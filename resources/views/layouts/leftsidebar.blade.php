@@ -38,7 +38,7 @@
                 <li> <a class="has-arrow  " href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Логирование</span></a></li>
                 <li> <a class="has-arrow  " href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Графики</span></a></li>
 
-                
+
             </ul>
         </nav>
         <!-- End Sidebar navigation -->
