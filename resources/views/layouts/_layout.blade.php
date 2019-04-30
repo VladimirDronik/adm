@@ -2,7 +2,7 @@
 
 @include('layouts.htmlheader')
 
-
+<html>
 <body class="fix-header fix-sidebar">
     <!-- Preloader - style you can find in spinners.css -->
     <div class="preloader">
@@ -12,19 +12,19 @@
     <!-- Main wrapper  -->
     <div id="main-wrapper">
 
-    @include('layouts.header')
+         @include('layouts.header')
 
-    @include('layouts.leftsidebar')
+         @include('layouts.leftsidebar')
 
-        <!-- Page wrapper  -->
-        <div class="page-wrapper">
+            <!-- Page wrapper  -->
+            <div class="page-wrapper">
 
-            @yield('breadcrumbs')
-            @yield('content')
+                @yield('breadcrumbs')
+                @yield('content')
 
-            @include('layouts.footer')
+                @include('layouts.footer')
 
-        </div>
+            </div>
         <!-- End Page wrapper  -->
     </div>
     <!-- End Wrapper -->
