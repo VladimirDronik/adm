@@ -1,7 +1,7 @@
 
 
 @include('layouts.htmlheader')
-
+@include('layouts.scripts')
 <html>
 <body class="fix-header fix-sidebar">
     <!-- Preloader - style you can find in spinners.css -->
@@ -29,8 +29,8 @@
     </div>
     <!-- End Wrapper -->
 
-    @include('layouts.scripts')
 
+    @yield('scripts')
 </body>
 
 </html>

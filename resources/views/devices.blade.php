@@ -38,6 +38,7 @@
                 <h4>Доступные устройства</h4>
 
             </div>
+
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table">
@@ -53,39 +54,26 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Kolor Tea Shirt For Man</td>
-                            <td>MegaD</td>
-                            <td>192.168.88.11</td>
-                            <td><span class="badge badge-primary">Выключено</span></td>
-                            <td>
-                                <button type="button" class="btn btn-info btn-rounded m-b-10 m-l-5">Настройка</button>
-                            </td>
 
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Kolor Tea Shirt For Women</td>
-                            <td>MegaD</td>
-                            <td>192.168.88.12</td>
-                            <td><span class="badge badge-success">Активно</span></td>
-                            <td>
-                                <button type="button" class="btn btn-info btn-rounded m-b-10 m-l-5">Настройка</button>
-                            </td>
+                        @foreach ($devices as $device)
+                            <tr>
+                                <th scope="row">{{ $device->id }}</th>
+                                <td>{{ $device->description }}</td>
+                                <td>MegaD</td>
+                                <td>{{ $device->ip_address }}</td>
+                                <td>
+                                    @if ( $device->active  === 1)
+                                        <span class="badge badge-success">Активно</span>
+                                    @else
+                                        <span class="badge badge-primary">Не доступно</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <button onclick="window.location.href='devices/select/{{ $device->id }}'" type="button" class="btn btn-info btn-rounded m-b-10 m-l-5">Настройка</button>
+                                </td>
+                            </tr>
+                        @endforeach
 
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>Blue Backpack For Baby</td>
-                            <td>MegaD</td>
-                            <td>192.168.88.13</td>
-                            <td><span class="badge badge-danger">Не доступно</span></td>
-                            <td>
-                                <button type="button" class="btn btn-info btn-rounded m-b-10 m-l-5">Настройка</button>
-                            </td>
-
-                        </tr>
                         </tbody>
                     </table>
                 </div>
