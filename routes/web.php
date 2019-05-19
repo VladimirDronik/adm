@@ -25,3 +25,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/devices', 'DevicesController@index');
 Route::get('/devices/select/{id_device}', 'DevicesController@select')->name('id_device');
 
+//AJAX return
+Route::post('/getobject','AJAX\ObjectsController@index');

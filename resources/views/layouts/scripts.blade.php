@@ -1,5 +1,7 @@
 
 
+
+
 <!-- All Jquery -->
 <script src="/js/lib/jquery/jquery.min.js"></script>
 <!-- Bootstrap tether Core JavaScript -->
@@ -37,3 +39,13 @@
 
 <script src="/js/custom.min.js"></script>
 
+
+<script>
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+</script>

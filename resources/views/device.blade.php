@@ -69,9 +69,9 @@
                                 <td><a href="#">{{ $port->comment }}</a></td>
                                 <td >
                                     @if ($port->nameobj)
-                                        <button type="button" class="btn btn-warning  m-b-10 btn-sm" name="object"  data-toggle="modal" data-target="#objectsModal"  value="{{ $port->object}}"> <b>{{ $port->nameobj }}</b></button>
+                                        <button type="button" class="btn btn-warning  m-b-10 btn-sm" name="object" id="portobj_{{ $port->num_port }}"  data-toggle="modal" data-target="#objectsModal"  value="{{ $port->object}},{{$port->nameobj}},portobj_{{ $port->num_port }}"> <b>{{ $port->nameobj }}</b></button>
                                     @else
-                                        <button type="button" class="btn btn-default  m-b-10 btn-sm" name="object"  data-toggle="modal" data-target="#objectsModal" value="empty">Отсутствует</button>
+                                        <button type="button" class="btn btn-default  m-b-10 btn-sm" name="object" id="portobjempty_{{ $port->num_port }}"   data-toggle="modal" data-target="#objectsModal" value="empty,empty,portobjempty_{{ $port->num_port }}">Отсутствует</button>
                                     @endif
                                 </td>
                                 <td>
@@ -120,18 +120,20 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                     <h4 class="modal-title">Выбор привязанного объекта</h4>
                 </div>
                 <div class="modal-body">
+                    <div class="alert alert-info">
+                        <label id="selected_object"></label>
+                        <br>
+                    </div>
+                    <div id="objectframe">
 
-
-
+                    </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                    <button type="button"   class="btn btn-primary">Сохранить изменения</button>
                 </div>
             </div>
         </div>
@@ -188,6 +190,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title">Выбор метода объекта</h4>
             </div>
+
             <div class="modal-body">
 
 
@@ -207,20 +210,56 @@
 <script>
 
 
+
+
+
+
+
+
     //Вызов модального окна с объектами
     $('button[type=button][name=object]').click(function () {
+        //alert(this.value);
+        var object_val = this.value;
+        var port_id = this.id;
+        var object_arr = object_val.split(',');
 
-            $.ajax({
+
+        var dataarr = {};
+        dataarr['object'] = object_val;
+
+        $.ajax({
                 type:'POST',
                 url:'/getobject',
-                data: this.value,
+                data: dataarr,
                 success:function(data){
-                    alert('111');
-                    //$("#msg").html(data.msg);
+
+                    $("#objectframe").html(data.html);
                 }
             });
 
+
+        if(object_arr[0]!='empty') {
+            $('#selected_object').html('Выбран объект: '+ object_arr[1] +
+                '   <button type="button" class="btn btn-danger  m-b-10 btn-xs" data-dismiss="modal" ' +
+                'id = "reset_object"  value="'+ port_id + '" onclick="reset_object(\''+port_id+'\',\''+object_arr[2]+'\');">убрать</button>');
+        }
+        else {
+            $('#selected_object').html('Объект не выбран');
+        }
+
     })
+
+
+    function reset_object(id,port) {
+
+        //Внесение изменений в БД
+
+        $('#'+id).html('Отсутсвует');
+        $('#'+id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
+        $( '#'+port).val('empty,empty,' + id);
+
+
+    }
 
 
 
@@ -229,13 +268,17 @@
         if (this.value == 'easy'){
             $('#mode').html('<button type="button" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal">Устройство:</button>&nbsp;' +
                 '<button type="button" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal">Порт:</button>&nbsp;' +
-                '<button type="button" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal">Действие:</button>');
+                '<button type="button" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal">Действие:</button>'+
+                '<br><br><div class="alert alert-info">В этом режиме при срабатывании входного порта будет выполняться ' +
+            'действие с другим портом этого же или другого устройства. Для этого необхоидмо добавить команду ' +
+            'в формате "Устройство; Порт: Действие"</div>');
 
         }
         else if (this.value == 'method'){
-            $('#mode').html('<button type="button" class="btn btn-warning  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal">Объект:</button>&nbsp;');
-            $('#mode').html('<button type="button" class="btn btn-warning  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal">Метод:</button>');
-
+            $('#mode').html('<button type="button" class="btn btn-warning  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal">Объект:</button>&nbsp;'+
+            '<button type="button" class="btn btn-warning  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal">Метод:</button>'+
+            '<div class="alert alert-info">В этом режиме при срабатывании входного порта будет выполняться ' +
+            ' метод выбранного здесь объекта</div>');
         }
         else if (this.value == 'script'){
             $('#mode').html('<button type="button" class="btn btn-info  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal">Скрипт</button>');
