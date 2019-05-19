@@ -26,4 +26,5 @@ Route::get('/devices', 'DevicesController@index');
 Route::get('/devices/select/{id_device}', 'DevicesController@select')->name('id_device');
 
 //AJAX return
-Route::post('/getobject','AJAX\ObjectsController@index');
+Route::post('/getobject','AJAX\ObjectsController@load_to_port');
+Route::post('/add_object_to_port','AJAX\ObjectsController@add_to_port');

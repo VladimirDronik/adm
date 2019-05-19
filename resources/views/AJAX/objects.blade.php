@@ -36,9 +36,27 @@
 <script>
 function select_object(id, name) {
 
-    //Заносим данные в таблицу с помощью ajax
 
-    
+var port_name = '{{$port}}';
+var arr_port = port_name.split('_');
+
+
+//Заносим данные в таблицу с помощью ajax
+
+    var dataarr = {};
+    dataarr['id_object'] = id;
+    dataarr['id_port'] = arr_port[1];
+
+    $.ajax({
+        type:'POST',
+        url:'/add_object_to_port',
+        data: dataarr,
+        success:function(data){
+         //alert(data.status);
+         //   $("#objectframe").html(data.html);
+        }
+    });
+
     //Отдаем данные странице
     $( '#{{$port}}' ).attr({"class": "btn btn-warning  m-b-10 btn-sm"});
     $( '#{{$port}}' ).html('<b>' + $('#object_'+id).html() + '</b>');

@@ -69,9 +69,9 @@
                                 <td><a href="#">{{ $port->comment }}</a></td>
                                 <td >
                                     @if ($port->nameobj)
-                                        <button type="button" class="btn btn-warning  m-b-10 btn-sm" name="object" id="portobj_{{ $port->num_port }}"  data-toggle="modal" data-target="#objectsModal"  value="{{ $port->object}},{{$port->nameobj}},portobj_{{ $port->num_port }}"> <b>{{ $port->nameobj }}</b></button>
+                                        <button type="button" class="btn btn-warning  m-b-10 btn-sm" name="object" id="portobj_{{ $port->id }}"  data-toggle="modal" data-target="#objectsModal"  value="{{ $port->object}},{{$port->nameobj}},portobj_{{ $port->id }}"> <b>{{ $port->nameobj }}</b></button>
                                     @else
-                                        <button type="button" class="btn btn-default  m-b-10 btn-sm" name="object" id="portobjempty_{{ $port->num_port }}"   data-toggle="modal" data-target="#objectsModal" value="empty,empty,portobjempty_{{ $port->num_port }}">Отсутствует</button>
+                                        <button type="button" class="btn btn-default  m-b-10 btn-sm" name="object" id="portobjempty_{{ $port->id }}"   data-toggle="modal" data-target="#objectsModal" value="empty,empty,portobjempty_{{ $port->id }}">Отсутствует</button>
                                     @endif
                                 </td>
                                 <td>
