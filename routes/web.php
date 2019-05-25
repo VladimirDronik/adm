@@ -28,3 +28,4 @@ Route::get('/devices/select/{id_device}', 'DevicesController@select')->name('id_
 //AJAX return
 Route::post('/getobject','AJAX\ObjectsController@load_to_port');
 Route::post('/add_object_to_port','AJAX\ObjectsController@add_to_port');
+Route::post('/getmethod','AJAX\ObjectsController@load_method');

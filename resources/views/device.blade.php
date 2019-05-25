@@ -48,8 +48,8 @@
                             <th>Описание</th>
                             <th>Связанный объект</th>
                             <th>Действие</th>
-                            <th align="center">Длит наж</th>
-                            <th align="center">Двойн наж</th>
+                            <th align="center">Длит</th>
+                            <th align="center">Двойн</th>
                             <th>Настройка</th>
                         </tr>
                         </thead>
@@ -76,13 +76,13 @@
                                 </td>
                                 <td>
                                     @if ($port->easy)
-                                        <button type="button" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal"><b>Простое: {{ $port->easy }}</b></button>
+                                        <button type="button" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('easy', {{ $port->id }}, '{{ $port->easy }}');"><b>Простое: {{ $port->easy }}</b></button>
                                     @elseif ($port->script)
-                                        <button type="button" class="btn btn-info  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal"><b>{{ $port->namescript }}</b></button>
+                                        <button type="button" class="btn btn-info  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('script', {{ $port->id }}, '{{ $port->namescript }}');"><b>{{ $port->namescript }}</b></button>
                                     @elseif ($port->nameobj!='' && $port->type!='out')
-                                        <button type="button" class="btn btn-warning  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal"><b><- Выполнять действие объекта</b></button>
+                                        <button type="button" class="btn btn-warning  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('method', {{ $port->id }}, '{{ $port->nameobj }}');"><b><- Выполнять действие объекта</b></button>
                                     @elseif ($port->type!='out')
-                                        <button type="button" class="btn btn-default  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal">Отсутсвует</button>
+                                        <button type="button" class="btn btn-default  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('none', {{ $port->id }}, 'none');">Отсутсвует</button>
                                     @endif
                                 </td>
                                 @if ($port->type!='out')
@@ -140,7 +140,7 @@
     </div>
 
 
-<!-- HTML-код модального окна -->
+<!-- модальное окно выбора действия -->
 <div id="actionModal" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -150,17 +150,17 @@
             </div>
             <div class="modal-body">
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="btn btn-success active">
-                        <input type="radio" name="actions" id="easy_button" autocomplete="off" value="easy" checked> Простое действие
+                    <label class="btn btn-success" id="easy_button" >
+                        <input type="radio" name="actions"  autocomplete="off" value="easy" checked> Простое действие
                     </label>
-                    <label class="btn btn-success">
-                        <input type="radio" name="actions" id="option2" autocomplete="off" value="method"> Метод объекта
+                    <label class="btn btn-success" id="method_button">
+                        <input type="radio" name="actions"  autocomplete="off" value="method"> Метод объекта
                     </label>
-                    <label class="btn btn-success">
-                        <input type="radio" name="actions" id="option3" autocomplete="off" value="script"> Скрипт
+                    <label class="btn btn-success" id="script_button">
+                        <input type="radio" name="actions"  autocomplete="off" value="script"> Скрипт
                     </label>
-                    <label class="btn btn-success">
-                        <input type="radio" name="actions" id="option3" autocomplete="off" value="none"> Отсутствует
+                    <label class="btn btn-success" id="none_button">
+                        <input type="radio" name="actions"  autocomplete="off" value="none"> Отсутствует
                     </label>
                 </div>
                 <br>
@@ -176,6 +176,9 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                 <button type="button" class="btn btn-primary" >Сохранить изменения</button>
+                <input type="hidden" value="" id="id_port">
+                <input type="hidden" value="" id="value">
+                <input type="hidden" value="" id="cur_method">
             </div>
         </div>
     </div>
@@ -250,9 +253,14 @@
     })
 
 
+
+
+
+
     function reset_object(id,port) {
 
         //Внесение изменений в БД
+        select_object(null, null);
 
         $('#'+id).html('Отсутсвует');
         $('#'+id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
@@ -262,35 +270,52 @@
     }
 
 
+// Модальное окно с действиями - выбор действия
 
     $('input[type=radio][name=actions]').change(function(){
 
-        if (this.value == 'easy'){
-            $('#mode').html('<button type="button" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal">Устройство:</button>&nbsp;' +
-                '<button type="button" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal">Порт:</button>&nbsp;' +
-                '<button type="button" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal">Действие:</button>'+
-                '<br><br><div class="alert alert-info">В этом режиме при срабатывании входного порта будет выполняться ' +
-            'действие с другим портом этого же или другого устройства. Для этого необхоидмо добавить команду ' +
-            'в формате "Устройство; Порт: Действие"</div>');
 
-        }
-        else if (this.value == 'method'){
-            $('#mode').html('<button type="button" class="btn btn-warning  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal">Объект:</button>&nbsp;'+
-            '<button type="button" class="btn btn-warning  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal">Метод:</button>'+
-            '<div class="alert alert-info">В этом режиме при срабатывании входного порта будет выполняться ' +
-            ' метод выбранного здесь объекта</div>');
-        }
-        else if (this.value == 'script'){
-            $('#mode').html('<button type="button" class="btn btn-info  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal">Скрипт</button>');
-        }
-
-        else if (this.value == 'none'){
-            $('#mode').html('<div class="alert alert-info">Действие при срабатывании порта не выбрано</div>');
-            //$('#object').removeClass("d-none");
-            //$('#object').addClass("d-none");
-        }
-
+        select_method(this.value,$('#id_port').val(),$('#value').val());
 
     });
+
+
+    function click_port_method(mode, port_id, value) {
+
+        $('#cur_method').val(mode);
+        select_method(mode, port_id, value)
+    }
+
+
+    function select_method(mode, port_id, value) {
+
+        $('#easy_button').attr({"class": "btn btn-success"});
+        $('#script_button').attr({"class": "btn btn-success"});
+        $('#method_button').attr({"class": "btn btn-success"});
+        $('#none_button').attr({"class": "btn btn-success"});
+
+        $('#'+mode+'_button').attr({"class": "btn btn-success active"});
+
+        $('#id_port').val(port_id);
+        $('#value').val(value);
+
+
+        var dataarr = {};
+        dataarr['methodmode'] = mode;
+        dataarr['port_id'] = port_id;
+        dataarr['value'] = value;
+        dataarr['cur_method'] = $('#cur_method').val();
+
+        $.ajax({
+            type:'POST',
+            url:'/getmethod',
+            data: dataarr,
+            success:function(data){
+
+                $('#mode').html(data.html);
+            }
+        });
+    }
+
 </script>
 @endsection
