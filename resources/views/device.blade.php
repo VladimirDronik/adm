@@ -76,13 +76,13 @@
                                 </td>
                                 <td>
                                     @if ($port->easy)
-                                        <button type="button" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('easy', {{ $port->id }}, '{{ $port->easy }}');"><b>Простое: {{ $port->easy }}</b></button>
+                                        <button type="button"  id="method_btn_{{ $port->id }}" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('easy', {{ $port->id }}, '{{ $port->easy }}');"><b>Простое: {{ $port->easy }}</b></button>
                                     @elseif ($port->script)
-                                        <button type="button" class="btn btn-info  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('script', {{ $port->id }}, '{{ $port->namescript }}');"><b>{{ $port->namescript }}</b></button>
+                                        <button type="button"  id="method_btn_{{ $port->id }}" class="btn btn-info  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('script', {{ $port->id }}, '{{ $port->namescript }}');"><b>{{ $port->namescript }}</b></button>
                                     @elseif ($port->nameobj!='' && $port->type!='out')
-                                        <button type="button" class="btn btn-warning  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('method', {{ $port->id }}, '{{ $port->nameobj }}');"><b><- Выполнять действие объекта</b></button>
+                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-warning  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('method', {{ $port->id }}, '{{ $port->nameobj }}');"><b><< Выполнять действие объекта</b></button>
                                     @elseif ($port->type!='out')
-                                        <button type="button" class="btn btn-default  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('none', {{ $port->id }}, 'none');">Отсутсвует</button>
+                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-default  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('none', {{ $port->id }}, 'none');">Отсутсвует</button>
                                     @endif
                                 </td>
                                 @if ($port->type!='out')
@@ -145,13 +145,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title">Действие по нажатию на физическую кнопку</h4>
+                <h4 class="modal-title">Действие при активации порта</h4>
             </div>
             <div class="modal-body">
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                     <label class="btn btn-success" id="easy_button" >
-                        <input type="radio" name="actions"  autocomplete="off" value="easy" checked> Простое действие
+                        <input type="radio" name="actions"  autocomplete="off" value="easy"> Простое действие
                     </label>
                     <label class="btn btn-success" id="method_button">
                         <input type="radio" name="actions"  autocomplete="off" value="method"> Метод объекта
@@ -175,7 +174,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                <button type="button" class="btn btn-primary" >Сохранить изменения</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"  onclick="save_method();">Сохранить изменения</button>
                 <input type="hidden" value="" id="id_port">
                 <input type="hidden" value="" id="value">
                 <input type="hidden" value="" id="cur_method">
@@ -185,28 +184,30 @@
 </div>
 
 
-<!-- HTML-код модального окна -->
+
+
+<!-- модальное окно выбора действия для порта -->
 <div id="methodsModal" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title">Выбор метода объекта</h4>
+
+                <h4 class="modal-title" id="title_action"></h4>
             </div>
 
-            <div class="modal-body">
-
+            <div class="modal-body" id="method_data">
 
 
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                <button type="button"   class="btn btn-primary">Сохранить изменения</button>
+                <button type="button"   class="btn btn-primary" >Сохранить изменения</button>
             </div>
         </div>
     </div>
 </div>
+
 @endsection
 
 @section('scripts')
@@ -221,7 +222,9 @@
 
     //Вызов модального окна с объектами
     $('button[type=button][name=object]').click(function () {
-        //alert(this.value);
+
+
+
         var object_val = this.value;
         var port_id = this.id;
         var object_arr = object_val.split(',');
@@ -270,8 +273,7 @@
     }
 
 
-// Модальное окно с действиями - выбор действия
-
+    // Модальное окно с действиями - выбор действия
     $('input[type=radio][name=actions]').change(function(){
 
 
@@ -280,11 +282,17 @@
     });
 
 
+
+
+
     function click_port_method(mode, port_id, value) {
 
         $('#cur_method').val(mode);
         select_method(mode, port_id, value)
     }
+
+
+
 
 
     function select_method(mode, port_id, value) {
@@ -306,6 +314,7 @@
         dataarr['value'] = value;
         dataarr['cur_method'] = $('#cur_method').val();
 
+
         $.ajax({
             type:'POST',
             url:'/getmethod',
@@ -316,6 +325,73 @@
             }
         });
     }
+
+
+    //Сохранение выбранного метода для порта
+    function save_method() {
+
+        var action = '';
+        var dataarr = {};
+
+        action = $('#action_text').val();
+
+        dataarr['methodmode'] = action;
+        dataarr['id_port'] = $('#id_port').val();
+
+        if (action == 'easy') {
+
+
+
+            var devicearr = ($('#dev_select_button').html()).split(': ');
+            var portarr = ($('#port_btn').html()).split(': ');
+            var actarr = ($('#action_btn').html()).split(': ');
+            dataarr['device'] = devicearr[1];
+            dataarr['port'] = portarr[1];
+            dataarr['act'] = actarr[1];
+
+
+
+            $('#method_btn_' + $('#port_id').val()).attr({"class": "btn btn-success  m-b-10 btn-sm"});
+            $('#method_btn_' + $('#port_id').val()).html('Простое: ' + dataarr['device'] + ';' + dataarr['port'] + ':' + dataarr['act']);
+        }
+
+        if (action == 'method') {
+
+            dataarr['id_object'] = $('#id_object').val();
+
+            $('#method_btn_' + $('#port_id').val()).attr({"class": "btn btn-warning  m-b-10 btn-sm"});
+            $('#method_btn_' + $('#port_id').val()).html('<b><< Выполнять действие объекта</b>');
+        }
+
+        if (action == 'script') {
+
+            var script = ($('#script_btn').html()).split(': ');
+            dataarr['script_name'] = script[1];
+            dataarr['id_script'] = $('#id_script').val();
+
+            $('#method_btn_' + $('#port_id').val()).attr({"class": "btn btn-info  m-b-10 btn-sm"});
+            $('#method_btn_' + $('#port_id').val()).html('<b>'+script[1]+'</b>');
+
+        }
+
+        if (action == 'none') {
+            $('#method_btn_' + $('#port_id').val()).attr({"class": "btn btn-default  m-b-10 btn-sm"});
+            $('#method_btn_' + $('#port_id').val()).html('Отсутствует');
+        }
+
+        $.ajax({
+            type:'POST',
+            url:'/savemethod',
+            data: dataarr,
+            success:function(data){
+
+                $('#').html(data.html);
+            }
+        });
+
+
+    }
+
 
 </script>
 @endsection
