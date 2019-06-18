@@ -12,8 +12,8 @@ class Port extends Model
     /**
      * Добавление объекта к порту
      *
-     * @param int id_port "id порта, к которому добавляем объект"
-     * @param int id_object "id объекта, который добавляем к порту"
+     * @param int $id_port "id порта, к которому добавляем объект"
+     * @param int $id_object "id объекта, который добавляем к порту"
      *
      * @return void
      */
@@ -32,7 +32,7 @@ class Port extends Model
     /**
      * Вывод всех портов для выбранного устройства
      *
-     * @param int device "id выбранного устройства"
+     * @param int $device "id выбранного устройства"
      *
      */
     static public function select_ports($device)
@@ -47,9 +47,9 @@ class Port extends Model
     /**
      * Добавление метода, скрипта или простого действия к порту
      *
-     * @param int id_port "id порта, у которого будем менять данные"
-     * @param string method "изменяемое свойство easy, script, none или object&method"
-     * @param string value "значение изменяемого свойства"
+     * @param int $id_port "id порта, у которого будем менять данные"
+     * @param string $method "изменяемое свойство easy, script, none или object&method"
+     * @param string $value "значение изменяемого свойства"
      */
     static public function add_method($id_port, $method, $value1, $value2 = null)
     {
@@ -83,13 +83,10 @@ class Port extends Model
 
 
 
-
-
-
     /**
      * Выбор объекта у порта
      *
-     * @param int id_port
+     * @param int $id_port
      *
      */
     static public function select_object($id_port)
@@ -102,5 +99,32 @@ class Port extends Model
 
 
 
+    /**
+     * Сохнаение названия порта
+     *
+     * @param int $id_port
+     * @param string $name_port
+     *
+     * @return void
+     */
+    static public function save_name_port($id_port, $name_port)
+    {
+        Port::where('id', $id_port)->update(['comment' => $name_port]);
+    }
+
+
+    /**
+     * Добавление новых портов для устройства
+     *
+     * @param int $id_device
+     * @param int $num_port
+     * @param string $status
+     *
+     */
+    static public function addports($id_device, $num_port, $status)
+    {
+        Port::insert(['id_device' => $id_device, 'num_port' => $num_port, 'status' => $status, 'comment' => '']);
+
+    }
 
 }

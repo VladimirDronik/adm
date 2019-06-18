@@ -38,6 +38,7 @@
 <!-- scripit init-->
 
 <script src="/js/custom.min.js"></script>
+<script src="/js/extfunctions.js"></script>
 
 
 <script>

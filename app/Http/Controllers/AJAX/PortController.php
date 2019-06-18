@@ -137,4 +137,31 @@ class PortController extends Controller
                 break;
         }
     }
+
+
+
+    /**
+     *  Сохранение названия порта
+     */
+    public function save_name_port()
+    {
+
+            $nameport = $_POST['nameport'];
+
+        Port::save_name_port($_POST['id_port'], $nameport);
+
+        return response()->json(array('success' => true, 'html'=>$nameport));
+    }
+
+
+    /**
+     * Добавление портов для нового устройства
+     *
+     */
+    public function add_ports()
+    {
+
+        port::addports($_POST['id_device'], $_POST['num_port'], $_POST['status']);
+
+    }
 }

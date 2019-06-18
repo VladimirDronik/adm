@@ -60,6 +60,7 @@
             dataarr['mode'] = mode;
             dataarr['device'] = device[1];
 
+
             $.ajax({
                 type: 'POST',
                 url: '/loaddata',

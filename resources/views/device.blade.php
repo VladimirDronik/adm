@@ -26,10 +26,12 @@
 
                     <div class="card">
                         <div class="card-body">
-                            Название: <input name="description" value="{{ $device->description}}" size="15">
-                            ip адрес: <input name="ip_address" value="{{ $device->ip_address }}" size="15">
-                            <button type="button" class="btn btn-success m-b-10 m-l-5">Сохранить настройки</button>
-                            <button type="button" class="btn btn-danger m-b-10 m-l-5">Удалить устройство</button>
+                            Название: <input name="description" id="descr_device" value="{{ $device->description}}" size="15">
+                            ip адрес: <input name="ip_address" id="ip_device" value="{{ $device->ip_address }}" size="15">
+                            <input type="hidden" id="id_device" value="{{ $device->id }}">
+
+                            <button type="button" class="btn btn-success m-b-10 m-l-5" data-toggle="modal" data-target="#device-settings-Modal">Сохранить настройки</button>
+                            <button type="button" class="btn btn-danger m-b-10 m-l-5"  data-toggle="modal" data-target="#delete-device-Modal">Удалить устройство</button>
                         </div>
                     </div>
 
@@ -60,13 +62,20 @@
                                 <td>
                                     @if ($port->type=='out')
                                         <span class="badge badge-primary">{{ $port->type }}</span>
-                                    @elseif ($port->type=='sw')
+                                    @elseif ($port->type=='in')
                                         <span class="badge badge-success">{{ $port->type }}</span>
 
                                     @endif
 
                                 </td>
-                                <td><a href="#">{{ $port->comment }}</a></td>
+                                <td><a href="#" data-toggle="modal" data-target="#name_modal" id="name_port_{{ $port->id }}" onclick="get_name_port('{{ $port->id }}', '{{$port->comment}}'); ">
+                                        @if ($port->comment != '')
+                                        {{ $port->comment }}
+                                           @else
+                                            Без названия
+                                        @endif
+                                    </a>
+                                </td>
                                 <td >
                                     @if ($port->nameobj)
                                         <button type="button" class="btn btn-warning  m-b-10 btn-sm" name="object" id="portobj_{{ $port->id }}"  data-toggle="modal" data-target="#objectsModal"  value="{{ $port->object}},{{$port->nameobj}},portobj_{{ $port->id }}"> <b>{{ $port->nameobj }}</b></button>
@@ -142,13 +151,13 @@
 
 <!-- модальное окно выбора действия -->
 <div id="actionModal" class="modal">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Действие при активации порта</h4>
             </div>
             <div class="modal-body">
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <div class="btn-group-toggle" data-toggle="buttons">
                     <label class="btn btn-success" id="easy_button" >
                         <input type="radio" name="actions"  autocomplete="off" value="easy"> Простое действие
                     </label>
@@ -200,6 +209,8 @@
 
 
             </div>
+
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                 <button type="button"   class="btn btn-primary" >Сохранить изменения</button>
@@ -208,190 +219,83 @@
     </div>
 </div>
 
+
+
+
+    <!-- модальное окно изменения имени у порта-->
+    <div id="name_modal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <h4 class="modal-title"> Описание порта</h4>
+                </div>
+
+                    <div class="modal-body" >
+
+                        <input type="text" class="form-control input-default " id="name_modal_data" placeholder="Input Default">
+                        <button type="button" class="btn btn-default" onclick="no_name();">Убрать</button>
+
+                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                    <button type="button"   class="btn btn-primary" data-dismiss="modal" onclick="save_name_port();" >Сохранить изменения</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- модальное окно сохранения настроек устройства -->
+    <div id="device-settings-Modal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <h4 class="modal-title"> Сохранить настройки устройства ?</h4>
+                </div>
+
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
+                    <button type="button"   class="btn btn-primary" data-dismiss="modal" onclick="save_device_settings();" >Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- модальное окно удаления устройства -->
+    <div id="delete-device-Modal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <h4 class="modal-title"> Удалить устройство ?</h4>
+                </div>
+
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
+                    <button type="button"   class="btn btn-primary" data-dismiss="modal" onclick="delete_device();" >Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
 @endsection
 
 @section('scripts')
-<script>
 
+    <script src="/js/pagescripts/device.js"></script>
 
-
-
-
-
-
-
-    //Вызов модального окна с объектами
-    $('button[type=button][name=object]').click(function () {
-
-
-
-        var object_val = this.value;
-        var port_id = this.id;
-        var object_arr = object_val.split(',');
-
-
-        var dataarr = {};
-        dataarr['object'] = object_val;
-
-        $.ajax({
-                type:'POST',
-                url:'/getobject',
-                data: dataarr,
-                success:function(data){
-
-                    $("#objectframe").html(data.html);
-                }
-            });
-
-
-        if(object_arr[0]!='empty') {
-            $('#selected_object').html('Выбран объект: '+ object_arr[1] +
-                '   <button type="button" class="btn btn-danger  m-b-10 btn-xs" data-dismiss="modal" ' +
-                'id = "reset_object"  value="'+ port_id + '" onclick="reset_object(\''+port_id+'\',\''+object_arr[2]+'\');">убрать</button>');
-        }
-        else {
-            $('#selected_object').html('Объект не выбран');
-        }
-
-    })
-
-
-
-
-
-
-    function reset_object(id,port) {
-
-        //Внесение изменений в БД
-        select_object(null, null);
-
-        $('#'+id).html('Отсутсвует');
-        $('#'+id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
-        $( '#'+port).val('empty,empty,' + id);
-
-
-    }
-
-
-    // Модальное окно с действиями - выбор действия
-    $('input[type=radio][name=actions]').change(function(){
-
-
-        select_method(this.value,$('#id_port').val(),$('#value').val());
-
-    });
-
-
-
-
-
-    function click_port_method(mode, port_id, value) {
-
-        $('#cur_method').val(mode);
-        select_method(mode, port_id, value)
-    }
-
-
-
-
-
-    function select_method(mode, port_id, value) {
-
-        $('#easy_button').attr({"class": "btn btn-success"});
-        $('#script_button').attr({"class": "btn btn-success"});
-        $('#method_button').attr({"class": "btn btn-success"});
-        $('#none_button').attr({"class": "btn btn-success"});
-
-        $('#'+mode+'_button').attr({"class": "btn btn-success active"});
-
-        $('#id_port').val(port_id);
-        $('#value').val(value);
-
-
-        var dataarr = {};
-        dataarr['methodmode'] = mode;
-        dataarr['port_id'] = port_id;
-        dataarr['value'] = value;
-        dataarr['cur_method'] = $('#cur_method').val();
-
-
-        $.ajax({
-            type:'POST',
-            url:'/getmethod',
-            data: dataarr,
-            success:function(data){
-
-                $('#mode').html(data.html);
-            }
-        });
-    }
-
-
-    //Сохранение выбранного метода для порта
-    function save_method() {
-
-        var action = '';
-        var dataarr = {};
-
-        action = $('#action_text').val();
-
-        dataarr['methodmode'] = action;
-        dataarr['id_port'] = $('#id_port').val();
-
-        if (action == 'easy') {
-
-
-
-            var devicearr = ($('#dev_select_button').html()).split(': ');
-            var portarr = ($('#port_btn').html()).split(': ');
-            var actarr = ($('#action_btn').html()).split(': ');
-            dataarr['device'] = devicearr[1];
-            dataarr['port'] = portarr[1];
-            dataarr['act'] = actarr[1];
-
-
-
-            $('#method_btn_' + $('#port_id').val()).attr({"class": "btn btn-success  m-b-10 btn-sm"});
-            $('#method_btn_' + $('#port_id').val()).html('Простое: ' + dataarr['device'] + ';' + dataarr['port'] + ':' + dataarr['act']);
-        }
-
-        if (action == 'method') {
-
-            dataarr['id_object'] = $('#id_object').val();
-
-            $('#method_btn_' + $('#port_id').val()).attr({"class": "btn btn-warning  m-b-10 btn-sm"});
-            $('#method_btn_' + $('#port_id').val()).html('<b><< Выполнять действие объекта</b>');
-        }
-
-        if (action == 'script') {
-
-            var script = ($('#script_btn').html()).split(': ');
-            dataarr['script_name'] = script[1];
-            dataarr['id_script'] = $('#id_script').val();
-
-            $('#method_btn_' + $('#port_id').val()).attr({"class": "btn btn-info  m-b-10 btn-sm"});
-            $('#method_btn_' + $('#port_id').val()).html('<b>'+script[1]+'</b>');
-
-        }
-
-        if (action == 'none') {
-            $('#method_btn_' + $('#port_id').val()).attr({"class": "btn btn-default  m-b-10 btn-sm"});
-            $('#method_btn_' + $('#port_id').val()).html('Отсутствует');
-        }
-
-        $.ajax({
-            type:'POST',
-            url:'/savemethod',
-            data: dataarr,
-            success:function(data){
-
-                $('#').html(data.html);
-            }
-        });
-
-
-    }
-
-
-</script>
 @endsection

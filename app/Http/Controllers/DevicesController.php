@@ -10,7 +10,9 @@ class DevicesController extends Controller
 {
     public function index()
     {
-        $devices = Device::all();
+
+        $devices = Device::select('devices.*', 'devtypes.name AS type')
+            ->join('devtypes','devtypes.id','=','devices.type')->get();
 
       return view('devices',['devices'=>$devices]);
     }
@@ -30,6 +32,7 @@ class DevicesController extends Controller
         $ports = Port::select('*','ports.id AS id', 'ports.status AS type','objects.name AS nameobj', 'scripts.name AS namescript')
                         ->leftjoin('objects','objects.id','=','ports.object')
                         ->leftjoin('scripts','scripts.id','=','ports.script')
+                        ->orderBy('num_port', 'ASC')
                         ->where('id_device',$id)->get();
 
 
