@@ -23,13 +23,15 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/devices', 'DevicesController@index');
+Route::get('/objects', 'ObjectsController@index');
 Route::get('/devices/select/{id_device}', 'DevicesController@select')->name('id_device');
+Route::get('/rooms', 'RoomsController@index');
 
 /* AJAX return */
 
 //Objects
-Route::post('/getobject','AJAX\ObjectsController@load_to_port');
-Route::post('/add_object_to_port','AJAX\ObjectsController@add_to_port');
+Route::post('/getobject','AJAX\ObjectController@load_to_port');
+Route::post('/add_object_to_port','AJAX\ObjectController@add_to_port');
 
 //Ports
 Route::post('/getmethod','AJAX\PortController@load_method');
@@ -42,3 +44,9 @@ Route::post('/addports','AJAX\PortController@add_ports');
 Route::post('/savedevicesettings','AJAX\DeviceController@save_device_settings');
 Route::post('/newdevice','AJAX\DeviceController@newdevice');
 Route::post('/deletedevice','AJAX\DeviceController@deletedevice');
+
+//Rooms
+Route::post('/rooms/addRoom','AJAX\RoomController@addRoom');
+Route::post('/rooms/deleteRoom','AJAX\RoomController@deleteRoom');
+Route::post('/rooms/sort','AJAX\RoomController@sort');
+
