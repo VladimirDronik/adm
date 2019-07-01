@@ -58,19 +58,28 @@
 
                         @foreach ($rooms as $room)
                             <tr>
-                                <td><input type="text" class="form-control input-default col-sm-2 "
+                                <td><input type="text" class="form-control input-default col-sm-2" readonly
                                            value="{{ $room->sort }}">
 
                                     <button type="button" class="btn btn-info btn-xs" id="sortBtn{{ $room->id }}"
-                                            onclick="changeSort({{ $room->id }},{{ $room->sort }}, 'UP');" >Up</button>
+                                            onclick="changeSort({{ $room->id }},{{ $room->sort }}, 'UP');" >Выше</button>
 
                                     <button type="button" class="btn btn-info btn-xs" id="sortBtn{{ $room->id }}"
-                                            onclick="changeSort({{ $room->id }},{{ $room->sort }}, 'DOWN');" >Down</button>
+                                            onclick="changeSort({{ $room->id }},{{ $room->sort }}, 'DOWN');" >Ниже</button>
 
                                 </td>
-                                <td><a href="#" onclick="edit_name({{ $room->id }});">{{ $room->name }}</a></td>
-                                <td>image</td>
-                                <td>color</td>
+                                <td>
+                                    <a href="#" id="nameRoom_{{ $room->id }}" onclick="edit_name({{ $room->id }});"
+                                       data-toggle="modal" data-target="#nameRoomModal" >{{ $room->name }}</a>
+                                </td>
+                                <td><img src="/images/rooms/{{ $room->image }}" id="imageRoom_{{ $room->id }}" class="imageRoom" data-toggle="modal" data-target="#selectImage"
+                                         onclick="updateImage({{ $room->id }}, true);"></td>
+                                <td>
+                                    <button style="background: {{ $room->style }}" id="colorRoom_{{ $room->id }}" class="btn btn-default"
+                                            data-toggle="modal" data-target="#selectColor"
+                                            onclick="updateColor({{ $room->id }}, true)">
+                                    </button>
+                                </td>
 
                                 <td>
                                     <button type="button" class="btn btn-danger btn-rounded m-b-10 m-l-5"
@@ -107,12 +116,15 @@
 
                         Название помещения: <input type="text" class="form-control input-default col-sm-4" id="nameRoom" size="15"><br><br>
 
-                        Изображение: <img src="/images/rooms/oimage.png" id="image" style="background: black;"  >
-                        &nbsp; &nbsp;
-                        <button data-toggle="modal" data-target="#selectImage"  class="btn btn-default m-b-10">Выбрать</button><br><br>
+                        Изображение: <img src="/images/rooms/noimage.png" id="image" style="background: black;"  >
+
+                        <button data-toggle="modal" data-target="#selectImage"  class="btn btn-default m-b-10"
+                        onclick="updateImage({{ $room->id }}, false);"> Выбрать</button><br><br>
 
                         Цветовая схема: <label class="btn btn-default" id="color"></label> &nbsp; &nbsp;
-                            <button data-toggle="modal" data-target="#selectColor" class="btn btn-default m-b-10">Выбрать</button><br><br>
+                            <button data-toggle="modal" data-target="#selectColor" onclick="updateColor({{ $room->id }}, false)"
+                                    class="btn btn-default m-b-10">Выбрать
+                            </button><br><br>
 
                     </div>
 
@@ -195,6 +207,29 @@
             </div>
         </div>
 
+
+        <!-- модальное окно изменения имени у помещения-->
+        <div id="nameRoomModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <h4 class="modal-title"> Назание помещения </h4>
+                    </div>
+
+                    <div class="modal-body" >
+
+                        <input type="text" class="form-control input-default " id="nameModalData" placeholder="Input Default">
+                        <button type="button" class="btn btn-default" onclick="no_name();">Убрать</button>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                        <button type="button"   class="btn btn-primary" data-dismiss="modal" onclick="saveNameRoom();" >Сохранить изменения</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 @endsection

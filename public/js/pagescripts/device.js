@@ -154,8 +154,9 @@ function save_method() {
 }
 
 //Получение название порта
-function get_name_port(id_port, name_port)
+function get_name_port(id_port)
 {
+    var name_port = $("#name_port_"+id_port).html();
 
     if (name_port == '')
         name_port = 'Без названия';

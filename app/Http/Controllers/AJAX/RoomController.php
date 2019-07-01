@@ -13,9 +13,9 @@ class RoomController extends Controller
     {
         $room = new Rooms();
 
-        $room->name = $_POST['name'];
-        $room->image = $_POST['image'];
-        $room->color = $_POST['color'];
+        $room->nameRoom = $_POST['name'];
+        $room->imageRoom = $_POST['image'];
+        $room->colorRoom = $_POST['color'];
         $room->addRoom();
 
     }
@@ -33,6 +33,43 @@ class RoomController extends Controller
     {
         Rooms::sort($_POST['id'], $_POST['sort'], $_POST['direction']);
     }
+
+
+    /**
+     * Сохранение названия помещения
+     */
+    public function saveNameRoom()
+    {
+        $room = new Rooms($_POST['idSelectRoom']);
+        $room->nameRoom = $_POST['nameRoom'];
+        $room->saveName();
+
+        return response()->json(array('success' => true, 'html'=>$_POST['nameRoom']));
+    }
+
+
+    /**
+     * Сохраненеие изображения помещения
+     */
+    public function updateImage()
+    {
+
+        $room = new Rooms($_POST['id']);
+        $room->imageRoom = $_POST['image'];
+        $room->saveImage();
+    }
+
+    /**
+     * Сохранение цвета для помещения
+     */
+    public function updateColor()
+    {
+        $room = new Rooms($_POST['id']);
+        $room->colorRoom = $_POST['color'];
+        $room->saveColor();
+    }
+
+
 
 
 }

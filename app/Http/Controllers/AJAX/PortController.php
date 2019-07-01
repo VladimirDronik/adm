@@ -146,7 +146,7 @@ class PortController extends Controller
     public function save_name_port()
     {
 
-            $nameport = $_POST['nameport'];
+        $nameport = trim($_POST['nameport']);
 
         Port::save_name_port($_POST['id_port'], $nameport);
 

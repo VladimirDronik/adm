@@ -6921,3 +6921,10 @@ tbody tr td:last-child {
     display: inline-block !important;
   }
 }
+
+
+/* new styles */
+.imageRoom {
+  background: black;
+  cursor: pointer;
+}

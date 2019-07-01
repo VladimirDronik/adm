@@ -68,7 +68,7 @@
                                     @endif
 
                                 </td>
-                                <td><a href="#" data-toggle="modal" data-target="#name_modal" id="name_port_{{ $port->id }}" onclick="get_name_port('{{ $port->id }}', '{{$port->comment}}'); ">
+                                <td><a href="#" data-toggle="modal" data-target="#name_modal" id="name_port_{{ $port->id }}" onclick="get_name_port('{{ $port->id }}'); ">
                                         @if ($port->comment != '')
                                         {{ $port->comment }}
                                            @else

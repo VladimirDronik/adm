@@ -27,7 +27,7 @@ Route::get('/objects', 'ObjectsController@index');
 Route::get('/devices/select/{id_device}', 'DevicesController@select')->name('id_device');
 Route::get('/rooms', 'RoomsController@index');
 
-/* AJAX return */
+/* =================================== START AJAX return ============================================================*/
 
 //Objects
 Route::post('/getobject','AJAX\ObjectController@load_to_port');
@@ -49,4 +49,8 @@ Route::post('/deletedevice','AJAX\DeviceController@deletedevice');
 Route::post('/rooms/addRoom','AJAX\RoomController@addRoom');
 Route::post('/rooms/deleteRoom','AJAX\RoomController@deleteRoom');
 Route::post('/rooms/sort','AJAX\RoomController@sort');
+Route::post('/rooms/saveNameRoom','AJAX\RoomController@saveNameRoom');
+Route::post('/rooms/updateImage','AJAX\RoomController@updateImage');
+Route::post('/rooms/updateColor','AJAX\RoomController@updateColor');
 
+/* ======================================== END AJAX return =========================================================*/

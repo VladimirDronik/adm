@@ -8,9 +8,15 @@ class Rooms extends Model
 {
     public $timestamps = false;
 
+    public $idRoom;
     public $nameRoom = 'new_room';
-    public $image = 'noimage.png';
-    public $color = 'blue';
+    public $imageRoom = 'noimage.png';
+    public $colorRoom = 'blue';
+
+    public function __construct($idRoom = null)
+    {
+        $this->idRoom = $idRoom;
+    }
 
     /**
      * Загрузка всех помещений из БД
@@ -67,8 +73,8 @@ class Rooms extends Model
         $sort = self::max('sort');
         $sort++;
 
-        $lastid =  Rooms::insertGetId(['name' => $this->nameRoom, 'image' => $this->image,
-            'style' => $this->color, 'sort' => $sort]);
+        $lastid =  Rooms::insertGetId(['name' => $this->nameRoom, 'image' => $this->imageRoom,
+            'style' => $this->colorRoom, 'sort' => $sort]);
     }
 
 
@@ -101,8 +107,10 @@ class Rooms extends Model
             $newSort = $sort+1;
 
 
-        //Если двигаться вверх еще есть куда
-        if ($newSort != 0) {
+        $maxSort = self::max('sort');
+
+        //Если двигаться еще есть куда
+        if (($newSort != 0) && ($newSort <= $maxSort)) {
             //В БД меняем сортировку у следующей по сорту записи на -1
             self::where('sort', $newSort)->update(['sort' => $sort]);
 
@@ -111,4 +119,31 @@ class Rooms extends Model
         }
 
     }
+
+
+    /**
+     * Сохраниение нового названия помещения
+     */
+    public function saveName()
+    {
+        self::where('id', $this->idRoom)->update(['name' => $this->nameRoom]);
+    }
+
+    /**
+     * Изменение изображения для помещения
+     */
+    public function saveImage()
+    {
+        self::where('id', $this->idRoom)->update(['image' => $this->imageRoom]);
+    }
+
+    /**
+     * Изменение цвета для помещения
+     */
+    public function saveColor()
+    {
+        self::where('id', $this->idRoom)->update(['style' => $this->colorRoom]);
+    }
+
+
 }
