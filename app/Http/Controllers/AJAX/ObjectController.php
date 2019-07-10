@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\AJAX;
 
-use App\Object AS object;
+use App\HomeObject AS obj;
 use App\Port AS port;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -36,7 +36,7 @@ class ObjectController extends Controller
 
 
         //Получение объектов из таблицы
-        $objects = object::all();
+        $objects = obj::all();
 
 
         $returnHTML = (String) view('AJAX.objects', ['objects' => $objects, 'port' => $object_array[2] ]);

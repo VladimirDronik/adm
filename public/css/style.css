@@ -6928,3 +6928,9 @@ tbody tr td:last-child {
   background: black;
   cursor: pointer;
 }
+
+.room-filter{
+  display: inline-block;
+  top: -5px;
+  left: 12px;
+}

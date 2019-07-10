@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Devtypes extends Model
+class View extends Model
 {
-    //
+    protected $table = 'view_items';
 }

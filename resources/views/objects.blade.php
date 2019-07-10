@@ -72,7 +72,7 @@
                                 </td>
                                 <td>{{ $object->view }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-danger btn-rounded m-b-10 m-l-5">Удалить</button>
+                                    <button type="button" class="btn btn-danger btn-rounded btn-sm"><i class="fa fa-trash fa-lg"></i></button>
                                 </td>
                             </tr>
                         @endforeach

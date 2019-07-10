@@ -102,7 +102,7 @@
                                     <td></td>
                                 @endif
 
-                                <td align="center"><button type="button" class="btn btn-info  m-b-10 btn-sm btn-rounded"><b>Настройка</b></button></td>
+                                <td align="center"><button type="button" class="btn btn-info btn-sm btn-rounded"><i class="fa fa-cog fa-lg"></i></button></td>
                             </tr>
                         @endforeach
 
