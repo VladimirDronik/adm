@@ -27,14 +27,11 @@ class Room extends Model
     }
 
     /**
-     * Загрузка всех помещений из БД
-     *
-     * @return static
+     * Наименование помещения по его id
      */
-    public static function getAllRooms()
+    public static function nameRoomFromId($id)
     {
-        $rooms = self::select('*')->where('id','>','0')->orderBy('sort', 'ASC')->get();
-        return $rooms;
+        return Room::find($id)->name;
     }
 
     /**

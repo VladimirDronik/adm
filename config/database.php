@@ -45,7 +45,7 @@ return [
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'smarthome'),
             'username' => env('DB_USERNAME', 'smarthome'),
-            'password' => env('DB_PASSWORD', 'smartpaswd'),
+            'password' => env('DB_PASSWORD', 'Alli80ed!'),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',

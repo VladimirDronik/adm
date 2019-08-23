@@ -21,15 +21,15 @@
                 </li>
 
                 <li class="nav-label">Настройки</li>
-                <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Основные</span></a></li>
-                <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Оповещения</span></a></li>
-                <li> <a class="has-arrow  " href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Меню</span></a></li>
-                <li> <a class="has-arrow  " href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Скрипты</span></a></li>
-                <li> <a class="has-arrow  " href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">События</span></a></li>
+                <li> <a class="has-arrow" href="#" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Сеть и VPN</span></a></li>
+                <li> <a class="has-arrow" href="#" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Оповещения</span></a></li>
+                <li> <a class="has-arrow" href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Меню</span></a></li>
+                <li> <a class="has-arrow" href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Скрипты</span></a></li>
+                <li> <a class="has-arrow" href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">События</span></a></li>
 
                 <li class="nav-label">Диагностика</li>
-                <li> <a class="has-arrow  " href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Логирование</span></a></li>
-                <li> <a class="has-arrow  " href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Графики</span></a></li>
+                <li> <a class="has-arrow" href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Логирование</span></a></li>
+                <li> <a class="has-arrow" href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Графики</span></a></li>
 
             </ul>
         </nav>

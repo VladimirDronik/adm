@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Room;
+use App\Models\View;
 use App\Repositories\RoomRepository;
 use App\Repositories\ViewRepository;
 use Illuminate\Http\Request;
@@ -22,7 +24,8 @@ class ViewController extends Controller
         $views = $this->rep->getAll();
         $rooms = $this->room_rep->getAll();
 
-        return view('views.index', compact('views','rooms'));
+        return view('views.index', compact('views', 'rooms') +
+            ['currentRoom' => '']);
     }
 
     /**
@@ -30,10 +33,13 @@ class ViewController extends Controller
      *
      * @param $name
      */
-   /*
-    public function getFilteredViews($name)
+    public function getFilteredViews($idRoom)
     {
-       // echo $name;
+        $views = View::getViews($idRoom);
+        $currentRoom = Room::nameRoomFromId($idRoom);
+        $rooms = $this->room_rep->getAll();
+
+        return view('views.index', compact('views', 'rooms', 'currentRoom'));
     }
-   */
+
 }
