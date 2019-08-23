@@ -2,18 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Room;
-use App\Models\View;
+use App\Repositories\RoomRepository;
+use App\Repositories\ViewRepository;
 use Illuminate\Http\Request;
 
 class ViewController extends Controller
 {
+    private $rep;
+    private $room_rep;
+
+    public function __construct(ViewRepository $repository, RoomRepository $room_repository)
+    {
+        $this->rep = $repository;
+        $this->room_rep = $room_repository;
+    }
+
     public function index()
     {
-        $views = View::all();
-        $rooms = Room::getAllRooms();
+        $views = $this->rep->getAll();
+        $rooms = $this->room_rep->getAll();
 
-        return view('views', ['views' => $views, 'rooms' => $rooms]);
+        return view('views.index', compact('views','rooms'));
     }
 
     /**

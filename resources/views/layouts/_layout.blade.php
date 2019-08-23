@@ -1,5 +1,3 @@
-
-
 @include('layouts.htmlheader')
 @include('layouts.scripts')
 <html>
@@ -11,30 +9,18 @@
     </div>
     <!-- Main wrapper  -->
     <div id="main-wrapper">
-
          @include('layouts.header')
-
          @include('layouts.leftsidebar')
-
             <!-- Page wrapper  -->
             <div class="page-wrapper">
-
                 @yield('breadcrumbs')
                 @yield('content')
 
                 @include('layouts.footer')
-
             </div>
         <!-- End Page wrapper  -->
     </div>
     <!-- End Wrapper -->
-
-
     @yield('scripts')
-
-
-
-
 </body>
-
 </html>
