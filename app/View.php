@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class View extends Model
 {
     protected $table = 'view_items';
+<<<<<<< HEAD
 
 
     /**
@@ -18,4 +19,6 @@ class View extends Model
     {
         return View::where('room','=',$idRoom)->orderBy('sort')->get();
     }
+=======
+>>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
 }

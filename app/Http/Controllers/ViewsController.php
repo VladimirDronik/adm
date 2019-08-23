@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class ViewsController extends Controller
 {
+<<<<<<< HEAD
     private $views;
     private $currentRoom = '';
 
@@ -17,10 +18,22 @@ class ViewsController extends Controller
         return $this->returnView();
     }
 
+=======
+    public function index()
+    {
+
+        $views = View::all();
+        $rooms = Rooms::getAllRooms();
+
+        return view('views', ['views' => $views, 'rooms' => $rooms]);
+
+    }
+>>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
 
     /**
      * Выводит представления при выборе помещения в фильтре
      *
+<<<<<<< HEAD
      * @param $idRoom
      *
      * @return view
@@ -42,4 +55,14 @@ class ViewsController extends Controller
         return view('views', ['views' => $this->views, 'rooms' => $rooms, 'currentRoom' => $this->currentRoom]);
     }
 
+=======
+     * @param $name
+     */
+   /*
+    public function getFilteredViews($name)
+    {
+       // echo $name;
+    }
+   */
+>>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
 }
