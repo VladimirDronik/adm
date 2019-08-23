@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\AJAX;
 
 use Illuminate\Http\Request;
-use App\Device AS device;
-use App\Devtypes AS devtypes;
-use App\Port AS port;
+use App\Models\Device;
+use App\Models\Devtype;
+use App\Models\Port;
 use App\Http\Controllers\Controller;
 
 
@@ -18,7 +18,7 @@ class DeviceController extends Controller
      */
     public function save_device_settings()
     {
-        device::save_device_settings($_POST['id_device'], $_POST['description'], $_POST['ip_device']);
+        Device::save_device_settings($_POST['id_device'], $_POST['description'], $_POST['ip_device']);
     }
 
     /**
@@ -28,10 +28,10 @@ class DeviceController extends Controller
     {
 
         //Добавляем устройство в таблицу устройств
-        $id_new_device = device::newdevice($_POST['type'], $_POST['description'], $_POST['ip_device']);
+        $id_new_device = Device::newdevice($_POST['type'], $_POST['description'], $_POST['ip_device']);
 
         //TODO: запрос в таблицу типов устройств для получения данных о типе устройства
-        $devtype = devtypes::where('id', $_POST['type'])->firstOrFail();
+        $devtype = Devtype::where('id', $_POST['type'])->firstOrFail();
 
 
         //Возвращаем id добавленного устройства
@@ -47,10 +47,10 @@ class DeviceController extends Controller
     public function deletedevice()
     {
         //Удаление самого устройства
-        device::where('id',$_POST['id_device'])->delete();
+        Device::where('id',$_POST['id_device'])->delete();
 
         //Удаление портов устройства
-        port::where('id_device',$_POST['id_device'])->delete();
+        Port::where('id_device',$_POST['id_device'])->delete();
     }
 }
 

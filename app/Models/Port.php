@@ -4,6 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Port
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port query()
+ * @mixin \Eloquent
+ */
 class Port extends Model
 {
     public $timestamps = false;

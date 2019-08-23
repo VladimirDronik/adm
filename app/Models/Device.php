@@ -4,11 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Device
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device query()
+ * @mixin \Eloquent
+ */
 class Device extends Model
 {
-
     public $timestamps = false;
-
 
     /**
      * Сохранение настроек контроллера
@@ -19,7 +25,7 @@ class Device extends Model
      */
     static public function save_device_settings($id, $description, $ip_address)
     {
-        device::where('id', $id)->update(['description' => $description, 'ip_address' => $ip_address]);
+        Device::where('id', $id)->update(['description' => $description, 'ip_address' => $ip_address]);
     }
 
     /**
@@ -31,9 +37,7 @@ class Device extends Model
      */
     static public function newdevice($type, $description, $ip_address)
     {
-
-       $lastid =  device::insertGetId(['type' => $type, 'description' => $description,  'active' => 0, 'ip_address' => $ip_address]);
-
+       $lastid =  Device::insertGetId(['type' => $type, 'description' => $description,  'active' => 0, 'ip_address' => $ip_address]);
 
        return $lastid;
     }

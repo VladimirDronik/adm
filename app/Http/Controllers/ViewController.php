@@ -6,12 +6,12 @@ use App\Models\Room;
 use App\Models\View;
 use Illuminate\Http\Request;
 
-class ViewsController extends Controller
+class ViewController extends Controller
 {
     public function index()
     {
         $views = View::all();
-        $rooms = Rooms::getAllRooms();
+        $rooms = Room::getAllRooms();
 
         return view('views', ['views' => $views, 'rooms' => $rooms]);
     }

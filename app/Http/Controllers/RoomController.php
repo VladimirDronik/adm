@@ -6,7 +6,7 @@ use App\Models\Color;
 use App\Models\Room;
 use Illuminate\Http\Request;
 
-class RoomsController extends Controller
+class RoomController extends Controller
 {
 
     public function index()

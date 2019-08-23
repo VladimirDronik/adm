@@ -4,6 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Room
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room query()
+ * @mixin \Eloquent
+ */
 class Room extends Model
 {
     public $timestamps = false;

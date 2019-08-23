@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\HomeObject as Obj;
+use App\Models\HomeObject;
 use Illuminate\Http\Request;
 
-class ObjectsController extends Controller
+class ObjectController extends Controller
 {
-
     public function index()
     {
-        $objects = Obj::all();
+        $objects = HomeObject::all();
         return view('objects', ['objects' => $objects]);
     }
 }

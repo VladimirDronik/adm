@@ -2,31 +2,23 @@
 
 namespace App\Http\Controllers\AJAX;
 
-use App\HomeObject AS obj;
-use App\Port AS port;
+use App\Models\HomeObject;
+use App\Models\Port;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-
 class ObjectController extends Controller
 {
-
     public function index()
     {
 
-
-
     }
 
-
     /**
-     * Загрузка объектов в модельное окно
-     *
-     *
+     * Загрузка объектов в модальное окно
      */
     public function load_to_port()
     {
-
         $object_array = explode(',',$_POST['object']);
 
         if ($object_array[0]!='empty')
@@ -34,17 +26,14 @@ class ObjectController extends Controller
         else
             $object_name = 'empty';
 
-
         //Получение объектов из таблицы
-        $objects = obj::all();
-
+        $objects = HomeObject::all();
 
         $returnHTML = (String) view('AJAX.objects', ['objects' => $objects, 'port' => $object_array[2] ]);
 
         //$returnHTML = (String) view('AJAX.objects')->with('objects', $objects)->render();
 
         return response()->json(array('success' => true, 'html'=>$returnHTML, 'object_name' => $object_name));
-
     }
 
 
@@ -59,7 +48,7 @@ class ObjectController extends Controller
     public function add_to_port()
     {
 
-       $res = port::add_object($_POST['id_port'], $_POST['id_object']);
+       $res = Port::add_object($_POST['id_port'], $_POST['id_object']);
        //return response()->json(array('success' => true, 'status'=>$res));
     }
 
