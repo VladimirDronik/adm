@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Rooms extends Model
+class Room extends Model
 {
     public $timestamps = false;
 
@@ -54,7 +54,7 @@ class Rooms extends Model
     public static function getAllColors()
     {
 
-        $colors = Colors::all();
+        $colors = Color::all();
         return $colors;
     }
 

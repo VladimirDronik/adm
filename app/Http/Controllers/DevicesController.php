@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Device;
-use App\Port;
+use App\Models\Device;
+use App\Models\Port;
 use Illuminate\Http\Request;
 
 class DevicesController extends Controller

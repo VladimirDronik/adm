@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\HomeObject as Obj;
+use App\Models\HomeObject as Obj;
 use Illuminate\Http\Request;
 
 class ObjectsController extends Controller
