@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\AJAX;
+namespace App\Http\Controllers\Ajax;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Device;
-use App\Port;
-use App\Script;
+use App\Models\Device;
+use App\Models\Port;
+use App\Models\Script;
 
 class PortController extends Controller
 {
-    //
-
     /**
      * Загрузка метода в модальное окно
      **/
@@ -24,44 +22,40 @@ class PortController extends Controller
         $value = '';
 
         // Если выбираемый метод равен уже существующему методу порта
-        if($_POST['cur_method'] == $method)
+        if ($_POST['cur_method'] == $method)
             $value = $_POST['value'];
         else
             $value = 'отсутствует';
 
-
-
         if ($method == 'easy') {
 
-                // Разбираем значение для простого действия
-                if ($value != 'отсутствует'){
+            // Разбираем значение для простого действия
+            if ($value != 'отсутствует') {
 
-                    $easy = explode(';', $_POST['value']);
-                    $easy1 = explode(':', $easy[1]);
+                $easy = explode(';', $_POST['value']);
+                $easy1 = explode(':', $easy[1]);
 
-                    $device = $easy[0];
-                    $port = $easy1[0];
-                    $act = $easy1[1];
+                $device = $easy[0];
+                $port = $easy1[0];
+                $act = $easy1[1];
 
-                }
-                else{
+            } else {
 
-                    $device = 'отсутствует';
-                    $port = 'отсутствует';
-                    $act = 'отсутствует';
+                $device = 'отсутствует';
+                $port = 'отсутствует';
+                $act = 'отсутствует';
 
-                }
+            }
 
         }
 
         $object = Port::select_object($_POST['port_id']);
 
-        $returnHTML = (String) view('AJAX.actions', ['action' => $method, 'device' => $device,
-             'port' => $port, 'act' => $act, 'value' => $value, 'port_id' => $_POST['port_id'], 'object' => $object]);
+        $returnHTML = (String)view('AJAX.actions', ['action' => $method, 'device' => $device,
+            'port' => $port, 'act' => $act, 'value' => $value, 'port_id' => $_POST['port_id'], 'object' => $object]);
 
-        return response()->json(array('success' => true, 'html'=>$returnHTML));
+        return response()->json(array('success' => true, 'html' => $returnHTML));
     }
-
 
 
     /**
@@ -69,42 +63,38 @@ class PortController extends Controller
      */
     static public function load_data()
     {
-
         switch ($_POST['mode']) {
 
             case 'device':
-
                 $return = Device::all();
                 $title_action = 'Выбор устройства';
-                $returnHTML = (String) view('AJAX.devices', ['devices' => $return ]);
+                $returnHTML = (String)view('AJAX.devices', ['devices' => $return]);
                 break;
-
             case 'port':
 
                 $return = Port::select_ports($_POST['device']);
                 $title_action = 'Выбор порта';
-                $returnHTML = (String) view('AJAX.ports', ['ports' => $return ]);
+                $returnHTML = (String)view('AJAX.ports', ['ports' => $return]);
                 break;
 
             case 'action':
 
                 $title_action = 'Выбор действия';
-                $returnHTML = (String) view('AJAX.act');
+                $returnHTML = (String)view('AJAX.act');
                 break;
 
             case 'script':
 
                 $return = Script::all();
                 $title_action = 'Выбор скрипта';
-                $returnHTML = (String) view('AJAX.scripts', ['scripts' => $return ]);
+                $returnHTML = (String)view('AJAX.scripts', ['scripts' => $return]);
                 break;
 
 
         }
 
 
-
-        return response()->json(array('success' => true, 'html'=>$returnHTML, 'title_action' => $title_action));
+        return response()->json(array('success' => true, 'html' => $returnHTML, 'title_action' => $title_action));
 
     }
 
@@ -139,18 +129,16 @@ class PortController extends Controller
     }
 
 
-
     /**
      *  Сохранение названия порта
      */
     public function save_name_port()
     {
-
         $nameport = trim($_POST['nameport']);
 
         Port::save_name_port($_POST['id_port'], $nameport);
 
-        return response()->json(array('success' => true, 'html'=>$nameport));
+        return response()->json(array('success' => true, 'html' => $nameport));
     }
 
 
@@ -160,8 +148,6 @@ class PortController extends Controller
      */
     public function add_ports()
     {
-
-        port::addports($_POST['id_device'], $_POST['num_port'], $_POST['status']);
-
+        Port::addports($_POST['id_device'], $_POST['num_port'], $_POST['status']);
     }
 }

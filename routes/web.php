@@ -1,6 +1,5 @@
 <?php
 
-
 Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
@@ -16,28 +15,29 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('views', 'ViewController@index');
     Route::get('views/room/{idRoom}', 'ViewController@getFilteredViews')->name('idRoom');
 
-    //Objects
-    Route::post('getobject', 'AJAX\ObjectController@load_to_port');
-    Route::post('add_object_to_port', 'AJAX\ObjectController@add_to_port');
+    Route::group(['namespace' => 'Ajax'], function () {
+        //Objects
+        Route::post('getobject', 'ObjectController@load_to_port');
+        Route::post('add_object_to_port', 'ObjectController@add_to_port');
 
-    //Ports
-    Route::post('getmethod', 'AJAX\PortController@load_method');
-    Route::post('loaddata', 'AJAX\PortController@load_data');
-    Route::post('savemethod', 'AJAX\PortController@save_method');
-    Route::post('savenameport', 'AJAX\PortController@save_name_port');
-    Route::post('addports', 'AJAX\PortController@add_ports');
+        //Ports
+        Route::post('getmethod', 'PortController@load_method');
+        Route::post('loaddata', 'PortController@load_data');
+        Route::post('savemethod', 'PortController@save_method');
+        Route::post('savenameport', 'PortController@save_name_port');
+        Route::post('addports', 'PortController@add_ports');
 
-    //Devices
-    Route::post('/savedevicesettings', 'AJAX\DeviceController@save_device_settings');
-    Route::post('/newdevice', 'AJAX\DeviceController@newdevice');
-    Route::post('/deletedevice', 'AJAX\DeviceController@deletedevice');
+        //Devices
+        Route::post('savedevicesettings', 'DeviceController@save_device_settings');
+        Route::post('newdevice', 'DeviceController@newdevice');
+        Route::post('deletedevice', 'DeviceController@deletedevice');
 
-    //Rooms
-    Route::post('rooms/addRoom', 'AJAX\RoomController@addRoom');
-    Route::post('rooms/deleteRoom', 'AJAX\RoomController@deleteRoom');
-    Route::post('rooms/sort', 'AJAX\RoomController@sort');
-    Route::post('rooms/saveNameRoom', 'AJAX\RoomController@saveNameRoom');
-    Route::post('rooms/updateImage', 'AJAX\RoomController@updateImage');
-    Route::post('rooms/updateColor', 'AJAX\RoomController@updateColor');
-
+        //Rooms
+        Route::post('rooms/addRoom', 'RoomController@addRoom');
+        Route::post('rooms/deleteRoom', 'RoomController@deleteRoom');
+        Route::post('rooms/sort', 'RoomController@sort');
+        Route::post('rooms/saveNameRoom', 'RoomController@saveNameRoom');
+        Route::post('rooms/updateImage', 'RoomController@updateImage');
+        Route::post('rooms/updateColor', 'RoomController@updateColor');
+    });
 });

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\AJAX;
+namespace App\Http\Controllers\Ajax;
 
 use App\Models\HomeObject;
 use App\Models\Port;

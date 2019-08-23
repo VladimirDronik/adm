@@ -14,5 +14,5 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Script extends Model
 {
-    //
+    public $timestamps = false;
 }

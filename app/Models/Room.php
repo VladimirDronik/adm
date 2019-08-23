@@ -37,7 +37,6 @@ class Room extends Model
         return $rooms;
     }
 
-
     /**
      * Вывод изображений для всех помеещний
      *
@@ -51,9 +50,6 @@ class Room extends Model
         return $aFiles;
     }
 
-
-
-
     /**
      * Вывод всех цветовых схем
      *
@@ -61,7 +57,6 @@ class Room extends Model
      */
     public static function getAllColors()
     {
-
         $colors = Color::all();
         return $colors;
     }
@@ -85,7 +80,6 @@ class Room extends Model
             'style' => $this->colorRoom, 'sort' => $sort]);
     }
 
-
     /**
      * Удаление помещения из БД
      *
@@ -97,7 +91,6 @@ class Room extends Model
         self::where('id',$id)->delete();
 
     }
-
 
     /**
      * Сортировка строк с помещениями
@@ -127,7 +120,6 @@ class Room extends Model
         }
 
     }
-
 
     /**
      * Сохраниение нового названия помещения

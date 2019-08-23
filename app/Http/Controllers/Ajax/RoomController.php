@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\AJAX;
+namespace App\Http\Controllers\Ajax;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Rooms;
+use App\Models\Room;
 
 class RoomController extends Controller
 {
-
     public function addRoom()
     {
-        $room = new Rooms();
+        $room = new Room();
 
         $room->nameRoom = $_POST['name'];
         $room->imageRoom = $_POST['image'];
@@ -20,10 +19,9 @@ class RoomController extends Controller
 
     }
 
-
     public function deleteRoom()
     {
-        Rooms::deleteRoom($_POST['id']);
+        Room::deleteRoom($_POST['id']);
     }
 
     /**
@@ -31,22 +29,20 @@ class RoomController extends Controller
      */
     public function sort()
     {
-        Rooms::sort($_POST['id'], $_POST['sort'], $_POST['direction']);
+        Room::sort($_POST['id'], $_POST['sort'], $_POST['direction']);
     }
-
 
     /**
      * Сохранение названия помещения
      */
     public function saveNameRoom()
     {
-        $room = new Rooms($_POST['idSelectRoom']);
+        $room = new Room($_POST['idSelectRoom']);
         $room->nameRoom = $_POST['nameRoom'];
         $room->saveName();
 
         return response()->json(array('success' => true, 'html'=>$_POST['nameRoom']));
     }
-
 
     /**
      * Сохраненеие изображения помещения
@@ -54,7 +50,7 @@ class RoomController extends Controller
     public function updateImage()
     {
 
-        $room = new Rooms($_POST['id']);
+        $room = new Room($_POST['id']);
         $room->imageRoom = $_POST['image'];
         $room->saveImage();
     }
@@ -64,12 +60,8 @@ class RoomController extends Controller
      */
     public function updateColor()
     {
-        $room = new Rooms($_POST['id']);
+        $room = new Room($_POST['id']);
         $room->colorRoom = $_POST['color'];
         $room->saveColor();
     }
-
-
-
-
 }
