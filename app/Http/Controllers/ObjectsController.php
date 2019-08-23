@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Object;
+use App\HomeObject as Obj;
 use Illuminate\Http\Request;
 
 class ObjectsController extends Controller
@@ -10,7 +10,7 @@ class ObjectsController extends Controller
 
     public function index()
     {
-        $objects = Object::all();
+        $objects = Obj::all();
         return view('objects', ['objects' => $objects]);
     }
 }

@@ -129,6 +129,7 @@ class Rooms extends Model
         self::where('id', $this->idRoom)->update(['name' => $this->nameRoom]);
     }
 
+
     /**
      * Изменение изображения для помещения
      */
@@ -136,6 +137,7 @@ class Rooms extends Model
     {
         self::where('id', $this->idRoom)->update(['image' => $this->imageRoom]);
     }
+
 
     /**
      * Изменение цвета для помещения
@@ -145,5 +147,12 @@ class Rooms extends Model
         self::where('id', $this->idRoom)->update(['style' => $this->colorRoom]);
     }
 
+    /**
+     * Наименование помещения по его id
+     */
+    public static function nameRoomFromId($id)
+    {
+        return Rooms::find($id)->name;
+    }
 
 }

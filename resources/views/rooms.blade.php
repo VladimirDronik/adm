@@ -84,7 +84,7 @@
                                 <td>
                                     <button type="button" class="btn btn-danger btn-rounded m-b-10 m-l-5"
                                             data-toggle="modal" data-target="#deleteRoomModal"
-                                            onclick="idRoom({{ $room->id }})">Удалить</button>
+                                            onclick="idRoom({{ $room->id }})"><i class="fa fa-trash fa-lg"></i></button>
                                 </td>
                             </tr>
                         @endforeach

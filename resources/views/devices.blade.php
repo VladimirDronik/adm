@@ -70,7 +70,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <button onclick="window.location.href='devices/select/{{ $device->id }}'" type="button" class="btn btn-info btn-rounded m-b-10 m-l-5">Настройка</button>
+                                    <button onclick="window.location.href='devices/select/{{ $device->id }}'" type="button" class="btn btn-info btn-rounded m-b-10 m-l-5"><i class="fa fa-cogs fa-lg"> Настройка</i></button>
                                 </td>
                             </tr>
                         @endforeach

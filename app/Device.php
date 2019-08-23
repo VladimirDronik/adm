@@ -33,7 +33,7 @@ class Device extends Model
     {
 
        $lastid =  device::insertGetId(['type' => $type, 'description' => $description,  'active' => 0, 'ip_address' => $ip_address]);
-
+        
 
        return $lastid;
     }

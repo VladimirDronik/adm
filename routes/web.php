@@ -27,6 +27,11 @@ Route::get('/objects', 'ObjectsController@index');
 Route::get('/devices/select/{id_device}', 'DevicesController@select')->name('id_device');
 Route::get('/rooms', 'RoomsController@index');
 
+
+Route::get('/views', 'ViewsController@index');
+
+Route::get('/views/room/{idRoom}', 'ViewsController@getFilteredViews')->name('idRoom');
+
 /* =================================== START AJAX return ============================================================*/
 
 //Objects
