@@ -2,12 +2,8 @@
     {!! Form::bs_label($name, $label, isset($attributes['required']), $col) !!}
     <div class="col-md-{{ 12 - $col }}">
         {{ Form::text($name, $value, array_merge(['class' => 'form-control'], $attributes)) }}
-        @if($errors->has($name))
-            <small class="form-text text-danger m-b-none">{{ $errors->first($name) }}</small>
-        @endif
-        @if(!is_null($help))
-            <small class="form-control-feedback">{{ $help }}</small>
-        @endif
+        {{ Form::bs_field_error($name) }}
+        {{ Form::bs_field_help($help) }}
     </div>
 </div>
 
