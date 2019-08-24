@@ -16,7 +16,18 @@ class FormServiceProvider extends ServiceProvider
     public function boot()
     {
         \Form::component('bs_text',
-            self::PATH.'text', ['name', 'label', 'value' => null, 'attributes' => [], 'help' => null]);
+            self::PATH.'text', ['name', 'label', 'value' => null, 'attributes' => [], 'help' => null, 'col' => 3]);
+        \Form::component('bs_label',
+            self::PATH.'label', ['name', 'label', 'is_required' => false, 'col' => 3, 'class' => null]);
+        \Form::component('bs_title',
+            self::PATH.'title', ['title']);
+        \Form::component('bs_hr',
+            self::PATH.'hr', []);
+        \Form::component('bs_submit_btn',
+            self::PATH.'submit_btn', ['label' => 'Сохранить', 'col' => 3, 'class' => 'btn btn-success']);
+        \Form::component('bs_select',
+            self::PATH.'select', ['name', 'label', 'values' => null, 'selected' => null, 'attributes' => [], 'help' => null]);
+
 //        \Form::component('bs_simple_text',
 //            self::PATH.'simple_text', ['label' => null, 'value' => null, 'name' => 'is_active', 'help' => null]);
 //        \Form::component('bs_textarea',
@@ -27,10 +38,6 @@ class FormServiceProvider extends ServiceProvider
 //            self::PATH.'email', ['name', 'label', 'value' => null, 'attributes' => [], 'help' => null]);
 //        \Form::component('bs_checkbox',
 //            self::PATH.'checkbox', ['name', 'label', 'is_checked' => false, 'attributes' => [], 'help' => null]);
-//        \Form::component('bs_submit_btn',
-//            self::PATH.'submit_btn', ['label' => 'Сохранить', 'class' => 'btn btn-primary btn-sm']);
-//        \Form::component('bs_select',
-//            self::PATH.'select', ['name', 'label', 'values' => null, 'selected' => null, 'attributes' => [], 'help' => null]);
 //        \Form::component('bs_tree_select',
 //            self::PATH.'tree_select', ['name', 'label', 'values' => null, 'selected' => null, 'attributes' => []]);
 //        \Form::component('bs_autoselect',
