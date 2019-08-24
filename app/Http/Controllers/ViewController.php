@@ -28,6 +28,11 @@ class ViewController extends Controller
             ['currentRoom' => '']);
     }
 
+    public function create()
+    {
+        return view('views.create');
+    }
+
     /**
      * Выводит представления при выборе помещения в фильтре
      *

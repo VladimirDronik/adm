@@ -34,6 +34,12 @@ class Room extends Model
         return Room::find($id)->name;
     }
 
+    public static function getAllRooms()
+    {
+        $rooms = self::select('*')->where('id','>','0')->orderBy('sort', 'ASC')->get();
+        return $rooms;
+    }
+
     /**
      * Вывод изображений для всех помеещний
      *

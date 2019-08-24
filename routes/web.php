@@ -4,7 +4,7 @@ Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
 
-    Route::get('/', 'HomeController@index')->name('home');
+    Route::redirect('/','home');
     Route::get('home', 'HomeController@index')->name('home');
 
     Route::get('devices', 'DeviceController@index');
@@ -12,7 +12,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('devices/select/{id_device}', 'DeviceController@select')->name('id_device');
     Route::get('rooms', 'RoomController@index');
 
-    Route::get('views', 'ViewController@index');
+    Route::resource('views', 'ViewController')->except('show');
+
     Route::get('views/room/{idRoom}', 'ViewController@getFilteredViews')->name('idRoom');
 
     Route::group(['namespace' => 'Ajax'], function () {

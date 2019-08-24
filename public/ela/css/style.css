@@ -6934,3 +6934,7 @@ tbody tr td:last-child {
   top: -5px;
   left: 12px;
 }
+
+.card {
+  margin: 0 0 20px 0;
+}
