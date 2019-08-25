@@ -4,26 +4,21 @@
 
 @section('breadcrumbs')
         <!-- Bread crumb -->
-<<<<<<< HEAD
-         <div class="row page-titles">
-=======
+
         <div class="row page-titles">
->>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
             <div class="col-md-5 align-self-center">
                 <h3 class="text-primary">Отображения</h3> </div>
             <div class="col-md-7 align-self-center">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-<<<<<<< HEAD
+
                     @if ($currentRoom == '')
                         <li class="breadcrumb-item active">Отображения</li>
                     @else
                         <li class="breadcrumb-item"><a href="/views">Отображения</a></li>
                         <li class="breadcrumb-item active">{{$currentRoom}}</li>
                     @endif
-=======
-                    <li class="breadcrumb-item active">Отображения</li>
->>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
+
                 </ol>
             </div>
         </div>
@@ -43,7 +38,7 @@
                         <button type="button" class="btn btn-success m-b-10 m-l-5" onclick="window.location.reload();">Обновить</button>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <div class="dropdown room-filter" id="room-filter">
-<<<<<<< HEAD
+
                             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
 
                                 @if ($currentRoom == '') Фильтр по помещению
@@ -51,27 +46,21 @@
                                     @php ($currentRoom = 'для помещения: '.$currentRoom)
                                 @endif
 
-=======
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Фильтр по помещению
->>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
+
                                 <span class="caret"></span></button>
                             <ul class="dropdown-menu">
                                 <li><a href="/views">Все помещения</a></li>
                                 <hr>
                                 <li><a href="/views/room/0">Общие</a></li>
                                 <hr>
-<<<<<<< HEAD
+
                                 
                                 @foreach ($rooms as $room)
                                     <li ><a href="/views/room/{{ $room->id }}" >
                                             <label style="background-color:{{ $room->style }}">&nbsp;&nbsp;&nbsp;</label>&nbsp;&nbsp;{{ $room->name }}
                                         </a>
                                     </li>
-=======
 
-                                @foreach ($rooms as $room)
-                                    <li><a href="#">{{ $room->name }}</a></li>
->>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
                                 @endforeach
                             </ul>
                         </div>
@@ -87,11 +76,9 @@
 
         <div class="card">
             <div class="card-title">
-<<<<<<< HEAD
+
                 <h4>Элементы отображения {{$currentRoom}}</h4>
-=======
-                <h4>Объекты</h4>
->>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
+
 
             </div>
 
@@ -100,7 +87,7 @@
                     <table class="table">
                         <thead>
                         <tr>
-<<<<<<< HEAD
+
                             @if ($currentRoom!= '')
                                 <th>Сорт</th>
                             @endif
@@ -108,21 +95,12 @@
                             <th>Статус</th>
                             <th>Вкл</th>
                             <th>Выкл</th>
-=======
-                            <th>#</th>
-                            <th>Тип</th>
-                            <th>Статус</th>
-                            <th>Вкл_картинка</th>
-                            <th>Выкл_картинка</th>
->>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
+
                             <th>Вкл_надпись</th>
                             <th>Выкл_надпись</th>
                             <th>Значение</th>
                             <th>Помещение</th>
-<<<<<<< HEAD
-=======
-                            <th>Сорт</th>
->>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
+
                             <th>Сцена</th>
                             <th>Left</th>
                             <th>Top</th>
@@ -135,13 +113,11 @@
 
                         @foreach ($views as $view)
                             <tr>
-<<<<<<< HEAD
+
                                 @if ($currentRoom!= '')
                                     <td scope="row">{{ $view->sort }}</td>
                                 @endif
-=======
-                                <th scope="row">{{ $view->id }}</th>
->>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
+
                                 <td><a href="#">{{ $view->name }}</a></td>
                                 <td>@if($view->status == 'on')
                                         <span class="badge badge-success">{{ $view->status }}</span>
@@ -149,25 +125,15 @@
                                         <span class="badge badge-primary">{{ $view->status }}</span>
                                     @endif
 
-<<<<<<< HEAD
+
                                 <td scope="row"><img src="/images/views_items/{{ $view->on_image }}" width="25px" height="25px" style="fill: green;"></td>
                                 <td scope="row">{{ $view->off_image }}</td>
                                 <td scope="row">{{$view->on_title }}</td>
-=======
-                                <td scope="row">{{ $view->on_image }}</td>
-                                <td scope="row">{{ $view->off_image }}</td>
-                                <td scope="row">{{ $view->on_title }}</td>
->>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
+
                                 <td scope="row">{{ $view->off_title }}</td>
 
                                 <td scope="row">{{ $view->value }}</td>
                                 <td scope="row">{{ $view->room }}</td>
-<<<<<<< HEAD
-
-=======
-                                <td scope="row">{{ $view->sort }}</td>
->>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
-
                                 <td scope="row">{{ $view->scene }}</td>
                                 <td scope="row">{{ $view->position_left }}</td>
                                 <td scope="row">{{ $view->position_top }}</td>
@@ -188,38 +154,28 @@
             </div>
 
 
-<<<<<<< HEAD
-=======
 
-
->>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
     <!-- End PAge Content -->
     </div>
     <!-- End Container fluid  -->
 
 
-<<<<<<< HEAD
+
         <!-- модальное окно добавления нового отображения -->
-=======
-        <!-- модальное окно добавления нового устройства -->
->>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
+
         <div class="modal" id="addNewDevice">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
 
-<<<<<<< HEAD
                         <h4 class="modal-title"> Добавить новое отображение</h4>
-=======
-                        <h4 class="modal-title"> Добавить новое устройство</h4>
->>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
+
                     </div>
 
 
                     <div class="modal-body">
 
 
-<<<<<<< HEAD
                             <ul class="nav nav-tabs" role="tablist">
                                     <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#home" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Тип Элемента</span></a> </li>
                                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Текст и графика</span></a> </li>
@@ -391,34 +347,7 @@
                                     </div>
                             </div>    
                         </div>
-=======
-                            Тип устройства:
-                        <br>
-                        <br>
-                            <div class="btn-group-toggle" data-toggle="buttons">
 
-                                <label class="btn btn-success" id="easy_button" >
-                                    <input type="radio" name="typedev"  autocomplete="off" value="1"> Monoblock 14IN/14OUT
-                                </label>
-
-                                <label class="btn btn-success" id="method_button">
-                                    <input type="radio" name="typedev"  autocomplete="off" value="2"> Mega328
-                                </label>
-
-                                <label class="btn btn-success" id="script_button">
-                                    <input type="radio" name="typedev"  autocomplete="off" value="3"> WIFI 4IN
-                                </label>
-
-                                <label class="btn btn-success" id="none_button">
-                                    <input type="radio" name="typedev"  autocomplete="off" value="4"> WIFI 4OUT
-                                </label>
-                            </div>
-                        <br>
-
-                        Название устройства: <input type="text" class="form-control input-default col-sm-4" id="name_device" size="15"><br>
-                        ip адрес устройства: <input type="text" class="form-control input-default col-sm-4" id="ip_device" size="15">
-
->>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
                     </div>
 
 
@@ -461,9 +390,7 @@
 @endsection
 
 @section('scripts')
-<<<<<<< HEAD
+
             <script src="/js/pagescripts/views.js"></script>
-=======
-            <script src="/js/pagescripts/object.js"></script>
->>>>>>> 4d7144ce68cdd8e0e79af2ccb200d1d1a846fd67
+
 @endsection
