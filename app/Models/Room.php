@@ -41,19 +41,6 @@ class Room extends Model
     }
 
     /**
-     * Вывод изображений для всех помеещний
-     *
-     * @return array;
-     *
-     */
-    public static function getAllImages()
-    {
-        $aFiles = array_diff(scandir('images/rooms'), array('..', '.'));
-
-        return $aFiles;
-    }
-
-    /**
      * Вывод всех цветовых схем
      *
      * @return static;

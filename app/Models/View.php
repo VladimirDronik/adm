@@ -23,6 +23,7 @@ class View extends Model
     const TYPE_INFOPANEL = 4;
 
     protected $casts = ['active' => 'boolean'];
+    protected $guarded = ['id'];
 
     public static function getFullTypeIds()
     {
@@ -43,6 +44,7 @@ class View extends Model
         return self::getFullTypeIds()[$id] ?? '';
     }
 
+    // todo refactoring
     /**
      * Вывод отображений с фильтром по номеру помещения
      *
@@ -51,5 +53,55 @@ class View extends Model
     public static function getViews($idRoom)
     {
         return View::where('room','=',$idRoom)->orderBy('sort')->get();
+    }
+
+    /* attributes */
+
+    public function getPartOfTitle($prefix = 'on', $part = 'top')
+    {
+        try {
+            if (empty($this->{$prefix.'_title'})) {
+                return '';
+            }
+
+            return explode('<br>', $this->{$prefix.'_title'})[$part === 'top' ? 0 : 1] ?? '';
+
+        } catch (\Throwable $e) {
+            \Log::alert('Некорректные данные в отображении № '.$this->id.' в поле '.$prefix.'_title');
+        }
+
+        return '';
+    }
+
+    public function getOnTitleTopAttribute()
+    {
+        return $this->getPartOfTitle('on','top');
+    }
+
+    public function getOnTitleBottomAttribute()
+    {
+        return $this->getPartOfTitle('on','bottom');
+    }
+
+    public function getOffTitleTopAttribute()
+    {
+        return $this->getPartOfTitle('off','top');
+    }
+
+    public function getOffTitleBottomAttribute()
+    {
+        return $this->getPartOfTitle('off','bottom');
+    }
+
+    /* relations */
+
+    public function scene()
+    {
+        return $this->belongsTo(Scene::class, 'scene');
+    }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class, 'room');
     }
 }

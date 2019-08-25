@@ -2,21 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Color;
 use App\Models\Room;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {
-
     public function index()
     {
         $rooms = Room::getAllRooms();
         $colors = Room::getAllColors();
-        $images = Room::getAllImages();
+        $images = ImageService::getRoomImages();
 
-        return view('rooms', ['rooms' => $rooms, 'colors' => $colors, 'images' => $images]);
+        return view('rooms', compact('rooms', 'colors', 'images'));
     }
-
-
 }

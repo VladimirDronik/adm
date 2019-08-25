@@ -1,6 +1,7 @@
 <div class="form-actions">
     <div class="row">
         <div class="col-md-12">
+            {{ Form::bs_hr(20) }}
             <div class="row">
                 <div class="offset-sm-{{$col}} col-md-{{ 12 - $col }}">
                     <button type="submit" class="{{ $class }}"> {{ $label }}</button>
