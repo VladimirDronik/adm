@@ -6922,7 +6922,6 @@ tbody tr td:last-child {
   }
 }
 
-
 /* new styles */
 .imageRoom {
   background: black;
@@ -6933,4 +6932,8 @@ tbody tr td:last-child {
   display: inline-block;
   top: -5px;
   left: 12px;
+}
+
+.label-fix {
+  padding-top: 8px !important;
 }

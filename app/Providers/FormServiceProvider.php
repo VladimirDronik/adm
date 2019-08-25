@@ -26,7 +26,7 @@ class FormServiceProvider extends ServiceProvider
         \Form::component('bs_submit_btn',
             self::PATH.'submit_btn', ['label' => 'Сохранить', 'col' => 3, 'class' => 'btn btn-success']);
         \Form::component('bs_select',
-            self::PATH.'select', ['name', 'label', 'values' => null, 'selected' => null, 'attributes' => [], 'help' => null]);
+            self::PATH.'select', ['name', 'label', 'values' => null, 'selected' => null, 'attributes' => [], 'help' => null, 'col' => 3]);
         \Form::component('bs_field_help',
             self::PATH.'field_help', ['help' => null]);
         \Form::component('bs_field_error',

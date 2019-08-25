@@ -16,17 +16,15 @@
 
 @section('content')
     <div class="container-fluid">
-        <!-- Start Page Content -->
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('views.index') }}" class="btn btn-success m-b-10 m-l-5">Все отображения</a>
+                        <a href="{{ route('views.index') }}" class="btn btn-success m-b-10 m-l-5">К списку отображений</a>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="card">
             <div class="card-body">
                 <div class="col-lg-9">
@@ -35,6 +33,8 @@
                         <div class="form-body">
 
                             {{ Form::bs_title('Тип элемента') }}
+
+                            {{ Form::bs_select('type', 'Тип*:', ["" => "Не указан"] + $types, null, ['required' => true]) }}
 
                             {{ Form::bs_title('Текст и графика') }}
 
@@ -46,6 +46,15 @@
 
                             {{ Form::bs_title('Расположение') }}
 
+                            {{ Form::bs_select('room', 'Помещение*:', ["" => "Не указано"] + $rooms, null, ['required' => true]) }}
+                            {{ Form::bs_select('scene', 'Сцена*:', ["" => "Не указана"] + $scenes, null, ['required' => true]) }}
+                            <div class="form-group row">
+                                <div class="col-md-3"></div>
+                                <div class="col-md-9">
+                                    {{ Form::bs_text('left','Левый отступ:', null, [], null, 4) }}
+                                    {{ Form::bs_text('to','Верхний отступ:', null, [], null, 4) }}
+                                </div>
+                            </div>
                         </div>
                         {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}

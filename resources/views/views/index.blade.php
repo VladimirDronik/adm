@@ -1,13 +1,12 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-    <!-- Bread crumb -->
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
             <h3 class="text-primary">Отображения</h3> </div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Главная</a></li>
                 @if ($currentRoom == '')
                     <li class="breadcrumb-item active">Отображения</li>
                 @else
@@ -17,7 +16,6 @@
             </ol>
         </div>
     </div>
-    <!-- End Bread crumb -->
 @endsection
 
 @section('content')
@@ -33,12 +31,14 @@
                         <button type="button" class="btn btn-success m-b-10 m-l-5" onclick="window.location.reload();">Обновить</button>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <div class="dropdown room-filter" id="room-filter">
+
                             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
 
                                 @if ($currentRoom == '') Фильтр по помещению
                                 @else  Фильтр по помещению: {{$currentRoom}}
                                 @php ($currentRoom = 'для помещения: '.$currentRoom)
                                 @endif
+
 
                                 <span class="caret"></span></button>
                             <ul class="dropdown-menu">
@@ -47,11 +47,13 @@
                                 <li><a href="/views/room/0">Общие</a></li>
                                 <hr>
 
+
                                 @foreach ($rooms as $room)
                                     <li ><a href="/views/room/{{ $room->id }}" >
                                             <label style="background-color:{{ $room->style }}">&nbsp;&nbsp;&nbsp;</label>&nbsp;&nbsp;{{ $room->name }}
                                         </a>
                                     </li>
+
                                 @endforeach
                             </ul>
                         </div>
@@ -67,7 +69,9 @@
 
         <div class="card">
             <div class="card-title">
+
                 <h4>Элементы отображения {{$currentRoom}}</h4>
+
 
             </div>
 
@@ -76,18 +80,20 @@
                     <table class="table">
                         <thead>
                         <tr>
+
                             @if ($currentRoom!= '')
                                 <th>Сорт</th>
                             @endif
                             <th>Тип</th>
                             <th>Статус</th>
-                            <th>Вкл_картинка</th>
-                            <th>Выкл_картинка</th>
+                            <th>Вкл</th>
+                            <th>Выкл</th>
+
                             <th>Вкл_надпись</th>
                             <th>Выкл_надпись</th>
                             <th>Значение</th>
                             <th>Помещение</th>
-                                <th>Сорт</th>
+
                             <th>Сцена</th>
                             <th>Left</th>
                             <th>Top</th>
@@ -100,26 +106,27 @@
 
                         @foreach ($views as $view)
                             <tr>
+
                                 @if ($currentRoom!= '')
                                     <td scope="row">{{ $view->sort }}</td>
                                 @endif
-                                    <th scope="row">{{ $view->id }}</th>
+
                                 <td><a href="#">{{ $view->name }}</a></td>
                                 <td>@if($view->status == 'on')
                                         <span class="badge badge-success">{{ $view->status }}</span>
                                     @else
                                         <span class="badge badge-primary">{{ $view->status }}</span>
                                 @endif
-                                </td>
+
+
                                 <td scope="row"><img src="/images/views_items/{{ $view->on_image }}" width="25px" height="25px" style="fill: green;"></td>
                                 <td scope="row">{{ $view->off_image }}</td>
                                 <td scope="row">{{$view->on_title }}</td>
+
                                 <td scope="row">{{ $view->off_title }}</td>
 
                                 <td scope="row">{{ $view->value }}</td>
                                 <td scope="row">{{ $view->room }}</td>
-
-
                                 <td scope="row">{{ $view->scene }}</td>
                                 <td scope="row">{{ $view->position_left }}</td>
                                 <td scope="row">{{ $view->position_top }}</td>
@@ -140,18 +147,22 @@
             </div>
 
 
+
             <!-- End PAge Content -->
         </div>
         <!-- End Container fluid  -->
 
 
+
         <!-- модальное окно добавления нового отображения -->
+
         <div class="modal" id="addNewDevice">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
 
                         <h4 class="modal-title"> Добавить новое отображение</h4>
+
                     </div>
 
 
@@ -329,6 +340,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
 
 
@@ -371,5 +383,7 @@
         @endsection
 
         @section('scripts')
+
             <script src="/js/pagescripts/views.js"></script>
+
 @endsection

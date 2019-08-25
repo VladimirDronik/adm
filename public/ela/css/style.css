@@ -6938,3 +6938,7 @@ tbody tr td:last-child {
 .card {
   margin: 0 0 20px 0;
 }
+
+div.row label.label-fix {
+  padding-top: 7px;
+}

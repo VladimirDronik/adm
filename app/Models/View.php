@@ -17,6 +17,32 @@ class View extends Model
     protected $table = 'view_items';
     public $timestamps = false;
 
+    const TYPE_SWITCH = 1;
+    const TYPE_BTN = 2;
+    const TYPE_TEMP = 3;
+    const TYPE_INFOPANEL = 4;
+
+    protected $casts = ['active' => 'boolean'];
+
+    public static function getFullTypeIds()
+    {
+        return [
+            self::TYPE_SWITCH => 'Переключатель',
+            self::TYPE_BTN => 'Кнопка',
+            self::TYPE_TEMP => 'Термометр/Гигрометр',
+            self::TYPE_INFOPANEL => 'Инфопанель',
+        ];
+    }
+
+    public static function getTypeIds()
+    {
+        return array_keys(self::getFullTypeIds());
+    }
+
+    public static function getTypeById($id) {
+        return self::getFullTypeIds()[$id] ?? '';
+    }
+
     /**
      * Вывод отображений с фильтром по номеру помещения
      *

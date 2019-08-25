@@ -1,5 +1,5 @@
 @if(is_null($class))
-    <label class="control-label text-right col-md-{{$col}}" for="{{ $name }}">
+    <label class="control-label text-right col-md-{{$col}} label-fix" for="{{ $name }}">
         @if($is_required) <strong>{{ $label }}</strong> @else {{ $label }} @endif
     </label>
 @else
