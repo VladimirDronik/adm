@@ -1,0 +1,1 @@
+<hr class="m-t-0 m-b-{{ $margin }}">

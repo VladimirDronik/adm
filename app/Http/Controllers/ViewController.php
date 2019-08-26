@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\View\CreateRequest;
+use App\Models\Room;
+use App\Models\View;
+use App\Repositories\RoomRepository;
+use App\Repositories\SceneRepository;
+use App\Repositories\ViewRepository;
+use App\Services\ImageService;
+use App\Services\ViewService;
+use Illuminate\Http\Request;
+
+class ViewController extends Controller
+{
+    private $view_rep;
+    private $room_rep;
+    private $scene_rep;
+    private $service;
+
+    public function __construct(ViewRepository $view_repository, RoomRepository $room_repository, SceneRepository $scene_rep,
+                                ViewService $service)
+    {
+        $this->view_rep = $view_repository;
+        $this->room_rep = $room_repository;
+        $this->scene_rep = $scene_rep;
+
+        $this->service = $service;
+    }
+
+    public function index()
+    {
+        $views = $this->view_rep->getAll();
+        $rooms = $this->room_rep->getAll();
+
+        return view('views.index', compact('views', 'rooms') +
+            ['currentRoom' => '']);
+    }
+
+    public function create()
+    {
+        $types = View::getFullTypeIds();
+        $rooms = $this->room_rep->getAll()->pluck('name', 'id')->toArray();
+        $scenes = $this->scene_rep->getAll()->pluck('label', 'id')->toArray();
+        $images = ImageService::getViewImages();
+
+        return view('views.create', compact('types', 'rooms', 'scenes', 'images'));
+    }
+
+    public function store(CreateRequest $r)
+    {
+        try {
+            if ($id = $this->service->store($r->except('_token'))) {
+                return redirect()->route('views.edit',[$id])->with('success', 'Отображение успешно добавлено');
+            }
+        } catch (\Throwable $e) {
+            \Log::error('Ошибка при добавлении отображения '
+                .json_encode($r->all()).' '.$e->getMessage());
+        }
+
+        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении отображения');
+    }
+
+    public function edit(View $view)
+    {
+        $types = View::getFullTypeIds();
+        $rooms = $this->room_rep->getAll()->pluck('name', 'id')->toArray();
+        $scenes = $this->scene_rep->getAll()->pluck('label', 'id')->toArray();
+        $images = ImageService::getViewImages();
+
+        return view('views.edit', compact('view', 'types', 'rooms', 'scenes', 'images'));
+    }
+    /**
+     * Выводит представления при выборе помещения в фильтре
+     *
+     * @param $name
+     */
+    public function getFilteredViews($idRoom)
+    {
+        $views = View::getViews($idRoom);
+        $currentRoom = Room::nameRoomFromId($idRoom);
+        $rooms = $this->room_rep->getAll();
+
+        return view('views.index', compact('views', 'rooms', 'currentRoom'));
+    }
+
+}
