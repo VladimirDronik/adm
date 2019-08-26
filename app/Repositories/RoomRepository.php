@@ -11,7 +11,7 @@ class RoomRepository
         return Room::where('id','>',0)->orderBy('sort')->get();
     }
 
-    public function getRoomName($room_id, $rooms)
+    public function getRoomName($room_id, $rooms = null)
     {
         if ($room_id === '') {
             return '';
@@ -19,6 +19,10 @@ class RoomRepository
 
         if ($room_id === '0') {
             return Room::COMMON_NAME;
+        }
+
+        if (empty($rooms)) {
+            return optional(Room::find($room_id))->name;
         }
 
         return optional($rooms->firstWhere('id', $room_id))->name;

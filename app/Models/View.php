@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\ImageService;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -125,6 +126,21 @@ class View extends Model
         }
 
         return Room::COMMON_NAME;
+    }
+
+    public function getImagePath(string $prefix)
+    {
+        return ImageService::VIEW_PATH.'/'.$this->{$prefix.'_image'};
+    }
+
+    public function getOnImagePathAttribute()
+    {
+        return $this->getImagePath('on');
+    }
+
+    public function getOffImagePathAttribute()
+    {
+        return $this->getImagePath('off');
     }
 
     /* relations */

@@ -44,4 +44,9 @@ class ViewService {
 
         return $view->id;
     }
+
+    public function delete($id)
+    {
+        return View::destroy($id);
+    }
 }

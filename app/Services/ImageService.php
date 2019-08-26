@@ -4,8 +4,8 @@ namespace App\Services;
 
 class ImageService {
 
-    const ROOM_PATH = 'images/rooms';
-    const VIEW_PATH = 'images/views_items';
+    const ROOM_PATH = 'ela/images/rooms';
+    const VIEW_PATH = 'ela/images/views_items';
 
     /**
      * Вывод изображений для всех помемещний

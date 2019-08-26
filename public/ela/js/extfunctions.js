@@ -1,7 +1,14 @@
-/**
- * Created by kinord on 12.06.19.
- */
+function showErrorModal(message)
+{
 
+}
+
+function showSuccessModal(message)
+{
+
+}
+
+// todo refactoring
 
 function ajax_html(dataarr, route, outobject)
 {

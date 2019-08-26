@@ -14,9 +14,12 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('views', 'ViewController')->except('show');
 
-    Route::get('views/room/{idRoom}', 'ViewController@getFilteredViews')->name('idRoom');
-
     Route::group(['namespace' => 'Ajax'], function () {
+
+        // Views
+        Route::post('views/delete', 'ViewController@delete')->name('ajax.views.delete');
+        Route::post('views/active', 'ViewController@active')->name('ajax.views.active');
+
         //Objects
         Route::post('getobject', 'ObjectController@load_to_port');
         Route::post('add_object_to_port', 'ObjectController@add_to_port');

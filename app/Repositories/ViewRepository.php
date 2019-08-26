@@ -11,7 +11,7 @@ class ViewRepository {
         return View::orderBy('id')->get();
     }
 
-    public function getByRoom($room_id, $pagination_count = 30)
+    public function getByRoom($room_id, $pagination_count = 5)
     {
         $query = View::query();
 
