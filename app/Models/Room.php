@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Room extends Model
 {
+    const COMMON_NAME = 'Общие';
+
     public $timestamps = false;
 
     public $idRoom;

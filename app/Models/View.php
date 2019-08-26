@@ -17,31 +17,36 @@ class View extends Model
     protected $table = 'view_items';
     public $timestamps = false;
 
-    const TYPE_SWITCH = 1;
-    const TYPE_BTN = 2;
-    const TYPE_TEMP = 3;
-    const TYPE_INFOPANEL = 4;
+    const TYPE_ITEM = 'i';
+    const TYPE_TEMP = 't';
+
+    const TYPE_NAME_SWITCH = 'switch';
+    const TYPE_NAME_BUTTON = 'button';
+    const TYPE_NAME_TEMP = 'temp';
+    const TYPE_NAME_HUMIDITY = 'humidity';
+    const TYPE_NAME_INFO = 'info';
 
     protected $casts = ['active' => 'boolean'];
     protected $guarded = ['id'];
 
-    public static function getFullTypeIds()
+    public static function getFullTypeNameIds()
     {
         return [
-            self::TYPE_SWITCH => 'Переключатель',
-            self::TYPE_BTN => 'Кнопка',
-            self::TYPE_TEMP => 'Термометр/Гигрометр',
-            self::TYPE_INFOPANEL => 'Инфопанель',
+            self::TYPE_NAME_SWITCH => 'Переключатель',
+            self::TYPE_NAME_BUTTON => 'Кнопка',
+            self::TYPE_NAME_TEMP => 'Термометр',
+            self::TYPE_NAME_HUMIDITY => 'Гигрометр',
+            self::TYPE_NAME_INFO => 'Инфопанель',
         ];
     }
 
-    public static function getTypeIds()
+    public static function getTypeNameIds()
     {
-        return array_keys(self::getFullTypeIds());
+        return array_keys(self::getFullTypeNameIds());
     }
 
-    public static function getTypeById($id) {
-        return self::getFullTypeIds()[$id] ?? '';
+    public static function getTypeNameById($id) {
+        return self::getFullTypeNameIds()[$id] ?? '';
     }
 
     // todo refactoring
@@ -106,6 +111,20 @@ class View extends Model
     public function getShortOffTitleAttribute()
     {
         return str_replace('<br>','|',$this->off_title);
+    }
+
+    public function getRusTypeNameAttribute()
+    {
+        return self::getTypeNameById($this->type_name);
+    }
+
+    public function getRoomNameAttribute()
+    {
+        if ($this->room !== 0) {
+            return optional($this->eroom)->name;
+        }
+
+        return Room::COMMON_NAME;
     }
 
     /* relations */

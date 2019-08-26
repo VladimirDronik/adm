@@ -32,9 +32,11 @@
                         {{ csrf_field() }}
                         <div class="form-body">
                             {{ Form::bs_alert() }}
-                            {{ Form::bs_title('Тип элемента') }}
+                            {{ Form::bs_title('Основные данные') }}
 
                             {{ Form::bs_radio('type', 'Тип элемента*:', $types, null, ['required' => true]) }}
+                            {{ Form::bs_text('type_name', 'Название*:', null, ['required' => true]) }}
+                            {{ Form::bs_text('description', 'Описание:') }}
 
                             {{ Form::bs_title('Текст и графика') }}
 
@@ -47,7 +49,7 @@
                             {{ Form::bs_title('Расположение') }}
 
                             {{ Form::bs_select('room', 'Помещение*:', ["" => "Не указано"] + $rooms, null, ['required' => true]) }}
-                            {{ Form::bs_select('scene', 'Сцена*:', ["" => "Не указана"] + $scenes, null, ['required' => true]) }}
+                            {{ Form::bs_select('scene', 'Сцена:', ["" => "Не указана"] + $scenes) }}
                             {{ Form::bs_number('position_left','Левый отступ (px):') }}
                             {{ Form::bs_number('position_top','Верхний отступ (px):') }}
 

@@ -11,6 +11,7 @@ use App\Repositories\SceneRepository;
 use App\Repositories\ViewRepository;
 use App\Services\ImageService;
 use App\Services\ViewService;
+use Illuminate\Http\Request;
 
 class ViewController extends Controller
 {
@@ -31,7 +32,7 @@ class ViewController extends Controller
 
     public function getLists()
     {
-        $types = View::getFullTypeIds();
+        $types = View::getFullTypeNameIds();
         $rooms = $this->room_rep->getAll()->pluck('name', 'id')->toArray();
         $scenes = $this->scene_rep->getAll()->pluck('label', 'id')->toArray();
         $images = ImageService::getViewImages();
@@ -39,13 +40,15 @@ class ViewController extends Controller
         return [$types, $rooms, $scenes, $images];
     }
 
-    public function index()
+    public function index(Request $r)
     {
-        $views = $this->view_rep->getAll();
-        $rooms = $this->room_rep->getAll();
+        $views = $this->view_rep->getByRoom($r->room);
+        $rooms = $this->room_rep->getSpecialRooms();
 
-        return view('views.index', compact('views', 'rooms') +
-            ['currentRoom' => '']);
+        $filter_room = $r->input('room', '');
+        $filter_room_name = $this->room_rep->getRoomName($filter_room, $rooms);
+
+        return view('views.index', compact('views', 'rooms', 'filter_room', 'filter_room_name'));
     }
 
     public function create()

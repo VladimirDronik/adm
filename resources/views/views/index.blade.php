@@ -7,11 +7,11 @@
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
-                @if ($currentRoom == '')
+                @if ($filter_room == '')
                     <li class="breadcrumb-item active">Отображения</li>
                 @else
                     <li class="breadcrumb-item"><a href="{{ route('views.index') }}">Отображения</a></li>
-                    <li class="breadcrumb-item active">{{$currentRoom}}</li>
+                    <li class="breadcrumb-item active">{{$filter_room}}</li>
                 @endif
             </ol>
         </div>
@@ -19,152 +19,137 @@
 @endsection
 
 @section('content')
-
-    <!-- Container fluid  -->
     <div class="container-fluid">
-        <!-- Start Page Content -->
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('views.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить
-                            отображение</a>
-                        <button type="button" class="btn btn-success m-b-10 m-l-5" data-toggle="modal"
-                                data-target="#addNewDevice">Добавить отображение
-                        </button>
-                        <button type="button" class="btn btn-success m-b-10 m-l-5" onclick="window.location.reload();">
-                            Обновить
-                        </button>
+                        <a href="{{ route('views.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить отображение</a>
+                        <a href="{{ route('views.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <div class="pull-right">
-                        <div class="dropdown room-filter" id="room-filter">
-
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-
-                                @if ($currentRoom == '') Фильтр по помещению
-                                @else  Фильтр по помещению: {{$currentRoom}}
-                                @php ($currentRoom = 'для помещения: '.$currentRoom)
-                                @endif
-
-
-                                <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                                <li><a href="/views">Все помещения</a></li>
-                                <hr>
-                                <li><a href="/views/room/0">Общие</a></li>
-                                <hr>
-
-
-                                @foreach ($rooms as $room)
-                                    <li><a href="/views/room/{{ $room->id }}">
-                                            <label style="background-color:{{ $room->style }}">&nbsp;&nbsp;&nbsp;</label>&nbsp;&nbsp;{{ $room->name }}
-                                        </a>
-                                    </li>
-
-                                @endforeach
-                            </ul>
+                            <div class="dropdown room-filter" id="room-filter">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                    @if($filter_room == '')
+                                        Фильтр по помещению
+                                    @else
+                                        Фильтр по помещению: {{$filter_room_name ?? ''}}
+                                        @php($filter_room = 'для помещения: '.($filter_room_name ?? ''))
+                                    @endif
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{{ route('views.index') }}">Все помещения</a></li>
+                                    <hr>
+                                    <li><a href="{{ route('views.index',['room' => 0]) }}">{{ \App\Models\Room::COMMON_NAME }}</a></li>
+                                    <hr>
+                                    @foreach($rooms as $room)
+                                        <li>
+                                            <a href="{{ route('views.index',['room' => $room->id]) }}">
+                                                <label style="background-color:{{ $room->style }}">&nbsp;&nbsp;&nbsp;</label>&nbsp;&nbsp;{{ $room->name }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            <a href="{{ route('views.index') }}" class="btn btn-success m-b-10 m-l-5">Сбросить</a>
                         </div>
-
-                        <button type="button" class="btn btn-success m-b-10 m-l-5"
-                                onclick="document.location.href = '/views';">Сбросить
-                        </button>
-                        </div>
-
                     </div>
                 </div>
             </div>
         </div>
-
-
         <div class="card">
             <div class="card-title">
-
-                <h4>Элементы отображения {{$currentRoom}}</h4>
-
-
+                <h4>Элементы отображения {{$filter_room}}</h4>
             </div>
-
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
-                        <tr>
-
-                            @if ($currentRoom!= '')
-                                <th>Сорт</th>
-                            @endif
-                            <th>Тип</th>
-                            <th>Статус</th>
-                            <th>Вкл</th>
-                            <th>Выкл</th>
-
-                            <th>Вкл_надпись</th>
-                            <th>Выкл_надпись</th>
-                            <th>Значение</th>
-                            <th>Помещение</th>
-
-                            <th>Сцена</th>
-                            <th>Left</th>
-                            <th>Top</th>
-                            <th>Активно</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
+                            <tr>
+                                @if ($filter_room!= '')
+                                    <th>Сорт</th>
+                                @endif
+                                <th>Тип</th>
+                                <th>Название</th>
+                                <th>Статус</th>
+                                <th>Вкл</th>
+                                <th>Выкл</th>
+                                <th>Вкл_надпись</th>
+                                <th>Выкл_надпись</th>
+                                <th>Значение</th>
+                                <th>Помещение</th>
+                                <th>Сцена</th>
+                                <th>Отступы</th>
+                                <th>Активно</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
                         </thead>
                         <tbody>
-
                         @foreach ($views as $view)
                             <tr>
-                                @if ($currentRoom!= '')
+                                @if ($filter_room!= '')
                                     <td scope="row">{{ $view->sort }}</td>
                                 @endif
-
-                                <td><a href="#">{{ $view->name }}</a></td>
-                                <td>@if($view->status == 'on')
+                                <td>{{ $view->rus_type_name }}</td>
+                                <td><a href="#" title="{{ $view->description }}">{{ $view->name }}</a></td>
+                                <td>
+                                    @if($view->status === 'on')
                                         <span class="badge badge-success">{{ $view->status }}</span>
                                     @else
                                         <span class="badge badge-primary">{{ $view->status }}</span>
-                                @endif
-
-
-                                <td scope="row"><img src="/images/views_items/{{ $view->on_image }}" width="25px"
-                                                     height="25px" style="fill: green;"></td>
+                                    @endif
+                                </td>
+                                <td scope="row">
+                                    <img src="{{ asset('images/views_items/'.$view->on_image) }}" width="25" height="25" style="fill: green;">
+                                </td>
                                 <td scope="row">{{ $view->off_image }}</td>
-                                <td scope="row">{{$view->short_on_title }}</td>
-
+                                <td scope="row">{{ $view->short_on_title }}</td>
                                 <td scope="row">{{ $view->short_off_title }}</td>
-
                                 <td scope="row">{{ $view->value }}</td>
-                                <td scope="row"><a href="#">{{ optional($view->eroom)->name }}</a></td>
-                                    <td scope="row"><a href="#">{{ optional($view->escene)->label }}</a></td>
-                                <td scope="row">{{ $view->position_left }}</td>
-                                <td scope="row">{{ $view->position_top }}</td>
-
+                                <td scope="row"><a href="#">{{ $view->room_name }}</a></td>
+                                <td scope="row"><a href="#">{{ optional($view->escene)->label }}</a></td>
+                                <td scope="row">{{ $view->position_left }} / {{ $view->position_top }}</td>
                                 <td scope="row">{{ $view->is_active }}</td>
-                                    <td align="center">
-                                        <a href="{{ route('views.edit',[$view->id]) }}" class="btn btn-info btn-sm btn-rounded">
-                                            <i class="fa fa-cog fa-lg"></i></a>
-                                    </td>
-
+                                <td align="center">
+                                    <a href="{{ route('views.edit',[$view->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                        <i class="fa fa-cog fa-lg"></i></a>
+                                </td>
                                 <td>
-
                                     <button type="button" class="btn btn-danger btn-rounded btn-sm"><i
                                                 class="fa fa-trash fa-lg"></i></button>
                                 </td>
-
                             </tr>
                         @endforeach
-
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                @if ($filter_room != '')
+                                    <th>Сорт</th>
+                                @endif
+                                <th>Тип</th>
+                                <th>Название</th>
+                                <th>Статус</th>
+                                <th>Вкл</th>
+                                <th>Выкл</th>
+                                <th>Вкл_надпись</th>
+                                <th>Выкл_надпись</th>
+                                <th>Значение</th>
+                                <th>Помещение</th>
+                                <th>Сцена</th>
+                                <th>Отступы</th>
+                                <th>Активно</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
-
-
             <!-- End PAge Content -->
         </div>
         <!-- End Container fluid  -->
-
 
         <!-- модальное окно добавления нового отображения -->
 
