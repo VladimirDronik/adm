@@ -107,7 +107,6 @@
 
                         @foreach ($views as $view)
                             <tr>
-
                                 @if ($currentRoom!= '')
                                     <td scope="row">{{ $view->sort }}</td>
                                 @endif
@@ -127,12 +126,12 @@
                                 <td scope="row">{{ $view->off_title }}</td>
 
                                 <td scope="row">{{ $view->value }}</td>
-                                <td scope="row">{{ $view->room }}</td>
-                                <td scope="row">{{ $view->scene }}</td>
+                                    <td scope="row"><a href="#">{{ optional($view->eroom)->name }}</a></td>
+                                <td scope="row">{{ optional($view->escene)->label }}</td>
                                 <td scope="row">{{ $view->position_left }}</td>
                                 <td scope="row">{{ $view->position_top }}</td>
 
-                                <td scope="row">{{ $view->active }}</td>
+                                <td scope="row">{{ $view->is_active }}</td>
 
 
                                 <td>

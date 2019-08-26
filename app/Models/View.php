@@ -93,14 +93,19 @@ class View extends Model
         return $this->getPartOfTitle('off','bottom');
     }
 
-    /* relations */
-
-    public function scene()
+    public function getIsActiveAttribute()
     {
-        return $this->belongsTo(Scene::class, 'scene');
+        return $this->active ? 'Да' : 'Нет';
     }
 
-    public function room()
+    /* relations */
+
+    public function escene()
+    {
+        return $this->belongsTo(Scene::class, 'scene', 'id');
+    }
+
+    public function eroom()
     {
         return $this->belongsTo(Room::class, 'room');
     }

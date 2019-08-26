@@ -8,6 +8,6 @@ class RoomRepository {
 
     public function getAll()
     {
-        return Room::where('id','>','0')->orderBy('sort', 'ASC')->get();
+        return Room::orderBy('sort')->get();
     }
 }
