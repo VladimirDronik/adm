@@ -59,7 +59,7 @@
                                     </p>
                                 </div>
                             </div>
-                            {{ Form::bs_hidden('on_image', old('on_image','')) }}
+                            {{ Form::bs_hidden('on_image', old('on_image',\App\Services\ImageService::NO_IMAGE_PATH)) }}
 
                             <div class="form-group row ">
                                 <label class="control-label text-right col-md-3 label-fix" for="off_title_top">
@@ -74,7 +74,7 @@
                                     </p>
                                 </div>
                             </div>
-                            {{ Form::bs_hidden('off_image', old('off_image','')) }}
+                            {{ Form::bs_hidden('off_image', old('off_image',\App\Services\ImageService::NO_IMAGE_PATH)) }}
 
                             {{ Form::bs_title('Расположение') }}
 

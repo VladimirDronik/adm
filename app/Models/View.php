@@ -130,6 +130,10 @@ class View extends Model
 
     public function getImagePath(string $prefix)
     {
+        if (empty($this->{$prefix.'_image'})) {
+            return ImageService::NO_IMAGE_PATH;
+        }
+
         return ImageService::VIEW_PATH.'/'.$this->{$prefix.'_image'};
     }
 

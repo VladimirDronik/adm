@@ -166,8 +166,8 @@
             </div>
         </div>
     </div>
-    @include('components.info_modal');
-    @include('components.del_modal');
+    @include('components.info_modal')
+    @include('components.del_modal')
 @endsection
 
 @section('scripts')

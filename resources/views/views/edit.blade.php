@@ -3,7 +3,8 @@
 @section('breadcrumbs')
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Редактирование отображения № {{ $view->id }}</h3> </div>
+            <h3 class="text-primary">Редактирование отображения № {{ $view->id }} «{{ $view->name }}»</h3>
+        </div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
@@ -80,7 +81,7 @@
                         {{ Form::bs_title('Расположение') }}
 
                         {{ Form::bs_select('room', 'Помещение*:', ["" => "Не указано"] + $rooms, null, ['required' => true]) }}
-                        {{ Form::bs_select('scene', 'Сцена*:', ["" => "Не указана"] + $scenes, null, ['required' => true]) }}
+                        {{ Form::bs_select('scene', 'Сцена:', ["" => "Не указана"] + $scenes) }}
                         {{ Form::bs_number('position_left','Левый отступ (px):') }}
                         {{ Form::bs_number('position_top','Верхний отступ (px):') }}
 
