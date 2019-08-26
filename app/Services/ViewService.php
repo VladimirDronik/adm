@@ -6,16 +6,14 @@ use App\Models\View;
 
 class ViewService {
 
-    public function concatTitles($data, $prefix)
+    public function concatTitles(array $data, string $prefix)
     {
         return trim($data[$prefix.'_title_top'] ?? '')
             .'<br>'.trim($data[$prefix.'_title_bottom'] ?? '');
     }
 
-    public function store(array $data)
+    public function prepareView(View $view, array $data)
     {
-        $view = new View();
-
         $view->on_title = $this->concatTitles($data, 'on');
         $view->off_title = $this->concatTitles($data, 'off');
 
@@ -28,7 +26,20 @@ class ViewService {
         $view->sort = 1;
         $view->items = '?';
         $view->on_image = '?';
+    }
 
+    public function store(array $data)
+    {
+        $view = new View();
+        $this->prepareView($view, $data);
+        $view->save();
+
+        return $view->id;
+    }
+
+    public function update(View $view, array $data)
+    {
+        $this->prepareView($view, $data);
         $view->save();
 
         return $view->id;

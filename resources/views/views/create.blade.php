@@ -34,7 +34,7 @@
                             {{ Form::bs_alert() }}
                             {{ Form::bs_title('Тип элемента') }}
 
-                            {{ Form::bs_select('type', 'Тип элемента*:', ["" => "Не указан"] + $types, null, ['required' => true]) }}
+                            {{ Form::bs_radio('type', 'Тип элемента*:', $types, null, ['required' => true]) }}
 
                             {{ Form::bs_title('Текст и графика') }}
 

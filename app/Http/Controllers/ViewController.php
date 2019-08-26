@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\View\CreateRequest;
+use App\Http\Requests\View\UpdateRequest;
 use App\Models\Room;
 use App\Models\View;
 use App\Repositories\RoomRepository;
@@ -10,7 +11,6 @@ use App\Repositories\SceneRepository;
 use App\Repositories\ViewRepository;
 use App\Services\ImageService;
 use App\Services\ViewService;
-use Illuminate\Http\Request;
 
 class ViewController extends Controller
 {
@@ -29,6 +29,16 @@ class ViewController extends Controller
         $this->service = $service;
     }
 
+    public function getLists()
+    {
+        $types = View::getFullTypeIds();
+        $rooms = $this->room_rep->getAll()->pluck('name', 'id')->toArray();
+        $scenes = $this->scene_rep->getAll()->pluck('label', 'id')->toArray();
+        $images = ImageService::getViewImages();
+
+        return [$types, $rooms, $scenes, $images];
+    }
+
     public function index()
     {
         $views = $this->view_rep->getAll();
@@ -40,10 +50,7 @@ class ViewController extends Controller
 
     public function create()
     {
-        $types = View::getFullTypeIds();
-        $rooms = $this->room_rep->getAll()->pluck('name', 'id')->toArray();
-        $scenes = $this->scene_rep->getAll()->pluck('label', 'id')->toArray();
-        $images = ImageService::getViewImages();
+        list($types, $rooms, $scenes, $images) = $this->getLists();
 
         return view('views.create', compact('types', 'rooms', 'scenes', 'images'));
     }
@@ -64,13 +71,26 @@ class ViewController extends Controller
 
     public function edit(View $view)
     {
-        $types = View::getFullTypeIds();
-        $rooms = $this->room_rep->getAll()->pluck('name', 'id')->toArray();
-        $scenes = $this->scene_rep->getAll()->pluck('label', 'id')->toArray();
-        $images = ImageService::getViewImages();
+        list($types, $rooms, $scenes, $images) = $this->getLists();
 
         return view('views.edit', compact('view', 'types', 'rooms', 'scenes', 'images'));
     }
+
+    public function update(UpdateRequest $r, View $view)
+    {
+        try {
+            if ($this->service->update($view, $r->except('_token'))) {
+                return redirect()->route('views.edit',[$view->id])->with('success','Отображение успешно изменено');
+            }
+        } catch (\Throwable $e) {
+            \Log::error('Ошибка при изменении отображения '.$view->id.' '
+                .json_encode($r->all()).' '.$e->getMessage());
+        }
+
+        return back()->withInput($r->all())->with('error','Ошибка при изменении отображения');
+    }
+
+    // todo refactoring
     /**
      * Выводит представления при выборе помещения в фильтре
      *
