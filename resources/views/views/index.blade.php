@@ -89,7 +89,7 @@
                         </thead>
                         <tbody>
                         @foreach ($views as $view)
-                            <tr id="t{{$view->id}}">
+                            <tr id="tr{{$view->id}}">
                                 @if($filter_room!= '')
                                     <td scope="row">{{ $view->sort }}</td>
                                 @endif
@@ -127,7 +127,10 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn" data-id="{{ $view->id }}"><i class="fa fa-trash fa-lg"></i></button>
+                                    <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                            data-id="{{ $view->id }}" data-name="{{ $view->rus_type_name }}">
+                                        <i class="fa fa-trash fa-lg"></i>
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
@@ -163,20 +166,8 @@
             </div>
         </div>
     </div>
-
-    <div id="del_modal" class="modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Удалить отображение?</h4>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Удалить</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('components.info_modal');
+    @include('components.del_modal');
 @endsection
 
 @section('scripts')
@@ -184,39 +175,41 @@
        $(document).ready(function(){
            let del_id;
 
-           $('.del_btn').change(function() {
-              $('#del_modal').show();
+           $('.del_btn').click(function() {
+               del_id = $(this).attr('data-id');
+               $('#del_modal_body').text('Удалить отображение «'+$(this).attr('data-name')+'»?');
+               $('#del_modal').modal('show');
            });
 
-           $('.active_checkbox').change(function(){
-               let active = this.checked ? 1 : 0;
-               let view_id = $(this).attr('data-id');
-
-               $.ajax({
-                   url: '{{ route('ajax.views.delete') }}',
-                   data: { '_token': _token, 'data': data },
-                   success: function (data) {
-                       if (data.result) {
-                           $('')
-                           showSuccessModal('Отображение успешно удалено');
-                       } else {
-                           showErrorModal('Ошибка при удалении отображения');
-                       }
-                   },
-                   error: function() {
-                       showErrorModal('Сервер временно недоступен');
-                   }
-               });
+           $('#del_modal_btn').click(function(){
+              $('#del_modal').modal('hide');
+              if (del_id) {
+                  $.ajax({
+                      url: '{{ route('ajax.views.delete') }}',
+                      data: { '_token': _token, 'id': del_id },
+                      success: function (data) {
+                          if (data.result) {
+                              $('#tr'+del_id).hide();
+                          } else {
+                              showErrorModal('Ошибка при удалении отображения');
+                          }
+                      },
+                      error: function() {
+                          showErrorModal('Сервер временно недоступен');
+                      }
+                  });
+              }
            });
 
            //
 
            $('.active_checkbox').change(function(){
                let active = this.checked ? 1 : 0;
+               let view_id = $(this).attr('data-id');
 
                $.ajax({
                    url: '{{ route('ajax.views.active') }}',
-                   data: { '_token': _token, 'data': data },
+                   data: { '_token': _token, 'id': view_id, 'active': active},
                    success: function (data) {
                         if (data.result) {
                             showSuccessModal('Активность успешно изменена');

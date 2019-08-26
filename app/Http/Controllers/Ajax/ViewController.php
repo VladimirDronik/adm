@@ -19,13 +19,14 @@ class ViewController extends Controller
     {
         abort_if(!$r->ajax() || !$r->has('id'), 400);
 
-        return response()->json(['result' => (bool)$this->service->delete($r->id)]);
+        return response()->json(['result' => (bool)$this->service->delete((int)$r->id)]);
     }
 
     public function active(Request $r)
     {
-        abort_if(!$r->ajax(), 400);
+        abort_if(!$r->ajax() || !$r->has('id') || !$r->has('active'), 400);
 
+        return response()->json(['result' => $this->service->changeActive((int)$r->id, (int)$r->active)]);
     }
 }
 

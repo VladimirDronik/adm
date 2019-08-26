@@ -8,12 +8,12 @@ class ViewRepository {
 
     public function getAll()
     {
-        return View::orderBy('id')->get();
+        return View::with('eroom','escene')->orderBy('id')->get();
     }
 
     public function getByRoom($room_id, $pagination_count = 5)
     {
-        $query = View::query();
+        $query = View::with('eroom','escene');
 
         if (!is_null($room_id)) {
             $query->where('room',$room_id);

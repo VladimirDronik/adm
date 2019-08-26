@@ -45,8 +45,15 @@ class ViewService {
         return $view->id;
     }
 
-    public function delete($id)
+    public function delete(int $id)
     {
         return View::destroy($id);
+    }
+
+    public function changeActive(int $id, int $active)
+    {
+        View::where('id', $id)->update(['active' => $active]);
+
+        return true;
     }
 }

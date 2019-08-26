@@ -169,5 +169,5 @@
 @endsection
 
 @section('scripts')
-            <script src="/js/pagescripts/device.js"></script>
+            <script src="{{ asset('ela/js/pagescripts/device.js') }}"></script>
 @endsection

@@ -235,5 +235,5 @@
 @endsection
 
 @section('scripts')
-            <script src="/js/pagescripts/room.js"></script>
+            <script src="{{ asset('ela/js/pagescripts/room.js') }}"></script>
 @endsection

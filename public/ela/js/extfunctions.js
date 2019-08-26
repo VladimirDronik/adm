@@ -1,11 +1,11 @@
-function showErrorModal(message)
-{
-
+function showErrorModal(message) {
+    $('#info_modal_body').html('<span class="text-danger">'+message+'</span>');
+    $('#info_modal').modal('show');
 }
 
-function showSuccessModal(message)
-{
-
+function showSuccessModal(message) {
+    $('#info_modal_body').html('<span class="text-info">'+message+'</span>');
+    $('#info_modal').modal('show');
 }
 
 // todo refactoring
