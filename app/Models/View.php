@@ -98,6 +98,16 @@ class View extends Model
         return $this->active ? 'Да' : 'Нет';
     }
 
+    public function getShortOnTitleAttribute()
+    {
+        return str_replace('<br>','|',$this->on_title);
+    }
+
+    public function getShortOffTitleAttribute()
+    {
+        return str_replace('<br>','|',$this->off_title);
+    }
+
     /* relations */
 
     public function escene()
@@ -107,6 +117,6 @@ class View extends Model
 
     public function eroom()
     {
-        return $this->belongsTo(Room::class, 'room');
+        return $this->belongsTo(Room::class, 'room', 'id');
     }
 }

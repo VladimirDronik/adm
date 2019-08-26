@@ -3,14 +3,14 @@
 @section('breadcrumbs')
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Отображения</h3> </div>
+            <h3 class="text-primary">Отображения</h3></div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="javascript:void(0)">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
                 @if ($currentRoom == '')
                     <li class="breadcrumb-item active">Отображения</li>
                 @else
-                    <li class="breadcrumb-item"><a href="/views">Отображения</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('views.index') }}">Отображения</a></li>
                     <li class="breadcrumb-item active">{{$currentRoom}}</li>
                 @endif
             </ol>
@@ -27,10 +27,16 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('views.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить отображение</a>
-                        <button type="button" class="btn btn-success m-b-10 m-l-5" data-toggle="modal" data-target="#addNewDevice">Добавить отображение</button>
-                        <button type="button" class="btn btn-success m-b-10 m-l-5" onclick="window.location.reload();">Обновить</button>
+                        <a href="{{ route('views.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить
+                            отображение</a>
+                        <button type="button" class="btn btn-success m-b-10 m-l-5" data-toggle="modal"
+                                data-target="#addNewDevice">Добавить отображение
+                        </button>
+                        <button type="button" class="btn btn-success m-b-10 m-l-5" onclick="window.location.reload();">
+                            Обновить
+                        </button>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <div class="pull-right">
                         <div class="dropdown room-filter" id="room-filter">
 
                             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
@@ -50,7 +56,7 @@
 
 
                                 @foreach ($rooms as $room)
-                                    <li ><a href="/views/room/{{ $room->id }}" >
+                                    <li><a href="/views/room/{{ $room->id }}">
                                             <label style="background-color:{{ $room->style }}">&nbsp;&nbsp;&nbsp;</label>&nbsp;&nbsp;{{ $room->name }}
                                         </a>
                                     </li>
@@ -59,8 +65,10 @@
                             </ul>
                         </div>
 
-                        <button type="button" class="btn btn-success m-b-10 m-l-5" onclick="document.location.href = '/views';">Сбросить</button>
-
+                        <button type="button" class="btn btn-success m-b-10 m-l-5"
+                                onclick="document.location.href = '/views';">Сбросить
+                        </button>
+                        </div>
 
                     </div>
                 </div>
@@ -100,7 +108,7 @@
                             <th>Top</th>
                             <th>Активно</th>
                             <th></th>
-
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -119,25 +127,31 @@
                                 @endif
 
 
-                                <td scope="row"><img src="/images/views_items/{{ $view->on_image }}" width="25px" height="25px" style="fill: green;"></td>
+                                <td scope="row"><img src="/images/views_items/{{ $view->on_image }}" width="25px"
+                                                     height="25px" style="fill: green;"></td>
                                 <td scope="row">{{ $view->off_image }}</td>
-                                <td scope="row">{{$view->on_title }}</td>
+                                <td scope="row">{{$view->short_on_title }}</td>
 
-                                <td scope="row">{{ $view->off_title }}</td>
+                                <td scope="row">{{ $view->short_off_title }}</td>
 
                                 <td scope="row">{{ $view->value }}</td>
-                                    <td scope="row"><a href="#">{{ optional($view->eroom)->name }}</a></td>
-                                <td scope="row">{{ optional($view->escene)->label }}</td>
+                                <td scope="row"><a href="#">{{ optional($view->eroom)->name }}</a></td>
+                                    <td scope="row"><a href="#">{{ optional($view->escene)->label }}</a></td>
                                 <td scope="row">{{ $view->position_left }}</td>
                                 <td scope="row">{{ $view->position_top }}</td>
 
                                 <td scope="row">{{ $view->is_active }}</td>
-
+                                    <td align="center">
+                                        <a href="{{ route('views.edit',[$view->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                            <i class="fa fa-cog fa-lg"></i></a>
+                                    </td>
 
                                 <td>
 
-                                    <button type="button" class="btn btn-danger btn-rounded btn-sm"><i class="fa fa-trash fa-lg"></i></button>
+                                    <button type="button" class="btn btn-danger btn-rounded btn-sm"><i
+                                                class="fa fa-trash fa-lg"></i></button>
                                 </td>
+
                             </tr>
                         @endforeach
 
@@ -147,11 +161,9 @@
             </div>
 
 
-
             <!-- End PAge Content -->
         </div>
         <!-- End Container fluid  -->
-
 
 
         <!-- модальное окно добавления нового отображения -->
@@ -170,9 +182,15 @@
 
 
                         <ul class="nav nav-tabs" role="tablist">
-                            <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#home" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Тип Элемента</span></a> </li>
-                            <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Текст и графика</span></a> </li>
-                            <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#messages" role="tab"><span class="hidden-sm-up"><i class="ti-email"></i></span> <span class="hidden-xs-down">Расположение</span></a> </li>
+                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home"
+                                                    role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span>
+                                    <span class="hidden-xs-down">Тип Элемента</span></a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#profile" role="tab"><span
+                                            class="hidden-sm-up"><i class="ti-user"></i></span> <span
+                                            class="hidden-xs-down">Текст и графика</span></a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#messages" role="tab"><span
+                                            class="hidden-sm-up"><i class="ti-email"></i></span> <span
+                                            class="hidden-xs-down">Расположение</span></a></li>
                         </ul>
 
                         <!-- Tab panes -->
@@ -183,20 +201,22 @@
 
                                     <div class="btn-group-toggle" data-toggle="buttons">
 
-                                        <label class="btn btn-success" id="easy_button" >
-                                            <input type="radio" name="typedev"  autocomplete="off" value="1"> Переключатель
+                                        <label class="btn btn-success" id="easy_button">
+                                            <input type="radio" name="typedev" autocomplete="off" value="1">
+                                            Переключатель
                                         </label>
 
                                         <label class="btn btn-success" id="method_button">
-                                            <input type="radio" name="typedev"  autocomplete="off" value="2"> Кнопка
+                                            <input type="radio" name="typedev" autocomplete="off" value="2"> Кнопка
                                         </label>
 
                                         <label class="btn btn-success" id="script_button">
-                                            <input type="radio" name="typedev"  autocomplete="off" value="3"> Термометр/Гигрометр
+                                            <input type="radio" name="typedev" autocomplete="off" value="3">
+                                            Термометр/Гигрометр
                                         </label>
 
                                         <label class="btn btn-success" id="none_button">
-                                            <input type="radio" name="typedev"  autocomplete="off" value="4"> Инфопанель
+                                            <input type="radio" name="typedev" autocomplete="off" value="4"> Инфопанель
                                         </label>
                                     </div>
 
@@ -205,8 +225,6 @@
                                     <div class="alert alert-info" id="infoAlert">
                                         Выберите тип элемента отображения.
                                     </div>
-
-
 
 
                                 </div>
@@ -219,7 +237,8 @@
                                             Надпись при включении:
                                         </div>
                                         <div class="col-3">
-                                            <input type="text" class="form-control input-default col-sm-12" id="name_device"  placeholder="Верхняя строка пустая">
+                                            <input type="text" class="form-control input-default col-sm-12"
+                                                   id="name_device" placeholder="Верхняя строка пустая">
                                         </div>
                                     </div>
                                     <div class="row">
@@ -227,7 +246,8 @@
 
                                         </div>
                                         <div class="col-3">
-                                            <input type="text" class="form-control input-default col-sm-12" id="name_device"  placeholder="Нижняя строка пустая">
+                                            <input type="text" class="form-control input-default col-sm-12"
+                                                   id="name_device" placeholder="Нижняя строка пустая">
                                         </div>
                                     </div>
 
@@ -238,7 +258,8 @@
                                             Надпись при выключении:
                                         </div>
                                         <div class="col-3">
-                                            <input type="text" class="form-control input-default col-sm-12" id="name_device"  placeholder="Верхняя строка пустая">
+                                            <input type="text" class="form-control input-default col-sm-12"
+                                                   id="name_device" placeholder="Верхняя строка пустая">
                                         </div>
                                     </div>
                                     <div class="row">
@@ -246,7 +267,8 @@
 
                                         </div>
                                         <div class="col-3">
-                                            <input type="text" class="form-control input-default col-sm-12" id="name_device"  placeholder="Нижняя строка пустая">
+                                            <input type="text" class="form-control input-default col-sm-12"
+                                                   id="name_device" placeholder="Нижняя строка пустая">
                                         </div>
                                     </div>
 
@@ -257,7 +279,7 @@
                                             Изображение при включении:
                                         </div>
                                         <div class="col-3">
-                                            <img src="/images/rooms/noimage.png" id="image" style="background: black;"  >
+                                            <img src="/images/rooms/noimage.png" id="image" style="background: black;">
                                         </div>
                                     </div>
                                     <br><br><br>
@@ -266,7 +288,7 @@
                                             Изображение при выключении:
                                         </div>
                                         <div class="col-3">
-                                            <img src="/images/rooms/noimage.png" id="image" style="background: black;"  >
+                                            <img src="/images/rooms/noimage.png" id="image" style="background: black;">
                                         </div>
                                     </div>
                                 </div>
@@ -281,7 +303,8 @@
 
                                         <div class="col-3">
                                             <div class="dropdown room-filter" id="room-filter">
-                                                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                                <button class="btn btn-primary dropdown-toggle" type="button"
+                                                        data-toggle="dropdown">
 
                                                     Выбрать помещение
 
@@ -292,7 +315,7 @@
                                                     <hr>
 
                                                     @foreach ($rooms as $room)
-                                                        <li ><a href="/views/room/{{ $room->id }}" >
+                                                        <li><a href="/views/room/{{ $room->id }}">
                                                                 <label style="background-color:{{ $room->style }}">&nbsp;&nbsp;&nbsp;</label>&nbsp;&nbsp;{{ $room->name }}
                                                             </a>
                                                         </li>
@@ -312,7 +335,8 @@
                                         <div class="col-3">
 
                                             <div class="dropdown room-filter" id="room-filter">
-                                                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                                <button class="btn btn-primary dropdown-toggle" type="button"
+                                                        data-toggle="dropdown">
 
                                                     Выбрать сцену
 
@@ -323,7 +347,7 @@
                                                     <hr>
 
                                                     @foreach ($rooms as $room)
-                                                        <li ><a href="/views/room/{{ $room->id }}" >
+                                                        <li><a href="/views/room/{{ $room->id }}">
                                                                 <label style="background-color:{{ $room->style }}">&nbsp;&nbsp;&nbsp;</label>&nbsp;&nbsp;{{ $room->name }}
                                                             </a>
                                                         </li>
@@ -331,8 +355,10 @@
                                                 </ul>
                                             </div>
 
-                                            Left: <input type="text" class="form-control input-default col-sm-4" id="name_device" size="5">
-                                            Top: <input type="text" class="form-control input-default col-sm-4" id="name_device" size="5">
+                                            Left: <input type="text" class="form-control input-default col-sm-4"
+                                                         id="name_device" size="5">
+                                            Top: <input type="text" class="form-control input-default col-sm-4"
+                                                        id="name_device" size="5">
                                         </div>
                                     </div>
 
@@ -344,18 +370,16 @@
                     </div>
 
 
-
-
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
-                        <button type="button"   class="btn btn-primary" data-dismiss="modal"  onclick="new_device();" >Добавить</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="new_device();">
+                            Добавить
+                        </button>
 
                     </div>
                 </div>
             </div>
         </div>
-
-
 
 
         <!-- модальное окно добавления портов -->
@@ -370,7 +394,9 @@
                     <div class="modal-body">
                         <h5 class="m-t-30">333<span class="pull-right">85%</span></h5>
                         <div class="progress ">
-                            <div class="progress-bar bg-danger wow animated progress-animated" id="progress_ports" style="width: 1%; height:6px;" role="progressbar"> <span class="sr-only">60% Complete</span> </div>
+                            <div class="progress-bar bg-danger wow animated progress-animated" id="progress_ports"
+                                 style="width: 1%; height:6px;" role="progressbar"><span
+                                        class="sr-only">60% Complete</span></div>
                         </div>
                     </div>
 
