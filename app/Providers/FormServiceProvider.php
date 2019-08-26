@@ -40,7 +40,9 @@ class FormServiceProvider extends ServiceProvider
         \Form::component('bs_alert',
             self::PATH.'alert', ['name' => null, 'is_success' => true]);
         \Form::component('bs_radio',
-            self::PATH.'radio', ['name', 'label', 'values', 'checked' => null, 'attributes' => [], 'help' => null, 'col' => 3]);
+            self::PATH.'radio', ['name', 'label', 'values', 'checked_key' => null, 'attributes' => [], 'help' => null, 'col' => 3]);
+        \Form::component('bs_hidden',
+            self::PATH.'hidden', ['name', 'value' => '']);
         //
 //        \Form::component('bs_simple_text',
 //            self::PATH.'simple_text', ['label' => null, 'value' => null, 'name' => 'is_active', 'help' => null]);

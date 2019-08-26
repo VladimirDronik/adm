@@ -35,7 +35,9 @@
                         {{ Form::bs_alert() }}
                         {{ Form::bs_title('Тип элемента') }}
 
-                        {{ Form::bs_radio('type', 'Тип элемента*:', $types, null, ['required' => true]) }}
+                        {{ Form::bs_radio('type_name', 'Тип элемента*:', $types, $view->type_name, ['required' => true]) }}
+                        {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
+                        {{ Form::bs_text('description', 'Описание:') }}
 
                         {{ Form::bs_title('Текст и графика') }}
 
@@ -44,6 +46,36 @@
 
                         {{ Form::bs_text('off_title_top','Надпись при выключении:', null, [], 'Верхняя строка') }}
                         {{ Form::bs_text('off_title_bottom','', null, [], 'Нижняя строка') }}
+
+                        <div class="form-group row ">
+                            <label class="control-label text-right col-md-3 label-fix" for="off_title_top">
+                                Изображение при включении:
+                            </label>
+                            <div class="col-md-9">
+                                <p class="p-t-6">
+                                    <img src="{{ asset($view->on_image_path) }}"
+                                         width="40" height="40" id="img_on" style="background: gray;">
+                                    <button type="button" class="btn btn-default pull-right img_btn"
+                                            data-toggle="modal" data-target="#img_modal" onclick="changeViewImage('on')"> Выбрать</button>
+                                </p>
+                            </div>
+                        </div>
+                        {{ Form::bs_hidden('on_image', old('on_image',$view->on_image_path)) }}
+
+                        <div class="form-group row ">
+                            <label class="control-label text-right col-md-3 label-fix" for="off_title_top">
+                                Изображение при выключении:
+                            </label>
+                            <div class="col-md-9">
+                                <p class="p-t-6">
+                                    <img src="{{ asset($view->off_image_path) }}"
+                                         width="40" height="40" id="img_off" style="background: gray;">
+                                    <button type="button" class="btn btn-default pull-right img_btn"
+                                            data-toggle="modal" data-target="#img_modal" onclick="changeViewImage('off')"> Выбрать</button>
+                                </p>
+                            </div>
+                        </div>
+                        {{ Form::bs_hidden('off_image', old('off_image', $view->off_image_path)) }}
 
                         {{ Form::bs_title('Расположение') }}
 
@@ -59,8 +91,38 @@
             </div>
         </div>
     </div>
+    <div class="modal" id="img_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"> Выберите изображение</h4>
+                </div>
+                <div class="modal-body" style="background: gray;">
+                    @foreach($images as $image)
+                        <img src="{{ asset($image) }}" width="40" height="40" style="cursor: pointer;"
+                             onclick="setViewImage('{{$image}}');" data-dismiss="modal">&nbsp;&nbsp;&nbsp;
+                    @endforeach
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
-    <script src="/js/pagescripts/views.js"></script>
+    <script>
+        let image_id;
+        let url = '{{ asset('/') }}';
+
+        function setViewImage(image) {
+            $('#img_'+image_id).prop('src', url + image);
+            $('input[name='+image_id+'_image]').val(image);
+        }
+
+        function changeViewImage(id) {
+            image_id = id;
+        }
+    </script>
 @endsection

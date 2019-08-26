@@ -59,7 +59,7 @@ function setImage(linkToImage)
     //Добавляем картинку к новому помещению или подменяем картинку у старого
     if (sessionStorage.getItem('updateImage') === 'true') {
 
-        $("#imageRoom_"+idRoom).prop('src', '/images/rooms/' + linkToImage);
+        $("#imageRoom_"+idRoom).prop('src', 'ela/images/rooms/' + linkToImage);
 
         var dataarr = {};
 
@@ -70,7 +70,7 @@ function setImage(linkToImage)
 
     }
         else {
-            $("#image").prop('src', '/images/rooms/' + linkToImage);
+            $("#image").prop('src', 'ela/images/rooms/' + linkToImage);
         }
 
 

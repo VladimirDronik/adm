@@ -3,8 +3,10 @@
     <div class="col-md-{{ 12 - $col }}">
         <div class="btn-group-toggle" data-toggle="buttons">
             @foreach($values as $key => $value)
-                <label class="btn btn-success" >
-                    <input type="radio" name="{{ $name }}" autocomplete="off" value="{{ $key }}"> {{ $value }}
+                <label class="btn btn-success @if($key === $checked_key) active @endif">
+                    <input type="radio" name="{{ $name }}" autocomplete="off"
+                           @if($key === $checked_key) checked @endif
+                           value="{{ $key }}"> {{ $value }}
                 </label>
             @endforeach
         </div>

@@ -17,15 +17,23 @@ class ViewService {
         $view->on_title = $this->concatTitles($data, 'on');
         $view->off_title = $this->concatTitles($data, 'off');
 
-        $view->fill(collect($data)->only('type','scene','room','position_top','position_left')->toArray());
-
-        $view->name = '?';
-        $view->status = '?';
+        $view->type_name = trim($data['type_name']);
+        $view->type = $view->type_name === View::TYPE_NAME_TEMP || $view->type_name === View::TYPE_NAME_HUMIDITY
+            ? View::TYPE_TEMP : View::TYPE_ITEM;
+        $view->scene = $data['scene'] ?? null;
+        $view->position_top = (int)$data['position_top'];
+        $view->position_left = (int)$data['position_left'];
+        $view->room = (int)$data['room'];
+        $view->name = trim($data['name']);
+        $view->description = trim($data['description']);
+        $view->status = 'off';
         $view->active = 1;
-        $view->date = '?';
-        $view->sort = 1;
-        $view->items = '?';
-        $view->on_image = '?';
+        $view->date = ''; // todo
+        $view->items = ''; // todo
+        $view->sort = 0;
+        $view->value = null;
+        $view->on_image = basename($data['on_image']);
+        $view->off_image = basename($data['off_image']);
     }
 
     public function store(array $data)

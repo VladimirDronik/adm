@@ -11,6 +11,11 @@ class RoomRepository
         return Room::where('id','>',0)->orderBy('sort')->get();
     }
 
+    public function getAllToArray()
+    {
+        return [0 => Room::COMMON_NAME] + $this->getSpecialRooms()->pluck('name', 'id')->toArray();
+    }
+
     public function getRoomName($room_id, $rooms = null)
     {
         if ($room_id === '') {

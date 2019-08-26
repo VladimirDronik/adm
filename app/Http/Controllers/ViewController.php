@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\View\CreateRequest;
 use App\Http\Requests\View\UpdateRequest;
-use App\Models\Room;
 use App\Models\View;
 use App\Repositories\RoomRepository;
 use App\Repositories\SceneRepository;
@@ -33,7 +32,7 @@ class ViewController extends Controller
     public function getLists()
     {
         $types = View::getFullTypeNameIds();
-        $rooms = $this->room_rep->getAll()->pluck('name', 'id')->toArray();
+        $rooms = $this->room_rep->getAllToArray();
         $scenes = $this->scene_rep->getAll()->pluck('label', 'id')->toArray();
         $images = ImageService::getViewImages();
 
@@ -92,20 +91,4 @@ class ViewController extends Controller
 
         return back()->withInput($r->all())->with('error','Ошибка при изменении отображения');
     }
-
-    // todo refactoring
-    /**
-     * Выводит представления при выборе помещения в фильтре
-     *
-     * @param $name
-     */
-    public function getFilteredViews($idRoom)
-    {
-        $views = View::getViews($idRoom);
-        $currentRoom = Room::nameRoomFromId($idRoom);
-        $rooms = $this->room_rep->getAll();
-
-        return view('views.index', compact('views', 'rooms', 'currentRoom'));
-    }
-
 }

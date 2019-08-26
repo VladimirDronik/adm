@@ -104,12 +104,12 @@
                                 </td>
                                 <td scope="row">
                                     @if(!empty($view->on_image))
-                                        <img src="{{ asset($view->on_image_path) }}" width="25" height="25" style="fill: green;">
+                                        <img src="{{ asset($view->on_image_path) }}" width="25" height="25" style="fill: green; background-color: #e8e8e8;">
                                     @endif
                                 </td>
                                 <td scope="row">
                                     @if(!empty($view->off_image))
-                                        <img src="{{ asset($view->off_image_path) }}" width="25" height="25" style="fill: green;">
+                                        <img src="{{ asset($view->off_image_path) }}" width="25" height="25" style="fill: green; background-color: #e8e8e8;">
                                     @endif
                                 </td>
                                 <td scope="row">{{ $view->short_on_title }}</td>

@@ -72,7 +72,7 @@
                                     <a href="#" id="nameRoom_{{ $room->id }}" onclick="edit_name({{ $room->id }});"
                                        data-toggle="modal" data-target="#nameRoomModal" >{{ $room->name }}</a>
                                 </td>
-                                <td><img src="/images/rooms/{{ $room->image }}" id="imageRoom_{{ $room->id }}" class="imageRoom" data-toggle="modal" data-target="#selectImage"
+                                <td><img src="{{ asset('ela/images/rooms/'.$room->image) }}" id="imageRoom_{{ $room->id }}" class="imageRoom" data-toggle="modal" data-target="#selectImage"
                                          onclick="updateImage({{ $room->id }}, true);"></td>
                                 <td>
                                     <button style="background: {{ $room->style }}" id="colorRoom_{{ $room->id }}" class="btn btn-default"
@@ -116,7 +116,7 @@
 
                         Название помещения: <input type="text" class="form-control input-default col-sm-4" id="nameRoom" size="15"><br><br>
 
-                        Изображение: <img src="/images/rooms/noimage.png" id="image" style="background: black;"  >
+                        Изображение: <img src="{{ asset('ela/images/rooms/noimage.png') }}" id="image" style="background: black;"  >
 
                         <button data-toggle="modal" data-target="#selectImage"  class="btn btn-default m-b-10"
                         onclick="updateImage({{ $room->id }}, false);"> Выбрать</button><br><br>
@@ -146,19 +146,15 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-
                         <h4 class="modal-title"> Выбрать изображение</h4>
                     </div>
-                    
                     <div class="modal-body" style="background: black;" >
 
                         @foreach ($images as $image)
-                            <img src="/images/rooms/{{$image}}" style="cursor: pointer;" onclick="setImage('{{$image}}');"
+                            <img src="{{ asset('ela/images/rooms/'.$image) }}" style="cursor: pointer;" onclick="setImage('{{$image}}');"
                                  data-dismiss="modal">&nbsp;&nbsp;&nbsp;
                         @endforeach
                     </div>
-
-                    
                 </div>
             </div>
         </div>
@@ -230,8 +226,6 @@
                 </div>
             </div>
         </div>
-
-
 @endsection
 
 @section('scripts')
