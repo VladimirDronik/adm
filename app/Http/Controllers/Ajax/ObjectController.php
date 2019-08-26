@@ -4,15 +4,27 @@ namespace App\Http\Controllers\Ajax;
 
 use App\Models\HomeObject;
 use App\Models\Port;
+use App\Services\ObjectService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ObjectController extends Controller
 {
-    public function index()
-    {
+    private $service;
 
+    public function __construct(ObjectService $service)
+    {
+        $this->service = $service;
     }
+
+    public function delete(Request $r)
+    {
+        abort_if(!$r->ajax() || !$r->has('id'), 400);
+
+        return response()->json(['result' => (bool)$this->service->delete((int)$r->id)]);
+    }
+
+    // todo refactoring below
 
     /**
      * Загрузка объектов в модальное окно

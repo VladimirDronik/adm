@@ -36,7 +36,7 @@
                         {{ Form::bs_alert() }}
                         {{ Form::bs_title('Тип элемента') }}
 
-                        {{ Form::bs_radio('type_name', 'Тип элемента*:', $types, $view->type_name, ['required' => true]) }}
+                        {{ Form::bs_radio('type_name', 'Тип элемента*:', $types, old('type_name', $view->type_name), ['required' => true]) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
                         {{ Form::bs_text('description', 'Описание:') }}
 
@@ -48,35 +48,8 @@
                         {{ Form::bs_text('off_title_top','Надпись при выключении:', null, [], 'Верхняя строка') }}
                         {{ Form::bs_text('off_title_bottom','', null, [], 'Нижняя строка') }}
 
-                        <div class="form-group row ">
-                            <label class="control-label text-right col-md-3 label-fix" for="off_title_top">
-                                Изображение при включении:
-                            </label>
-                            <div class="col-md-9">
-                                <p class="p-t-6">
-                                    <img src="{{ asset($view->on_image_path) }}"
-                                         width="40" height="40" id="img_on" style="background: gray;">
-                                    <button type="button" class="btn btn-default pull-right img_btn"
-                                            data-toggle="modal" data-target="#img_modal" onclick="changeViewImage('on')"> Выбрать</button>
-                                </p>
-                            </div>
-                        </div>
-                        {{ Form::bs_hidden('on_image', old('on_image',$view->on_image_path)) }}
-
-                        <div class="form-group row ">
-                            <label class="control-label text-right col-md-3 label-fix" for="off_title_top">
-                                Изображение при выключении:
-                            </label>
-                            <div class="col-md-9">
-                                <p class="p-t-6">
-                                    <img src="{{ asset($view->off_image_path) }}"
-                                         width="40" height="40" id="img_off" style="background: gray;">
-                                    <button type="button" class="btn btn-default pull-right img_btn"
-                                            data-toggle="modal" data-target="#img_modal" onclick="changeViewImage('off')"> Выбрать</button>
-                                </p>
-                            </div>
-                        </div>
-                        {{ Form::bs_hidden('off_image', old('off_image', $view->off_image_path)) }}
+                        {{ Form::bs_image('on','Изображение при включении:', old('on_image',$view->on_image_path)) }}
+                        {{ Form::bs_image('off','Изображение при выключении:', old('off_image', $view->off_image_path)) }}
 
                         {{ Form::bs_title('Расположение') }}
 

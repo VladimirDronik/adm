@@ -68,6 +68,7 @@
                     <table class="table">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 @if ($filter_room!= '')
                                     <th>Сорт</th>
                                 @endif
@@ -88,13 +89,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach ($views as $view)
+                        @foreach($views as $view)
                             <tr id="tr{{$view->id}}">
+                                <td>{{ $view->id }}</td>
                                 @if($filter_room!= '')
                                     <td scope="row">{{ $view->sort }}</td>
                                 @endif
                                 <td>{{ $view->rus_type_name }}</td>
-                                <td><a href="#" title="{{ $view->description }}">{{ $view->name }}</a></td>
+                                <td><a href="{{ route('views.edit',[$view->id]) }}" title="{{ $view->description }}">{{ $view->name }}</a></td>
                                 <td>
                                     @if($view->status === 'on')
                                         <span class="badge badge-success">{{ $view->status }}</span>
@@ -137,6 +139,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
+                                <th>ID</th>
                                 @if ($filter_room != '')
                                     <th>Сорт</th>
                                 @endif
@@ -193,9 +196,6 @@
                           } else {
                               showErrorModal('Ошибка при удалении отображения');
                           }
-                      },
-                      error: function() {
-                          showErrorModal('Сервер временно недоступен');
                       }
                   });
               }

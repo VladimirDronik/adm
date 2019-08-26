@@ -12,6 +12,57 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View query()
  * @mixin \Eloquent
+ * @property int $id
+ * @property string $type i=item, s=setting, e=event,  t=temp
+ * @property string $type_name тип элемента: button, switch, temp, humidity, info
+ * @property string $name Название элемента на русском языке
+ * @property string $description описание элемнта на русском языке
+ * @property string $status
+ * @property string $on_image
+ * @property string|null $off_image
+ * @property float|null $value
+ * @property string|null $on_title
+ * @property string|null $off_title
+ * @property string $items
+ * @property string $date
+ * @property int|null $position_left
+ * @property int|null $position_top
+ * @property int|null $room
+ * @property int|null $scene
+ * @property int $sort
+ * @property bool $active
+ * @property-read \App\Models\Room|null $eroom
+ * @property-read \App\Models\Scene|null $escene
+ * @property-read mixed $is_active
+ * @property-read mixed $off_image_path
+ * @property-read mixed $off_title_bottom
+ * @property-read mixed $off_title_top
+ * @property-read mixed $on_image_path
+ * @property-read mixed $on_title_bottom
+ * @property-read mixed $on_title_top
+ * @property-read mixed $room_name
+ * @property-read mixed $rus_type_name
+ * @property-read mixed $short_off_title
+ * @property-read mixed $short_on_title
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereItems($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereOffImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereOffTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereOnImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereOnTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View wherePositionLeft($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View wherePositionTop($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereRoom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereScene($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereSort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereTypeName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereValue($value)
  */
 class View extends Model
 {
@@ -48,17 +99,6 @@ class View extends Model
 
     public static function getTypeNameById($id) {
         return self::getFullTypeNameIds()[$id] ?? '';
-    }
-
-    // todo refactoring
-    /**
-     * Вывод отображений с фильтром по номеру помещения
-     *
-     * @param $idRoom id помещения для вывода отображений в этом помещении
-     */
-    public static function getViews($idRoom)
-    {
-        return View::where('room','=',$idRoom)->orderBy('sort')->get();
     }
 
     /* attributes */
@@ -106,12 +146,12 @@ class View extends Model
 
     public function getShortOnTitleAttribute()
     {
-        return str_replace('<br>','|',$this->on_title);
+        return str_replace('<br>',' | ',$this->on_title);
     }
 
     public function getShortOffTitleAttribute()
     {
-        return str_replace('<br>','|',$this->off_title);
+        return str_replace('<br>',' | ',$this->off_title);
     }
 
     public function getRusTypeNameAttribute()

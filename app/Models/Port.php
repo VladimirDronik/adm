@@ -11,6 +11,28 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port query()
  * @mixin \Eloquent
+ * @property int $id
+ * @property int $id_device id девайса из таблицы devices
+ * @property int $num_port номер порта меги
+ * @property string $status статус порта in, out, ds, nc, 1w
+ * @property string|null $easy выполнение простого действия (например переключение порта). В значениях указываем id порта из этой таблицы  !!!
+ * @property int|null $object id объекта
+ * @property int|null $method id метода объекта
+ * @property int|null $script выполнение скрипта из таблицы скриптов
+ * @property int $longclick Разрешаем долгое нажатие
+ * @property int $doubleclick Разрешаем двойное нажатие
+ * @property string $comment комментарий к порту
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereDoubleclick($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereEasy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereIdDevice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereLongclick($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereNumPort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereObject($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereScript($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereStatus($value)
  */
 class Port extends Model
 {

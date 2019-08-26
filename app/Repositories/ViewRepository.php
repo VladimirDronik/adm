@@ -11,6 +11,14 @@ class ViewRepository {
         return View::with('eroom','escene')->orderBy('id')->get();
     }
 
+    public function getAllToArray()
+    {
+        $views = View::select('id','name')->orderBy('name')->pluck('name', 'id')->toArray();
+        array_walk($views, function (&$view, $key) { $view = $key.' - '.$view; });
+
+        return $views;
+    }
+
     public function getByRoom($room_id, $pagination_count = 5)
     {
         $query = View::with('eroom','escene');

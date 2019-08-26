@@ -11,6 +11,20 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Devtype newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Devtype query()
  * @mixin \Eloquent
+ * @property int $id
+ * @property string $name
+ * @property int $start_in
+ * @property int $end_in
+ * @property int $start_out
+ * @property string $end_out
+ * @property int $total_ports
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevType whereEndIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevType whereEndOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevType whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevType whereStartIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevType whereStartOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevType whereTotalPorts($value)
  */
 class DevType extends Model
 {

@@ -19,11 +19,11 @@ class ViewController extends Controller
     private $scene_rep;
     private $service;
 
-    public function __construct(ViewRepository $view_repository, RoomRepository $room_repository, SceneRepository $scene_rep,
+    public function __construct(ViewRepository $view_rep, RoomRepository $room_rep, SceneRepository $scene_rep,
                                 ViewService $service)
     {
-        $this->view_rep = $view_repository;
-        $this->room_rep = $room_repository;
+        $this->view_rep = $view_rep;
+        $this->room_rep = $room_rep;
         $this->scene_rep = $scene_rep;
 
         $this->service = $service;

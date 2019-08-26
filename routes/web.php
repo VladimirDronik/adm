@@ -7,22 +7,22 @@ Route::group(['middleware' => ['auth']], function () {
     Route::redirect('/','home');
     Route::get('home', 'HomeController@index')->name('home');
 
+    Route::resource('views', 'ViewController')->except('show','destroy');
+    Route::resource('objects', 'ObjectController')->except('show','destroy');
+
     Route::get('devices', 'DeviceController@index');
-    Route::get('objects', 'ObjectController@index');
     Route::get('devices/select/{id_device}', 'DeviceController@select')->name('id_device');
     Route::get('rooms', 'RoomController@index');
 
-    Route::resource('views', 'ViewController')->except('show');
-
     Route::group(['namespace' => 'Ajax'], function () {
 
-        // Views
         Route::post('views/delete', 'ViewController@delete')->name('ajax.views.delete');
         Route::post('views/active', 'ViewController@active')->name('ajax.views.active');
 
-        //Objects
-        Route::post('getobject', 'ObjectController@load_to_port');
-        Route::post('add_object_to_port', 'ObjectController@add_to_port');
+        Route::post('objects/delete', 'ObjectController@delete')->name('ajax.objects.delete');
+
+        Route::post('getobject', 'ObjectController@load_to_port');  // todo check
+        Route::post('add_object_to_port', 'ObjectController@add_to_port');  // todo check
 
         //Ports
         Route::post('getmethod', 'PortController@load_method');
