@@ -17,6 +17,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::group(['namespace' => 'Ajax'], function () {
 
+        Route::post('devices/delete', 'DeviceController@delete')->name('ajax.devices.delete');
+
         Route::post('views/delete', 'ViewController@delete')->name('ajax.views.delete');
         Route::post('views/active', 'ViewController@active')->name('ajax.views.active');
 
@@ -37,7 +39,6 @@ Route::group(['middleware' => ['auth']], function () {
         //Devices
         Route::post('savedevicesettings', 'DeviceController@save_device_settings');
         Route::post('newdevice', 'DeviceController@newdevice');
-        Route::post('deletedevice', 'DeviceController@deletedevice');
 
         //Rooms
         Route::post('rooms/addRoom', 'RoomController@addRoom');

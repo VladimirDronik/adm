@@ -41,8 +41,7 @@ class DeviceController extends Controller
                 return redirect()->route('devices.edit',[$id])->with('success', 'Устройство успешно добавлено');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении устройства '
-                .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при добавлении устройства ' .json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении устройства');
@@ -54,19 +53,11 @@ class DeviceController extends Controller
      * @param int $id - ид устройсва, коотрое выбираем
      * @return void
      */
-    public function edit($id)
+    public function edit(int $id)
     {
-        //получение инормации об устройстве по овыбранному id
-        $device = Device::where('id', $id)->first();
+        $device = Device::where('id', $id)->with('ports','ports.eobject','ports.escript')->first();
 
-        //получение портов устройства и связанных с ними свойств
-        $ports = Port::select('*', 'ports.id AS id', 'ports.status AS type', 'objects.name AS nameobj', 'scripts.name AS namescript')
-            ->leftjoin('objects', 'objects.id', '=', 'ports.object')
-            ->leftjoin('scripts', 'scripts.id', '=', 'ports.script')
-            ->orderBy('num_port', 'ASC')
-            ->where('id_device', $id)->get();
-
-        return view('devices.edit', ['device' => $device, 'ports' => $ports]);
+        return view('devices.edit', compact('device'));
     }
 
 }

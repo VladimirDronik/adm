@@ -37,8 +37,10 @@ class DeviceService {
     public function storeDevice($data)
     {
         $this->device = new Device();
+
         $this->device->fill($data);
         $this->device->active = 0;
+
         $this->device->save();
     }
 

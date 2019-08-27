@@ -34,6 +34,11 @@ class Device extends Model
         return $this->belongsTo(DevType::class, 'type', 'id');
     }
 
+    public function ports()
+    {
+        return $this->hasMany(Port::class, 'id_device', 'id')->orderBy('num_port');
+    }
+
     // todo
     /**
      * Сохранение настроек контроллера
@@ -45,19 +50,5 @@ class Device extends Model
     static public function save_device_settings($id, $description, $ip_address)
     {
         Device::where('id', $id)->update(['description' => $description, 'ip_address' => $ip_address]);
-    }
-
-    /**
-     * Добавление нового устройства
-     *
-     * @param int type
-     * @param string description
-     * @param string ip_address
-     */
-    static public function newdevice($type, $description, $ip_address)
-    {
-       $lastid =  Device::insertGetId(['type' => $type, 'description' => $description,  'active' => 0, 'ip_address' => $ip_address]);
-
-       return $lastid;
     }
 }

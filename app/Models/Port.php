@@ -38,6 +38,25 @@ class Port extends Model
 {
     public $timestamps = false;
 
+    /* relations */
+
+    public function device()
+    {
+        return $this->belongsTo(Device::class, 'id_device', 'id');
+    }
+
+    public function eobject()
+    {
+        return $this->belongsTo(HomeObject::class, 'object', 'id');
+    }
+
+    public function escript()
+    {
+        return $this->belongsTo(Script::class, 'script', 'id');
+    }
+
+    // todo
+
     /**
      * Добавление объекта к порту
      *
