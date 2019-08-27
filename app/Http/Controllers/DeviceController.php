@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Device\CreateRequest;
 use App\Models\Device;
 use App\Models\Port;
 use App\Repositories\DeviceRepository;
@@ -24,6 +25,27 @@ class DeviceController extends Controller
         $devices = $this->device_rep->getByName();
 
         return view('devices.index', compact('devices'));
+    }
+
+    public function create()
+    {
+        $devtypes = $this->device_rep->getDevTypesToArray();
+
+        return view('devices.create', compact('devtypes'));
+    }
+
+    public function store(CreateRequest $r)
+    {
+        try {
+            if ($id = $this->service->store($r->except('_token'))) {
+                return redirect()->route('devices.edit',[$id])->with('success', 'Устройство успешно добавлено');
+            }
+        } catch (\Throwable $e) {
+            \Log::error('Ошибка при добавлении устройства '
+                .json_encode($r->all()).' '.$e->getMessage());
+        }
+
+        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении устройства');
     }
 
     /**

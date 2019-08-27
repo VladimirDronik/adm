@@ -3,38 +3,69 @@
 namespace App\Services;
 
 use App\Models\Device;
-use App\Models\HomeObject;
+use App\Models\Port;
+use Illuminate\Support\Facades\DB;
 
 class DeviceService {
+
+    private $device;
 
     public function delete(int $id)
     {
         return Device::destroy($id);
     }
 
-    // todo
-    public function prepareObject(HomeObject $object, array $data)
+    public function storePorts()
     {
-        $object->type = trim($data['type']);
-        $object->name = trim($data['name']);
-        $object->view = $data['view'] ?? null;
-        $object->status = 'off';
+        $ports = [];
+        $devtype = $this->device->devtype;
+
+        foreach (['in','out'] as $status) {
+            for ($num_port = $devtype->{'start_' . $status}; $num_port <= $devtype->{'end_' . $status}; $num_port++) {
+                $ports[] = [
+                    'id_device' => $this->device->id,
+                    'num_port' => $num_port,
+                    'status' => $status,
+                    'comment' => ''
+                ];
+            }
+        }
+
+        Port::insert($ports);
+    }
+
+    public function storeDevice($data)
+    {
+        $this->device = new Device();
+        $this->device->fill($data);
+        $this->device->active = 0;
+        $this->device->save();
     }
 
     public function store(array $data)
     {
-        $object = new HomeObject();
-        $this->prepareObject($object, $data);
-        $object->save();
+        DB::beginTransaction();
 
-        return $object->id;
+        try {
+
+            $this->storeDevice($data);
+            $this->storePorts();
+
+            DB::commit();
+
+            return $this->device->id;
+
+        } catch (\Throwable $e) {
+            DB::rollback();
+            throw $e;
+        }
     }
 
-    public function update(HomeObject $object, array $data)
+    public function update(Device $device, array $data)
     {
-        $this->prepareObject($object, $data);
-        $object->save();
+        $device->fill($data);
+        $device->save();
 
-        return $object->id;
+        return $device->id;
     }
 }

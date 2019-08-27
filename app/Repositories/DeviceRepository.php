@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Device;
+use App\Models\DevType;
 
 class DeviceRepository {
 
@@ -15,5 +16,10 @@ class DeviceRepository {
         }
 
         return $query->orderBy('id')->paginate($pagination_count);
+    }
+
+    public function getDevTypesToArray()
+    {
+        return DevType::orderBy('id')->pluck('name','id')->toArray();
     }
 }
