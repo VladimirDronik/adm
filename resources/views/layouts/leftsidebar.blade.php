@@ -8,7 +8,7 @@
                 <li class="nav-devider"></li>
                 <li class="nav-label">Модель</li>
                 <li>
-                    <a class="has-arrow" href="/devices" aria-expanded="false">
+                    <a class="has-arrow" href="{{ route('devices.index') }}" aria-expanded="false">
                         <i class="fa fa-suitcase"></i>
                         <span class="hide-menu">Устройства</span>
                     </a>
@@ -19,7 +19,7 @@
                         <span class="hide-menu">Объекты</span></a>
                 </li>
                 <li>
-                    <a class="has-arrow" href="/rooms" aria-expanded="false">
+                    <a class="has-arrow" href="{{ route('rooms.index') }}" aria-expanded="false">
                         <i class="fa fa-wpforms"></i><span class="hide-menu">Помещения</span></a>
                 </li>
                 <li>
@@ -27,10 +27,10 @@
                         <i class="fa fa-table"></i><span class="hide-menu">Отображения</span></a>
                 </li>
                 <li>
-                    <a class="has-arrow" href="/" aria-expanded="false">
+                    <a class="has-arrow" href="{{ route('scenes.index') }}" aria-expanded="false">
                         <i class="fa fa-table"></i><span class="hide-menu">Сцены</span></a>
                 </li>
-                <li> <a class="has-arrow" href="/" aria-expanded="false">
+                <li> <a class="has-arrow" href="{{ route('termostats.index') }}" aria-expanded="false">
                         <i class="fa fa-table"></i><span class="hide-menu">Термостаты</span></a>
                 </li>
 

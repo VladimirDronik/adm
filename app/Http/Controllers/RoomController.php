@@ -14,6 +14,6 @@ class RoomController extends Controller
         $colors = Room::getAllColors();
         $images = ImageService::getRoomImages();
 
-        return view('rooms', compact('rooms', 'colors', 'images'));
+        return view('rooms.index', compact('rooms', 'colors', 'images'));
     }
 }

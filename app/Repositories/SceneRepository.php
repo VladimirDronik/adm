@@ -8,6 +8,6 @@ class SceneRepository {
 
     public function getAll()
     {
-        return Scene::orderBy('sort', 'ASC')->get();
+        return Scene::orderBy('sort')->get();
     }
 }

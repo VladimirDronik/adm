@@ -4,16 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Models\Device;
 use App\Models\Port;
+use App\Repositories\DeviceRepository;
+use App\Services\DeviceService;
 use Illuminate\Http\Request;
 
 class DeviceController extends Controller
 {
+    private $device_rep;
+    private $service;
+
+    public function __construct(DeviceRepository $device_rep, DeviceService $service)
+    {
+        $this->device_rep = $device_rep;
+        $this->service = $service;
+    }
+
     public function index()
     {
-        $devices = Device::select('devices.*', 'devtypes.name AS type')
-            ->join('devtypes', 'devtypes.id', '=', 'devices.type')->get();
+        $devices = $this->device_rep->getByName();
 
-        return view('devices', ['devices' => $devices]);
+        return view('devices.index', compact('devices'));
     }
 
     /**
@@ -22,7 +32,7 @@ class DeviceController extends Controller
      * @param int $id - ид устройсва, коотрое выбираем
      * @return void
      */
-    public function select($id)
+    public function edit($id)
     {
         //получение инормации об устройстве по овыбранному id
         $device = Device::where('id', $id)->first();
@@ -34,7 +44,7 @@ class DeviceController extends Controller
             ->orderBy('num_port', 'ASC')
             ->where('id_device', $id)->get();
 
-        return view('device', ['device' => $device, 'ports' => $ports]);
+        return view('devices.edit', ['device' => $device, 'ports' => $ports]);
     }
 
 }

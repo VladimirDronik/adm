@@ -10,9 +10,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('views', 'ViewController')->except('show','destroy');
     Route::resource('objects', 'ObjectController')->except('show','destroy');
 
-    Route::get('devices', 'DeviceController@index');
-    Route::get('devices/select/{id_device}', 'DeviceController@select')->name('id_device');
-    Route::get('rooms', 'RoomController@index');
+    Route::resource('devices', 'DeviceController')->except('show','destroy');
+    Route::resource('rooms', 'RoomController')->except('show','destroy');
+    Route::resource('scenes', 'SceneController')->except('show','destroy');
+    Route::resource('termostats', 'TermostatController')->except('show','destroy');
 
     Route::group(['namespace' => 'Ajax'], function () {
 

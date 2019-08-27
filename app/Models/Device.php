@@ -26,6 +26,14 @@ class Device extends Model
 {
     public $timestamps = false;
 
+    /* relations */
+
+    public function devtype()
+    {
+        return $this->belongsTo(DevType::class, 'type', 'id');
+    }
+
+    // todo
     /**
      * Сохранение настроек контроллера
      *
