@@ -1,17 +1,8 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-    <div class="row page-titles">
-        <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Добавление отображения</h3> </div>
-        <div class="col-md-7 align-self-center">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('views.index') }}">Отображения</a></li>
-                <li class="breadcrumb-item active">Добавление</li>
-            </ol>
-        </div>
-    </div>
+    @includeIf('components.breadcrumbs',
+       ['title' => 'Добавление отображения', 'links' => [ route('views.index') => 'Отображения']])
 @endsection
 
 @section('content')

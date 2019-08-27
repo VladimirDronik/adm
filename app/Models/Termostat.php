@@ -50,4 +50,16 @@ class Termostat extends Model
 {
     protected $table = 'termostats';
     public $timestamps = false;
+
+    /* relations */
+
+    public function eobject()
+    {
+        return $this->belongsTo(HomeObject::class, 'object', 'id');
+    }
+
+    public function eroom()
+    {
+        return $this->belongsTo(Room::class, 'room', 'id');
+    }
 }

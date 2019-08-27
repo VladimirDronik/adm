@@ -6,29 +6,28 @@ use App\Http\Requests\Object\CreateRequest;
 use App\Http\Requests\Object\UpdateRequest;
 use App\Models\HomeObject;
 use App\Repositories\ObjectRepository;
+use App\Repositories\SceneRepository;
 use App\Repositories\ViewRepository;
 use App\Services\ObjectService;
+use App\Services\SceneService;
 use Illuminate\Http\Request;
 
 class SceneController extends Controller
 {
-    private $object_rep;
-    private $view_rep;
+    private $scene_rep;
     private $service;
 
-    public function __construct(ObjectRepository $object_rep, ViewRepository $view_rep, ObjectService $service)
+    public function __construct(SceneRepository $scene_rep, SceneService $service)
     {
-        $this->object_rep = $object_rep;
-        $this->view_rep = $view_rep;
+        $this->scene_rep = $scene_rep;
         $this->service = $service;
     }
 
-    public function index(Request $r)
+    public function index()
     {
-        $filter_name = $r->input('name', '');
-        $objects = $this->object_rep->getByName($filter_name);
+        $scenes = $this->scene_rep->getAll();
 
-        return view('objects.index', compact('objects','filter_name'));
+        return view('scenes.index', compact('scenes'));
     }
 
     public function create()

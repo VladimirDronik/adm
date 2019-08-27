@@ -1,21 +1,14 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-    <div class="row page-titles">
-        <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Отображения</h3></div>
-        <div class="col-md-7 align-self-center">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
-                @if ($filter_room == '')
-                    <li class="breadcrumb-item active">Отображения</li>
-                @else
-                    <li class="breadcrumb-item"><a href="{{ route('views.index') }}">Отображения</a></li>
-                    <li class="breadcrumb-item active">{{$filter_room_name}}</li>
-                @endif
-            </ol>
-        </div>
-    </div>
+    @if ($filter_room == '')
+        @include('components.breadcrumbs', ['title' => 'Отображения'])
+    @else
+        @includeIf('components.breadcrumbs',
+           ['title' => 'Отображения',
+            'links' => [ route('views.index') => 'Отображения'],
+            'last_link' => $filter_room_name])
+    @endif
 @endsection
 
 @section('content')

@@ -5,30 +5,26 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Object\CreateRequest;
 use App\Http\Requests\Object\UpdateRequest;
 use App\Models\HomeObject;
-use App\Repositories\ObjectRepository;
-use App\Repositories\ViewRepository;
-use App\Services\ObjectService;
+use App\Repositories\TermostatRepository;
+use App\Services\TermostatService;
 use Illuminate\Http\Request;
 
 class TermostatController extends Controller
 {
-    private $object_rep;
-    private $view_rep;
+    private $termostat_rep;
     private $service;
 
-    public function __construct(ObjectRepository $object_rep, ViewRepository $view_rep, ObjectService $service)
+    public function __construct(TermostatRepository $termostat_rep, TermostatService $service)
     {
-        $this->object_rep = $object_rep;
-        $this->view_rep = $view_rep;
+        $this->termostat_rep = $termostat_rep;
         $this->service = $service;
     }
 
-    public function index(Request $r)
+    public function index()
     {
-        $filter_name = $r->input('name', '');
-        $objects = $this->object_rep->getByName($filter_name);
+        $termostats = $this->termostat_rep->getAll();
 
-        return view('objects.index', compact('objects','filter_name'));
+        return view('termostats.index', compact('termostats'));
     }
 
     public function create()

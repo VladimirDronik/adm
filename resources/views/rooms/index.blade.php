@@ -1,16 +1,7 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-        <div class="row page-titles">
-            <div class="col-md-5 align-self-center">
-                <h3 class="text-primary">Помещения</h3> </div>
-            <div class="col-md-7 align-self-center">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
-                    <li class="breadcrumb-item active">Помещения</li>
-                </ol>
-            </div>
-        </div>
+    @includeIf('components.breadcrumbs', ['title' => 'Помещения'])
 @endsection
 
 @section('content')
@@ -26,9 +17,7 @@
             </div>
         </div>
         <div class="card">
-            <div class="card-title">
-                <h4>Помещения</h4>
-            </div>
+            <div class="card-title"><h4>Помещения</h4></div>
             <div class="card-body">
                 @if(count($rooms))
                 <div class="table-responsive">

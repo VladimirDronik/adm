@@ -1,16 +1,7 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-        <div class="row page-titles">
-            <div class="col-md-5 align-self-center">
-                <h3 class="text-primary">Объекты</h3></div>
-            <div class="col-md-7 align-self-center">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
-                    <li class="breadcrumb-item active">Объекты</li>
-                </ol>
-            </div>
-        </div>
+    @includeIf('components.breadcrumbs', ['title' => 'Объекты'])
 @endsection
 
 @section('content')
@@ -53,7 +44,7 @@
                             <tbody>
                                 @foreach($objects as $object)
                                     <tr id="tr{{$object->id}}">
-                                        <th scope="row">{{ $object->id }}</th>
+                                        <td scope="row">{{ $object->id }}</td>
                                         <td><a href="{{ route('objects.edit',[$object->id]) }}">{{ $object->name }}</a></td>
                                         <td>{{ $object->rus_type }}</td>
                                         <td>

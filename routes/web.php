@@ -21,6 +21,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('views/active', 'ViewController@active')->name('ajax.views.active');
 
         Route::post('objects/delete', 'ObjectController@delete')->name('ajax.objects.delete');
+        Route::post('scenes/delete', 'SceneController@delete')->name('ajax.scenes.delete');
+        Route::post('termostats/delete', 'TermostatController@delete')->name('ajax.termostats.delete');
 
         Route::post('getobject', 'ObjectController@load_to_port');  // todo check
         Route::post('add_object_to_port', 'ObjectController@add_to_port');  // todo check
