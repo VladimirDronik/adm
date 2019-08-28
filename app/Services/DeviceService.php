@@ -63,11 +63,21 @@ class DeviceService {
         }
     }
 
-    public function update(Device $device, array $data)
+    public function update(array $data)
     {
-        $device->fill($data);
+        // todo validate data
+
+        $device = Device::find($data['id']);
+
+        if (!$device) {
+            return false;
+        }
+
+        $device->description = trim($data['description']);
+        $device->ip_address = trim($data['ip_address']);
+
         $device->save();
 
-        return $device->id;
+        return true;
     }
 }

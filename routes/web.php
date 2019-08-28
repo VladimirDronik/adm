@@ -15,16 +15,20 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('scenes', 'SceneController')->except('show','destroy');
     Route::resource('termostats', 'TermostatController')->except('show','destroy');
 
-    Route::group(['namespace' => 'Ajax'], function () {
+    Route::group(['namespace' => 'Ajax', 'as' => 'ajax.'], function () {
 
-        Route::post('devices/delete', 'DeviceController@delete')->name('ajax.devices.delete');
+        Route::group(['prefix' => 'devices', 'as' => 'devices.'], function () {
+            Route::post('delete', 'DeviceController@delete')->name('delete');
+            Route::post('update', 'DeviceController@update')->name('update');
+            Route::post('ports/update', 'DeviceController@updatePort')->name('ports.update');
+        });
 
-        Route::post('views/delete', 'ViewController@delete')->name('ajax.views.delete');
-        Route::post('views/active', 'ViewController@active')->name('ajax.views.active');
+        Route::post('views/delete', 'ViewController@delete')->name('views.delete');
+        Route::post('views/active', 'ViewController@active')->name('views.active');
 
-        Route::post('objects/delete', 'ObjectController@delete')->name('ajax.objects.delete');
-        Route::post('scenes/delete', 'SceneController@delete')->name('ajax.scenes.delete');
-        Route::post('termostats/delete', 'TermostatController@delete')->name('ajax.termostats.delete');
+        Route::post('objects/delete', 'ObjectController@delete')->name('objects.delete');
+        Route::post('scenes/delete', 'SceneController@delete')->name('scenes.delete');
+        Route::post('termostats/delete', 'TermostatController@delete')->name('termostats.delete');
 
         Route::post('getobject', 'ObjectController@load_to_port');  // todo check
         Route::post('add_object_to_port', 'ObjectController@add_to_port');  // todo check
@@ -34,11 +38,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('loaddata', 'PortController@load_data');
         Route::post('savemethod', 'PortController@save_method');
         Route::post('savenameport', 'PortController@save_name_port');
-        Route::post('addports', 'PortController@add_ports');
-
-        //Devices
-        Route::post('savedevicesettings', 'DeviceController@save_device_settings');
-        Route::post('newdevice', 'DeviceController@newdevice');
 
         //Rooms
         Route::post('rooms/addRoom', 'RoomController@addRoom');

@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Ajax;
 
 use App\Services\DeviceService;
 use Illuminate\Http\Request;
-use App\Models\Device;
-use App\Models\Devtype;
 use App\Http\Controllers\Controller;
 
 class DeviceController extends Controller
@@ -19,19 +17,16 @@ class DeviceController extends Controller
 
     public function delete(Request $r)
     {
-        abort_if(!$r->ajax() || !$r->has('id'), 400);
+        abort_if(!ajaxHas($r, ['id']), 400);
 
         return response()->json(['result' => (bool)$this->service->delete((int)$r->id)]);
     }
 
-    // todo refactoring below
-    /**
-     * Сохранение настроек контроллера
-     *
-     */
-    public function save_device_settings()
+    public function update(Request $r)
     {
-        Device::save_device_settings($_POST['id_device'], $_POST['description'], $_POST['ip_device']);
+        abort_if(!ajaxHas($r, ['id','description','ip_address']), 400);
+
+        return response()->json(['result' => $this->service->update($r->all())]);
     }
 }
 

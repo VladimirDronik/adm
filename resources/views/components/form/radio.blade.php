@@ -5,7 +5,7 @@
             @foreach($values as $key => $value)
                 <label class="btn btn-success @if($key == $checked_key) active @endif">
                     <input type="radio" name="{{ $name }}" autocomplete="off"
-                           @if($key === $checked_key) checked @endif
+                           @if($key == $checked_key) checked @endif
                            value="{{ $key }}"> {{ $value }}
                 </label>
             @endforeach

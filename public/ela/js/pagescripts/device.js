@@ -135,24 +135,6 @@ function no_name() {
     $("#name_modal_data").val('Без названия');
 }
 
-//Сохранение настроек устройства
-function save_device_settings() {
-    var description = $("#descr_device").val().trim();
-    var ip_device = $("#ip_device").val().trim();
-
-    if (description === '' || ip_device === '') {
-        return false;
-    }
-
-    var data = {};
-
-    data['id_device'] = $("#id_device").val();
-    data['description'] = description;
-    data['ip_device'] = ip_device;
-
-    ajax_html(data, '/savedevicesettings', '');
-}
-
 // Модальное окно с действиями - выбор действия
 $('input[type=radio][name=typedev]').change(function(){
     sessionStorage.setItem('typedev', this.value);

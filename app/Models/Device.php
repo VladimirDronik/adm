@@ -38,17 +38,4 @@ class Device extends Model
     {
         return $this->hasMany(Port::class, 'id_device', 'id')->orderBy('num_port');
     }
-
-    // todo
-    /**
-     * Сохранение настроек контроллера
-     *
-     * @param int id
-     * @param string description
-     * @param string ip_address
-     */
-    static public function save_device_settings($id, $description, $ip_address)
-    {
-        Device::where('id', $id)->update(['description' => $description, 'ip_address' => $ip_address]);
-    }
 }

@@ -21,12 +21,12 @@
         </div>
         <div class="card">
             <div class="card-body">
-                Название: <input name="description" id="descr_device" value="{{ $device->description}}" size="15">
-                ip адрес: <input name="ip_address" id="ip_device" value="{{ $device->ip_address }}" size="15">
+                Название: <input name="description" value="{{ $device->description}}" size="15">
+                ip адрес: <input name="ip_address" value="{{ $device->ip_address }}" size="15">
                 <input type="hidden" id="id_device" value="{{ $device->id }}">
-                Тип: <span class="text-capitalize">{{ $device->devtype->name }}</span>
-                <button type="button" class="btn btn-success m-b-10 m-l-5" data-toggle="modal" data-target="#device-settings-Modal">Сохранить</button>
-                <button type="button" class="btn btn-danger m-b-10 m-l-5 pull-right"  data-toggle="modal" data-target="#delete-device-Modal">Удалить устройство</button>
+                Тип: <span class="text-capitalize">{{ optional($device->devtype)->name }}</span>
+                <button type="button" class="btn btn-success m-b-10 m-l-5" data-toggle="modal" data-target="#device_modal">Сохранить</button>
+                <button type="button" class="btn btn-danger m-b-10 m-l-5 pull-right"  data-toggle="modal" data-target="#delete_modal">Удалить устройство</button>
             </div>
         </div>
         <div class="card">
@@ -83,14 +83,14 @@
                                     @elseif(optional($port->eobject)->name != '' && $port->status !== 'out')
                                         <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-warning  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('method', {{ $port->id }}, '{{ optional($port->eobject)->name }}');"><b><< Выполнять действие объекта</b></button>
                                     @elseif($port->status !== 'out')
-                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-default  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('none', {{ $port->id }}, 'none');">Отсутсвует</button>
+                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-default  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('none', {{ $port->id }}, 'none');">Отсутствует</button>
                                     @endif
                                 </td>
                                 @if($port->status !== 'out')
                                     <td align="center">
-                                        <input type="checkbox" style="cursor: pointer;" value="{{ $port->longclick }}"></td>
+                                        <input type="checkbox" class="long_checkbox" data-id="{{ $port->id }}" style="cursor: pointer;" autocomplete="off" value="{{ $port->longclick }}"></td>
                                     <td align="center">
-                                        <input type="checkbox" style="cursor: pointer;" value="{{ $port->doubleclick }}"></td>
+                                        <input type="checkbox" class="double_checkbox" data-id="{{ $port->id }}" style="cursor: pointer;" autocomplete="off" value="{{ $port->doubleclick }}"></td>
                                 @else
                                     <td></td>
                                     <td></td>
@@ -123,6 +123,7 @@
             </div>
         </div>
     </div>
+    @include('components.info_modal')
 
     <!-- HTML-код модального окна выбор объекта -->
     <div id="objectsModal" class="modal">
@@ -220,23 +221,21 @@
         </div>
     </div>
 
-    <!-- модальное окно сохранения настроек устройства -->
-    <div id="device-settings-Modal" class="modal">
+    <div id="device_modal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title"> Сохранить настройки устройства?</h4>
+                    <h4 class="modal-title">Сохранить название и ip адрес устройства?</h4>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
-                    <button type="button"   class="btn btn-primary" data-dismiss="modal" onclick="save_device_settings();" >Сохранить</button>
+                    <button type="button"   class="btn btn-primary" data-dismiss="modal" onclick="updateDevice();" >Сохранить</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- модальное окно удаления устройства -->
-    <div id="delete-device-Modal" class="modal">
+    <div id="delete_modal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -254,11 +253,12 @@
 @section('scripts')
     <script src="{{ asset('ela/js/pagescripts/device.js') }}"></script>
     <script>
+        let device_id = '{{ $device->id }}';
+
         function deleteDevice() {
-            let del_id = '{{ $device->id }}';
             $.ajax({
                 url: '{{ route('ajax.devices.delete') }}',
-                data: { '_token': _token, 'id': del_id },
+                data: { '_token': _token, 'id': device_id },
                 success: function (data) {
                     if (data.result) {
                         window.location = '{{ route('devices.index') }}';
@@ -268,5 +268,84 @@
                 }
             });
         }
+
+        function isValidIP(ip) {
+            if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip)) {
+                return true;
+            }
+
+            return false;
+        }
+
+        function isValidDevice(description, ip_address) {
+            if (description === '') {
+                return 'Не указано название устройства';
+            }
+            if (description === '') {
+                return 'Не указано название устройства';
+            }
+            if (ip_address === '') {
+                return 'Не указан ip адрес устройства';
+            }
+            if (ip_address.length > 15) {
+                return 'Длина ip адреса не может быть больше 15';
+            }
+
+            if (!isValidIP(ip_address)) {
+                return 'Недопустимый ip адрес';
+            }
+
+            return '';
+        }
+
+        function updateDevice() {
+
+            let description = $("input[name=description]").val().trim();
+            let ip_address = $("input[name=ip_address]").val().trim();
+
+            $message = validateDevice(description, ip_address);
+            if ($message !== '') {
+                showErrorModal($message);
+                return false;
+            }
+
+            $.ajax({
+                url: '{{ route('ajax.devices.update') }}',
+                data: {'_token': _token, 'id': device_id, 'description': description, 'ip_address': ip_address},
+                success: function (data) {
+                    if (!data.result) {
+                        showErrorModal('Ошибка при сохранении изменений');
+                    }
+                }
+            });
+        }
+
+        function updatePortCheckbox(name, port_id, value) {
+            $.ajax({
+                url: '{{ route('ajax.devices.ports.update') }}',
+                data: {'_token': _token, 'id': device_id, 'port_id': port_id, 'name': name, 'value': value},
+                success: function (data) {
+                    if (!data.result) {
+                        showErrorModal('Ошибка при сохранении изменений');
+                    } else if (name === 'doubleclick' || name === 'longclick') {
+                        showSuccessModal('Изменения успешно сохранены');
+                    }
+                }
+            });
+        }
+
+        $('.long_checkbox').change(function() {
+            let port_id = $(this).attr('data-id');
+            let value = this.checked ? 1 : 0;
+
+            updatePortCheckbox('longclick', port_id, value);
+        });
+
+        $('.double_checkbox').change(function() {
+            let port_id = $(this).attr('data-id');
+            let value = this.checked ? 1 : 0;
+
+            updatePortCheckbox('doubleclick', port_id, value);
+        });
     </script>
 @endsection
