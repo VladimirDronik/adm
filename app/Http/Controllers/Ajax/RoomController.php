@@ -2,66 +2,64 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use App\Services\RoomService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Room;
 
 class RoomController extends Controller
 {
-    public function addRoom()
+    private $service;
+
+    public function __construct(RoomService $service)
     {
-        $room = new Room();
-
-        $room->nameRoom = $_POST['name'];
-        $room->imageRoom = $_POST['image'];
-        $room->colorRoom = $_POST['color'];
-        $room->addRoom();
-
+        $this->service = $service;
     }
 
-    public function deleteRoom()
+    public function delete(Request $r)
     {
-        Room::deleteRoom($_POST['id']);
+        abort_if(!ajaxHas($r, ['id']), 400);
+
+        return response()->json(['result' => $this->service->delete((int)$r->id)]);
     }
 
-    /**
-     * Перемещение строки вниз
-     */
-    public function sort()
+    public function sort(Request $r)
     {
-        Room::sort($_POST['id'], $_POST['sort'], $_POST['direction']);
+        abort_if(!ajaxHas($r, ['id', 'direction']), 400);
+
+        return response()->json(['result' => $this->service->sort($r->all())]);
     }
 
-    /**
-     * Сохранение названия помещения
-     */
-    public function saveNameRoom()
+    public function store(Request $r)
     {
-        $room = new Room($_POST['idSelectRoom']);
-        $room->nameRoom = $_POST['nameRoom'];
-        $room->saveName();
+        abort_if(!ajaxHas($r, ['name', 'image', 'style']), 400);
 
-        return response()->json(array('success' => true, 'html'=>$_POST['nameRoom']));
+        return response()->json(['result' => (bool)$this->service->store($r->all())]);
     }
 
-    /**
-     * Сохраненеие изображения помещения
-     */
-    public function updateImage()
+    public function updateName(Request $r)
     {
+        abort_if(!ajaxHas($r, ['id', 'name']), 400);
 
-        $room = new Room($_POST['id']);
-        $room->imageRoom = $_POST['image'];
-        $room->saveImage();
+        $this->service->updateName((int)$r->id, $r->name);
+
+        return response()->json(['success' => true, 'html' => $r->name]);
     }
 
-    /**
-     * Сохранение цвета для помещения
-     */
-    public function updateColor()
+    public function updateImage(Request $r)
     {
-        $room = new Room($_POST['id']);
-        $room->colorRoom = $_POST['color'];
-        $room->saveColor();
+        abort_if(!ajaxHas($r, ['id', 'image']), 400);
+
+        $this->service->updateImage((int)$r->id, $r->image);
+
+        return response()->json(['result' => true]);
+    }
+
+    public function updateColor(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['id', 'color']), 400);
+
+        $this->service->updateColor((int)$r->id, $r->color);
+
+        return response()->json(['result' => true]);
     }
 }

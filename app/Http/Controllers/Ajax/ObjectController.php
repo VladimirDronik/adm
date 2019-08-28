@@ -48,8 +48,6 @@ class ObjectController extends Controller
         return response()->json(array('success' => true, 'html'=>$returnHTML, 'object_name' => $object_name));
     }
 
-
-
     /**
      * Привязка объекта к порту устройства
      *
@@ -63,10 +61,4 @@ class ObjectController extends Controller
        $res = Port::add_object($_POST['id_port'], $_POST['id_object']);
        //return response()->json(array('success' => true, 'status'=>$res));
     }
-
-
-
-
-
-
 }

@@ -28,6 +28,13 @@ class DeviceController extends Controller
 
         return response()->json(['result' => $this->service->update($r->all())]);
     }
+
+    public function updatePort(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['id','port_id','name','value']), 400);
+
+        return response()->json(['result' => $this->service->updatePort($r->all())]);
+    }
 }
 
 

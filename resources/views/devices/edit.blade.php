@@ -15,6 +15,7 @@
                     <div class="card-body">
                         <a href="{{ route('devices.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок устройств</a>
                         <a href="{{ route('devices.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить устройство</a>
+                        <a href="{{ route('devices.edit',[$device->id]) }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
             </div>
@@ -64,7 +65,7 @@
                                         @if($port->comment != '')
                                             {{ $port->comment }}
                                         @else
-                                            Без названия
+                                            Отсутствует
                                         @endif
                                     </a>
                                 </td>
@@ -88,9 +89,9 @@
                                 </td>
                                 @if($port->status !== 'out')
                                     <td align="center">
-                                        <input type="checkbox" class="long_checkbox" data-id="{{ $port->id }}" style="cursor: pointer;" autocomplete="off" value="{{ $port->longclick }}"></td>
+                                        <input type="checkbox" class="long_checkbox" data-id="{{ $port->id }}" style="cursor: pointer;" autocomplete="off" value="1" @if($port->longclick) checked @endif></td>
                                     <td align="center">
-                                        <input type="checkbox" class="double_checkbox" data-id="{{ $port->id }}" style="cursor: pointer;" autocomplete="off" value="{{ $port->doubleclick }}"></td>
+                                        <input type="checkbox" class="double_checkbox" data-id="{{ $port->id }}" style="cursor: pointer;" autocomplete="off" value="1" @if($port->doubleclick) checked @endif> </td>
                                 @else
                                     <td></td>
                                     <td></td>
@@ -125,7 +126,6 @@
     </div>
     @include('components.info_modal')
 
-    <!-- HTML-код модального окна выбор объекта -->
     <div id="objectsModal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -146,44 +146,41 @@
         </div>
     </div>
 
-<!-- модальное окно выбора действия -->
-<div id="actionModal" class="modal">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Действие при активации порта</h4>
-            </div>
-            <div class="modal-body">
-                <div class="btn-group-toggle" data-toggle="buttons">
-                    <label class="btn btn-success" id="easy_button" >
-                        <input type="radio" name="actions"  autocomplete="off" value="easy"> Простое действие
-                    </label>
-                    <label class="btn btn-success" id="method_button">
-                        <input type="radio" name="actions"  autocomplete="off" value="method"> Метод объекта
-                    </label>
-                    <label class="btn btn-success" id="script_button">
-                        <input type="radio" name="actions"  autocomplete="off" value="script"> Скрипт
-                    </label>
-                    <label class="btn btn-success" id="none_button">
-                        <input type="radio" name="actions"  autocomplete="off" value="none"> Отсутствует
-                    </label>
+    <div id="actionModal" class="modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Действие при активации порта</h4>
                 </div>
-                <br><br><br>
-                <div id="mode">
+                <div class="modal-body">
+                    <div class="btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-success" id="easy_button" >
+                            <input type="radio" name="actions"  autocomplete="off" value="easy"> Простое действие
+                        </label>
+                        <label class="btn btn-success" id="method_button">
+                            <input type="radio" name="actions"  autocomplete="off" value="method"> Метод объекта
+                        </label>
+                        <label class="btn btn-success" id="script_button">
+                            <input type="radio" name="actions"  autocomplete="off" value="script"> Скрипт
+                        </label>
+                        <label class="btn btn-success" id="none_button">
+                            <input type="radio" name="actions"  autocomplete="off" value="none"> Отсутствует
+                        </label>
+                    </div>
+                    <br><br><br>
+                    <div id="mode"></div>
+                    <div id="object" class="d-none"></div>
                 </div>
-                <div id="object" class="d-none">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"  onclick="save_method();">Сохранить изменения</button>
+                    <input type="hidden" value="" id="id_port">
+                    <input type="hidden" value="" id="value">
+                    <input type="hidden" value="" id="cur_method">
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal"  onclick="save_method();">Сохранить изменения</button>
-                <input type="hidden" value="" id="id_port">
-                <input type="hidden" value="" id="value">
-                <input type="hidden" value="" id="cur_method">
             </div>
         </div>
     </div>
-</div>
 
     <!-- модальное окно выбора действия для порта -->
     <div id="methodsModal" class="modal">
@@ -258,7 +255,7 @@
         function deleteDevice() {
             $.ajax({
                 url: '{{ route('ajax.devices.delete') }}',
-                data: { '_token': _token, 'id': device_id },
+                data: {'_token': _token, 'id': device_id},
                 success: function (data) {
                     if (data.result) {
                         window.location = '{{ route('devices.index') }}';
@@ -277,7 +274,7 @@
             return false;
         }
 
-        function isValidDevice(description, ip_address) {
+        function validateDevice(description, ip_address) {
             if (description === '') {
                 return 'Не указано название устройства';
             }
@@ -290,11 +287,9 @@
             if (ip_address.length > 15) {
                 return 'Длина ip адреса не может быть больше 15';
             }
-
             if (!isValidIP(ip_address)) {
                 return 'Недопустимый ip адрес';
             }
-
             return '';
         }
 
@@ -334,18 +329,20 @@
             });
         }
 
-        $('.long_checkbox').change(function() {
-            let port_id = $(this).attr('data-id');
-            let value = this.checked ? 1 : 0;
+        $(document).ready(function () {
+            $('.long_checkbox').change(function () {
+                let port_id = $(this).attr('data-id');
+                let value = this.checked ? 1 : 0;
 
-            updatePortCheckbox('longclick', port_id, value);
-        });
+                updatePortCheckbox('longclick', port_id, value);
+            });
 
-        $('.double_checkbox').change(function() {
-            let port_id = $(this).attr('data-id');
-            let value = this.checked ? 1 : 0;
+            $('.double_checkbox').change(function () {
+                let port_id = $(this).attr('data-id');
+                let value = this.checked ? 1 : 0;
 
-            updatePortCheckbox('doubleclick', port_id, value);
+                updatePortCheckbox('doubleclick', port_id, value);
+            });
         });
     </script>
 @endsection

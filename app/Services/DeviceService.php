@@ -34,7 +34,7 @@ class DeviceService {
         Port::insert($ports);
     }
 
-    public function storeDevice($data)
+    public function storeDevice(array $data)
     {
         $this->device = new Device();
 
@@ -77,6 +77,22 @@ class DeviceService {
         $device->ip_address = trim($data['ip_address']);
 
         $device->save();
+
+        return true;
+    }
+
+    public function updatePort(array $data)
+    {
+        $port = Port::where('id', $data['port_id'])
+            ->where('id_device', $data['id'])->first();
+        
+        if (!$port) {
+            return false;
+        }
+
+        $port->{$data['name']} = $data['value'];
+
+        $port->save();
 
         return true;
     }

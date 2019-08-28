@@ -30,6 +30,17 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('scenes/delete', 'SceneController@delete')->name('scenes.delete');
         Route::post('termostats/delete', 'TermostatController@delete')->name('termostats.delete');
 
+        Route::group(['prefix' => 'rooms', 'as' => 'rooms.'], function () {
+            Route::post('sort', 'RoomController@sort')->name('sort');
+            Route::post('delete', 'RoomController@delete')->name('delete');
+            Route::post('store', 'RoomController@store')->name('store');
+            Route::post('update/name', 'RoomController@updateName')->name('update.name');
+            Route::post('update/image', 'RoomController@updateImage')->name('update.image');
+            Route::post('update/color', 'RoomController@updateColor')->name('update.color');
+        });
+
+        // todo
+
         Route::post('getobject', 'ObjectController@load_to_port');  // todo check
         Route::post('add_object_to_port', 'ObjectController@add_to_port');  // todo check
 
@@ -38,13 +49,5 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('loaddata', 'PortController@load_data');
         Route::post('savemethod', 'PortController@save_method');
         Route::post('savenameport', 'PortController@save_name_port');
-
-        //Rooms
-        Route::post('rooms/addRoom', 'RoomController@addRoom');
-        Route::post('rooms/deleteRoom', 'RoomController@deleteRoom');
-        Route::post('rooms/sort', 'RoomController@sort');
-        Route::post('rooms/saveNameRoom', 'RoomController@saveNameRoom');
-        Route::post('rooms/updateImage', 'RoomController@updateImage');
-        Route::post('rooms/updateColor', 'RoomController@updateColor');
     });
 });

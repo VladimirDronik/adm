@@ -35,4 +35,9 @@ class ImageService {
 
         return $images;
     }
+
+    public static function getNoImageName()
+    {
+        return basename(self::NO_IMAGE_PATH);
+    }
 }
