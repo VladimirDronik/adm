@@ -33,6 +33,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereObject($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereScript($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereStatus($value)
+ * @property-read \App\Models\Device $device
+ * @property-read \App\Models\HomeObject|null $eobject
+ * @property-read \App\Models\Script|null $escript
  */
 class Port extends Model
 {

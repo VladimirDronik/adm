@@ -25,59 +25,5 @@ use Illuminate\Database\Eloquent\Model;
 class Room extends Model
 {
     const COMMON_NAME = 'Общие';
-
     public $timestamps = false;
-
-    public $idRoom;
-    public $nameRoom = 'new_room';
-    public $imageRoom = 'noimage.png';
-    public $colorRoom = 'blue';
-
-    public function __construct($idRoom = null)
-    {
-        $this->idRoom = $idRoom;
-    }
-
-    /**
-     * Наименование помещения по его id
-     */
-    public static function nameRoomFromId($id)
-    {
-        return Room::find($id)->name;
-    }
-
-    public static function getAllRooms()
-    {
-        $rooms = self::select('*')->where('id','>','0')->orderBy('sort', 'ASC')->get();
-        return $rooms;
-    }
-
-    /**
-     * Вывод всех цветовых схем
-     *
-     * @return static;
-     */
-    public static function getAllColors()
-    {
-        $colors = Color::all();
-        return $colors;
-    }
-
-    /**
-     * Изменение изображения для помещения
-     */
-    public function saveImage()
-    {
-        self::where('id', $this->idRoom)->update(['image' => $this->imageRoom]);
-    }
-
-    /**
-     * Изменение цвета для помещения
-     */
-    public function saveColor()
-    {
-        self::where('id', $this->idRoom)->update(['style' => $this->colorRoom]);
-    }
-
-
 }

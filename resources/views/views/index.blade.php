@@ -173,7 +173,7 @@
 
            $('.del_btn').click(function() {
                del_id = $(this).attr('data-id');
-               $('#del_modal_body').text('Удалить отображение «'+$(this).attr('data-name')+'»?');
+               $('#del_modal_body').text('Удалить отображение № '+$(this).attr('data-id')+' «'+$(this).attr('data-name')+'»?');
                $('#del_modal').modal('show');
            });
 

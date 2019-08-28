@@ -127,10 +127,10 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title"> Выбрать изображение</h4>
+                        <h4 class="modal-title">Выбрать изображение</h4>
                     </div>
                     <div class="modal-body" style="background: black;" >
-                        @foreach ($images as $image)
+                        @foreach($images as $image)
                             <img src="{{ asset('ela/images/rooms/'.$image) }}" style="cursor: pointer;" onclick="setImage('{{$image}}');"
                                  data-dismiss="modal">&nbsp;&nbsp;&nbsp;
                         @endforeach
@@ -147,10 +147,9 @@
                         <h4 class="modal-title"> Выбрать цвет</h4>
                     </div>
                     <div class="modal-body">
-                        <button style="background:red;" data-dismiss="modal"  class="btn btn-default m-b-10" onclick="setColor('red'); ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
-                        <button style="background:green;" data-dismiss="modal"  class="btn btn-default m-b-10" onclick="setColor('green');">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
-                        <button style="background:orange;" data-dismiss="modal"  class="btn btn-default m-b-10" onclick="setColor('orange');">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
-                        <button style="background:blue;" data-dismiss="modal"  class="btn btn-default m-b-10" onclick="setColor('blue');">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                        @foreach($colors as $color)
+                            <button style="background:{{$color->name}};" data-dismiss="modal" class="btn btn-default m-b-10" onclick="setColor('{{$color->name}}'); ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -241,7 +240,7 @@
                 $('#del_modal').modal('show');
             });
 
-            $('#del_modal_btn').click(del());
+            $('#del_modal_btn').click(del);
         });
     </script>
 @endsection

@@ -23,6 +23,7 @@ function setImage(linkToImage) {
         data['id'] = idRoom;
         data['image'] = linkToImage;
         ajax_html(data, '/rooms/update/image', '');
+        sessionStorage.setItem('imageRoom', 'noimage.png');
     } else {
         $("#image").prop('src', 'ela/images/rooms/' + linkToImage);
     }

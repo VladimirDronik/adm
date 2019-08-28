@@ -45,6 +45,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat whereRoom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat whereThermostat($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\HomeObject|null $eobject
+ * @property-read \App\Models\Room|null $eroom
  */
 class Termostat extends Model
 {

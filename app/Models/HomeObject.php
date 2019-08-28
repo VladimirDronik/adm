@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject whereView($value)
+ * @property-read \App\Models\View|null $eview
+ * @property-read mixed $rus_type
  */
 class HomeObject extends Model
 {

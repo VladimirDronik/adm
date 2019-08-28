@@ -6,7 +6,6 @@ use App\Repositories\RoomRepository;
 use App\Services\ColorService;
 use App\Services\ImageService;
 use App\Services\RoomService;
-use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {

@@ -109,6 +109,6 @@ class RoomService {
 
     public function updateColor(int $id, string $color)
     {
-        Room::where('id', $id)->update(['color' => $this->setColorIfEmpty($color)]);
+        Room::where('id', $id)->update(['style' => $this->setColorIfEmpty($color)]);
     }
 }
