@@ -15,6 +15,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('scenes', 'SceneController')->except('show','destroy');
     Route::resource('termostats', 'TermostatController')->except('show','destroy');
 
+    Route::get('menu', 'MenuController@index')->name('menu.index');
+
     Route::group(['namespace' => 'Ajax', 'as' => 'ajax.'], function () {
 
         Route::group(['prefix' => 'devices', 'as' => 'devices.'], function () {
@@ -34,6 +36,9 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('sort', 'SceneController@sort')->name('sort');
             Route::post('active', 'SceneController@active')->name('active');
         });
+
+        Route::post('menu/sort', 'MenuController@sort')->name('menu.sort');
+        Route::post('menu/active', 'MenuController@active')->name('menu.active');
 
         Route::group(['prefix' => 'rooms', 'as' => 'rooms.'], function () {
             Route::post('sort', 'RoomController@sort')->name('sort');

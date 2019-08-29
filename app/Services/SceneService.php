@@ -61,7 +61,7 @@ class SceneService {
 
     public function prepareScene(Scene $scene, array $data)
     {
-        $scene->name = ''; // todo
+        $scene->name = '';
         $scene->label = trim($data['label']);
         $scene->active = $data['active'] ?? 0;
         $scene->image = basename($data['_image']);;
@@ -72,11 +72,11 @@ class SceneService {
     {
         $scene = new Scene();
 
-        $this->prepareScene($scene, $data);
         $scene->id = Scene::max('id') + 1; // todo
         $scene->sort = Scene::max('sort') + 1;
+        $this->prepareScene($scene, $data);
 
-        $scene_id = $scene->id; // todo ?
+        $scene_id = $scene->id; // todo
 
         $scene->save();
 

@@ -7,6 +7,7 @@ class ImageService {
     const ROOM_PATH = 'ela/images/rooms';
     const VIEW_PATH = 'ela/images/views_items';
     const SCENE_PATH = 'ela/images/scenes';
+    const MENU_PATH = 'ela/images/menu';
     const NO_IMAGE_PATH = 'ela/images/rooms/noimage.png';
 
     public static function getImages(string $path)
