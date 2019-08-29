@@ -27,8 +27,13 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('views/active', 'ViewController@active')->name('views.active');
 
         Route::post('objects/delete', 'ObjectController@delete')->name('objects.delete');
-        Route::post('scenes/delete', 'SceneController@delete')->name('scenes.delete');
         Route::post('termostats/delete', 'TermostatController@delete')->name('termostats.delete');
+
+        Route::group(['prefix' => 'scenes', 'as' => 'scenes.'], function () {
+            Route::post('delete', 'SceneController@delete')->name('delete');
+            Route::post('sort', 'SceneController@sort')->name('sort');
+            Route::post('active', 'SceneController@active')->name('active');
+        });
 
         Route::group(['prefix' => 'rooms', 'as' => 'rooms.'], function () {
             Route::post('sort', 'RoomController@sort')->name('sort');

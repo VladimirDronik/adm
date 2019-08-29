@@ -28,6 +28,7 @@
                             {{ Form::bs_radio('type_name', 'Тип элемента*:', $types, null, ['required' => true]) }}
                             {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
                             {{ Form::bs_text('description', 'Описание:') }}
+                            {{ Form::bs_checkbox('active', 'Активность:', true) }}
 
                             {{ Form::bs_title('Текст и графика') }}
 

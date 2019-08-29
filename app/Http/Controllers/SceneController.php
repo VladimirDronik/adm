@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Object\CreateRequest;
 use App\Http\Requests\Object\UpdateRequest;
 use App\Models\HomeObject;
-use App\Repositories\ObjectRepository;
 use App\Repositories\SceneRepository;
-use App\Repositories\ViewRepository;
-use App\Services\ObjectService;
 use App\Services\SceneService;
 use Illuminate\Http\Request;
 
@@ -35,7 +32,7 @@ class SceneController extends Controller
         $types = HomeObject::getFullTypeIds();
         $views = $this->view_rep->getAllToArray();
 
-        return view('objects.create', compact('types', 'views'));
+        return view('scenes.create', compact('types', 'views'));
     }
 
     public function store(CreateRequest $r)

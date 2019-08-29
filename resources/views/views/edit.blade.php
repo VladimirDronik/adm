@@ -26,11 +26,12 @@
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
-                        {{ Form::bs_title('Тип элемента') }}
+                        {{ Form::bs_title('Основные данные') }}
 
                         {{ Form::bs_radio('type_name', 'Тип элемента*:', $types, old('type_name', $view->type_name), ['required' => true]) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
                         {{ Form::bs_text('description', 'Описание:') }}
+                        {{ Form::bs_checkbox('active', 'Активность:') }}
 
                         {{ Form::bs_title('Текст и графика') }}
 

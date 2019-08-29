@@ -28,7 +28,8 @@
                                     <th>Название</th>
                                     <th>Изображение</th>
                                     <th>Цвет фона</th>
-                                    <th>Активно</th>
+                                    <th class="text-center">Активно</th>
+                                    <th>Сортировка</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
@@ -39,13 +40,34 @@
                                         <td scope="row">{{ $scene->id }}</td>
                                         <td><a href="{{ route('scenes.edit',[$scene->id]) }}">{{ $scene->label }}</a></td>
                                         <td>
-                                            {{ $scene->image }}
+                                            @if(!empty($scene->image))
+                                                <img src="{{ asset('ela/images/scenes/'.$scene->image) }}" width="60">
+                                            @endif
                                         </td>
                                         <td>
-                                            {{ $scene->backgroung_color }}
+                                            @if(!empty($scene->backgroung_color))
+                                                <div style="border: 1px solid gray; width: 60px; height: 40px; background-color: {{ $scene->backgroung_color }};">&nbsp;&nbsp;</div>
+                                            @else
+                                                Не указан
+                                            @endif
                                         </td>
-                                        <td>
-                                            {{ $scene->active }}
+                                        <td class="text-center">
+                                            <input type="checkbox" class="active_checkbox" style="cursor: pointer;" data-id="{{$scene->id}}" value="1" @if($scene->active) checked @endif>
+                                        </td>
+                                        <td style="width: 160px;">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control input-default" readonly
+                                                           value="{{ $scene->sort }}">
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <button type="button" class="btn btn-info btn-xs" id="sortBtn{{ $scene->id }}"
+                                                            onclick="changeSort({{ $scene->id }}, 'up');" >выше</button>
+
+                                                    <button type="button" class="btn btn-info btn-xs" id="sortBtn{{ $scene->id }}"
+                                                            onclick="changeSort({{ $scene->id }}, 'down');" >ниже</button>
+                                                </div>
+                                            </div>
                                         </td>
                                         <td align="center" class="text-center">
                                             <a href="{{ route('scenes.edit',[$scene->id]) }}" class="btn btn-info btn-sm btn-rounded">
@@ -68,6 +90,7 @@
                                     <th>Изображение</th>
                                     <th>Цвет фона</th>
                                     <th>Активно</th>
+                                    <th>Сортировка</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
@@ -83,16 +106,33 @@
         </div>
     </div>
     @include('components.del_modal')
+    @include('components.info_modal')
 @endsection
 
 @section('scripts')
     <script>
+        let url = '{{ route('scenes.index') }}';
+
+        function changeSort(id, direction) {
+            $.ajax({
+                url: '{{ route('ajax.scenes.sort') }}',
+                data: {'_token': _token, 'id': id, 'direction': direction},
+                success: function (data) {
+                    if (data.result) {
+                        window.location.href = url;
+                    } else {
+                        showErrorModal('Ошибка при сохранении изменений');
+                    }
+                }
+            });
+        }
+
         $(document).ready(function(){
             let del_id;
 
             $('.del_btn').click(function() {
                 del_id = $(this).attr('data-id');
-                $('#del_modal_body').text('Удалить сцену «'+$(this).attr('data-name')+'»?');
+                $('#del_modal_body').text('Удалить сцену № '+$(this).attr('data-id')+' «'+$(this).attr('data-name')+'»?');
                 $('#del_modal').modal('show');
             });
 
@@ -111,6 +151,23 @@
                         }
                     });
                 }
+            });
+
+            $('.active_checkbox').change(function(){
+                let active = this.checked ? 1 : 0;
+                let view_id = $(this).attr('data-id');
+
+                $.ajax({
+                    url: '{{ route('ajax.scenes.active') }}',
+                    data: { '_token': _token, 'id': view_id, 'active': active},
+                    success: function (data) {
+                        if (data.result) {
+                            showSuccessModal('Активность успешно изменена');
+                        } else {
+                            showErrorModal('Ошибка при изменении активности');
+                        }
+                    },
+                });
             });
         });
     </script>

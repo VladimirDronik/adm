@@ -27,7 +27,7 @@ class ViewService {
         $view->name = trim($data['name']);
         $view->description = trim($data['description']);
         $view->status = 'off';
-        $view->active = 1;
+        $view->active = $data['active'] ?? 0;
         $view->date = ''; // todo
         $view->items = ''; // todo
         $view->sort = 0;

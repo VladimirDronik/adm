@@ -28,6 +28,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Scene extends Model
 {
-    protected $primaryKey = 'scenes';
+    protected $table = 'scenes';
     public $timestamps = false;
 }

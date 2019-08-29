@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Room;
 use Illuminate\Support\Facades\DB;
 

@@ -32,8 +32,7 @@
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a href="{{ route('views.index') }}">Все помещения</a></li>
-                                    <hr>
+                                    <li><a href="{{ route('views.index') }}">Все помещения</a></li><hr>
                                     <li><a href="{{ route('views.index',['room' => 0]) }}">{{ \App\Models\Room::COMMON_NAME }}</a></li>
                                     <hr>
                                     @foreach($rooms as $room)
@@ -62,7 +61,7 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                @if ($filter_room!= '')
+                                @if($filter_room != '')
                                     <th>Сорт</th>
                                 @endif
                                 <th>Тип</th>
@@ -137,7 +136,7 @@
                         <tfoot>
                             <tr>
                                 <th>ID</th>
-                                @if ($filter_room != '')
+                                @if($filter_room != '')
                                     <th>Сорт</th>
                                 @endif
                                 <th>Тип</th>
