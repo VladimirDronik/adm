@@ -24,7 +24,16 @@ class ObjectController extends Controller
         return response()->json(['result' => (bool)$this->service->delete((int)$r->id)]);
     }
 
-    // todo refactoring below
+    public function methods(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['object_id']), 400);
+
+        $methods = $this->service->getMethodsByObjectId((int)$r->object_id);
+
+        return response()->json(['result' => true, 'methods' => $methods]);
+    }
+
+    // todo refactoring
 
     /**
      * Загрузка объектов в модальное окно

@@ -55,6 +55,7 @@ class Termostat extends Model
 
     protected $table = 'termostats';
     public $timestamps = false;
+    protected $guarded = ['id'];
 
     public static function getFullThermostatIds()
     {

@@ -23,8 +23,38 @@ class CreateRequest extends FormRequest
      */
     public function rules()
     {
+        $rules = [
+            'id_termometr' => 'required|string|max:12',
+            'optimal' => 'required|integer|min:0|max:40',
+            'gisteresis' => 'required|integer|min:0|max:10',
+            'thermostat' => 'required|integer|min:0|max:1',
+            'port' => 'required|integer|min:0',
+            'min_threshold' => 'required|integer',
+            'max_threshold' => 'required|integer|max:100',
+            'min_alarm' => 'required|integer',
+            'max_alarm' => 'required|integer|max:100',
+            'room' => 'nullable|integer|min:0'
+        ];
+
+        $ids = ['id_object', 'object', 'method_on', 'method_off', 'id_device'];
+        foreach ($ids as $id) {
+            $rules[$id] = 'required|integer|min:0';
+        }
+
+        return $rules;
+    }
+
+    public function messages()
+    {
         return [
-            //
+            'id_termometr.required' => 'Не указан код',
+            'optimal.required' => 'Не указана оптимальная температура',
+            'gisteresis.required' => 'Не указан гистерезис',
+            'thermostat.required' => 'Не указан режим',
+            'port.required' => 'Не указан номер порта',
+            'id_object.required' => 'Не указан объект',
+            'object.required' => 'Не указан объект влияния',
+            'id_device.required' => 'Не указано устройство',
         ];
     }
 }

@@ -54,6 +54,9 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('update/color', 'RoomController@updateColor')->name('update.color');
         });
 
+        Route::group(['prefix' => 'objects', 'as' => 'objects.'], function () {
+            Route::post('methods', 'ObjectController@methods')->name('methods');
+        });
         // todo
 
         Route::post('getobject', 'ObjectController@load_to_port');  // todo check

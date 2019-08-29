@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\HomeObject;
+use App\Models\Method;
 
 class ObjectService {
 
@@ -34,5 +35,16 @@ class ObjectService {
         $object->save();
 
         return $object->id;
+    }
+
+    public function getMethodsByObjectId(int $object_id)
+    {
+        if ($object_id) {
+            return Method::where('id_object', $object_id)
+                ->orderBy('name')
+                ->select('id', 'name')->get()->toArray();
+        }
+
+        return [];
     }
 }

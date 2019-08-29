@@ -48,64 +48,35 @@
                             {{ Form::bs_autoselect('object', 'Объект влияния*:', $objects, old('object'),
                                 false, false, ['required' => true], null, 'Объект, у которого меняем состояние') }}
 
-                            {{ Form::bs_autoselect('method_on', 'Метод при включении*:', $methods, old('method_on'),
-                                false, false, ['required' => true], null, 'Метод объекта при срабатывании термостата на включение') }}
-                            {{ Form::bs_autoselect('method_off', 'Метод при выключении*:', $methods, old('method_off'),
-                                false, false, ['required' => true], null, 'Метод объекта при срабатывании термостата на выключение') }}
+                            {{ Form::bs_autoselect('method_on', 'Метод при включении*:', [], old('method_on'),
+                                false, false, ['required' => true], null, 'Метод объекта влияния при срабатывании термостата на включение') }}
+                            {{ Form::bs_autoselect('method_off', 'Метод при выключении*:', [], old('method_off'),
+                                false, false, ['required' => true], null, 'Метод объекта влияния при срабатывании термостата на выключение') }}
 
                             {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', -1), false, false) }}
 
                             {{ Form::bs_autoselect('id_device', 'Устройство*:', $devices, old('id_device'),
                                 false, false, ['required' => true]) }}
-                            {{ Form::bs_autoselect('port', 'Номер порта*:', [], null, false, false, ['required' => true]) }}
+                            {{ Form::bs_autoselect('port', 'Номер порта*:', [], null, false, false, ['required' => true],
+                                null, 'Список портов выбранного устройства') }}
                         </div>
                         {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
                 </div>
                 <div style="height: 200px;">&nbsp;</div>
+                <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
             </div>
         </div>
     </div>
+    @include('components.info_modal')
 @endsection
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/termostat.js') }}"></script>
     <script>
-        $(document).ready(function () {
-            $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_object").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_method_on").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_method_off").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_room").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_id_device").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_port").chosen({width:"100%", no_results_text: "Не найдено"});
-
-            function createSelect(target, options, selected) {
-                let sel = $(target);
-                sel.html('');
-                let s = '<option value="">Не выбрано</option>';
-                for (let i = 0; i < options.length; i++) {
-                    if(selected == options[i])
-                        s += '<option selected value="' + options[i] + '">' + options[i] + '</option>';
-                    else
-                        s += '<option value="' + options[i] + '">' + options[i] + '</option>';
-                }
-                sel.append(s);
-            }
-
-
-            $("#auto_sel_id_device").chosen().change(function() {
-                let device_id = $(this).val();
-
-                $.ajax({
-                    url: '{{ route('ajax.devices.ports') }}',
-                    data: {'_token': _token, 'device_id': device_id},
-                    success: function (data) {
-                        createSelect('#auto_sel_port', data.ports, -1);
-                        $('#auto_sel_port').trigger("chosen:updated");
-                    }
-                });
-            });
-        });
+        let url_methods = '{{ route('ajax.objects.methods') }}';
+        let url_ports = '{{ route('ajax.devices.ports') }}';
+        $(document).ready(initTermostatForm);
     </script>
 @endsection
