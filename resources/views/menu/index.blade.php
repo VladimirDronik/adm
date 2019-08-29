@@ -28,6 +28,7 @@
                                     <th>Изображение</th>
                                     <th class="text-center">Активно</th>
                                     <th>Сортировка</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -58,6 +59,7 @@
                                                 </div>
                                             </div>
                                         </td>
+                                        <td></td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -68,6 +70,7 @@
                                     <th>Изображение</th>
                                     <th>Активно</th>
                                     <th>Сортировка</th>
+                                    <th></th>
                                 </tr>
                             </tfoot>
                         </table>

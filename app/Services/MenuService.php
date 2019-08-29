@@ -2,32 +2,33 @@
 
 namespace App\Services;
 
-use App\Models\View;
+use App\Models\Menu;
+use Illuminate\Support\Facades\DB;
 
 class MenuService {
 
     public function sort(array $data)
     {
-        $scene = Scene::find($data['id']);
+        $menu = Menu::find($data['id']);
 
-        if (!$scene) {
+        if (!$menu) {
             return false;
         }
 
-        $min = Scene::min('sort');
-        $max = Scene::max('sort');
+        $min = Menu::min('sort');
+        $max = Menu::max('sort');
 
-        if (($scene->sort === $min && $data['direction'] === 'up')
-            || ($scene->sort === $max && $data['direction'] === 'down')) {
+        if (($menu->sort === $min && $data['direction'] === 'up')
+            || ($menu->sort === $max && $data['direction'] === 'down')) {
             return true;
         }
 
-        $previous_sort = $scene->sort;
-        $scene->sort += $data['direction'] === 'up' ? -1 : 1;
+        $previous_sort = $menu->sort;
+        $menu->sort += $data['direction'] === 'up' ? -1 : 1;
 
-        DB::transaction(function () use ($scene, $previous_sort) {
-            Scene::where('sort', $scene->sort)->update(['sort' => $previous_sort]);
-            $scene->save();
+        DB::transaction(function () use ($menu, $previous_sort) {
+            Menu::where('sort', $menu->sort)->update(['sort' => $previous_sort]);
+            $menu->save();
         });
 
         return true;
@@ -35,7 +36,7 @@ class MenuService {
 
     public function changeActive(int $id, int $active)
     {
-        View::where('id', $id)->update(['active' => $active]);
+        Menu::where('id', $id)->update(['active' => $active]);
 
         return true;
     }
