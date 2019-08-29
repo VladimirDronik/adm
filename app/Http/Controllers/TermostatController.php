@@ -6,9 +6,12 @@ use App\Http\Requests\Termostat\CreateRequest;
 use App\Http\Requests\Termostat\UpdateRequest;
 use App\Models\Termostat;
 use App\Repositories\DeviceRepository;
+use App\Repositories\MethodRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
 use App\Repositories\TermostatRepository;
+use App\Services\DeviceService;
+use App\Services\ObjectService;
 use App\Services\TermostatService;
 
 class TermostatController extends Controller
@@ -50,7 +53,7 @@ class TermostatController extends Controller
     {
         list($objects, $devices, $rooms, $types) = $this->getLists();
 
-        return view('termostats.create', compact('objects','devices','rooms','types'));
+        return view('termostats.create', compact('objects','devices', 'rooms', 'types'));
     }
 
     public function store(CreateRequest $r)
@@ -66,11 +69,15 @@ class TermostatController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении термостата');
     }
 
-    public function edit(Termostat $termostat)
+    public function edit(Termostat $termostat, ObjectService $object_service, DeviceService $device_service)
     {
         list($objects, $devices, $rooms, $types) = $this->getLists();
 
-        return view('termostats.edit', compact('termostat', 'objects','devices','rooms','types'));
+        $methods = $object_service->getMethodsByObjectIdToArray($termostat->object);
+        $ports = $device_service->getPortsByDeviceId($termostat->id_device);
+
+        return view('termostats.edit', compact('termostat', 'objects', 'devices', 'rooms', 'types',
+            'methods', 'ports'));
     }
 
     public function update(UpdateRequest $r, Termostat $termostat)

@@ -47,4 +47,15 @@ class ObjectService {
 
         return [];
     }
+
+    public function getMethodsByObjectIdToArray(int $object_id)
+    {
+        if ($object_id) {
+            return Method::where('id_object', $object_id)
+                ->orderBy('name')->select('id', 'name')
+                ->pluck('name', 'id')->toArray();
+        }
+
+        return [];
+    }
 }

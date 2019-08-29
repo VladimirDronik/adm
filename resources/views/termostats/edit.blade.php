@@ -34,38 +34,40 @@
                         {{ Form::bs_text('id_termometr', 'Код*:', null, ['required' => true], 'Например, ff750c311703') }}
                         {{ Form::bs_number('optimal', 'Оптимальная температура*:', null, ['min' => 0, 'max' => 40, 'required' => true],
                             'Температура, которая должна быть в помещении') }}
-                        {{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', 1), ['min' => 0, 'max' => 10, 'required' => true]) }}
-                        {{ Form::bs_radio('thermostat', 'Режим*:', $types, old('thermostat', -1), ['required' => true]) }}
+                        {{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', $termostat->gisteresis), ['min' => 0, 'max' => 10, 'required' => true]) }}
+                        {{ Form::bs_radio('thermostat', 'Режим*:', $types, old('thermostat', $termostat->thermostat), ['required' => true]) }}
 
-                        {{ Form::bs_number('min_threshold', 'Минимальная температура*:', old('min_threshold', 0), ['min' => 0, 'max' => 40, 'required' => true],
+                        {{ Form::bs_number('min_threshold', 'Минимальная температура*:', old('min_threshold', $termostat->min_threshold), ['min' => 0, 'max' => 40, 'required' => true],
                             '') }}
-                        {{ Form::bs_number('max_threshold', 'Максимальная температура*:', old('max_threshold', 30), ['min' => 0, 'max' => 40, 'required' => true],
+                        {{ Form::bs_number('max_threshold', 'Максимальная температура*:', old('max_threshold', $termostat->max_threshold), ['min' => 0, 'max' => 40, 'required' => true],
                             '') }}
-                        {{ Form::bs_number('min_alarm', 'Мин. аварийная температура*:', old('min_alarm', 0), ['min' => 0, 'max' => 40, 'required' => true],
+                        {{ Form::bs_number('min_alarm', 'Мин. аварийная температура*:', old('min_alarm', $termostat->min_alarm), ['min' => 0, 'max' => 40, 'required' => true],
                             '') }}
-                        {{ Form::bs_number('max_alarm', 'Макс. аварийная температура*:', old('max_alarm', 40), ['min' => 0, 'max' => 40, 'required' => true],
+                        {{ Form::bs_number('max_alarm', 'Макс. аварийная температура*:', old('max_alarm', $termostat->max_alarm), ['min' => 0, 'max' => 40, 'required' => true],
                             '') }}
 
-                        {{ Form::bs_autoselect('id_object', 'Объект термостата*:', $objects, old('id_object'),
+                        {{ Form::bs_autoselect('id_object', 'Объект термостата*:', $objects, old('id_object', $termostat->id_object),
                             false, false, ['required' => true]) }}
-                        {{ Form::bs_autoselect('object', 'Объект влияния*:', $objects, old('object'),
+                        {{ Form::bs_autoselect('object', 'Объект влияния*:', $objects, old('object', $termostat->object),
                             false, false, ['required' => true], null, 'Объект, у которого меняем состояние') }}
 
-                        {{ Form::bs_autoselect('method_on', 'Метод при включении*:', [], old('method_on'),
+                        {{ Form::bs_autoselect('method_on', 'Метод при включении*:', $methods, old('method_on', $termostat->method_on),
                             false, false, ['required' => true], null, 'Метод объекта влияния при срабатывании термостата на включение') }}
-                        {{ Form::bs_autoselect('method_off', 'Метод при выключении*:', [], old('method_off'),
+                        {{ Form::bs_autoselect('method_off', 'Метод при выключении*:', $methods, old('method_off', $termostat->method_off),
                             false, false, ['required' => true], null, 'Метод объекта влияния при срабатывании термостата на выключение') }}
 
-                        {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', -1), false, false) }}
+                        {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', $termostat->room), false, false) }}
 
-                        {{ Form::bs_autoselect('id_device', 'Устройство*:', $devices, old('id_device'),
+                        {{ Form::bs_autoselect('id_device', 'Устройство*:', $devices, old('id_device', $termostat->id_device),
                             false, false, ['required' => true]) }}
-                        {{ Form::bs_autoselect('port', 'Номер порта*:', [], null, false, false, ['required' => true],
+                        {{ Form::bs_autoselect('port', 'Номер порта*:', $ports, old('port',$termostat->port), false, false, ['required' => true],
                             null, 'Список портов выбранного устройства') }}
                     </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
                 </div>
+                <div style="height: 200px;">&nbsp;</div>
+                <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
             </div>
         </div>
     </div>
