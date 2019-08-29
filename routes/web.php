@@ -22,11 +22,14 @@ Route::group(['middleware' => ['auth']], function () {
         Route::group(['prefix' => 'devices', 'as' => 'devices.'], function () {
             Route::post('delete', 'DeviceController@delete')->name('delete');
             Route::post('update', 'DeviceController@update')->name('update');
+            Route::post('ports', 'DeviceController@ports')->name('ports');
             Route::post('ports/update', 'DeviceController@updatePort')->name('ports.update');
         });
 
-        Route::post('views/delete', 'ViewController@delete')->name('views.delete');
-        Route::post('views/active', 'ViewController@active')->name('views.active');
+        Route::group(['prefix' => 'views', 'as' => 'views.'], function () {
+            Route::post('delete', 'ViewController@delete')->name('delete');
+            Route::post('active', 'ViewController@active')->name('active');
+        });
 
         Route::post('objects/delete', 'ObjectController@delete')->name('objects.delete');
         Route::post('termostats/delete', 'TermostatController@delete')->name('termostats.delete');
@@ -37,8 +40,10 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('active', 'SceneController@active')->name('active');
         });
 
-        Route::post('menu/sort', 'MenuController@sort')->name('menu.sort');
-        Route::post('menu/active', 'MenuController@active')->name('menu.active');
+        Route::group(['prefix' => 'menu', 'as' => 'menu.'], function () {
+            Route::post('sort', 'MenuController@sort')->name('sort');
+            Route::post('active', 'MenuController@active')->name('active');
+        });
 
         Route::group(['prefix' => 'rooms', 'as' => 'rooms.'], function () {
             Route::post('sort', 'RoomController@sort')->name('sort');

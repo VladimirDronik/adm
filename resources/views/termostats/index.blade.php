@@ -25,8 +25,12 @@
                             <thead>
                                 <tr>
                                     <th style="width: 60px;">ID</th>
-                                    <th>Объект</th>
-                                    <th>Помещение</th>
+                                    <th>Код</th>
+                                    <th>Текущая темп.</th>
+                                    <th>Оптим. темп.</th>
+                                    <th>Гистерезис</th>
+                                    <th>Режим</th>
+                                    <th>Объект влияния</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
@@ -35,16 +39,15 @@
                                 @foreach($termostats as $termostat)
                                     <tr id="tr{{$termostat->id}}">
                                         <td scope="row">{{ $termostat->id }}</td>
+                                        <td>{{ $termostat->id_termometr }}</td>
+                                        <td>{{ $termostat->current }}</td>
+                                        <td>{{ $termostat->optimal }}</td>
+                                        <td>{{ $termostat->gisteresis }}</td>
+                                        <td>{{ $termostat->rus_thermostat }}</td>
                                         <td>
                                             @if($termostat->object)
                                                 <a href="{{ route('objects.edit',[$termostat->object]) }}">{{ optional($termostat->eobject)->name }}</a>
                                             @endif
-                                        </td>
-                                        <td>
-{{--                                            @if($termostat->room)--}}
-{{--                                                <a href="{{ route('rooms.edit',[$termostat->room]) }}">{{ optional($termostat->eroom)->name }}</a>--}}
-{{--                                            @endif--}}
-                                            {{ optional($termostat->eroom)->name }}
                                         </td>
                                         <td align="center" class="text-center">
                                             <a href="{{ route('termostats.edit',[$termostat->id]) }}" class="btn btn-info btn-sm btn-rounded">
@@ -53,7 +56,7 @@
                                         </td>
                                         <td align="center" class="text-center">
                                             <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                    data-id="{{ $termostat->id }}" data-name="{{ $termostat->id }}">
+                                                    data-id="{{ $termostat->id }}" data-name="{{ $termostat->id_termometr }}">
                                                 <i class="fa fa-trash fa-lg"></i>
                                             </button>
                                         </td>
@@ -63,8 +66,12 @@
                             <tfoot>
                                 <tr>
                                     <th style="width: 60px;">ID</th>
-                                    <th>Объект</th>
-                                    <th>Помещение</th>
+                                    <th>Код</th>
+                                    <th>Текущая темп.</th>
+                                    <th>Оптим. темп.</th>
+                                    <th>Гистерезис</th>
+                                    <th>Режим</th>
+                                    <th>Объект влияния</th>>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
@@ -89,7 +96,7 @@
 
             $('.del_btn').click(function() {
                 del_id = $(this).attr('data-id');
-                $('#del_modal_body').text('Удалить термостат «'+$(this).attr('data-name')+'»?');
+                $('#del_modal_body').text('Удалить термостат № '+$(this).attr('data-id')+' «'+$(this).attr('data-name')+'»?');
                 $('#del_modal').modal('show');
             });
 

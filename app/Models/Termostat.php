@@ -50,8 +50,33 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Termostat extends Model
 {
+    const THERMOSTAT_COLD = 0;
+    const THERMOSTAT_HOT = 1;
+
     protected $table = 'termostats';
     public $timestamps = false;
+
+    public static function getFullThermostatIds()
+    {
+        return [
+            self::THERMOSTAT_COLD => 'Охлаждение',
+            self::THERMOSTAT_HOT => 'Нагревание',
+        ];
+    }
+
+    public static function getThermostatIds()
+    {
+        return array_keys(self::getFullThermostatIds());
+    }
+
+    public static function getThermostatById($id) {
+        return self::getFullThermostatIds()[$id] ?? '';
+    }
+
+    public function getRusThermostatAttribute()
+    {
+        return self::getThermostatById($this->thermostat);
+    }
 
     /* relations */
 
@@ -63,5 +88,25 @@ class Termostat extends Model
     public function eroom()
     {
         return $this->belongsTo(Room::class, 'room', 'id');
+    }
+
+    public function iobject()
+    {
+        return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+    }
+
+    public function edevice()
+    {
+        return $this->belongsTo(Device::class, 'id_device', 'id');
+    }
+
+    public function emethod_on()
+    {
+        return $this->belongsTo(Method::class, 'method_on', 'id');
+    }
+
+    public function emethod_off()
+    {
+        return $this->belongsTo(Method::class, 'method_off', 'id');
     }
 }

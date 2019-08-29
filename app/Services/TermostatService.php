@@ -12,29 +12,25 @@ class TermostatService {
         return Termostat::destroy($id);
     }
 
-    // todo
-    public function prepareObject(HomeObject $object, array $data)
+    public function prepare(Termostat $termostat, array $data)
     {
-        $object->type = trim($data['type']);
-        $object->name = trim($data['name']);
-        $object->view = $data['view'] ?? null;
-        $object->status = 'off';
+
     }
 
     public function store(array $data)
     {
-        $object = new HomeObject();
-        $this->prepareObject($object, $data);
-        $object->save();
+        $termostat = new Termostat();
+        $this->prepare($termostat, $data);
+        $termostat->save();
 
-        return $object->id;
+        return $termostat->id;
     }
 
-    public function update(HomeObject $object, array $data)
+    public function update(Termostat $termostat, array $data)
     {
-        $this->prepareObject($object, $data);
-        $object->save();
+        $this->prepare($termostat, $data);
+        $termostat->save();
 
-        return $object->id;
+        return $termostat->id;
     }
 }

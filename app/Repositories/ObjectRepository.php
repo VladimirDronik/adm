@@ -6,6 +6,14 @@ use App\Models\HomeObject;
 
 class ObjectRepository {
 
+    public function getAllToArray()
+    {
+        $objects = HomeObject::select('id','name')->orderBy('name')->pluck('name','id')->toArray();
+        array_walk($objects, function (&$object, $key) { $object = $key.' - '.$object; });
+
+        return $objects;
+    }
+
     public function getByName($name, $pagination_count = 15)
     {
         $query = HomeObject::with('eview');
