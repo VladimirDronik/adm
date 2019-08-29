@@ -19,7 +19,7 @@ class ViewRepository {
         return $views;
     }
 
-    public function getByRoom($room_id, $pagination_count = 5)
+    public function getByRoom($room_id, $pagination_count = 10)
     {
         $query = View::with('eroom','escene');
 

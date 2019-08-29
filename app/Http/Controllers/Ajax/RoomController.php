@@ -40,7 +40,7 @@ class RoomController extends Controller
     {
         abort_if(!ajaxHas($r, ['id', 'name']), 400);
 
-        $this->service->updateName((int)$r->id, $r->name);
+        $this->service->updateName((int)$r->id, (string)$r->name);
 
         return response()->json(['success' => true, 'html' => $r->name]);
     }
@@ -49,7 +49,7 @@ class RoomController extends Controller
     {
         abort_if(!ajaxHas($r, ['id', 'image']), 400);
 
-        $this->service->updateImage((int)$r->id, $r->image);
+        $this->service->updateImage((int)$r->id, (string)$r->image);
 
         return response()->json(['result' => true]);
     }
@@ -58,7 +58,7 @@ class RoomController extends Controller
     {
         abort_if(!ajaxHas($r, ['id', 'color']), 400);
 
-        $this->service->updateColor((int)$r->id, $r->color);
+        $this->service->updateColor((int)$r->id, (string)$r->color);
 
         return response()->json(['result' => true]);
     }

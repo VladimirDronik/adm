@@ -11,7 +11,7 @@ class RoomRepository
         return Room::where('id','>',0)->orderBy('sort')->get();
     }
 
-    public function getPaginationSpecialRooms($pagination_count = 3)
+    public function getPaginationSpecialRooms($pagination_count = 10)
     {
         return Room::where('id','>',0)->orderBy('sort')->paginate($pagination_count);
     }

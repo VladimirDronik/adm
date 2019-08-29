@@ -69,6 +69,11 @@ function saveNameRoom() {
     data['id'] = sessionStorage.getItem('idSelectRoom');
     data['name'] = $("#nameModalData").val().trim();
 
+    if (data['name'] == '') {
+        $("#nameModalData").val('Без названия');
+        data['name'] = 'Без названия';
+    }
+
     ajax_html(data, '/rooms/update/name', '#nameRoom_'+data['id']);
 }
 

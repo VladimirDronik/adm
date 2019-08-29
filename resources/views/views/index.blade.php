@@ -110,8 +110,12 @@
                                 <td scope="row">{{ $view->short_on_title }}</td>
                                 <td scope="row">{{ $view->short_off_title }}</td>
                                 <td scope="row">{{ $view->value }}</td>
-                                <td scope="row"><a href="#">{{ $view->room_name }}</a></td>
-                                <td scope="row"><a href="#">{{ optional($view->escene)->label }}</a></td>
+                                <td scope="row">{{ $view->room_name }}</td>
+                                <td scope="row">
+                                    @if($view->scene)
+                                        <a href="{{ route('scenes.edit',$view->scene) }}">{{ optional($view->escene)->label }}</a>
+                                    @endif
+                                </td>
                                 <td scope="row">{{ $view->position_left }} / {{ $view->position_top }}</td>
                                 <td scope="row" align="center">
                                     <input type="checkbox" class="active_checkbox" style="cursor: pointer;" data-id="{{$view->id}}" value="1" @if($view->active) checked @endif>

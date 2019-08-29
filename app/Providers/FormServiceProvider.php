@@ -45,6 +45,9 @@ class FormServiceProvider extends ServiceProvider
             self::PATH.'hidden', ['name', 'value' => '']);
         \Form::component('bs_image',
             self::PATH.'image', ['prefix', 'label', 'value', 'col' => 3]);
+        \Form::component('bs_autoselect',
+            self::PATH.'autoselect', ['name', 'label', 'values' => null, 'selected' => null, 'show_id' => false,
+                'multiple' => false, 'attributes' => [], 'multiple_id' => null, 'help' => null, 'col' => 3]);
     }
 
     /**

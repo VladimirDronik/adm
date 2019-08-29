@@ -1,5 +1,9 @@
 @extends('layouts._layout')
 
+@section('css')
+    <link href="{{ asset('ela/css/lib/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+@endsection
+
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
        ['title' => 'Редактирование объекта № '. $object->id .' «'. $object->name .'»',
@@ -29,7 +33,7 @@
 
                         {{ Form::bs_radio('type', 'Тип элемента*:', $types, old('type', $object->type), ['required' => true]) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_select('view', 'Отображение:', ["" => "Не указано"] + $views) }}
+                        {{ Form::bs_autoselect('view', 'Отображение:', $views, old('view', $object->view),  false, false) }}
                     </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
@@ -37,5 +41,15 @@
             </div>
         </div>
     </div>
+@endsection
+
+
+@section('scripts')
+    <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $("#auto_sel_view").chosen({width:"100%", no_results_text: "Не найдено"});
+        });
+    </script>
 @endsection
 
