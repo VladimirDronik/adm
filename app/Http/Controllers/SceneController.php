@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Object\CreateRequest;
-use App\Http\Requests\Object\UpdateRequest;
-use App\Models\HomeObject;
+use App\Http\Requests\Scene\CreateRequest;
+use App\Http\Requests\Scene\UpdateRequest;
+use App\Models\Scene;
 use App\Repositories\SceneRepository;
+use App\Services\ImageService;
 use App\Services\SceneService;
-use Illuminate\Http\Request;
 
 class SceneController extends Controller
 {
@@ -29,49 +29,41 @@ class SceneController extends Controller
 
     public function create()
     {
-        $types = HomeObject::getFullTypeIds();
-        $views = $this->view_rep->getAllToArray();
+        $images = ImageService::getSceneImages();
 
-        return view('scenes.create', compact('types', 'views'));
+        return view('scenes.create', compact('images'));
     }
 
     public function store(CreateRequest $r)
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('objects.edit',[$id])->with('success', 'Объект успешно добавлен');
+                return redirect()->route('scenes.edit',[$id])->with('success', 'Сцена успешно добавлена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении объекта '
-                .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при добавлении сцены ' .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении объекта');
+        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении сцены');
     }
 
-    public function edit(int $id)
+    public function edit(Scene $scene)
     {
-        $object = HomeObject::findOrFail($id);
+        $images = ImageService::getSceneImages();
 
-        $types = HomeObject::getFullTypeIds();
-        $views = $this->view_rep->getAllToArray();
-
-        return view('objects.edit', compact('object', 'types', 'views'));
+        return view('scenes.edit', compact('scene', 'images'));
     }
 
-    public function update(UpdateRequest $r, int $id)
+    public function update(UpdateRequest $r, Scene $scene)
     {
-        $object = HomeObject::findOrFail($id);
-
         try {
-            if ($this->service->update($object, $r->except('_token'))) {
-                return redirect()->route('objects.edit',[$object->id])->with('success','Объект успешно изменен');
+            if ($this->service->update($scene, $r->except('_token'))) {
+                return redirect()->route('scenes.edit',[$scene->id])->with('success','Сцена успешно изменена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении объекта '.$object->id.' '
-                .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при изменении сцены '.$scene->id.' ' .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении объекта');
+        return back()->withInput($r->all())->with('error','Ошибка при изменении сцены');
     }
 }

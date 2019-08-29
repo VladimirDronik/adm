@@ -1,17 +1,12 @@
 @extends('layouts._layout')
 
+@section('css')
+    <link href="{{ asset('ela/css/lib/colorpicker/bootstrap-colorpicker.min.css') }}" rel="stylesheet">
+@endsection
+
 @section('breadcrumbs')
-    <div class="row page-titles">
-        <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Добавление объекта</h3> </div>
-        <div class="col-md-7 align-self-center">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('objects.index') }}">Объекты</a></li>
-                <li class="breadcrumb-item active">Добавление</li>
-            </ol>
-        </div>
-    </div>
+    @includeIf('components.breadcrumbs',
+       ['title' => 'Добавление сцены', 'links' => [ route('scenes.index') => 'Сцены']])
 @endsection
 
 @section('content')
@@ -20,7 +15,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('objects.index') }}" class="btn btn-success m-b-10 m-l-5">Список объектов</a>
+                        <a href="{{ route('scenes.index') }}" class="btn btn-success m-b-10 m-l-5">Список сцен</a>
                     </div>
                 </div>
             </div>
@@ -28,21 +23,67 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::open(['route' => 'objects.store', 'method' => 'post', 'class' => 'form-horizontal form-bordered']) !!}
-                        {{ csrf_field() }}
-                        <div class="form-body">
-                            {{ Form::bs_alert() }}
+                    {!! Form::open(['route' => 'scenes.store', 'method' => 'post', 'class' => 'form-horizontal form-bordered']) !!}
+                    {{ csrf_field() }}
+                    <div class="form-body">
+                        {{ Form::bs_alert() }}
 
-                            {{ Form::bs_radio('type', 'Тип элемента*:', $types, null, ['required' => true]) }}
-                            {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                            {{ Form::bs_select('view', 'Отображение:', ["" => "Не указано"] + $views) }}
+                        {{ Form::bs_text('label', 'Название*:', null, ['required' => true]) }}
+                        {{ Form::bs_checkbox('active', 'Активность:', true) }}
 
-                        </div>
-                        {{ Form::bs_submit_btn() }}
+                        @if(count($images))
+                            {{ Form::bs_image('','Изображение:',old('_image',$images[0])) }}
+                        @else
+                            {{ Form::bs_simple_text('Изображение:','Не найдены варианты для выбора') }}
+                            {{ Form::bs_hidden('_image','') }}
+                        @endif
+
+                        {{ Form::bs_color('backgroung_color', 'Цвет фона:', '#E9E9F0') }}
+
+                    </div>
+                    {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
                 </div>
-                <div style="height: 200px;">&nbsp;</div>
             </div>
         </div>
     </div>
+    <div class="modal" id="img_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"> Выберите изображение</h4>
+                </div>
+                <div class="modal-body" style="background: gray;">
+                    @foreach($images as $image)
+                        <img src="{{ asset($image) }}" width="40" height="40" style="cursor: pointer;"
+                             onclick="setViewImage('{{$image}}');" data-dismiss="modal">&nbsp;&nbsp;&nbsp;
+                    @endforeach
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('ela/js/lib/colorpicker/bootstrap-colorpicker.min.js') }}"></script>
+    <script>
+        let image_id;
+        let url = '{{ asset('/') }}';
+
+        function setViewImage(image) {
+            $('#img_'+image_id).prop('src', url + image);
+            $('input[name='+image_id+'_image]').val(image);
+        }
+
+        function changeViewImage(id) {
+            image_id = id;
+        }
+
+        $(document).ready(function () {
+            $('input[name=backgroung_color]').colorpicker();
+        });
+    </script>
 @endsection

@@ -13,7 +13,7 @@ class CreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,17 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'label' => 'required|string|max:150',
+            'backgroung_color' => 'nullable|string|max:7'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'label.required' => 'Не указано название',
+            'label.max' => 'Название содержит более 150 символов',
+            'backgroung_color.max' => 'Недопустимый цвет фона',
         ];
     }
 }

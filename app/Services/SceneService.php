@@ -59,29 +59,35 @@ class SceneService {
         return true;
     }
 
-    // todo
-    public function prepareObject(HomeObject $object, array $data)
+    public function prepareScene(Scene $scene, array $data)
     {
-        $object->type = trim($data['type']);
-        $object->name = trim($data['name']);
-        $object->view = $data['view'] ?? null;
-        $object->status = 'off';
+        $scene->name = ''; // todo
+        $scene->label = trim($data['label']);
+        $scene->active = $data['active'] ?? 0;
+        $scene->image = basename($data['_image']);;
+        $scene->backgroung_color = trim($data['backgroung_color']);
     }
 
     public function store(array $data)
     {
-        $object = new HomeObject();
-        $this->prepareObject($object, $data);
-        $object->save();
+        $scene = new Scene();
 
-        return $object->id;
+        $this->prepareScene($scene, $data);
+        $scene->id = Scene::max('id') + 1; // todo
+        $scene->sort = Scene::max('sort') + 1;
+
+        $scene_id = $scene->id; // todo ?
+
+        $scene->save();
+
+        return $scene_id;
     }
 
-    public function update(HomeObject $object, array $data)
+    public function update(Scene $scene, array $data)
     {
-        $this->prepareObject($object, $data);
-        $object->save();
+        $this->prepareScene($scene, $data);
+        $scene->save();
 
-        return $object->id;
+        return $scene->id;
     }
 }

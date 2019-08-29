@@ -50,6 +50,10 @@ class FormServiceProvider extends ServiceProvider
                 'multiple' => false, 'attributes' => [], 'multiple_id' => null, 'help' => null, 'col' => 3]);
         \Form::component('bs_checkbox',
             self::PATH.'checkbox', ['name', 'label', 'is_checked' => false, 'attributes' => [], 'help' => null, 'col' => 3]);
+        \Form::component('bs_color',
+            self::PATH.'color', ['name', 'label', 'value', 'attributes' => [], 'help' => null, 'col' => 3]);
+        \Form::component('bs_simple_text',
+            self::PATH.'simple_text', ['label' => null, 'value' => null, 'name' => null, 'help' => null, 'col' => 3]);
     }
 
     /**

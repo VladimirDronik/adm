@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\ImageService;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -29,5 +30,11 @@ use Illuminate\Database\Eloquent\Model;
 class Scene extends Model
 {
     protected $table = 'scenes';
+    protected $primaryKey = 'id';
     public $timestamps = false;
+
+    public function getImagePathAttribute()
+    {
+        return ImageService::SCENE_PATH.'/'.$this->image;
+    }
 }
