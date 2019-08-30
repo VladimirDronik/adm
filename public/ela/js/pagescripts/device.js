@@ -5,19 +5,19 @@
 //Вызов модального окна с объектами
 $('button[type=button][name=object]').click(function () {
 
-    var object_val = this.value;
-    var port_id = this.id;
-    var object_arr = object_val.split(',');
+    let object_val = this.value;
+    let port_id = this.id;
+    let object_arr = object_val.split(',');
 
-    var dataarr = {};
-    dataarr['object'] = object_val;
+    let data = {};
+    data['object'] = object_val;
 
-    ajax_html(dataarr, '/getobject', '#objectframe');
+    ajax_html(data, objects_url, '#objectframe');
 
-    if (object_arr[0]!='empty') {
+    if (object_arr[0] != 'empty') {
         $('#selected_object').html('Выбран объект: '+ object_arr[1] +
-            '   <button type="button" class="btn btn-danger  m-b-10 btn-xs" data-dismiss="modal" ' +
-            'id = "reset_object"  value="'+ port_id + '" onclick="reset_object(\''+port_id+'\',\''+object_arr[2]+'\');">убрать</button>');
+            '   <button type="button" class="btn btn-danger m-b-2 btn-xs" data-dismiss="modal" ' +
+            'id = "reset_object"  value="'+ port_id + '" onclick="reset_object(\''+port_id+'\',\''+object_arr[2]+'\');">Убрать</button>');
     } else {
         $('#selected_object').html('Объект не выбран');
     }
@@ -27,7 +27,7 @@ function reset_object(id,port) {
     //Внесение изменений в БД
     select_object(null, null);
 
-    $('#'+id).html('Отсутсвует');
+    $('#'+id).html('Отсутствует');
     $('#'+id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
     $( '#'+port).val('empty,empty,' + id);
 }
@@ -108,31 +108,30 @@ function save_method() {
     ajax_html(dataarr, '/savemethod', '');
 }
 
-//Получение название порта
-function get_name_port(id_port) {
-    var name_port = $("#name_port_"+id_port).html();
+function getPortComment(id_port) {
+    var name_port = $("#name_port_"+id_port).text().trim();
 
     if (name_port == '') {
-        name_port = 'Без названия';
+        name_port = 'Отсутствует';
     }
 
     $("#name_modal_data").val(name_port);
     sessionStorage.setItem('id_port', id_port);
 }
 
-//Сохраниение названия порта
-function save_name_port() {
-    var dataarr = {};
+function updatePortComment() {
+    var data = {};
 
-    dataarr['id_port'] = sessionStorage.getItem('id_port');
-    dataarr['nameport'] = $("#name_modal_data").val();
+    data['port_id'] = sessionStorage.getItem('id_port');
+    data['comment'] = $("#name_modal_data").val().trim();
+    data['device_id'] = device_id;
 
-    ajax_html(dataarr, '/savenameport', '#name_port_'+dataarr['id_port']);
+    ajax_html(data, port_comment_url, '#name_port_'+data['port_id']);
 }
 
 //Убрать в поле название порта
-function no_name() {
-    $("#name_modal_data").val('Без названия');
+function setDefaultComment() {
+    $("#name_modal_data").val('Отсутствует');
 }
 
 // Модальное окно с действиями - выбор действия

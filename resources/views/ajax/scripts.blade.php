@@ -2,36 +2,28 @@
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
-            <tr>
-                <th>#</th>
-                <th>Название</th>
-
-
-            </tr>
+                <tr>
+                    <th>ID</th>
+                    <th class="text-left">Название</th>
+                </tr>
             </thead>
             <tbody>
-            @foreach ($scripts as $script)
-
+            @foreach($scripts as $script)
                 <tr>
-                    <th scope="row">{{$script->id}}</th>
-                    <td><a href="#" id="object_{{$script->id}}" onclick="select_script({{$script->id}}, '{{$script->name}}')" data-dismiss="modal" >{{$script->name}} </a></td>
-
+                    <td>{{$script->id}}</td>
+                    <td class="text-left">
+                        <a href="#" id="object_{{$script->id}}"
+                           onclick="select_script({{$script->id}}, '{{$script->name}}')"
+                           data-dismiss="modal" >{{$script->name}}</a>
+                    </td>
                 </tr>
-
-
             @endforeach
-
-
-
-
             </tbody>
         </table>
     </div>
 </div>
-
 <script>
-    function select_script(id_script, name_script)
-    {
+    function select_script(id_script, name_script) {
         $('#script_btn').html('Скрипт: ' + name_script);
         $('#id_script').val(id_script);
     }

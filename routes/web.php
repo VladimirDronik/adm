@@ -56,6 +56,7 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'objects', 'as' => 'objects.'], function () {
             Route::post('methods', 'ObjectController@methods')->name('methods');
+            Route::post('view/all', 'ObjectController@getViewAll')->name('view.all');
         });
 
         Route::group(['prefix' => 'methods', 'as' => 'methods.'], function () {
@@ -63,15 +64,15 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('store', 'MethodController@store')->name('store');
         });
 
-        // todo
+        Route::group(['prefix' => 'ports', 'as' => 'ports.'], function () {
+            Route::post('update/comment', 'PortController@updateComment')->name('update.comment');
+        });
 
-        Route::post('getobject', 'ObjectController@load_to_port');  // todo check
-        Route::post('add_object_to_port', 'ObjectController@add_to_port');  // todo check
+        Route::post('add_object_to_port', 'ObjectController@addObjectToPort');
 
         //Ports
         Route::post('getmethod', 'PortController@load_method');
         Route::post('loaddata', 'PortController@load_data');
         Route::post('savemethod', 'PortController@save_method');
-        Route::post('savenameport', 'PortController@save_name_port');
     });
 });

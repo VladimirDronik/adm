@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use App\Models\HomeObject;
-use App\Models\Port;
+use App\Repositories\ObjectRepository;
+use App\Repositories\PortRepository;
 use App\Services\ObjectService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -33,28 +33,17 @@ class ObjectController extends Controller
         return response()->json(['result' => true, 'methods' => $methods]);
     }
 
-    // todo refactoring
-
     /**
      * Загрузка объектов в модальное окно
      */
-    public function load_to_port()
+    public function getViewAll(Request $r, ObjectRepository $object_rep)
     {
-        $object_array = explode(',',$_POST['object']);
+        $object_array = explode(',',$r->object);
+        $object_name = $object_array[0] != 'empty' ? $object_array[1] : 'empty';
+        $objects = $object_rep->getAll();
+        $html = (String) view('ajax.objects', ['objects' => $objects, 'port' => $object_array[2]]);
 
-        if ($object_array[0]!='empty')
-            $object_name = $object_array[1];
-        else
-            $object_name = 'empty';
-
-        //Получение объектов из таблицы
-        $objects = HomeObject::all();
-
-        $returnHTML = (String) view('AJAX.objects', ['objects' => $objects, 'port' => $object_array[2] ]);
-
-        //$returnHTML = (String) view('AJAX.objects')->with('objects', $objects)->render();
-
-        return response()->json(array('success' => true, 'html'=>$returnHTML, 'object_name' => $object_name));
+        return response()->json(['success' => true] + compact('html', 'object_name'));
     }
 
     /**
@@ -64,10 +53,8 @@ class ObjectController extends Controller
      *
      * @return void
      */
-    public function add_to_port()
+    public function addObjectToPort(Request $r, PortRepository $port_rep)
     {
-
-       $res = Port::add_object($_POST['id_port'], $_POST['id_object']);
-       //return response()->json(array('success' => true, 'status'=>$res));
+        $port_rep->updateObject($r->all());
     }
 }

@@ -61,26 +61,6 @@ class Port extends Model
     // todo
 
     /**
-     * Добавление объекта к порту
-     *
-     * @param int $id_port "id порта, к которому добавляем объект"
-     * @param int $id_object "id объекта, который добавляем к порту"
-     *
-     * @return void
-     */
-    static public function add_object($id_port, $id_object)
-    {
-
-    if($id_object=='')
-        $id_object = null;
-
-    Port::where('id', $id_port)->update(['object' => $id_object]);
-
-
-    }
-
-
-    /**
      * Вывод всех портов для выбранного устройства
      *
      * @param int $device "id выбранного устройства"
@@ -131,9 +111,6 @@ class Port extends Model
 
     }
 
-
-
-
     /**
      * Выбор объекта у порта
      *
@@ -147,35 +124,4 @@ class Port extends Model
 
         return $port->object;
     }
-
-
-
-    /**
-     * Сохнаение названия порта
-     *
-     * @param int $id_port
-     * @param string $name_port
-     *
-     * @return void
-     */
-    static public function save_name_port($id_port, $name_port)
-    {
-        Port::where('id', $id_port)->update(['comment' => $name_port]);
-    }
-
-
-    /**
-     * Добавление новых портов для устройства
-     *
-     * @param int $id_device
-     * @param int $num_port
-     * @param string $status
-     *
-     */
-    static public function addports($id_device, $num_port, $status)
-    {
-        Port::insert(['id_device' => $id_device, 'num_port' => $num_port, 'status' => $status, 'comment' => '']);
-
-    }
-
 }

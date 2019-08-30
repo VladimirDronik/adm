@@ -6,6 +6,11 @@ use App\Models\HomeObject;
 
 class ObjectRepository {
 
+    public function getAll()
+    {
+        return HomeObject::orderBy('name')->get();
+    }
+
     public function getAllToArray()
     {
         $objects = HomeObject::select('id','name')->orderBy('name')->pluck('name','id')->toArray();

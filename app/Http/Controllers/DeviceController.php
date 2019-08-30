@@ -47,17 +47,10 @@ class DeviceController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении устройства');
     }
 
-    /**
-     * Выбор определенного устройства по id
-     *
-     * @param int $id - ид устройсва, коотрое выбираем
-     * @return void
-     */
     public function edit(int $id)
     {
         $device = Device::where('id', $id)->with('ports','ports.eobject','ports.escript')->first();
 
         return view('devices.edit', compact('device'));
     }
-
 }

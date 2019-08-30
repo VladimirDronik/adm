@@ -31,9 +31,7 @@
             </div>
         </div>
         <div class="card">
-            <div class="card-title">
-                <h4>Порты устройства </h4>
-            </div>
+            <div class="card-title"><h4>Порты устройства</h4></div>
             <div class="card-body">
                 @if(count($device->ports))
                 <div class="table-responsive">
@@ -45,9 +43,8 @@
                                 <th>Описание</th>
                                 <th>Связанный объект</th>
                                 <th>Действие</th>
-                                <th class="text-center">Длит</th>
-                                <th class="text-center">Двойн</th>
-                                <th>Настройка</th>
+                                <th class="text-center">Длит. нажатие</th>
+                                <th class="text-center">Двойн. нажатие</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,19 +58,27 @@
                                         <span class="badge badge-success">{{ $port->status }}</span>
                                     @endif
                                 </td>
-                                <td><a href="#" data-toggle="modal" data-target="#name_modal" id="name_port_{{ $port->id }}" onclick="get_name_port('{{ $port->id }}'); ">
-                                        @if($port->comment != '')
-                                            {{ $port->comment }}
-                                        @else
-                                            Отсутствует
-                                        @endif
+                                <td>
+                                    <a href="#" data-toggle="modal" data-target="#name_modal"
+                                       id="name_port_{{ $port->id }}" onclick="getPortComment('{{ $port->id }}');">
+                                        {{ $port->comment != '' ? $port->comment : 'Отсутствует'}}
                                     </a>
                                 </td>
-                                <td >
+                                <td>
                                     @if (optional($port->eobject)->name)
-                                        <button type="button" class="btn btn-warning  m-b-10 btn-sm" name="object" id="portobj_{{ $port->id }}" data-toggle="modal" data-target="#objectsModal"  value="{{ $port->object}},{{$port->eobject->name}},portobj_{{ $port->id }}"> <b>{{ $port->eobject->name }}</b></button>
+                                        <button type="button" class="btn btn-warning m-b-10 btn-sm"
+                                                name="object" id="portobj_{{ $port->id }}"
+                                                data-toggle="modal" data-target="#objectsModal"
+                                                value="{{ $port->object}},{{$port->eobject->name}},portobj_{{ $port->id }}">
+                                            <b>{{ $port->eobject->name }}</b>
+                                        </button>
                                     @else
-                                        <button type="button" class="btn btn-default  m-b-10 btn-sm" name="object" id="portobjempty_{{ $port->id }}" data-toggle="modal" data-target="#objectsModal" value="empty,empty,portobjempty_{{ $port->id }}">Отсутствует</button>
+                                        <button type="button" class="btn btn-default m-b-10 btn-sm"
+                                                name="object" id="portobjempty_{{ $port->id }}"
+                                                data-toggle="modal" data-target="#objectsModal"
+                                                value="empty,empty,portobjempty_{{ $port->id }}">
+                                            Отсутствует
+                                        </button>
                                     @endif
                                 </td>
                                 <td>
@@ -88,17 +93,15 @@
                                     @endif
                                 </td>
                                 @if($port->status !== 'out')
-                                    <td align="center">
+                                    <td class="text-center">
                                         <input type="checkbox" class="long_checkbox" data-id="{{ $port->id }}" style="cursor: pointer;" autocomplete="off" value="1" @if($port->longclick) checked @endif></td>
-                                    <td align="center">
+                                    <td class="text-center">
                                         <input type="checkbox" class="double_checkbox" data-id="{{ $port->id }}" style="cursor: pointer;" autocomplete="off" value="1" @if($port->doubleclick) checked @endif> </td>
                                 @else
                                     <td></td>
                                     <td></td>
                                 @endif
-
-                                <td align="center"><button type="button" class="btn btn-info btn-sm btn-rounded"><i class="fa fa-cog fa-lg"></i></button></td>
-                            </tr>
+                         </tr>
                         @endforeach
                         </tbody>
                         @if(count($device->ports)>10)
@@ -109,9 +112,8 @@
                                 <th>Описание</th>
                                 <th>Связанный объект</th>
                                 <th>Действие</th>
-                                <th align="center">Длит</th>
-                                <th align="center">Двойн</th>
-                                <th>Настройка</th>
+                                <th class="text-center">Длит. нажатие</th>
+                                <th class="text-center">Двойн. нажатие</th>
                             </tr>
                         </tfoot>
                         @endif
@@ -126,18 +128,37 @@
     </div>
     @include('components.info_modal')
 
+    <div id="name_modal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Описание порта</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control input-default"
+                           id="name_modal_data" placeholder="">
+                    <button type="button" class="btn btn-default" onclick="setDefaultComment();">Убрать</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                    <button type="button"   class="btn btn-primary" data-dismiss="modal"
+                            onclick="updatePortComment();">Сохранить изменения</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="objectsModal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Выбор привязанного объекта</h4>
+                    <h4 class="modal-title">Выбор связанного объекта</h4>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-info">
                         <label id="selected_object"></label><br>
                     </div>
-                    <div id="objectframe">
-                    </div>
+                    <div id="objectframe"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
@@ -199,25 +220,6 @@
         </div>
     </div>
 
-    <!-- модальное окно изменения имени у порта-->
-    <div id="name_modal" class="modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"> Описание порта</h4>
-                </div>
-                    <div class="modal-body" >
-                        <input type="text" class="form-control input-default " id="name_modal_data" placeholder="Input Default">
-                        <button type="button" class="btn btn-default" onclick="no_name();">Убрать</button>
-                    </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                    <button type="button"   class="btn btn-primary" data-dismiss="modal" onclick="save_name_port();" >Сохранить изменения</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="device_modal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -251,6 +253,8 @@
     <script src="{{ asset('ela/js/pagescripts/device.js') }}"></script>
     <script>
         let device_id = '{{ $device->id }}';
+        let port_comment_url = '{{ route('ajax.ports.update.comment') }}';
+        let objects_url = '{{ route('ajax.objects.view.all') }}';
 
         function deleteDevice() {
             $.ajax({

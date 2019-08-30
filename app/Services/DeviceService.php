@@ -21,6 +21,9 @@ class DeviceService {
         $devtype = $this->device->devtype;
 
         foreach (['in','out'] as $status) {
+            if ($devtype->{'start_' . $status} === 0 && $devtype->{'end_' . $status} === 0) {
+                break;
+            }
             for ($num_port = $devtype->{'start_' . $status}; $num_port <= $devtype->{'end_' . $status}; $num_port++) {
                 $ports[] = [
                     'id_device' => $this->device->id,
@@ -90,7 +93,7 @@ class DeviceService {
             return false;
         }
 
-        $port->{$data['name']} = $data['value'];
+        $port->{$data['name']} = trim($data['value']);
 
         $port->save();
 

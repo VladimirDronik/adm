@@ -30,4 +30,11 @@ class DevType extends Model
 {
     protected $table = 'devtypes';
     public $timestamps = false;
+
+    protected $casts = [
+            'start_in' => 'integer',
+            'end_in' => 'integer',
+            'start_out' => 'integer',
+            'end_out' => 'integer'
+        ];
 }
