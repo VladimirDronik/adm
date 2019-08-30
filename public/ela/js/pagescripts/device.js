@@ -68,8 +68,11 @@ function resetObjectButton(port_id) {
         .val('empty,empty,portobj_' + port_id);
 }
 
-function setMethodButton(port_id, color, html) {
-    $('#method_btn_' + port_id).attr({"class": "btn btn-"+color+" m-b-10 btn-sm"}).html(html);
+function setMethodButton(port_id, color, html, click) {
+    $('#method_btn_' + port_id)
+        .attr({"class": "btn btn-"+color+" m-b-10 btn-sm"})
+        .html(html)
+        .attr({"onclick" : "click_port_method("+click+");"});
 }
 
 //Сохранение выбранного метода для порта при закрытии главного модального окна
@@ -91,8 +94,10 @@ function storeMethod() {
         data['port'] = portarr[1];
         data['act'] = actarr[1];
 
+        let code = data['device'] + ';' + data['port'] + ':' + data['act'];
         setMethodButton(port_id, 'success',
-            'Простое: ' + data['device'] + ';' + data['port'] + ':' + data['act']);
+            '<b>Простое: ' + code +'</b>',
+            "'easy',"+port_id+",'"+code+"'");
 
         resetObjectButton(port_id);
 
@@ -101,7 +106,8 @@ function storeMethod() {
         data['id_object'] = $('#id_object').val();
         data['method_id'] = $('#method_id').val();
 
-        setMethodButton(port_id, 'warning', '<b>Метод: '+$('#method_name').val()+'</b>');
+        setMethodButton(port_id, 'warning', '<b>Метод: '+$('#method_name').val()+'</b>',
+            "'method',"+port_id+",'"+ $('#method_name').val()+"'");
 
     } else if (action === 'script') {
 
@@ -109,13 +115,14 @@ function storeMethod() {
         data['script_name'] = script[1];
         data['id_script'] = $('#id_script').val();
 
-        setMethodButton(port_id, 'info', '<b>'+script[1]+'</b>');
+        setMethodButton(port_id, 'info', '<b>Скрипт:'+script[1]+'</b>',
+            "'script',"+port_id+",'"+script[1]+"'");
 
         resetObjectButton(port_id);
 
     } else if (action === 'none') {
 
-        setMethodButton(port_id, 'default', 'Отсутствует');
+        setMethodButton(port_id, 'default', 'Отсутствует', "'none',"+port_id+",'none'");
 
         resetObjectButton(port_id);
     }
