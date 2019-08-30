@@ -6,6 +6,7 @@ use App\Http\Requests\Object\CreateRequest;
 use App\Http\Requests\Object\UpdateRequest;
 use App\Models\HomeObject;
 use App\Repositories\ObjectRepository;
+use App\Repositories\ScriptRepository;
 use App\Repositories\ViewRepository;
 use App\Services\ObjectService;
 use Illuminate\Http\Request;
@@ -53,14 +54,15 @@ class ObjectController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении объекта');
     }
 
-    public function edit(int $id)
+    public function edit(int $id, ScriptRepository $script_rep)
     {
         $object = HomeObject::findOrFail($id);
 
         $types = HomeObject::getFullTypeIds();
         $views = $this->view_rep->getAllToArray();
+        $scripts = $script_rep->getAllToArray();
 
-        return view('objects.edit', compact('object', 'types', 'views'));
+        return view('objects.edit', compact('object', 'types', 'views', 'scripts'));
     }
 
     public function update(UpdateRequest $r, int $id)

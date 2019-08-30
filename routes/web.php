@@ -57,6 +57,12 @@ Route::group(['middleware' => ['auth']], function () {
         Route::group(['prefix' => 'objects', 'as' => 'objects.'], function () {
             Route::post('methods', 'ObjectController@methods')->name('methods');
         });
+
+        Route::group(['prefix' => 'methods', 'as' => 'methods.'], function () {
+            Route::post('delete', 'MethodController@delete')->name('delete');
+            Route::post('store', 'MethodController@store')->name('store');
+        });
+
         // todo
 
         Route::post('getobject', 'ObjectController@load_to_port');  // todo check

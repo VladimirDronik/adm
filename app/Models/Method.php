@@ -25,4 +25,11 @@ use Illuminate\Database\Eloquent\Model;
 class Method extends Model
 {
     public $timestamps = false;
+
+    /* relations */
+
+    public function escript()
+    {
+        return $this->belongsTo(Script::class, 'script', 'id');
+    }
 }

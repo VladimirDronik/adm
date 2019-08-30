@@ -60,4 +60,9 @@ class HomeObject extends Model
     {
         return $this->belongsTo(View::class, 'view', 'id');
     }
+
+    public function methods()
+    {
+        return $this->hasMany(Method::class, 'id_object', 'id')->orderBy('id');
+    }
 }

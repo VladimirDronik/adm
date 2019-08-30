@@ -160,7 +160,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Назание помещения</h4>
+                        <h4 class="modal-title">Название помещения</h4>
                     </div>
                     <div class="modal-body" >
                         <input type="text" class="form-control input-default " id="nameModalData" placeholder="Введите название">

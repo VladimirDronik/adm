@@ -96,6 +96,7 @@
             </div>
         </div>
     </div>
+    @include('components.info_modal')
     @include('components.del_modal')
 @endsection
 
@@ -107,11 +108,11 @@
             $('.del_btn').click(function() {
                 del_id = $(this).attr('data-id');
                 $('#del_modal_body').text('Удалить объект «'+$(this).attr('data-name')+'»?');
-                $('#del_modal').modal('show');
+                $('#del_init_btn').click();
             });
 
             $('#del_modal_btn').click(function(){
-                $('#del_modal').modal('hide');
+                $('#del_cancel_btn').click();
                 if (del_id) {
                     $.ajax({
                         url: '{{ route('ajax.objects.delete') }}',

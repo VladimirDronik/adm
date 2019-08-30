@@ -27,7 +27,7 @@
                         {{ csrf_field() }}
                         <div class="form-body">
                             {{ Form::bs_alert() }}
-
+                            {{ Form::bs_title('Основные данные') }}
                             {{ Form::bs_radio('type', 'Тип элемента*:', $types, null, ['required' => true]) }}
                             {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
                             {{ Form::bs_autoselect('view', 'Отображение:', $views, old('view'),  false, false) }}
