@@ -1,4 +1,5 @@
 <div style="height:300px;overflow:auto;">
+    @if(count($scripts))
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -21,6 +22,9 @@
             </tbody>
         </table>
     </div>
+    @else
+        <p>Скрипты не найдены</p>
+    @endif
 </div>
 <script>
     function select_script(id_script, name_script) {

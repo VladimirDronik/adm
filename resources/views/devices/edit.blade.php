@@ -83,11 +83,13 @@
                                 </td>
                                 <td>
                                     @if($port->easy)
-                                        <button type="button"  id="method_btn_{{ $port->id }}" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('easy', {{ $port->id }}, '{{ $port->easy }}');"><b>Простое: {{ $port->easy }}</b></button>
+                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('easy', {{ $port->id }}, '{{ $port->easy }}');"><b>Простое: {{ $port->easy }}</b></button>
                                     @elseif($port->script)
-                                        <button type="button"  id="method_btn_{{ $port->id }}" class="btn btn-info  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('script', {{ $port->id }}, '{{ optional($port->escript)->name }}');"><b>{{ optional($port->escript)->name }}</b></button>
+                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-info  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('script', {{ $port->id }}, '{{ optional($port->escript)->name }}');"><b>{{ optional($port->escript)->name }}</b></button>
                                     @elseif(optional($port->eobject)->name != '' && $port->status !== 'out')
-                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-warning  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('method', {{ $port->id }}, '{{ optional($port->eobject)->name }}');"><b><< Выполнять действие объекта</b></button>
+                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-warning  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('method', {{ $port->id }}, '{{ optional($port->eobject)->name }}');">
+                                            @if($port->method) <b>Метод: {{ optional($port->emethod)->name }}</b> @else <b class="text-danger">Метод не выбран</b> @endif
+                                        </button>
                                     @elseif($port->status !== 'out')
                                         <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-default  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('none', {{ $port->id }}, 'none');">Отсутствует</button>
                                     @endif
@@ -194,7 +196,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal"  onclick="save_method();">Сохранить изменения</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="storeMethod();">Сохранить изменения</button>
                     <input type="hidden" value="" id="id_port">
                     <input type="hidden" value="" id="value">
                     <input type="hidden" value="" id="cur_method">

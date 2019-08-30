@@ -58,70 +58,8 @@ class Port extends Model
         return $this->belongsTo(Script::class, 'script', 'id');
     }
 
-    // todo
-
-    /**
-     * Вывод всех портов для выбранного устройства
-     *
-     * @param int $device "id выбранного устройства"
-     *
-     */
-    static public function select_ports($device)
+    public function emethod()
     {
-        $ports = Port::where('id_device',$device)->where('status', 'out')->get();
-
-        return $ports;
-
-    }
-
-
-    /**
-     * Добавление метода, скрипта или простого действия к порту
-     *
-     * @param int $id_port "id порта, у которого будем менять данные"
-     * @param string $method "изменяемое свойство easy, script, none или object&method"
-     * @param string $value "значение изменяемого свойства"
-     */
-    static public function add_method($id_port, $method, $value1, $value2 = null)
-    {
-        switch ($method){
-
-            case 'easy':
-                Port::where('id', $id_port)->update(['easy' => $value1, 'object' => null,
-                    'method' => null, 'script' => null]);
-                break;
-
-            case 'method':
-                Port::where('id', $id_port)->update(['object' => $value1, 'method' => $value2,
-                    'easy' => null, 'script' => null]);
-                break;
-
-            case 'script':
-                Port::where('id', $id_port)->update(['script' => $value1, 'object' => null,
-                    'method' => null, 'easy' => null]);
-                break;
-
-            case 'none':
-                Port::where('id', $id_port)->update(['script' => null, 'object' => null,
-                    'method' => null, 'easy' => null]);
-                break;
-
-        }
-
-
-    }
-
-    /**
-     * Выбор объекта у порта
-     *
-     * @param int $id_port
-     *
-     */
-    static public function select_object($id_port)
-    {
-
-        $port = Port::where('id',$id_port)->firstOrFail();
-
-        return $port->object;
+        return $this->belongsTo(Method::class, 'method', 'id');
     }
 }

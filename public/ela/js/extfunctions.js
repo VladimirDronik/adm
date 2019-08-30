@@ -8,21 +8,18 @@ function showSuccessModal(message) {
     $('#info_modal').modal('show');
 }
 
-// todo refactoring
-
-function ajax_html(dataarr, route, outobject)
-{
-
+function ajax_html(data, route, outobject) {
     $.ajax({
         type:'POST',
         url: route,
-        data: dataarr,
-        success:function(data){
-
+        data: data,
+        success: function (data) {
             $(outobject).html(data.html);
+            if (data.reload) {
+                location.href = location.href;
+            }
         }
     });
-
 }
 
 

@@ -70,9 +70,8 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::post('add_object_to_port', 'ObjectController@addObjectToPort');
 
-        //Ports
-        Route::post('getmethod', 'PortController@load_method');
-        Route::post('loaddata', 'PortController@load_data');
-        Route::post('savemethod', 'PortController@save_method');
+        Route::post('getmethod', 'PortController@getViewMethod');
+        Route::post('loaddata', 'PortController@getViewData');
+        Route::post('savemethod', 'PortController@storeMethod');
     });
 });

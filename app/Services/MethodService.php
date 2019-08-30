@@ -3,13 +3,21 @@
 namespace App\Services;
 
 use App\Models\Method;
+use App\Models\Port;
 use App\Models\Script;
+use Illuminate\Support\Facades\DB;
 
 class MethodService {
 
     public function delete(int $id)
     {
-        return Method::destroy($id);
+        DB::transaction(function () use ($id) {
+            Port::whereNotNull('method')->where('method', $id)
+                ->update(['method' => null, 'object' => null]);
+            Method::destroy($id);
+        });
+
+        return true;
     }
 
     public function store(array $data)

@@ -23,7 +23,7 @@ $('button[type=button][name=object]').click(function () {
     }
 });
 
-function reset_object(id,port) {
+function reset_object(id, port) {
     //Внесение изменений в БД
     select_object(null, null);
 
@@ -54,58 +54,73 @@ function select_method(mode, port_id, value) {
     $('#id_port').val(port_id);
     $('#value').val(value);
 
-    var dataarr = {};
-    dataarr['methodmode'] = mode;
-    dataarr['port_id'] = port_id;
-    dataarr['value'] = value;
-    dataarr['cur_method'] = $('#cur_method').val();
+    let data = {};
+    data['methodmode'] = mode;
+    data['port_id'] = port_id;
+    data['value'] = value;
+    data['cur_method'] = $('#cur_method').val();
 
-    ajax_html(dataarr, '/getmethod', '#mode');
+    ajax_html(data, '/getmethod', '#mode');
 }
 
-//Сохранение выбранного метода для порта
-function save_method() {
+function resetObjectButton(port_id) {
+    $('#portobj_'+port_id).html('Отсутствует').attr({"class": "btn btn-default  m-b-10 btn-sm"})
+        .val('empty,empty,portobj_' + port_id);
+}
 
-    var action = $('#action_text').val();
-    var dataarr = {};
+function setMethodButton(port_id, color, html) {
+    $('#method_btn_' + port_id).attr({"class": "btn btn-"+color+" m-b-10 btn-sm"}).html(html);
+}
 
-    dataarr['methodmode'] = action;
-    dataarr['id_port'] = $('#id_port').val();
+//Сохранение выбранного метода для порта при закрытии главного модального окна
+function storeMethod() {
+
+    let action = $('#action_text').val();
+    let data = {};
+    let port_id = $('#port_id').val();
+
+    data['methodmode'] = action;
+    data['id_port'] = $('#id_port').val();
 
     if (action === 'easy') {
 
-        var devicearr = ($('#dev_select_button').html()).split(': ');
-        var portarr = ($('#port_btn').html()).split(': ');
-        var actarr = ($('#action_btn').html()).split(': ');
-        dataarr['device'] = devicearr[1];
-        dataarr['port'] = portarr[1];
-        dataarr['act'] = actarr[1];
+        let devicearr = ($('#dev_select_button').html()).split(': ');
+        let portarr = ($('#port_btn').html()).split(': ');
+        let actarr = ($('#action_btn').html()).split(': ');
+        data['device'] = devicearr[1];
+        data['port'] = portarr[1];
+        data['act'] = actarr[1];
 
-        $('#method_btn_' + $('#port_id').val()).attr({"class": "btn btn-success  m-b-10 btn-sm"});
-        $('#method_btn_' + $('#port_id').val()).html('Простое: ' + dataarr['device'] + ';' + dataarr['port'] + ':' + dataarr['act']);
+        setMethodButton(port_id, 'success',
+            'Простое: ' + data['device'] + ';' + data['port'] + ':' + data['act']);
+
+        resetObjectButton(port_id);
 
     } else if (action === 'method') {
 
-        dataarr['id_object'] = $('#id_object').val();
+        data['id_object'] = $('#id_object').val();
+        data['method_id'] = $('#method_id').val();
 
-        $('#method_btn_' + $('#port_id').val()).attr({"class": "btn btn-warning  m-b-10 btn-sm"});
-        $('#method_btn_' + $('#port_id').val()).html('<b><< Выполнять действие объекта</b>');
+        setMethodButton(port_id, 'warning', '<b>Метод: '+$('#method_name').val()+'</b>');
 
     } else if (action === 'script') {
 
-        var script = ($('#script_btn').html()).split(': ');
-        dataarr['script_name'] = script[1];
-        dataarr['id_script'] = $('#id_script').val();
+        let script = ($('#script_btn').html()).split(': ');
+        data['script_name'] = script[1];
+        data['id_script'] = $('#id_script').val();
 
-        $('#method_btn_' + $('#port_id').val()).attr({"class": "btn btn-info  m-b-10 btn-sm"});
-        $('#method_btn_' + $('#port_id').val()).html('<b>'+script[1]+'</b>');
+        setMethodButton(port_id, 'info', '<b>'+script[1]+'</b>');
+
+        resetObjectButton(port_id);
 
     } else if (action === 'none') {
-        $('#method_btn_' + $('#port_id').val()).attr({"class": "btn btn-default  m-b-10 btn-sm"});
-        $('#method_btn_' + $('#port_id').val()).html('Отсутствует');
+
+        setMethodButton(port_id, 'default', 'Отсутствует');
+
+        resetObjectButton(port_id);
     }
 
-    ajax_html(dataarr, '/savemethod', '');
+    ajax_html(data, '/savemethod', '');
 }
 
 function getPortComment(id_port) {

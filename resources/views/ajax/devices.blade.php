@@ -14,7 +14,6 @@
                     <td class="text-left"><a href="#" id="object_{{$device->id}}"
                            onclick="select_device({{$device->id}})"
                            data-dismiss="modal" >{{$device->description}}</a></td>
-
                 </tr>
             @endforeach
             </tbody>
