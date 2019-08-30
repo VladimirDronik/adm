@@ -95,7 +95,7 @@
                     <div class="alert alert-danger alert-dismissible fade show" id="error_div" style="display: none;">
                          <span id="error_text"></span>
                     </div>
-                    <input type="hidden" name="m_id" value="">
+                    <input type="hidden" id="m_id" name="m_id" value="">
                     <div class="form-group row">
                         <label class="control-label text-right col-md-3 label-fix" for="m_name">
                             <strong>Название*:</strong>
