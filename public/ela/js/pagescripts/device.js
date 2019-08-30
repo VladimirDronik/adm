@@ -1,7 +1,3 @@
-/**
- * Скрипты для шаблона device.blade.php
- */
-
 //Вызов модального окна с объектами
 $('button[type=button][name=object]').click(function () {
 
@@ -29,7 +25,7 @@ function reset_object(id, port) {
 
     $('#'+id).html('Отсутствует');
     $('#'+id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
-    $( '#'+port).val('empty,empty,' + id);
+    $('#'+port).val('empty,empty,' + id);
 }
 
 // Модальное окно с действиями - выбор действия
@@ -131,7 +127,7 @@ function storeMethod() {
 }
 
 function getPortComment(id_port) {
-    var name_port = $("#name_port_"+id_port).text().trim();
+    let name_port = $("#name_port_"+id_port).text().trim();
 
     if (name_port == '') {
         name_port = 'Отсутствует';
@@ -142,7 +138,7 @@ function getPortComment(id_port) {
 }
 
 function updatePortComment() {
-    var data = {};
+    let data = {};
 
     data['port_id'] = sessionStorage.getItem('id_port');
     data['comment'] = $("#name_modal_data").val().trim();

@@ -32,8 +32,7 @@ class PortService {
     }
 
     public function getViewMethod($r)
-    {\Log::alert($r->all());
-
+    {
         $device = $port = $act = '';
 
         $eport = Port::findOrFail($r->port_id);
