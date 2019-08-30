@@ -45,7 +45,7 @@
                     <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ Auth::user()->login }}</a>
                     <div class="dropdown-menu dropdown-menu-right animated zoomIn">
                         <ul class="dropdown-user">
-                            <li><a href="#"><i class="ti-user"></i> Профиль</a></li>
+                            <li><a href="{{ route('profile.edit') }}"><i class="ti-user"></i> Профиль</a></li>
                             <li><a href="{{ route('logout') }}" onclick="event.preventDefault();
                                    document.getElementById('logout-form').submit();"><i class="fa fa-power-off"></i> Выход</a></li>
 

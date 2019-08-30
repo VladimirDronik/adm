@@ -30,9 +30,9 @@
                                 <th>Название</th>
                                 <th>Тип</th>
                                 <th>ip адрес</th>
-                                <th>Статус</th>
-                                <th></th>
-                                <th></th>
+                                <th class="text-center">Статус</th>
+                                <th style="width: 60px;"></th>
+                                <th style="width: 60px;"></th>
                             </tr>
                         </thead>
                         <tbody>

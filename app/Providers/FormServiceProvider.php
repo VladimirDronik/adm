@@ -54,6 +54,8 @@ class FormServiceProvider extends ServiceProvider
             self::PATH.'color', ['name', 'label', 'value', 'attributes' => [], 'help' => null, 'col' => 3]);
         \Form::component('bs_simple_text',
             self::PATH.'simple_text', ['label' => null, 'value' => null, 'name' => null, 'help' => null, 'col' => 3]);
+        \Form::component('bs_password',
+            self::PATH.'password', ['name', 'label', 'attributes' => [], 'help' => null, 'col' => 3]);
     }
 
     /**
