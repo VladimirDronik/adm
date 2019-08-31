@@ -28,6 +28,9 @@ class HomeObject extends Model
 {
     const TYPE_BUTTON = 'button';
     const TYPE_LAMP = 'lamp';
+    const TYPE_TERMO = 'termo';
+    const TYPE_HYDRO = 'hydro';
+    const TYPE_SOCKET = 'socket';
 
     protected $table = 'objects';
     public $timestamps = false;
@@ -37,6 +40,9 @@ class HomeObject extends Model
         return [
             self::TYPE_BUTTON => 'Кнопка',
             self::TYPE_LAMP => 'Лампа',
+            self::TYPE_SOCKET => 'Розетка',
+            self::TYPE_TERMO => 'Термометр',
+            self::TYPE_HYDRO => 'Гигрометр'
         ];
     }
 

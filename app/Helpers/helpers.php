@@ -39,3 +39,19 @@ if (!function_exists('ajaxHas')) {
         return true;
     }
 }
+
+/* array */
+
+if (!function_exists('trimArray')) {
+    function trimArray(&$array, $keys = []) {
+        if (empty($keys)) {
+            foreach ($array as &$value) {
+                $value = trim($value);
+            }
+        } else {
+            foreach ($keys as $key) {
+                $array[$key] = trim($array[$key]);
+            }
+        }
+    }
+}

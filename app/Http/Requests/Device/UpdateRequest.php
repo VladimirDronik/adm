@@ -25,7 +25,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'type' => 'required|integer|min:0',
-            'description' => 'required|string|max:255',
+            'description' => 'required|string|max:255|unique:devices,description,'.$this->device->id,
             'ip_address' => 'required|string|ip|max:15',
         ];
     }
@@ -38,7 +38,8 @@ class UpdateRequest extends FormRequest
             'description.max' => 'Название содержит более 255 символов',
             'ip_address.required' => 'Не указан ip адрес',
             'ip_address.max' => 'IP адрес содержит более 15 символов',
-            'ip_address.ip' => 'Недопустимый ip адрес'
+            'ip_address.ip' => 'Недопустимый ip адрес',
+            'description.unique' => 'Устройство с таким названием уже существует. Необходимо изменить название'
         ];
     }
 }

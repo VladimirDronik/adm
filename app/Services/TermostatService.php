@@ -20,12 +20,10 @@ class TermostatService {
     {
         $termostat = new Termostat();
         $this->prepare($termostat, $data);
-        $termostat->id = Termostat::max('id') + 1; //  todo
-        $termostat_id = $termostat->id;
         $termostat->current = 0;
         $termostat->save();
 
-        return $termostat_id;
+        return $termostat->id;
     }
 
     public function update(Termostat $termostat, array $data)

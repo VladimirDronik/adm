@@ -72,15 +72,12 @@ class SceneService {
     {
         $scene = new Scene();
 
-        $scene->id = Scene::max('id') + 1; // todo
         $scene->sort = Scene::max('sort') + 1;
         $this->prepareScene($scene, $data);
 
-        $scene_id = $scene->id; // todo
-
         $scene->save();
 
-        return $scene_id;
+        return $scene->id;
     }
 
     public function update(Scene $scene, array $data)

@@ -60,7 +60,6 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 @if($filter_room != '')
                                     <th>Сорт</th>
                                 @endif
@@ -83,7 +82,6 @@
                         <tbody>
                         @foreach($views as $view)
                             <tr id="tr{{$view->id}}">
-                                <td>{{ $view->id }}</td>
                                 @if($filter_room!= '')
                                     <td scope="row">{{ $view->sort }}</td>
                                 @endif
@@ -135,7 +133,6 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>ID</th>
                                 @if($filter_room != '')
                                     <th>Сорт</th>
                                 @endif
@@ -176,7 +173,7 @@
 
            $('.del_btn').click(function() {
                del_id = $(this).attr('data-id');
-               $('#del_modal_body').text('Удалить отображение № '+$(this).attr('data-id')+' «'+$(this).attr('data-name')+'»?');
+               $('#del_modal_body').text('Удалить отображение «'+$(this).attr('data-name')+'»?');
                $('#del_modal').modal('show');
            });
 

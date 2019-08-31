@@ -2,7 +2,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование отображения № '. $view->id .' «'. $view->name .'»',
+       ['title' => 'Редактирование отображения «'. $view->name .'»',
         'links' => [ route('views.index') => 'Отображения'],
         'last_link' => 'Редактирование отображения'])
 @endsection

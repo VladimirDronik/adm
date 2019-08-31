@@ -19,7 +19,7 @@ class ObjectRepository {
         return $objects;
     }
 
-    public function getByName($name, $pagination_count = 15)
+    public function getByName($name, $pagination_count = 30)
     {
         $query = HomeObject::with('eview');
 

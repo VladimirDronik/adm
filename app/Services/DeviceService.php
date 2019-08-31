@@ -66,22 +66,41 @@ class DeviceService {
         }
     }
 
+    private function isDoubleDescription(array $data)
+    {
+        return Device::where('id','!=',$data['id'])
+            ->where('description',$data['description'])->exists();
+    }
+
+    private function isValidIpAddress($ip)
+    {
+        return filter_var($ip, FILTER_VALIDATE_IP);
+    }
+
     public function update(array $data)
     {
-        // todo validate data
+        trimArray($data);
+
+        if ($this->isDoubleDescription($data)) {
+            return [false, 'Устройство с таким название уже существует. Необходимо изменить название'];
+        }
+
+        if (!$this->isValidIpAddress($data['ip_address'])) {
+            return [false, 'Недопустимый ip адрес'];
+        }
 
         $device = Device::find($data['id']);
 
         if (!$device) {
-            return false;
+            return [false, 'Устройство не найдено'];
         }
 
-        $device->description = trim($data['description']);
-        $device->ip_address = trim($data['ip_address']);
+        $device->description = $data['description'];
+        $device->ip_address = $data['ip_address'];
 
         $device->save();
 
-        return true;
+        return [true, ''];
     }
 
     public function updatePort(array $data)

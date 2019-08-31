@@ -26,7 +26,9 @@ class DeviceController extends Controller
     {
         abort_if(!ajaxHas($r, ['id','description','ip_address']), 400);
 
-        return response()->json(['result' => $this->service->update($r->all())]);
+        list($result, $message) = $this->service->update($r->all());
+
+        return response()->json(compact('result','message'));
     }
 
     public function updatePort(Request $r)

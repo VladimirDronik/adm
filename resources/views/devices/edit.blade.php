@@ -2,7 +2,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование устройства № '. $device->id .' «'. $device->description.'»',
+       ['title' => 'Редактирование устройства «'. $device->description.'»',
         'links' => [ route('devices.index') => 'Устройства'],
         'last_link' => 'Редактирование устройства'])
 @endsection
@@ -312,10 +312,11 @@
 
             $.ajax({
                 url: '{{ route('ajax.devices.update') }}',
-                data: {'_token': _token, 'id': device_id, 'description': description, 'ip_address': ip_address},
+                data: {'_token': _token, 'id': device_id, 'description': description,
+                    'ip_address': ip_address},
                 success: function (data) {
                     if (!data.result) {
-                        showErrorModal('Ошибка при сохранении изменений');
+                        showErrorModal(data.message);
                     }
                 }
             });
@@ -324,7 +325,8 @@
         function updatePortCheckbox(name, port_id, value) {
             $.ajax({
                 url: '{{ route('ajax.devices.ports.update') }}',
-                data: {'_token': _token, 'id': device_id, 'port_id': port_id, 'name': name, 'value': value},
+                data: {'_token': _token, 'id': device_id, 'port_id': port_id,
+                    'name': name, 'value': value},
                 success: function (data) {
                     if (!data.result) {
                         showErrorModal('Ошибка при сохранении изменений');

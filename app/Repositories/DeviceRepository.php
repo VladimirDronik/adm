@@ -7,7 +7,7 @@ use App\Models\DevType;
 
 class DeviceRepository {
 
-    public function getByName($name = '', $pagination_count = 15)
+    public function getByName($name = '', $pagination_count = 30)
     {
         $query = Device::with('devtype');
 

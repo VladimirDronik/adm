@@ -44,7 +44,7 @@ class ObjectController extends Controller
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('objects.edit',[$id])->with('success', 'Объект успешно добавлен');
+                return redirect()->route('objects.edit',[$id])->with('success', 'Объект успешно добавлен. Теперь к объекту можно добавить методы');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при добавлении объекта '
