@@ -7,9 +7,10 @@ trait SchedulerPointType
     public static function getFullTypeIds()
     {
         return [
+            self::TYPE_CRON => 'Ежеминутные',
             self::TYPE_DAYS => 'Ежедневные',
             self::TYPE_MONTHS => 'Ежемесячные',
-            self::TYPE_YEARS => 'Ежегодные'
+            self::TYPE_YEARS => 'Ежегодные',
         ];
     }
 

@@ -31,12 +31,20 @@ class SchedulerPoint extends Model
 {
     use SchedulerPointType;
 
+    const CRON_PERIODS = [1, 5, 10, 15, 30, 60]; // minutes
+
     const TYPE_DAYS = 'w';
     const TYPE_MONTHS = 'm';
     const TYPE_YEARS = 'y';
+    const TYPE_CRON = 'c';
 
     protected $table = 'scheduler_points';
     public $timestamps = false;
+
+    public static function isInCronPeriods(int $period)
+    {
+        return in_array($period, self::CRON_PERIODS);
+    }
 
     /* relations */
 

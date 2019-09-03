@@ -81,5 +81,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('getmethod', 'PortController@getViewMethod');
         Route::post('loaddata', 'PortController@getViewData');
         Route::post('savemethod', 'PortController@storeMethod');
+
+        Route::post('events/delete', 'EventController@delete')->name('events.delete');
     });
 });

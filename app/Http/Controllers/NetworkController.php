@@ -22,7 +22,7 @@ class NetworkController extends Controller
                 'id' => 1,
                 'ip' => '12.12.12.12'
             ];
-            dd($network);
+
         } catch (\Throwable $e) {
             dd($e->getMessage());
         }

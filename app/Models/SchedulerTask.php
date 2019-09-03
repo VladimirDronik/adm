@@ -26,6 +26,7 @@ class SchedulerTask extends Model
 {
     protected $table = 'scheduler_tasks';
     public $timestamps = false;
+    protected $guarded = ['id'];
 
     /* relations */
 

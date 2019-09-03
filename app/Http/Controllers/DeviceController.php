@@ -50,6 +50,10 @@ class DeviceController extends Controller
     {
         $device = Device::where('id', $id)->with('ports','ports.eobject','ports.escript')->first();
 
+        if (!$device) {
+            return redirect()->route('devices.index')->with('error','Устройство не найдено');
+        }
+
         return view('devices.edit', compact('device'));
     }
 }

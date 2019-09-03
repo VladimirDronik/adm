@@ -63,7 +63,7 @@ class TermostatController extends Controller
                 return redirect()->route('termostats.edit',[$id])->with('success', 'Термостат успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении термостата ' .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при добавлении термостата '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении термостата');
