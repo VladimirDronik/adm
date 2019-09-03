@@ -26,6 +26,24 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Cron extends Model
 {
+    const PERIODS = [1, 5, 10, 15, 30, 60]; // minutes
     protected $table = 'cron';
     public $timestamps = false;
+
+    public static function isInPeriods(int $period)
+    {
+        return in_array($period, self::PERIODS);
+    }
+
+    /* relations */
+
+    public function eobject()
+    {
+        return $this->belongsTo(HomeObject::class, 'object', 'id');
+    }
+
+    public function emethod()
+    {
+        return $this->belongsTo(Method::class, 'method', 'id');
+    }
 }

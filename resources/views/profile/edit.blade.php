@@ -27,6 +27,7 @@
                     </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
+                    <div style="height: 150px;">&nbsp;</div>
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Models\SchedulerPointType;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -28,6 +29,19 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SchedulerPoint extends Model
 {
+    use SchedulerPointType;
+
+    const TYPE_DAYS = 'w';
+    const TYPE_MONTHS = 'm';
+    const TYPE_YEARS = 'y';
+
     protected $table = 'scheduler_points';
     public $timestamps = false;
+
+    /* relations */
+
+    public function etask()
+    {
+        return $this->belongsTo(SchedulerTask::class, 'id_task', 'id');
+    }
 }

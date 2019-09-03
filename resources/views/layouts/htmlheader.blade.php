@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('ela/images/favicon.png') }}">
+    <link rel="icon" sizes="16x16" href="{{ asset('favicon.ico') }}">
     <title>TouchON Configuration Panel</title>
 
     <link href="{{ asset('ela/css/lib/bootstrap/bootstrap.min.css') }}" rel="stylesheet">

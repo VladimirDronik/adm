@@ -38,7 +38,7 @@
                                         <td>{{ $menu->title }}</td>
                                         <td>
                                             @if(!empty($menu->image))
-                                                <img src="{{ asset($menu->image_path) }}" width="60" style="background-color: #e8e8e8;">
+                                                <img src="{{ asset($menu->image_path) }}" width="60" height="60" style="background-color: #e8e8e8;">
                                             @endif
                                         </td>
                                         <td class="text-center">

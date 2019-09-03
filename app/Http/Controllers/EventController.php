@@ -4,26 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Device\CreateRequest;
 use App\Models\Device;
-use App\Repositories\DeviceRepository;
-use App\Services\DeviceService;
+use App\Repositories\EventRepository;
+use App\Services\EventService;
 use Illuminate\Http\Request;
 
-class DeviceController extends Controller
+class EventController extends Controller
 {
-    private $device_rep;
+    private $event_rep;
     private $service;
 
-    public function __construct(DeviceRepository $device_rep, DeviceService $service)
+    public function __construct(EventRepository $event_rep, EventService $service)
     {
-        $this->device_rep = $device_rep;
+        $this->event_rep = $event_rep;
         $this->service = $service;
     }
 
     public function index()
     {
-        $devices = $this->device_rep->getByName();
+        $events = $this->event_rep->getAll();
 
-        return view('devices.index', compact('devices'));
+        return view('events.index', compact('events'));
     }
 
     public function create()

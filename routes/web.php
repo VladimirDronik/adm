@@ -19,7 +19,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('rooms', 'RoomController')->except('show','destroy');
     Route::resource('scenes', 'SceneController')->except('show','destroy');
     Route::resource('termostats', 'TermostatController')->except('show','destroy');
+    Route::resource('events', 'EventController')->except('show','destroy');
 
+    Route::get('network', 'NetworkController@edit')->name('network.edit');
+    Route::put('network', 'NetworkController@update')->name('network.update');
     Route::get('menu', 'MenuController@index')->name('menu.index');
 
     Route::group(['namespace' => 'Ajax', 'as' => 'ajax.'], function () {

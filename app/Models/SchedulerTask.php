@@ -26,4 +26,21 @@ class SchedulerTask extends Model
 {
     protected $table = 'scheduler_tasks';
     public $timestamps = false;
+
+    /* relations */
+
+    public function eobject()
+    {
+        return $this->belongsTo(HomeObject::class, 'object', 'id');
+    }
+
+    public function emethod()
+    {
+        return $this->belongsTo(Method::class, 'method', 'id');
+    }
+
+    public function points()
+    {
+        return $this->hasMany(SchedulerPoint::class, 'id_task', 'id')->orderBy('type');
+    }
 }
