@@ -5,8 +5,8 @@
                 <h4 class="modal-title" id="point_modal_title">Добавление периода</h4>
             </div>
             <div class="modal-body">
-                <div class="alert alert-danger alert-dismissible fade show" id="error_div" style="display: none;">
-                    <span id="error_text"></span>
+                <div class="alert alert-danger alert-dismissible fade show" id="m_error_div" style="display: none;">
+                    <span id="m_error_text"></span>
                 </div>
                 <input type="hidden" id="m_id" name="m_id" value="">
                 <div class="form-group row">
@@ -68,7 +68,7 @@
                         @foreach(['Пн','Вт','Ср','Чт','Пт','Сб','Вск'] as $key => $day)
                             <div class="checkbox m-r-10" style="display: inline-block;">
                                 <label style="cursor: pointer;">
-                                    <input type="checkbox" name="m_days" value="{{ $key }}" autocomplete="off"> {{ $day }}
+                                    <input type="checkbox" name="m_days" value="{{ $key+1 }}" autocomplete="off"> {{ $day }}
                                 </label>
                             </div>
                         @endforeach
@@ -90,10 +90,16 @@
                 </div>
                 <div class="form-group row" id="m_div_y" style="display: none;">
                     <label class="control-label text-right col-md-3 label-fix" for="m_time">
-                        <strong>y*:</strong>
+                        <strong>Даты*:</strong>
                     </label>
                     <div class="col-md-9">
-d
+                        <div id="m_div_year_dates" class="p-t-4">
+                        </div>
+                        <hr>
+                        <form class="form-inline my-2 my-lg-0">
+                            <input class="form-control mr-sm-2" id="m_year_date" type="text" autocomplete="off" name="m_year_dates" value="">
+                            <button class="form-control btn btn-default m-l-4 my-2 my-sm-0" id="add_year_date_btn" type="button">Добавить</button>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -3,6 +3,7 @@
 @section('css')
     <link href="{{ asset('ela/css/lib/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
     <link href="{{ asset('ela/css/lib/clockpicker/clockpicker.css') }}" rel="stylesheet">
+    <link href="{{ asset('ela/css/lib/datepicker/bootstrap-datepicker3.min.css') }}" rel="stylesheet">
 @endsection
 
 @section('breadcrumbs')
@@ -93,8 +94,9 @@
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script src="{{ asset('ela/js/lib/clockpicker/clockpicker.js') }}"></script>
     <script src="{{ asset('ela/js/moment.js') }}"></script>
+    <script src="{{ asset('ela/js/lib/datepicker/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('ela/js/lib/datepicker/datepicker-ru.min.js') }}" charset="UTF-8"></script>
     <script>
-
         let init_btn = $('#init_btn');
         let cancel_btn = $('#cancel_btn');
         let store_url = '{{ route('ajax.points.store') }}';
@@ -104,6 +106,8 @@
         let event_id = '{{ $event->id }}';
         let del_id;
         let is_valid = false;
+        let year_dates = [];
+        let m_year_date = $('#m_year_date');
 
         function createMethodSelect(target, options, selected) {
             let sel = $(target);
@@ -145,6 +149,7 @@
             $("#auto_sel_method").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $('#clockpicker').clockpicker({donetext: 'Применить'});
+            $('#m_year_date').datepicker({format: "dd.mm", language: "ru", autoclose: true});
 
             // event
 
@@ -194,16 +199,47 @@
             // points
 
             function showModalError(message) {
-                $('#error_text').text(message);
-                $('#error_div').show();
+                $('#m_error_text').text(message);
+                $('#m_error_div').show();
             }
 
             function showAddModal() {
                 $('#m_id').val('');
                 $('#point_modal_title').text('Добавление периода');
                 $('#apply_btn').text('Добавить период');
-                $('#error_div').hide();
+                $('#m_error_div').hide();
+                $('#m_div_w').find('input:checkbox').prop('checked', false);
+                $('#m_div_m').find('input:checkbox').prop('checked', false);
+                $('#m_div_year_dates').html('');
+                year_dates = [];
                 init_btn.click();
+            }
+
+            function getModalData(type) {
+                let data = { 'type': type };
+                data.id = $('#m_id').val();
+                if (type === 'c') {
+                    data.time = $('select[name=m_cron_period]').val();
+                } else {
+                    data.time = $('#m_time').val().trim();
+                    data.days = [];
+                    if (type === 'w') {
+                        $('input:checkbox[name=m_days]:checked').each(function() {
+                            data.days.push($(this).val());
+                        });
+                    } else if (type === 'm') {
+                        $('input:checkbox[name=m_dates]:checked').each(function() {
+                            data.days.push($(this).val());
+                        });
+                    } else if (type === 'y') {
+                        data.days = year_dates.slice();
+                    }
+                }
+                return data;
+            }
+
+            function validatePoint(data) {
+                return '123';
             }
 
             function showEditModal(id) {
@@ -214,7 +250,7 @@
                 init_btn.click();
             }
 
-            function addMethod(id, name, script_id, script_name, comment) {
+            function addPoint(data) {
                 let html = `
                     <div class="form-group row" id="div${id}">
                          <label class="col-md-3" id="name${id}">${name}</label>
@@ -241,30 +277,25 @@
 
             $('#apply_btn').click(function(){
 
-                let id = $('input[name=m_id]').val();
-                let name = $('input[name=m_name]').val().trim();
-                let script_id = $('select[name=m_script]').val();
-                let comment = $('input[name=m_comment]').val().trim();
+                let type = $("input[name='m_type']:checked").val();
+                let data = getModalData(type);
 
-                if (name == '') {
-                    showModalError('Не указано название метода');
+                let message = validatePoint(data);
+
+                if (message !== '') {
+                    showModalError(message);
                     return false;
-                }
-
-                if (comment == '') {
-                    comment = name;
                 }
 
                 $.ajax({
                     url: store_url,
-                    data: {'_token': _token, 'object_id': object_id, 'id': id, 'name': name,
-                        'script_id': script_id, 'comment': comment},
+                    data: {'_token': _token, 'event_id': event_id, 'data': data},
                     success: function (data) {
                         if (data.result) {
                             if (id) {
-                                editMethod(id, name, script_id, data.script_name, comment);
+                                editPoint(id, data);
                             } else {
-                                addMethod(data.id, name, script_id, data.script_name, comment);
+                                addPoint(data);
                             }
                         }
                         cancel_btn.click();
@@ -328,8 +359,41 @@
                 $('#m_div_'+type).show();
             }
 
+            function getYearDateButtonHtml(date) {
+                let html = `
+                    <button type="button" data-date="${date}" class="btn btn-outline-success btn-outline btn-addon m-b-10 m-l-5 year_date_btn">
+                        ${date} <i class="ti-close"></i>
+                    </button>
+                `;
+                return html;
+            }
+
+            function addYearDateToList(date) {
+                if (year_dates.indexOf(date) === -1) {
+                    year_dates.push(date);
+                    $('#m_div_year_dates').append(getYearDateButtonHtml(date));
+                }
+            }
+
             $('input[type=radio][name=m_type]').change(function() {
                 refreshModalDivs(this.value);
+            });
+
+            $('#add_year_date_btn').click(function() {
+                let year_date = m_year_date.val().trim();
+                m_year_date.val('');
+                addYearDateToList(year_date);
+            });
+
+            $('body').on('click', '.year_date_btn', function() {
+                let date = $(this).attr('data-date');
+                for (let i = year_dates.length - 1; i >= 0; i--) {
+                    if (year_dates[i] == date) {
+                        year_dates.splice(i, 1);
+                        break;
+                    }
+                }
+                $(this).remove();
             });
         });
     </script>
