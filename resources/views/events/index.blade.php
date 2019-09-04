@@ -1,13 +1,13 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-    @if ($filter_type == '')
+    @if ($filter['type'] == '')
         @include('components.breadcrumbs', ['title' => 'Cобытия'])
     @else
         @includeIf('components.breadcrumbs',
            ['title' => 'События',
             'links' => [ route('events.index') => 'События'],
-            'last_link' => $filter_type_name])
+            'last_link' => $filter['type_name']])
     @endif
 @endsection
 
@@ -22,12 +22,12 @@
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <div class="pull-right">
                             <form class="form-inline my-2 my-lg-0" method="get">
-                                <input class="form-control mr-sm-2" type="text" autocomplete="off" name="name" value="{{ $filter_name }}" placeholder="Поиск по названию" aria-label="Поиск">
+                                <input class="form-control mr-sm-2" type="text" autocomplete="off" name="name" value="{{ $filter['name'] }}" placeholder="Поиск по названию" aria-label="Поиск">
 
                                 <select class="form-control form-control-lg" autocomplete="off" name="type" style="font-size: 1rem;">
-                                    <option value="" @if($filter_type == '') selected @endif>Все типы</option>
+                                    <option value="" @if($filter['type'] == '') selected @endif>Все типы</option>
                                     @foreach($types as $key => $type)
-                                        <option value="{{ $key }}" @if($filter_type == $key) selected @endif>{{ $type }}</option>
+                                        <option value="{{ $key }}" @if($filter['type'] == $key) selected @endif>{{ $type }}</option>
                                     @endforeach
                                 </select>
                                 <button class="form-control btn btn-primary m-l-4 p-l-50 p-r-50 my-2 my-sm-0" type="submit">Найти</button>
@@ -40,27 +40,39 @@
         </div>
         <div class="card">
             <div class="card-title">
-                <h4>@if($filter_type == '') События @else {{ $filter_type_name }} события @endif </h4>
+                <h4>@if($filter['type'] == '') События @else {{ $filter['type_name'] }} события @endif </h4>
             </div>
             <div class="card-body">
                 @if(count($events))
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
-                            <tr>
-                                <th>Название</th>
-                                <th>Периодичность</th>
-                                <th>Метод</th>
-                                <th style="width: 60px;"></th>
-                                <th style="width: 60px;"></th>
-                            </tr>
+                                <tr>
+                                    <th>Название</th>
+                                    <th>Периодичность</th>
+                                    <th>Метод</th>
+                                    <th style="width: 60px;"></th>
+                                    <th style="width: 60px;"></th>
+                                </tr>
                             </thead>
                             <tbody>
                             @foreach($events as $event)
                                 <tr id="tr{{$event->id}}">
                                     <td><a href="{{ route('events.edit',[$event->id]) }}" title="{{ $event->name }}">{{ $event->name }}</a></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>
+                                        @if(count($event->points))
+
+                                        @else
+                                            <span class="text-danger">Расписание отсутствует</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if(optional($event->emethod)->id_object)
+                                            <a href="{{ route('objects.edit',[optional($event->emethod)->id_object]) }}">
+                                                {{ optional($event->emethod)->name }}
+                                            </a>
+                                        @endif
+                                    </td>
                                     <td align="center">
                                         <a href="{{ route('events.edit',[$event->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                             <i class="fa fa-cog fa-lg"></i>
@@ -75,15 +87,17 @@
                                 </tr>
                             @endforeach
                             </tbody>
+                            @if(count($events) > 10)
                             <tfoot>
-                            <tr>
-                                <th>Название</th>
-                                <th>Периодичность</th>
-                                <th>Метод</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
+                                <tr>
+                                    <th>Название</th>
+                                    <th>Периодичность</th>
+                                    <th>Метод</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
                             </tfoot>
+                            @endif
                         </table>
                     </div>
                     {{ $events->appends(request()->input())->links() }}

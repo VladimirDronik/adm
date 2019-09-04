@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Event\CreateRequest;
+use App\Http\Requests\Event\UpdateRequest;
 use App\Models\SchedulerPoint;
 use App\Models\SchedulerTask;
 use App\Repositories\EventRepository;
 use App\Repositories\ObjectRepository;
 use App\Services\EventService;
+use App\Services\ObjectService;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -23,17 +25,22 @@ class EventController extends Controller
         $this->service = $service;
     }
 
+    private function getFilter(Request $r)
+    {
+        $filter['name'] = $r->input('name', '');
+        $filter['type'] = $r->input('type', '');
+        $filter['type_name'] = SchedulerPoint::getTypeById($filter['type']);
+
+        return $filter;
+    }
+
     public function index(Request $r)
     {
-        $events = $this->event_rep->getAll();
+        $filter = $this->getFilter($r);
+        $events = $this->event_rep->getByNameAndType($filter);
         $types = SchedulerPoint::getFullTypeIds();
 
-        $filter_name =  $r->input('name', '');
-        $filter_type = $r->input('type', '');
-        $filter_type_name = SchedulerPoint::getTypeById($filter_type);
-
-        return view('events.index', compact('events', 'types',
-            'filter_name', 'filter_type', 'filter_type_name'));
+        return view('events.index', compact('events', 'types', 'filter'));
     }
 
     public function create()
@@ -47,7 +54,8 @@ class EventController extends Controller
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('events.edit',[$id])->with('success', 'Событие успешно добавлено');
+                return redirect()->route('events.edit', [$id])
+                    ->with('success', 'Событие успешно сохранено. Осталось указать расписание');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при добавлении события ' .json_encode($r->all()).' '.$e->getMessage());
@@ -56,14 +64,38 @@ class EventController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении события');
     }
 
-    public function edit(int $id)
+    public function edit(int $id, ObjectService $object_service)
     {
-        $event = SchedulerTask::where('id', $id)->with('points','eobject','emethod')->first();
+        $event = SchedulerTask::where('id', $id)->with('points', 'eobject', 'emethod')->first();
 
         if (!$event) {
-            return redirect()->route('events.index')->with('error','Событие не найдено');
+            return redirect()->route('events.index')->with('error', 'Событие не найдено');
         }
 
-        return view('events.edit', compact('event'));
+        $objects = $this->object_rep->getAllToArray();
+        $methods = $object_service->getMethodsByObjectIdToArray($event->object);
+        $types = SchedulerPoint::getFullTypeIds();
+        $cron_periods = SchedulerPoint::CRON_PERIODS;
+
+        return view('events.edit', compact('event', 'objects', 'methods', 'types', 'cron_periods'));
+    }
+
+    public function update(UpdateRequest $r, int $id)
+    {
+        try {
+            $event = SchedulerTask::find($id);
+
+            if (!$event) {
+                return redirect()->route('events.index')->with('error', 'Событие не найдено');
+            }
+
+            if ($this->service->update($event, $r->except('_token'))) {
+                return redirect()->route('events.edit', [$event->id])->with('success','Событие успешно изменено');
+            }
+        } catch (\Throwable $e) {
+            \Log::error('Ошибка при изменении события '.$event->id.' ' .json_encode($r->all()).' '.$e->getMessage());
+        }
+
+        return back()->withInput($r->all())->with('error','Ошибка при изменении события');
     }
 }

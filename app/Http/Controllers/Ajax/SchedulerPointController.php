@@ -6,7 +6,7 @@ use App\Services\EventService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class EventController extends Controller
+class SchedulerPointController extends Controller
 {
     private $service;
 
@@ -19,15 +19,13 @@ class EventController extends Controller
     {
         abort_if(!ajaxHas($r, ['id']), 400);
 
-        return response()->json(['result' => (bool)$this->service->delete((int)$r->id)]);
+        return response()->json(['result' => (bool)$this->service->deletePoint((int)$r->id)]);
     }
 
-    public function validateName(Request $r)
+    public function store(Request $r)
     {
-        abort_if(!ajaxHas($r, ['id','name']), 400);
+        abort_if(!ajaxHas($r, ['object_id', 'id', 'name', 'script_id', 'comment']), 400);
 
-        return response()->json($this->service->validateName((int)$r->id, $r->name));
+        return response()->json(['result' => true] + $this->service->storePoint($r->all()));
     }
 }
-
-

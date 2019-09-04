@@ -83,5 +83,11 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('savemethod', 'PortController@storeMethod');
 
         Route::post('events/delete', 'EventController@delete')->name('events.delete');
+        Route::post('events/validation/name', 'EventController@validateName')->name('events.validation.name');
+
+        Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
+            Route::post('delete', 'SchedulerPointController@delete')->name('delete');
+            Route::post('store', 'SchedulerPointController@store')->name('store');
+        });
     });
 });

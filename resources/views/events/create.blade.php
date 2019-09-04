@@ -27,6 +27,7 @@
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
+                        {{ Form::bs_title('Основные данные') }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
                         {{ Form::bs_autoselect('object', 'Объект*:', $objects, null,  false, false, ['required' => true]) }}
                         {{ Form::bs_autoselect('method', 'Метод*:', [], null,  false, false, ['required' => true]) }}

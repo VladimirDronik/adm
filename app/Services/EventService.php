@@ -22,14 +22,8 @@ class EventService {
         return $task->id;
     }
 
-    public function update(int $id, array $data)
+    public function update($task, array $data)
     {
-        $task = SchedulerTask::find($id);
-
-        if (!$task) {
-            return false;
-        }
-
         $this->prepare($task, $data);
         $task->save();
 
@@ -44,5 +38,20 @@ class EventService {
         });
 
         return true;
+    }
+
+    public function validateName(int $id, string $name)
+    {
+        $event = SchedulerTask::find($id);
+
+        if (!$event) {
+            return ['result' => false, 'message' => 'Событие не найдено'];
+        }
+
+        $result = !SchedulerTask::where('id', '!=', $id)
+            ->where('name', trim($name))->exists();
+        $message = $result ? '' : 'Событие с таким названием уже существует. Выберите другое название';
+
+        return compact('result', 'message');
     }
 }
