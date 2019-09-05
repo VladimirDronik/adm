@@ -49,7 +49,7 @@
                             <thead>
                                 <tr>
                                     <th>Название</th>
-                                    <th>Периодичность</th>
+                                    <th>Расписание</th>
                                     <th>Метод</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
@@ -60,8 +60,24 @@
                                 <tr id="tr{{$event->id}}">
                                     <td><a href="{{ route('events.edit',[$event->id]) }}" title="{{ $event->name }}">{{ $event->name }}</a></td>
                                     <td>
-                                        @if(count($event->points))
-
+                                        @php $count = count($event->points); @endphp
+                                        @if($count > 0 && $count <= 3)
+                                            @foreach($event->points as $index => $point)
+                                                {!! $point->description !!}<br>
+                                            @endforeach
+                                        @elseif($count > 3)
+                                            {!! $event->points[0]->description !!} <br>
+                                            {!! $event->points[1]->description !!}
+                                            <button class="btn btn-sm btn-outline-info btn-outline btn-addon" type="button" data-toggle="collapse" data-target="#collapse{{$event->id}}" aria-expanded="false" aria-controls="{{$event->id}}">
+                                                Еще ({{ $count - 2 }})
+                                            </button>
+                                            <div class="collapse" id="collapse{{$event->id}}">
+                                                @foreach($event->points as $index => $point)
+                                                    @if($index > 1)
+                                                        {!! $point->description !!} <br>
+                                                    @endif
+                                                @endforeach
+                                            </div>
                                         @else
                                             <span class="text-danger">Расписание отсутствует</span>
                                         @endif
@@ -91,7 +107,7 @@
                             <tfoot>
                                 <tr>
                                     <th>Название</th>
-                                    <th>Периодичность</th>
+                                    <th>Расписание</th>
                                     <th>Метод</th>
                                     <th></th>
                                     <th></th>
@@ -142,6 +158,16 @@
 
             $('#reset_btn').click(function() {
                 window.location = '{{ route('events.index') }}';
+            });
+
+            $('[data-toggle="collapse"]').click(function() {
+                $(this).toggleClass("active");
+                if ($(this).hasClass("active")) {
+                    $(this).text("Свернуть");
+                } else {
+                    $(this).text("Подробнее");
+                }
+                $(this).remove();
             });
         });
     </script>

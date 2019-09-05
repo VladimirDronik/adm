@@ -88,7 +88,7 @@ class EventService {
     }
 
     public function storePoint(array $data)
-    {\Log::alert($data);
+    {
         $task = SchedulerTask::findOrFail((int)$data['event_id']);
 
         $point = new SchedulerPoint();
@@ -109,7 +109,10 @@ class EventService {
         $point = SchedulerPoint::where('id_task', (int)$data['event_id'])
             ->where('id', (int)$data['id'])->firstOrFail();
 
+        $this->storePointType($point, $data);
+        $point->save();
 
+        return $this->getPointToArray($point);
     }
 
     public function storeOrUpdatePoint(array $data)

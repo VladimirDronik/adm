@@ -205,15 +205,20 @@
                 $('#m_error_div').show();
             }
 
-            function showAddModal() {
+            function clearModal() {
                 $('#m_id').val('');
-                $('#point_modal_title').text('Добавление периода');
-                $('#apply_btn').text('Добавить период');
+                $('#m_time').val('');
                 $('#m_error_div').hide();
                 $('#m_div_w').find('input:checkbox').prop('checked', false);
                 $('#m_div_m').find('input:checkbox').prop('checked', false);
                 $('#m_div_year_dates').html('');
                 year_dates = [];
+            }
+
+            function showAddModal() {
+                clearModal();
+                $('#point_modal_title').text('Добавление периода');
+                $('#apply_btn').text('Добавить период');
                 init_btn.click();
             }
 
@@ -246,38 +251,89 @@
                     if (data.time != parseInt(data.time)) {
                         return 'Недопустимый период';
                     }
-                } else {
-
-                    if (data.time === '') {
-                        return 'Не указано время';
-                    }
-
-                    if (!moment(data.time, "HH:mm", true).isValid()) {
-                        return 'Недопустимое время';
-                    }
-
-                    if (data.type === 'w') {
-                        if (!data.days.length) {
-                            return 'Не указаны дни недели';
-                        }
-                    } else if (data.type === 'm') {
-                        if (!data.days.length) {
-                            return 'Не указаны даты месяца';
-                        }
-                    } else if (data.type === 'y') {
-                        if (!data.days.length) {
-                            return 'Не указаны даты';
-                        }
-                    }
+                    return '';
                 }
+                if (data.time === '') {
+                    return 'Не указано время';
+                }
+                if (!moment(data.time, "HH:mm", true).isValid()) {
+                    return 'Недопустимое время';
+                }
+                if (data.type === 'w' && !data.days.length) {
+                    return 'Не указаны дни недели';
+                }
+                if (data.type === 'm' && !data.days.length) {
+                    return 'Не указаны даты месяца';
+                }
+                if (data.type === 'y' && !data.days.length) {
+                    return 'Не указаны даты';
+                }
+
                 return '';
             }
 
-            function showEditModal(id) {
-                $('#m_id').val(id);
+            function hideModalDivs() {
+                ['c','m','w','y','clock'].forEach(function(val) {
+                   $('#m_div_'+val).hide();
+                });
+            }
+
+            function initCronModal(data) {
+                $('select[name=m_cron_period]').val(data.time);
+            }
+
+            function initDayModal(data) {
+                let days = data.days.split(",");
+                let m_days = $('input:checkbox[name=m_days]');
+
+                days.forEach(function(day) {
+                   m_days.filter('[value='+day+']').prop('checked',true);
+                });
+            }
+
+            function initMonthModal(data) {
+                let days = data.days.split(",");
+                let m_days = $('input:checkbox[name=m_dates]');
+
+                days.forEach(function(day) {
+                    m_days.filter('[value='+day+']').prop('checked',true);
+                });
+            }
+
+            function initYearModal(data) {
+                let dates = data.days.split(",");
+                let html = '';
+                year_dates = [];
+                dates.forEach(function(date) {
+                    year_dates.push(date);
+                    html += getYearDateButtonHtml(date);
+                });
+                $('#m_div_year_dates').html(html);
+            }
+
+            function showEditModal(data) {
+                clearModal();
+                hideModalDivs();
+
+                $('#m_id').val(data.id);
+                $('input:radio[name=m_type]').filter('[value='+data.type+']').prop('checked',true);
+                $('#m_div_'+data.type).show();
+                if (data.type !== 'c') {
+                    $('#m_div_clock').show();
+                    $('#m_time').val(data.time);
+                }
+
+                switch (data.type) {
+                    case 'c': initCronModal(data); break;
+                    case 'w': initDayModal(data); break;
+                    case 'm': initMonthModal(data); break;
+                    case 'y': initYearModal(data); break;
+                    default: break;
+                }
+
                 $('#point_modal_title').text('Редактирование периода');
                 $('#apply_btn').text('Сохранить изменения');
-                $('#error_div').hide();
+
                 init_btn.click();
             }
 
@@ -304,9 +360,8 @@
             }
 
             function editPoint(data) {
-                $('#name'+id).text(name);
-                $('#script'+id).text(script_name);
-                $('#comment'+id).text(comment);
+                $('#type'+data.id).text(data.single_rus_type);
+                $('#description'+data.id).html(data.description);
             }
 
             $('#add_btn').click(showAddModal);
@@ -337,15 +392,13 @@
 
             // edit method
             $('body').on('click', '.edit_btn', function() {
-                let id = $(this).attr('data-id');
-                let script_id = $(this).attr('data-script-id');
+                let data = {};
+                data.id = $(this).attr('data-id');
+                data.type = $(this).attr('data-type');
+                data.time = $(this).attr('data-time');
+                data.days = $(this).attr('data-days');
 
-                $('input[name=m_id]').val(id);
-                $('input[name=m_name]').val($('#name'+id).text().trim());
-                $('select[name=m_script]').val(script_id);
-                $('input[name=m_comment]').val($('#comment'+id).text().trim());
-
-                showEditModal(id);
+                showEditModal(data);
             });
 
             // delete method
