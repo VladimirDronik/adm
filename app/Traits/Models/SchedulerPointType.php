@@ -27,4 +27,10 @@ trait SchedulerPointType
     {
         return self::getTypeById($this->type);
     }
+
+    public function getSingleRusTypeAttribute()
+    {
+        $rus_type = self::getTypeById($this->type);
+        return mb_substr($rus_type, 0, mb_strlen($rus_type, 'UTF-8') - 2, 'UTF-8') . 'о';
+    }
 }

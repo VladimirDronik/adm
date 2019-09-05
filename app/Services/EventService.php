@@ -54,4 +54,73 @@ class EventService {
 
         return compact('result', 'message');
     }
+
+    private function getPointToArray(SchedulerPoint $point)
+    {
+        return [
+            'id' => $point->id,
+            'type' => $point->type,
+            'time' => $point->time,
+            'days' => $point->days,
+            'close' => $point->close,
+            'system' => $point->system,
+            'single_rus_type' => $point->single_rus_type,
+            'description' => $point->description
+        ];
+    }
+
+    private function storePointType(SchedulerPoint $point, array $data)
+    {
+        $point->type = $data['type'];
+        $point->time = trim($data['time']);
+
+        switch ($data['type']) {
+            case SchedulerPoint::TYPE_CRON:
+                if (!SchedulerPoint::isInCronPeriods((int)$point->time)) {
+                    throw new \Exception();
+                }
+                $point->days = '';
+                break;
+            default:
+                $point->days = implode(",",$data['days']);
+                break;
+        }
+    }
+
+    public function storePoint(array $data)
+    {\Log::alert($data);
+        $task = SchedulerTask::findOrFail((int)$data['event_id']);
+
+        $point = new SchedulerPoint();
+
+        $point->id_task = $task->id;
+        $point->close = 0;
+        $point->system = 0;
+
+        $this->storePointType($point, $data);
+
+        $point->save();
+
+        return $this->getPointToArray($point);
+    }
+
+    public function updatePoint(array $data)
+    {
+        $point = SchedulerPoint::where('id_task', (int)$data['event_id'])
+            ->where('id', (int)$data['id'])->firstOrFail();
+
+
+    }
+
+    public function storeOrUpdatePoint(array $data)
+    {
+        return ['data' => empty($data['id']) ? $this->storePoint($data) : $this->updatePoint($data)];
+    }
+
+    public function deletePoint(int $id)
+    {
+        SchedulerPoint::where('close','!=',1)->where('id', $id)->delete();
+
+        return true;
+    }
 }

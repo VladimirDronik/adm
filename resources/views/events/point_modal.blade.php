@@ -65,7 +65,7 @@
                         <strong>Дни недели*:</strong>
                     </label>
                     <div class="col-md-9" style="padding-top: 10px;">
-                        @foreach(['Пн','Вт','Ср','Чт','Пт','Сб','Вск'] as $key => $day)
+                        @foreach(['Пн','Вт','Ср','Чт','Пт','Сб','Вс'] as $key => $day)
                             <div class="checkbox m-r-10" style="display: inline-block;">
                                 <label style="cursor: pointer;">
                                     <input type="checkbox" name="m_days" value="{{ $key+1 }}" autocomplete="off"> {{ $day }}

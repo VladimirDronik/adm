@@ -49,19 +49,21 @@
                             @foreach($event->points as $point)
                                 <div class="form-group row" id="div{{$point->id}}">
                                     <label class="col-md-3" id="type{{$point->id}}">
-                                        {{$point->rus_type}}
+                                        {{$point->single_rus_type}}
                                     </label>
                                     <div class="col-md-7" id="description{{$point->id}}">
-                                        {{ $point->description }}
+                                        {!! $point->description !!}
                                     </div>
                                     <div class="col-md-2 text-right">
-                                        <button type="button" data-id="{{ $point->id }}"
-                                                data-type="{{ $point->type }}" class="btn btn-info btn-sm btn-rounded edit_btn">
-                                            <i class="fa fa-cog fa-lg"></i>
-                                        </button>
-                                        <button type="button" data-id="{{ $point->id }}" data-type="{{ $point->type }}" class="btn btn-danger btn-rounded btn-sm del_btn">
-                                            <i class="fa fa-trash fa-lg"></i>
-                                        </button>
+                                        @if(!$point->is_close)
+                                            <button type="button" data-id="{{ $point->id }}"
+                                                    data-type="{{ $point->type }}" data-time="{{ $point->time }}" data-days="{{ $point->days }}" class="btn btn-info btn-sm btn-rounded edit_btn">
+                                                <i class="fa fa-cog fa-lg"></i>
+                                            </button>
+                                            <button type="button" data-id="{{ $point->id }}" data-type="{{ $point->type }}" class="btn btn-danger btn-rounded btn-sm del_btn">
+                                                <i class="fa fa-trash fa-lg"></i>
+                                            </button>
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach
@@ -104,10 +106,10 @@
         let url_methods = '{{ route('ajax.objects.methods') }}';
         let url_name = '{{ route('ajax.events.validation.name') }}';
         let event_id = '{{ $event->id }}';
-        let del_id;
         let is_valid = false;
         let year_dates = [];
         let m_year_date = $('#m_year_date');
+        let del_id;
 
         function createMethodSelect(target, options, selected) {
             let sel = $(target);
@@ -215,23 +217,24 @@
                 init_btn.click();
             }
 
-            function getModalData(type) {
-                let data = { 'type': type };
+            function getModalData() {
+                let data = {};
+                data.type = $("input[name=m_type]:checked").val();
                 data.id = $('#m_id').val();
-                if (type === 'c') {
+                data.days = [];
+                if (data.type === 'c') {
                     data.time = $('select[name=m_cron_period]').val();
                 } else {
                     data.time = $('#m_time').val().trim();
-                    data.days = [];
-                    if (type === 'w') {
+                    if (data.type === 'w') {
                         $('input:checkbox[name=m_days]:checked').each(function() {
                             data.days.push($(this).val());
                         });
-                    } else if (type === 'm') {
+                    } else if (data.type === 'm') {
                         $('input:checkbox[name=m_dates]:checked').each(function() {
                             data.days.push($(this).val());
                         });
-                    } else if (type === 'y') {
+                    } else if (data.type === 'y') {
                         data.days = year_dates.slice();
                     }
                 }
@@ -239,7 +242,35 @@
             }
 
             function validatePoint(data) {
-                return '123';
+                if (data.type === 'c') {
+                    if (data.time != parseInt(data.time)) {
+                        return 'Недопустимый период';
+                    }
+                } else {
+
+                    if (data.time === '') {
+                        return 'Не указано время';
+                    }
+
+                    if (!moment(data.time, "HH:mm", true).isValid()) {
+                        return 'Недопустимое время';
+                    }
+
+                    if (data.type === 'w') {
+                        if (!data.days.length) {
+                            return 'Не указаны дни недели';
+                        }
+                    } else if (data.type === 'm') {
+                        if (!data.days.length) {
+                            return 'Не указаны даты месяца';
+                        }
+                    } else if (data.type === 'y') {
+                        if (!data.days.length) {
+                            return 'Не указаны даты';
+                        }
+                    }
+                }
+                return '';
             }
 
             function showEditModal(id) {
@@ -251,23 +282,28 @@
             }
 
             function addPoint(data) {
-                let html = `
-                    <div class="form-group row" id="div${id}">
-                         <label class="col-md-3" id="name${id}">${name}</label>
-                         <div class="col-md-4" id="script${id}">${script_name}</div>
-                         <div class="col-md-3" id="comment${id}">${comment}</div>
-                         <div class="col-md-2 text-right">
-                             <button type="button" data-id="${id}" data-script-id="${script_id}" class="btn btn-info btn-sm btn-rounded edit_btn">
-                                                <i class="fa fa-cog fa-lg"></i></button>
-                             <button type="button" data-id="${id}" data-name="${name}" class="btn btn-danger btn-rounded btn-sm del_btn">
-                                                <i class="fa fa-trash fa-lg"></i></button>
-                         </div>
-                    </div>`;
+                let html = `<div class="form-group row" id="div${data.id}">
+                                <label class="col-md-3" id="type${data.id}">
+                                    ${data.single_rus_type}
+                                </label>
+                                <div class="col-md-7" id="description${data.id}">
+                                    ${data.description}
+                                </div>
+                                <div class="col-md-2 text-right">
+                                <button type="button" data-id="${data.id}" data-type="${data.type}"
+                                    data-time="${data.time}" data-days="${data.days}" class="btn btn-info btn-sm btn-rounded edit_btn">
+                                       <i class="fa fa-cog fa-lg"></i>
+                                </button>
+                                <button type="button" data-id="${data.id}" data-type="${data.type}" class="btn btn-danger btn-rounded btn-sm del_btn">
+                                    <i class="fa fa-trash fa-lg"></i>
+                                </button>
+                                </div>
+                           </div>`;
 
-                $('#methods_div').append(html);
+                $('#points_div').append(html);
             }
 
-            function editMethod(id, name, script_id, script_name, comment) {
+            function editPoint(data) {
                 $('#name'+id).text(name);
                 $('#script'+id).text(script_name);
                 $('#comment'+id).text(comment);
@@ -277,9 +313,7 @@
 
             $('#apply_btn').click(function(){
 
-                let type = $("input[name='m_type']:checked").val();
-                let data = getModalData(type);
-
+                let data = getModalData();
                 let message = validatePoint(data);
 
                 if (message !== '') {
@@ -287,16 +321,14 @@
                     return false;
                 }
 
+                data.event_id = event_id;
+
                 $.ajax({
                     url: store_url,
-                    data: {'_token': _token, 'event_id': event_id, 'data': data},
-                    success: function (data) {
-                        if (data.result) {
-                            if (id) {
-                                editPoint(id, data);
-                            } else {
-                                addPoint(data);
-                            }
+                    data: {'_token': _token, 'data': data},
+                    success: function (resp) {
+                        if (resp.result) {
+                            data.id ? editPoint(resp.data) : addPoint(resp.data);
                         }
                         cancel_btn.click();
                     }
@@ -320,7 +352,7 @@
 
             $('body').on('click', '.del_btn', function() {
                 del_id = $(this).attr('data-id');
-                $('#del_modal_body').text('Удалить метод «'+$(this).attr('data-name')+'»?');
+                $('#del_modal_body').text('Удалить период?');
                 $('#del_init_btn').click();
             });
 
@@ -361,7 +393,7 @@
 
             function getYearDateButtonHtml(date) {
                 let html = `
-                    <button type="button" data-date="${date}" class="btn btn-outline-success btn-outline btn-addon m-b-10 m-l-5 year_date_btn">
+                    <button type="button" data-date="${date}" class="btn btn-outline-info btn-outline btn-addon m-b-10 m-l-5 year_date_btn">
                         ${date} <i class="ti-close"></i>
                     </button>
                 `;
@@ -369,7 +401,7 @@
             }
 
             function addYearDateToList(date) {
-                if (year_dates.indexOf(date) === -1) {
+                if (date != '' && year_dates.indexOf(date) === -1) {
                     year_dates.push(date);
                     $('#m_div_year_dates').append(getYearDateButtonHtml(date));
                 }

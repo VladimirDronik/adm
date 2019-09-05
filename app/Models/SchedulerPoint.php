@@ -40,10 +40,77 @@ class SchedulerPoint extends Model
 
     protected $table = 'scheduler_points';
     public $timestamps = false;
+    protected $casts = ['close' => 'integer', 'system' => 'integer'];
 
     public static function isInCronPeriods(int $period)
     {
         return in_array($period, self::CRON_PERIODS);
+    }
+
+    public function getIsCloseAttribute()
+    {
+        return $this->close == 1;
+    }
+
+    public function getIsSystemAttribute()
+    {
+        return $this->system == 1;
+    }
+
+    public function getCronDescription()
+    {
+        return 'Каждые '.$this->time.' мин';
+    }
+
+    public function getDayDescription()
+    {
+        return 'В '.$this->time.' по '.daysToShortRus($this->days).' каждую неделю';
+    }
+
+    public function getMonthDescription()
+    {
+        $days = str_replace(",",", ", $this->days);
+        return 'В '.$this->time.' по '.$days.' числам каждого месяца';
+    }
+
+    public function getYearDescription()
+    {
+        $dates = str_replace(",",", ", $this->days);
+        return 'В '.$this->time.' по датам '.$dates.' каждого года';
+    }
+
+    private function getSystemHtml()
+    {
+        if ($this->is_system) {
+            return '&nbsp;&nbsp;<i class="fa fa-exclamation-triangle" title="Системный"></i>';
+        }
+
+        return '';
+    }
+
+    public function getDescriptionAttribute()
+    {
+        $description = '';
+        switch ($this->type) {
+            case self::TYPE_CRON:
+                $description = $this->getCronDescription();
+                break;
+            case self::TYPE_DAYS:
+                $description = $this->getDayDescription();
+                break;
+            case self::TYPE_MONTHS:
+                $description = $this->getMonthDescription();
+                break;
+            case self::TYPE_YEARS:
+                $description = $this->getYearDescription();
+                break;
+        }
+
+        if ($description !== '') {
+            return $description . $this->getSystemHtml();
+        }
+
+        return '';
     }
 
     /* relations */

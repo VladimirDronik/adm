@@ -24,8 +24,14 @@ class SchedulerPointController extends Controller
 
     public function store(Request $r)
     {
-        abort_if(!ajaxHas($r, ['object_id', 'id', 'name', 'script_id', 'comment']), 400);
-
-        return response()->json(['result' => true] + $this->service->storePoint($r->all()));
+        abort_if(!ajaxHas($r, ['data']), 400);
+\Log::info($r->all());
+       // try {
+            $data = $this->service->storeOrUpdatePoint($r->data);
+            return response()->json(['result' => true] + $data);
+        //} catch (\Throwable $e) {
+            //\Log::error('Ошибка при добавлении расписания события', [$r->all(), $e->getMessage()]);
+            //return response()->json(['result' => false]);
+        //}
     }
 }
