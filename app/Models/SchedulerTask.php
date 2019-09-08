@@ -24,6 +24,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SchedulerTask extends Model
 {
+    const SYSTEM = 1;
+    const NOT_SYSTEM = 0;
+
     protected $table = 'scheduler_tasks';
     public $timestamps = false;
     protected $guarded = ['id'];
@@ -43,5 +46,17 @@ class SchedulerTask extends Model
     public function points()
     {
         return $this->hasMany(SchedulerPoint::class, 'id_task', 'id')->orderBy('type');
+    }
+
+    public function system_points()
+    {
+        return $this->hasMany(SchedulerPoint::class, 'id_task', 'id')
+            ->where('system', self::SYSTEM)->orderBy('type');
+    }
+
+    public function not_system_points()
+    {
+        return $this->hasMany(SchedulerPoint::class, 'id_task', 'id')
+            ->where('system', self::NOT_SYSTEM)->orderBy('type');
     }
 }
