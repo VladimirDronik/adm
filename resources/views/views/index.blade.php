@@ -67,13 +67,15 @@
                                 <th>Название</th>
                                 <th>Статус</th>
                                 <th>Вкл</th>
-                                <th>Выкл</th>
+{{--                                <th>Выкл</th>--}}
                                 <th>Вкл_надпись</th>
-                                <th>Выкл_надпись</th>
-                                <th>Значение</th>
+{{--                                <th>Выкл_надпись</th>--}}
+{{--                                <th>Значение</th>--}}
+                                <th>Объект</th>
+                                <th>Метод</th>
                                 <th>Помещение</th>
                                 <th>Сцена</th>
-                                <th>Отступы</th>
+{{--                                <th>Отступы</th>--}}
                                 <th>Активно</th>
                                 <th></th>
                                 <th></th>
@@ -99,21 +101,35 @@
                                         <img src="{{ asset($view->on_image_path) }}" width="25" height="25" style="fill: green; background-color: #e8e8e8;">
                                     @endif
                                 </td>
-                                <td scope="row">
-                                    @if(!empty($view->off_image))
-                                        <img src="{{ asset($view->off_image_path) }}" width="25" height="25" style="fill: green; background-color: #e8e8e8;">
+{{--                                <td scope="row">--}}
+{{--                                    @if(!empty($view->off_image))--}}
+{{--                                        <img src="{{ asset($view->off_image_path) }}" width="25" height="25" style="fill: green; background-color: #e8e8e8;">--}}
+{{--                                    @endif--}}
+{{--                                </td>--}}
+                                <td scope="row">{{ $view->short_on_title }}</td>
+{{--                                <td scope="row">{{ $view->short_off_title }}</td>--}}
+{{--                                <td scope="row">{{ $view->value }}</td>--}}
+                                <td>
+                                    @if($view->id_object)
+                                        <a href="{{ route('objects.edit',$view->id_object) }}">{{ $view->object_name }}</a>
                                     @endif
                                 </td>
-                                <td scope="row">{{ $view->short_on_title }}</td>
-                                <td scope="row">{{ $view->short_off_title }}</td>
-                                <td scope="row">{{ $view->value }}</td>
+                                <td>
+                                    @if($view->id_method)
+                                        @if($view->id_object)
+                                            <a href="{{ route('objects.edit',$view->id_object) }}">{{ $view->method_name }}</a>
+                                        @else
+                                            <a href="{{ route('objects.edit',optional($view->emethod)->id_object) }}">{{ $view->method_name }}</a>
+                                        @endif
+                                    @endif
+                                </td>
                                 <td scope="row">{{ $view->room_name }}</td>
                                 <td scope="row">
                                     @if($view->scene)
                                         <a href="{{ route('scenes.edit',$view->scene) }}">{{ optional($view->escene)->label }}</a>
                                     @endif
                                 </td>
-                                <td scope="row">{{ $view->position_left }} / {{ $view->position_top }}</td>
+{{--                                <td scope="row">{{ $view->position_left }} / {{ $view->position_top }}</td>--}}
                                 <td scope="row" align="center">
                                     <input type="checkbox" class="active_checkbox" style="cursor: pointer;" data-id="{{$view->id}}" value="1" @if($view->active) checked @endif>
                                 </td>
@@ -140,13 +156,15 @@
                                 <th>Название</th>
                                 <th>Статус</th>
                                 <th>Вкл</th>
-                                <th>Выкл</th>
+{{--                                <th>Выкл</th>--}}
                                 <th>Вкл_надпись</th>
-                                <th>Выкл_надпись</th>
-                                <th>Значение</th>
+{{--                                <th>Выкл_надпись</th>--}}
+{{--                                <th>Значение</th>--}}
+                                <th>Объект</th>
+                                <th>Метод</th>
                                 <th>Помещение</th>
                                 <th>Сцена</th>
-                                <th>Отступы</th>
+{{--                                <th>Отступы</th>--}}
                                 <th>Активно</th>
                                 <th></th>
                                 <th></th>

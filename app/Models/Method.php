@@ -32,4 +32,9 @@ class Method extends Model
     {
         return $this->belongsTo(Script::class, 'script', 'id');
     }
+
+    public function eobject()
+    {
+        return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+    }
 }
