@@ -13,10 +13,7 @@ class ObjectRepository {
 
     public function getAllToArray()
     {
-        $objects = HomeObject::select('id','name')->orderBy('name')->pluck('name','id')->toArray();
-        array_walk($objects, function (&$object, $key) { $object = $key.' - '.$object; });
-
-        return $objects;
+        return  HomeObject::select('id','name')->orderBy('name')->pluck('name','id')->toArray();
     }
 
     public function getByName($name, $pagination_count = 30)

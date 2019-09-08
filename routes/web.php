@@ -25,6 +25,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('network', 'NetworkController@update')->name('network.update');
     Route::get('menu', 'MenuController@index')->name('menu.index');
 
+    Route::resource('scripts', 'ScriptController')->except('show','destroy');
+
     Route::group(['namespace' => 'Ajax', 'as' => 'ajax.'], function () {
 
         Route::group(['prefix' => 'devices', 'as' => 'devices.'], function () {

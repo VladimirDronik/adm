@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\View\CreateRequest;
 use App\Http\Requests\View\UpdateRequest;
 use App\Models\View;
+use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
 use App\Repositories\SceneRepository;
 use App\Repositories\ViewRepository;
 use App\Services\ImageService;
+use App\Services\ObjectService;
 use App\Services\ViewService;
 use Illuminate\Http\Request;
 
@@ -17,15 +19,16 @@ class ViewController extends Controller
     private $view_rep;
     private $room_rep;
     private $scene_rep;
+    private $object_rep;
     private $service;
 
     public function __construct(ViewRepository $view_rep, RoomRepository $room_rep, SceneRepository $scene_rep,
-                                ViewService $service)
+                                ViewService $service, ObjectRepository $object_rep)
     {
         $this->view_rep = $view_rep;
         $this->room_rep = $room_rep;
         $this->scene_rep = $scene_rep;
-
+        $this->object_rep = $object_rep;
         $this->service = $service;
     }
 
@@ -35,8 +38,9 @@ class ViewController extends Controller
         $rooms = $this->room_rep->getAllToArray();
         $scenes = $this->scene_rep->getAll()->pluck('label', 'id')->toArray();
         $images = ImageService::getViewImages();
+        $objects = $this->object_rep->getAllToArray();
 
-        return [$types, $rooms, $scenes, $images];
+        return [$types, $rooms, $objects, $scenes, $images];
     }
 
     public function index(Request $r)
@@ -52,9 +56,9 @@ class ViewController extends Controller
 
     public function create()
     {
-        list($types, $rooms, $scenes, $images) = $this->getLists();
+        list($types, $rooms, $objects, $scenes, $images) = $this->getLists();
 
-        return view('views.create', compact('types', 'rooms', 'scenes', 'images'));
+        return view('views.create', compact('types', 'rooms', 'objects', 'scenes', 'images'));
     }
 
     public function store(CreateRequest $r)
@@ -71,11 +75,12 @@ class ViewController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении отображения');
     }
 
-    public function edit(View $view)
+    public function edit(View $view, ObjectService $object_service)
     {
-        list($types, $rooms, $scenes, $images) = $this->getLists();
+        list($types, $rooms, $objects, $scenes, $images) = $this->getLists();
+        $methods = $object_service->getMethodsByObjectIdToArray($view->id_object);
 
-        return view('views.edit', compact('view', 'types', 'rooms', 'scenes', 'images'));
+        return view('views.edit', compact('view', 'types', 'rooms', 'methods', 'objects', 'scenes', 'images'));
     }
 
     public function update(UpdateRequest $r, View $view)

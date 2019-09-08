@@ -28,6 +28,14 @@ class EventRepository {
             });
         }
 
-        return $query->orderBy('name')->paginate($pagination_count);
+        $query->withCount(['points' => function ($q) {
+            $q->where('system', SchedulerTask::SYSTEM);
+        }]);
+
+        $query->orderBy('points_count', 'desc');
+
+        $query->orderBy('name');
+
+        return $query->paginate($pagination_count);
     }
 }

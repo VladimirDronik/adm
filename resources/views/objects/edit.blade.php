@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование объекта № '. $object->id .' «'. $object->name .'»',
+       ['title' => 'Редактирование объекта «'. $object->name .'»',
         'links' => [ route('objects.index') => 'Объекты'],
         'last_link' => 'Редактирование объекта'])
 @endsection
