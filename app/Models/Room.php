@@ -26,4 +26,11 @@ class Room extends Model
 {
     const COMMON_NAME = 'Общие';
     public $timestamps = false;
+
+    /* relations */
+
+    public function termostats()
+    {
+        return $this->hasMany(Termostat::class, 'room', 'id')->orderBy('id');
+    }
 }

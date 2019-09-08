@@ -24,4 +24,11 @@ class Graph extends Model
 {
     protected $table = 'graph';
     public $timestamps = false;
+
+    /* relations */
+
+    public function etermostat()
+    {
+        return $this->belongsTo(Termostat::class, 'id_termostat', 'id');
+    }
 }

@@ -24,6 +24,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('network', 'NetworkController@edit')->name('network.edit');
     Route::put('network', 'NetworkController@update')->name('network.update');
     Route::get('menu', 'MenuController@index')->name('menu.index');
+    Route::get('graphs', 'GraphController@index')->name('graphs.index');
 
     Route::resource('scripts', 'ScriptController')->except('show','destroy');
 
