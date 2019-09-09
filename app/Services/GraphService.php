@@ -8,23 +8,12 @@ use App\Models\Termostat;
 
 class GraphService {
 
-    const LAST_COUNT = 100;
-
-    private function trimLabels($labels)
-    {
-        $count = count($labels);
-        for ($i = 1; $i < $count-1; $i++) {
-            if ($i % 300) {
-                $labels[$i] = explode(" ", $labels[$i])[1] ?? '';
-            }
-        }
-        return $labels;
-    }
+    const LAST_COUNT = 10000;
 
     private function getTermostatData($termostat)
     {
         $values = array_slice($termostat->last_graphs->pluck('value')->toArray(), -self::LAST_COUNT);
-        $labels = $this->trimLabels(array_slice($termostat->last_graphs->pluck('datetime')->toArray(), -self::LAST_COUNT));
+        $labels = array_slice($termostat->last_graphs->pluck('datetime')->toArray(), -self::LAST_COUNT);
 
         return compact('values', 'labels');
     }
@@ -43,6 +32,12 @@ class GraphService {
             foreach ($room->termostats as $termostat) {
                  $data['termostat_'.$termostat->id] = $this->getTermostatData($termostat);
             }
+        }
+
+        $data['other_termostats'] = Termostat::with('last_graphs')->whereNull('room')->orderBy('id')->get();
+
+        foreach ($data['other_termostats'] as $termostat) {
+            $data['termostat_'.$termostat->id] = $this->getTermostatData($termostat);
         }
 
         return $data;
