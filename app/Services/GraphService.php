@@ -12,8 +12,8 @@ class GraphService {
 
     private function getTermostatData($termostat)
     {
-        $values = array_slice($termostat->last_graphs->pluck('value')->toArray(), -self::LAST_COUNT);
-        $labels = array_slice($termostat->last_graphs->pluck('datetime')->toArray(), -self::LAST_COUNT);
+        $values = $termostat->last_graphs->pluck('value')->toArray();
+        $labels = $termostat->last_graphs->pluck('datetime')->toArray();
 
         return compact('values', 'labels');
     }
