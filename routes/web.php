@@ -92,5 +92,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('delete', 'SchedulerPointController@delete')->name('delete');
             Route::post('store', 'SchedulerPointController@store')->name('store');
         });
+
+        Route::post('graphs/period/data', 'GraphController@getPeriodData')->name('graphs.period.data');
     });
 });

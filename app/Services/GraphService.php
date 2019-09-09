@@ -5,17 +5,25 @@ namespace App\Services;
 use App\Models\Graph;
 use App\Models\Room;
 use App\Models\Termostat;
+use Carbon\Carbon;
 
 class GraphService {
 
-    const LAST_COUNT = 10000;
-
-    private function getTermostatData($termostat)
+    public function getPeriods()
     {
-        $values = $termostat->last_graphs->pluck('value')->toArray();
-        $labels = $termostat->last_graphs->pluck('datetime')->toArray();
+        $periods = [];
+        $min_date = Graph::min('datetime');
+        if (empty($min_date)) {
+            return $periods;
+        }
+        $min_date = Carbon::createFromFormat('Y-m-d H:i:s', $min_date);
+        $cur_date = Carbon::now();
+        while ($min_date->lte($cur_date)) {
+            $periods[$min_date->month.'-'.$min_date->year] = 'за '.getRusMonth($min_date->month).' '.$min_date->year;
+            $min_date->addMonth();
+        }
 
-        return compact('values', 'labels');
+        return array_reverse($periods);
     }
 
     public function getGraphData()
@@ -28,18 +36,30 @@ class GraphService {
         $data['rooms'] = Room::whereIn('id', $rooms_ids)
             ->with('termostats', 'termostats.last_graphs')->orderBy('id')->get();
 
-        foreach ($data['rooms'] as $room) {
-            foreach ($room->termostats as $termostat) {
-                 $data['termostat_'.$termostat->id] = $this->getTermostatData($termostat);
-            }
-        }
-
         $data['other_termostats'] = Termostat::with('last_graphs')->whereNull('room')->orderBy('id')->get();
 
-        foreach ($data['other_termostats'] as $termostat) {
-            $data['termostat_'.$termostat->id] = $this->getTermostatData($termostat);
+        return $data;
+    }
+
+    public function getGraphPeriodData(int $termostat_id, string $period)
+    {
+        $query = Graph::where('id_termostat', $termostat_id)
+            ->select('value', 'datetime')->orderBy('datetime');
+
+        if ($period === '7') {
+            $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
+            $graphs = $query->where('datetime','>=',$week_ago_date)->get();
+        } else {
+            $period_parts = explode("-", $period);
+            $month = (int)$period_parts[0];
+            $year = (int)$period_parts[1];
+            $graphs = $query->whereMonth('datetime', '=', $month)
+                ->whereYear('datetime', '=', $year)->get();
         }
 
-        return $data;
+        $data['values'] = $graphs->pluck('value')->toArray();
+        $data['dates'] = $graphs->pluck('datetime')->toArray();
+
+        return [true, $data];
     }
 }
