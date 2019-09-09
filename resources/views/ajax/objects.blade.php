@@ -3,7 +3,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
+{{--                    <th>ID</th>--}}
                     <th>Название</th>
                     <th>Тип</th>
                 </tr>
@@ -11,7 +11,7 @@
             <tbody>
             @foreach($objects as $object)
                 <tr>
-                    <th scope="row">{{$object->id}}</th>
+{{--                    <th scope="row">{{$object->id}}</th>--}}
                     <td><a href="#" id="object_{{$object->id}}" onclick="select_object({{$object->id}},'{{$object->name}}')" data-dismiss="modal" >{{$object->name}} </a></td>
                     <td>{{$object->type}}</td>
                 </tr>

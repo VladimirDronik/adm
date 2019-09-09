@@ -1,5 +1,9 @@
 @extends('layouts._layout')
 
+@section('css')
+    <link href="{{ asset('ela/css/lib/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+@endsection
+
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
        ['title' => 'Добавление отображения', 'links' => [ route('views.index') => 'Отображения']])
@@ -30,6 +34,9 @@
                             {{ Form::bs_text('description', 'Описание:') }}
                             {{ Form::bs_checkbox('active', 'Активность:', true) }}
 
+                            {{ Form::bs_autoselect('id_object', 'Объект:', $objects, old('id_object'), false, false) }}
+                            {{ Form::bs_autoselect('id_method', 'Метод объекта:', [], old('id_method'), false, false) }}
+
                             {{ Form::bs_title('Текст и графика') }}
 
                             {{ Form::bs_text('on_title_top','Надпись при включении:', null, [], 'Верхняя строка') }}
@@ -51,6 +58,8 @@
                         {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
                 </div>
+                <div style="height: 200px;">&nbsp;</div>
+                <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
             </div>
         </div>
     </div>
@@ -72,12 +81,15 @@
             </div>
         </div>
     </div>
+    @include('components.info_modal')
 @endsection
 
 @section('scripts')
+    <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script>
         let image_id;
         let url = '{{ asset('/') }}';
+        let url_methods = '{{ route('ajax.objects.methods') }}';
 
         function setViewImage(image) {
             $('#img_'+image_id).prop('src', url + image);
@@ -87,5 +99,67 @@
         function changeViewImage(id) {
             image_id = id;
         }
+
+        function createMethodSelect(target, options, selected) {
+            let sel = $(target);
+            sel.html('');
+            let s = '<option value="">Не выбрано</option>';
+            for (let i = 0; i < options.length; i++) {
+                if (selected == options[i].id)
+                    s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
+                else
+                    s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
+            }
+            sel.append(s);
+        }
+
+        function isEmptyInput(name) {
+            return $('input[name='+name+']').val().trim() == '';
+        }
+
+        function isEmptyAutoSelect(name) {
+            return $('#auto_sel_'+name).val().trim() == '';
+        }
+
+        function validateView() {
+            if (!$("input[name=type_name]:checked").val()) {
+                return 'Не указан тип элемента';
+            }
+            if (isEmptyInput('name')) {
+                return 'Не указано название';
+            }
+            if (!$("select[name=room]").val()) {
+                return 'Не указано помещение';
+            }
+            return '';
+        }
+
+        $(document).ready(function () {
+
+            $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_id_method").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            $("#auto_sel_id_object").chosen().change(function() {
+                let object_id = $(this).val();
+
+                $.ajax({
+                    url: url_methods,
+                    data: {'_token': _token, 'object_id': object_id},
+                    success: function (data) {
+                        createMethodSelect('#auto_sel_id_method', data.methods, -1);
+                        $('#auto_sel_id_method').trigger("chosen:updated");
+                    }
+                });
+            });
+
+            $('button[type=submit]').click(function(){
+                let message = validateView();
+                if (message !== '') {
+                    $('#info_modal_body').html('<span class="text-danger">'+message+'</span>');
+                    $('#init_btn').click();
+                    return false;
+                }
+            });
+        });
     </script>
 @endsection

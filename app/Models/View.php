@@ -161,11 +161,25 @@ class View extends Model
 
     public function getRoomNameAttribute()
     {
+        if (is_null($this->room)) {
+            return 'Не указано';
+        }
+
         if ($this->room !== 0) {
             return optional($this->eroom)->name;
         }
 
         return Room::COMMON_NAME;
+    }
+
+    public function getMethodNameAttribute()
+    {
+        return optional($this->emethod)->name;
+    }
+
+    public function getObjectNameAttribute()
+    {
+        return optional($this->eobject)->name;
     }
 
     public function getImagePath(string $prefix)
@@ -197,5 +211,15 @@ class View extends Model
     public function eroom()
     {
         return $this->belongsTo(Room::class, 'room', 'id');
+    }
+
+    public function eobject()
+    {
+        return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+    }
+
+    public function emethod()
+    {
+        return $this->belongsTo(Method::class, 'id_method', 'id');
     }
 }

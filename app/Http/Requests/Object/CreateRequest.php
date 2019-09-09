@@ -25,7 +25,7 @@ class CreateRequest extends FormRequest
     {
         return [
             'type' => 'required|string|max:10',
-            'name' => 'required|string|max:100',
+            'name' => 'required|string|max:100|unique:objects,name',
             'view' => 'nullable|integer|min:0',
         ];
     }
@@ -37,6 +37,7 @@ class CreateRequest extends FormRequest
             'type.max' => 'Недопустимый тип объекта',
             'name.required' => 'Не указано название',
             'name.max' => 'Название содержит более 100 символов',
+            'name.unique' => 'Объект с таким названием уже существует. Укажите другое название'
         ];
     }
 }

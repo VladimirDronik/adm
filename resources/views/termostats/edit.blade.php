@@ -56,7 +56,7 @@
                         {{ Form::bs_autoselect('method_off', 'Метод при выключении*:', $methods, old('method_off', $termostat->method_off),
                             false, false, ['required' => true], null, 'Метод объекта влияния при срабатывании термостата на выключение') }}
 
-                        {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', $termostat->room), false, false) }}
+                        {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', is_null($termostat->room) ? -1 : $termostat->room ), false, false) }}
 
                         {{ Form::bs_autoselect('id_device', 'Устройство*:', $devices, old('id_device', $termostat->id_device),
                             false, false, ['required' => true]) }}

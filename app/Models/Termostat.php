@@ -110,4 +110,15 @@ class Termostat extends Model
     {
         return $this->belongsTo(Method::class, 'method_off', 'id');
     }
+
+    public function graphs()
+    {
+        return $this->hasMany(Graph::class, 'id_termostat', 'id')->orderBy('datetime');
+    }
+
+    public function last_graphs()
+    {
+        return $this->hasMany(Graph::class, 'id_termostat', 'id')
+            ->orderBy('datetime');
+    }
 }

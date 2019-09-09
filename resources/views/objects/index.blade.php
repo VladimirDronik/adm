@@ -32,7 +32,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th style="width: 60px;">ID</th>
+{{--                                    <th style="width: 60px;">ID</th>--}}
                                     <th>Название</th>
                                     <th>Тип</th>
                                     <th>Статус</th>
@@ -44,7 +44,7 @@
                             <tbody>
                                 @foreach($objects as $object)
                                     <tr id="tr{{$object->id}}">
-                                        <td scope="row">{{ $object->id }}</td>
+{{--                                        <td scope="row">{{ $object->id }}</td>--}}
                                         <td><a href="{{ route('objects.edit',[$object->id]) }}">{{ $object->name }}</a></td>
                                         <td>{{ $object->rus_type }}</td>
                                         <td>
@@ -77,7 +77,7 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>ID</th>
+{{--                                    <th>ID</th>--}}
                                     <th>Название</th>
                                     <th>Тип</th>
                                     <th>Статус</th>
