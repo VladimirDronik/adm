@@ -177,15 +177,15 @@
                 </div>
                 <div class="modal-body">
                     <div class="btn-group-toggle" data-toggle="buttons">
-                        <label class="btn btn-success" id="easy_button" >
-                            <input type="radio" name="actions"  autocomplete="off" value="easy"> Простое действие
-                        </label>
+{{--                        <label class="btn btn-success" id="easy_button" >--}}
+{{--                            <input type="radio" name="actions"  autocomplete="off" value="easy"> Простое действие--}}
+{{--                        </label>--}}
                         <label class="btn btn-success" id="method_button">
                             <input type="radio" name="actions"  autocomplete="off" value="method"> Метод объекта
                         </label>
-                        <label class="btn btn-success" id="script_button">
-                            <input type="radio" name="actions"  autocomplete="off" value="script"> Скрипт
-                        </label>
+{{--                        <label class="btn btn-success" id="script_button">--}}
+{{--                            <input type="radio" name="actions"  autocomplete="off" value="script"> Скрипт--}}
+{{--                        </label>--}}
                         <label class="btn btn-success" id="none_button">
                             <input type="radio" name="actions"  autocomplete="off" value="none"> Отсутствует
                         </label>

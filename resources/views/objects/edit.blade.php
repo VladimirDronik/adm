@@ -25,7 +25,7 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <div class="col-md-12 col-lg-8 col-xl-8">
+                <div class="col-md-12 col-lg-10 col-xl-9">
                     {!! Form::model($object, ['route' => ['objects.update', $object->id], 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
@@ -236,26 +236,57 @@
                 $('#error_div').show();
             }
 
-            function showAddModal() {
-                $('#m_id').val('');
+            function clearModal() {
                 $('#easy_device').text('отсутствует');
                 $('#easy_port').text('отсутствует');
                 $('#easy_action').text('отсутствует');
                 $("input[name=actions][value=none]").prop("checked",true);
-                $("input[name=actions]").change();
+                $("#none_button").removeClass("active");
+                $("#script_button").removeClass("active");
+                $("#easy_button").removeClass("active");
+                $('#easy_div').hide();
+                $('#script_div').hide();
+                $('#error_div').hide();
+            }
+
+            function showAddModal() {
+                $('#m_id').val('');
+                clearModal();
+                $("#none_button").addClass("active");
                 $('input[name=m_name]').val('');
                 $('input[name=m_comment]').val('');
                 $('#method_modal_title').text('Добавление метода');
                 $('#apply_btn').text('Добавить метод');
-                $('#error_div').hide();
                 init_btn.click();
             }
 
-            function showEditModal(id) {
-                $('#m_id').val(id);
+            function showEditModal(data) {
+                clearModal();
+
+                $('#m_id').val(data.id);
                 $('#method_modal_title').text('Редактирование метода');
                 $('#apply_btn').text('Сохранить изменения');
-                $('#error_div').hide();
+
+                $('input[name=m_name]').val($('#name'+data.id).text().trim());
+                $('input[name=m_comment]').val($('#comment'+data.id).text().trim());
+                if (data.type === 'script') {
+                    $('select[name=m_script]').val(data.script_id);
+                    $("input[name=actions][value=script]").prop("checked",true);
+                    $("#script_button").addClass("active");
+                    $('#script_div').show();
+                } else if (data.type === 'easy') {
+                    $("input[name=actions][value=easy]").prop("checked",true);
+                    $("#easy_button").addClass("active");
+                    $('#easy_div').show();
+                    $('#easy_device').text(data.device_id);
+                    $('#easy_port').text(data.port);
+                    $('#easy_action').text(data.action);
+                } else if (data.type === 'none') {
+                    $("input[name=actions][value=none]").prop("checked",true);
+                    $("#none_button").addClass("active");
+                }
+
+
                 init_btn.click();
             }
 
@@ -275,7 +306,7 @@
                                     data-action="${data.action}"
                                     class="btn btn-info btn-sm btn-rounded edit_btn">
                                                 <i class="fa fa-cog fa-lg"></i></button>
-                             <button type="button" data-id="${id}" data-name="${name}" class="btn btn-danger btn-rounded btn-sm del_btn">
+                             <button type="button" data-id="${data.id}" data-name="${data.name}" class="btn btn-danger btn-rounded btn-sm del_btn">
                                                 <i class="fa fa-trash fa-lg"></i></button>
                          </div>
                     </div>`;
@@ -283,11 +314,11 @@
                 $('#methods_div').append(html);
             }
 
-            function editMethod(id, name, script_id, script_name, comment) {
-                // todo
-                $('#name'+id).text(name);
-                $('#script'+id).text(script_name);
-                $('#comment'+id).text(comment);
+            function editMethod(data) {
+                $('#name'+data.id).text(data.name);
+                $('#script'+data.id).text(data.script_name);
+                $('#comment'+data.id).text(data.comment);
+                $('#easy'+data.id).text(data.easy);
             }
 
             $('#add_btn').click(showAddModal);
@@ -357,7 +388,7 @@
                     success: function (resp) {
                         if (resp.result) {
                             if (data.id) {
-                                editMethod(data.id, resp.data);
+                                editMethod(resp.data);
                             } else {
                                 addMethod(resp.data);
                             }
@@ -369,15 +400,16 @@
 
             // edit method
             $('body').on('click', '.edit_btn', function() {
-                let id = $(this).attr('data-id');
-                let script_id = $(this).attr('data-script-id');
+                let data = {};
 
-                $('input[name=m_id]').val(id);
-                $('input[name=m_name]').val($('#name'+id).text().trim());
-                $('select[name=m_script]').val(script_id);
-                $('input[name=m_comment]').val($('#comment'+id).text().trim());
+                data.id = $(this).attr('data-id');
+                data.type = $(this).attr('data-type');
+                data.script_id = $(this).attr('data-script-id');
+                data.device_id = $(this).attr('data-device');
+                data.port = $(this).attr('data-port');
+                data.action = $(this).attr('data-action');
 
-                showEditModal(id);
+                showEditModal(data);
             });
 
             // change easy/script/none in modal
