@@ -26,6 +26,7 @@
 
 <script>
     function select_port(port) {
-        $('#port_btn').html('Порт: ' + port);
+        //$('#port_btn').html('Порт: ' + port);
+        $('#easy_port').text(port);
     }
 </script>

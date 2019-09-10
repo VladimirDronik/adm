@@ -26,6 +26,52 @@ class Method extends Model
 {
     public $timestamps = false;
 
+    public function getTypeAttribute()
+    {
+        if (!empty($this->script)) {
+            return 'script';
+        }
+
+        if (!empty($this->easy)) {
+            return 'easy';
+        }
+
+        return 'none';
+    }
+
+    private function getEasySecondPart($index)
+    {
+        $ar = explode(";",$this->easy);
+        return explode(":",$ar[1] ?? 'отсутствует')[$index] ?? 'отсутствует';
+    }
+
+    public function getPortAttribute()
+    {
+        if ($this->type === 'easy') {
+            return $this->getEasySecondPart(0);
+        }
+
+        return 'отсутствует';
+    }
+
+    public function getActionAttribute()
+    {
+        if ($this->type === 'easy') {
+            return $this->getEasySecondPart(1);
+        }
+
+        return 'отсутствует';
+    }
+
+    public function getDeviceIdAttribute()
+    {
+        if ($this->type === 'easy') {
+            return explode(";",$this->easy)[0] ?? 'отсутствует';
+        }
+
+        return 'отсутствует';
+    }
+
     /* relations */
 
     public function escript()

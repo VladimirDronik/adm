@@ -23,6 +23,8 @@
 
 <script>
     function select_device(id_device) {
-        $('#dev_select_button').html('Устройство: ' + id_device);
+        //$('#dev_select_button').html('Устройство: ' + id_device);
+        $('#easy_device').text(id_device);
+        $('#easy_port').text('отсутствует');
     }
 </script>

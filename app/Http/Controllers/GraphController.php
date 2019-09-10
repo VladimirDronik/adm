@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\GraphService;
-use Illuminate\Http\Request;
 
 class GraphController extends Controller
 {
@@ -17,7 +16,8 @@ class GraphController extends Controller
     public function index()
     {
         $data = $this->service->getGraphData();
+        $periods = $this->service->getPeriods();
 
-        return view('graphs.index', compact('data'));
+        return view('graphs.index', compact('data', 'periods'));
     }
 }

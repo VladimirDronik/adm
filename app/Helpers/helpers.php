@@ -82,3 +82,18 @@ if (!function_exists('daysToShortRus')) {
         return trim($rus_days,", ");
     }
 }
+
+if (!function_exists('getRusMonth')) {
+
+    function getRusMonth($month = null)
+    {
+        if (empty($month)) {
+            $month = (int)date('m');
+        }
+
+        $rus_months = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль',
+            'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
+
+        return $rus_months[$month-1];
+    }
+}

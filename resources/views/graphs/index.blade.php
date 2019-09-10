@@ -30,16 +30,12 @@
                         <h3>Помещение «{{ $room->name }}»</h3>
                         @if(count($room->termostats))
                             @foreach($room->termostats as $termostat)
-                                <h4>Термостат «{{ $termostat->id_termometr }}»</h4>
-                                @if(count($data['termostat_'.$termostat->id]['values']))
-                                    <div class="row">
-                                        <div class="col col-md-12">
-                                            <div id="chart{{$termostat->id}}" class="chartdiv"></div>
-                                        </div>
+                                @include('graphs.period',compact('termostat'))
+                                <div class="row">
+                                    <div class="col col-md-12">
+                                        <div id="chart{{$termostat->id}}" class="chartdiv"></div>
                                     </div>
-                                @else
-                                    <p>Нет данных</p>
-                                @endif
+                                </div>
                             @endforeach
                         @else
                             <p>Нет термостатов</p>
@@ -49,16 +45,12 @@
                     @if(count($data['other_termostats']))
                         <h3>Остальные термостаты</h3>
                         @foreach ($data['other_termostats'] as $termostat)
-                            <h4>Термостат «{{ $termostat->id_termometr }}»</h4>
-                            @if(count($data['termostat_'.$termostat->id]['values']))
-                                <div class="row">
-                                    <div class="col col-md-12">
-                                        <div id="chart{{$termostat->id}}" class="chartdiv"></div>
-                                    </div>
+                            @include('graphs.period',compact('termostat'))
+                            <div class="row">
+                                <div class="col col-md-12">
+                                    <div id="chart{{$termostat->id}}" class="chartdiv"></div>
                                 </div>
-                            @else
-                                <p>Нет данных</p>
-                            @endif
+                            </div>
                         @endforeach
                     @endif
                 @else
@@ -76,83 +68,90 @@
     <script src="{{ asset('ela/js/lib/amcharts4/themes/animated.js') }}"></script>
     <script src="{{ asset('ela/js/lib/amcharts4/lang/ru_RU.js') }}"></script>
     <script>
+        let url_graph = '{{ route('ajax.graphs.period.data') }}';
+
         $(document).ready(function(){
 
-            am4core.ready(function() {
-                // Themes begin
-                am4core.useTheme(am4themes_animated);
-                // Themes end
+            function createAmChart(id, dates, values) {
+                // Create chart
+                var chart = am4core.create("chart"+id, am4charts.XYChart);
+                chart.paddingRight = 20;
+                chart.language.locale = am4lang_ru_RU;
+                chart.data = getChartData(dates, values);
 
-                let id = 0;
-                let dates = [];
-                let values = [];
+                var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+                dateAxis.baseInterval = {
+                    "timeUnit": "minute",
+                    "count": 1
+                };
+                dateAxis.tooltipDateFormat = "dd.MM.yyyy HH:mm";
 
-                @foreach($data['rooms'] as $room)
-                    @foreach($room->termostats as $termostat)
-                        @if(count($data['termostat_'.$termostat->id]['values']))
-                            id = '{{ $termostat->id }}';
-                            values = {{ json_encode($data['termostat_'.$termostat->id]['values']) }};
-                            dates = {!! json_encode($data['termostat_'.$termostat->id]['labels']) !!};
-                            createAmChart(id, dates, values);
-                         @endif
-                     @endforeach
-                @endforeach
+                var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+                valueAxis.tooltip.disabled = true;
+                valueAxis.title.text = "Температура";
 
-                @foreach ($data['other_termostats'] as $termostat)
-                    @if(count($data['termostat_'.$termostat->id]['values']))
-                        id = '{{ $termostat->id }}';
-                        values = {{ json_encode($data['termostat_'.$termostat->id]['values']) }};
-                        dates = {!! json_encode($data['termostat_'.$termostat->id]['labels']) !!};
-                        createAmChart(id, dates, values);
-                    @endif
-                @endforeach
+                var series = chart.series.push(new am4charts.LineSeries());
+                series.dataFields.dateX = "date";
+                series.dataFields.valueY = "temp";
+                series.tooltipText = "T: [bold]{valueY}[/]";
+                series.fillOpacity = 0.3;
 
-                function createAmChart(id, dates, values) {
-                    // Create chart
-                    var chart = am4core.create("chart"+id, am4charts.XYChart);
-                    chart.paddingRight = 20;
-                    chart.language.locale = am4lang_ru_RU;
-                    chart.data = getChartData(dates, values);
+                chart.cursor = new am4charts.XYCursor();
+                chart.cursor.lineY.opacity = 0;
+                chart.scrollbarX = new am4charts.XYChartScrollbar();
+                chart.scrollbarX.series.push(series);
 
-                    var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-                    dateAxis.baseInterval = {
-                        "timeUnit": "minute",
-                        "count": 1
-                    };
-                    dateAxis.tooltipDateFormat = "dd.MM.yyyy HH:mm";
+                chart.events.on("datavalidated", function () {
+                    dateAxis.zoom({start:0, end:1});
+                });
+            }
 
-                    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-                    valueAxis.tooltip.disabled = true;
-                    valueAxis.title.text = "Температура";
-
-                    var series = chart.series.push(new am4charts.LineSeries());
-                    series.dataFields.dateX = "date";
-                    series.dataFields.valueY = "temp";
-                    series.tooltipText = "T: [bold]{valueY}[/]";
-                    series.fillOpacity = 0.3;
-
-                    chart.cursor = new am4charts.XYCursor();
-                    chart.cursor.lineY.opacity = 0;
-                    chart.scrollbarX = new am4charts.XYChartScrollbar();
-                    chart.scrollbarX.series.push(series);
-
-                    chart.events.on("datavalidated", function () {
-                        dateAxis.zoom({start:0.85, end:1});
+            function getChartData(dates, values) {
+                var chartData = [];
+                for (var i = 0; i < dates.length; i++) {
+                    chartData.push({
+                        date: new Date(dates[i]),
+                        temp: values[i]
                     });
                 }
+                return chartData;
+            }
 
-                function getChartData(dates, values) {
-                    var chartData = [];
-                    for (var i = 0; i < dates.length; i++) {
-                        chartData.push({
-                            date: new Date(dates[i]),
-                            temp: values[i]
-                        });
+            am4core.ready(function() {
+                am4core.useTheme(am4themes_animated);
+            });
+
+            function updateChart(termostat_id, data) {
+                createAmChart(termostat_id, data.dates, data.values);
+            }
+
+            function getChartPeriodData(termostat_id, period) {
+                $.ajax({
+                    url: url_graph,
+                    data: {'_token': _token, 'termostat_id': termostat_id, 'period': period},
+                    success: function (resp) {
+                        if (resp.result) {
+                            updateChart(termostat_id, resp.data);
+                        }
                     }
-                    return chartData;
-                }
+                });
+            }
 
-            }); // end am4core.ready()
+            $('body').on('change', '.select_period', function() {
+                let termostat_id = $(this).attr('data-id');
+                let period = $(this).val();
+                getChartPeriodData(termostat_id, period);
+            });
+
+            @foreach($data['rooms'] as $room)
+                @foreach($room->termostats as $termostat)
+                    $('#select_period{{$termostat->id}}').change();
+                @endforeach
+            @endforeach
+
+            @foreach($data['other_termostats'] as $termostat)
+                $('#select_period{{$termostat->id}}').change();
+            @endforeach
         });
     </script>
 @endsection

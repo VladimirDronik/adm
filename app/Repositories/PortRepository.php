@@ -32,7 +32,6 @@ class PortRepository {
 
     public function updateMethod($port_id, $object_id = null, $method_id = null)
     {
-        Port::where('id', $port_id)->update(['object' => $object_id, 'method' => $method_id,
-            'easy' => null, 'script' => null]);
+        Port::where('id', $port_id)->update(['object' => $object_id, 'method' => $method_id]);
     }
 }

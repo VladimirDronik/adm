@@ -24,8 +24,8 @@ class MethodController extends Controller
 
     public function store(Request $r)
     {
-        abort_if(!ajaxHas($r, ['object_id', 'id', 'name', 'script_id', 'comment']), 400);
+        abort_if(!ajaxHas($r, ['data']), 400);
 
-        return response()->json(['result' => true] + $this->service->store($r->all()));
+        return response()->json(['result' => true, 'data' => $this->service->store($r->data)]);
     }
 }

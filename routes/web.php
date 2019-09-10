@@ -82,7 +82,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('add_object_to_port', 'ObjectController@addObjectToPort');
 
         Route::post('getmethod', 'PortController@getViewMethod');
-        Route::post('loaddata', 'PortController@getViewData');
+        Route::post('loaddata', 'PortController@getViewData')->name('load.data');
         Route::post('savemethod', 'PortController@storeMethod');
 
         Route::post('events/delete', 'EventController@delete')->name('events.delete');
@@ -92,5 +92,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('delete', 'SchedulerPointController@delete')->name('delete');
             Route::post('store', 'SchedulerPointController@store')->name('store');
         });
+
+        Route::post('graphs/period/data', 'GraphController@getPeriodData')->name('graphs.period.data');
     });
 });
