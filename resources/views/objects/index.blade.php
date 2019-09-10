@@ -36,7 +36,6 @@
                                     <th>Название</th>
                                     <th>Тип</th>
                                     <th>Статус</th>
-                                    <th>Отображение</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
@@ -52,13 +51,6 @@
                                                 <span class="badge badge-success">{{ $object->status }}</span>
                                             @else
                                                 <span class="badge badge-primary">{{ $object->status }}</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($object->view)
-                                                <a href="{{ route('views.edit',[$object->view]) }}" title="Перейти к отображению">
-                                                    {{ optional($object->eview)->name }}
-                                                </a>
                                             @endif
                                         </td>
                                         <td align="center" class="text-center">
@@ -81,7 +73,6 @@
                                     <th>Название</th>
                                     <th>Тип</th>
                                     <th>Статус</th>
-                                    <th>Отображение</th>
                                     <th></th>
                                     <th></th>
                                 </tr>

@@ -1,9 +1,5 @@
 @extends('layouts._layout')
 
-@section('css')
-    <link href="{{ asset('ela/css/lib/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
-@endsection
-
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
        ['title' => 'Редактирование объекта «'. $object->name .'»',
@@ -33,7 +29,6 @@
                         {{ Form::bs_title('Основные данные') }}
                         {{ Form::bs_radio('type', 'Тип элемента*:', $types, old('type', $object->type), ['required' => true]) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_autoselect('view', 'Отображение:', $views, old('view', $object->view),  false, false) }}
 
                         {{ Form::bs_submit_btn() }}
 
@@ -190,7 +185,6 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script>
         let store_url = '{{ route('ajax.methods.store') }}';
         let del_url = '{{ route('ajax.methods.delete') }}';
@@ -228,8 +222,6 @@
         $(document).ready(function () {
             let init_btn = $('#init_btn');
             let cancel_btn = $('#cancel_btn');
-
-            $("#auto_sel_view").chosen({width:"100%", no_results_text: "Не найдено"});
 
             function showModalError(message) {
                 $('#error_text').text(message);

@@ -16,7 +16,6 @@ class ObjectService {
     {
         $object->type = trim($data['type']);
         $object->name = trim($data['name']);
-        $object->view = $data['view'] ?? null;
         $object->status = 'off';
     }
 

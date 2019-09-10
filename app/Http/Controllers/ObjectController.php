@@ -7,20 +7,17 @@ use App\Http\Requests\Object\UpdateRequest;
 use App\Models\HomeObject;
 use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
-use App\Repositories\ViewRepository;
 use App\Services\ObjectService;
 use Illuminate\Http\Request;
 
 class ObjectController extends Controller
 {
     private $object_rep;
-    private $view_rep;
     private $service;
 
-    public function __construct(ObjectRepository $object_rep, ViewRepository $view_rep, ObjectService $service)
+    public function __construct(ObjectRepository $object_rep, ObjectService $service)
     {
         $this->object_rep = $object_rep;
-        $this->view_rep = $view_rep;
         $this->service = $service;
     }
 
@@ -35,9 +32,8 @@ class ObjectController extends Controller
     public function create()
     {
         $types = HomeObject::getFullTypeIds();
-        $views = $this->view_rep->getAllToArray();
 
-        return view('objects.create', compact('types', 'views'));
+        return view('objects.create', compact('types'));
     }
 
     public function store(CreateRequest $r)
@@ -59,10 +55,9 @@ class ObjectController extends Controller
         $object = HomeObject::findOrFail($id);
 
         $types = HomeObject::getFullTypeIds();
-        $views = $this->view_rep->getAllToArray();
         $scripts = $script_rep->getAllToArray();
 
-        return view('objects.edit', compact('object', 'types', 'views', 'scripts'));
+        return view('objects.edit', compact('object', 'types', 'scripts'));
     }
 
     public function update(UpdateRequest $r, int $id)
