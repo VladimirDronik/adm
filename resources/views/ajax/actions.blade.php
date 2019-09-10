@@ -3,7 +3,7 @@
     <button type="button" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal" id="port_btn" onclick="load_data('port');">Порт: {{$port}}</button>&nbsp;
     <button type="button" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal" id="action_btn" onclick="load_data('action');">Действие: {{$act}}</button>
     <br><br><div class="alert alert-info">В этом режиме при срабатывании входного порта будет выполняться
-        действие с другим портом этого же или другого устройства. Для этого необхоидмо добавить команду
+        действие с другим портом этого же или другого устройства. Для этого необходимо добавить команду
         в формате "Устройство; Порт: Действие"</div>
 @elseif ($action == 'method')
         @if ($object != '')

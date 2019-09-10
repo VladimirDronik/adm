@@ -40,8 +40,9 @@
                         {{ Form::bs_title('Методы объекта') }}
                             <div class="form-group row">
                                 <label class="col-md-3"><i>Название метода</i></label>
-                                <div class="col-md-4"><i>Скрипт</i></div>
-                                <div class="col-md-3"><i>Комментарий</i></div>
+                                <div class="col-md-3"><i>Простое действие</i></div>
+                                <div class="col-md-2"><i>Скрипт</i></div>
+                                <div class="col-md-2"><i>Комментарий</i></div>
                                 <div class="col-md-2 text-right"></div>
                             </div>
                             <div id="methods_div">
@@ -50,15 +51,23 @@
                                     <label class="col-md-3" id="name{{$method->id}}">
                                         {{$method->name}}
                                     </label>
-                                    <div class="col-md-4" id="script{{$method->id}}">
+                                    <div class="col-md-3" id="easy{{$method->id}}">
+                                        {{ $method->easy }}
+                                    </div>
+                                    <div class="col-md-2" id="script{{$method->id}}">
                                         {{ optional($method->escript)->name }}
                                     </div>
-                                    <div class="col-md-3" id="comment{{$method->id}}">
+                                    <div class="col-md-2" id="comment{{$method->id}}">
                                         {{ $method->comment }}
                                     </div>
                                     <div class="col-md-2 text-right">
                                         <button type="button" data-id="{{ $method->id }}"
-                                                data-script-id="{{ $method->script }}" class="btn btn-info btn-sm btn-rounded edit_btn">
+                                                data-type="{{ $method->type }}"
+                                                data-script-id="{{ $method->script }}"
+                                                data-device="{{ $method->device_id }}"
+                                                data-port="{{ $method->port }}"
+                                                data-action="{{ $method->action }}"
+                                                class="btn btn-info btn-sm btn-rounded edit_btn">
                                             <i class="fa fa-cog fa-lg"></i>
                                         </button>
                                         <button type="button" data-id="{{ $method->id }}" data-name="{{ $method->name }}" class="btn btn-danger btn-rounded btn-sm del_btn">
@@ -85,6 +94,7 @@
             </div>
         </div>
     </div>
+
     <div id="method_modal" class="modal">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -105,11 +115,36 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label text-right col-md-3 label-fix" for="m_script">
-                            Скрипт:
+                        <label class="control-label text-right col-md-3 label-fix">&nbsp;
                         </label>
                         <div class="col-md-9">
-                            <select name="m_script" class="form-control">
+                            <div class="btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-success active" id="easy_button">
+                                    <input type="radio" name="actions" checked autocomplete="off" value="easy"> Простое действие
+                                </label>
+                                <label class="btn btn-success" id="script_button">
+                                    <input type="radio" name="actions"  autocomplete="off" value="script"> Скрипт
+                                </label>
+                                <label class="btn btn-success" id="none_button">
+                                    <input type="radio" name="actions"  autocomplete="off" value="none"> Отсутствует
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row" id="easy_div">
+                        <label class="control-label text-right col-md-3 label-fix"></label>
+                        <div class="col-md-9">
+                            <button type="button" class="btn btn-success m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal" id="dev_select_button" onclick="loadSubData('device');">Устройство: <span id="easy_device">отсутствует</span></button>&nbsp;
+                            <button type="button" class="btn btn-success m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal" id="port_btn" onclick="loadSubData('port');">Порт: <span id="easy_port">отсутствует</span></button>&nbsp;
+                            <button type="button" class="btn btn-success m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal" id="action_btn" onclick="loadSubData('action');">Действие: <span id="easy_action">отсутствует</span></button>
+                        </div>
+                    </div>
+                    <div class="form-group row" id="script_div" style="display: none;">
+                        <label class="control-label text-right col-md-3 label-fix" for="m_script">
+                            <strong>Скрипт*:</strong>
+                        </label>
+                        <div class="col-md-9">
+                            <select name="m_script" autocomplete="off" class="form-control">
                                 <option value="">Не указан</option>
                                 @foreach($scripts as $key => $script)
                                     <option value="{{ $key }}">{{ $script }}</option>
@@ -133,6 +168,23 @@
             </div>
         </div>
     </div>
+
+    <div id="methodsModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="title_action"></h4>
+                </div>
+                <div class="modal-body" id="method_data">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" >Сохранить изменения</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @include('components.info_modal')
     @include('components.del_modal')
 @endsection
@@ -140,13 +192,42 @@
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script>
+        let store_url = '{{ route('ajax.methods.store') }}';
+        let del_url = '{{ route('ajax.methods.delete') }}';
+        let sub_data_url = '{{ route('ajax.load.data') }}';
+        let object_id = '{{ $object->id }}';
+        let del_id;
+
+        function loadSubData(mode, object_id) {
+            let device = {};
+
+            if (mode == 'port') {
+                device = $('#easy_device').text().trim();
+            }
+
+            if (device == 'отсутствует') {
+                alert('Сначала необходимо выбрать устройство');
+                mode = 'device';
+            }
+
+            let data = {};
+            data['mode'] = mode;
+            data['device'] = device;
+            data['object_id'] = object_id;
+
+            $.ajax({
+                url: sub_data_url,
+                data: data,
+                success: function (data) {
+                    $('#method_data').html(data.html);
+                    $('#title_action').html(data.title_action);
+                }
+            });
+        }
+
         $(document).ready(function () {
             let init_btn = $('#init_btn');
             let cancel_btn = $('#cancel_btn');
-            let store_url = '{{ route('ajax.methods.store') }}';
-            let del_url = '{{ route('ajax.methods.delete') }}';
-            let object_id = '{{ $object->id }}';
-            let del_id;
 
             $("#auto_sel_view").chosen({width:"100%", no_results_text: "Не найдено"});
 
@@ -157,6 +238,13 @@
 
             function showAddModal() {
                 $('#m_id').val('');
+                $('#easy_device').text('отсутствует');
+                $('#easy_port').text('отсутствует');
+                $('#easy_action').text('отсутствует');
+                $("input[name=actions][value=none]").prop("checked",true);
+                $("input[name=actions]").change();
+                $('input[name=m_name]').val('');
+                $('input[name=m_comment]').val('');
                 $('#method_modal_title').text('Добавление метода');
                 $('#apply_btn').text('Добавить метод');
                 $('#error_div').hide();
@@ -171,14 +259,21 @@
                 init_btn.click();
             }
 
-            function addMethod(id, name, script_id, script_name, comment) {
+            function addMethod(data) {
                 let html = `
-                    <div class="form-group row" id="div${id}">
-                         <label class="col-md-3" id="name${id}">${name}</label>
-                         <div class="col-md-4" id="script${id}">${script_name}</div>
-                         <div class="col-md-3" id="comment${id}">${comment}</div>
+                    <div class="form-group row" id="div${data.id}">
+                         <label class="col-md-3" id="name${data.id}">${data.name}</label>
+                         <div class="col-md-3" id="easy${data.id}">${data.easy}</div>
+                         <div class="col-md-2" id="script${data.id}">${data.script_name}</div>
+                         <div class="col-md-2" id="comment${data.id}">${data.comment}</div>
                          <div class="col-md-2 text-right">
-                             <button type="button" data-id="${id}" data-script-id="${script_id}" class="btn btn-info btn-sm btn-rounded edit_btn">
+                             <button type="button" data-id="${data.id}"
+                                    data-type="${data.type}"
+                                    data-script-id="${data.script_id}"
+                                    data-device="${data.device_id}"
+                                    data-port="${data.port}"
+                                    data-action="${data.action}"
+                                    class="btn btn-info btn-sm btn-rounded edit_btn">
                                                 <i class="fa fa-cog fa-lg"></i></button>
                              <button type="button" data-id="${id}" data-name="${name}" class="btn btn-danger btn-rounded btn-sm del_btn">
                                                 <i class="fa fa-trash fa-lg"></i></button>
@@ -189,6 +284,7 @@
             }
 
             function editMethod(id, name, script_id, script_name, comment) {
+                // todo
                 $('#name'+id).text(name);
                 $('#script'+id).text(script_name);
                 $('#comment'+id).text(comment);
@@ -196,32 +292,74 @@
 
             $('#add_btn').click(showAddModal);
 
-            $('#apply_btn').click(function(){
-
-                let id = $('input[name=m_id]').val();
-                let name = $('input[name=m_name]').val().trim();
-                let script_id = $('select[name=m_script]').val();
-                let comment = $('input[name=m_comment]').val().trim();
-
-                if (name == '') {
-                    showModalError('Не указано название метода');
-                    return false;
+            function validateMethod(data) {
+                if (data.name == '') {
+                    return 'Не указано название';
                 }
 
-                if (comment == '') {
-                    comment = name;
+                if (data.type === 'script' && data.script_id == "") {
+                    return 'Не указан скрипт';
+                }
+
+                if (data.type === 'easy') {
+                    if (data.device_id === 'отсутствует') {
+                        return 'Не указано устройство';
+                    }
+                    if (data.port === 'отсутствует') {
+                        return 'Не указан порт';
+                    }
+                    if (data.action === 'отсутствует') {
+                        return 'Не указано действие';
+                    }
+                }
+
+                return '';
+            }
+
+            function getModalData() {
+                let data = {};
+
+                data.object_id = object_id;
+                data.id = $('input[name=m_id]').val();
+                data.name = $('input[name=m_name]').val().trim();
+                data.comment = $('input[name=m_comment]').val().trim();
+
+                if (data.comment == '') {
+                    data.comment = data.name;
+                }
+
+                data.type = $("input[name=actions]:checked").val();
+
+                if (data.type === 'script') {
+                    data.script_id = $('select[name=m_script]').val();
+                } else if (data.type === 'easy') {
+                    data.device_id = $('#easy_device').text().trim();
+                    data.port = $('#easy_port').text().trim();
+                    data.action = $('#easy_action').text().trim();
+                }
+
+                return data;
+            }
+
+            $('#apply_btn').click(function(){
+
+                let data = getModalData();
+                let message = validateMethod(data);
+
+                if (message != '') {
+                    showModalError(message);
+                    return false;
                 }
 
                 $.ajax({
                     url: store_url,
-                    data: {'_token': _token, 'object_id': object_id, 'id': id, 'name': name,
-                        'script_id': script_id, 'comment': comment},
-                    success: function (data) {
-                        if (data.result) {
-                            if (id) {
-                                editMethod(id, name, script_id, data.script_name, comment);
+                    data: {'_token': _token, 'data': data},
+                    success: function (resp) {
+                        if (resp.result) {
+                            if (data.id) {
+                                editMethod(data.id, resp.data);
                             } else {
-                                addMethod(data.id, name, script_id, data.script_name, comment);
+                                addMethod(resp.data);
                             }
                         }
                         cancel_btn.click();
@@ -240,6 +378,22 @@
                 $('input[name=m_comment]').val($('#comment'+id).text().trim());
 
                 showEditModal(id);
+            });
+
+            // change easy/script/none in modal
+
+            $('input[type=radio][name=actions]').change(function() {
+                if (this.value === 'easy') {
+                    $('#script_div').hide();
+                    $('#easy_div').show();
+                } else if (this.value === 'script') {
+                    $('#easy_div').hide();
+                    $('#script_div').show();
+                } else {
+                    $('#easy_div').hide();
+                    $('#script_div').hide();
+                }
+                $('#error_div').hide();
             });
 
             // delete method
