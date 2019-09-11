@@ -23,9 +23,9 @@ function reset_object(id, port) {
     //Внесение изменений в БД
     select_object(null, null);
 
-    $('#'+id).html('Отсутствует');
     $('#'+id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
     $('#'+port).val('empty,empty,' + id);
+    $('#method_btn_'+port.split('_')[1]).html('<b>Метод не выбран</b>');
 }
 
 // Модальное окно с действиями - выбор действия

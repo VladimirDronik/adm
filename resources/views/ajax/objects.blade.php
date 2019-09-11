@@ -3,7 +3,6 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-{{--                    <th>ID</th>--}}
                     <th>Название</th>
                     <th>Тип</th>
                 </tr>
@@ -11,7 +10,6 @@
             <tbody>
             @foreach($objects as $object)
                 <tr>
-{{--                    <th scope="row">{{$object->id}}</th>--}}
                     <td><a href="#" id="object_{{$object->id}}" onclick="select_object({{$object->id}},'{{$object->name}}')" data-dismiss="modal" >{{$object->name}} </a></td>
                     <td>{{$object->type}}</td>
                 </tr>
@@ -23,12 +21,12 @@
 
 <script>
 function select_object(id, name) {
-    var port_name = '{{$port}}';
-    var arr_port = port_name.split('_');
+    let port_name = '{{$port}}';
+    let arr_port = port_name.split('_');
 
     //Заносим данные в таблицу с помощью ajax
 
-    var data = {};
+    let data = {};
     data['id_object'] = id;
     data['id_port'] = arr_port[1];
 
@@ -42,8 +40,14 @@ function select_object(id, name) {
     });
 
     //Отдаем данные странице
+    let html = $('#object_'+id).html();
+    if (typeof html === 'undefined') {
+        html = 'Отсутствует';
+    } else {
+        html = '<b>' + html + '</b>';
+    }
     $( '#{{$port}}' ).attr({"class": "btn btn-warning  m-b-10 btn-sm"});
-    $( '#{{$port}}' ).html('<b>' + $('#object_'+id).html() + '</b>');
+    $( '#{{$port}}' ).html(html);
     $( '#{{$port}}').val(id+',' + name + ',' + '{{$port}}');
 }
 </script>

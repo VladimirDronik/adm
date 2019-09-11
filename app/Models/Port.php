@@ -53,11 +53,6 @@ class Port extends Model
         return $this->belongsTo(HomeObject::class, 'object', 'id');
     }
 
-    public function escript()
-    {
-        return $this->belongsTo(Script::class, 'script', 'id');
-    }
-
     public function emethod()
     {
         return $this->belongsTo(Method::class, 'method', 'id');

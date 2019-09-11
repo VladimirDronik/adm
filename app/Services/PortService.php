@@ -10,6 +10,8 @@ use App\Repositories\PortRepository;
 
 class PortService {
 
+    const NONE = 'отсутствует';
+
     private $rep;
 
     public function __construct(PortRepository $rep)
@@ -38,22 +40,22 @@ class PortService {
         $eport = Port::findOrFail($r->port_id);
 
         // Выбираемый метод равен существующему методу порта
-        $value = $r->cur_method === $r->methodmode ? $r->value : 'отсутствует';
+        $value = $r->cur_method === $r->methodmode ? $r->value : self::NONE;
 
         if ($r->methodmode === 'easy') {
             // Разбираем значение для простого действия
-            if ($value !== 'отсутствует') {
+            if ($value !== self::NONE) {
                 $easy = explode(';', $r->value);
                 $easy1 = explode(':', $easy[1]);
                 $device = $easy[0];
                 $port = $easy1[0];
                 $act = $easy1[1];
             } else {
-                $device = $port = $act = 'отсутствует';
+                $device = $port = $act = self::NONE;
             }
         } elseif ($r->methodmode === 'method') {
             if ($r->cur_method === $r->methodmode) {
-                $value = empty($eport->method) ? 'отсутствует' : optional($eport->emethod)->name;
+                $value = empty($eport->method) ? self::NONE : optional($eport->emethod)->name;
             }
         }
 
@@ -93,7 +95,7 @@ class PortService {
                 break;
         }
 
-        return ['html' => $html, 'title_action' => $title_action];
+        return compact('html', 'title_action');
     }
 
     public function storeMethod($r)

@@ -8,8 +8,11 @@ class PortRepository {
 
     public function updateObject(array $data)
     {
-        $id_object = empty($data['id_object']) ? null : $data['id_object'];
-        Port::where('id', $data['id_port'])->update(['object' => $id_object]);
+        if (empty($data['id_object'])) {
+            Port::where('id', $data['id_port'])->update(['object' => null, 'method' => null]);
+        } else {
+            Port::where('id', $data['id_port'])->update(['object' => $data['id_object']]);
+        }
     }
 
     public function getOutPortsByDeviceId(int $device_id)
