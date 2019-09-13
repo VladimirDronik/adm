@@ -46,7 +46,7 @@
                                         <td>{{ $termostat->rus_thermostat }}</td>
                                         <td>
                                             @if($termostat->object)
-                                                <a href="{{ route('objects.edit',[$termostat->object]) }}">{{ optional($termostat->eobject)->name }}</a>
+                                                <a href="{{ route('objects.edit',[$termostat->object]) }}" target="_blank">{{ optional($termostat->eobject)->name }}</a>
                                             @endif
                                         </td>
                                         <td align="center" class="text-center">

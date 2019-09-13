@@ -65,12 +65,12 @@
                                     </a>
                                 </td>
                                 <td>
-                                    @if (optional($port->eobject)->name)
+                                    @if($port->eobject)
                                         <button type="button" class="btn btn-warning m-b-10 btn-sm"
                                                 name="object" id="portobj_{{ $port->id }}"
                                                 data-toggle="modal" data-target="#objectsModal"
                                                 value="{{ $port->object}},{{$port->eobject->name}},portobj_{{ $port->id }}">
-                                            <b>{{ $port->eobject->name }}</b>
+                                            <b>{{ optional($port->eobject)->name }}</b>
                                         </button>
                                     @else
                                         <button type="button" class="btn btn-default m-b-10 btn-sm"
@@ -82,16 +82,12 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if($port->easy)
-                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-success  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('easy', {{ $port->id }}, '{{ $port->easy }}');"><b>Простое: {{ $port->easy }}</b></button>
-                                    @elseif($port->script)
-                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-info  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('script', {{ $port->id }}, '{{ optional($port->escript)->name }}');"><b>Скрипт: {{ optional($port->escript)->name }}</b></button>
-                                    @elseif(optional($port->eobject)->name != '' && $port->status !== 'out')
-                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-warning  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('method', {{ $port->id }}, '{{ optional($port->eobject)->name }}');">
+                                    @if($port->eobject && $port->status !== 'out')
+                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-warning m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('method', {{ $port->id }}, '{{ optional($port->eobject)->name }}');">
                                             @if($port->method) <b>Метод: {{ optional($port->emethod)->name }}</b> @else <b class="text-danger">Метод не выбран</b> @endif
                                         </button>
                                     @elseif($port->status !== 'out')
-                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-default  m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('none', {{ $port->id }}, 'none');">Отсутствует</button>
+                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-default m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('none', {{ $port->id }}, 'none');">Отсутствует</button>
                                     @endif
                                 </td>
                                 @if($port->status !== 'out')
@@ -244,7 +240,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
-                    <button type="button"   class="btn btn-primary" data-dismiss="modal" onclick="deleteDevice();" >Удалить</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deleteDevice();" >Удалить</button>
                 </div>
             </div>
         </div>

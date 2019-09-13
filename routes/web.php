@@ -70,6 +70,11 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('view/all', 'ObjectController@getViewAll')->name('view.all');
         });
 
+        Route::post('view_objects/view/all', 'ViewObjectController@getViewAll')->name('view_objects.view.all');
+        Route::post('add_object_to_view', 'ViewObjectController@addObjectToView');
+        Route::post('view_objects/method/all', 'ViewObjectController@getMethodAll')->name('view_objects.method.all');
+        Route::post('add_method_to_view', 'ViewObjectController@addMethodToView');
+
         Route::group(['prefix' => 'methods', 'as' => 'methods.'], function () {
             Route::post('delete', 'MethodController@delete')->name('delete');
             Route::post('store', 'MethodController@store')->name('store');

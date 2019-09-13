@@ -110,17 +110,36 @@
 {{--                                <td scope="row">{{ $view->short_off_title }}</td>--}}
 {{--                                <td scope="row">{{ $view->value }}</td>--}}
                                 <td>
-                                    @if($view->id_object)
-                                        <a href="{{ route('objects.edit',$view->id_object) }}">{{ $view->object_name }}</a>
+                                    @if($view->eobject)
+                                        <button type="button" class="btn btn-warning m-b-10 btn-sm"
+                                                name="object" id="viewobj_{{ $view->id }}"
+                                                data-toggle="modal" data-target="#objectsModal"
+                                                value="{{ $view->id_object}},{{optional($view->eobject)->name}},viewobj_{{ $view->id }}">
+                                            <b>{{ optional($view->eobject)->name }}</b>
+                                        </button>
+                                    @else
+                                        <button type="button" class="btn btn-default m-b-10 btn-sm"
+                                                name="object" id="viewobjempty_{{ $view->id }}"
+                                                data-toggle="modal" data-target="#objectsModal"
+                                                value="empty,empty,viewobjempty_{{ $view->id }}">
+                                            Отсутствует
+                                        </button>
                                     @endif
                                 </td>
                                 <td>
-                                    @if($view->id_method)
-                                        @if($view->id_object)
-                                            <a href="{{ route('objects.edit',$view->id_object) }}">{{ $view->method_name }}</a>
-                                        @else
-                                            <a href="{{ route('objects.edit',optional($view->emethod)->id_object) }}">{{ $view->method_name }}</a>
-                                        @endif
+                                    @if($view->eobject && $view->emethod)
+                                        <button type="button" id="viewmethod_{{ $view->id }}"
+                                                name="method" class="btn btn-warning m-b-10 btn-sm" data-toggle="modal"
+                                                value="{{ $view->id_method}},{{optional($view->emethod)->name}},viewmethod_{{ $view->id }}"
+                                                data-target="#methodsModal">
+                                                <b>{{ optional($view->emethod)->name }}</b>
+                                        </button>
+                                    @else
+                                        <button type="button" id="viewmethodempty_{{ $view->id }}"
+                                                name="method" class="btn @if($view->eobject) btn-warning @else btn-default @endif m-b-10 btn-sm" data-toggle="modal"
+                                                value="empty,empty,viewmethodempty_{{ $view->id }}"
+                                                data-target="#methodsModal">
+                                                 @if($view->eobject) <b class="text-danger">Метод не выбран</b> @else Отсутствует @endif</button>
                                     @endif
                                 </td>
                                 <td scope="row">{{ $view->room_name }}</td>
@@ -180,14 +199,123 @@
             </div>
         </div>
     </div>
+
+    <div id="objectsModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Выбор объекта</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <label id="selected_object"></label><br>
+                    </div>
+                    <div id="objectframe"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="methodsModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Выбор метода</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <label id="selected_method"></label><br>
+                    </div>
+                    <div id="methodframe"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
     @include('components.info_modal')
     @include('components.del_modal')
 @endsection
 
 @section('scripts')
    <script>
+
+       function resetObject(id, view) {
+           //Внесение изменений в БД
+           selectObject(null, null);
+
+           $('#'+id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
+           $('#'+view).val('empty,empty,' + id);
+           let mid = view.split('_')[1];
+           $('#viewmethod_'+mid).html('<b>Метод не выбран</b>');
+           $('#viewmethod_'+mid).val("empty,empty,viewmethod_"+mid);
+           $('#viewmethodempty_'+midview.split('_')[1]).html('<b>Метод не выбран</b>');
+           $('#viewmethodempty_'+mid).val("empty,empty,viewmethodempty_"+mid);
+       }
+
+       function resetMethod(id, view) {
+           //Внесение изменений в БД
+           selectMethod(null, null);
+
+           $('#'+id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
+           $('#'+view).val('empty,empty,' + id);
+       }
+
        $(document).ready(function(){
+           let objects_url = '{{ route('ajax.view_objects.view.all') }}';
+           let methods_url = '{{ route('ajax.view_objects.method.all') }}';
            let del_id;
+
+           //Вызов модального окна с методами
+           $('button[type=button][name=method]').click(function () {
+
+               let method_val = this.value;
+               let view_id = this.id;
+               let method_arr = method_val.split(',');
+
+               let data = {};
+               data['method'] = method_val;
+               data['id'] = view_id.split('_')[1];
+
+               ajax_html(data, methods_url, '#methodframe');
+
+               if (method_arr[0] != 'empty') {
+                   $('#selected_method').html('Выбран метод: '+ method_arr[1] +
+                       '   <button type="button" class="btn btn-danger m-b-2 btn-xs" data-dismiss="modal" ' +
+                       'id = "reset_method"  value="'+ view_id + '" onclick="resetMethod(\''+view_id+'\',\''+method_arr[2]+'\');">Убрать</button>');
+               } else {
+                   $('#selected_method').html('Метод не выбран');
+               }
+           });
+
+           //
+
+           //Вызов модального окна с объектами
+           $('button[type=button][name=object]').click(function () {
+
+               let object_val = this.value;
+               let view_id = this.id;
+               let object_arr = object_val.split(',');
+
+               let data = {};
+               data['object'] = object_val;
+
+               ajax_html(data, objects_url, '#objectframe');
+
+               if (object_arr[0] != 'empty') {
+                   $('#selected_object').html('Выбран объект: '+ object_arr[1] +
+                       '   <button type="button" class="btn btn-danger m-b-2 btn-xs" data-dismiss="modal" ' +
+                       'id = "reset_object"  value="'+ view_id + '" onclick="resetObject(\''+view_id+'\',\''+object_arr[2]+'\');">Убрать</button>');
+               } else {
+                   $('#selected_object').html('Объект не выбран');
+               }
+           });
+
+           //
 
            $('.del_btn').click(function() {
                del_id = $(this).attr('data-id');

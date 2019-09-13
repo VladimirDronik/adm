@@ -18,7 +18,7 @@ class ObjectRepository {
 
     public function getByName($name, $pagination_count = 30)
     {
-        $query = HomeObject::with('eview');
+        $query = HomeObject::query();
 
         if (!empty($name)) {
             $query->where('name','like','%'.$name.'%');

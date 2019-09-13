@@ -6,6 +6,12 @@
         <nav class="sidebar-nav">
             <ul id="sidebarnav">
                 <li class="nav-devider"></li>
+                <li>
+                    <a class="has-arrow" href="{{ route('home') }}" aria-expanded="false">
+                        <i class="fa fa-dashboard"></i>
+                        <span class="hide-menu">Главная</span>
+                    </a>
+                </li>
                 <li class="nav-label">Модель</li>
                 <li>
                     <a class="has-arrow" href="{{ route('devices.index') }}" aria-expanded="false">
