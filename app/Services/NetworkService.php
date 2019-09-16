@@ -7,8 +7,8 @@ class NetworkService {
     //private $pathNet = "/etc/network/interfaces";
     //private $pathVpn = "/etc/ppp/peers/vpn";
     //private $cmdPath = "/home/ubuntu/cmd.sh";
-    private $pathNet = "/home/kinord/test/interfaces";
-    private $pathVpn = "/home/kinord/test/vpn";
+    private $pathNet = "/home/kinord/www/test/interfaces";
+    private $pathVpn = "/home/kinord/www/test/vpn";
     private $cmdPath = "/home/kinord/www/test/cmd.sh";
 
     /**
@@ -23,6 +23,7 @@ class NetworkService {
     			address {$address}
     			network {$netmask}
     			gateway {$gateway}
+    			
 EOT1;
 
         $tplB = <<<EOT2
@@ -64,10 +65,12 @@ EOT2;
             }
 
             $bn[$key + 1] = $tpl;
-            $tmpfname = tempnam("/tmp", "net");
-            file_put_contents($tmpfname, $bn);
-            exec('sh '.$this->cmdPath.' "mv -f '.$tmpfname.' '.$this->pathNet.'"');
+            //$tmpfname = tempnam("/tmp", "net");
+            file_put_contents($this->pathNet, $bn);
+            //exec('bash -c "mv -f '.$tmpfname.' '.$this->pathVpn.'"');
+            //exec('sh '.$this->cmdPath.' "mv -f '.$tmpfname.' '.$this->pathNet.'"');
         }
+        //return 'bash -c "mv -f '.$tmpfname.' '.$this->pathVpn.'"';
     }
 
     /**
@@ -95,10 +98,10 @@ EOT2;
 				holdoff 15 #интервал между подключениями
 EOT;
 
-        $tmpfname = tempnam("/tmp", "vpn");
-        file_put_contents($tmpfname, $tpl);
+        //$tmpfname = tempnam("/tmp", "vpn");
+        file_put_contents($this->pathVpn, $tpl);
 
-        exec('sh '.$this->cmdPath.' "mv -f '.$tmpfname.' '.$this->pathVpn.'"');
+        //exec('sh '.$this->cmdPath.' "mv -f '.$tmpfname.' '.$this->pathVpn.'"');
     }
 
     /**
@@ -162,7 +165,8 @@ EOT;
      * Перезагрузка сервера
      */
     public function reload() {
-        exec('sh '.$this->cmdPath.' "/sbin/reboot"');
+        exec('sudo /sbin/reboot');
+        //exec('sudo sh '.$this->cmdPath.' "/sbin/reboot"');
         //exec('sudo sh '.$this->cmdPath.' "/etc/init.d/networking restart"');
         //exec('sh '.$this->cmdPath.' "killall pppd"');
         //exec('sh '.$this->cmdPath.' "pppd call vpn"');
