@@ -45,6 +45,7 @@
 @endsection
 
 @section('scripts')
+    @if(isset($main_network) && isset($network) && isset($vpn))
     <script>
         let data = {};
         data.main_ip = '{{ $main_network[0] }}';
@@ -115,4 +116,5 @@
             });
         });
     </script>
+    @endif
 @endsection
