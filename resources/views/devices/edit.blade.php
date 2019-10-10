@@ -61,7 +61,11 @@
                                 <td>
                                     <a href="#" data-toggle="modal" data-target="#name_modal"
                                        id="name_port_{{ $port->id }}" onclick="getPortComment('{{ $port->id }}');">
-                                        {{ $port->comment != '' ? $port->comment : 'Отсутствует'}}
+                                        @if($port->is_empty_comment)
+                                            <i>{{ $port->comment != '' ? $port->comment : 'Отсутствует'}}</i>
+                                        @else
+                                            <span style="color: #455a64;">{{ $port->comment }}</span>
+                                        @endif
                                     </a>
                                 </td>
                                 <td>
