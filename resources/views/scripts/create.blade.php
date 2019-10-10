@@ -18,13 +18,14 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <div class="col-md-12 col-lg-8 col-xl-8">
+                <div class="col-md-12 col-lg-10 col-xl-9">
                     {!! Form::open(['route' => 'scripts.store', 'method' => 'post', 'class' => 'form-horizontal form-bordered']) !!}
                         {{ csrf_field() }}
                         <div class="form-body">
                             {{ Form::bs_alert() }}
                             {{ Form::bs_simple_text('Системный:', 'Нет') }}
                             {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
+                            {{ Form::bs_textarea('code', 'Код скрипта*:', null, ['required'=>true, 'rows' => 20]) }}
                         </div>
                         {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}

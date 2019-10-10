@@ -13,7 +13,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,18 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'required|string|max:100|unique:scripts,name,'.$this->script,
+            'code' => 'required|string',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'Не указано название',
+            'name.max' => 'Название содержит более 100 символов',
+            'name.unique' => 'Скрипт с таким названием уже существует. Укажите другое название',
+            'code.required' => 'Не указан код скрипта'
         ];
     }
 }

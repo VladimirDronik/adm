@@ -17,6 +17,8 @@ class FormServiceProvider extends ServiceProvider
     {
         \Form::component('bs_text',
             self::PATH.'text', ['name', 'label', 'value' => null, 'attributes' => [], 'help' => null, 'col' => 3]);
+        \Form::component('bs_textarea',
+            self::PATH.'textarea', ['name', 'label', 'value' => null, 'attributes' => ['rows' => 3], 'help' => null, 'col' => 3]);
         \Form::component('bs_label',
             self::PATH.'label', ['name', 'label', 'is_required' => false, 'col' => 3, 'class' => null]);
         \Form::component('bs_title',
