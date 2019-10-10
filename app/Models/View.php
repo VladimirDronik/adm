@@ -77,9 +77,6 @@ class View extends Model
     protected $table = 'view_items';
     public $timestamps = false;
 
-    const TYPE_ITEM = 'i';
-    const TYPE_TEMP = 't';
-
     const TYPE_NAME_SWITCH = 'switch';
     const TYPE_NAME_BUTTON = 'button';
     const TYPE_NAME_TEMP = 'temp';

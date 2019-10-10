@@ -18,8 +18,6 @@ class ViewService {
         $view->off_title = $this->concatTitles($data, 'off');
 
         $view->type_name = trim($data['type_name']);
-        $view->type = $view->type_name === View::TYPE_NAME_TEMP || $view->type_name === View::TYPE_NAME_HUMIDITY
-            ? View::TYPE_TEMP : View::TYPE_ITEM;
         $view->scene = $data['scene'] ?? null;
         $view->position_top = (int)$data['position_top'];
         $view->position_left = (int)$data['position_left'];

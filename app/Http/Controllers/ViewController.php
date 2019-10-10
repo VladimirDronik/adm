@@ -68,8 +68,7 @@ class ViewController extends Controller
                 return redirect()->route('views.edit',[$id])->with('success', 'Отображение успешно добавлено');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении отображения '
-                .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при добавлении отображения ', [$r->all(),$e->getMessage()]);
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении отображения');
