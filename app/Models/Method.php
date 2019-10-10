@@ -21,6 +21,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Method whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Method whereScript($value)
  * @mixin \Eloquent
+ * @property string|null $easy выполнение простого действия (например переключение порта). В значениях указываем номер порта устройства
+ * @property-read \App\Models\HomeObject $eobject
+ * @property-read \App\Models\Script|null $escript
+ * @property-read mixed $action
+ * @property-read mixed $device_id
+ * @property-read mixed $port
+ * @property-read mixed $type
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Method whereEasy($value)
  */
 class Method extends Model
 {

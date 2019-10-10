@@ -21,6 +21,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereObject($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereScript($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Method|null $emethod
+ * @property-read \App\Models\HomeObject|null $eobject
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SchedulerPoint[] $not_system_points
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SchedulerPoint[] $points
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SchedulerPoint[] $system_points
  */
 class SchedulerTask extends Model
 {

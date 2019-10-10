@@ -23,6 +23,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cron wherePeriod($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cron whereSystem($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Method $emethod
+ * @property-read \App\Models\HomeObject $eobject
  */
 class Cron extends Model
 {

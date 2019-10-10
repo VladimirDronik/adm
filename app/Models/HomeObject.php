@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject whereView($value)
  * @property-read \App\Models\View|null $eview
  * @property-read mixed $rus_type
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Method[] $methods
  */
 class HomeObject extends Model
 {

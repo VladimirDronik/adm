@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Menu whereSort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Menu whereTitle($value)
  * @mixin \Eloquent
+ * @property-read mixed $image_path
  */
 class Menu extends Model
 {

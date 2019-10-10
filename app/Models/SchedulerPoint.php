@@ -26,6 +26,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerPoint whereTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerPoint whereType($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\SchedulerTask $etask
+ * @property-read mixed $description
+ * @property-read mixed $is_close
+ * @property-read mixed $is_system
+ * @property-read mixed $rus_type
+ * @property-read mixed $single_rus_type
  */
 class SchedulerPoint extends Model
 {

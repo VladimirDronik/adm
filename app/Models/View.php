@@ -63,6 +63,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereTypeName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereValue($value)
+ * @property int|null $id_object id объекта из таблицы объектов
+ * @property int|null $id_method метод объекта из таблицы методов
+ * @property-read \App\Models\Method|null $emethod
+ * @property-read \App\Models\HomeObject|null $eobject
+ * @property-read mixed $method_name
+ * @property-read mixed $object_name
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereIdMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereIdObject($value)
  */
 class View extends Model
 {

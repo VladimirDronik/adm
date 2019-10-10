@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Graph whereIdTermostat($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Graph whereValue($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Termostat $etermostat
  */
 class Graph extends Model
 {

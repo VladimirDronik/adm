@@ -21,6 +21,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereSort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereStyle($value)
+ * @property int $lighting
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Termostat[] $termostats
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereLighting($value)
  */
 class Room extends Model
 {

@@ -36,6 +36,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Device $device
  * @property-read \App\Models\HomeObject|null $eobject
  * @property-read \App\Models\Script|null $escript
+ * @property-read \App\Models\Method|null $emethod
+ * @property-read mixed $is_empty_comment
  */
 class Port extends Model
 {

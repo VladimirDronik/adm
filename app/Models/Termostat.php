@@ -47,6 +47,13 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property-read \App\Models\HomeObject|null $eobject
  * @property-read \App\Models\Room|null $eroom
+ * @property-read \App\Models\Device|null $edevice
+ * @property-read \App\Models\Method|null $emethod_off
+ * @property-read \App\Models\Method|null $emethod_on
+ * @property-read mixed $rus_thermostat
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Graph[] $graphs
+ * @property-read \App\Models\HomeObject|null $iobject
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Graph[] $last_graphs
  */
 class Termostat extends Model
 {
