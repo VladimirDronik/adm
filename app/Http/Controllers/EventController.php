@@ -8,6 +8,7 @@ use App\Models\SchedulerPoint;
 use App\Models\SchedulerTask;
 use App\Repositories\EventRepository;
 use App\Repositories\ObjectRepository;
+use App\Repositories\ScriptRepository;
 use App\Services\EventService;
 use App\Services\ObjectService;
 use Illuminate\Http\Request;
@@ -16,12 +17,16 @@ class EventController extends Controller
 {
     private $event_rep;
     private $object_rep;
+    private $script_rep;
     private $service;
 
-    public function __construct(EventRepository $event_rep, ObjectRepository $object_rep, EventService $service)
+    public function __construct(EventRepository $event_rep, ObjectRepository $object_rep,
+                                ScriptRepository $script_rep, EventService $service)
     {
         $this->event_rep = $event_rep;
         $this->object_rep = $object_rep;
+        $this->script_rep = $script_rep;
+
         $this->service = $service;
     }
 
@@ -46,8 +51,9 @@ class EventController extends Controller
     public function create()
     {
         $objects = $this->object_rep->getAllToArray();
+        $scripts = $this->script_rep->getAllToArray();
 
-        return view('events.create', compact('objects'));
+        return view('events.create', compact('objects', 'scripts'));
     }
 
     public function store(CreateRequest $r)
@@ -66,7 +72,8 @@ class EventController extends Controller
 
     public function edit(int $id, ObjectService $object_service)
     {
-        $event = SchedulerTask::where('id', $id)->with('points', 'eobject', 'emethod')->first();
+        $event = SchedulerTask::where('id', $id)
+            ->with('points', 'eobject', 'emethod', 'escript')->first();
 
         if (!$event) {
             return redirect()->route('events.index')->with('error', 'Событие не найдено');

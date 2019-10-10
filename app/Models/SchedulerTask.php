@@ -48,6 +48,11 @@ class SchedulerTask extends Model
         return $this->belongsTo(Method::class, 'method', 'id');
     }
 
+    public function escript()
+    {
+        return $this->belongsTo(Script::class, 'script', 'id');
+    }
+
     public function points()
     {
         return $this->hasMany(SchedulerPoint::class, 'id_task', 'id')->orderBy('type');

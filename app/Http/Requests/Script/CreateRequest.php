@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Event;
+namespace App\Http\Requests\Script;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,7 +24,8 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:100|unique:scheduler_tasks,name',
+            'name' => 'required|string|max:100|unique:scripts,name',
+            'code' => 'required|string',
         ];
     }
 
@@ -33,7 +34,8 @@ class CreateRequest extends FormRequest
         return [
             'name.required' => 'Не указано название',
             'name.max' => 'Название содержит более 100 символов',
-            'name.unique' => 'Событие с таким названием уже существует. Выберите другое название',
+            'name.unique' => 'Скрипт с таким названием уже существует. Укажите другое название',
+            'code.required' => 'Не указан код скрипта'
         ];
     }
 }

@@ -42,7 +42,6 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('active', 'ViewController@active')->name('active');
         });
 
-        Route::post('objects/delete', 'ObjectController@delete')->name('objects.delete');
         Route::post('termostats/delete', 'TermostatController@delete')->name('termostats.delete');
 
         Route::group(['prefix' => 'scenes', 'as' => 'scenes.'], function () {
@@ -68,6 +67,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::group(['prefix' => 'objects', 'as' => 'objects.'], function () {
             Route::post('methods', 'ObjectController@methods')->name('methods');
             Route::post('view/all', 'ObjectController@getViewAll')->name('view.all');
+            Route::post('delete', 'ObjectController@delete')->name('delete');
         });
 
         Route::post('view_objects/view/all', 'ViewObjectController@getViewAll')->name('view_objects.view.all');
@@ -99,5 +99,9 @@ Route::group(['middleware' => ['auth']], function () {
         });
 
         Route::post('graphs/period/data', 'GraphController@getPeriodData')->name('graphs.period.data');
+
+        Route::group(['prefix' => 'scripts', 'as' => 'scripts.'], function () {
+            Route::post('delete', 'ScriptController@delete')->name('delete');
+        });
     });
 });

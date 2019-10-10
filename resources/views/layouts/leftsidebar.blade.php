@@ -47,7 +47,7 @@
                         <i class="fa fa-bell-o"></i><span class="hide-menu">Оповещения</span></a></li>
                 <li> <a class="has-arrow" href="{{ route('menu.index') }}" aria-expanded="false">
                         <i class="fa fa-th-list"></i><span class="hide-menu">Меню</span></a></li>
-                <li> <a class="has-arrow" href="/" aria-expanded="false">
+                <li> <a class="has-arrow" href="{{ route('scripts.index') }}" aria-expanded="false">
                         <i class="fa fa-flash"></i><span class="hide-menu">Скрипты</span></a></li>
                 <li> <a class="has-arrow" href="{{ route('events.index') }}" aria-expanded="false">
                         <i class="fa fa-calendar"></i><span class="hide-menu">События</span></a></li>

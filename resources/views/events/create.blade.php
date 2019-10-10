@@ -29,8 +29,12 @@
                         {{ Form::bs_alert() }}
                         {{ Form::bs_title('Основные данные') }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_autoselect('object', 'Объект*:', $objects, null,  false, false, ['required' => true]) }}
-                        {{ Form::bs_autoselect('method', 'Метод*:', [], null,  false, false, ['required' => true]) }}
+                        {{ Form::bs_hr() }}
+                        {{ Form::bs_simple_text('', 'Необходимо выбрать или только метод, или только скрипт') }}
+                        {{ Form::bs_autoselect('object', 'Объект:', $objects, null,  false, false) }}
+                        {{ Form::bs_autoselect('method', 'Метод:', [], null,  false, false) }}
+                        {{ Form::bs_hr() }}
+                        {{ Form::bs_autoselect('script', 'Скрипт:', $scripts, null,  false, false) }}
                     </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
@@ -73,11 +77,8 @@
             if (isEmptyInput('name')) {
                 return 'Не указано название события';
             }
-            if (isEmptyAutoSelect('object')) {
-                return 'Не указан объект';
-            }
-            if (isEmptyAutoSelect('method')) {
-                return 'Не указан метод';
+            if (!isEmptyAutoSelect('script') && !isEmptyAutoSelect('method')) {
+                return 'Необходимо выбрать или только метод, или только скрипт';
             }
             return '';
         }
@@ -85,6 +86,7 @@
         $(document).ready(function () {
             $("#auto_sel_object").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_method").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_script").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_object").chosen().change(function() {
                 let object_id = $(this).val();
