@@ -25,6 +25,7 @@ class CreateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100|unique:scheduler_tasks,name',
+            'type' => 'required'
         ];
     }
 
@@ -34,6 +35,7 @@ class CreateRequest extends FormRequest
             'name.required' => 'Не указано название',
             'name.max' => 'Название содержит более 100 символов',
             'name.unique' => 'Событие с таким названием уже существует. Выберите другое название',
+            'type.required' => 'Не выбран тип: метод или скрипт'
         ];
     }
 }

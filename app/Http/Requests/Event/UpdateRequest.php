@@ -24,9 +24,8 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:100|unique:scheduler_tasks,name,'.$this->id,
-            'object' => 'required|integer|min:0',
-            'method' => 'required|integer|min:0',
+            'name' => 'required|string|max:100|unique:scheduler_tasks,name,'.$this->event,
+            'type' => 'required'
         ];
     }
 
@@ -36,8 +35,7 @@ class UpdateRequest extends FormRequest
             'name.required' => 'Не указано название',
             'name.max' => 'Название содержит более 100 символов',
             'name.unique' => 'Событие с таким названием уже существует. Выберите другое название',
-            'object.required' => 'Не указан объект',
-            'method.required' => 'Не указан метод'
+            'type.required' => 'Не выбран тип: метод или скрипт'
         ];
     }
 }

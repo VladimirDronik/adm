@@ -73,7 +73,7 @@ class EventController extends Controller
     public function edit(int $id, ObjectService $object_service)
     {
         $event = SchedulerTask::where('id', $id)
-            ->with('points', 'eobject', 'emethod', 'escript')->first();
+            ->with('points', 'eobject', 'emethod', 'escript', 'eobject')->first();
 
         if (!$event) {
             return redirect()->route('events.index')->with('error', 'Событие не найдено');
@@ -81,10 +81,12 @@ class EventController extends Controller
 
         $objects = $this->object_rep->getAllToArray();
         $methods = $object_service->getMethodsByObjectIdToArray($event->object);
+        $scripts = $this->script_rep->getAllToArray();
+
         $types = SchedulerPoint::getFullTypeIds();
         $cron_periods = SchedulerPoint::CRON_PERIODS;
 
-        return view('events.edit', compact('event', 'objects', 'methods', 'types', 'cron_periods'));
+        return view('events.edit', compact('event', 'objects', 'methods', 'scripts', 'types', 'cron_periods'));
     }
 
     public function update(UpdateRequest $r, int $id)

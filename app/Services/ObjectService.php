@@ -47,7 +47,7 @@ class ObjectService {
         return [];
     }
 
-    public function getMethodsByObjectIdToArray(int $object_id)
+    public function getMethodsByObjectIdToArray($object_id)
     {
         if ($object_id) {
             return Method::where('id_object', $object_id)

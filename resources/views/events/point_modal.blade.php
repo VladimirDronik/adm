@@ -68,7 +68,7 @@
                         @foreach(['Пн','Вт','Ср','Чт','Пт','Сб','Вс'] as $key => $day)
                             <div class="checkbox m-r-10" style="display: inline-block;">
                                 <label style="cursor: pointer;">
-                                    <input type="checkbox" name="m_days" value="{{ $key+1 }}" autocomplete="off"> {{ $day }}
+                                    <input type="checkbox" name="m_days" value="{{ $key }}" autocomplete="off"> {{ $day }}
                                 </label>
                             </div>
                         @endforeach

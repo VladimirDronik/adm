@@ -10,18 +10,13 @@ class EventService {
 
     public function prepare(SchedulerTask $task, array $data)
     {
-        if (!is_null($data['method']) && !is_null($data['script'])) {
-            if (is_null($data['object'])) {
-                $data['method'] = null;
-            } else {
-                $data['script'] = null;
-            }
-        }
-
-        if (is_null($data['method'])) {
+        if ($data['type'] === 'method') {
+            $data['script'] = null;
+        } else {
             $data['object'] = null;
+            $data['method'] = null;
         }
-
+        unset($data['type']);
         $task->fill($data);
     }
 

@@ -51,6 +51,7 @@
                                     <th>Название</th>
                                     <th>Расписание</th>
                                     <th>Метод</th>
+                                    <th>Скрипт</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
@@ -89,6 +90,13 @@
                                             </a>
                                         @endif
                                     </td>
+                                    <td>
+                                        @if($event->escript)
+                                            <a href="{{ route('scripts.edit',[$event->script]) }}">
+                                                {{ optional($event->escript)->name }}
+                                            </a>
+                                        @endif
+                                    </td>
                                     <td align="center">
                                         <a href="{{ route('events.edit',[$event->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                             <i class="fa fa-cog fa-lg"></i>
@@ -109,6 +117,7 @@
                                     <th>Название</th>
                                     <th>Расписание</th>
                                     <th>Метод</th>
+                                    <th>Скрипт</th>
                                     <th></th>
                                     <th></th>
                                 </tr>

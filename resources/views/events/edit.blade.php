@@ -34,8 +34,36 @@
                         {{ Form::bs_alert() }}
                         {{ Form::bs_title('Основные данные') }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_autoselect('object', 'Объект*:', $objects, old('object', $event->object),  false, false, ['required' => true]) }}
-                        {{ Form::bs_autoselect('method', 'Метод*:', $methods, old('method', $event->method),  false, false, ['required' => true]) }}
+                        {{ Form::bs_hr() }}
+                        <div class="form-group row">
+                            <label class="control-label text-right col-md-3 label-fix">&nbsp;</label>
+                            <div class="col-md-5">
+                                <div class="mt-2">
+                                    <div class="checkbox">
+                                        <label style="cursor: pointer;">
+                                            <input type="radio" name="type" @if($event->has_method) checked @endif value="method" autocomplete="off"> Выбор объекта и метода
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mt-2">
+                                    <div class="checkbox">
+                                        <label style="cursor: pointer;">
+                                            <input type="radio" name="type"  @if($event->has_script) checked @endif value="script" autocomplete="off"> Выбор скрипта
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="method_div" @if($event->has_script) style="display: none;" @endif>
+                            {{ Form::bs_autoselect('object', 'Объект:', $objects, old('object', $event->object),  false, false) }}
+                            {{ Form::bs_autoselect('method', 'Метод:', $methods, old('method', $event->method),  false, false) }}
+                        </div>
+                        <div id="script_div" @if(!$event->has_script) style="display: none;" @endif>
+                            {{ Form::bs_autoselect('script', 'Скрипт:', $scripts, old('script', $event->script),  false, false) }}
+                        </div>
 
                         {{ Form::bs_submit_btn() }}
 
@@ -136,11 +164,15 @@
             if (isEmptyInput('name')) {
                 return 'Не указано название события';
             }
-            if (isEmptyAutoSelect('object')) {
-                return 'Не указан объект';
+            let type = $('[name=type]:checked').val();
+            if (type === 'script' && isEmptyAutoSelect('script')) {
+                return 'Не указан скрипт';
             }
-            if (isEmptyAutoSelect('method')) {
+            if (type === 'method' && isEmptyAutoSelect('method')) {
                 return 'Не указан метод';
+            }
+            if (type === 'method' && isEmptyAutoSelect('object')) {
+                return 'Не указан объект';
             }
             return '';
         }
@@ -149,6 +181,7 @@
 
             $("#auto_sel_object").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_method").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_script").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $('#clockpicker').clockpicker({donetext: 'Применить'});
             $('#m_year_date').datepicker({format: "dd.mm", language: "ru", autoclose: true});
@@ -194,6 +227,17 @@
                     });
 
                     return false;
+                }
+                return true;
+            });
+
+            $('[name=type]').change(function(){
+                if ($(this).val() === 'method') {
+                    $('#script_div').hide();
+                    $('#method_div').show();
+                } else {
+                    $('#method_div').hide();
+                    $('#script_div').show();
                 }
                 return true;
             });

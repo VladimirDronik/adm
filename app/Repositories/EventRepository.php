@@ -16,7 +16,7 @@ class EventRepository {
         $name = trim($filter['name']);
         $type = trim($filter['type']);
 
-        $query = SchedulerTask::with('points', 'emethod');
+        $query = SchedulerTask::with('points', 'emethod', 'escript');
 
         if ($name !== '') {
             $query->where('name', 'like', '%'.$name.'%');

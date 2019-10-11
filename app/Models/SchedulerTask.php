@@ -36,6 +36,18 @@ class SchedulerTask extends Model
     public $timestamps = false;
     protected $guarded = ['id'];
 
+    /* attributes */
+
+    public function getHasMethodAttribute()
+    {
+        return !is_null($this->method);
+    }
+
+    public function getHasScriptAttribute()
+    {
+        return !is_null($this->script);
+    }
+
     /* relations */
 
     public function eobject()

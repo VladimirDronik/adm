@@ -30,11 +30,34 @@
                         {{ Form::bs_title('Основные данные') }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
                         {{ Form::bs_hr() }}
-                        {{ Form::bs_simple_text('', 'Необходимо выбрать или только метод, или только скрипт') }}
-                        {{ Form::bs_autoselect('object', 'Объект:', $objects, null,  false, false) }}
-                        {{ Form::bs_autoselect('method', 'Метод:', [], null,  false, false) }}
-                        {{ Form::bs_hr() }}
-                        {{ Form::bs_autoselect('script', 'Скрипт:', $scripts, null,  false, false) }}
+                        <div class="form-group row">
+                            <label class="control-label text-right col-md-3 label-fix">&nbsp;</label>
+                            <div class="col-md-5">
+                                <div class="mt-2">
+                                    <div class="checkbox">
+                                        <label style="cursor: pointer;">
+                                            <input type="radio" name="type" checked value="method" autocomplete="off"> Выбор объекта и метода
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mt-2">
+                                    <div class="checkbox">
+                                        <label style="cursor: pointer;">
+                                            <input type="radio" name="type" value="script" autocomplete="off"> Выбор скрипта
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="method_div">
+                            {{ Form::bs_autoselect('object', 'Объект:', $objects, null,  false, false) }}
+                            {{ Form::bs_autoselect('method', 'Метод:', [], null,  false, false) }}
+                        </div>
+                        <div id="script_div" style="display: none;">
+                            {{ Form::bs_autoselect('script', 'Скрипт:', $scripts, null,  false, false) }}
+                        </div>
                     </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
@@ -77,8 +100,15 @@
             if (isEmptyInput('name')) {
                 return 'Не указано название события';
             }
-            if (!isEmptyAutoSelect('script') && !isEmptyAutoSelect('method')) {
-                return 'Необходимо выбрать или только метод, или только скрипт';
+            let type = $('[name=type]:checked').val();
+            if (type === 'script' && isEmptyAutoSelect('script')) {
+                return 'Не указан скрипт';
+            }
+            if (type === 'method' && isEmptyAutoSelect('method')) {
+                return 'Не указан метод';
+            }
+            if (type === 'method' && isEmptyAutoSelect('object')) {
+                return 'Не указан объект';
             }
             return '';
         }
@@ -108,6 +138,17 @@
                     $('#init_btn').click();
                     return false;
                 }
+            });
+
+            $('[name=type]').change(function(){
+               if ($(this).val() === 'method') {
+                   $('#script_div').hide();
+                   $('#method_div').show();
+               } else {
+                   $('#method_div').hide();
+                   $('#script_div').show();
+               }
+               return true;
             });
         });
     </script>
