@@ -49,13 +49,11 @@ class ScriptController extends Controller
 
     public function edit(int $id)
     {
-        $script = Script::find($id);
-
-        if (!$script) {
-            return redirect()->route('scripts.index');
+        if ($script = Script::find($id)) {
+            return view('scripts.edit', compact('script'));
         }
 
-        return view('script.edit', compact('script'));
+        return redirect()->route('scripts.index');
     }
 
     public function update(UpdateRequest $r, int $id)
