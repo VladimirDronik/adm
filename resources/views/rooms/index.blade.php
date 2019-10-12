@@ -28,7 +28,6 @@
                                 <th>Название</th>
                                 <th>Изображение</th>
                                 <th>Цвет</th>
-                                <th>Термостаты</th>
                                 <th class="text-center">Сортировка</th>
                                 <th class="text-center" style="width: 80px;"></th>
                             </tr>
@@ -45,16 +44,10 @@
                                          onclick="updateImage({{ $room->id }}, true);">
                                 </td>
                                 <td>
-                                    <button style="background: {{ $room->style }}" id="colorRoom_{{ $room->id }}" class="btn btn-default"
+                                    <button style="background: {{ $room->color_style }}" id="colorRoom_{{ $room->id }}" class="btn btn-default"
                                             data-toggle="modal" data-target="#selectColor"
                                             onclick="updateColor({{ $room->id }}, true)">
                                     </button>
-                                </td>
-                                <td>
-                                    @foreach($room->termostats as $termostat)
-                                        <a href="{{ route('termostats.edit', [$termostat->id]) }}">{{ $termostat->id_termometr }}</a>
-                                        @if(!$loop->last) ,&nbsp; @endif
-                                    @endforeach
                                 </td>
                                 <td style="width: 150px;">
                                     <div class="row">
@@ -87,7 +80,6 @@
                                     <th>Название</th>
                                     <th>Изображение</th>
                                     <th>Цвет</th>
-                                    <th>Термостаты</th>
                                     <th>Сортировка</th>
                                     <th></th>
                                 </tr>

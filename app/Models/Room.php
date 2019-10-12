@@ -30,6 +30,13 @@ class Room extends Model
     const COMMON_NAME = 'Общие';
     public $timestamps = false;
 
+    /* attributes */
+
+    public function getColorStyleAttribute()
+    {
+        return Color::getStyleByColor($this->style);
+    }
+
     /* relations */
 
     public function termostats()
