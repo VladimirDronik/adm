@@ -13,7 +13,7 @@ class RoomRepository
 
     public function getPaginationSpecialRooms($pagination_count = 30)
     {
-        return Room::where('id','>',0)->orderBy('sort')->paginate($pagination_count);
+        return Room::with('termostats')->where('id','>',0)->orderBy('sort')->paginate($pagination_count);
     }
 
     public function getAllToArray()
