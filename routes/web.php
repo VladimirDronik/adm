@@ -82,9 +82,11 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'ports', 'as' => 'ports.'], function () {
             Route::post('update/comment', 'PortController@updateComment')->name('update.comment');
+            Route::post('method/all', 'PortController@getMethodAll')->name('method.all');
         });
 
         Route::post('add_object_to_port', 'ObjectController@addObjectToPort');
+        Route::post('add_method_to_port', 'PortController@addMethodToPort');
 
         Route::post('getmethod', 'PortController@getViewMethod');
         Route::post('loaddata', 'PortController@getViewData')->name('load.data');

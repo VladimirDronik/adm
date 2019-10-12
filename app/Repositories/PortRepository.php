@@ -37,4 +37,13 @@ class PortRepository {
     {
         Port::where('id', $port_id)->update(['object' => $object_id, 'method' => $method_id]);
     }
+
+    public function updateMethodByModal(array $data)
+    {
+        if (empty($data['id_method'])) {
+            Port::where('id', $data['id_view'])->update(['method' => null]);
+        } else {
+            Port::where('id', $data['id_view'])->update(['method' => $data['id_method']]);
+        }
+    }
 }

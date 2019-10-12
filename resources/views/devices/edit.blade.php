@@ -86,12 +86,26 @@
                                     @endif
                                 </td>
                                 <td>
+{{--                                    @if($port->eobject && $port->status !== 'out')--}}
+{{--                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-warning m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('method', {{ $port->id }}, '{{ optional($port->eobject)->name }}');">--}}
+{{--                                            @if($port->method) <b>Метод: {{ optional($port->emethod)->name }}</b> @else <b class="text-danger">Метод не выбран</b> @endif--}}
+{{--                                        </button>--}}
+{{--                                    @elseif($port->status !== 'out')--}}
+{{--                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-default m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('none', {{ $port->id }}, 'none');">Отсутствует</button>--}}
+{{--                                    @endif--}}
                                     @if($port->eobject && $port->status !== 'out')
-                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-warning m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('method', {{ $port->id }}, '{{ optional($port->eobject)->name }}');">
-                                            @if($port->method) <b>Метод: {{ optional($port->emethod)->name }}</b> @else <b class="text-danger">Метод не выбран</b> @endif
+                                        <button type="button" id="viewmethod_{{ $port->id }}"
+                                                name="method" class="btn btn-warning m-b-10 btn-sm" data-toggle="modal"
+                                                value="{{ $port->method}},{{optional($port->emethod)->name}},viewmethod_{{ $port->id }}"
+                                                data-target="#methodsModal">
+                                            @if($port->method)<b>Метод: {{ optional($port->emethod)->name }}</b>@else <b class="text-danger">Метод не выбран</b> @endif
                                         </button>
                                     @elseif($port->status !== 'out')
-                                        <button type="button" id="method_btn_{{ $port->id }}" class="btn btn-default m-b-10 btn-sm" data-toggle="modal" data-target="#actionModal" onclick="click_port_method('none', {{ $port->id }}, 'none');">Отсутствует</button>
+                                        <button type="button" id="viewmethodempty_{{ $port->id }}"
+                                                name="method" class="btn btn-default m-b-10 btn-sm" data-toggle="modal"
+                                                value="empty,empty,viewmethodempty_{{ $port->id }}"
+                                                data-target="#methodsModal">
+                                            Отсутствует</button>
                                     @endif
                                 </td>
                                 @if($port->status !== 'out')
@@ -169,54 +183,20 @@
         </div>
     </div>
 
-    <div id="actionModal" class="modal">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Действие при активации порта</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="btn-group-toggle" data-toggle="buttons">
-{{--                        <label class="btn btn-success" id="easy_button" >--}}
-{{--                            <input type="radio" name="actions"  autocomplete="off" value="easy"> Простое действие--}}
-{{--                        </label>--}}
-                        <label class="btn btn-success" id="method_button">
-                            <input type="radio" name="actions"  autocomplete="off" value="method"> Метод объекта
-                        </label>
-{{--                        <label class="btn btn-success" id="script_button">--}}
-{{--                            <input type="radio" name="actions"  autocomplete="off" value="script"> Скрипт--}}
-{{--                        </label>--}}
-                        <label class="btn btn-success" id="none_button">
-                            <input type="radio" name="actions"  autocomplete="off" value="none"> Отсутствует
-                        </label>
-                    </div>
-                    <br><br><br>
-                    <div id="mode"></div>
-                    <div id="object" class="d-none"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="storeMethod();">Сохранить изменения</button>
-                    <input type="hidden" value="" id="id_port">
-                    <input type="hidden" value="" id="value">
-                    <input type="hidden" value="" id="cur_method">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- модальное окно выбора действия для порта -->
     <div id="methodsModal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="title_action"></h4>
+                    <h4 class="modal-title">Выбор метода</h4>
                 </div>
-                <div class="modal-body" id="method_data">
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <label id="selected_method"></label><br>
+                    </div>
+                    <div id="methodframe"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                    <button type="button"   class="btn btn-primary" >Сохранить изменения</button>
                 </div>
             </div>
         </div>
@@ -257,6 +237,7 @@
         let device_id = '{{ $device->id }}';
         let port_comment_url = '{{ route('ajax.ports.update.comment') }}';
         let objects_url = '{{ route('ajax.objects.view.all') }}';
+        let methods_url = '{{ route('ajax.ports.method.all') }}';
 
         function deleteDevice() {
             $.ajax({
@@ -351,6 +332,38 @@
 
                 updatePortCheckbox('doubleclick', port_id, value);
             });
+
+            //Вызов модального окна с методами
+            $('button[type=button][name=method]').click(function () {
+
+                let method_val = this.value;
+                let view_id = this.id;
+                let method_arr = method_val.split(',');
+
+                let data = {};
+                data['method'] = method_val;
+                data['id'] = view_id.split('_')[1];
+
+                ajax_html(data, methods_url, '#methodframe');
+
+                if (method_arr[0] != 'empty') {
+                    $('#selected_method').html('Выбран метод: '+ method_arr[1] +
+                        '   <button type="button" class="btn btn-danger m-b-2 btn-xs" data-dismiss="modal" ' +
+                        'id = "reset_method"  value="'+ view_id + '" ' +
+                        'onclick="resetMethod(\''+view_id+'\',\''+method_arr[2]+'\');">Убрать</button>');
+                } else {
+                    $('#selected_method').html('Метод не выбран');
+                }
+            });
+
         });
+
+        function resetMethod(id, view) {
+            //Внесение изменений в БД
+            selectMethod(null, null);
+
+            $('#'+id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
+            $('#'+view).val('empty,empty,' + id);
+        }
     </script>
 @endsection

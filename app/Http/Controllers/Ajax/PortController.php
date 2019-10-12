@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use App\Models\Method;
+use App\Models\Port;
+use App\Repositories\PortRepository;
 use App\Services\PortService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -48,5 +51,21 @@ class PortController extends Controller
     public function storeMethod(Request $r)
     {
         $this->service->storeMethod($r);
+    }
+
+    public function getMethodAll(Request $r)
+    {
+        $method_array = explode(',',$r->input('method'));
+        $method_name = $method_array[0] != 'empty' ? $method_array[1] : 'empty';
+        $port = Port::find($r->input('id'));
+        $methods = Method::where('id_object',$port->object)->orderBy('name')->get();
+        $html = (String) view('ajax.port_methods', ['methods' => $methods, 'view' => $method_array[2]]);
+
+        return response()->json(['success' => true] + compact('html', 'method_name'));
+    }
+
+    public function addMethodToPort(Request $r, PortRepository $port_rep)
+    {
+        $port_rep->updateMethodByModal($r->all());
     }
 }

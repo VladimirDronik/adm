@@ -48,7 +48,7 @@ class DeviceController extends Controller
 
     public function edit(int $id)
     {
-        $device = Device::where('id', $id)->with('ports','ports.eobject')->first();
+        $device = Device::where('id', $id)->with('ports','ports.eobject','ports.emethod')->first();
 
         if (!$device) {
             return redirect()->route('devices.index')->with('error','Устройство не найдено');
