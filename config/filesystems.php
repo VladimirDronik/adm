@@ -50,7 +50,7 @@ return [
 
         'scripts' => [
             'driver' => 'local',
-            'root' => storage_path('app/scripts'),
+            'root' => env('APP_SCRIPTS_PATH', storage_path('app/scripts')),
         ],
 
         'public' => [
