@@ -123,7 +123,6 @@ class RoomService {
 
             if (!$temperature) {
                 $temperature = new Temperature();
-                $temperature->id = Temperature::max('id') + 1; // todo Add Autoincrement
                 $temperature->id_room = $room->id;
                 $temperature->sort = 1;
             }
