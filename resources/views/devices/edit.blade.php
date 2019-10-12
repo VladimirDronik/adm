@@ -346,7 +346,7 @@
 
                 ajax_html(data, methods_url, '#methodframe');
 
-                if (method_arr[0] != 'empty') {
+                if (method_arr[0] != 'empty' && method_arr[0] != '') {
                     $('#selected_method').html('Выбран метод: '+ method_arr[1] +
                         '   <button type="button" class="btn btn-danger m-b-2 btn-xs" data-dismiss="modal" ' +
                         'id = "reset_method"  value="'+ view_id + '" ' +

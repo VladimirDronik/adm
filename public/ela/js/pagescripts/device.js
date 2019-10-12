@@ -25,7 +25,10 @@ function reset_object(id, port) {
 
     $('#'+id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
     $('#'+port).val('empty,empty,' + id);
-    $('#method_btn_'+port.split('_')[1]).html('<b>Метод не выбран</b>');
+    let method_btn = $('#viewmethod_'+port.split('_')[1]);
+    method_btn.html('<b>Метод не выбран</b>');
+    let val = method_btn.val().split(',')[2];
+    method_btn.val('empty,empty,'+val);
 }
 
 // Модальное окно с действиями - выбор действия
