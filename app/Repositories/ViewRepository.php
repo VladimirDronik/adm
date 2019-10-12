@@ -33,7 +33,7 @@ class ViewRepository {
     public function updateObject(array $data)
     {
         if (empty($data['id_object'])) {
-            View::where('id', $data['id_view'])->update(['id_object' => 0, 'id_method' => 0]);
+            View::where('id', $data['id_view'])->update(['id_object' => NULL, 'id_method' => 0]);
         } else {
             View::where('id', $data['id_view'])->update(['id_object' => $data['id_object']]);
         }

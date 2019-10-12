@@ -26,7 +26,7 @@ use Exception;
  */
 class Script extends Model
 {
-    const LINK_PATH = 'scripts/';
+    const LINK_PATH = '/';
     public $timestamps = false;
 
     /**
@@ -47,7 +47,7 @@ class Script extends Model
         }
 
         $count = 1;
-        while (Storage::disk('local')->exists(self::LINK_PATH . $filename)) {
+        while (Storage::disk('scripts')->exists(self::LINK_PATH . $filename)) {
             $filename = $name.'_'.$count.'.php';
             $count++;
             if ($count > 1000) {
@@ -55,7 +55,7 @@ class Script extends Model
             }
         }
 
-        Storage::disk('local')->put(self::LINK_PATH . $filename, $code);
+        Storage::disk('scripts')->put(self::LINK_PATH . $filename, $code);
 
         $this->link = $filename;
     }
@@ -63,7 +63,7 @@ class Script extends Model
     public function updateCodeToFile(string $code)
     {
         if ($this->isLinkExists()) {
-            Storage::disk('local')->put(self::LINK_PATH . $this->link, $code);
+            Storage::disk('scripts')->put(self::LINK_PATH . $this->link, $code);
         } elseif (empty($this->link)) {
             $this->storeCodeToFile($code);
         } else {
@@ -73,7 +73,7 @@ class Script extends Model
 
     public function isLinkExists()
     {
-        return !empty($this->link) && Storage::disk('local')->exists(self::LINK_PATH . $this->link);
+        return !empty($this->link) && Storage::disk('scripts')->exists(self::LINK_PATH . $this->link);
     }
 
     /**
@@ -86,6 +86,6 @@ class Script extends Model
             return '';
         }
 
-        return Storage::disk('local')->get(self::LINK_PATH . $this->link);
+        return Storage::disk('scripts')->get(self::LINK_PATH . $this->link);
     }
 }

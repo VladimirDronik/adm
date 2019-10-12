@@ -2,17 +2,17 @@
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
-            <tr>
-                <th>Название</th>
-                <th>Тип</th>
-            </tr>
+                <tr>
+                    <th>Название</th>
+                    <th>Тип</th>
+                </tr>
             </thead>
             <tbody>
             @foreach($objects as $object)
-                <tr>
+                <tr class="modal_object_tr" data-name="{{$object->name}}">
                     <td><a href="#" id="object_{{$object->id}}"
                            onclick="selectObject({{$object->id}},'{{$object->name}}')"
-                           data-dismiss="modal" >{{$object->name}} </a></td>
+                           data-dismiss="modal">{{$object->name}}</a></td>
                     <td>{{$object->type}}</td>
                 </tr>
             @endforeach

@@ -210,6 +210,9 @@
                     <div class="alert alert-info">
                         <label id="selected_object"></label><br>
                     </div>
+                    <div>
+                        <input type="text" name="modal_objects_filter" class="form-control" placeholder="Поиск по названию...">
+                    </div>
                     <div id="objectframe"></div>
                 </div>
                 <div class="modal-footer">
@@ -296,6 +299,7 @@
 
            //Вызов модального окна с объектами
            $('button[type=button][name=object]').click(function () {
+               $('[name=modal_objects_filter]').val('');
 
                let object_val = this.value;
                let view_id = this.id;
@@ -357,6 +361,14 @@
                         }
                    },
                });
+           });
+
+           $('[name=modal_objects_filter]').on('input', function() {
+                let search = $(this).val().trim();
+                $(".modal_object_tr").show();
+                if (search !== "") {
+                    $(".modal_object_tr:not([data-name*='" + $(this).val() + "'])").hide();
+                }
            });
        });
    </script>
