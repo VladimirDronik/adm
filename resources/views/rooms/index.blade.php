@@ -30,6 +30,7 @@
                                 <th>Цвет</th>
                                 <th class="text-center">Сортировка</th>
                                 <th class="text-center" style="width: 80px;"></th>
+                                <th class="text-center" style="width: 80px;"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,7 +65,12 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>
+                                <td class="text-center">
+                                    <a href="{{ route('rooms.edit',[$room->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                        <i class="fa fa-cog fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td class="text-center">
                                     <button type="button" class="btn btn-danger btn-sm btn-rounded m-b-10 m-l-5 del_btn"
                                         data-id="{{ $room->id }}" data-name="{{ $room->name }}">
                                         <i class="fa fa-trash fa-lg"></i>
@@ -81,6 +87,7 @@
                                     <th>Изображение</th>
                                     <th>Цвет</th>
                                     <th>Сортировка</th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                             </tfoot>

@@ -39,9 +39,10 @@
                                 @foreach($termostats as $termostat)
                                     <tr id="tr{{$termostat->id}}">
                                         <td scope="row">{{ $termostat->id }}</td>
-                                        <td>{{ $termostat->id_termometr }}</td>
-                                        <td>{{ $termostat->current }}</td>
-                                        <td>{{ $termostat->optimal }}</td>
+                                        <td><a href="{{ route('termostats.edit',[$termostat->id]) }}">
+                                                {{ $termostat->id_termometr }}</a></td>
+                                        <td>{{ $termostat->current }} &#176;С</td>
+                                        <td>{{ $termostat->optimal }} &#176;С</td>
                                         <td>{{ $termostat->gisteresis }}</td>
                                         <td>{{ $termostat->rus_thermostat }}</td>
                                         <td>

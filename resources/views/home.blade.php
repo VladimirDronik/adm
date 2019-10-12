@@ -48,7 +48,7 @@
                     </div>
                     <div class="media-body media-text-right">
                         <h2 class="float-none p-l-10"><a href="{{ route('rooms.index') }}" class="float-left">Помещения</a> {{ $counts['rooms'] }}</h2>
-                        <div class="m-b-0 float-none"><a href="{{ route('rooms.create') }}" class="btn btn-sm btn-outline-info btn-outline">Добавить</a></div>
+                        <div class="m-b-0 float-none"><a href="{{ route('rooms.index') }}" class="btn btn-sm btn-outline-info btn-outline">Добавить</a></div>
                     </div>
                 </div>
             </div>

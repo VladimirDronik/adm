@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Room;
+use App\Models\Temperature;
 use Illuminate\Support\Facades\DB;
 
 class RoomService {
@@ -109,5 +110,31 @@ class RoomService {
     public function updateColor(int $id, string $color)
     {
         Room::where('id', $id)->update(['style' => $this->setColorIfEmpty($color)]);
+    }
+
+    public function update(Room $room, array $data)
+    {
+        DB::transaction(function() use ($room, $data) {
+
+            $room->lighting = (int)$data['lighting'];
+            $room->save();
+
+            $temperature = Temperature::where('id_room', $room->id)->first();
+
+            if (!$temperature) {
+                $temperature = new Temperature();
+                $temperature->id = Temperature::max('id') + 1; // todo Add Autoincrement
+                $temperature->id_room = $room->id;
+                $temperature->sort = 1;
+            }
+
+            $temperature->normal = (int)$data['temperature_normal'];
+            $temperature->night = (int)$data['temperature_night'];
+            $temperature->eco = (int)$data['temperature_eco'];
+
+            $temperature->save();
+        });
+
+        return $room->id;
     }
 }

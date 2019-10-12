@@ -13,7 +13,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,19 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'lighting' => 'required|integer|min:0|max:1024',
+            'temperature_normal' => 'required|integer|min:10|max:30',
+            'temperature_night' => 'required|integer|min:10|max:30',
+            'temperature_eco' => 'required|integer|min:10|max:30',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'lighting.required' => 'Не указан порог освещенности',
+            'lighting.min' => 'Недопустимый порог освещенности',
+            'lighting.max' => 'Недопустимый порог освещенности',
         ];
     }
 }

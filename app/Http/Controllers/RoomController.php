@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Room\UpdateRequest;
+use App\Models\Room;
 use App\Repositories\RoomRepository;
 use App\Services\ColorService;
 use App\Services\ImageService;
@@ -25,5 +27,25 @@ class RoomController extends Controller
         $images = ImageService::getRoomImages();
 
         return view('rooms.index', compact('rooms', 'colors', 'images'));
+    }
+
+    public function edit(Room $room)
+    {
+        return view('rooms.edit', compact('room'));
+    }
+
+    public function update(UpdateRequest $r, Room $room)
+    {
+        try {
+            if ($this->service->update($room, $r->except('_token'))) {
+                return redirect()->route('rooms.edit',[$room->id])->with('success','Настройки успешно изменены');
+            }
+        } catch (\Throwable $e) {
+            \Log::error('Ошибка при изменении настроек помещения'.$room->id.' '
+                .json_encode($r->all()).' '.$e->getMessage());
+        }
+
+        return back()->withInput($r->all())->with('error','Ошибка при изменении настроек помещения');
+
     }
 }
