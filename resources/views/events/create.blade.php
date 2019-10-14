@@ -30,24 +30,16 @@
                         {{ Form::bs_title('Основные данные') }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
                         {{ Form::bs_hr() }}
-                        <div class="form-group row">
-                            <label class="control-label text-right col-md-3 label-fix">&nbsp;</label>
-                            <div class="col-md-5">
-                                <div class="mt-2">
-                                    <div class="checkbox">
-                                        <label style="cursor: pointer;">
-                                            <input type="radio" name="type" checked value="method" autocomplete="off"> Выбор объекта и метода
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mt-2">
-                                    <div class="checkbox">
-                                        <label style="cursor: pointer;">
-                                            <input type="radio" name="type" value="script" autocomplete="off"> Выбор скрипта
-                                        </label>
-                                    </div>
+                        <div class="form-group row ">
+                            <label class="control-label text-right col-md-3 label-fix" for="type"><strong></strong></label>
+                            <div class="col-md-9">
+                                <div class="btn-group-toggle" data-toggle="buttons">
+                                    <label class="btn btn-success active">
+                                        <input type="radio" name="type" autocomplete="off" checked value="method">  Выбор объекта и метода
+                                    </label>
+                                    <label class="btn btn-success ">
+                                        <input type="radio" name="type" autocomplete="off" value="script"> Выбор скрипта
+                                    </label>
                                 </div>
                             </div>
                         </div>
