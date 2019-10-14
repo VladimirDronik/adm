@@ -76,6 +76,11 @@ class Script extends Model
         return !empty($this->link) && Storage::disk('scripts')->exists(self::LINK_PATH . $this->link);
     }
 
+    public function deleteFile()
+    {
+        Storage::disk('scripts')->delete(self::LINK_PATH .$this->link);
+    }
+
     /**
      * @return string
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException

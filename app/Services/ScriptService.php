@@ -12,6 +12,12 @@ class ScriptService
      */
     public function delete(int $id)
     {
+        $script = Script::find($id);
+
+        if ($script->isLinkExists()) {
+            $script->deleteFile();
+        }
+
         return Script::destroy($id);
     }
 
