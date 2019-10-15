@@ -37,7 +37,7 @@ class ScriptController extends Controller
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('scripts.edit',[$id])->with('success', 'Скрипт успешно добавлен');
+                return redirect()->route('scripts.index')->with('success', 'Скрипт успешно добавлен');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при добавлении скрипта '
