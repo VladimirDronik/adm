@@ -28,6 +28,7 @@
             </div>
             <div class="card-body">
                 @if(count($scripts))
+                    {{ Form::bs_alert() }}
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
