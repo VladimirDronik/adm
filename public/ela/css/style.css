@@ -6922,14 +6922,14 @@ tbody tr td:last-child {
   }
 }
 
-
 /* new styles */
+
 .imageRoom {
   background: black;
   cursor: pointer;
 }
 
-.room-filter{
+.room-filter {
   display: inline-block;
   top: -5px;
   left: 12px;

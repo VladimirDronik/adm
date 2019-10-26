@@ -4,8 +4,16 @@ namespace App\Services;
 
 class ImageService {
 
-    const ROOM_PATH = 'images/rooms';
-    const VIEW_PATH = 'images/views_items';
+    const ROOM_PATH = 'ela/images/rooms';
+    const VIEW_PATH = 'ela/images/views_items';
+    const SCENE_PATH = 'ela/images/scenes';
+    const MENU_PATH = 'ela/images/menu';
+    const NO_IMAGE_PATH = 'ela/images/rooms/noimage.png';
+
+    public static function getImages(string $path)
+    {
+        return array_values(array_diff(scandir($path), ['..', '.']));
+    }
 
     /**
      * Вывод изображений для всех помемещний
@@ -15,7 +23,7 @@ class ImageService {
      */
     public static function getRoomImages()
     {
-        return array_diff(scandir(self::ROOM_PATH), ['..', '.']);
+        return self::getImages(self::ROOM_PATH);
     }
 
     /**
@@ -26,6 +34,28 @@ class ImageService {
      */
     public static function getViewImages()
     {
-        return array_diff(scandir(self::VIEW_PATH), ['..', '.']);
+        $images = self::getImages(self::VIEW_PATH);
+
+        foreach($images as &$image) {
+            $image = self::VIEW_PATH.'/'.$image;
+        }
+
+        return $images;
+    }
+
+    public static function getNoImageName()
+    {
+        return basename(self::NO_IMAGE_PATH);
+    }
+
+    public static function getSceneImages()
+    {
+        $images = self::getImages(self::SCENE_PATH);
+
+        foreach($images as &$image) {
+            $image = self::SCENE_PATH.'/'.$image;
+        }
+
+        return $images;
     }
 }

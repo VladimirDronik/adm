@@ -17,6 +17,8 @@ class FormServiceProvider extends ServiceProvider
     {
         \Form::component('bs_text',
             self::PATH.'text', ['name', 'label', 'value' => null, 'attributes' => [], 'help' => null, 'col' => 3]);
+        \Form::component('bs_textarea',
+            self::PATH.'textarea', ['name', 'label', 'value' => null, 'attributes' => ['rows' => 3], 'help' => null, 'col' => 3]);
         \Form::component('bs_label',
             self::PATH.'label', ['name', 'label', 'is_required' => false, 'col' => 3, 'class' => null]);
         \Form::component('bs_title',
@@ -39,43 +41,23 @@ class FormServiceProvider extends ServiceProvider
             self::PATH.'success', ['name' => null]);
         \Form::component('bs_alert',
             self::PATH.'alert', ['name' => null, 'is_success' => true]);
-        //
-//        \Form::component('bs_simple_text',
-//            self::PATH.'simple_text', ['label' => null, 'value' => null, 'name' => 'is_active', 'help' => null]);
-//        \Form::component('bs_textarea',
-//            self::PATH.'textarea', ['name', 'label', 'value' => null, 'attributes' => ['rows' => 3], 'help' => null]);
-//        \Form::component('bs_full_textarea',
-//            self::PATH.'full_textarea', ['name', 'label', 'value' => null, 'attributes' => ['rows' => 3], 'help' => null]);
-//        \Form::component('bs_email',
-//            self::PATH.'email', ['name', 'label', 'value' => null, 'attributes' => [], 'help' => null]);
-//        \Form::component('bs_checkbox',
-//            self::PATH.'checkbox', ['name', 'label', 'is_checked' => false, 'attributes' => [], 'help' => null]);
-//        \Form::component('bs_tree_select',
-//            self::PATH.'tree_select', ['name', 'label', 'values' => null, 'selected' => null, 'attributes' => []]);
-//        \Form::component('bs_autoselect',
-//            self::PATH.'autoselect', ['name', 'label', 'values' => null, 'selected' => null, 'show_id' => false,
-//                'multiple' => false, 'attributes' => [], 'multiple_id' => null]);
-//        \Form::component('bs_clock',
-//            self::PATH.'clock', ['name', 'label', 'value' => null, 'attributes' => []]);
-//        \Form::component('bs_file',
-//            self::PATH.'file', ['name', 'label', 'id' => 1, 'value' => null, 'attributes' => [], 'mb0' => false]);
-//        \Form::component('bs_img',
-//            self::PATH.'img', ['label', 'value' => null, 'is_round' => true, 'name' => null, 'attributes' => []]);
-//        \Form::component('bs_simple_file',
-//            self::PATH.'simple_file', ['name', 'label', 'attributes' => [], 'help' => null]);
-//        \Form::component('bs_simple_date',
-//            self::PATH.'simple_date', ['name', 'label', 'value' => null, 'attributes' => [], 'help' => null]);
-//        \Form::component('bs_password',
-//            self::PATH.'password', ['name', 'label', 'attributes' => [], 'help' => null]);
-//        \Form::component('bs_date',
-//            self::PATH.'date', ['name', 'label', 'value' => null, 'attributes' => [], 'help' => null, 'id' => null]);
-//        \Form::component('bs_typeahead',
-//            self::PATH.'typeahead', ['name', 'label', 'value' => null, 'attributes' => [],
-//                'help' => 'Вводите ID, ФИО или email — автопоиск предложит варианты']);
-//        \Form::component('bs_url',
-//            self::PATH.'url', ['label', 'value' => null, 'href' => null, 'help' => null]);
-//        \Form::component('bs_phone',
-//            self::PATH.'phone', ['name', 'label', 'value' => null, 'attributes' => [], 'help' => null]);
+        \Form::component('bs_radio',
+            self::PATH.'radio', ['name', 'label', 'values', 'checked_key' => null, 'attributes' => [], 'help' => null, 'col' => 3]);
+        \Form::component('bs_hidden',
+            self::PATH.'hidden', ['name', 'value' => '']);
+        \Form::component('bs_image',
+            self::PATH.'image', ['prefix', 'label', 'value', 'col' => 3]);
+        \Form::component('bs_autoselect',
+            self::PATH.'autoselect', ['name', 'label', 'values' => null, 'selected' => null, 'show_id' => false,
+                'multiple' => false, 'attributes' => [], 'multiple_id' => null, 'help' => null, 'col' => 3]);
+        \Form::component('bs_checkbox',
+            self::PATH.'checkbox', ['name', 'label', 'is_checked' => false, 'attributes' => [], 'help' => null, 'col' => 3]);
+        \Form::component('bs_color',
+            self::PATH.'color', ['name', 'label', 'value', 'attributes' => [], 'help' => null, 'col' => 3]);
+        \Form::component('bs_simple_text',
+            self::PATH.'simple_text', ['label' => null, 'value' => null, 'name' => null, 'help' => null, 'col' => 3]);
+        \Form::component('bs_password',
+            self::PATH.'password', ['name', 'label', 'attributes' => [], 'help' => null, 'col' => 3]);
     }
 
     /**

@@ -13,7 +13,7 @@ class CreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,20 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'type' => 'required|string|max:10',
+            'name' => 'required|string|max:100|unique:objects,name',
+            'view' => 'nullable|integer|min:0',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'type.required' => 'Не указан тип объекта',
+            'type.max' => 'Недопустимый тип объекта',
+            'name.required' => 'Не указано название',
+            'name.max' => 'Название содержит более 100 символов',
+            'name.unique' => 'Объект с таким названием уже существует. Укажите другое название'
         ];
     }
 }

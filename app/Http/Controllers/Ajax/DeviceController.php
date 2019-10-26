@@ -2,54 +2,49 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use App\Services\DeviceService;
 use Illuminate\Http\Request;
-use App\Models\Device;
-use App\Models\Devtype;
-use App\Models\Port;
 use App\Http\Controllers\Controller;
-
 
 class DeviceController extends Controller
 {
-    /**
-     * Сохранение настроек контроллера
-     *
-     */
-    public function save_device_settings()
+    private $service;
+
+    public function __construct(DeviceService $service)
     {
-        Device::save_device_settings($_POST['id_device'], $_POST['description'], $_POST['ip_device']);
+        $this->service = $service;
     }
 
-    /**
-     * Добавление новго устройства
-     */
-    public function newdevice()
+    public function delete(Request $r)
     {
+        abort_if(!ajaxHas($r, ['id']), 400);
 
-        //Добавляем устройство в таблицу устройств
-        $id_new_device = Device::newdevice($_POST['type'], $_POST['description'], $_POST['ip_device']);
-
-        //TODO: запрос в таблицу типов устройств для получения данных о типе устройства
-        $devtype = Devtype::where('id', $_POST['type'])->firstOrFail();
-
-
-        //Возвращаем id добавленного устройства
-        return response()->json(array('success' => true, 'id_new_device'=>$id_new_device,
-            'totalports' => $devtype->total_ports, 'start_in' => $devtype->start_in, 'end_in' => $devtype->end_in,
-            'start_out' => $devtype->start_out, 'end_out' => $devtype->end_out));
+        return response()->json(['result' => (bool)$this->service->delete((int)$r->id)]);
     }
 
-    /**
-     * Удаление устройства
-     *
-     */
-    public function deletedevice()
+    public function update(Request $r)
     {
-        //Удаление самого устройства
-        Device::where('id',$_POST['id_device'])->delete();
+        abort_if(!ajaxHas($r, ['id','description','ip_address']), 400);
 
-        //Удаление портов устройства
-        Port::where('id_device',$_POST['id_device'])->delete();
+        list($result, $message) = $this->service->update($r->all());
+
+        return response()->json(compact('result','message'));
+    }
+
+    public function updatePort(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['id','port_id','name','value']), 400);
+
+        return response()->json(['result' => $this->service->updatePort($r->all())]);
+    }
+
+    public function ports(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['device_id']), 400);
+
+        $ports = $this->service->getPortsByDeviceId((int)$r->device_id);
+
+        return response()->json(['result' => true, 'ports' => $ports]);
     }
 }
 

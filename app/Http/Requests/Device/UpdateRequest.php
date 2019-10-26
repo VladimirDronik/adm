@@ -13,7 +13,7 @@ class UpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,22 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'type' => 'required|integer|min:0',
+            'description' => 'required|string|max:255|unique:devices,description,'.$this->device->id,
+            'ip_address' => 'required|string|ip|max:15',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'type.required' => 'Не указан тип устройства',
+            'description.required' => 'Не указано название',
+            'description.max' => 'Название содержит более 255 символов',
+            'ip_address.required' => 'Не указан ip адрес',
+            'ip_address.max' => 'IP адрес содержит более 15 символов',
+            'ip_address.ip' => 'Недопустимый ip адрес',
+            'description.unique' => 'Устройство с таким названием уже существует. Необходимо изменить название'
         ];
     }
 }

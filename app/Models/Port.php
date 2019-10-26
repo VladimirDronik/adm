@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+<<<<<<< HEAD
 class Rooms extends Model
 {
     public $timestamps = false;
@@ -41,9 +42,58 @@ class Rooms extends Model
         $aFiles = array_diff(scandir('images/rooms'), array('..', '.'));
 
         return $aFiles;
+=======
+/**
+ * App\Models\Port
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port query()
+ * @mixin \Eloquent
+ * @property int $id
+ * @property int $id_device id девайса из таблицы devices
+ * @property int $num_port номер порта меги
+ * @property string $status статус порта in, out, ds, nc, 1w
+ * @property string|null $easy выполнение простого действия (например переключение порта). В значениях указываем id порта из этой таблицы  !!!
+ * @property int|null $object id объекта
+ * @property int|null $method id метода объекта
+ * @property int|null $script выполнение скрипта из таблицы скриптов
+ * @property int $longclick Разрешаем долгое нажатие
+ * @property int $doubleclick Разрешаем двойное нажатие
+ * @property string $comment комментарий к порту
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereDoubleclick($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereEasy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereIdDevice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereLongclick($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereNumPort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereObject($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereScript($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereStatus($value)
+ * @property-read \App\Models\Device $device
+ * @property-read \App\Models\HomeObject|null $eobject
+ * @property-read \App\Models\Script|null $escript
+ * @property-read \App\Models\Method|null $emethod
+ * @property-read mixed $is_empty_comment
+ */
+class Port extends Model
+{
+    public $timestamps = false;
+
+    /* attributes */
+
+    public function getIsEmptyCommentAttribute()
+    {
+        return empty($this->comment) || mb_strtolower($this->comment, 'UTF-8') === 'отсутствует'
+            ||  mb_strtolower($this->comment, 'UTF-8') === 'без названия';
+>>>>>>> 60de956102a593f31582326fc280ce710437f7e7
     }
 
+    /* relations */
 
+<<<<<<< HEAD
 
 
     /**
@@ -153,6 +203,20 @@ class Rooms extends Model
     public static function nameRoomFromId($id)
     {
         return Rooms::find($id)->name;
+=======
+    public function device()
+    {
+        return $this->belongsTo(Device::class, 'id_device', 'id');
     }
 
+    public function eobject()
+    {
+        return $this->belongsTo(HomeObject::class, 'object', 'id');
+    }
+
+    public function emethod()
+    {
+        return $this->belongsTo(Method::class, 'method', 'id');
+>>>>>>> 60de956102a593f31582326fc280ce710437f7e7
+    }
 }

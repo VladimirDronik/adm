@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\View\CreateRequest;
-use App\Models\Room;
+use App\Http\Requests\View\UpdateRequest;
 use App\Models\View;
+use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
 use App\Repositories\SceneRepository;
 use App\Repositories\ViewRepository;
 use App\Services\ImageService;
+use App\Services\ObjectService;
 use App\Services\ViewService;
 use Illuminate\Http\Request;
 
@@ -17,35 +19,46 @@ class ViewController extends Controller
     private $view_rep;
     private $room_rep;
     private $scene_rep;
+    private $object_rep;
     private $service;
 
-    public function __construct(ViewRepository $view_repository, RoomRepository $room_repository, SceneRepository $scene_rep,
-                                ViewService $service)
+    public function __construct(ViewRepository $view_rep, RoomRepository $room_rep, SceneRepository $scene_rep,
+                                ViewService $service, ObjectRepository $object_rep)
     {
-        $this->view_rep = $view_repository;
-        $this->room_rep = $room_repository;
+        $this->view_rep = $view_rep;
+        $this->room_rep = $room_rep;
         $this->scene_rep = $scene_rep;
-
+        $this->object_rep = $object_rep;
         $this->service = $service;
     }
 
-    public function index()
+    public function getLists()
     {
-        $views = $this->view_rep->getAll();
-        $rooms = $this->room_rep->getAll();
+        $types = View::getFullTypeNameIds();
+        $rooms = $this->room_rep->getAllToArray();
+        $scenes = $this->scene_rep->getAll()->pluck('label', 'id')->toArray();
+        $images = ImageService::getViewImages();
+        $objects = $this->object_rep->getAllToArray();
 
-        return view('views.index', compact('views', 'rooms') +
-            ['currentRoom' => '']);
+        return [$types, $rooms, $objects, $scenes, $images];
+    }
+
+    public function index(Request $r)
+    {
+        $views = $this->view_rep->getByRoom($r->room);
+        $rooms = $this->room_rep->getSpecialRooms();
+
+        $filter_room = $r->input('room', '');
+        $filter_room_name = $this->room_rep->getRoomName($filter_room, $rooms);
+
+        return view('views.index', compact('views', 'rooms', 'filter_room', 'filter_room_name'));
     }
 
     public function create()
     {
-        $types = View::getFullTypeIds();
-        $rooms = $this->room_rep->getAll()->pluck('name', 'id')->toArray();
-        $scenes = $this->scene_rep->getAll()->pluck('label', 'id')->toArray();
-        $images = ImageService::getViewImages();
+        list($types, $rooms, $objects, $scenes, $images) = $this->getLists();
 
-        return view('views.create', compact('types', 'rooms', 'scenes', 'images'));
+        return view('views.create', compact('types', 'rooms', 'objects', 'scenes', 'images'));
     }
 
     public function store(CreateRequest $r)
@@ -55,34 +68,31 @@ class ViewController extends Controller
                 return redirect()->route('views.edit',[$id])->with('success', 'Отображение успешно добавлено');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении отображения '
-                .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при добавлении отображения ', [$r->all(),$e->getMessage()]);
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении отображения');
     }
 
-    public function edit(View $view)
+    public function edit(View $view, ObjectService $object_service)
     {
-        $types = View::getFullTypeIds();
-        $rooms = $this->room_rep->getAll()->pluck('name', 'id')->toArray();
-        $scenes = $this->scene_rep->getAll()->pluck('label', 'id')->toArray();
-        $images = ImageService::getViewImages();
+        list($types, $rooms, $objects, $scenes, $images) = $this->getLists();
+        $methods = $object_service->getMethodsByObjectIdToArray($view->id_object);
 
-        return view('views.edit', compact('view', 'types', 'rooms', 'scenes', 'images'));
-    }
-    /**
-     * Выводит представления при выборе помещения в фильтре
-     *
-     * @param $name
-     */
-    public function getFilteredViews($idRoom)
-    {
-        $views = View::getViews($idRoom);
-        $currentRoom = Room::nameRoomFromId($idRoom);
-        $rooms = $this->room_rep->getAll();
-
-        return view('views.index', compact('views', 'rooms', 'currentRoom'));
+        return view('views.edit', compact('view', 'types', 'rooms', 'methods', 'objects', 'scenes', 'images'));
     }
 
+    public function update(UpdateRequest $r, View $view)
+    {
+        try {
+            if ($this->service->update($view, $r->except('_token'))) {
+                return redirect()->route('views.edit',[$view->id])->with('success','Отображение успешно изменено');
+            }
+        } catch (\Throwable $e) {
+            \Log::error('Ошибка при изменении отображения '.$view->id.' '
+                .json_encode($r->all()).' '.$e->getMessage());
+        }
+
+        return back()->withInput($r->all())->with('error','Ошибка при изменении отображения');
+    }
 }

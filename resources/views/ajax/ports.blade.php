@@ -2,38 +2,31 @@
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
-            <tr>
-                <th>#</th>
-                <th>Название</th>
-
-
-            </tr>
+                <tr>
+                    <th>Номер порта</th>
+                    <th class="text-left">Описание</th>
+                </tr>
             </thead>
             <tbody>
-            @foreach ($ports as $port)
-
+            @foreach($ports as $port)
                 <tr>
-                    <th scope="row">{{$port->num_port}}</th>
-                    <td><a href="#" id="object_{{$port->id}}" onclick="select_port({{$port->num_port}})" data-dismiss="modal" >{{$port->comment}} </a></td>
-
+                    <td><a href="#" id="object_{{$port->id}}"
+                           onclick="select_port({{$port->num_port}})"
+                           data-dismiss="modal" >{{$port->num_port}}</a></td>
+                    <td class="text-left"><a href="#" id="object_{{$port->id}}"
+                           onclick="select_port({{$port->num_port}})"
+                           data-dismiss="modal" >{{$port->comment}}</a>
+                    </td>
                 </tr>
-
-
             @endforeach
-
-
-
-
             </tbody>
         </table>
     </div>
 </div>
 
 <script>
-    function select_port(port)
-    {
-
-        $('#port_btn').html('Порт: ' + port);
-
+    function select_port(port) {
+        //$('#port_btn').html('Порт: ' + port);
+        $('#easy_port').text(port);
     }
 </script>

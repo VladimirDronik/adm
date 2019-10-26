@@ -24,22 +24,24 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'type' => 'required',
+            'type_name' => 'required|string|max:8',
+            'name' => 'required|string|max:100',
+            'description' => 'nullable|string|max:255',
             'room' => 'required|integer|min:0',
-            'scene' => 'required|integer|min:0',
-            'position_left' => 'required|integer|min:0',
-            'position_top' => 'required|integer|min:0',
+            'scene' => 'nullable|integer|min:0',
+            'position_left' => 'nullable|integer|min:0',
+            'position_top' => 'nullable|integer|min:0',
         ];
     }
 
     public function messages()
     {
         return [
-            'type.required' => 'Не указан тип элемента',
+            'type_name.required' => 'Не указан тип элемента',
             'room.required' => 'Не указано помещение',
-            'scene.required' => 'Не указана сцена',
-            'position_left.required' => 'Не указан левый отступ',
-            'position_top.required' => 'Не указан верхний отступ',
+            'name.required' => 'Не указано название',
+            'name.max' => 'Название содержит более 100 символов',
+            'description.max' => 'Описание содержит более 255 символов'
         ];
     }
 }

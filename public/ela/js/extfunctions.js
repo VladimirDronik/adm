@@ -1,21 +1,25 @@
-/**
- * Created by kinord on 12.06.19.
- */
+function showErrorModal(message) {
+    $('#info_modal_body').html('<span class="text-danger">'+message+'</span>');
+    $('#info_modal').modal('show');
+}
 
+function showSuccessModal(message) {
+    $('#info_modal_body').html('<span class="text-info">'+message+'</span>');
+    $('#info_modal').modal('show');
+}
 
-function ajax_html(dataarr, route, outobject)
-{
-
+function ajax_html(data, route, outobject) {
     $.ajax({
         type:'POST',
         url: route,
-        data: dataarr,
-        success:function(data){
-
+        data: data,
+        success: function (data) {
             $(outobject).html(data.html);
+            if (data.reload) {
+                location.href = location.href;
+            }
         }
     });
-
 }
 
 

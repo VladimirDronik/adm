@@ -1,389 +1,375 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-    <div class="row page-titles">
-        <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Отображения</h3> </div>
-        <div class="col-md-7 align-self-center">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="javascript:void(0)">Главная</a></li>
-                @if ($currentRoom == '')
-                    <li class="breadcrumb-item active">Отображения</li>
-                @else
-                    <li class="breadcrumb-item"><a href="/views">Отображения</a></li>
-                    <li class="breadcrumb-item active">{{$currentRoom}}</li>
-                @endif
-            </ol>
-        </div>
-    </div>
+    @if ($filter_room == '')
+        @include('components.breadcrumbs', ['title' => 'Отображения'])
+    @else
+        @includeIf('components.breadcrumbs',
+           ['title' => 'Отображения',
+            'links' => [ route('views.index') => 'Отображения'],
+            'last_link' => $filter_room_name])
+    @endif
 @endsection
 
 @section('content')
-
-    <!-- Container fluid  -->
     <div class="container-fluid">
-        <!-- Start Page Content -->
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <button type="button" class="btn btn-success m-b-10 m-l-5" data-toggle="modal" data-target="#addNewDevice">Добавить отображение</button>
-                        <button type="button" class="btn btn-success m-b-10 m-l-5" onclick="window.location.reload();">Обновить</button>
+                        <a href="{{ route('views.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить отображение</a>
+                        <a href="{{ route('views.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <div class="dropdown room-filter" id="room-filter">
-
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-
-                                @if ($currentRoom == '') Фильтр по помещению
-                                @else  Фильтр по помещению: {{$currentRoom}}
-                                @php ($currentRoom = 'для помещения: '.$currentRoom)
-                                @endif
-
-
-                                <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                                <li><a href="/views">Все помещения</a></li>
-                                <hr>
-                                <li><a href="/views/room/0">Общие</a></li>
-                                <hr>
-
-
-                                @foreach ($rooms as $room)
-                                    <li ><a href="/views/room/{{ $room->id }}" >
-                                            <label style="background-color:{{ $room->style }}">&nbsp;&nbsp;&nbsp;</label>&nbsp;&nbsp;{{ $room->name }}
-                                        </a>
-                                    </li>
-
-                                @endforeach
-                            </ul>
+                        <div class="pull-right">
+                            <div class="dropdown room-filter" id="room-filter">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                    @if($filter_room == '')
+                                        Фильтр по помещению
+                                    @else
+                                        Фильтр по помещению: {{$filter_room_name ?? ''}}
+                                        @php($filter_room = 'для помещения: '.($filter_room_name ?? ''))
+                                    @endif
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{{ route('views.index') }}">Все помещения</a></li><hr>
+                                    <li><a href="{{ route('views.index',['room' => 0]) }}">{{ \App\Models\Room::COMMON_NAME }}</a></li>
+                                    <hr>
+                                    @foreach($rooms as $room)
+                                        <li>
+                                            <a href="{{ route('views.index',['room' => $room->id]) }}">
+                                                <label style="background-color:{{ $room->style }}">&nbsp;&nbsp;&nbsp;</label>&nbsp;&nbsp;{{ $room->name }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            <a href="{{ route('views.index') }}" class="btn btn-success m-b-10 m-l-5">Сбросить</a>
                         </div>
-
-                        <button type="button" class="btn btn-success m-b-10 m-l-5" onclick="document.location.href = '/views';">Сбросить</button>
-
-
                     </div>
                 </div>
             </div>
         </div>
-
-
         <div class="card">
             <div class="card-title">
-
-                <h4>Элементы отображения {{$currentRoom}}</h4>
-
-
+                <h4>Элементы отображения {{$filter_room}}</h4>
             </div>
-
             <div class="card-body">
+                @if(count($views))
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
-                        <tr>
-
-                            @if ($currentRoom!= '')
-                                <th>Сорт</th>
-                            @endif
-                            <th>Тип</th>
-                            <th>Статус</th>
-                            <th>Вкл</th>
-                            <th>Выкл</th>
-
-                            <th>Вкл_надпись</th>
-                            <th>Выкл_надпись</th>
-                            <th>Значение</th>
-                            <th>Помещение</th>
-
-                            <th>Сцена</th>
-                            <th>Left</th>
-                            <th>Top</th>
-                            <th>Активно</th>
-                            <th></th>
-
-                        </tr>
+                            <tr>
+                                @if($filter_room != '')
+                                    <th>Сорт</th>
+                                @endif
+                                <th>Тип</th>
+                                <th>Название</th>
+                                <th>Статус</th>
+                                <th>Вкл</th>
+{{--                                <th>Выкл</th>--}}
+                                <th>Вкл_надпись</th>
+{{--                                <th>Выкл_надпись</th>--}}
+{{--                                <th>Значение</th>--}}
+                                <th>Объект</th>
+                                <th>Метод</th>
+                                <th>Помещение</th>
+                                <th>Сцена</th>
+{{--                                <th>Отступы</th>--}}
+                                <th>Активно</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
                         </thead>
                         <tbody>
-
-                        @foreach ($views as $view)
-                            <tr>
-
-                                @if ($currentRoom!= '')
+                        @foreach($views as $view)
+                            <tr id="tr{{$view->id}}">
+                                @if($filter_room!= '')
                                     <td scope="row">{{ $view->sort }}</td>
                                 @endif
-
-                                <td><a href="#">{{ $view->name }}</a></td>
-                                <td>@if($view->status == 'on')
+                                <td>{{ $view->rus_type_name }}</td>
+                                <td><a href="{{ route('views.edit',[$view->id]) }}" title="{{ $view->description }}">{{ $view->name }}</a></td>
+                                <td>
+                                    @if($view->status === 'on')
                                         <span class="badge badge-success">{{ $view->status }}</span>
                                     @else
                                         <span class="badge badge-primary">{{ $view->status }}</span>
-                                @endif
-
-
-                                <td scope="row"><img src="/images/views_items/{{ $view->on_image }}" width="25px" height="25px" style="fill: green;"></td>
-                                <td scope="row">{{ $view->off_image }}</td>
-                                <td scope="row">{{$view->on_title }}</td>
-
-                                <td scope="row">{{ $view->off_title }}</td>
-
-                                <td scope="row">{{ $view->value }}</td>
-                                <td scope="row">{{ $view->room }}</td>
-                                <td scope="row">{{ $view->scene }}</td>
-                                <td scope="row">{{ $view->position_left }}</td>
-                                <td scope="row">{{ $view->position_top }}</td>
-
-                                <td scope="row">{{ $view->active }}</td>
-
-
+                                    @endif
+                                </td>
+                                <td scope="row">
+                                    @if(!empty($view->on_image))
+                                        <img src="{{ asset($view->on_image_path) }}" width="25" height="25" style="fill: green; background-color: #e8e8e8;">
+                                    @endif
+                                </td>
+{{--                                <td scope="row">--}}
+{{--                                    @if(!empty($view->off_image))--}}
+{{--                                        <img src="{{ asset($view->off_image_path) }}" width="25" height="25" style="fill: green; background-color: #e8e8e8;">--}}
+{{--                                    @endif--}}
+{{--                                </td>--}}
+                                <td scope="row">{{ $view->short_on_title }}</td>
+{{--                                <td scope="row">{{ $view->short_off_title }}</td>--}}
+{{--                                <td scope="row">{{ $view->value }}</td>--}}
                                 <td>
-
-                                    <button type="button" class="btn btn-danger btn-rounded btn-sm"><i class="fa fa-trash fa-lg"></i></button>
+                                    @if($view->eobject)
+                                        <button type="button" class="btn btn-warning m-b-10 btn-sm"
+                                                name="object" id="viewobj_{{ $view->id }}"
+                                                data-toggle="modal" data-target="#objectsModal"
+                                                value="{{ $view->id_object}},{{optional($view->eobject)->name}},viewobj_{{ $view->id }}">
+                                            <b>{{ optional($view->eobject)->name }}</b>
+                                        </button>
+                                    @else
+                                        <button type="button" class="btn btn-default m-b-10 btn-sm"
+                                                name="object" id="viewobjempty_{{ $view->id }}"
+                                                data-toggle="modal" data-target="#objectsModal"
+                                                value="empty,empty,viewobjempty_{{ $view->id }}">
+                                            Отсутствует
+                                        </button>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($view->eobject && $view->emethod)
+                                        <button type="button" id="viewmethod_{{ $view->id }}"
+                                                name="method" class="btn btn-warning m-b-10 btn-sm" data-toggle="modal"
+                                                value="{{ $view->id_method}},{{optional($view->emethod)->name}},viewmethod_{{ $view->id }}"
+                                                data-target="#methodsModal">
+                                                <b>{{ optional($view->emethod)->name }}</b>
+                                        </button>
+                                    @else
+                                        <button type="button" id="viewmethodempty_{{ $view->id }}"
+                                                name="method" class="btn @if($view->eobject) btn-warning @else btn-default @endif m-b-10 btn-sm" data-toggle="modal"
+                                                value="empty,empty,viewmethodempty_{{ $view->id }}"
+                                                data-target="#methodsModal">
+                                                 @if($view->eobject) <b class="text-danger">Метод не выбран</b> @else Отсутствует @endif</button>
+                                    @endif
+                                </td>
+                                <td scope="row">{{ $view->room_name }}</td>
+                                <td scope="row">
+                                    @if($view->scene)
+                                        <a href="{{ route('scenes.edit',$view->scene) }}">{{ optional($view->escene)->label }}</a>
+                                    @endif
+                                </td>
+{{--                                <td scope="row">{{ $view->position_left }} / {{ $view->position_top }}</td>--}}
+                                <td scope="row" align="center">
+                                    <input type="checkbox" class="active_checkbox" style="cursor: pointer;" data-id="{{$view->id}}" value="1" @if($view->active) checked @endif>
+                                </td>
+                                <td align="center">
+                                    <a href="{{ route('views.edit',[$view->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                        <i class="fa fa-cog fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                            data-id="{{ $view->id }}" data-name="{{ $view->rus_type_name }}">
+                                        <i class="fa fa-trash fa-lg"></i>
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
-
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                @if($filter_room != '')
+                                    <th>Сорт</th>
+                                @endif
+                                <th>Тип</th>
+                                <th>Название</th>
+                                <th>Статус</th>
+                                <th>Вкл</th>
+{{--                                <th>Выкл</th>--}}
+                                <th>Вкл_надпись</th>
+{{--                                <th>Выкл_надпись</th>--}}
+{{--                                <th>Значение</th>--}}
+                                <th>Объект</th>
+                                <th>Метод</th>
+                                <th>Помещение</th>
+                                <th>Сцена</th>
+{{--                                <th>Отступы</th>--}}
+                                <th>Активно</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
+                {{ $views->appends(request()->input())->links() }}
+                <p class="text-right">Найдено: {{ $views->total() }}</p>
+                @else
+                    <p>Отображения не найдены</p>
+                @endif
             </div>
-
-
-
-            <!-- End PAge Content -->
         </div>
-        <!-- End Container fluid  -->
+    </div>
 
-
-
-        <!-- модальное окно добавления нового отображения -->
-
-        <div class="modal" id="addNewDevice">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-
-                        <h4 class="modal-title"> Добавить новое отображение</h4>
-
+    <div id="objectsModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Выбор объекта</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <label id="selected_object"></label><br>
                     </div>
-
-
-                    <div class="modal-body">
-
-
-                        <ul class="nav nav-tabs" role="tablist">
-                            <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#home" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Тип Элемента</span></a> </li>
-                            <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Текст и графика</span></a> </li>
-                            <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#messages" role="tab"><span class="hidden-sm-up"><i class="ti-email"></i></span> <span class="hidden-xs-down">Расположение</span></a> </li>
-                        </ul>
-
-                        <!-- Tab panes -->
-                        <div class="tab-content tabcontent-border">
-
-                            <div class="tab-pane active" id="home" role="tabpanel">
-                                <div class="p-20">
-
-                                    <div class="btn-group-toggle" data-toggle="buttons">
-
-                                        <label class="btn btn-success" id="easy_button" >
-                                            <input type="radio" name="typedev"  autocomplete="off" value="1"> Переключатель
-                                        </label>
-
-                                        <label class="btn btn-success" id="method_button">
-                                            <input type="radio" name="typedev"  autocomplete="off" value="2"> Кнопка
-                                        </label>
-
-                                        <label class="btn btn-success" id="script_button">
-                                            <input type="radio" name="typedev"  autocomplete="off" value="3"> Термометр/Гигрометр
-                                        </label>
-
-                                        <label class="btn btn-success" id="none_button">
-                                            <input type="radio" name="typedev"  autocomplete="off" value="4"> Инфопанель
-                                        </label>
-                                    </div>
-
-                                    <br><br>
-
-                                    <div class="alert alert-info" id="infoAlert">
-                                        Выберите тип элемента отображения.
-                                    </div>
-
-
-
-
-                                </div>
-                            </div>
-
-                            <div class="tab-pane  p-20" id="profile" role="tabpanel">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            Надпись при включении:
-                                        </div>
-                                        <div class="col-3">
-                                            <input type="text" class="form-control input-default col-sm-12" id="name_device"  placeholder="Верхняя строка пустая">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-3">
-
-                                        </div>
-                                        <div class="col-3">
-                                            <input type="text" class="form-control input-default col-sm-12" id="name_device"  placeholder="Нижняя строка пустая">
-                                        </div>
-                                    </div>
-
-                                    <br><br><br>
-
-                                    <div class="row">
-                                        <div class="col-3">
-                                            Надпись при выключении:
-                                        </div>
-                                        <div class="col-3">
-                                            <input type="text" class="form-control input-default col-sm-12" id="name_device"  placeholder="Верхняя строка пустая">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-3">
-
-                                        </div>
-                                        <div class="col-3">
-                                            <input type="text" class="form-control input-default col-sm-12" id="name_device"  placeholder="Нижняя строка пустая">
-                                        </div>
-                                    </div>
-
-                                    <br><br><br>
-
-                                    <div class="row">
-                                        <div class="col-3">
-                                            Изображение при включении:
-                                        </div>
-                                        <div class="col-3">
-                                            <img src="/images/rooms/noimage.png" id="image" style="background: black;"  >
-                                        </div>
-                                    </div>
-                                    <br><br><br>
-                                    <div class="row">
-                                        <div class="col-3">
-                                            Изображение при выключении:
-                                        </div>
-                                        <div class="col-3">
-                                            <img src="/images/rooms/noimage.png" id="image" style="background: black;"  >
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="tab-pane p-20" id="messages" role="tabpanel">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            Помещение:
-                                        </div>
-
-                                        <div class="col-3">
-                                            <div class="dropdown room-filter" id="room-filter">
-                                                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-
-                                                    Выбрать помещение
-
-                                                    <span class="caret"></span></button>
-                                                <ul class="dropdown-menu">
-
-                                                    <li><a href="/views/room/0">Общие</a></li>
-                                                    <hr>
-
-                                                    @foreach ($rooms as $room)
-                                                        <li ><a href="/views/room/{{ $room->id }}" >
-                                                                <label style="background-color:{{ $room->style }}">&nbsp;&nbsp;&nbsp;</label>&nbsp;&nbsp;{{ $room->name }}
-                                                            </a>
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-
-                                    <div class="row">
-                                        <div class="col-3">
-                                            Сцена:
-                                        </div>
-
-                                        <div class="col-3">
-
-                                            <div class="dropdown room-filter" id="room-filter">
-                                                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-
-                                                    Выбрать сцену
-
-                                                    <span class="caret"></span></button>
-                                                <ul class="dropdown-menu">
-
-                                                    <li><a href="/views/room/0">Общие</a></li>
-                                                    <hr>
-
-                                                    @foreach ($rooms as $room)
-                                                        <li ><a href="/views/room/{{ $room->id }}" >
-                                                                <label style="background-color:{{ $room->style }}">&nbsp;&nbsp;&nbsp;</label>&nbsp;&nbsp;{{ $room->name }}
-                                                            </a>
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-
-                                            Left: <input type="text" class="form-control input-default col-sm-4" id="name_device" size="5">
-                                            Top: <input type="text" class="form-control input-default col-sm-4" id="name_device" size="5">
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                        </div>
-
+                    <div>
+                        <input type="text" name="modal_objects_filter" class="form-control" placeholder="Поиск по названию...">
                     </div>
-
-
-
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
-                        <button type="button"   class="btn btn-primary" data-dismiss="modal"  onclick="new_device();" >Добавить</button>
-
-                    </div>
+                    <div id="objectframe"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                 </div>
             </div>
         </div>
+    </div>
 
-
-
-
-        <!-- модальное окно добавления портов -->
-        <div id="addports-Modal" class="modal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-
-                        <h4 class="modal-title"> Добавляются порты</h4>
+    <div id="methodsModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Выбор метода</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <label id="selected_method"></label><br>
                     </div>
-
-                    <div class="modal-body">
-                        <h5 class="m-t-30">333<span class="pull-right">85%</span></h5>
-                        <div class="progress ">
-                            <div class="progress-bar bg-danger wow animated progress-animated" id="progress_ports" style="width: 1%; height:6px;" role="progressbar"> <span class="sr-only">60% Complete</span> </div>
-                        </div>
-                    </div>
-
-
+                    <div id="methodframe"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                 </div>
             </div>
         </div>
+    </div>
+    @include('components.info_modal')
+    @include('components.del_modal')
+@endsection
 
+@section('scripts')
+   <script>
 
-        @endsection
+       function resetObject(id, view) {
+           //Внесение изменений в БД
+           selectObject(null, null);
 
-        @section('scripts')
+           $('#'+id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
+           $('#'+view).val('empty,empty,' + id);
+           let mid = view.split('_')[1];
+           $('#viewmethod_'+mid).html('<b>Метод не выбран</b>');
+           $('#viewmethod_'+mid).val("empty,empty,viewmethod_"+mid);
+           $('#viewmethodempty_'+midview.split('_')[1]).html('<b>Метод не выбран</b>');
+           $('#viewmethodempty_'+mid).val("empty,empty,viewmethodempty_"+mid);
+       }
 
-            <script src="/js/pagescripts/views.js"></script>
+       function resetMethod(id, view) {
+           //Внесение изменений в БД
+           selectMethod(null, null);
 
+           $('#'+id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
+           $('#'+view).val('empty,empty,' + id);
+       }
+
+       $(document).ready(function(){
+           let objects_url = '{{ route('ajax.view_objects.view.all') }}';
+           let methods_url = '{{ route('ajax.view_objects.method.all') }}';
+           let del_id;
+
+           //Вызов модального окна с методами
+           $('button[type=button][name=method]').click(function () {
+
+               let method_val = this.value;
+               let view_id = this.id;
+               let method_arr = method_val.split(',');
+
+               let data = {};
+               data['method'] = method_val;
+               data['id'] = view_id.split('_')[1];
+
+               ajax_html(data, methods_url, '#methodframe');
+
+               if (method_arr[0] != 'empty') {
+                   $('#selected_method').html('Выбран метод: '+ method_arr[1] +
+                       '   <button type="button" class="btn btn-danger m-b-2 btn-xs" data-dismiss="modal" ' +
+                       'id = "reset_method"  value="'+ view_id + '" onclick="resetMethod(\''+view_id+'\',\''+method_arr[2]+'\');">Убрать</button>');
+               } else {
+                   $('#selected_method').html('Метод не выбран');
+               }
+           });
+
+           //
+
+           //Вызов модального окна с объектами
+           $('button[type=button][name=object]').click(function () {
+               $('[name=modal_objects_filter]').val('');
+
+               let object_val = this.value;
+               let view_id = this.id;
+               let object_arr = object_val.split(',');
+
+               let data = {};
+               data['object'] = object_val;
+
+               ajax_html(data, objects_url, '#objectframe');
+
+               if (object_arr[0] != 'empty') {
+                   $('#selected_object').html('Выбран объект: '+ object_arr[1] +
+                       '   <button type="button" class="btn btn-danger m-b-2 btn-xs" data-dismiss="modal" ' +
+                       'id = "reset_object"  value="'+ view_id + '" onclick="resetObject(\''+view_id+'\',\''+object_arr[2]+'\');">Убрать</button>');
+               } else {
+                   $('#selected_object').html('Объект не выбран');
+               }
+           });
+
+           //
+
+           $('.del_btn').click(function() {
+               del_id = $(this).attr('data-id');
+               $('#del_modal_body').text('Удалить отображение «'+$(this).attr('data-name')+'»?');
+               $('#del_modal').modal('show');
+           });
+
+           $('#del_modal_btn').click(function(){
+              $('#del_modal').modal('hide');
+              if (del_id) {
+                  $.ajax({
+                      url: '{{ route('ajax.views.delete') }}',
+                      data: { '_token': _token, 'id': del_id },
+                      success: function (data) {
+                          if (data.result) {
+                              $('#tr'+del_id).hide();
+                          } else {
+                              showErrorModal('Ошибка при удалении отображения');
+                          }
+                      }
+                  });
+              }
+           });
+
+           //
+
+           $('.active_checkbox').change(function(){
+               let active = this.checked ? 1 : 0;
+               let view_id = $(this).attr('data-id');
+
+               $.ajax({
+                   url: '{{ route('ajax.views.active') }}',
+                   data: { '_token': _token, 'id': view_id, 'active': active},
+                   success: function (data) {
+                        if (data.result) {
+                            showSuccessModal('Активность успешно изменена');
+                        } else {
+                            showErrorModal('Ошибка при изменении активности');
+                        }
+                   },
+               });
+           });
+
+           $('[name=modal_objects_filter]').on('input', function() {
+                let search = $(this).val().trim();
+                $(".modal_object_tr").show();
+                if (search !== "") {
+                    $(".modal_object_tr:not([data-name*='" + $(this).val() + "'])").hide();
+                }
+           });
+       });
+   </script>
 @endsection
