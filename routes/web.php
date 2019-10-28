@@ -4,47 +4,6 @@ Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
-<<<<<<< HEAD
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/devices', 'DevicesController@index');
-Route::get('/objects', 'ObjectsController@index');
-Route::get('/devices/select/{id_device}', 'DevicesController@select')->name('id_device');
-Route::get('/rooms', 'RoomsController@index');
-
-
-Route::get('/views', 'ViewsController@index');
-
-Route::get('/views/room/{idRoom}', 'ViewsController@getFilteredViews')->name('idRoom');
-
-
-/* =================================== START AJAX return ============================================================*/
-
-//Objects
-Route::post('/getobject','AJAX\ObjectController@load_to_port');
-Route::post('/add_object_to_port','AJAX\ObjectController@add_to_port');
-
-//Ports
-Route::post('/getmethod','AJAX\PortController@load_method');
-Route::post('/loaddata','AJAX\PortController@load_data');
-Route::post('/savemethod','AJAX\PortController@save_method');
-Route::post('/savenameport','AJAX\PortController@save_name_port');
-Route::post('/addports','AJAX\PortController@add_ports');
-
-//Devices
-Route::post('/savedevicesettings','AJAX\DeviceController@save_device_settings');
-Route::post('/newdevice','AJAX\DeviceController@newdevice');
-Route::post('/deletedevice','AJAX\DeviceController@deletedevice');
-
-//Rooms
-Route::post('/rooms/addRoom','AJAX\RoomController@addRoom');
-Route::post('/rooms/deleteRoom','AJAX\RoomController@deleteRoom');
-Route::post('/rooms/sort','AJAX\RoomController@sort');
-Route::post('/rooms/saveNameRoom','AJAX\RoomController@saveNameRoom');
-Route::post('/rooms/updateImage','AJAX\RoomController@updateImage');
-Route::post('/rooms/updateColor','AJAX\RoomController@updateColor');
-
-/* ======================================== END AJAX return =========================================================*/
-=======
 Route::group(['middleware' => ['auth']], function () {
 
     Route::redirect('/','home');
@@ -148,4 +107,3 @@ Route::group(['middleware' => ['auth']], function () {
         });
     });
 });
->>>>>>> 60de956102a593f31582326fc280ce710437f7e7

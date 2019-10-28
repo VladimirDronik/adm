@@ -1,14 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-<<<<<<< HEAD
-class Script extends Model
-{
-    //
-=======
 /**
  * App\Models\Device
  *
@@ -45,5 +40,4 @@ class Device extends Model
     {
         return $this->hasMany(Port::class, 'id_device', 'id')->orderBy('num_port');
     }
->>>>>>> 60de956102a593f31582326fc280ce710437f7e7
 }

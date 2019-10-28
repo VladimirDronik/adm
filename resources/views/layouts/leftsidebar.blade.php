@@ -41,24 +41,6 @@
                 </li>
 
                 <li class="nav-label">Настройки</li>
-<<<<<<< HEAD
-<<<<<<< HEAD
-                <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Сеть и VPN</span></a></li>
-                <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Оповещения</span></a></li>
-                <li> <a class="has-arrow  " href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Меню</span></a></li>
-                <li> <a class="has-arrow  " href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Скрипты</span></a></li>
-                <li> <a class="has-arrow  " href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">События</span></a></li>
-
-
-
-=======
-                <li> <a class="has-arrow" href="#" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Сеть и VPN</span></a></li>
-                <li> <a class="has-arrow" href="#" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Оповещения</span></a></li>
-                <li> <a class="has-arrow" href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Меню</span></a></li>
-                <li> <a class="has-arrow" href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">Скрипты</span></a></li>
-                <li> <a class="has-arrow" href="/views" aria-expanded="false"><i class="fa fa-columns"></i><span class="hide-menu">События</span></a></li>
->>>>>>> dece063e8ecaa90b3dfa14da4a3cf0a31066dd8c
-=======
                 <li> <a class="has-arrow" href="{{ route('network.edit') }}" aria-expanded="false">
                         <i class="fa fa-plug"></i><span class="hide-menu">Сеть и VPN</span></a></li>
                 <li> <a class="has-arrow" href="#" aria-expanded="false">
@@ -69,7 +51,6 @@
                         <i class="fa fa-flash"></i><span class="hide-menu">Скрипты</span></a></li>
                 <li> <a class="has-arrow" href="{{ route('events.index') }}" aria-expanded="false">
                         <i class="fa fa-calendar"></i><span class="hide-menu">События</span></a></li>
->>>>>>> 60de956102a593f31582326fc280ce710437f7e7
 
                 <li class="nav-label">Диагностика</li>
                 <li> <a class="has-arrow" href="/" aria-expanded="false">

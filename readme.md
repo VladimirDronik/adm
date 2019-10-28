@@ -1,5 +1,3 @@
-### Version 1.1
-
 ### Путь к папке scripts
 
 В .env APP_SCRIPTS_PATH=/var/www/adm/storage/app/scripts 
