@@ -17,6 +17,10 @@ class EventService {
             $data['method'] = null;
         }
         unset($data['type']);
+
+        $data['is_system'] = $data['is_system'] ?? 0;
+        $data['is_hidden'] = $data['is_hidden'] ?? 0;
+
         $task->fill($data);
     }
 
@@ -130,6 +134,20 @@ class EventService {
     public function deletePoint(int $id)
     {
         SchedulerPoint::where('close','!=',1)->where('id', $id)->delete();
+
+        return true;
+    }
+
+    public function changeSystem(int $id, int $is_system)
+    {
+        SchedulerTask::where('id', $id)->update(['is_system' => $is_system]);
+
+        return true;
+    }
+
+    public function changeHidden(int $id, int $is_hidden)
+    {
+        SchedulerTask::where('id', $id)->update(['is_hidden' => $is_hidden]);
 
         return true;
     }

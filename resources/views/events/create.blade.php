@@ -29,6 +29,8 @@
                         {{ Form::bs_alert() }}
                         {{ Form::bs_title('Основные данные') }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
+                        {{ Form::bs_checkbox('is_system', 'Системное:') }}
+                        {{ Form::bs_checkbox('is_hidden', 'Скрытое:') }}
                         {{ Form::bs_hr() }}
                         <div class="form-group row ">
                             <label class="control-label text-right col-md-3 label-fix" for="type"><strong></strong></label>
