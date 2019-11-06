@@ -59,7 +59,7 @@
                                         </td>
                                         <td><a href="{{ route('objects.edit',[$object->id]) }}">{{ $object->name }}</a></td>
                                         <td>
-                                            @if($object->status === 'on')
+                                            @if(strtoupper($object->status) === 'ON')
                                                 <span class="badge badge-success">{{ $object->status }}</span>
                                             @else
                                                 <span class="badge badge-primary">{{ $object->status }}</span>
