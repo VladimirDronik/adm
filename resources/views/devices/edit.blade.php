@@ -26,7 +26,7 @@
                 ip адрес: <input name="ip_address" value="{{ $device->ip_address }}" size="15">
                 <input type="hidden" id="id_device" value="{{ $device->id }}">
                 Тип: <span class="text-capitalize">{{ optional($device->devtype)->name }}</span>
-                <button type="button" class="btn btn-success m-b-10 m-l-5" data-toggle="modal" data-target="#device_modal">Сохранить</button>
+                <button type="button" id="updateDeviceBtn" class="btn btn-success m-b-10 m-l-5" data-toggle="modal" data-target="#device_modal">Сохранить</button>
                 <button type="button" class="btn btn-danger m-b-10 m-l-5 pull-right"  data-toggle="modal" data-target="#delete_modal">Удалить устройство</button>
             </div>
         </div>
@@ -229,15 +229,37 @@
             </div>
         </div>
     </div>
+
+    <div id="reloadModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Сообщение</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Сервер перезагружается... Пожалуйста, дождитесь завершения перезагрузки.
+                    </div>
+                </div>
+                <div class="modal-footer">
+{{--                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>--}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" style="display: none;" id="reloadDeviceBtn" data-target="#reloadModal" data-toggle="modal" data-backdrop="static" data-keyboard="false">&nbsp;</button>
 @endsection
 
 @section('scripts')
     <script src="{{ asset('ela/js/pagescripts/device.js') }}"></script>
     <script>
-        let device_id = '{{ $device->id }}';
-        let port_comment_url = '{{ route('ajax.ports.update.comment') }}';
-        let objects_url = '{{ route('ajax.objects.view.all') }}';
-        let methods_url = '{{ route('ajax.ports.method.all') }}';
+        const device_id = '{{ $device->id }}';
+        const port_comment_url = '{{ route('ajax.ports.update.comment') }}';
+        const objects_url = '{{ route('ajax.objects.view.all') }}';
+        const methods_url = '{{ route('ajax.ports.method.all') }}';
+        const autoreload_period = 3000;
 
         function deleteDevice() {
             $.ajax({
@@ -298,6 +320,9 @@
                 success: function (data) {
                     if (!data.result) {
                         showErrorModal(data.message);
+                    } else {
+                        $('#reloadDeviceBtn').click();
+                        setTimeout(checkServer, autoreload_period);
                     }
                 }
             });
@@ -364,6 +389,23 @@
 
             $('#'+id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
             $('#'+view).val('empty,empty,' + id);
+        }
+
+        function checkServer() {
+            $.ajax({
+                url: '{{ route('ajax.devices.check.server') }}',
+                data: { '_token' : _token },
+                success: function (data) {
+                    if (data.result) {
+                        location.reload();
+                    } else {
+                        setTimeout(checkServer, autoreload_period);
+                    }
+                },
+                error: function (data) {
+                    setTimeout(checkServer, autoreload_period);
+                }
+            });
         }
     </script>
 @endsection

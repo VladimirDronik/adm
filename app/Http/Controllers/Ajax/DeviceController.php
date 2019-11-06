@@ -46,6 +46,11 @@ class DeviceController extends Controller
 
         return response()->json(['result' => true, 'ports' => $ports]);
     }
+
+    public function checkServer(Request $r)
+    {
+        return response()->json(['result' => true]);
+    }
 }
 
 
