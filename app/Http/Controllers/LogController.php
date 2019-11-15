@@ -2,16 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Event\CreateRequest;
-use App\Http\Requests\Event\UpdateRequest;
-use App\Models\SchedulerPoint;
-use App\Models\SchedulerTask;
-use App\Repositories\EventRepository;
 use App\Repositories\LogRepository;
-use App\Repositories\ObjectRepository;
-use App\Repositories\ScriptRepository;
-use App\Services\EventService;
-use App\Services\ObjectService;
 use Illuminate\Http\Request;
 
 class LogController extends Controller

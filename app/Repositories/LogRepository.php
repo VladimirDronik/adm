@@ -3,12 +3,13 @@
 namespace App\Repositories;
 
 use App\Models\Log;
+use Carbon\Carbon;
 
 class LogRepository {
 
     public function getTypes()
     {
-        return Log::select('type')->distinct()->orderBy('type')->get()->toArray();
+        return Log::select('type')->distinct()->orderBy('type')->get()->pluck('type')->toArray();
     }
 
     public function getByFilter(array $filter, $pagination_count = 30)
@@ -20,13 +21,17 @@ class LogRepository {
         $query = Log::query();
 
         if ($start !== '') {
-            $query->where('name', 'like', '%'.$name.'%');
+            $query->where('date', '>=',
+                Carbon::createFromFormat('d.m.Y', $start)->format('Y-m-d 00:00:00'));
+        }
+
+        if ($end !== '') {
+            $query->where('date', '<=',
+                Carbon::createFromFormat('d.m.Y', $end)->format('Y-m-d 23:59:59'));
         }
 
         if ($type !== '') {
-            $query->whereHas('points', function ($q) use ($type) {
-                $q->where('type', $type);
-            });
+            $query->where('type', $type);
         }
 
         $query->orderBy('date', 'desc');
