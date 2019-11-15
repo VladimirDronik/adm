@@ -53,7 +53,7 @@
                         <i class="fa fa-calendar"></i><span class="hide-menu">События</span></a></li>
 
                 <li class="nav-label">Диагностика</li>
-                <li> <a class="has-arrow" href="/" aria-expanded="false">
+                <li> <a class="has-arrow" href="{{ route('logs.index') }}" aria-expanded="false">
                         <i class="fa fa-list"></i><span class="hide-menu">Логирование</span></a></li>
                 <li> <a class="has-arrow" href="{{ route('graphs.index') }}" aria-expanded="false">
                         <i class="fa fa-bar-chart"></i><span class="hide-menu">Графики</span></a></li>

@@ -20,6 +20,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('scenes', 'SceneController')->except('show','destroy');
     Route::resource('termostats', 'TermostatController')->except('show','destroy');
     Route::resource('events', 'EventController')->except('show','destroy');
+    Route::resource('logs', 'LogController')->only('index');
 
     Route::get('network', 'NetworkController@edit')->name('network.edit');
     Route::put('network', 'NetworkController@update')->name('network.update');
