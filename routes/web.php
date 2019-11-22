@@ -20,6 +20,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('scenes', 'SceneController')->except('show','destroy');
     Route::resource('termostats', 'TermostatController')->except('show','destroy');
     Route::resource('events', 'EventController')->except('show','destroy');
+    Route::resource('logs', 'LogController')->only('index');
 
     Route::get('network', 'NetworkController@edit')->name('network.edit');
     Route::put('network', 'NetworkController@update')->name('network.update');
@@ -35,6 +36,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('update', 'DeviceController@update')->name('update');
             Route::post('ports', 'DeviceController@ports')->name('ports');
             Route::post('ports/update', 'DeviceController@updatePort')->name('ports.update');
+            Route::post('check/server', 'DeviceController@checkServer')->name('check.server');
         });
 
         Route::group(['prefix' => 'views', 'as' => 'views.'], function () {
@@ -94,6 +96,8 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::post('events/delete', 'EventController@delete')->name('events.delete');
         Route::post('events/validation/name', 'EventController@validateName')->name('events.validation.name');
+        Route::post('events/system', 'EventController@system')->name('events.system');
+        Route::post('events/hidden', 'EventController@hidden')->name('events.hidden');
 
         Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
             Route::post('delete', 'SchedulerPointController@delete')->name('delete');

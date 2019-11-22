@@ -52,6 +52,8 @@
                                     <th>Расписание</th>
                                     <th>Метод</th>
                                     <th>Скрипт</th>
+                                    <th class="text-center">Системное</th>
+                                    <th class="text-center">Скрытое</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
@@ -97,6 +99,14 @@
                                             </a>
                                         @endif
                                     </td>
+                                    <td class="text-center">
+                                        <input type="checkbox" class="system_checkbox" style="cursor: pointer;"
+                                               data-id="{{$event->id}}" value="1" @if($event->is_system) checked @endif>
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="checkbox" class="hidden_checkbox" style="cursor: pointer;"
+                                               data-id="{{$event->id}}" value="1" @if($event->is_hidden) checked @endif>
+                                    </td>
                                     <td align="center">
                                         <a href="{{ route('events.edit',[$event->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                             <i class="fa fa-cog fa-lg"></i>
@@ -118,6 +128,8 @@
                                     <th>Расписание</th>
                                     <th>Метод</th>
                                     <th>Скрипт</th>
+                                    <th class="text-center">Системное</th>
+                                    <th class="text-center">Скрытое</th>
                                     <th></th>
                                     <th></th>
                                 </tr>
@@ -177,6 +189,42 @@
                     $(this).text("Подробнее");
                 }
                 $(this).remove();
+            });
+
+            // system and hidden checkboxes
+
+            $('.system_checkbox').change(function(){
+                let is_system = this.checked ? 1 : 0;
+                let id = $(this).attr('data-id');
+
+                $.ajax({
+                    url: '{{ route('ajax.events.system') }}',
+                    data: { '_token': _token, 'id': id, 'is_system': is_system},
+                    success: function (data) {
+                        if (data.result) {
+                            showSuccessModal('Изменения успешно сохранены');
+                        } else {
+                            showErrorModal('Ошибка при изменении свойств события');
+                        }
+                    },
+                });
+            });
+
+            $('.hidden_checkbox').change(function(){
+                let is_hidden = this.checked ? 1 : 0;
+                let id = $(this).attr('data-id');
+
+                $.ajax({
+                    url: '{{ route('ajax.events.hidden') }}',
+                    data: { '_token': _token, 'id': id, 'is_hidden': is_hidden },
+                    success: function (data) {
+                        if (data.result) {
+                            showSuccessModal('Изменения успешно сохранены');
+                        } else {
+                            showErrorModal('Ошибка при изменении свойств события');
+                        }
+                    },
+                });
             });
         });
     </script>

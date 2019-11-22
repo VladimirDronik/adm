@@ -72,7 +72,7 @@
                                     <th>Оптим. темп.</th>
                                     <th>Гистерезис</th>
                                     <th>Режим</th>
-                                    <th>Объект влияния</th>>
+                                    <th>Объект влияния</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>

@@ -31,7 +31,7 @@ class SceneController extends Controller
 
     public function active(Request $r)
     {
-        abort_if(!ajaxHas($r, ['id','active']), 400);
+        abort_if(!ajaxHas($r, ['id', 'active']), 400);
 
         return response()->json(['result' => $this->service->changeActive((int)$r->id, (int)$r->active)]);
     }

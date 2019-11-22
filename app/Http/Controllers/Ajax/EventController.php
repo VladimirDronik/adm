@@ -28,6 +28,20 @@ class EventController extends Controller
 
         return response()->json($this->service->validateName((int)$r->id, $r->name));
     }
+
+    public function system(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['id', 'is_system']), 400);
+
+        return response()->json(['result' => $this->service->changeSystem((int)$r->id, (int)$r->is_system)]);
+    }
+
+    public function hidden(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['id', 'is_hidden']), 400);
+
+        return response()->json(['result' => $this->service->changeHidden((int)$r->id, (int)$r->is_hidden)]);
+    }
 }
 
 

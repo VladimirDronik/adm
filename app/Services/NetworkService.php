@@ -4,12 +4,8 @@ namespace App\Services;
 
 class NetworkService {
 
-    //private $pathNet = "/etc/network/interfaces";
-    //private $pathVpn = "/etc/ppp/peers/vpn";
-    //private $cmdPath = "/home/ubuntu/cmd.sh";
-    private $pathNet = "/home/kinord/www/test/interfaces";
-    private $pathVpn = "/home/kinord/www/test/vpn";
-    private $cmdPath = "/home/kinord/www/test/cmd.sh";
+    private $pathNet = "/etc/network/interfaces";
+    private $pathVpn = "/etc/ppp/peers/vpn";
 
     /**
      * Установка параметров для сетевого интерфейса

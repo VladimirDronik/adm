@@ -19,6 +19,7 @@
     <link href="{{ asset('ela/css/helper.css') }}" rel="stylesheet">
     <link href="{{ asset('ela/css/style.css') }}" rel="stylesheet">
 
+    <link href="{{ asset('ela/css/custom.css') }}" rel="stylesheet">
     @section('css')
     @show
 

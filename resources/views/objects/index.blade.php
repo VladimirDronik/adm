@@ -33,8 +33,8 @@
                             <thead>
                                 <tr>
 {{--                                    <th style="width: 60px;">ID</th>--}}
+                                    <th style="width: 65px;">Тип</th>
                                     <th>Название</th>
-                                    <th>Тип</th>
                                     <th>Статус</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
@@ -44,10 +44,22 @@
                                 @foreach($objects as $object)
                                     <tr id="tr{{$object->id}}">
 {{--                                        <td scope="row">{{ $object->id }}</td>--}}
+                                        <td class="text-center">
+                                            @if($object->type === 'lamp')
+                                                <img width="30" height="30" title="{{ $object->rus_type }}" src="{{ asset('ela/images/objects/'.$object->type.'.png') }}">
+                                            @elseif($object->type === 'socket')
+                                                <img width="35" height="35" title="{{ $object->rus_type }}" src="{{ asset('ela/images/objects/'.$object->type.'.png') }}">
+                                            @elseif($object->type === 'termo')
+                                                <img width="60" height="35" title="{{ $object->rus_type }}" src="{{ asset('ela/images/objects/'.$object->type.'.png') }}">
+                                            @elseif($object->type === 'hydro')
+                                                <img width="50" height="35" title="{{ $object->rus_type }}" src="{{ asset('ela/images/objects/'.$object->type.'.png') }}">
+                                            @else
+                                                <img width="60" height="40" title="{{ $object->rus_type }}" src="{{ asset('ela/images/objects/'.$object->type.'.png') }}">
+                                            @endif
+                                        </td>
                                         <td><a href="{{ route('objects.edit',[$object->id]) }}">{{ $object->name }}</a></td>
-                                        <td>{{ $object->rus_type }}</td>
                                         <td>
-                                            @if($object->status === 'on')
+                                            @if(strtoupper($object->status) === 'ON')
                                                 <span class="badge badge-success">{{ $object->status }}</span>
                                             @else
                                                 <span class="badge badge-primary">{{ $object->status }}</span>
@@ -70,8 +82,8 @@
                             <tfoot>
                                 <tr>
 {{--                                    <th>ID</th>--}}
-                                    <th>Название</th>
                                     <th>Тип</th>
+                                    <th>Название</th>
                                     <th>Статус</th>
                                     <th></th>
                                     <th></th>
