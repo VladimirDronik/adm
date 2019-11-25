@@ -21,9 +21,9 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property-read \App\Models\Termostat $etermostat
  */
-class Graph extends Model
+class GraphTermostat extends Model
 {
-    protected $table = 'graph';
+    protected $table = 'graph_termostats';
     public $timestamps = false;
 
     /* relations */

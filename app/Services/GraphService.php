@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Graph;
+use App\Models\GraphTermostat;
 use App\Models\Room;
 use App\Models\Termostat;
 use Carbon\Carbon;
@@ -12,7 +12,7 @@ class GraphService {
     public function getPeriods()
     {
         $periods = [];
-        $min_date = Graph::min('datetime');
+        $min_date = GraphTermostat::min('datetime');
         if (empty($min_date)) {
             return $periods;
         }
@@ -28,7 +28,7 @@ class GraphService {
 
     public function getGraphData()
     {
-        $termostat_ids = Graph::select('id_termostat')
+        $termostat_ids = GraphTermostat::select('id_termostat')
             ->distinct()->pluck('id_termostat')->toArray();
         $rooms_ids = Termostat::select('room')->whereIn('id', $termostat_ids)
             ->distinct()->pluck('room')->toArray();
@@ -43,7 +43,7 @@ class GraphService {
 
     public function getGraphPeriodData(int $termostat_id, string $period)
     {
-        $query = Graph::where('id_termostat', $termostat_id)
+        $query = GraphTermostat::where('id_termostat', $termostat_id)
             ->select('value', 'datetime')->orderBy('datetime');
 
         if ($period === '7') {

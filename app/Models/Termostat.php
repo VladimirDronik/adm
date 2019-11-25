@@ -120,12 +120,12 @@ class Termostat extends Model
 
     public function graphs()
     {
-        return $this->hasMany(Graph::class, 'id_termostat', 'id')->orderBy('datetime');
+        return $this->hasMany(GraphTermostat::class, 'id_termostat', 'id')->orderBy('datetime');
     }
 
     public function last_graphs()
     {
-        return $this->hasMany(Graph::class, 'id_termostat', 'id')
+        return $this->hasMany(GraphTermostat::class, 'id_termostat', 'id')
             ->orderBy('datetime');
     }
 }
