@@ -6,7 +6,6 @@ use App\Http\Requests\Device\CreateRequest;
 use App\Models\Device;
 use App\Repositories\DeviceRepository;
 use App\Services\DeviceService;
-use Illuminate\Http\Request;
 
 class DeviceController extends Controller
 {

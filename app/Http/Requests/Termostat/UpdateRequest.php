@@ -28,7 +28,6 @@ class UpdateRequest extends FormRequest
             'optimal' => 'required|integer|min:0|max:40',
             'gisteresis' => 'required|integer|min:0|max:10',
             'thermostat' => 'required|integer|min:0|max:1',
-            'port' => 'required|integer|min:0',
             'min_threshold' => 'required|integer',
             'max_threshold' => 'required|integer|max:100',
             'min_alarm' => 'required|integer',
@@ -36,7 +35,7 @@ class UpdateRequest extends FormRequest
             'room' => 'nullable|integer|min:0'
         ];
 
-        $ids = ['id_object', 'object', 'method_on', 'method_off', 'id_device'];
+        $ids = ['id_object', 'object', 'method_on', 'method_off'];
         foreach ($ids as $id) {
             $rules[$id] = 'required|integer|min:0';
         }
@@ -51,10 +50,8 @@ class UpdateRequest extends FormRequest
             'optimal.required' => 'Не указана оптимальная температура',
             'gisteresis.required' => 'Не указан гистерезис',
             'thermostat.required' => 'Не указан режим',
-            'port.required' => 'Не указан номер порта',
             'id_object.required' => 'Не указан объект',
             'object.required' => 'Не указан объект влияния',
-            'id_device.required' => 'Не указано устройство',
         ];
     }
 }

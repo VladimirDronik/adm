@@ -58,10 +58,6 @@
 
                         {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', is_null($termostat->room) ? -1 : $termostat->room ), false, false) }}
 
-                        {{ Form::bs_autoselect('id_device', 'Устройство*:', $devices, old('id_device', $termostat->id_device),
-                            false, false, ['required' => true]) }}
-                        {{ Form::bs_autoselect('port', 'Номер порта*:', $ports, old('port',$termostat->port), false, false, ['required' => true],
-                            null, 'Список портов выбранного устройства') }}
                     </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
@@ -79,7 +75,6 @@
     <script src="{{ asset('ela/js/pagescripts/termostat.js') }}"></script>
     <script>
         let url_methods = '{{ route('ajax.objects.methods') }}';
-        let url_ports = '{{ route('ajax.devices.ports') }}';
         $(document).ready(initTermostatForm);
     </script>
 @endsection

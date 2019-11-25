@@ -1,16 +1,3 @@
-function createPortSelect(target, options, selected) {
-    let sel = $(target);
-    sel.html('');
-    let s = '<option value="">Не выбрано</option>';
-    for (let i = 0; i < options.length; i++) {
-        if(selected == options[i])
-            s += '<option selected value="' + options[i] + '">' + options[i] + '</option>';
-        else
-            s += '<option value="' + options[i] + '">' + options[i] + '</option>';
-    }
-    sel.append(s);
-}
-
 function createMethodSelect(target, options, selected) {
     let sel = $(target);
     sel.html('');
@@ -69,12 +56,7 @@ function validateTermostat() {
     if (isEmptyAutoSelect('method_off')) {
         return 'Не указан метод при выключении';
     }
-    if (isEmptyAutoSelect('id_device')) {
-        return 'Не указано устройство';
-    }
-    if (isEmptyAutoSelect('port')) {
-        return 'Не указан номер порта';
-    }
+
     return '';
 }
 
@@ -84,21 +66,6 @@ function initTermostatForm() {
     $("#auto_sel_method_on").chosen({width:"100%", no_results_text: "Не найдено"});
     $("#auto_sel_method_off").chosen({width:"100%", no_results_text: "Не найдено"});
     $("#auto_sel_room").chosen({width:"100%", no_results_text: "Не найдено"});
-    $("#auto_sel_id_device").chosen({width:"100%", no_results_text: "Не найдено"});
-    $("#auto_sel_port").chosen({width:"100%", no_results_text: "Не найдено"});
-
-    $("#auto_sel_id_device").chosen().change(function() {
-        let device_id = $(this).val();
-
-        $.ajax({
-            url: url_ports,
-            data: {'_token': _token, 'device_id': device_id},
-            success: function (data) {
-                createPortSelect('#auto_sel_port', data.ports, -1);
-                $('#auto_sel_port').trigger("chosen:updated");
-            }
-        });
-    });
 
     $("#auto_sel_object").chosen().change(function() {
         let object_id = $(this).val();

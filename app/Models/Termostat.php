@@ -103,11 +103,6 @@ class Termostat extends Model
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
     }
 
-    public function edevice()
-    {
-        return $this->belongsTo(Device::class, 'id_device', 'id');
-    }
-
     public function emethod_on()
     {
         return $this->belongsTo(Method::class, 'method_on', 'id');

@@ -6,7 +6,6 @@ use App\Http\Requests\Termostat\CreateRequest;
 use App\Http\Requests\Termostat\UpdateRequest;
 use App\Models\Termostat;
 use App\Repositories\DeviceRepository;
-use App\Repositories\MethodRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
 use App\Repositories\TermostatRepository;
@@ -42,18 +41,17 @@ class TermostatController extends Controller
     private function getLists()
     {
         $objects = $this->object_rep->getAllToArray();
-        $devices = $this->device_rep->getAllToArray();
         $rooms = $this->room_rep->getAllToArray();
         $types = Termostat::getFullThermostatIds();
 
-        return [$objects, $devices, $rooms, $types];
+        return [$objects, $rooms, $types];
     }
 
     public function create()
     {
-        list($objects, $devices, $rooms, $types) = $this->getLists();
+        list($objects, $rooms, $types) = $this->getLists();
 
-        return view('termostats.create', compact('objects','devices', 'rooms', 'types'));
+        return view('termostats.create', compact('objects','rooms', 'types'));
     }
 
     public function store(CreateRequest $r)
@@ -69,15 +67,14 @@ class TermostatController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении термостата');
     }
 
-    public function edit(Termostat $termostat, ObjectService $object_service, DeviceService $device_service)
+    public function edit(Termostat $termostat, ObjectService $object_service)
     {
-        list($objects, $devices, $rooms, $types) = $this->getLists();
+        list($objects, $rooms, $types) = $this->getLists();
 
         $methods = $object_service->getMethodsByObjectIdToArray($termostat->object);
-        $ports = $device_service->getPortsByDeviceId($termostat->id_device);
 
-        return view('termostats.edit', compact('termostat', 'objects', 'devices', 'rooms', 'types',
-            'methods', 'ports'));
+        return view('termostats.edit', compact('termostat', 'objects', 'rooms',
+            'types', 'methods'));
     }
 
     public function update(UpdateRequest $r, Termostat $termostat)
