@@ -11,7 +11,7 @@ php artisan key:generate
 php artisan migrate --seed
 
 В результате созданы таблицы в базе 
-и заполнены таблицы Colors и Devtypes
+и заполнены таблицы Colors, Devtypes, Menu, Settings
 
 Далее создаем пользователя:
 
@@ -36,3 +36,15 @@ php artisan db:seed --class=ColorsTableSeeder
 php artisan db:seed --class=DevtypesTableSeeder
 
 команда заполняет таблицу Devtypes
+
+### Menu
+
+php artisan db:seed --class=MenuTableSeeder
+
+команда заполняет таблицу Menu
+
+### Settings
+
+php artisan db:seed --class=SettingsTableSeeder
+
+команда заполняет таблицу Settings
