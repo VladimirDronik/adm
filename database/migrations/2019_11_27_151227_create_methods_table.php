@@ -21,11 +21,10 @@ class CreateMethodsTable extends Migration
             $table->unsignedInteger('script')->nullable()->comment('id скрипта из таблицы скриптов');
             $table->string('comment');
 
-
             $table->foreign('id_object')->references('id')->on('objects')
                 ->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('script')->references('id')->on('scripts')
-                ->onUpdate('cascade')->onDelete('cascade');
+                ->onUpdate('cascade')->onDelete('set null');
         });
     }
 

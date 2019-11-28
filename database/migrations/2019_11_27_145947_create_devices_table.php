@@ -19,6 +19,9 @@ class CreateDevicesTable extends Migration
             $table->string('description');
             $table->unsignedInteger('type');
             $table->boolean('active');
+
+            $table->foreign('type')->references('id')->on('devtypes')
+                ->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

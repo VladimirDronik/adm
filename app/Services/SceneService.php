@@ -65,7 +65,7 @@ class SceneService {
         $scene->label = trim($data['label']);
         $scene->active = $data['active'] ?? 0;
         $scene->image = basename($data['_image']);;
-        $scene->backgroung_color = trim($data['backgroung_color']);
+        $scene->background_color = trim($data['background_color']);
     }
 
     public function store(array $data)

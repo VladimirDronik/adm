@@ -41,7 +41,7 @@
                             {{ Form::bs_hidden('_image','') }}
                         @endif
 
-                        {{ Form::bs_color('backgroung_color', 'Цвет фона:') }}
+                        {{ Form::bs_color('background_color', 'Цвет фона:') }}
 
                     </div>
                     {{ Form::bs_submit_btn() }}
@@ -86,7 +86,7 @@
         }
 
         $(document).ready(function () {
-            $('input[name=backgroung_color]').colorpicker();
+            $('input[name=background_color]').colorpicker();
         });
     </script>
 @endsection

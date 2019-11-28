@@ -15,7 +15,19 @@ class CreateSchedulerTasksTable extends Migration
     {
         Schema::create('scheduler_tasks', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
+            $table->string('name', 100)->comment('Название задачи');
+            $table->unsignedInteger('object')->nullable()->comment('id объекта');
+            $table->unsignedInteger('method')->nullable()->comment('id метода объекта');
+            $table->unsignedInteger('script')->nullable()->comment('id скрипта. Выполняется, если объект не задан');
+            $table->boolean('is_system')->default(false);
+            $table->boolean('is_hidden')->default(false);
+
+            $table->foreign('object')->references('id')->on('objects')
+                ->onUpdate('cascade')->onDelete('set null');
+            $table->foreign('method')->references('id')->on('methods')
+                ->onUpdate('cascade')->onDelete('set null');
+            $table->foreign('script')->references('id')->on('scripts')
+                ->onUpdate('cascade')->onDelete('set null');
         });
     }
 

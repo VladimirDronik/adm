@@ -18,7 +18,7 @@ class ColorsTableSeeder extends Seeder
         $new_colors = [];
         foreach ($colors as $color) {
             if (!in_array($color, $db_colors, true)) {
-                $new_colors[] = ['name' => $color, 'color' => ''];
+                $new_colors[] = ['name' => $color];
             }
         }
 

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property string $label
  * @property string $image
- * @property string $backgroung_color
+ * @property string $background_color
  * @property int $sort
  * @property int $active
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scene newModelQuery()

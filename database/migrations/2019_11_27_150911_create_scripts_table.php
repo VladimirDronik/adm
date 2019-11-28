@@ -15,7 +15,10 @@ class CreateScriptsTable extends Migration
     {
         Schema::create('scripts', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
+            $table->string('name', 100)->comment('название скрипта');
+            $table->string('link', 100)->comment('ссылка на скрипт в папке скрипты');
+            $table->integer('count')->nullable()->comment('количество раз, которое выполнился скрипт');
+            $table->boolean('system');
         });
     }
 

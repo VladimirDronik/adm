@@ -45,8 +45,8 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if(!empty($scene->backgroung_color))
-                                                <div style="border: 1px solid gray; width: 60px; height: 40px; background-color: {{ $scene->backgroung_color }};">&nbsp;&nbsp;</div>
+                                            @if(!empty($scene->background_color))
+                                                <div style="border: 1px solid gray; width: 60px; height: 40px; background-color: {{ $scene->background_color }};">&nbsp;&nbsp;</div>
                                             @else
                                                 Не указан
                                             @endif

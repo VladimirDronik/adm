@@ -25,7 +25,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'label' => 'required|string|max:150',
-            'backgroung_color' => 'nullable|string|max:7'
+            'background_color' => 'nullable|string|max:7'
         ];
     }
 
@@ -34,7 +34,7 @@ class UpdateRequest extends FormRequest
         return [
             'label.required' => 'Не указано название',
             'label.max' => 'Название содержит более 150 символов',
-            'backgroung_color.max' => 'Недопустимый цвет фона',
+            'background_color.max' => 'Недопустимый цвет фона',
         ];
     }
 }

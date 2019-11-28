@@ -24,7 +24,7 @@ class CreateCountsTable extends Migration
             $table->integer('total_value');
 
             $table->foreign('id_object')->references('id')->on('objects')
-                ->onUpdate('cascade')->onDelete('cascade');
+                ->onUpdate('cascade')->onDelete('set null');
         });
     }
 

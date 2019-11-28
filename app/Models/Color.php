@@ -35,22 +35,20 @@ class Color extends Model
 
     public static function getColors(bool $is_full = true)
     {
-        if ($is_full) {
-            return [
-                self::GREY => '#656565',
-                self::BLUE => '#0060aa',
-                self::ORANGE => '#f36f21',
-                self::RED => '#ff0000',
-                self::GREEN => '#007439',
-                self::PURPLE => '#C73C93',
-                self::TURQUOISE => '#328F9D',
-                self::LIGHT_GREEN => '#7EDF44',
-                self::YELLOW => '#EEFB4C',
-                self::GOLD => '#FFD700'
-            ];
-        }
+        $colors = [
+            self::GREY => '#656565',
+            self::BLUE => '#0060aa',
+            self::ORANGE => '#f36f21',
+            self::RED => '#ff0000',
+            self::GREEN => '#007439',
+            self::PURPLE => '#C73C93',
+            self::TURQUOISE => '#328F9D',
+            self::LIGHT_GREEN => '#7EDF44',
+            self::YELLOW => '#EEFB4C',
+            self::GOLD => '#FFD700'
+        ];
 
-        return array_keys(self::getColors());
+        return $is_full ? $colors : array_keys($colors);
     }
 
     public static function getStyleByColor($color)
