@@ -118,7 +118,7 @@
                         <button data-toggle="modal" data-target="#selectImage"  class="btn btn-default m-b-10"
                         onclick="updateImage(0, false);"> Выбрать</button><br><br>
                         Цветовая схема: <label class="btn btn-default" id="color"></label> &nbsp; &nbsp;
-                            <button data-toggle="modal" data-target="#selectColor" onclick="updateColor({{ $room->id }}, false)"
+                            <button data-toggle="modal" data-target="#selectColor" onclick="updateColor({{ 0 }}, false)"
                                     class="btn btn-default m-b-10">Выбрать
                             </button><br><br>
                     </div>

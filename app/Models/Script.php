@@ -23,6 +23,7 @@ use Exception;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Script whereLink($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Script whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Script whereSystem($value)
+ * @property-read string $code
  */
 class Script extends Model
 {

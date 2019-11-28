@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $lighting
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Termostat[] $termostats
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereLighting($value)
+ * @property-read mixed $color_style
+ * @property-read \App\Models\Temperature $temperature
  */
 class Room extends Model
 {

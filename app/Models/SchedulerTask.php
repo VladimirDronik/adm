@@ -26,6 +26,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SchedulerPoint[] $not_system_points
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SchedulerPoint[] $points
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SchedulerPoint[] $system_points
+ * @property int $is_system
+ * @property int $is_hidden
+ * @property-read \App\Models\Script|null $escript
+ * @property-read mixed $has_method
+ * @property-read mixed $has_script
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereIsHidden($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereIsSystem($value)
  */
 class SchedulerTask extends Model
 {

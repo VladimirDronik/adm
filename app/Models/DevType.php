@@ -25,16 +25,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevType whereStartIn($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevType whereStartOut($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevType whereTotalPorts($value)
+ * @property string|null $port_numbers
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevType wherePortNumbers($value)
  */
 class DevType extends Model
 {
     protected $table = 'devtypes';
     public $timestamps = false;
-
-    protected $casts = [
-            'start_in' => 'integer',
-            'end_in' => 'integer',
-            'start_out' => 'integer',
-            'end_out' => 'integer'
-        ];
 }

@@ -38,6 +38,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Script|null $escript
  * @property-read \App\Models\Method|null $emethod
  * @property-read mixed $is_empty_comment
+ * @property int|null $dc_method id метода при двойном нажатии
+ * @property int|null $lc_method id метода при длительном нажатии
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereDcMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereLcMethod($value)
  */
 class Port extends Model
 {

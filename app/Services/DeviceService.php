@@ -121,13 +121,13 @@ class DeviceService {
 
     public function getPortsByDeviceId(int $device_id)
     {
-        if ($device_id) {
-            $ports = Port::where('id_device', $device_id)->orderBy('num_port')
-                ->pluck('num_port', 'id')->toArray();
-
-            return array_values($ports);
+        if (!$device_id) {
+            return [];
         }
 
-        return [];
+        $ports = Port::where('id_device', $device_id)->orderBy('num_port')
+            ->pluck('num_port', 'id')->toArray();
+
+        return array_values($ports);
     }
 }

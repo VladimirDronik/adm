@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scene whereSort($value)
  * @mixin \Eloquent
  * @property-read mixed $image_path
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scene whereBackgroundColor($value)
  */
 class Scene extends Model
 {
