@@ -12,29 +12,17 @@ class DeviceService {
 
     public function delete(int $id)
     {
-        return Device::destroy($id);
+        DB::transaction(function () use ($id) {
+            Port::where('id_device', $id)->delete();
+            Device::destroy($id);
+        });
+
+        return true;
     }
 
     public function storePorts()
     {
-        $ports = [];
-        $devtype = $this->device->devtype;
-
-        foreach (['in','out'] as $status) {
-            if ($devtype->{'start_' . $status} === 0 && $devtype->{'end_' . $status} === 0) {
-                break;
-            }
-            for ($num_port = $devtype->{'start_' . $status}; $num_port <= $devtype->{'end_' . $status}; $num_port++) {
-                $ports[] = [
-                    'id_device' => $this->device->id,
-                    'num_port' => $num_port,
-                    'status' => $status,
-                    'comment' => ''
-                ];
-            }
-        }
-
-        Port::insert($ports);
+        Port::insert($this->device->devtype->getPortsForInserting($this->device->id));
     }
 
     public function storeDevice(array $data)
@@ -72,7 +60,7 @@ class DeviceService {
             ->where('description',$data['description'])->exists();
     }
 
-    private function isValidIpAddress($ip)
+    private function isValidIpAddress(string $ip)
     {
         return filter_var($ip, FILTER_VALIDATE_IP);
     }
