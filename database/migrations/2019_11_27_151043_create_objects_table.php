@@ -13,12 +13,14 @@ class CreateObjectsTable extends Migration
      */
     public function up()
     {
-        Schema::create('objects', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 100)->comment('название объекта');
-            $table->string('type', 10);
-            $table->string('status', 5);
-        });
+        if (!Schema::hasTable('objects')) {
+            Schema::create('objects', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name', 100)->comment('название объекта');
+                $table->string('type', 10);
+                $table->string('status', 5);
+            });
+        }
     }
 
     /**

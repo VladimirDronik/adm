@@ -13,11 +13,13 @@ class CreateDevusersTable extends Migration
      */
     public function up()
     {
-        Schema::create('devusers', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('dev_id', 30);
-            $table->smallInteger('def_scene');
-        });
+        if (!Schema::hasTable('devusers')) {
+            Schema::create('devusers', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('dev_id', 30);
+                $table->smallInteger('def_scene');
+            });
+        }
     }
 
     /**

@@ -13,19 +13,21 @@ class CreateCountsTable extends Migration
      */
     public function up()
     {
-        Schema::create('counts', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('type', 10);
-            $table->unsignedInteger('id_object')->nullable();
-            $table->integer('impulse');
-            $table->string('unit', 4);
-            $table->integer('today_value');
-            $table->integer('total_value');
+        if (!Schema::hasTable('counts')) {
+            Schema::create('counts', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->string('type', 10);
+                $table->unsignedInteger('id_object')->nullable();
+                $table->integer('impulse');
+                $table->string('unit', 4);
+                $table->integer('today_value');
+                $table->integer('total_value');
 
-            $table->foreign('id_object')->references('id')->on('objects')
-                ->onUpdate('cascade')->onDelete('set null');
-        });
+                $table->foreign('id_object')->references('id')->on('objects')
+                    ->onUpdate('cascade')->onDelete('set null');
+            });
+        }
     }
 
     /**

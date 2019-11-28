@@ -13,17 +13,19 @@ class CreateTemperaturesTable extends Migration
      */
     public function up()
     {
-        Schema::create('temperatures', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('id_room');
-            $table->float('normal');
-            $table->float('night');
-            $table->float('eco');
-            $table->tinyInteger('sort');
+        if (!Schema::hasTable('temperatures')) {
+            Schema::create('temperatures', function (Blueprint $table) {
+                $table->increments('id');
+                $table->unsignedInteger('id_room');
+                $table->float('normal');
+                $table->float('night');
+                $table->float('eco');
+                $table->tinyInteger('sort');
 
-            $table->foreign('id_room')->references('id')->on('rooms')
-                ->onUpdate('cascade')->onDelete('cascade');
-        });
+                $table->foreign('id_room')->references('id')->on('rooms')
+                    ->onUpdate('cascade')->onDelete('cascade');
+            });
+        }
     }
 
     /**

@@ -13,11 +13,13 @@ class CreateDevtypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('devtypes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 100);
-            $table->text('port_numbers')->nullable();
-        });
+        if (!Schema::hasTable('devtypes')) {
+            Schema::create('devtypes', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name', 100);
+                $table->text('port_numbers')->nullable();
+            });
+        }
     }
 
     /**

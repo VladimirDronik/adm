@@ -13,10 +13,12 @@ class CreateColorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('colors', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 30);
-        });
+        if (!Schema::hasTable('colors')) {
+            Schema::create('colors', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name', 30);
+            });
+        }
     }
 
     /**

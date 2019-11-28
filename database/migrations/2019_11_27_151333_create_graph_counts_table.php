@@ -13,11 +13,13 @@ class CreateGraphCountsTable extends Migration
      */
     public function up()
     {
-        Schema::create('graph_counts', function (Blueprint $table) {
-            $table->date('date')->primary();
-            $table->tinyInteger('id_count');
-            $table->mediumInteger('value');
-        });
+        if (!Schema::hasTable('graph_counts')) {
+            Schema::create('graph_counts', function (Blueprint $table) {
+                $table->date('date')->primary();
+                $table->tinyInteger('id_count');
+                $table->mediumInteger('value');
+            });
+        }
     }
 
     /**

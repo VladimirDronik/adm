@@ -13,13 +13,15 @@ class CreateScriptsTable extends Migration
      */
     public function up()
     {
-        Schema::create('scripts', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 100)->comment('название скрипта');
-            $table->string('link', 100)->comment('ссылка на скрипт в папке скрипты');
-            $table->integer('count')->nullable()->comment('количество раз, которое выполнился скрипт');
-            $table->boolean('system');
-        });
+        if (!Schema::hasTable('scripts')) {
+            Schema::create('scripts', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name', 100)->comment('название скрипта');
+                $table->string('link', 100)->comment('ссылка на скрипт в папке скрипты');
+                $table->integer('count')->nullable()->comment('количество раз, которое выполнился скрипт');
+                $table->boolean('system');
+            });
+        }
     }
 
     /**

@@ -13,14 +13,16 @@ class CreateObjtypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('objtypes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 20);
-            $table->string('view_type', 20);
-            $table->boolean('usestatus')->comment('используется ли смена состояния у объекта');
-            $table->boolean('virt')->comment('виртуальный объект или реальный');
-            $table->text('description');
-        });
+        if (!Schema::hasTable('objtypes')) {
+            Schema::create('objtypes', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name', 20);
+                $table->string('view_type', 20);
+                $table->boolean('usestatus')->comment('используется ли смена состояния у объекта');
+                $table->boolean('virt')->comment('виртуальный объект или реальный');
+                $table->text('description');
+            });
+        }
     }
 
     /**
