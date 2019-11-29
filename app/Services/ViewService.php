@@ -28,8 +28,6 @@ class ViewService {
         $view->description = trim($data['description']);
         $view->status = 'off';
         $view->active = $data['active'] ?? 0;
-        $view->date = ''; // todo
-        $view->items = ''; // todo
         $view->sort = 0;
         $view->value = null;
         $view->on_image = basename($data['on_image']);
