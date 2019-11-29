@@ -10,6 +10,9 @@ php artisan key:generate
 
 php artisan migrate --seed
 
+(Можно отдельно миграции: php artisan migrate
+а затем отдельно сидеры php artisan db:seed)
+
 В результате созданы таблицы в базе 
 и заполнены таблицы Colors, Devtypes, Menu, Settings
 
@@ -22,6 +25,21 @@ php artisan create:user
 Если ошибка вида Сlass...Seeder не найден, то выполнить команду
 
 composer dumpautoload
+
+### Заполнение базы тестовыми данными
+
+php artisan fake
+
+Создается админ: логи admin, пароль 111111 и заполняются несколько таблиц (termostats, rooms, objects и др.)
+
+Не заполняет таблицы Colors, Devtypes, Menu, Settings. Они должны быть заполнены до вызова этой команды. 
+Например, с помощью команды php artisan db:seed
+
+Чтобы сбросить текущее состояние для тестирования, можно выполнить две команды:
+
+php artisan migrate:refresh --seed
+
+php artisan fake
 
 ### Путь к папке scripts
 
