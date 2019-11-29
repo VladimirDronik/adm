@@ -15,7 +15,9 @@ class CreateGraphHumiditiesTable extends Migration
     {
         Schema::create('graph_humidities', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
+            $table->unsignedInteger('id_count')->comment('id датчика влажности');
+            $table->dateTime('datetime')->comment('дата и время значения');
+            $table->unsignedTinyInteger('value')->comment('значение параметра в процентах (от 0 до 100 вкл)');
         });
     }
 

@@ -48,8 +48,18 @@ class GenerateFakeData extends Command
         $this->info('fake devices - done!');
         Artisan::call('db:seed', ['--class' => 'FakeRoomsTableSeeder']);
         $this->info('fake rooms - done!');
+        Artisan::call('db:seed', ['--class' => 'FakeMethodsTableSeeder']);
+        $this->info('fake methods - done!');
+        Artisan::call('db:seed', ['--class' => 'FakeTermostatsTableSeeder']);
+        $this->info('fake termostats - done!');
         Artisan::call('db:seed', ['--class' => 'FakeGraphCountsTableSeeder']);
         $this->info('fake graph counts - done!');
+        Artisan::call('db:seed', ['--class' => 'FakeGraphTermostatsTableSeeder']);
+        $this->info('fake graph termostats - done!');
+        Artisan::call('db:seed', ['--class' => 'FakeGraphLightsTableSeeder']);
+        $this->info('fake graph lights - done!');
+        Artisan::call('db:seed', ['--class' => 'FakeGraphHumiditiesTableSeeder']);
+        $this->info('fake graph humidities - done!');
         Artisan::call('db:seed', ['--class' => 'FakeLogsTableSeeder']);
         $this->info('fake logs - done!');
     }

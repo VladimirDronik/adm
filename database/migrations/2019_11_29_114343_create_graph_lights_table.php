@@ -15,7 +15,9 @@ class CreateGraphLightsTable extends Migration
     {
         Schema::create('graph_lights', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
+            $table->unsignedInteger('id_count')->comment('id датчика освещенности');
+            $table->dateTime('datetime')->comment('дата и время значения');
+            $table->double('value')->comment('значение параметра');
         });
     }
 
