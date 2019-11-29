@@ -71,7 +71,7 @@ class PortService {
         switch ($r->mode) {
             case 'device':
                 $devices = Device::orderBy('description')->get();
-                $title_action = 'Выбор устройства';
+                $title_action = 'Выбор контроллера';
                 $html = (String)view('ajax.devices', compact('devices'));
                 break;
             case 'port':

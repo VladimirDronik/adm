@@ -33,13 +33,13 @@ class CreateRequest extends FormRequest
     public function messages()
     {
         return [
-            'type.required' => 'Не указан тип устройства',
+            'type.required' => 'Не указан тип контроллера',
             'description.required' => 'Не указано название',
             'description.max' => 'Название содержит более 255 символов',
             'ip_address.required' => 'Не указан ip адрес',
             'ip_address.max' => 'IP адрес содержит более 15 символов',
             'ip_address.ip' => 'Недопустимый ip адрес',
-            'description.unique' => 'Устройство с таким названием уже существует. Необходимо изменить название'
+            'description.unique' => 'Контроллер с таким названием уже существует. Необходимо изменить название'
         ];
     }
 }

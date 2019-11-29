@@ -14,10 +14,36 @@
                 </li>
                 <li class="nav-label">Модель</li>
                 <li>
-                    <a class="has-arrow" href="{{ route('devices.index') }}" aria-expanded="false">
+                    <a class="has-arrow" href="#" aria-expanded="false">
                         <i class="fa fa-building"></i>
                         <span class="hide-menu">Устройства</span>
                     </a>
+                    <ul aria-expanded="false" class="collapse">
+                        <li>
+                            <a href="{{ route('devices.index') }}">
+                                <i class="fa fa-building"></i>
+                                Контроллеры
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('termostats.index') }}">
+                                <i class="fa fa-tasks"></i>
+                                Термостаты
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-tachometer"></i>
+                                Датчики движения
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-tachometer"></i>
+                                Счетчики
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <a class="has-arrow" href="{{ route('objects.index') }}" aria-expanded="false">
@@ -35,9 +61,6 @@
                 <li>
                     <a class="has-arrow" href="{{ route('scenes.index') }}" aria-expanded="false">
                         <i class="fa fa-image"></i><span class="hide-menu">Сцены</span></a>
-                </li>
-                <li> <a class="has-arrow" href="{{ route('termostats.index') }}" aria-expanded="false">
-                        <i class="fa fa-tasks"></i><span class="hide-menu">Термостаты</span></a>
                 </li>
 
                 <li class="nav-label">Настройки</li>

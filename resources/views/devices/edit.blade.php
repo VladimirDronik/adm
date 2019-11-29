@@ -2,9 +2,9 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование устройства «'. $device->description.'»',
-        'links' => [ route('devices.index') => 'Устройства'],
-        'last_link' => 'Редактирование устройства'])
+       ['title' => 'Редактирование контроллера «'. $device->description.'»',
+        'links' => [ route('devices.index') => 'Контроллеры'],
+        'last_link' => 'Редактирование контроллера'])
 @endsection
 
 @section('content')
@@ -13,8 +13,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('devices.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок устройств</a>
-                        <a href="{{ route('devices.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить устройство</a>
+                        <a href="{{ route('devices.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок контроллеров</a>
+                        <a href="{{ route('devices.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить контроллер</a>
                         <a href="{{ route('devices.edit',[$device->id]) }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
@@ -27,11 +27,11 @@
                 <input type="hidden" id="id_device" value="{{ $device->id }}">
                 Тип: <span class="text-capitalize">{{ optional($device->devtype)->name }}</span>
                 <button type="button" id="updateDeviceBtn" class="btn btn-success m-b-10 m-l-5" data-toggle="modal" data-target="#device_modal">Сохранить</button>
-                <button type="button" class="btn btn-danger m-b-10 m-l-5 pull-right"  data-toggle="modal" data-target="#delete_modal">Удалить устройство</button>
+                <button type="button" class="btn btn-danger m-b-10 m-l-5 pull-right"  data-toggle="modal" data-target="#delete_modal">Удалить контроллер</button>
             </div>
         </div>
         <div class="card">
-            <div class="card-title"><h4>Порты устройства</h4></div>
+            <div class="card-title"><h4>Порты контроллера</h4></div>
             <div class="card-body">
                 @if(count($device->ports))
                 <div class="table-responsive">
@@ -206,7 +206,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Сохранить название и ip адрес устройства?</h4>
+                    <h4 class="modal-title">Сохранить название и ip адрес контроллера?</h4>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
@@ -220,7 +220,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Удалить устройство?</h4>
+                    <h4 class="modal-title">Удалить контроллер?</h4>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
@@ -269,7 +269,7 @@
                     if (data.result) {
                         window.location = '{{ route('devices.index') }}';
                     } else {
-                        showErrorModal('Ошибка при удалении устройства');
+                        showErrorModal('Ошибка при удалении контроллера');
                     }
                 }
             });
@@ -285,13 +285,10 @@
 
         function validateDevice(description, ip_address) {
             if (description === '') {
-                return 'Не указано название устройства';
-            }
-            if (description === '') {
-                return 'Не указано название устройства';
+                return 'Не указано название контроллера';
             }
             if (ip_address === '') {
-                return 'Не указан ip адрес устройства';
+                return 'Не указан ip адрес контроллера';
             }
             if (ip_address.length > 15) {
                 return 'Длина ip адреса не может быть больше 15';

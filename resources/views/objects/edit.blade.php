@@ -129,7 +129,7 @@
                     <div class="form-group row" id="easy_div">
                         <label class="control-label text-right col-md-3 label-fix"></label>
                         <div class="col-md-9">
-                            <button type="button" class="btn btn-success m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal" id="dev_select_button" onclick="loadSubData('device');">Устройство: <span id="easy_device">отсутствует</span></button>&nbsp;
+                            <button type="button" class="btn btn-success m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal" id="dev_select_button" onclick="loadSubData('device');">Контроллер: <span id="easy_device">отсутствует</span></button>&nbsp;
                             <button type="button" class="btn btn-success m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal" id="port_btn" onclick="loadSubData('port');">Порт: <span id="easy_port">отсутствует</span></button>&nbsp;
                             <button type="button" class="btn btn-success m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal" id="action_btn" onclick="loadSubData('action');">Действие: <span id="easy_action">отсутствует</span></button>
                         </div>
@@ -200,7 +200,7 @@
             }
 
             if (device == 'отсутствует') {
-                alert('Сначала необходимо выбрать устройство');
+                alert('Сначала необходимо выбрать контроллер');
                 mode = 'device';
             }
 
@@ -326,7 +326,7 @@
 
                 if (data.type === 'easy') {
                     if (data.device_id === 'отсутствует') {
-                        return 'Не указано устройство';
+                        return 'Не указан контроллер';
                     }
                     if (data.port === 'отсутствует') {
                         return 'Не указан порт';

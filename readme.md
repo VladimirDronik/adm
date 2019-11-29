@@ -19,6 +19,10 @@ php artisan create:user
 
 Указываем логин, пароль. Эти данные можно изменить в личном кабинете администратора в разделе Профиль
 
+Если ошибка вида Сlass...Seeder не найден, то выполнить команду
+
+composer dumpautoload
+
 ### Путь к папке scripts
 
 В .env APP_SCRIPTS_PATH=/var/www/adm/storage/app/scripts 

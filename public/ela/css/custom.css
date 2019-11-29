@@ -29,3 +29,7 @@
     height: 1rem;
     border-width: 0.2em;
 }
+
+.sidebar-nav ul li ul {
+    padding-left: 33px;
+}

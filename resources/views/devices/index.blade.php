@@ -1,7 +1,7 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs', ['title' => 'Устройства'])
+    @includeIf('components.breadcrumbs', ['title' => 'Устройства: контроллеры'])
 @endsection
 
 @section('content')
@@ -10,7 +10,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('devices.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить устройство</a>
+                        <a href="{{ route('devices.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить контроллер</a>
                         <a href="{{ route('devices.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
@@ -18,7 +18,7 @@
         </div>
         <div class="card">
             <div class="card-title">
-                <h4>Доступные устройства</h4>
+                <h4>Доступные контроллеры</h4>
             </div>
             <div class="card-body">
                 @if(count($devices))
@@ -78,7 +78,7 @@
                 {{ $devices->appends(request()->input())->links() }}
                 <p class="text-right">Найдено: {{ $devices->total() }}</p>
                 @else
-                    <p>Устройства не найдены</p>
+                    <p>Контроллеры не найдены</p>
                 @endif
             </div>
         </div>
@@ -93,7 +93,7 @@
 
             $('.del_btn').click(function() {
                 del_id = $(this).attr('data-id');
-                $('#del_modal_body').text('Удалить устройство «'+$(this).attr('data-name')+'»?');
+                $('#del_modal_body').text('Удалить контроллер «'+$(this).attr('data-name')+'»?');
                 $('#del_modal').modal('show');
             });
 
@@ -107,7 +107,7 @@
                             if (data.result) {
                                 $('#tr'+del_id).hide();
                             } else {
-                                showErrorModal('Ошибка при удалении устройства');
+                                showErrorModal('Ошибка при удалении контроллера');
                             }
                         }
                     });

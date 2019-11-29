@@ -2,7 +2,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-        ['title' => 'Добавление устройства', 'links' => [ route('devices.index') => 'Устройства']])
+        ['title' => 'Добавление контроллера', 'links' => [ route('devices.index') => 'Контроллеры']])
 @endsection
 
 @section('content')
@@ -11,7 +11,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('devices.index') }}" class="btn btn-success m-b-10 m-l-5">Список устройств</a>
+                        <a href="{{ route('devices.index') }}" class="btn btn-success m-b-10 m-l-5">Список контроллеров</a>
                     </div>
                 </div>
             </div>
@@ -24,7 +24,7 @@
                         <div class="form-body">
                             {{ Form::bs_alert() }}
 
-                            {{ Form::bs_radio('type', 'Тип устройства*:', $devtypes, old('type'), ['required' => true]) }}
+                            {{ Form::bs_radio('type', 'Тип контроллера*:', $devtypes, old('type'), ['required' => true]) }}
                             {{ Form::bs_text('description', 'Название*:', null, ['required' => true]) }}
                             {{ Form::bs_text('ip_address', 'IP адрес*:', null, ['required' => true]) }}
 

@@ -1,7 +1,7 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs', ['title' => 'Термостаты'])
+    @includeIf('components.breadcrumbs', ['title' => 'Устройства: термостаты'])
 @endsection
 
 @section('content')
