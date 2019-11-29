@@ -24,7 +24,7 @@ class CreateTermostatsTable extends Migration
                 $table->unsignedInteger('object')->nullable()->comment('Объект, у которого будем менять состояние');
                 $table->unsignedInteger('method_on')->nullable()->comment('Метод объекта при срабатывании термостата на включение');
                 $table->unsignedInteger('method_off')->nullable()->comment('Метод объекта при срабатывании термостата на выключение');
-                $table->string('id_termometr', 12)->comment('id термометра для идентификации его по коду');
+                $table->string('id_termometr', 12)->nullable()->comment('id термометра для идентификации его по коду');
                 $table->tinyInteger('min_threshold')->comment('минимальное значение, которое возможно в помещении');
                 $table->tinyInteger('max_threshold')->comment('максимальное значение, которое возможно в помещении');
                 $table->tinyInteger('min_alarm')->comment('минимальное значение аварии');
