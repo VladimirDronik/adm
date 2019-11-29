@@ -23,8 +23,8 @@ class ViewService {
         $view->position_left = (int)$data['position_left'];
         $view->room = (int)$data['room'];
         $view->name = trim($data['name']);
-        $view->id_object = (int)$data['id_object'];
-        $view->id_method = (int)$data['id_method'];
+        $view->id_object = $data['id_object'] ?? null;
+        $view->id_method = $data['id_method'] ?? null;
         $view->description = trim($data['description']);
         $view->status = 'off';
         $view->active = $data['active'] ?? 0;
