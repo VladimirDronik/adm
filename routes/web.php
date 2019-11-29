@@ -107,7 +107,10 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('store', 'SchedulerPointController@store')->name('store');
         });
 
-        Route::post('graphs/period/data', 'GraphController@getPeriodData')->name('graphs.period.data');
+        Route::post('graphs/termostats/period/data', 'GraphController@getTermostatsPeriodData')->name('graphs.termostats.period.data');
+        Route::post('graphs/humidities/period/data', 'GraphController@getHumiditiesPeriodData')->name('graphs.humidities.period.data');
+        Route::post('graphs/lights/period/data', 'GraphController@getLightsPeriodData')->name('graphs.lights.period.data');
+        Route::post('graphs/counts/period/data', 'GraphController@getCountsPeriodData')->name('graphs.counts.period.data');
 
         Route::group(['prefix' => 'scripts', 'as' => 'scripts.'], function () {
             Route::post('delete', 'ScriptController@delete')->name('delete');

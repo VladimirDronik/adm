@@ -15,9 +15,33 @@ class GraphController extends Controller
 
     public function termostats()
     {
-        $data = $this->service->getGraphData();
-        $periods = $this->service->getPeriods();
+        $data = $this->service->getGraphTermostatsData();
+        $periods = $this->service->getTermostatsPeriods();
 
-        return view('graphs.index', compact('data', 'periods'));
+        return view('graphs.termostats.index', compact('data', 'periods'));
+    }
+
+    public function humidities()
+    {
+        $data = $this->service->getGraphHumiditiesData();
+        $periods = $this->service->getHumiditiesPeriods();
+
+        return view('graphs.humidities.index', compact('data', 'periods'));
+    }
+
+    public function lights()
+    {
+        $data = $this->service->getGraphLightsData();
+        $periods = $this->service->getLightsPeriods();
+
+        return view('graphs.lights.index', compact('data', 'periods'));
+    }
+
+    public function counts()
+    {
+        $data = $this->service->getGraphCountsData();
+        $periods = $this->service->getCountsPeriods();
+
+        return view('graphs.counts.index', compact('data', 'periods'));
     }
 }

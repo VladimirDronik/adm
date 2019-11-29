@@ -9,7 +9,7 @@
 @endsection
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs', ['title' => 'Графики'])
+    @includeIf('components.breadcrumbs', ['title' => 'Графики: освещенность'])
 @endsection
 
 @section('content')
@@ -18,41 +18,35 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('graphs.termostats.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
+                        <a href="{{ route('graphs.lights.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
-                @if(count($data))
-                    @foreach($data['rooms'] as $room)
-                        <h3>Помещение «{{ $room->name }}»</h3>
-                        @if(count($room->termostats))
-                            @foreach($room->termostats as $termostat)
-                                @include('graphs.period',compact('termostat'))
-                                <div class="row">
-                                    <div class="col col-md-12">
-                                        <div id="chart{{$termostat->id}}" class="chartdiv"></div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        @else
-                            <p>Нет термостатов</p>
-                        @endif
+                @if(count($data) && count($data['counts']))
+                    @foreach($data['counts'] as $count)
+                        <div class="row">
+                            <div class="col col-md-8">
+                                <h4>Датчик освещенности«{{ $count }}»</h4>
+                            </div>
+                            <div class="col col-md-4">
+                                <select class="form-control select_period" id="select_period{{$count}}" autocomplete="off" data-id="{{ $count }}">
+                                    <option value="7" selected>за последние 7 дней</option>
+                                    @foreach($periods as $key => $period)
+                                        <option value="{{ $key }}">{{ $period }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-md-12">
+                                <div id="chart{{$count}}" class="chartdiv"></div>
+                            </div>
+                        </div>
                         <hr>
                     @endforeach
-                    @if(count($data['other_termostats']))
-                        <h3>Остальные термостаты</h3>
-                        @foreach ($data['other_termostats'] as $termostat)
-                            @include('graphs.period',compact('termostat'))
-                            <div class="row">
-                                <div class="col col-md-12">
-                                    <div id="chart{{$termostat->id}}" class="chartdiv"></div>
-                                </div>
-                            </div>
-                        @endforeach
-                    @endif
                 @else
                     <p>Нет данных</p>
                 @endif
@@ -68,7 +62,7 @@
     <script src="{{ asset('ela/js/lib/amcharts4/themes/animated.js') }}"></script>
     <script src="{{ asset('ela/js/lib/amcharts4/lang/ru_RU.js') }}"></script>
     <script>
-        let url_graph = '{{ route('ajax.graphs.period.data') }}';
+        let url_graph = '{{ route('ajax.graphs.lights.period.data') }}';
 
         $(document).ready(function(){
 
@@ -88,12 +82,12 @@
 
                 var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
                 valueAxis.tooltip.disabled = true;
-                valueAxis.title.text = "Температура";
+                valueAxis.title.text = "Освещенность";
 
                 var series = chart.series.push(new am4charts.LineSeries());
                 series.dataFields.dateX = "date";
                 series.dataFields.valueY = "temp";
-                series.tooltipText = "T: [bold]{valueY}[/]";
+                series.tooltipText = "Освещенность: [bold]{valueY}[/]";
                 series.fillOpacity = 0.3;
 
                 chart.cursor = new am4charts.XYCursor();
@@ -125,32 +119,26 @@
                 createAmChart(termostat_id, data.dates, data.values);
             }
 
-            function getChartPeriodData(termostat_id, period) {
+            function getChartPeriodData(count_id, period) {
                 $.ajax({
                     url: url_graph,
-                    data: {'_token': _token, 'termostat_id': termostat_id, 'period': period},
+                    data: {'_token': _token, 'count_id': count_id, 'period': period},
                     success: function (resp) {
                         if (resp.result) {
-                            updateChart(termostat_id, resp.data);
+                            updateChart(count_id, resp.data);
                         }
                     }
                 });
             }
 
             $('body').on('change', '.select_period', function() {
-                let termostat_id = $(this).attr('data-id');
+                let count_id = $(this).attr('data-id');
                 let period = $(this).val();
-                getChartPeriodData(termostat_id, period);
+                getChartPeriodData(count_id, period);
             });
 
-            @foreach($data['rooms'] as $room)
-                @foreach($room->termostats as $termostat)
-                    $('#select_period{{$termostat->id}}').change();
-                @endforeach
-            @endforeach
-
-            @foreach($data['other_termostats'] as $termostat)
-                $('#select_period{{$termostat->id}}').change();
+            @foreach($data['counts'] as $count)
+            $('#select_period{{$count}}').change();
             @endforeach
         });
     </script>
