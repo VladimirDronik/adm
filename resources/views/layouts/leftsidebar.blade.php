@@ -38,7 +38,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="{{ route('counts.index') }}">
                                 <i class="fa fa-tachometer"></i>
                                 Счетчики
                             </a>

@@ -54,6 +54,8 @@ class GenerateFakeData extends Command
         $this->info('fake termostats - done!');
         Artisan::call('db:seed', ['--class' => 'FakeScenesTableSeeder']);
         $this->info('fake scenes - done!');
+        Artisan::call('db:seed', ['--class' => 'FakeCountsTableSeeder']);
+        $this->info('fake counts - done!');
         Artisan::call('db:seed', ['--class' => 'FakeGraphCountsTableSeeder']);
         $this->info('fake graph counts - done!');
         Artisan::call('db:seed', ['--class' => 'FakeGraphTermostatsTableSeeder']);
