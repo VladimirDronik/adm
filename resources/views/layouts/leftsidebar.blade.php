@@ -78,8 +78,37 @@
                 <li class="nav-label">Диагностика</li>
                 <li> <a class="has-arrow" href="{{ route('logs.index') }}" aria-expanded="false">
                         <i class="fa fa-list"></i><span class="hide-menu">Логирование</span></a></li>
-                <li> <a class="has-arrow" href="{{ route('graphs.index') }}" aria-expanded="false">
-                        <i class="fa fa-bar-chart"></i><span class="hide-menu">Графики</span></a></li>
+                <li>
+                    <a class="has-arrow" href="#" aria-expanded="false">
+                        <i class="fa fa-bar-chart"></i><span class="hide-menu">Графики</span>
+                    </a>
+                    <ul aria-expanded="false" class="collapse">
+                        <li>
+                            <a href="{{ route('graphs.termostats.index') }}">
+                                <i class="fa fa-bar-chart"></i>
+                                Температура
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('graphs.humidities.index') }}">
+                                <i class="fa fa-bar-chart"></i>
+                                Влажность
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('graphs.lights.index') }}">
+                                <i class="fa fa-bar-chart"></i>
+                                Освещенность
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('graphs.counts.index') }}">
+                                <i class="fa fa-bar-chart"></i>
+                                Счетчики
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
             </ul>
         </nav>

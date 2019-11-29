@@ -29,7 +29,7 @@ class CreateViewItemsTable extends Migration
                 $table->string('off_title', 50)->nullable();
                 $table->smallInteger('position_left')->nullable();
                 $table->smallInteger('position_top')->nullable();
-                $table->unsignedInteger('room')->nullable();
+                $table->integer('room')->nullable();
                 $table->unsignedInteger('scene')->nullable();
                 $table->tinyInteger('sort');
                 $table->boolean('active');

@@ -18,7 +18,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('graphs.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
+                        <a href="{{ route('graphs.termostats.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
             </div>

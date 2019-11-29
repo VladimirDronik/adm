@@ -13,7 +13,7 @@ class GraphController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    public function termostats()
     {
         $data = $this->service->getGraphData();
         $periods = $this->service->getPeriods();

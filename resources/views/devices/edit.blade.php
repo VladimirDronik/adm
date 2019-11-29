@@ -2,7 +2,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование контроллера «'. $device->description.'»',
+       ['title' => 'Редактирование контроллера «'.$device->description.'»',
         'links' => [ route('devices.index') => 'Контроллеры'],
         'last_link' => 'Редактирование контроллера'])
 @endsection

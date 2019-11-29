@@ -15,7 +15,7 @@ class CreateRoomsTable extends Migration
     {
         if (!Schema::hasTable('rooms')) {
             Schema::create('rooms', function (Blueprint $table) {
-                $table->increments('id');
+                $table->integer('id', true);
                 $table->string('name', 30);
                 $table->string('image', 20);
                 $table->string('style', 10);

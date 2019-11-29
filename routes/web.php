@@ -25,7 +25,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('network', 'NetworkController@edit')->name('network.edit');
     Route::put('network', 'NetworkController@update')->name('network.update');
     Route::get('menu', 'MenuController@index')->name('menu.index');
-    Route::get('graphs', 'GraphController@index')->name('graphs.index');
+    Route::get('graphs/termostats', 'GraphController@termostats')->name('graphs.termostats.index');
+    Route::get('graphs/lights', 'GraphController@lights')->name('graphs.lights.index');
+    Route::get('graphs/humidities', 'GraphController@humidities')->name('graphs.humidities.index');
+    Route::get('graphs/counts', 'GraphController@counts')->name('graphs.counts.index');
 
     Route::resource('scripts', 'ScriptController')->except('show','destroy');
 

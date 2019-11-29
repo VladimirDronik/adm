@@ -29,7 +29,7 @@ class CreateTermostatsTable extends Migration
                 $table->tinyInteger('max_threshold')->comment('максимальное значение, которое возможно в помещении');
                 $table->tinyInteger('min_alarm')->comment('минимальное значение аварии');
                 $table->integer('max_alarm')->comment('максимальное значение аварии');
-                $table->unsignedInteger('room')->nullable();
+                $table->integer('room')->nullable();
 
                 $table->foreign('id_object')->references('id')->on('objects')
                     ->onUpdate('cascade')->onDelete('set null');
