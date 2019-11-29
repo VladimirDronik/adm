@@ -61,7 +61,6 @@ class SceneService {
 
     public function prepareScene(Scene $scene, array $data)
     {
-        $scene->name = '';
         $scene->label = trim($data['label']);
         $scene->active = $data['active'] ?? 0;
         $scene->image = basename($data['_image']);;
