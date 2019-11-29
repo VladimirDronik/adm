@@ -33,3 +33,7 @@
 .sidebar-nav ul li ul {
     padding-left: 33px;
 }
+
+.no-border-top th {
+    border-top: none;
+}
