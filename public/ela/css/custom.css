@@ -37,3 +37,7 @@
 .no-border-top th {
     border-top: none;
 }
+
+.space-between {
+    justify-content: space-between;
+}
