@@ -27,10 +27,10 @@
                                     <th>Тип</th>
                                     <th>Название</th>
                                     <th>Объект</th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
+                                    <th>Кол-во импульсов</th>
+                                    <th>Ед.изм.</th>
+                                    <th>Значение за сегодня</th>
+                                    <th>Общее значение</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
@@ -38,8 +38,16 @@
                             <tbody>
                                 @foreach($counts as $count)
                                     <tr id="tr{{$count->id}}">
-                                        <td>{{ $count->type }}</td>
+                                        <td>
+                                            <img src="{{ asset('ela/images/counts/'.$count->image) }}" title="{{ $count->rus_type }}" alt="{{ $count->rus_type }}" width="30" height="30">
+                                        </td>
                                         <td><a href="{{ route('counts.edit', [$count->id]) }}">{{ $count->name }}</a></td>
+                                        <td>@if($count->object)
+                                                <a href="{{ route('objects.edit', [$count->id_object]) }}">{{ optional($count->object)->name }}</a>
+                                            @else
+                                                Не указан
+                                            @endif
+                                        </td>
                                         <td>{{ $count->impulse }}</td>
                                         <td>{{ $count->unit }}</td>
                                         <td>{{ $count->today_value}}</td>
@@ -63,10 +71,10 @@
                                     <th>Тип</th>
                                     <th>Название</th>
                                     <th>Объект</th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
+                                    <th>Кол-во импульсов</th>
+                                    <th>Ед.изм.</th>
+                                    <th>Значение за сегодня</th>
+                                    <th>Общее значение</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>

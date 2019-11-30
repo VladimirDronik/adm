@@ -24,7 +24,7 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'id_termometr' => 'required|string|max:12',
+            'id_termometr' => 'nullable|string|max:12',
             'optimal' => 'required|integer|min:0|max:40',
             'gisteresis' => 'required|integer|min:0|max:10',
             'thermostat' => 'required|integer|min:0|max:1',
@@ -46,7 +46,6 @@ class CreateRequest extends FormRequest
     public function messages()
     {
         return [
-            'id_termometr.required' => 'Не указан код',
             'optimal.required' => 'Не указана оптимальная температура',
             'gisteresis.required' => 'Не указан гистерезис',
             'thermostat.required' => 'Не указан режим',

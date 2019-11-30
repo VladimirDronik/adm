@@ -40,12 +40,24 @@ class Count extends Model
     public static function getTypes(bool $is_full = false)
     {
         $types = [
-            self::TYPE_ELECTRO => self::TYPE_ELECTRO.'png',
-            self::TYPE_WATER => self::TYPE_WATER.'png',
+            self::TYPE_WATER => 'Вода',
+            self::TYPE_ELECTRO => 'Электричество'
         ];
 
         return $is_full ? $types : array_keys($types);
     }
+
+    public function getRusTypeAttribute()
+    {
+        return self::getTypes(true)[$this->type] ?? '';
+    }
+
+    public function getImageAttribute()
+    {
+        return $this->type.'.png';
+    }
+
+    /* relations */
 
     public function object()
     {

@@ -34,7 +34,7 @@ class FakeCountsTableSeeder extends Seeder
                 'total_value' => 6500
             ],
             [
-                'name' => 'Счетчик холодной воды',
+                'name' => 'Счетчик электричества',
                 'type' => Count::TYPE_ELECTRO,
                 'id_object' => $objects[1]->id,
                 'impulse' => 6400,

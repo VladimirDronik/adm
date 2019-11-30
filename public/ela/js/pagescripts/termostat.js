@@ -20,9 +20,6 @@ function isEmptyAutoSelect(name) {
 }
 
 function validateTermostat() {
-    if (isEmptyInput('id_termometr')) {
-        return 'Не указан код термостата';
-    }
     if (isEmptyInput('optimal')) {
         return 'Не указана оптимальная температура';
     }
