@@ -38,6 +38,11 @@ class SettingsTableSeeder extends Seeder
                 'value' => '365',
                 'comment' => 'Сколько дней хранить информацию о температуре в графиках'
             ],
+            [
+                'name' => 'logging',
+                'value' => 'DB',
+                'comment' => 'Где хранить логи: file или DB'
+            ],
         ];
 
         Setting::insert($settings);
