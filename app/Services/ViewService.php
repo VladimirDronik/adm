@@ -29,7 +29,6 @@ class ViewService {
         $view->status = 'off';
         $view->active = $data['active'] ?? 0;
         $view->sort = 0;
-        $view->value = null;
         $view->on_image = basename($data['on_image']);
         $view->off_image = basename($data['off_image']);
     }

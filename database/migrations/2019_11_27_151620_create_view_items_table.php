@@ -24,7 +24,6 @@ class CreateViewItemsTable extends Migration
                 $table->unsignedInteger('id_method')->nullable()->comment('метод объекта из таблицы методов');
                 $table->string('on_image', 20);
                 $table->string('off_image', 20)->nullable();
-                $table->float('value')->nullable();
                 $table->string('on_title', 50)->nullable();
                 $table->string('off_title', 50)->nullable();
                 $table->smallInteger('position_left')->nullable();

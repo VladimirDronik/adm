@@ -29,10 +29,10 @@
                     @foreach($data['counts'] as $count)
                         <div class="row">
                             <div class="col col-md-8">
-                                <h4>Счетчик «{{ $count }}»</h4>
+                                <h4>Счетчик «{{ $count->name }}»</h4>
                             </div>
                             <div class="col col-md-4">
-                                <select class="form-control select_period" id="select_period{{$count}}" autocomplete="off" data-id="{{ $count }}">
+                                <select class="form-control select_period" id="select_period{{$count->id}}" autocomplete="off" data-id="{{ $count->id }}">
                                     <option value="7" selected>за последние 7 дней</option>
                                     @foreach($periods as $key => $period)
                                         <option value="{{ $key }}">{{ $period }}</option>
@@ -42,7 +42,7 @@
                         </div>
                         <div class="row">
                             <div class="col col-md-12">
-                                <div id="chart{{$count}}" class="chartdiv"></div>
+                                <div id="chart{{$count->id}}" class="chartdiv"></div>
                             </div>
                         </div>
                         <hr>
@@ -138,7 +138,7 @@
             });
 
             @foreach($data['counts'] as $count)
-            $('#select_period{{$count}}').change();
+            $('#select_period{{$count->id}}').change();
             @endforeach
         });
     </script>

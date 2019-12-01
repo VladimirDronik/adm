@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\Count;
 
 class FakeGraphCountsTableSeeder extends Seeder
 {
@@ -13,12 +14,13 @@ class FakeGraphCountsTableSeeder extends Seeder
         $counts = [];
 
         $date = Carbon::now()->subDays(self::COUNT);
+        $cs = Count::limit(2)->get();
 
         for ($i = 0; $i < self::COUNT; $i++) {
-            for ($id_count = 1; $id_count <= 3; $id_count++) {
+            foreach ($cs as $count) {
                 $counts[] = [
                     'date' => $date->format('Y-m-d'),
-                    'id_count' => $id_count,
+                    'id_count' => $count->id,
                     'value' => rand(2000, 6000)
                 ];
             }

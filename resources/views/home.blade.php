@@ -21,7 +21,7 @@
                         <span><i class="fa fa-building f-s-40 color-primary"></i></span>
                     </div>
                     <div class="media-body media-text-right">
-                        <h2 class="float-none p-l-10"><a href="{{ route('devices.index') }}" class="float-left">Устройства</a> {{ $counts['devices'] }}</h2>
+                        <h2 class="float-none p-l-10"><a href="{{ route('devices.index') }}" class="float-left">Контроллеры</a> {{ $counts['devices'] }}</h2>
                         <div class="m-b-0 float-none"><a href="{{ route('devices.create') }}" class="btn btn-sm btn-outline-info btn-outline">Добавить</a></div>
                     </div>
                 </div>

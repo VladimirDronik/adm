@@ -35,7 +35,6 @@ class FakeViewItemsTableSeeder extends Seeder
                 'id_method' => is_null($object) ? null : $object->methods[rand(0, count($object->methods)-1)]->id,
                 'on_image' => rand(0, 10) > 6 ? 'lamp.svg' : 'noimage.png',
                 'off_image' => 'noimage.png',
-                'value' => null,
                 'on_title' => 'стол<br>свет вкл',
                 'off_title' => 'стол<br>свет выкл',
                 'position_left' => $left,

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Count;
 use App\Models\GraphCount;
 use App\Models\GraphHumidity;
 use App\Models\GraphLight;
@@ -192,7 +193,7 @@ class GraphService {
         $count_ids = GraphCount::select('id_count')
             ->distinct()->pluck('id_count')->toArray();
 
-        $data['counts'] = $count_ids; // todo
+        $data['counts'] = Count::whereIn('id', $count_ids)->orderBy('name')->get();
 
         return $data;
     }
