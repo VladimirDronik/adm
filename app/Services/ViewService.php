@@ -21,7 +21,7 @@ class ViewService {
         $view->scene = $data['scene'] ?? null;
         $view->position_top = (int)$data['position_top'];
         $view->position_left = (int)$data['position_left'];
-        $view->room = (int)$data['room'];
+        $view->room = ((int)$data['room'] === 0) ? null : (int)$data['room'];
         $view->name = trim($data['name']);
         $view->id_object = $data['id_object'] ?? null;
         $view->id_method = $data['id_method'] ?? null;

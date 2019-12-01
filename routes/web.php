@@ -78,6 +78,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('methods', 'ObjectController@methods')->name('methods');
             Route::post('view/all', 'ObjectController@getViewAll')->name('view.all');
             Route::post('delete', 'ObjectController@delete')->name('delete');
+            Route::post('delete/all', 'ObjectController@deleteAll')->name('delete.all');
         });
 
         Route::post('view_objects/view/all', 'ViewObjectController@getViewAll')->name('view_objects.view.all');

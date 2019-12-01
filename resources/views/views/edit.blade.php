@@ -53,7 +53,8 @@
 
                         {{ Form::bs_title('Расположение') }}
 
-                        {{ Form::bs_select('room', 'Помещение*:', ["" => "Не указано"] + $rooms, null, ['required' => true]) }}
+                        {{ Form::bs_select('room', 'Помещение*:', ["" => "Не указано"] + $rooms,
+                            is_null($view->room) ? 0 : $view->room, ['required' => true]) }}
                         {{ Form::bs_select('scene', 'Сцена:', ["" => "Не указана"] + $scenes) }}
                         {{ Form::bs_number('position_left','Левый отступ (px):') }}
                         {{ Form::bs_number('position_top','Верхний отступ (px):') }}

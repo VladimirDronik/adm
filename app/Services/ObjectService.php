@@ -4,12 +4,24 @@ namespace App\Services;
 
 use App\Models\HomeObject;
 use App\Models\Method;
+use Illuminate\Support\Facades\DB;
 
 class ObjectService {
 
     public function delete(int $id)
     {
         return HomeObject::destroy($id);
+    }
+
+    public function deleteObjects($ids)
+    {
+        if (empty($ids)) {
+            DB::table('objects')->delete();
+        } else {
+            HomeObject::whereIn('id', $ids)->delete();
+        }
+
+        return true;
     }
 
     public function prepareObject(HomeObject $object, array $data)

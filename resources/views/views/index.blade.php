@@ -88,7 +88,7 @@
                             <tbody>
                             @foreach($views as $view)
                                 <tr id="tr{{$view->id}}">
-                                    @if($filter_room!= '')
+                                    @if($filter_room != '')
                                         <td scope="row">{{ $view->sort }}</td>
                                     @endif
                                     <td>{{ $view->rus_type_name }}</td>

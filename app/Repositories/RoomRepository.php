@@ -8,12 +8,12 @@ class RoomRepository
 {
     public function getSpecialRooms()
     {
-        return Room::where('id','>',0)->orderBy('sort')->get();
+        return Room::orderBy('sort')->get();
     }
 
     public function getPaginationSpecialRooms($pagination_count = 30)
     {
-        return Room::where('id','>',0)->orderBy('sort')->paginate($pagination_count);
+        return Room::orderBy('sort')->paginate($pagination_count);
     }
 
     public function getAllToArray()
@@ -27,7 +27,7 @@ class RoomRepository
             return '';
         }
 
-        if ($room_id === '0') {
+        if ($room_id === '0' || is_null($room_id)) {
             return Room::COMMON_NAME;
         }
 

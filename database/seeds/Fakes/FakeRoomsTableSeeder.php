@@ -8,12 +8,6 @@ class FakeRoomsTableSeeder extends Seeder
     {
         return [
             [
-                'name' => 'Весь дом',
-                'image' => 'noimage.png',
-                'style' => 'orange',
-                'sort' => 1
-            ],
-            [
                 'name' => '1-й этаж',
                 'image' => '1et_.svg',
                 'style' => 'blue',
@@ -47,12 +41,6 @@ class FakeRoomsTableSeeder extends Seeder
      */
     public function run()
     {
-        //try {
-            DB::statement("SET SESSION sql_mode='NO_AUTO_VALUE_ON_ZERO';");
-            DB::statement("ALTER TABLE rooms AUTO_INCREMENT = 0;");
-            DB::table('rooms')->insert($this->getRooms());
-       // } catch (\Throwable $e) {
-
-       // }
+        DB::table('rooms')->insert($this->getRooms());
     }
 }

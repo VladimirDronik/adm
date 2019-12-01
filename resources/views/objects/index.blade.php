@@ -25,15 +25,18 @@
         <div class="card">
             <div class="card-title">
                 <h4>Объекты</h4>
+                @if(count($objects))
+                    <button class="btn btn-outline-danger pull-right" id="deleteAllBtn">Удалить все объекты</button>
+                @endif
             </div>
             <div class="card-body">
                 @if(count($objects))
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
-                                <tr>
-{{--                                    <th style="width: 60px;">ID</th>--}}
-                                    <th style="width: 65px;">Тип</th>
+                                <tr class="no-border-top">
+                                    <th style="width: 40px;" class="text-center"><input type="checkbox" style="cursor: pointer;" id="allCheckbox" autocomplete="off"></th>
+                                    <th style="width: 65px;" class="text-center">Тип</th>
                                     <th>Название</th>
                                     <th>Статус</th>
                                     <th style="width: 60px;"></th>
@@ -43,7 +46,10 @@
                             <tbody>
                                 @foreach($objects as $object)
                                     <tr id="tr{{$object->id}}">
-{{--                                        <td scope="row">{{ $object->id }}</td>--}}
+                                        <td  style="width: 40px;" class="text-center">
+                                            <input type="checkbox" style="cursor: pointer;" autocomplete="off"
+                                                   data-id="{{ $object->id }}" class="js-object-checkbox">
+                                        </td>
                                         <td class="text-center">
                                             @if($object->type === 'lamp')
                                                 <img width="30" height="30" title="{{ $object->rus_type }}" src="{{ asset('ela/images/objects/'.$object->type.'.png') }}">
@@ -81,8 +87,8 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-{{--                                    <th>ID</th>--}}
-                                    <th>Тип</th>
+                                    <th></th>
+                                    <th class="text-center">Тип</th>
                                     <th>Название</th>
                                     <th>Статус</th>
                                     <th></th>
@@ -101,6 +107,23 @@
     </div>
     @include('components.info_modal')
     @include('components.del_modal')
+
+    <div id="del_all_modal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="del_all_modal_title">Подтверждение</h5>
+                </div>
+                <div class="modal-body text-left" id="del_all_modal_body" style="font-size: larger;"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="del_all_modal_btn">Удалить</button>
+                    <button type="button" class="btn btn-default" id="del_all_cancel_btn" data-dismiss="modal">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" id="del_all_init_btn" style="display: none;" data-toggle="modal" data-target="#del_all_modal">&nbsp;</button>
 @endsection
 
 @section('scripts')
@@ -129,6 +152,79 @@
                         }
                     });
                 }
+            });
+
+            // checkboxes
+
+            let del_ids = [];
+            const reloadUrl = '{{ route('objects.index') }}'
+            const deleteAllBtn = $('#deleteAllBtn');
+
+            deleteAllBtn.click(function () {
+                const message = del_ids.length
+                    ? 'Удалить выбранные объекты (' + del_ids.length + ')?'
+                    : 'Удалить все объекты?';
+                $('#del_all_modal_body').text(message);
+                $('#del_all_init_btn').click();
+            });
+
+            $('#del_all_modal_btn').click(function(){
+                $('#del_all_cancel_btn').click();
+                $.ajax({
+                    url: '{{ route('ajax.objects.delete.all') }}',
+                    data: {'_token': _token, 'ids': del_ids},
+                    success: function (data) {
+                        if (data.result) {
+                            window.location = reloadUrl;
+                        } else {
+                            showErrorModal('Ошибка при удалении объектов');
+                        }
+                    }
+                });
+            });
+
+            function updateDeleteAllBtn() {
+                if (del_ids.length) {
+                    deleteAllBtn.text('Удалить выбранные объекты (' + del_ids.length + ')');
+                } else {
+                    deleteAllBtn.text('Удалить все объекты');
+                }
+            }
+
+            $('.js-object-checkbox').change(function() {
+                const id = parseInt($(this).attr('data-id'));
+                if (this.checked) {
+                    if (del_ids.indexOf(id) === -1) {
+                        del_ids.push(id);
+                    }
+                } else {
+                    for (let i = del_ids.length - 1; i >= 0; i--) {
+                        if (del_ids[i] === id) {
+                            del_ids.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+
+                updateDeleteAllBtn();
+            });
+
+            function pushAllCheckboxesIds() {
+                $(".js-object-checkbox").each(function () {
+                    del_ids.push(parseInt($(this).attr('data-id')));
+                });
+            }
+
+            $('#allCheckbox').change(function(){
+
+                del_ids = [];
+
+                $('.js-object-checkbox').prop('checked', this.checked);
+                if (this.checked) {
+                    pushAllCheckboxesIds();
+                }
+
+                updateDeleteAllBtn();
             });
         });
     </script>

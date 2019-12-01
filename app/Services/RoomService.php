@@ -34,8 +34,8 @@ class RoomService {
             return false;
         }
 
-        $min = Room::where('id','>',0)->min('sort');
-        $max = Room::where('id','>',0)->max('sort');
+        $min = Room::min('sort');
+        $max = Room::max('sort');
 
         if (($room->sort === $min && $data['direction'] === 'up')
             || ($room->sort === $max && $data['direction'] === 'down')) {

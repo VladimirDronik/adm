@@ -21,10 +21,12 @@ class ViewRepository {
 
     public function getByRoom($room_id, $pagination_count = 30)
     {
-        $query = View::with('eroom','escene','eobject','emethod');
+        $query = View::with('eroom', 'escene', 'eobject', 'emethod');
 
-        if (!is_null($room_id)) {
-            $query->where('room',$room_id);
+        if ($room_id === '0') {
+            $query->whereNull('room');
+        } elseif (!is_null($room_id)) {
+            $query->where('room', $room_id);
         }
 
         return $query->orderBy('id')->paginate($pagination_count);

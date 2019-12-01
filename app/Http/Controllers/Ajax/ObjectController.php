@@ -24,6 +24,11 @@ class ObjectController extends Controller
         return response()->json(['result' => (bool)$this->service->delete((int)$r->id)]);
     }
 
+    public function deleteAll(Request $r)
+    {
+        return response()->json(['result' => (bool)$this->service->deleteObjects($r->ids)]);
+    }
+
     public function methods(Request $r)
     {
         abort_if(!ajaxHas($r, ['object_id']), 400);

@@ -16,7 +16,7 @@ class CreateTemperaturesTable extends Migration
         if (!Schema::hasTable('temperatures')) {
             Schema::create('temperatures', function (Blueprint $table) {
                 $table->increments('id');
-                $table->integer('id_room');
+                $table->unsignedInteger('id_room');
                 $table->float('normal');
                 $table->float('night');
                 $table->float('eco');

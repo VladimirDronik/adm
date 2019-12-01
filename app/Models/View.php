@@ -167,14 +167,14 @@ class View extends Model
     public function getRoomNameAttribute()
     {
         if (is_null($this->room)) {
-            return 'Не указано';
+            return Room::COMMON_NAME;
         }
 
-        if ($this->room !== 0) {
+        if ($this->room) {
             return optional($this->eroom)->name;
         }
 
-        return Room::COMMON_NAME;
+        return 'Не указано';
     }
 
     public function getMethodNameAttribute()
