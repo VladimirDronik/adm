@@ -10,15 +10,11 @@ use App\Models\SchedulerTask;
 use App\Models\Script;
 use App\Models\Termostat;
 use App\Models\View;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Artisan;
 
 class HomeController extends Controller
 {
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $counts = [
@@ -33,5 +29,16 @@ class HomeController extends Controller
         ];
 
         return view('home', compact('counts'));
+    }
+
+    public function generateFake()
+    {
+        if (App::environment('local')) {
+            Artisan::call('migrate:refresh');
+            Artisan::call('db:seed');
+            Artisan::call('fake');
+        }
+
+        return back();
     }
 }
