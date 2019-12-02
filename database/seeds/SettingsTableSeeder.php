@@ -5,6 +5,13 @@ use App\Models\Setting;
 
 class SettingsTableSeeder extends Seeder
 {
+    private $settings;
+
+    public function __construct()
+    {
+        $this->settings = Setting::pluck('name')->toArray();
+    }
+
     /**
      * Run the database seeds.
      *
@@ -50,6 +57,14 @@ class SettingsTableSeeder extends Seeder
             ],
         ];
 
-        Setting::insert($settings);
+        $result_settings = [];
+
+        foreach ($settings as $setting) {
+            if (!in_array($setting['name'], $this->settings, true)) {
+                $result_settings[] = $setting;
+            }
+        }
+
+        Setting::insert($result_settings);
     }
 }
