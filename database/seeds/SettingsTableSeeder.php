@@ -43,6 +43,11 @@ class SettingsTableSeeder extends Seeder
                 'value' => 'DB',
                 'comment' => 'Где хранить логи: file или DB'
             ],
+            [
+                'name' => 'storage_logs',
+                'value' => '30',
+                'comment' => 'Количество дней хранения логов'
+            ],
         ];
 
         Setting::insert($settings);
