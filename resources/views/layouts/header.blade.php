@@ -18,9 +18,7 @@
             <ul class="navbar-nav mr-auto mt-md-0">
                 <!-- This is  -->
                 <li class="nav-item pl-3">
-                    @if(\Illuminate\Support\Facades\App::environment('local'))
-                        <a href="{{ route('generate.fake') }}" class="btn btn-outline-info" title="Сброс бд: заново выполнение миграций и заполнение тестовыми данными">Сгененировать тестовые данные</a>
-                    @endif
+
                 </li>
                 <li class="nav-item m-l-10"></li>
                 <!-- Messages -->
