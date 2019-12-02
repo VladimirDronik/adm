@@ -46,10 +46,10 @@
                         {{ Form::bs_number('max_alarm', 'Макс. аварийная температура*:', old('max_alarm', $termostat->max_alarm), ['min' => 0, 'max' => 40, 'required' => true],
                             '') }}
 
-                        {{ Form::bs_autoselect('id_object', 'Объект термостата*:', $objects, old('id_object', $termostat->id_object),
+                        {{ Form::bs_autoselect_and_btn('id_object', 'Объект термостата*:', $objects, old('id_object', $termostat->id_object),
                             false, false, ['required' => true]) }}
-                        {{ Form::bs_autoselect('object', 'Объект влияния*:', $objects, old('object', $termostat->object),
-                            false, false, ['required' => true], null, 'Объект, у которого меняем состояние') }}
+                        {{ Form::bs_autoselect_and_btn('object', 'Объект влияния*:', $objects, old('object', $termostat->object),
+                            false, false, ['required' => true], '', '', null, 'Объект, у которого меняем состояние') }}
 
                         {{ Form::bs_autoselect('method_on', 'Метод при включении*:', $methods, old('method_on', $termostat->method_on),
                             false, false, ['required' => true], null, 'Метод объекта влияния при срабатывании термостата на включение') }}
@@ -68,13 +68,83 @@
         </div>
     </div>
     @include('components.info_modal')
+    @include('components.create_object_modal', compact('object_types'))
 @endsection
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/termostat.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script>
-        let url_methods = '{{ route('ajax.objects.methods') }}';
-        $(document).ready(initTermostatForm);
+        const url_methods = '{{ route('ajax.objects.methods') }}';
+        const storeObjectUrl = '{{ route('ajax.objects.store') }}';
+        let modal_btn_index = -1;
+
+        $(document).ready(function () {
+            initTermostatForm();
+
+            $('#auto_sel_btn_id_object').click(function() {
+                modal_btn_index = 1;
+                clearCreateObjectModal();
+                $('#create_object_modal_init_btn').click();
+                return false;
+            });
+
+            $('#auto_sel_btn_object').click(function() {
+                modal_btn_index = 2;
+                clearCreateObjectModal();
+                $('#create_object_modal_init_btn').click();
+                return false;
+            });
+
+            $('#create_object_modal_btn').click(function() {
+                let message = validateCreateObject();
+                if (message !== '') {
+                    showCreateObjectError(message);
+                    return false;
+                }
+
+                storeObject();
+            });
+
+            function storeObject() {
+                const name = $("#create_object_modal input[name=object_name]").val().trim();
+                const type = $("#create_object_modal input[name=object_type]:checked").val().trim();
+
+                $.ajax({
+                    url: storeObjectUrl,
+                    data: {'_token': _token, 'name': name, 'type': type},
+                    success: function (data) {
+                        if (data.result) {
+                            hideCreateObjectError();
+                            updateObjectSelects(data.objects, data.id);
+                            $('#create_object_cancel_btn').click();
+                        } else {
+                            showCreateObjectError(data.message);
+                        }
+                    },
+                    error: function () {
+                        showCreateObjectError('Сервер временно недоступен');
+                    }
+                });
+            }
+
+            function updateObjectSelects(objects, selected) {
+                let id = false;
+
+                if (modal_btn_index === 1) {
+                    id = $('#auto_sel_id_object').val();
+                } else if (modal_btn_index === 2) {
+                    id = $('#auto_sel_object').val();
+                }
+
+                if (id) {
+                    selected = id;
+                }
+
+                createObjectSelect('#auto_sel_id_object', objects, modal_btn_index === 1 ? selected : $('#auto_sel_id_object').val());
+                createObjectSelect('#auto_sel_object', objects, modal_btn_index === 2 ? selected : $('#auto_sel_object').val());
+            }
+        });
     </script>
 @endsection

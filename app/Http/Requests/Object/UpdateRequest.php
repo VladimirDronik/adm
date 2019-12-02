@@ -26,7 +26,6 @@ class UpdateRequest extends FormRequest
         return [
             'type' => 'required|string|max:10',
             'name' => 'required|string|max:100|unique:objects,name,'.$this->object,
-            'view' => 'nullable|integer|min:0',
         ];
     }
 

@@ -26,7 +26,6 @@ class CreateRequest extends FormRequest
         return [
             'type' => 'required|string|max:10',
             'name' => 'required|string|max:100|unique:objects,name',
-            'view' => 'nullable|integer|min:0',
         ];
     }
 

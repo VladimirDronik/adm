@@ -38,6 +38,26 @@ class ObjectController extends Controller
         return response()->json(['result' => true, 'methods' => $methods]);
     }
 
+    public function store(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['type', 'name']), 400);
+
+        if (empty($r->name) || empty($r->type)) {
+            return response()->json(['result' => false,
+                'message' => 'Не указаны данные для создания объекта']);
+        }
+
+        if ($this->service->isNameExists($r->name)) {
+            return response()->json(['result' => false,
+                'message' => 'Объект с таким названием уже существует. Укажите другое название']);
+        }
+
+        $id = $this->service->store($r->except('_token'));
+        $objects = $this->service->getObjectsArray();
+
+        return response()->json(['result' => true, 'objects' => $objects, 'id' => $id]);
+    }
+
     /**
      * Загрузка объектов в модальное окно
      */

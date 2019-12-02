@@ -43,7 +43,7 @@
                         </div>
 
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_autoselect('id_object', 'Объект*:', $objects, old('id_object', $count->id_object), false, false, ['required' => true]) }}
+                        {{ Form::bs_autoselect_and_btn('id_object', 'Объект*:', $objects, old('id_object', $count->id_object), false, false, ['required' => true]) }}
                         {{ Form::bs_number('impulse', 'Количество импульсов*:', old('impulse', $count->impulse), ['min' => 0, 'required' => true]) }}
                         {{ Form::bs_simple_text('Единица измерения:', $count->unit) }}
                         {{ Form::bs_number('today_value', 'Значение за сегодня*:', old('today_value', $count->today_value), ['min' => 0, 'required' => true]) }}
@@ -58,12 +58,65 @@
         </div>
     </div>
     @include('components.info_modal')
+    @include('components.create_object_modal', compact('object_types'))
 @endsection
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/count.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script>
-        $(document).ready(initCountForm);
+        const storeObjectUrl = '{{ route('ajax.objects.store') }}';
+
+        $(document).ready(function () {
+            initCountForm();
+
+
+            $('#auto_sel_btn_id_object').click(function() {
+                clearCreateObjectModal();
+                $('#create_object_modal_init_btn').click();
+                return false;
+            });
+
+            $('#create_object_modal_btn').click(function() {
+                let message = validateCreateObject();
+                if (message !== '') {
+                    showCreateObjectError(message);
+                    return false;
+                }
+
+                storeObject();
+            });
+
+            function storeObject() {
+                const name = $("#create_object_modal input[name=object_name]").val().trim();
+                const type = $("#create_object_modal input[name=object_type]:checked").val().trim();
+
+                $.ajax({
+                    url: storeObjectUrl,
+                    data: {'_token': _token, 'name': name, 'type': type},
+                    success: function (data) {
+                        if (data.result) {
+                            hideCreateObjectError();
+                            updateObjectSelects(data.objects, data.id);
+                            $('#create_object_cancel_btn').click();
+                        } else {
+                            showCreateObjectError(data.message);
+                        }
+                    },
+                    error: function () {
+                        showCreateObjectError('Сервер временно недоступен');
+                    }
+                });
+            }
+
+            function updateObjectSelects(objects, selected) {
+                const id = $('#auto_sel_id_object').val();
+                if (id) {
+                    selected = id;
+                }
+                createObjectSelect('#auto_sel_id_object', objects, selected);
+            }
+        });
     </script>
 @endsection

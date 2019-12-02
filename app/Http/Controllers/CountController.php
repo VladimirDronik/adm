@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Count\CreateRequest;
 use App\Http\Requests\Count\UpdateRequest;
 use App\Models\Count;
+use App\Models\HomeObject;
 use App\Repositories\CountRepository;
 use App\Repositories\ObjectRepository;
 use App\Services\CountService;
@@ -34,8 +35,9 @@ class CountController extends Controller
     {
         $types = Count::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
+        $object_types =  HomeObject::getFullTypeIds();
 
-        return view('counts.create', compact('types', 'objects'));
+        return view('counts.create', compact('types', 'objects', 'object_types'));
     }
 
     public function store(CreateRequest $r)
@@ -57,8 +59,9 @@ class CountController extends Controller
     {
         $types = Count::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
+        $object_types =  HomeObject::getFullTypeIds();
 
-        return view('counts.edit', compact('count', 'types', 'objects'));
+        return view('counts.edit', compact('count', 'types', 'objects', 'object_types'));
     }
 
     public function update(UpdateRequest $r, Count $count)

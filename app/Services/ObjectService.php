@@ -4,9 +4,17 @@ namespace App\Services;
 
 use App\Models\HomeObject;
 use App\Models\Method;
+use App\Repositories\ObjectRepository;
 use Illuminate\Support\Facades\DB;
 
 class ObjectService {
+
+    private $rep;
+
+    public function __construct(ObjectRepository $rep)
+    {
+        $this->rep = $rep;
+    }
 
     public function delete(int $id)
     {
@@ -68,5 +76,15 @@ class ObjectService {
         }
 
         return [];
+    }
+
+    public function isNameExists(string $name)
+    {
+        return HomeObject::where('name', $name)->exists();
+    }
+
+    public function getObjectsArray(): array
+    {
+        return HomeObject::orderBy('name')->select('id', 'name')->get()->toArray();
     }
 }

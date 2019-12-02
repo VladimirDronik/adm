@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Termostat\CreateRequest;
 use App\Http\Requests\Termostat\UpdateRequest;
+use App\Models\HomeObject;
 use App\Models\Termostat;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
 use App\Repositories\TermostatRepository;
-use App\Services\DeviceService;
 use App\Services\ObjectService;
 use App\Services\TermostatService;
 
@@ -50,8 +50,9 @@ class TermostatController extends Controller
     public function create()
     {
         list($objects, $rooms, $types) = $this->getLists();
+        $object_types =  HomeObject::getFullTypeIds();
 
-        return view('termostats.create', compact('objects','rooms', 'types'));
+        return view('termostats.create', compact('objects','rooms', 'types', 'object_types'));
     }
 
     public function store(CreateRequest $r)
@@ -72,9 +73,10 @@ class TermostatController extends Controller
         list($objects, $rooms, $types) = $this->getLists();
 
         $methods = $object_service->getMethodsByObjectIdToArray($termostat->object);
+        $object_types =  HomeObject::getFullTypeIds();
 
         return view('termostats.edit', compact('termostat', 'objects', 'rooms',
-            'types', 'methods'));
+            'types', 'methods', 'object_types'));
     }
 
     public function update(UpdateRequest $r, Termostat $termostat)
@@ -87,6 +89,6 @@ class TermostatController extends Controller
             \Log::error('Ошибка при изменении термостата '.$termostat->id.' ' .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении термостата');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении термостата');
     }
 }
