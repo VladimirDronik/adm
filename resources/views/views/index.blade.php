@@ -268,8 +268,8 @@
 
 @section('scripts')
     <script>
-        let createObjectUrl = '{{ route('objects.create') }}';
-        let createMethodInitUrl = '{{ route('objects.index') }}';
+        const createObjectUrl = '{{ route('objects.create') }}';
+        const createMethodInitUrl = '{{ route('objects.index') }}';
 
         function redirectToCreateObject() {
             $('#objectsModalCloseBtn').click();

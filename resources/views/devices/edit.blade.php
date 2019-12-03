@@ -229,7 +229,7 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <button type="button" id="modal_create_method_btn" onclick="redirectToCreateObject()"
+                                    <button type="button" id="modal_create_method_btn" onclick="redirectToCreateMethod()"
                                             class="btn btn-xs btn-outline-info btn-outline m-t-5" data-object-id="">
                                         Создать метод
                                     </button>
@@ -259,9 +259,29 @@
         const objects_url = '{{ route('ajax.objects.view.all') }}';
         const methods_url = '{{ route('ajax.ports.method.all') }}';
         const edit_port_methods_url = '{{ route('ajax.ports.edit.methods') }}'
+        const edit_port_method_delete_url = '{{ route('ajax.ports.edit.method.delete') }}';
+        const object_methods_url = '{{ route('ajax.ports.object.methods') }}';
         const autoreload_period = 3000;
+        const createObjectUrl = '{{ route('objects.create') }}';
+        const createMethodInitUrl = '{{ route('objects.index') }}';
+        let port_id = 0;
+        let object_id = 0;
+        let method_id = 0;
+        let type = '';
 
         // in-port methods
+
+        function redirectToCreateObject() {
+            $('#methodsModal #methods_modal_cancel_btn').click();
+            window.open(createObjectUrl, '_blank');
+        }
+
+        function redirectToCreateMethod() {
+            if (object_id !== 0) {
+                $('#methodsModal #methods_modal_cancel_btn').click();
+                window.open(createMethodInitUrl + '/' + object_id + '/edit', '_blank');
+            }
+        }
 
         $(document).ready(function () {
 
@@ -275,12 +295,16 @@
                 data.port_id = $(this).data('port-id');
                 data.method_id = $(this).data('method-id');
 
+                port_id = data.port_id;
+                type = data.type;
+
                 $.ajax({
                     url: edit_port_methods_url,
                     data: {'_token': _token, 'data': data},
                     success: function (data) {
                         if (data.result) {
-                            console.log(data);
+                            method_id = data.method_id;
+                            object_id = data.object_id;
                             updateMethodsModal(data);
                             $('#methods_modal_init_btn').click();
                         } else {
@@ -290,7 +314,59 @@
                 });
             });
 
+            // кнопка Убрать
+
+            $('#methodsModal #modal_delete_method_btn').click(function () {
+                if (port_id === 0 || type === '') {
+                    return false;
+                }
+
+                $.ajax({
+                    url: edit_port_method_delete_url,
+                    data: {'_token': _token, 'device_id': device_id, 'port_id': port_id, 'type': type},
+                    success: function (data) {
+                        if (data.result) {
+                            clearMethodBtn();
+                            $('#methodsModal #methods_modal_cancel_btn').click();
+                        } else {
+                            showErrorModal('Сервер временно недоступен');
+                        }
+                    }
+                });
+
+                return false;
+            });
+
+            // выбор объекта в таблице
+
+            $('body').on('click', '.js-object-td', function () {
+                if (port_id === 0 || type === '') {
+                    return false;
+                }
+                const objectId = $(this).data('id');
+                $.ajax({
+                    url: object_methods_url,
+                    data: {'_token': _token, 'object_id': objectId},
+                    success: function (data) {
+                        if (data.result) {
+                            object_id = objectId;
+                            method_id = 0;
+                            selectObjectInTable(objectId);
+                            updateMethodsTable(data.methods);
+                        } else {
+                            showErrorModal('Сервер временно недоступен');
+                        }
+                    }
+                });
+
+                return false;
+            });
         });
+
+        function selectObjectInTable(object_id) {
+            $('.js-object-tr').removeClass('alert-info-bg');
+            $('#object_tr_'+object_id).addClass('alert-info-bg');
+        }
 
         function updateMethodsModalHeader(data) {
             if (data.method_id !== 0) {
@@ -317,7 +393,7 @@
 
                 html += `<tr class="js-object-tr ${selected_class}" id="object_tr_${data.objects[i].id}">
                             <td>
-                                <a href="#" class="js-object-td" id="object_${data.objects[i].id}">${data.objects[i].name}</a>
+                                <a href="#" class="js-object-td" data-id="${data.objects[i].id}" id="object_${data.objects[i].id}">${data.objects[i].name}</a>
                             </td>
                             <td class="text-center">
                                 ${data.objects[i].type_img}
@@ -330,20 +406,7 @@
             // таблица методов
 
             if (data.object_id !== 0) {
-                html = '';
-                $('#methodsModal #modal_no_methods_div').hide();
-                $('#methodsModal #modal_methods_table').show();
-                for (let i = 0; i < data.methods.length; i++) {
-                    selected_class = data.methods[i].id === data.method_id ? 'alert-info-bg' : '';
-
-                    html += `<tr class="js-method-tr ${selected_class}" id="method_tr_${data.objects[i].id}">
-                            <td class="text-left">
-                                <a href="#" class="js-method-td" id="method_${data.methods[i].id}">${data.methods[i].name}</a>
-                            </td>
-                        </tr>`;
-                }
-
-                $('#methodsModal #modal_methods_table_body').html(html);
+                setMethodsTableHtml(data.methods);
             } else {
                 $('#methodsModal #modal_methods_table').hide();
                 $('#methodsModal #modal_no_methods_div').show();
@@ -357,9 +420,54 @@
             }
         }
 
+        function setMethodsTableHtml(methods) {
+            html = '';
+            $('#methodsModal #modal_no_methods_div').hide();
+            $('#methodsModal #modal_methods_table').show();
+            for (let i = 0; i < methods.length; i++) {
+                selected_class = methods[i].id === method_id ? 'alert-info-bg' : '';
+
+                html += `<tr class="js-method-tr ${selected_class}" id="method_tr_${methods[i].id}">
+                            <td class="text-left">
+                                <a href="#" class="js-method-td" data-id="${methods[i].id}" id="method_${methods[i].id}">${methods[i].name}</a>
+                            </td>
+                        </tr>`;
+            }
+
+            $('#methodsModal #modal_methods_table_body').html(html);
+        }
+
+        function updateMethodsTable(methods) {
+            // фильтр
+            $('#methodsModal input[name=modal_methods_filter]').val('');
+
+            // таблица методов
+            setMethodsTableHtml(methods);
+
+            // кнопка Создать метод
+            $('#methodsModal #modal_create_method_btn').data('object-id', object_id).show();
+        }
+
         function updateMethodsModal(data) {
             updateMethodsModalHeader(data);
             updateMethodsModalTables(data);
+        }
+
+        function clearMethodBtn() {
+            let btn = $('#' + type + port_id);
+
+            btn.removeClass('btn-warning');
+            btn.addClass('btn-default');
+
+            btn.data('method-id', '');
+            btn.data('object-id', '');
+
+            btn.html('<i class="f-s-14">Метод не указан</i>');
+
+            method_id = 0;
+            object_id = 0;
+            type = '';
+            port_id = 0;
         }
 
         //

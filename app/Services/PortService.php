@@ -190,4 +190,30 @@ class PortService {
 
         return $data;
     }
+
+    public function deletePortMethod(array $data)
+    {
+        $methodColumnName = $this->getMethodColumnName($data['type']);
+
+        Port::where('id_device', $data['device_id'])->where('id', $data['port_id'])
+            ->update([$methodColumnName => null]);
+    }
+
+    private function getMethodColumnName(string $type): string
+    {
+        if ($type === 'ordinary') {
+            return 'method';
+        } elseif ($type === 'double') {
+            return 'dc_method';
+        } elseif ($type === 'long') {
+            return 'lc_method';
+        }
+
+        return '';
+    }
+
+    public function getObjectMethods($object_id)
+    {
+        return $this->object_service->getMethodsByObjectId($object_id);
+    }
 }

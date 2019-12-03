@@ -79,4 +79,26 @@ class PortController extends Controller
             return response()->json(['result' => false]);
         }
     }
+
+    public function deletePortMethod(Request $r)
+    {
+        try {
+            $this->service->deletePortMethod($r->except('_token'));
+            return response()->json(['result' => true]);
+        } catch (\Throwable $e) {
+            \Log::error($e->getMessage());
+            return response()->json(['result' => false]);
+        }
+    }
+
+    public function getObjectMethods(Request $r)
+    {
+        try {
+            $methods = $this->service->getObjectMethods($r->object_id);
+            return response()->json(['result' => true, 'methods' => $methods]);
+        } catch (\Throwable $e) {
+            \Log::error($e->getMessage());
+            return response()->json(['result' => false]);
+        }
+    }
 }
