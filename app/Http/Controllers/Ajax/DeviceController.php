@@ -31,6 +31,7 @@ class DeviceController extends Controller
         return response()->json(compact('result','message'));
     }
 
+    // todo
     public function updatePort(Request $r)
     {
         abort_if(!ajaxHas($r, ['id','port_id','name','value']), 400);

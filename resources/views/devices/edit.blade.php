@@ -93,25 +93,6 @@
         </div>
     </div>
 
-    <div id="methodsModal" class="modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Выбор метода</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-info">
-                        <label id="selected_method"></label><br>
-                    </div>
-                    <div id="methodframe"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="device_modal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -160,6 +141,112 @@
     </div>
 
     <button type="button" style="display: none;" id="reloadDeviceBtn" data-target="#reloadModal" data-toggle="modal" data-backdrop="static" data-keyboard="false">&nbsp;</button>
+
+    {{-- methods modal --}}
+
+    <div id="methodsModal" class="modal">
+        <div class="modal-dialog modal-lg" style="max-width: 900px !important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Выбор объекта и метода</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid p-0">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-info" id="modal_selected_method_div">
+                                    <label id="modal_selected_method">Объект: НазваниеОбъекта Метод: НазваниеМетода</label>
+                                    <button type="button" class="btn btn-danger m-b-2 btn-xs" id="modal_delete_method_btn">Убрать</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" name="modal_objects_filter" class="form-control"
+                                       placeholder="Поиск объекта по названию...">
+                                <div style="height:350px; overflow:auto;">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>Название</th>
+                                                <th>Тип</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="modal_objects_table_body">
+                                                <tr class="js-object-tr" id="object_tr_40">
+                                                    <td>
+                                                        <a href="#" class="js-object-td" id="object_40">1-й этаж.Датчик_температуры</a>
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <img title="Кнопка" src="http://adm/ela/images/objects/button.png" width="60" height="40">
+                                                    </td>
+                                                </tr>
+                                                <tr class="js-object-tr alert-info-bg" id="object_tr_40">
+                                                    <td>
+                                                        <a href="#" class="js-object-td" id="object_40">1-й этаж.Датчик_температуры</a>
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <img title="Кнопка" src="http://adm/ela/images/objects/button.png" width="60" height="40">
+                                                    </td>
+                                                </tr>
+                                                <tr class="js-object-tr" id="object_tr_40">
+                                                    <td>
+                                                        <a href="#" class="js-object-td" id="object_40">1-й этаж.Датчик_температуры</a>
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <img title="Кнопка" src="http://adm/ela/images/objects/button.png" width="60" height="40">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <button type="button" id="modal_create_object_btn" onclick="redirectToCreateObject()"
+                                        class="btn btn-xs btn-outline-info btn-outline m-t-5">
+                                    Создать объект
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <div id="modal_methods_table">
+                                    <input type="text" name="modal_objects_filter" class="form-control"
+                                           placeholder="Поиск метода по названию...">
+                                    <div style="height:350px; overflow:auto;">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-left">Название</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="modal_methods_table_body">
+                                                    <tr class="modal_object_tr" data-name="1-й этаж.Датчик_температуры">
+                                                        <td class="text-left"><a href="#" id="object_40" onclick="selectObject(40,'1-й этаж.Датчик_температуры')" data-dismiss="modal">1-й этаж.Датчик_температуры</a></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <button type="button" id="modal_create_method_btn" onclick="redirectToCreateObject()"
+                                            class="btn btn-xs btn-outline-info btn-outline m-t-5">
+                                        Создать метод
+                                    </button>
+                                </div>
+                                <div class="modal_no_methods_div" style="display:none;">
+                                    Выберите объект
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="methods_modal_cancel_btn" data-dismiss="modal">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="button" id="methods_modal_init_btn" style="display: none;"
+            data-toggle="modal" data-target="#methodsModal">&nbsp;</button>
 @endsection
 
 @section('scripts')
@@ -235,69 +322,6 @@
             });
         }
 
-        function updatePortCheckbox(name, port_id, value) {
-            $.ajax({
-                url: '{{ route('ajax.devices.ports.update') }}',
-                data: {'_token': _token, 'id': device_id, 'port_id': port_id,
-                    'name': name, 'value': value},
-                success: function (data) {
-                    if (!data.result) {
-                        showErrorModal('Ошибка при сохранении изменений');
-                    } else if (name === 'doubleclick' || name === 'longclick') {
-                        showSuccessModal('Изменения успешно сохранены');
-                    }
-                }
-            });
-        }
-
-        $(document).ready(function () {
-            $('.long_checkbox').change(function () {
-                let port_id = $(this).attr('data-id');
-                let value = this.checked ? 1 : 0;
-
-                updatePortCheckbox('longclick', port_id, value);
-            });
-
-            $('.double_checkbox').change(function () {
-                let port_id = $(this).attr('data-id');
-                let value = this.checked ? 1 : 0;
-
-                updatePortCheckbox('doubleclick', port_id, value);
-            });
-
-            //Вызов модального окна с методами
-            $('button[type=button][name=method]').click(function () {
-
-                let method_val = this.value;
-                let view_id = this.id;
-                let method_arr = method_val.split(',');
-
-                let data = {};
-                data['method'] = method_val;
-                data['id'] = view_id.split('_')[1];
-
-                ajax_html(data, methods_url, '#methodframe');
-
-                if (method_arr[0] != 'empty' && method_arr[0] != '') {
-                    $('#selected_method').html('Выбран метод: '+ method_arr[1] +
-                        '   <button type="button" class="btn btn-danger m-b-2 btn-xs" data-dismiss="modal" ' +
-                        'id = "reset_method"  value="'+ view_id + '" ' +
-                        'onclick="resetMethod(\''+view_id+'\',\''+method_arr[2]+'\');">Убрать</button>');
-                } else {
-                    $('#selected_method').html('Метод не выбран');
-                }
-            });
-
-        });
-
-        function resetMethod(id, view) {
-            //Внесение изменений в БД
-            selectMethod(null, null);
-
-            $('#'+id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
-            $('#'+view).val('empty,empty,' + id);
-        }
-
         function checkServer() {
             $.ajax({
                 url: '{{ route('ajax.devices.check.server') }}',
@@ -314,5 +338,20 @@
                 }
             });
         }
+
+        // in-port methods
+
+        $(document).ready(function () {
+
+            //Вызов модального окна с методами
+            $('.js-method-btn').click(function () {
+
+                let method_val = this.value;
+
+                $('#methods_modal_init_btn').click();
+
+            });
+
+        });
     </script>
 @endsection

@@ -5,6 +5,13 @@ use App\Models\Menu;
 
 class MenuTableSeeder extends Seeder
 {
+    private $menu;
+
+    public function __construct()
+    {
+        $this->menu = Menu::pluck('name')->toArray();
+    }
+
     /**
      * Run the database seeds.
      *
@@ -63,6 +70,16 @@ class MenuTableSeeder extends Seeder
             ],
         ];
 
-        Menu::insert($menu);
+        $result_menu = [];
+
+        foreach ($menu as $m) {
+            if (!in_array($m['name'], $this->menu, true)) {
+                $result_menu[] = $m;
+            }
+        }
+
+        if (count($result_menu)) {
+            Menu::insert($result_menu);
+        }
     }
 }

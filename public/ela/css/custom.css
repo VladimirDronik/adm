@@ -41,3 +41,7 @@
 .space-between {
     justify-content: space-between;
 }
+
+.alert-info-bg {
+    background-color: #d1ecf1;
+}

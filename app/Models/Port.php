@@ -71,4 +71,14 @@ class Port extends Model
     {
         return $this->belongsTo(Method::class, 'method', 'id');
     }
+
+    public function dcmethod()
+    {
+        return $this->belongsTo(Method::class, 'dc_method', 'id');
+    }
+
+    public function lcmethod()
+    {
+        return $this->belongsTo(Method::class, 'lc_method', 'id');
+    }
 }

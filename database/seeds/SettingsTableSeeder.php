@@ -65,6 +65,8 @@ class SettingsTableSeeder extends Seeder
             }
         }
 
-        Setting::insert($result_settings);
+        if (count($result_settings)) {
+            Setting::insert($result_settings);
+        }
     }
 }

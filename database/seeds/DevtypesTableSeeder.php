@@ -5,6 +5,14 @@ use App\Models\DevType;
 
 class DevtypesTableSeeder extends Seeder
 {
+    private $devtypes;
+
+    public function __construct()
+    {
+        $this->devtypes = DevType::pluck('name')->toArray();
+    }
+
+
     /**
      * Run the database seeds.
      *
@@ -31,6 +39,16 @@ class DevtypesTableSeeder extends Seeder
             ],
         ];
 
-        DevType::insert($devtypes);
+        $result_devtypes = [];
+
+        foreach ($devtypes as $devtype) {
+            if (!in_array($devtype['name'], $this->devtypes, true)) {
+                $result_devtypes[] = $devtype;
+            }
+        }
+
+        if (count($result_devtypes)) {
+            DevType::insert($result_devtypes);
+        }
     }
 }

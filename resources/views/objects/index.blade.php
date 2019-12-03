@@ -51,17 +51,7 @@
                                                    data-id="{{ $object->id }}" class="js-object-checkbox">
                                         </td>
                                         <td class="text-center">
-                                            @if($object->type === 'lamp')
-                                                <img width="30" height="30" title="{{ $object->rus_type }}" src="{{ asset('ela/images/objects/'.$object->type.'.png') }}">
-                                            @elseif($object->type === 'socket')
-                                                <img width="35" height="35" title="{{ $object->rus_type }}" src="{{ asset('ela/images/objects/'.$object->type.'.png') }}">
-                                            @elseif($object->type === 'termo')
-                                                <img width="60" height="35" title="{{ $object->rus_type }}" src="{{ asset('ela/images/objects/'.$object->type.'.png') }}">
-                                            @elseif($object->type === 'hydro')
-                                                <img width="50" height="35" title="{{ $object->rus_type }}" src="{{ asset('ela/images/objects/'.$object->type.'.png') }}">
-                                            @else
-                                                <img width="60" height="40" title="{{ $object->rus_type }}" src="{{ asset('ela/images/objects/'.$object->type.'.png') }}">
-                                            @endif
+                                            @include('objects.type_img', compact('object'))
                                         </td>
                                         <td><a href="{{ route('objects.edit',[$object->id]) }}">{{ $object->name }}</a></td>
                                         <td>

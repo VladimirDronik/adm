@@ -16,7 +16,7 @@
             @if($port->status === 'in')
             @php $port_count++; @endphp
             <tr>
-                <th scope="row"> {{ $port->num_port }}</th>
+                <th scope="row">{{ $port->num_port }}</th>
                 <td><span class="badge badge-success">{{ $port->status }}</span></td>
                 <td>
                     <a href="#" data-toggle="modal" data-target="#name_modal"
@@ -29,52 +29,43 @@
                     </a>
                 </td>
                 <td class="text-left">
-                    @if($port->eobject)
-                        <button type="button" id="viewmethod_{{ $port->id }}"
-                                name="method" class="btn btn-warning m-b-10 btn-sm" data-toggle="modal"
-                                value="{{ $port->method}},{{optional($port->emethod)->name}},viewmethod_{{ $port->id }}"
-                                data-target="#methodsModal">
-                            @if($port->method)<b>Метод: {{ optional($port->emethod)->name }}</b>@else <b class="text-danger">Метод не выбран</b> @endif
-                        </button>
-                    @else
-                        <button type="button" id="viewmethodempty_{{ $port->id }}"
-                                name="method" class="btn btn-default m-b-10 btn-sm" data-toggle="modal"
-                                value="empty,empty,viewmethodempty_{{ $port->id }}"
-                                data-target="#methodsModal">
-                            Отсутствует</button>
-                    @endif
+                    <span id="ordinary{{ $port->id }}" style="cursor: pointer;"
+                            class="@if($port->method) btn-warning @else btn-default @endif
+                                    m-b-10 btn-sm js-method-btn"
+                            data-type="ordinary"
+                            data-port-id="{{ $port->id }}"
+                            data-method-id="{{ $port->method ? $port->method : '' }}"
+                            data-object-id="@if($port->method) {{ $port->emethod->id_object }} @endif">
+                        @if($port->method) Объект: {{ $port->emethod->eobject->name }}
+                            <br>&nbsp;&nbsp;Метод: {{ $port->emethod->name }}
+                        @else <i class="f-s-14">Метод не указан</i> @endif
+                    </span>
                 </td>
                 <td class="text-left">
-                    @if($port->eobject)
-                        <button type="button" id="viewmethod_{{ $port->id }}"
-                                name="method" class="btn btn-warning m-b-10 btn-sm" data-toggle="modal"
-                                value="{{ $port->method}},{{optional($port->emethod)->name}},viewmethod_{{ $port->id }}"
-                                data-target="#methodsModal">
-                            @if($port->method)<b>Метод: {{ optional($port->emethod)->name }}</b>@else <b class="text-danger">Метод не выбран</b> @endif
-                        </button>
-                    @else
-                        <button type="button" id="viewmethodempty_{{ $port->id }}"
-                                name="method" class="btn btn-default m-b-10 btn-sm" data-toggle="modal"
-                                value="empty,empty,viewmethodempty_{{ $port->id }}"
-                                data-target="#methodsModal">
-                            Отсутствует</button>
-                    @endif
+                    <span id="double{{ $port->id }}" style="cursor: pointer;"
+                            class="@if($port->dcmethod) btn-warning @else btn-default @endif
+                                    m-b-10 btn-sm js-method-btn"
+                            data-type="double"
+                            data-port-id="{{ $port->id }}"
+                            data-method-id="{{ $port->dcmethod ? $port->dcmethod : '' }}"
+                            data-object-id="@if($port->dcmethod) {{ $port->dcmethod->id_object }} @endif">
+                        @if($port->dcmethod) Объект: {{ $port->dcmethod->eobject->name }}
+                            <br>&nbsp;&nbsp;Метод: {{ $port->dcmethod->name }}
+                        @else <i class="f-s-14">Метод не указан</i> @endif
+                    </span>
                 </td>
                 <td class="text-left">
-                    @if($port->eobject)
-                        <button type="button" id="viewmethod_{{ $port->id }}"
-                                name="method" class="btn btn-warning m-b-10 btn-sm" data-toggle="modal"
-                                value="{{ $port->method}},{{optional($port->emethod)->name}},viewmethod_{{ $port->id }}"
-                                data-target="#methodsModal">
-                            @if($port->method)<b>Метод: {{ optional($port->emethod)->name }}</b>@else <b class="text-danger">Метод не выбран</b> @endif
-                        </button>
-                    @else
-                        <button type="button" id="viewmethodempty_{{ $port->id }}"
-                                name="method" class="btn btn-default m-b-10 btn-sm" data-toggle="modal"
-                                value="empty,empty,viewmethodempty_{{ $port->id }}"
-                                data-target="#methodsModal">
-                            Отсутствует</button>
-                    @endif
+                    <span id="long{{ $port->id }}" style="cursor: pointer;"
+                            class="@if($port->lcmethod) btn-warning @else btn-default @endif
+                                    m-b-10 btn-sm js-method-btn"
+                            data-type="long"
+                            data-port-id="{{ $port->id }}"
+                            data-method-id="{{ $port->lcmethod ? $port->lcmethod : '' }}"
+                            data-object-id="@if($port->lcmethod) {{ $port->lcmethod->id_object }} @endif">
+                        @if($port->lcmethod) Объект: {{ $port->lcmethod->eobject->name }}
+                            <br>&nbsp;&nbsp;Метод: {{ $port->lcmethod->name }}
+                        @else <i class="f-s-14">Метод не указан</i> @endif
+                    </span>
                 </td>
             </tr>
             @endif
