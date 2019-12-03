@@ -87,4 +87,9 @@ class ObjectService {
     {
         return HomeObject::orderBy('name')->select('id', 'name')->get()->toArray();
     }
+
+    public function getObjects()
+    {
+        return HomeObject::orderBy('name')->get();
+    }
 }

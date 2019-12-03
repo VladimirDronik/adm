@@ -13,10 +13,12 @@ class PortService {
     const NONE = 'отсутствует';
 
     private $rep;
+    private $object_service;
 
-    public function __construct(PortRepository $rep)
+    public function __construct(PortRepository $rep, ObjectService $object_service)
     {
         $this->rep = $rep;
+        $this->object_service = $object_service;
     }
 
     public function updateComment(array $data)
@@ -114,5 +116,78 @@ class PortService {
                 $this->rep->updateMethod($r->id_port);
                 break;
         }
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws \Exception
+     */
+    public function getPortMethods(array $data): array
+    {
+        $port = Port::where('id_device', $data['device_id'])->where('id', $data['port_id'])->first();
+
+        if (!$port) {
+            throw new \Exception('Порт не найден');
+        }
+
+        $portData = $this->getPortMethod($port, $data['type']);
+
+        $portData['type'] = $data['type'];
+        $portData['port_id'] = $port->id;
+
+        $objects = $this->object_service->getObjects();
+        $portData['objects'] = [];
+        foreach ($objects as $object) {
+            $portData['objects'][] = [
+                'id' => $object->id,
+                'name' => $object->name,
+                'type_img' => (string)view('objects.type_img', compact('object'))
+            ];
+        }
+
+        $portData['methods'] = $this->getMethods($portData['object_id'], $portData['objects']);
+
+        return $portData;
+    }
+
+    private function getMethods(int $object_id, array $objects): array
+    {
+        if ($object_id) {
+            return $this->object_service->getMethodsByObjectId($object_id);
+        }
+
+        if (count($objects)) {
+            return $this->object_service->getMethodsByObjectId($objects[0]['id']);
+        }
+
+        return [];
+    }
+
+    private function getPortMethod($port, string $type): array
+    {
+        $data = [];
+
+        if ($type === 'ordinary' && $port->emethod) {
+            $data['method_id'] = $port->method;
+            $data['object_id'] = $port->emethod->id_object;
+            $data['method_name'] = $port->emethod->name;
+            $data['object_name'] = optional($port->emethod->eobject)->name;
+        } elseif ($type === 'double' && $port->dcmethod) {
+            $data['method_id'] = $port->dc_method;
+            $data['object_id'] = $port->dcmethod->id_object;
+            $data['method_name'] = $port->dcmethod->name;
+            $data['object_name'] = optional($port->dcmethod->eobject)->name;
+        }  elseif ($type === 'long' && $port->lcmethod) {
+            $data['method_id'] = $port->lc_method;
+            $data['object_id'] = $port->lcmethod->id_object;
+            $data['method_name'] = $port->lcmethod->name;
+            $data['object_name'] = optional($port->lcmethod->eobject)->name;
+        } else {
+            $data['method_id'] = 0;
+            $data['object_id'] = 0;
+        }
+
+        return $data;
     }
 }

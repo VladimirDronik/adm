@@ -97,6 +97,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::group(['prefix' => 'ports', 'as' => 'ports.'], function () {
             Route::post('update/comment', 'PortController@updateComment')->name('update.comment');
             Route::post('method/all', 'PortController@getMethodAll')->name('method.all');
+            Route::post('edit/methods', 'PortController@getPortMethods')->name('edit.methods');
         });
 
         Route::post('add_object_to_port', 'ObjectController@addObjectToPort');

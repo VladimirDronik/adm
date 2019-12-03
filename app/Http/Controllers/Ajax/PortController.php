@@ -68,4 +68,15 @@ class PortController extends Controller
     {
         $port_rep->updateMethodByModal($r->all());
     }
+
+    public function getPortMethods(Request $r)
+    {
+        try {
+            $data = $this->service->getPortMethods($r->data);
+            return response()->json(['result' => true] + $data);
+        } catch (\Throwable $e) {
+            \Log::error($e->getMessage());
+            return response()->json(['result' => false]);
+        }
+    }
 }

@@ -43,5 +43,5 @@
 }
 
 .alert-info-bg {
-    background-color: #d1ecf1;
+    background-color: #d1ecf1 !important;
 }

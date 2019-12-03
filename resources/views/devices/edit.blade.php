@@ -155,7 +155,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="alert alert-info" id="modal_selected_method_div">
-                                    <label id="modal_selected_method">Объект: НазваниеОбъекта Метод: НазваниеМетода</label>
+                                    <label id="modal_selected_method">Объект: <b>НазваниеОбъекта</b> Метод: <b>НазваниеМетода</b></label>
                                     <button type="button" class="btn btn-danger m-b-2 btn-xs" id="modal_delete_method_btn">Убрать</button>
                                 </div>
                             </div>
@@ -166,7 +166,7 @@
                                        placeholder="Поиск объекта по названию...">
                                 <div style="height:350px; overflow:auto;">
                                     <div class="table-responsive">
-                                        <table class="table table-striped">
+                                        <table class="table">
                                             <thead>
                                             <tr>
                                                 <th>Название</th>
@@ -186,7 +186,7 @@
                                                     <td>
                                                         <a href="#" class="js-object-td" id="object_40">1-й этаж.Датчик_температуры</a>
                                                     </td>
-                                                    <td class="text-right">
+                                                    <td class="text-center">
                                                         <img title="Кнопка" src="http://adm/ela/images/objects/button.png" width="60" height="40">
                                                     </td>
                                                 </tr>
@@ -209,30 +209,32 @@
                             </div>
                             <div class="col-md-6">
                                 <div id="modal_methods_table">
-                                    <input type="text" name="modal_objects_filter" class="form-control"
+                                    <input type="text" name="modal_methods_filter" class="form-control"
                                            placeholder="Поиск метода по названию...">
                                     <div style="height:350px; overflow:auto;">
                                         <div class="table-responsive">
-                                            <table class="table table-striped">
+                                            <table class="table">
                                                 <thead>
                                                     <tr>
                                                         <th class="text-left">Название</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="modal_methods_table_body">
-                                                    <tr class="modal_object_tr" data-name="1-й этаж.Датчик_температуры">
-                                                        <td class="text-left"><a href="#" id="object_40" onclick="selectObject(40,'1-й этаж.Датчик_температуры')" data-dismiss="modal">1-й этаж.Датчик_температуры</a></td>
+                                                    <tr class="modal_method_tr" data-name="1-й этаж.Датчик_температуры">
+                                                        <td class="text-left">
+                                                            <a href="#" class="js-method-td" id="method_40">1-й этаж.Датчик_температуры</a>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                     <button type="button" id="modal_create_method_btn" onclick="redirectToCreateObject()"
-                                            class="btn btn-xs btn-outline-info btn-outline m-t-5">
+                                            class="btn btn-xs btn-outline-info btn-outline m-t-5" data-object-id="">
                                         Создать метод
                                     </button>
                                 </div>
-                                <div class="modal_no_methods_div" style="display:none;">
+                                <div id="modal_no_methods_div" style="display:none;">
                                     Выберите объект
                                 </div>
                             </div>
@@ -256,7 +258,111 @@
         const port_comment_url = '{{ route('ajax.ports.update.comment') }}';
         const objects_url = '{{ route('ajax.objects.view.all') }}';
         const methods_url = '{{ route('ajax.ports.method.all') }}';
+        const edit_port_methods_url = '{{ route('ajax.ports.edit.methods') }}'
         const autoreload_period = 3000;
+
+        // in-port methods
+
+        $(document).ready(function () {
+
+            //Вызов модального окна с методами
+            $('.js-method-btn').click(function () {
+
+                let data = {};
+
+                data.device_id = device_id;
+                data.type = $(this).data('type');
+                data.port_id = $(this).data('port-id');
+                data.method_id = $(this).data('method-id');
+
+                $.ajax({
+                    url: edit_port_methods_url,
+                    data: {'_token': _token, 'data': data},
+                    success: function (data) {
+                        if (data.result) {
+                            console.log(data);
+                            updateMethodsModal(data);
+                            $('#methods_modal_init_btn').click();
+                        } else {
+                            showErrorModal('Сервер временно недоступен');
+                        }
+                    }
+                });
+            });
+
+        });
+
+        function updateMethodsModalHeader(data) {
+            if (data.method_id !== 0) {
+                $('#methodsModal #modal_selected_method').html('Объект: <b>'+data['object_name']+'</b> Метод: <b>'+data['method_name']+'</b>');
+                $('#methodsModal #modal_selected_method_div').show();
+            } else {
+                $('#methodsModal #modal_selected_method_div').hide();
+            }
+        }
+
+        function updateMethodsModalTables(data) {
+
+            // фильтры
+
+            $('#methodsModal input[name=modal_objects_filter]').val('');
+            $('#methodsModal input[name=modal_methods_filter]').val('');
+
+            // таблица объектов
+
+            let html = '';
+            let selected_class = '';
+            for (let i = 0; i < data.objects.length; i++) {
+                selected_class = data.objects[i].id === data.object_id ? 'alert-info-bg' : '';
+
+                html += `<tr class="js-object-tr ${selected_class}" id="object_tr_${data.objects[i].id}">
+                            <td>
+                                <a href="#" class="js-object-td" id="object_${data.objects[i].id}">${data.objects[i].name}</a>
+                            </td>
+                            <td class="text-center">
+                                ${data.objects[i].type_img}
+                            </td>
+                        </tr>`;
+            }
+
+            $('#methodsModal #modal_objects_table_body').html(html);
+
+            // таблица методов
+
+            if (data.object_id !== 0) {
+                html = '';
+                $('#methodsModal #modal_no_methods_div').hide();
+                $('#methodsModal #modal_methods_table').show();
+                for (let i = 0; i < data.methods.length; i++) {
+                    selected_class = data.methods[i].id === data.method_id ? 'alert-info-bg' : '';
+
+                    html += `<tr class="js-method-tr ${selected_class}" id="method_tr_${data.objects[i].id}">
+                            <td class="text-left">
+                                <a href="#" class="js-method-td" id="method_${data.methods[i].id}">${data.methods[i].name}</a>
+                            </td>
+                        </tr>`;
+                }
+
+                $('#methodsModal #modal_methods_table_body').html(html);
+            } else {
+                $('#methodsModal #modal_methods_table').hide();
+                $('#methodsModal #modal_no_methods_div').show();
+            }
+
+            // кнопка Создать метод
+            if (data.object_id !== 0) {
+                $('#methodsModal #modal_create_method_btn').data('object-id', data.object_id).show();
+            } else {
+                $('#methodsModal #modal_create_method_btn').hide();
+            }
+        }
+
+        function updateMethodsModal(data) {
+            updateMethodsModalHeader(data);
+            updateMethodsModalTables(data);
+        }
+
+        //
 
         function deleteDevice() {
             $.ajax({
@@ -338,20 +444,5 @@
                 }
             });
         }
-
-        // in-port methods
-
-        $(document).ready(function () {
-
-            //Вызов модального окна с методами
-            $('.js-method-btn').click(function () {
-
-                let method_val = this.value;
-
-                $('#methods_modal_init_btn').click();
-
-            });
-
-        });
     </script>
 @endsection
