@@ -216,4 +216,16 @@ class PortService {
     {
         return $this->object_service->getMethodsByObjectId($object_id);
     }
+
+    public function updatePortMethod(array $data): array
+    {
+        $methodColumnName = $this->getMethodColumnName($data['type']);
+
+        Port::where('id_device', $data['device_id'])->where('id', $data['port_id'])
+            ->update([$methodColumnName => $data['method_id']]);
+
+        $port = Port::find($data['port_id']);
+
+        return $this->getPortMethod($port, $data['type']);
+    }
 }

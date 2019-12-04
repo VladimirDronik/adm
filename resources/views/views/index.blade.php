@@ -428,10 +428,10 @@
             });
 
             $('[name=modal_objects_filter]').on('input', function () {
-                let search = $(this).val().trim();
+                const search = $(this).val().trim().toLowerCase();
                 $(".modal_object_tr").show();
                 if (search !== "") {
-                    $(".modal_object_tr:not([data-name*='" + $(this).val() + "'])").hide();
+                    $(".modal_object_tr:not([data-name*='" + search + "'])").hide();
                 }
             });
         });

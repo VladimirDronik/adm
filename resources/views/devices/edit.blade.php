@@ -84,6 +84,10 @@
                     <div class="alert alert-info">
                         <label id="selected_object"></label><br>
                     </div>
+                    <div>
+                        <input type="text" name="modal_objects_filter" class="form-control"
+                               placeholder="Поиск по названию...">
+                    </div>
                     <div id="objectframe"></div>
                 </div>
                 <div class="modal-footer">
@@ -169,12 +173,12 @@
                                         <table class="table">
                                             <thead>
                                             <tr>
-                                                <th>Название</th>
+                                                <th>Название объекта</th>
                                                 <th>Тип</th>
                                             </tr>
                                             </thead>
                                             <tbody id="modal_objects_table_body">
-                                                <tr class="js-object-tr" id="object_tr_40">
+                                                <tr class="js-object-tr" id="object_tr_40" data-name="1-й этаж.датчик_температуры">
                                                     <td>
                                                         <a href="#" class="js-object-td" id="object_40">1-й этаж.Датчик_температуры</a>
                                                     </td>
@@ -216,7 +220,7 @@
                                             <table class="table">
                                                 <thead>
                                                     <tr>
-                                                        <th class="text-left">Название</th>
+                                                        <th class="text-left">Название метода</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="modal_methods_table_body">
@@ -242,7 +246,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" id="methods_modal_cancel_btn" data-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-default" id="methods_modal_cancel_btn"
+                            data-dismiss="modal">Отмена</button>
                 </div>
             </div>
         </div>
@@ -261,6 +266,7 @@
         const edit_port_methods_url = '{{ route('ajax.ports.edit.methods') }}'
         const edit_port_method_delete_url = '{{ route('ajax.ports.edit.method.delete') }}';
         const object_methods_url = '{{ route('ajax.ports.object.methods') }}';
+        const update_method_url = '{{ route('ajax.ports.update.method') }}';
         const autoreload_period = 3000;
         const createObjectUrl = '{{ route('objects.create') }}';
         const createMethodInitUrl = '{{ route('objects.index') }}';
@@ -361,7 +367,75 @@
 
                 return false;
             });
+
+            // выбор метода в таблице
+
+            $('body').on('click', '.js-method-td', function () {
+                if (port_id === 0 || type === '' || object_id === 0) {
+                    return false;
+                }
+                const methodId = $(this).data('id');
+                $.ajax({
+                    url: update_method_url,
+                    data: {'_token': _token, 'method_id': methodId, 'device_id': device_id,
+                        'port_id': port_id, 'type': type},
+                    success: function (data) {
+                        if (data.result) {
+                            object_id = data.object_id;
+                            method_id = data.method_id;
+                            updateMethodBtnText(data);
+                            $('#methodsModal #methods_modal_cancel_btn').click();
+                        } else {
+                            showErrorModal('Сервер временно недоступен');
+                        }
+                    }
+                });
+
+                return false;
+            });
+
+            // фильтры
+
+            $('#methodsModal input[name=modal_objects_filter]').on('input', function () {
+                const search = $(this).val().trim().toLowerCase();
+                $("#methodsModal .js-object-tr").show();
+                if (search !== "") {
+                    $("#methodsModal .js-object-tr:not([data-name*='" + search + "'])").hide();
+                }
+            });
+
+            $('#methodsModal input[name=modal_methods_filter]').on('input', function () {
+                const search = $(this).val().trim().toLowerCase();
+                $("#methodsModal .js-method-tr").show();
+                if (search !== "") {
+                    $("#methodsModal .js-method-tr:not([data-name*='" + search + "'])").hide();
+                }
+            });
+
+            $('#objectsModal input[name=modal_objects_filter]').on('input', function () {
+                const search = $(this).val().trim().toLowerCase();
+                $("#objectsModal .js-object-tr").show();
+                if (search !== "") {
+                    $("#objectsModal .js-object-tr:not([data-name*='" + search + "'])").hide();
+                }
+            });
         });
+
+        function resetOutFilter() {
+            $('#objectsModal input[name=modal_objects_filter]').val('');
+        }
+
+        function updateMethodBtnText(data) {
+            let btn = $('#' + type + port_id);
+
+            btn.removeClass('btn-default');
+            btn.addClass('btn-warning');
+
+            btn.data('method-id', data.method_id);
+            btn.data('object-id', data.object_id);
+
+            btn.html('Объект: ' + data.object_name + '<br>&nbsp;&nbsp;Метод: ' + data.method_name);
+        }
 
         function selectObjectInTable(object_id) {
             $('.js-object-tr').removeClass('alert-info-bg');
@@ -391,7 +465,7 @@
             for (let i = 0; i < data.objects.length; i++) {
                 selected_class = data.objects[i].id === data.object_id ? 'alert-info-bg' : '';
 
-                html += `<tr class="js-object-tr ${selected_class}" id="object_tr_${data.objects[i].id}">
+                html += `<tr class="js-object-tr ${selected_class}" data-name="${data.objects[i].name.toLowerCase()}" id="object_tr_${data.objects[i].id}">
                             <td>
                                 <a href="#" class="js-object-td" data-id="${data.objects[i].id}" id="object_${data.objects[i].id}">${data.objects[i].name}</a>
                             </td>
@@ -427,7 +501,7 @@
             for (let i = 0; i < methods.length; i++) {
                 selected_class = methods[i].id === method_id ? 'alert-info-bg' : '';
 
-                html += `<tr class="js-method-tr ${selected_class}" id="method_tr_${methods[i].id}">
+                html += `<tr class="js-method-tr ${selected_class}" data-name="${methods[i].name.toLowerCase()}" id="method_tr_${methods[i].id}">
                             <td class="text-left">
                                 <a href="#" class="js-method-td" data-id="${methods[i].id}" id="method_${methods[i].id}">${methods[i].name}</a>
                             </td>

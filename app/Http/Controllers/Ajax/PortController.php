@@ -101,4 +101,15 @@ class PortController extends Controller
             return response()->json(['result' => false]);
         }
     }
+
+    public function updatePortMethod(Request $r)
+    {
+        try {
+            $data = $this->service->updatePortMethod($r->except('_token'));
+            return response()->json(['result' => true] + $data);
+        } catch (\Throwable $e) {
+            \Log::error($e->getMessage());
+            return response()->json(['result' => false]);
+        }
+    }
 }

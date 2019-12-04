@@ -100,6 +100,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('object/methods', 'PortController@getObjectMethods')->name('object.methods');
             Route::post('edit/methods', 'PortController@getPortMethods')->name('edit.methods');
             Route::post('edit/method/delete', 'PortController@deletePortMethod')->name('edit.method.delete');
+            Route::post('update/method', 'PortController@updatePortMethod')->name('update.method');
         });
 
         Route::post('add_object_to_port', 'ObjectController@addObjectToPort');

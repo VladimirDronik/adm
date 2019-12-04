@@ -9,11 +9,11 @@
             </thead>
             <tbody>
             @foreach($objects as $object)
-                <tr class="modal_object_tr" data-name="{{$object->name}}">
+                <tr class="modal_object_tr" data-name="{{mb_strtolower($object->name,'UTF-8')}}">
                     <td><a href="#" id="object_{{$object->id}}"
                            onclick="selectObject({{$object->id}},'{{$object->name}}')"
                            data-dismiss="modal">{{$object->name}}</a></td>
-                    <td>{{$object->type}}</td>
+                    <td class="text-center">@include('objects.type_img', compact('object'))</td>
                 </tr>
             @endforeach
             </tbody>
