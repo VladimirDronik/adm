@@ -17,10 +17,10 @@ function validateCount() {
         return 'Не указан объект';
     }
     if (isEmptyInput('impulse')) {
-        return 'Не указано количество импульсов';
+        return 'Не указано значение за один импульс';
     }
     if (!$.isNumeric($('input[name=impulse]').val().trim())) {
-        return 'Недопустимое количество импульсов';
+        return 'Недопустимое значение за один импульс';
     }
     if ($("input[name=unit]").length && isEmptyInput('unit')) {
         return 'Не указана единица измерения';
