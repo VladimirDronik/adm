@@ -19,10 +19,10 @@ class CreateCountsTable extends Migration
                 $table->string('name');
                 $table->string('type', 10);
                 $table->unsignedInteger('id_object')->nullable();
-                $table->integer('impulse');
+                $table->float('impulse');
                 $table->string('unit', 4);
-                $table->integer('today_value');
-                $table->integer('total_value');
+                $table->float('today_value');
+                $table->float('total_value');
 
                 $table->foreign('id_object')->references('id')->on('objects')
                     ->onUpdate('cascade')->onDelete('set null');
