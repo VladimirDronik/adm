@@ -2,7 +2,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление параметра', 'links' => [ route('settings.index') => 'Добавление параметра']])
+       ['title' => 'Добавление параметра', 'links' => [ route('settings.index') => 'Настройки']])
 @endsection
 
 @section('content')
