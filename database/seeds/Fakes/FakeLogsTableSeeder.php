@@ -13,7 +13,7 @@ class FakeLogsTableSeeder extends Seeder
         $date = Carbon::now()->subDays(self::COUNT);
         $faker = Factory::create();
 
-        $types = ['system', 'socket', 'server'];
+        $types = ['system', 'socket', 'server', ''];
 
         $logs = [];
 
@@ -40,10 +40,6 @@ class FakeLogsTableSeeder extends Seeder
      */
     public function run()
     {
-        try {
-            DB::table('logs')->insert($this->getLogs());
-        } catch (\Throwable $e) {
-
-        }
+        DB::table('logs')->insert($this->getLogs());
     }
 }

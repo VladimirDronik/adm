@@ -22,6 +22,17 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Log extends Model
 {
+    const NO_TYPE_NAME = 'без категории';
+
     public $timestamps = false;
     protected $dates = ['date'];
+
+    public function getRusTypeAttribute()
+    {
+        if (empty(trim($this->type))) {
+            return self::NO_TYPE_NAME;
+        }
+
+        return $this->type;
+    }
 }

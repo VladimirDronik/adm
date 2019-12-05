@@ -53,7 +53,7 @@
                                 @foreach($logs as $log)
                                     <tr>
                                         <td>{{ $log->date->format('d.m.y H:i:s') }}</td>
-                                        <td class="text-left">{{ $log->type }}</td>
+                                        <td class="text-left">{{ $log->rus_type }}</td>
                                         <td class="text-left">{{ $log->message }}</td>
                                     </tr>
                                 @endforeach

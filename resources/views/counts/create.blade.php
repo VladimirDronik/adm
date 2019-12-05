@@ -31,7 +31,7 @@
                         {{ Form::bs_radio('type', 'Тип счетчика*:', $types, old('type', -1), ['required' => true]) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
                         {{ Form::bs_autoselect_and_btn('id_object', 'Объект*:', $objects, old('id_object'), false, false, ['required' => true]) }}
-                        {{ Form::bs_text('unit', 'Единица измерения*:', null, ['required' => true, 'maxlength' => 4], 'Например, m3 или kw/h') }}
+                        {{ Form::bs_text('unit', 'Единица измерения*:', null, ['required' => true, 'maxlength' => 4], 'Например, кв/ч или л') }}
                         {{ Form::bs_text('impulse', 'Значение за один импульс*:', old('impulse'), ['required' => true]) }}
                         {{ Form::bs_text('today_value', 'Значение за сегодня*:', old('today_value', 0), ['required' => true]) }}
                         {{ Form::bs_text('total_value', 'Общее значение*:', old('total_value', 0), ['required' => true]) }}

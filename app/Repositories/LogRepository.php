@@ -9,7 +9,14 @@ class LogRepository {
 
     public function getTypes()
     {
-        return Log::select('type')->distinct()->orderBy('type')->get()->pluck('type')->toArray();
+        $types = Log::select('type')->distinct()->orderBy('type')->get()->pluck('type')->toArray();
+        foreach ($types as &$type) {
+            if (empty(trim($type))) {
+                $type = Log::NO_TYPE_NAME;
+            }
+        }
+
+        return $types;
     }
 
     public function getByFilter(array $filter, $pagination_count = 30)
@@ -31,7 +38,11 @@ class LogRepository {
         }
 
         if ($type !== '') {
-            $query->where('type', $type);
+            if ($type === Log::NO_TYPE_NAME) {
+                $query->where('type', '');
+            } else {
+                $query->where('type', $type);
+            }
         }
 
         $query->orderBy('date', 'desc');
