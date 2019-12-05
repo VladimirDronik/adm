@@ -18,12 +18,12 @@ class CountService {
             $count->type = $data['type'];
         }
         $count->id_object = (int)$data['id_object'];
-        $count->impulse = (int)$data['impulse'];
+        $count->impulse = $data['impulse'];
         if (isset($data['unit'])) {
             $count->unit = trim($data['unit']);
         }
-        $count->today_value = (int)($data['today_value'] ?? 0);
-        $count->total_value = (int)($data['total_value'] ?? 0);
+        $count->today_value = $data['today_value'] ?? 0;
+        $count->total_value = $data['total_value'] ?? 0;
     }
 
     public function store(array $data)

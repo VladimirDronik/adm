@@ -74,7 +74,8 @@
                         <i class="fa fa-flash"></i><span class="hide-menu">Скрипты</span></a></li>
                 <li> <a class="has-arrow" href="{{ route('events.index') }}" aria-expanded="false">
                         <i class="fa fa-calendar"></i><span class="hide-menu">События</span></a></li>
-
+                <li> <a class="has-arrow" href="{{ route('settings.index') }}" aria-expanded="false">
+                        <i class="fa fa-cog "></i><span class="hide-menu">Настройки</span></a></li>
                 <li class="nav-label">Диагностика</li>
                 <li> <a class="has-arrow" href="{{ route('logs.index') }}" aria-expanded="false">
                         <i class="fa fa-list"></i><span class="hide-menu">Логирование</span></a></li>

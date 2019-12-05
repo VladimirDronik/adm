@@ -1,13 +1,13 @@
 function isEmptyInput(name) {
-    return $('input[name='+name+']').val().trim() == '';
+    return $('#count_form input[name='+name+']').val().trim() == '';
 }
 
 function isEmptyAutoSelect(name) {
-    return $('#auto_sel_'+name).val().trim() == '';
+    return $('#count_form #auto_sel_'+name).val().trim() == '';
 }
 
 function validateCount() {
-    if ($("input[name=type]").length && !$("input[name=type]:checked").val()) {
+    if ($("#count_form input[name=type]").length && !$("#count_form input[name=type]:checked").val()) {
         return 'Не указан тип';
     }
     if (isEmptyInput('name')) {
@@ -19,6 +19,9 @@ function validateCount() {
     if (isEmptyInput('impulse')) {
         return 'Не указано количество импульсов';
     }
+    if (!$.isNumeric($('input[name=impulse]').val().trim())) {
+        return 'Недопустимое количество импульсов';
+    }
     if ($("input[name=unit]").length && isEmptyInput('unit')) {
         return 'Не указана единица измерения';
     }
@@ -28,13 +31,31 @@ function validateCount() {
     if (isEmptyInput('total_value')) {
         return 'Не указано общее значение';
     }
+    if (!$.isNumeric($('input[name=today_value]').val().trim())) {
+        return 'Недопустимое значение за сегодня';
+    }
+    if (!$.isNumeric($('input[name=total_value]').val().trim())) {
+        return 'Недопустимое общее значение';
+    }
     return '';
+}
+
+function replaceCommaToDot() {
+    let today_value_element = $('#count_form input[name=today_value]');
+    today_value_element.val(today_value_element.val().trim().replace(',', '.'));
+    let total_value_element = $('#count_form input[name=total_value]');
+    total_value_element.val(total_value_element.val().trim().replace(',', '.'));
+    let impulse = $('#count_form input[name=impulse]');
+    impulse.val(impulse.val().trim().replace(',', '.'));
 }
 
 function initCountForm() {
     $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});
 
-    $('button[type=submit]').click(function(){
+    $('#count_form button[type=submit]').click(function(){
+
+        replaceCommaToDot();
+
         let message = validateCount();
         if (message !== '') {
             $('#info_modal_body').html('<span class="text-danger">'+message+'</span>');

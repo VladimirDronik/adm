@@ -19,6 +19,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('devices', 'DeviceController')->except('show','destroy');
     Route::resource('counts', 'CountController')->except('show','destroy');
+    Route::resource('settings', 'SettingController')->except('show','destroy');
     Route::resource('rooms', 'RoomController')->except('show','create','store','destroy');
     Route::resource('scenes', 'SceneController')->except('show','destroy');
     Route::resource('termostats', 'TermostatController')->except('show','destroy');
@@ -60,6 +61,10 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'counts', 'as' => 'counts.'], function () {
             Route::post('delete', 'CountController@delete')->name('delete');
+        });
+
+        Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
+            Route::post('delete', 'SettingController@delete')->name('delete');
         });
 
         Route::group(['prefix' => 'menu', 'as' => 'menu.'], function () {

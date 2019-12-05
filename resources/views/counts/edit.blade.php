@@ -26,7 +26,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::model($count, ['route' => ['counts.update', $count->id], 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::model($count, ['route' => ['counts.update', $count->id], 'id' => 'count_form', 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
@@ -44,10 +44,9 @@
 
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
                         {{ Form::bs_autoselect_and_btn('id_object', 'Объект*:', $objects, old('id_object', $count->id_object), false, false, ['required' => true]) }}
-                        {{ Form::bs_number('impulse', 'Количество импульсов*:', old('impulse', $count->impulse), ['min' => 0, 'required' => true]) }}
-                        {{ Form::bs_simple_text('Единица измерения:', $count->unit) }}
-                        {{ Form::bs_number('today_value', 'Значение за сегодня*:', old('today_value', $count->today_value), ['min' => 0, 'required' => true]) }}
-                        {{ Form::bs_number('total_value', 'Общее значение*:', old('total_value', $count->total_value), ['min' => 0, 'required' => true]) }}
+                        {{ Form::bs_text('impulse', 'Значение за один импульс (в '.$count->unit.')*:', old('impulse', $count->impulse), ['required' => true]) }}
+                        {{ Form::bs_text('today_value', 'Значение за сегодня*:', old('today_value', $count->today_value), ['required' => true]) }}
+                        {{ Form::bs_text('total_value', 'Общее значение*:', old('total_value', $count->total_value), ['required' => true]) }}
                     </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}

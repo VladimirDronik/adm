@@ -27,8 +27,7 @@
                                     <th>Тип</th>
                                     <th>Название</th>
                                     <th>Объект</th>
-                                    <th>Кол-во импульсов</th>
-                                    <th>Ед.изм.</th>
+                                    <th>Значение за один импульс</th>
                                     <th>Значение за сегодня</th>
                                     <th>Общее значение</th>
                                     <th style="width: 60px;"></th>
@@ -48,10 +47,9 @@
                                                 Не указан
                                             @endif
                                         </td>
-                                        <td>{{ $count->impulse }}</td>
-                                        <td>{{ $count->unit }}</td>
-                                        <td>{{ $count->today_value}}</td>
-                                        <td>{{ $count->total_value}}</td>
+                                        <td>{{ $count->impulse }} {{ $count->unit }}</td>
+                                        <td>{{ $count->today_value}} {{ $count->unit }}</td>
+                                        <td>{{ $count->total_value}} {{ $count->unit }}</td>
                                         <td align="center" class="text-center">
                                             <a href="{{ route('counts.edit',[$count->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>
@@ -71,8 +69,7 @@
                                     <th>Тип</th>
                                     <th>Название</th>
                                     <th>Объект</th>
-                                    <th>Кол-во импульсов</th>
-                                    <th>Ед.изм.</th>
+                                    <th>Значение за один импульс</th>
                                     <th>Значение за сегодня</th>
                                     <th>Общее значение</th>
                                     <th style="width: 60px;"></th>

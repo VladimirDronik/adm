@@ -25,12 +25,10 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            //'type' => 'required|string|max:10',
             'id_object' => 'required|integer|min:1',
-            'impulse' => 'required|integer|min:1',
-            //'unit' => 'required|string|max:4',
-            'today_value' => 'required|integer|min:0',
-            'total_value' => 'required|integer|min:0',
+            'impulse' => 'required|numeric|min:1',
+            'today_value' => 'required|numeric|min:0',
+            'total_value' => 'required|numeric|min:0',
         ];
     }
 
@@ -38,12 +36,14 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name.required' => 'Не указано название',
-            //'type.required' => 'Не указан тип счетчика',
             'id_object.required' => 'Не указан объект',
-            'impulse.required' => 'Не указано количество импульсов',
-            //'unit.required' => 'Не указана единица измерения',
-            'today_value' => 'Не указано значение за сегодня',
-            'total_value' => 'Не указано общее значение',
+            'impulse.required' => 'Не указано значение за один импульс',
+            'today_value.required' => 'Не указано значение за сегодня',
+            'total_value.required' => 'Не указано общее значение',
+            'today_value.numeric' => 'Недопустимое значение за сегодня',
+            'total_value.numeric' => 'Недопустимое общее значение',
+            'today_value.min' => 'Недопустимое значение за сегодня',
+            'total_value.min' => 'Недопустимое общее значение',
         ];
     }
 }
