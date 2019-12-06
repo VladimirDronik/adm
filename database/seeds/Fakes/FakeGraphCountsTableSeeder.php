@@ -19,7 +19,7 @@ class FakeGraphCountsTableSeeder extends Seeder
         for ($i = 0; $i < self::COUNT; $i++) {
             foreach ($cs as $count) {
                 $counts[] = [
-                    'date' => $date->format('Y-m-d'),
+                    'datetime' => $date->format('Y-m-d'),
                     'id_count' => $count->id,
                     'value' => rand(2000, 6000).'.'.rand(10,90)
                 ];

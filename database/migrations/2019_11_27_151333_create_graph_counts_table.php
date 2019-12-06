@@ -16,7 +16,7 @@ class CreateGraphCountsTable extends Migration
         if (!Schema::hasTable('graph_counts')) {
             Schema::create('graph_counts', function (Blueprint $table) {
 
-                $table->date('date');
+                $table->date('datetime');
                 $table->unsignedInteger('id_count');
                 $table->float('value');
 
