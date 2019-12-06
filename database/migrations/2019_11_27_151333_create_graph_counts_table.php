@@ -15,10 +15,12 @@ class CreateGraphCountsTable extends Migration
     {
         if (!Schema::hasTable('graph_counts')) {
             Schema::create('graph_counts', function (Blueprint $table) {
-                $table->increments('id');
+
                 $table->date('date');
                 $table->unsignedInteger('id_count');
                 $table->mediumInteger('value');
+
+                $table->primary(['id_count', 'date']);
 
                 $table->foreign('id_count')->references('id')->on('counts')
                     ->onUpdate('cascade')->onDelete('cascade');

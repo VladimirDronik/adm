@@ -5,6 +5,7 @@
                 <th>#</th>
                 <th>Тип</th>
                 <th>Описание</th>
+                <th class="text-left">Связанный объект</th>
                 <th>Один. нажатие</th>
                 <th>Двойн. нажатие</th>
                 <th class="text-left">Длит. нажатие</th>
@@ -27,6 +28,25 @@
                             <span style="color: #455a64;">{{ $port->comment }}</span>
                         @endif
                     </a>
+                </td>
+                <td class="text-left">
+                    @if($port->eobject)
+                        <button type="button" class="btn btn-warning m-b-10 btn-sm"
+                                name="object" id="portobj_{{ $port->id }}"
+                                data-toggle="modal" data-target="#objectsModal"
+                                onclick="resetOutFilter()"
+                                value="{{ $port->object}},{{$port->eobject->name}},portobj_{{ $port->id }}">
+                            <b>{{ optional($port->eobject)->name }}</b>
+                        </button>
+                    @else
+                        <button type="button" class="btn btn-default m-b-10 btn-sm"
+                                name="object" id="portobjempty_{{ $port->id }}"
+                                onclick="resetOutFilter()"
+                                data-toggle="modal" data-target="#objectsModal"
+                                value="empty,empty,portobjempty_{{ $port->id }}">
+                            Отсутствует
+                        </button>
+                    @endif
                 </td>
                 <td class="text-left">
                     <span id="ordinary{{ $port->id }}" style="cursor: pointer;"
@@ -77,6 +97,7 @@
                     <th>#</th>
                     <th>Тип</th>
                     <th>Описание</th>
+                    <th class="text-left">Связанный объект</th>
                     <th>Один. нажатие</th>
                     <th>Двойн. нажатие</th>
                     <th class="text-left">Длит. нажатие</th>

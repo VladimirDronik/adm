@@ -14,7 +14,7 @@
                         <a href="{{ route('settings.index') }}" class="btn btn-success m-b-10 m-l-5">Список параметров</a>
                     </div>
                 </div>
-            </div>
+            </div>g
         </div>
         <div class="card">
             <div class="card-body">
