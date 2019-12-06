@@ -43,7 +43,7 @@ class SettingsTableSeeder extends Seeder
             [
                 'name' => 'graphdate',
                 'value' => '365',
-                'comment' => 'Сколько дней хранить информацию о температуре в графиках'
+                'comment' => 'Сколько дней хранить информацию в графиках'
             ],
             [
                 'name' => 'logging',
