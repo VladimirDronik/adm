@@ -21,7 +21,7 @@ class FakeGraphCountsTableSeeder extends Seeder
                 $counts[] = [
                     'date' => $date->format('Y-m-d'),
                     'id_count' => $count->id,
-                    'value' => rand(2000, 6000)
+                    'value' => rand(2000, 6000).'.'.rand(10,90)
                 ];
             }
             $date->addDay();

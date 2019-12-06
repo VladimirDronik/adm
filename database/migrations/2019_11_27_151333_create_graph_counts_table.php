@@ -18,7 +18,7 @@ class CreateGraphCountsTable extends Migration
 
                 $table->date('date');
                 $table->unsignedInteger('id_count');
-                $table->mediumInteger('value');
+                $table->float('value');
 
                 $table->primary(['id_count', 'date']);
 
