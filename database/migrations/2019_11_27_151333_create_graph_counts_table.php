@@ -20,7 +20,7 @@ class CreateGraphCountsTable extends Migration
                 $table->unsignedInteger('id_count');
                 $table->float('value');
 
-                $table->primary(['id_count', 'date']);
+                $table->primary(['id_count', 'datetime']);
 
                 $table->foreign('id_count')->references('id')->on('counts')
                     ->onUpdate('cascade')->onDelete('cascade');

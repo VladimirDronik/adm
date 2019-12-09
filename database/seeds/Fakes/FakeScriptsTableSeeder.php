@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\Script;
 
 class FakeScriptsTableSeeder extends Seeder
 {
@@ -11,12 +12,32 @@ class FakeScriptsTableSeeder extends Seeder
         $this->now = date('Y-m-d H:i:s');
     }
 
-    public function getScripts()
+    /**
+     * Добавляются в таблицу только если она пустая, то есть не сработал основной сидер ScriptsTableSeeder
+     *
+     * @return array
+     */
+    public function getScripts(): array
     {
         return [
-            ['name' => 'Проверка термостата в гостиной', 'link' => 'termostat_kotel.php', 'count' => 0, 'system' => 0],
-            ['name' => 'Вкл света в прихожей по датчику движения', 'link' => 'penetration.php', 'count' => 5, 'system' => 1],
-            ['name' => 'Включение обычного режима отопления', 'link' => 'normal_mode.php', 'count' => 3, 'system' => 0],
+            [
+                'name' => 'Проверка термостата в гостиной',
+                'link' => 'termostat_kotel.php',
+                'count' => 0,
+                'system' => 0
+            ],
+            [
+                'name' => 'Вкл света в прихожей по датчику движения',
+                'link' => 'penetration.php',
+                'count' => 5,
+                'system' => 1
+            ],
+            [
+                'name' => 'Включение обычного режима отопления',
+                'link' => 'normal_mode.php',
+                'count' => 3,
+                'system' => 0
+            ],
         ];
     }
 
@@ -27,10 +48,8 @@ class FakeScriptsTableSeeder extends Seeder
      */
     public function run()
     {
-        try {
+        if (!Script::count()) {
             DB::table('scripts')->insert($this->getScripts());
-        } catch (\Throwable $e) {
-
         }
     }
 }
