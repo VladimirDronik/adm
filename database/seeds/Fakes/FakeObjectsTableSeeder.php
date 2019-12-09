@@ -48,6 +48,12 @@ class FakeObjectsTableSeeder extends Seeder
             ['name' => 'Фасад.Свет', 'type' => 'lamp', 'status' => 'off'],
             ['name' => '1-й этаж.Датчик_температуры', 'type' => 'temp', 'status' => 'off'],
             ['name' => 'Котел.Реле', 'type' => 'socket', 'status' => 'off'],
+            ['name' => 'Тестовый объект 1', 'type' => 'Motion_sens', 'status' => 'off'],
+            ['name' => 'Тестовый объект 2', 'type' => 'count', 'status' => 'off'],
+            ['name' => 'Тестовый объект 3', 'type' => 'IR_transmitter', 'status' => 'off'],
+            ['name' => 'Тестовый объект 4', 'type' => 'pass_sensor', 'status' => 'off'],
+            ['name' => 'Тестовый объект 5', 'type' => 'dry_contact', 'status' => 'off'],
+            ['name' => 'Тестовый объект 6', 'type' => 'reley', 'status' => 'off'],
         ];
     }
 
@@ -58,11 +64,7 @@ class FakeObjectsTableSeeder extends Seeder
      */
     public function run()
     {
-        try {
-            DB::statement("ALTER TABLE objects AUTO_INCREMENT = 1;");
-            DB::table('objects')->insert($this->getObjects());
-        } catch (\Throwable $e) {
-
-        }
+        DB::statement("ALTER TABLE objects AUTO_INCREMENT = 1;");
+        DB::table('objects')->insert($this->getObjects());
     }
 }

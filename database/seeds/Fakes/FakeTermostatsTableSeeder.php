@@ -15,6 +15,9 @@ class FakeTermostatsTableSeeder extends Seeder
     {
         $this->rooms = Room::all();
         $this->objects = HomeObject::with('methods')->whereHas('methods')->get();
+        if (!count($this->objects)) {
+            throw new Exception('Termostats seeder: Objects which methods not found');
+        }
     }
 
     public function getRandRoomId()
@@ -49,14 +52,14 @@ class FakeTermostatsTableSeeder extends Seeder
                 'current' => rand(20, 30).'.'.rand(10, 99),
                 'optimal' => rand(20, 30),
                 'gisteresis' => 1,
-                'thermostat' => rand(0,1),
+                'thermostat' => rand(0, 1),
                 'object' => $object->id,
                 'method_on' => $this->getRandObjectMethodId($object),
                 'method_off' => $this->getRandObjectMethodId($object),
                 'id_termometr' => strtolower(str_random(12)),
                 'min_threshold' => rand(10, 12),
                 'max_threshold' => rand(19, 25),
-                'min_alarm' => rand(3,7),
+                'min_alarm' => rand(3, 7),
                 'max_alarm' => rand(28, 35),
                 'room' => $this->getRandRoomId()
             ];
