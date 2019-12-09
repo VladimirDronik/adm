@@ -174,7 +174,7 @@ class GraphService {
     public function getCountsPeriods()
     {
         $periods = [];
-        $min_date = GraphCount::min('date');
+        $min_date = GraphCount::min('datetime');
         if (empty($min_date)) {
             return $periods;
         }
@@ -201,21 +201,21 @@ class GraphService {
     public function getGraphCountsPeriodData(int $count_id, string $period)
     {
         $query = GraphCount::where('id_count', $count_id)
-            ->select('value', 'date')->orderBy('date');
+            ->select('value', 'datetime')->orderBy('datetime');
 
         if ($period === '7') {
             $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d');
-            $graphs = $query->where('date','>=',$week_ago_date)->get();
+            $graphs = $query->where('datetime','>=',$week_ago_date)->get();
         } else {
             $period_parts = explode("-", $period);
             $month = (int)$period_parts[0];
             $year = (int)$period_parts[1];
-            $graphs = $query->whereMonth('date', '=', $month)
-                ->whereYear('date', '=', $year)->get();
+            $graphs = $query->whereMonth('datetime', '=', $month)
+                ->whereYear('datetime', '=', $year)->get();
         }
 
         $data['values'] = $graphs->pluck('value')->toArray();
-        $data['dates'] = $graphs->pluck('date')->toArray();
+        $data['dates'] = $graphs->pluck('datetime')->toArray();
 
         return [true, $data];
     }

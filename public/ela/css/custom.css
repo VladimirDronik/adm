@@ -45,3 +45,7 @@
 .alert-info-bg {
     background-color: #d1ecf1 !important;
 }
+
+.breadcrumb-item-no-link {
+    color: #99abb4;
+}

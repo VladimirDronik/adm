@@ -9,7 +9,17 @@
 @endsection
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs', ['title' => 'Графики: освещенность'])
+    <div class="row page-titles">
+        <div class="col-md-5 align-self-center">
+            <h3 class="text-primary">Графики: освещенность</h3></div>
+        <div class="col-md-7 align-self-center">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
+                <li class="breadcrumb-item breadcrumb-item-no-link">Графики</li>
+                <li class="breadcrumb-item active">Освещенность</li>
+            </ol>
+        </div>
+    </div>
 @endsection
 
 @section('content')

@@ -1,7 +1,17 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs', ['title' => 'Устройства: счетчики'])
+    <div class="row page-titles">
+        <div class="col-md-5 align-self-center">
+            <h3 class="text-primary">Устройства: счетчики</h3></div>
+        <div class="col-md-7 align-self-center">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
+                <li class="breadcrumb-item breadcrumb-item-no-link">Устройства</li>
+                <li class="breadcrumb-item active">Счетчики</li>
+            </ol>
+        </div>
+    </div>
 @endsection
 
 @section('content')
