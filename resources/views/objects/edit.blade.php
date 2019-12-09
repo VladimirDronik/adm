@@ -79,6 +79,28 @@
                                     </button>
                                 </div>
                             </div>
+                        <br>
+                        {{ Form::bs_title('Cобытия объекта') }}
+                        @if(count($object->scheduler_tasks))
+                            <div class="form-group row">
+                                <label class="col-md-3"><i>Событие</i></label>
+                                <div class="col-md-3"><i>Метод</i></div>
+                            </div>
+                            <div id="events_div">
+                                @foreach($object->scheduler_tasks as $scheduler_task)
+                                    <div class="form-group row" id="ediv{{$scheduler_task->method}}">
+                                        <label class="col-md-3">
+                                            <a href="{{ route('events.edit', [$scheduler_task->id]) }}">{{ $scheduler_task->name }}</a>
+                                        </label>
+                                        <div class="col-md-3">
+                                            {{ optional($scheduler_task->emethod)->name }}
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <i>Отсутствуют</i>
+                        @endif
                     </div>
                     {!! Form::close() !!}
                 </div>
@@ -369,7 +391,7 @@
                 let data = getModalData();
                 let message = validateMethod(data);
 
-                if (message != '') {
+                if (message !== '') {
                     showModalError(message);
                     return false;
                 }
@@ -436,7 +458,8 @@
                         data: { '_token': _token, 'id': del_id },
                         success: function (data) {
                             if (data.result) {
-                                $('#div'+del_id).remove();
+                                $('#methods_div #div'+del_id).remove();
+                                $('#events_div #ediv'+del_id).remove();
                             } else {
                                 showErrorModal('Ошибка при удалении метода');
                             }

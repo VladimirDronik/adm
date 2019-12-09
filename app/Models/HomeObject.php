@@ -67,4 +67,9 @@ class HomeObject extends Model
     {
         return $this->hasMany(Method::class, 'id_object', 'id')->orderBy('id');
     }
+
+    public function scheduler_tasks()
+    {
+        return $this->hasMany(SchedulerTask::class, 'object', 'id')->orderBy('id');
+    }
 }
