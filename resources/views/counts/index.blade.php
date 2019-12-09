@@ -35,6 +35,7 @@
                             <thead>
                                 <tr>
                                     <th>Тип</th>
+                                    <th style="width: 60px;">ID</th>
                                     <th>Название</th>
                                     <th>Объект</th>
                                     <th>Значение за один импульс</th>
@@ -50,6 +51,7 @@
                                         <td>
                                             <img src="{{ asset('ela/images/counts/'.$count->image) }}" title="{{ $count->rus_type }}" alt="{{ $count->rus_type }}" width="30" height="30">
                                         </td>
+                                        <td scope="row">{{ $count->id }}</td>
                                         <td><a href="{{ route('counts.edit', [$count->id]) }}">{{ $count->name }}</a></td>
                                         <td>@if($count->object)
                                                 <a href="{{ route('objects.edit', [$count->id_object]) }}">{{ optional($count->object)->name }}</a>
@@ -77,6 +79,7 @@
                             <tfoot>
                                 <tr>
                                     <th>Тип</th>
+                                    <th style="width: 60px;">ID</th>
                                     <th>Название</th>
                                     <th>Объект</th>
                                     <th>Значение за один импульс</th>
@@ -109,7 +112,7 @@
 
             $('.del_btn').click(function() {
                 del_id = $(this).attr('data-id');
-                $('#del_modal_body').text('Удалить счетчик «'+$(this).attr('data-name')+'»?');
+                $('#del_modal_body').text('Удалить счетчик № '+$(this).attr('data-id')+' «'+$(this).attr('data-name')+'»?');
                 $('#del_modal').modal('show');
             });
 
