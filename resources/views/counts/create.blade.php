@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление счетчика', 'links' => [ route('counts.index') => 'Устройства: счетчики']])
+       ['title' => 'Добавление счетчика', 'links' => [ route('counts.index') => 'Счетчики']])
 @endsection
 
 @section('content')
@@ -30,7 +30,56 @@
 
                         {{ Form::bs_radio('type', 'Тип счетчика*:', $types, old('type', -1), ['required' => true]) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_autoselect_and_btn('id_object', 'Объект*:', $objects, old('id_object'), false, false, ['required' => true]) }}
+
+                        <div class="form-group row ">
+                            <label class="control-label text-right col-md-3 label-fix" for="id_object">
+                                <strong>Объект*:</strong>
+                            </label>
+                            <div class="col-sm-9">
+                                <div class="form-group row">
+                                    <div class="col-md-12 p-0">
+                                        <div class="btn-group-toggle" data-toggle="buttons">
+                                            <label class="btn btn-success btn-sm active">
+                                                <input type="radio" name="object_type" autocomplete="off" checked value="manual">  Выбор из списка
+                                            </label>
+                                            <label class="btn btn-success btn-sm">
+                                                <input type="radio" name="object_type" autocomplete="off" value="auto"> Создать автоматически
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" id="manual_object_div">
+                                    <div class="col-sm-11 pr-0">
+                                        <select autocomplete="off" id="auto_sel_id_object"
+                                                data-placeholder="не выбрано"
+                                                name="id_object"
+                                                class="chosen-select form-control"
+                                                style="width:350px;">
+                                            <option value="">Не выбрано</option>
+                                            @foreach ($objects as $key => $value)
+                                                <option value="{{ $key }}" @if($key == old('id_object')) selected @endif>
+                                                    {{ $value }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-1 pt-1 text-left">
+                                        <button type="button" id="auto_sel_btn_id_object" class="btn btn-default btn-sm" title=" Создать объект ">
+                                            <i class="fa fa-plus"></i></button>
+                                    </div>
+                                </div>
+                                <div class="row" id="auto_object_div" style="display: none;">
+                                    <div class="col-sm-11 pr-0">
+                                        <p>При создании счетчика будет создан объект с таким же названием.
+                                            <br>У объекта будут созданы методы «Проверка счетчика» и «Обнуление счетчика».
+                                            Для методов будут созданы соответствующие события «Проверка счетчика» (каждый час)
+                                            и «Обнуление счетчика» (каждый день в 23:55).
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         {{ Form::bs_text('unit', 'Единица измерения*:', null, ['required' => true, 'maxlength' => 4], 'Например, кв/ч или л') }}
                         {{ Form::bs_text('impulse', 'Значение за один импульс*:', old('impulse'), ['required' => true]) }}
                         {{ Form::bs_text('today_value', 'Значение за сегодня*:', old('today_value', 0), ['required' => true]) }}
@@ -103,6 +152,17 @@
                 }
                 createObjectSelect('#auto_sel_id_object', objects, selected);
             }
+
+            $('#count_form [name=object_type]').change(function(){
+                if ($(this).val() === 'manual') {
+                    $('#auto_object_div').hide();
+                    $('#manual_object_div').show();
+                } else {
+                    $('#manual_object_div').hide();
+                    $('#auto_object_div').show();
+                }
+                return true;
+            });
         });
     </script>
 @endsection

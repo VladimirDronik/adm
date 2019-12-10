@@ -49,7 +49,8 @@
                                 @foreach($counts as $count)
                                     <tr id="tr{{$count->id}}">
                                         <td>
-                                            <img src="{{ asset('ela/images/counts/'.$count->image) }}" title="{{ $count->rus_type }}" alt="{{ $count->rus_type }}" width="30" height="30">
+                                            <img src="{{ asset('ela/images/counts/'.$count->image) }}"
+                                                 title="{{ $count->rus_type }}" alt="{{ $count->rus_type }}" width="25" height="25">
                                         </td>
                                         <td scope="row">{{ $count->id }}</td>
                                         <td><a href="{{ route('counts.edit', [$count->id]) }}">{{ $count->name }}</a></td>

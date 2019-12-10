@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphCount whereIdCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphCount whereValue($value)
  * @mixin \Eloquent
+ * @property string $datetime
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphCount whereDatetime($value)
  */
 class GraphCount extends Model
 {

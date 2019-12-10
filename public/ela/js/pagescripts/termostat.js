@@ -20,6 +20,9 @@ function isEmptyAutoSelect(name) {
 }
 
 function validateTermostat() {
+    if (isEmptyInput('name')) {
+        return 'Не указано название';
+    }
     if (isEmptyInput('optimal')) {
         return 'Не указана оптимальная температура';
     }

@@ -32,14 +32,14 @@
                         {{ Form::bs_checkbox('is_system', 'Системное:', false, [], '&nbsp;&nbsp;Доступно для редактирования только администратору') }}
                         {{ Form::bs_checkbox('is_hidden', 'Скрытое:', false, [], '&nbsp;&nbsp;Доступно для просмотра только администратору') }}
                         {{ Form::bs_hr() }}
-                        <div class="form-group row ">
+                        <div class="form-group row">
                             <label class="control-label text-right col-md-3 label-fix" for="type"><strong></strong></label>
                             <div class="col-md-9">
                                 <div class="btn-group-toggle" data-toggle="buttons">
                                     <label class="btn btn-success active">
                                         <input type="radio" name="type" autocomplete="off" checked value="method">  Выбор объекта и метода
                                     </label>
-                                    <label class="btn btn-success ">
+                                    <label class="btn btn-success">
                                         <input type="radio" name="type" autocomplete="off" value="script"> Выбор скрипта
                                     </label>
                                 </div>

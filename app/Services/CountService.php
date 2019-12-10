@@ -3,12 +3,58 @@
 namespace App\Services;
 
 use App\Models\Count;
+use App\Models\HomeObject;
+use App\Models\Method;
+use App\Models\SchedulerTask;
+use Illuminate\Support\Facades\DB;
 
 class CountService {
 
-    public function delete(int $id)
+    private $count_object_service;
+
+    public function __construct(CountObjectService $count_object_service)
     {
-        return Count::destroy($id);
+        $this->count_object_service = $count_object_service;
+    }
+
+    /**
+     * Удаление объекта, созданного автоматически для счетчика.
+     * Удаление событий для системных методов этого объекта.
+     * Удаление методов происходит автоматически на уровне базы (по связям объекта).
+     *
+     * @param int $object_id
+     * @throws \Exception
+     */
+    public function deleteAutoObject(int $object_id)
+    {
+        $methods = Method::where('is_system', 1)
+            ->where('id_object', $object_id)->get();
+        SchedulerTask::whereIn('method', $methods->pluck('id')->toArray())->delete();
+        HomeObject::destroy($object_id);
+    }
+
+    /**
+     * Удаление счетчика. Если связанный объект системный, то удаление объекта, методов, событий,
+     * созданных автоматически при создании счетчика
+     *
+     * @param int $id
+     * @return bool
+     * @throws \Throwable
+     */
+    public function delete(int $id): bool
+    {
+        $count = Count::findOrFail($id);
+
+        if ($count->object && $count->object->is_system) {
+            DB::transaction(function () use (&$count) {
+                $this->deleteAutoObject($count->id_object);
+                $count->delete();
+            });
+        } else {
+            $count->delete();
+        }
+
+        return true;
     }
 
     public function prepareCount(Count $count, array $data)
@@ -26,20 +72,77 @@ class CountService {
         $count->total_value = $data['total_value'] ?? 0;
     }
 
-    public function store(array $data)
+    /**
+     * Создание счетчика. Если $data['type'] === 'auto', то еще создается объект с методами и событиями.
+     *
+     * @param array $data
+     * @return int
+     * @throws \Throwable
+     */
+    public function store(array $data): int
     {
         $count = new Count();
         $this->prepareCount($count, $data);
-        $count->save();
+
+        if ($data['object_type'] === 'manual') {
+            $count->save();
+        } else if ($data['object_type'] === 'auto') {
+            DB::transaction(function () use (&$count) {
+                $object = $this->count_object_service->createCountObject($count->name);
+                $this->count_object_service->createCountObjectMethodsWithEvents($object->id);
+                $count->id_object = $object->id;
+                $count->save();
+            });
+        }
 
         return $count->id;
     }
 
-    public function update(Count $count, array $data)
+    private function isUpdateAutoObjectName(Count $count, string $name): bool
     {
-        $this->prepareCount($count, $data);
-        $count->save();
+        return $count->name !== trim($name) && $count->object && $count->object->is_system;
+    }
+
+    /**
+     * Обновление счетчика. Если изменилось название и у счетчика системный объект, то изменяем название объекта.
+     * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
+     *
+     * @param Count $count
+     * @param array $data
+     * @return int
+     * @throws \Throwable
+     */
+    public function update(Count $count, array $data): int
+    {
+        DB::transaction(function () use (&$count, $data) {
+            if ($this->isUpdateAutoObjectName($count, $data['name'])) {
+                $count->object->name = $this->getUniqueObjectName($count->object->id, trim($data['name']));
+                $count->object->save();
+            }
+
+            $this->prepareCount($count, $data);
+            $count->save();
+        });
 
         return $count->id;
+    }
+
+    /**
+     * Проверяет, уникально ли название $name в таблице объектов.
+     * Если нет, то добавляет в конец названия подходящее для уникальности число (2, 3 и т.д.)
+     *
+     * @param int $object_id
+     * @param string $name
+     * @return string
+     */
+    private function getUniqueObjectName(int $object_id, string $name): string
+    {
+        $index = 2;
+        $unique_name = $name;
+        while (HomeObject::where('id', '<>', $object_id)->where('name', $unique_name)->exists()) {
+            $unique_name = $name . ' ' .$index;
+            $index++;
+        }
+        return $unique_name;
     }
 }

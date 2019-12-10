@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Log whereMessage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Log whereType($value)
  * @mixin \Eloquent
+ * @property-read mixed $rus_type
  */
 class Log extends Model
 {

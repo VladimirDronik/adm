@@ -24,9 +24,9 @@ class ObjectService {
     public function deleteObjects($ids)
     {
         if (empty($ids)) {
-            DB::table('objects')->delete();
+            DB::table('objects')->where('is_system', 0)->delete();
         } else {
-            HomeObject::whereIn('id', $ids)->delete();
+            HomeObject::whereIn('id', $ids)->where('is_system', 0)->delete();
         }
 
         return true;
@@ -56,7 +56,7 @@ class ObjectService {
         return $object->id;
     }
 
-    public function getMethodsByObjectId(int $object_id)
+    public function getMethodsByObjectId(int $object_id): array
     {
         if ($object_id) {
             return Method::where('id_object', $object_id)
@@ -67,7 +67,7 @@ class ObjectService {
         return [];
     }
 
-    public function getMethodsByObjectIdToArray($object_id)
+    public function getMethodsByObjectIdToArray($object_id): array
     {
         if ($object_id) {
             return Method::where('id_object', $object_id)
@@ -78,7 +78,7 @@ class ObjectService {
         return [];
     }
 
-    public function isNameExists(string $name)
+    public function isNameExists(string $name): bool
     {
         return HomeObject::where('name', $name)->exists();
     }

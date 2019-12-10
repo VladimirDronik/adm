@@ -13,9 +13,14 @@ function validateCount() {
     if (isEmptyInput('name')) {
         return 'Не указано название';
     }
-    if (isEmptyAutoSelect('id_object')) {
+
+    let object_type = $('#count_form input[name=object_type]');
+
+    if (object_type.length && $('#count_form input[name=object_type]:checked').val() === 'manual'
+            && isEmptyAutoSelect('id_object')) {
         return 'Не указан объект';
     }
+
     if (isEmptyInput('impulse')) {
         return 'Не указано значение за один импульс';
     }

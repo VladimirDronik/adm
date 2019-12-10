@@ -42,6 +42,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $lc_method id метода при длительном нажатии
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereDcMethod($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereLcMethod($value)
+ * @property-read \App\Models\Method|null $dcmethod
+ * @property-read \App\Models\Method|null $lcmethod
  */
 class Port extends Model
 {

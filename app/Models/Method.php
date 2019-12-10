@@ -29,6 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read mixed $port
  * @property-read mixed $type
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Method whereEasy($value)
+ * @property int $is_system
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Method whereIsSystem($value)
  */
 class Method extends Model
 {

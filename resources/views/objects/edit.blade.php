@@ -27,12 +27,46 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
                         {{ Form::bs_title('Основные данные') }}
-                        {{ Form::bs_radio('type', 'Тип элемента*:', $types, old('type', $object->type), ['required' => true]) }}
-                        {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-                        {{ Form::bs_submit_btn() }}
+                        @if(!$object->is_system)
+                            {{ Form::bs_radio('type', 'Тип элемента*:', $types, old('type', $object->type),
+                                ['required' => true]) }}
+                            {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
+                            {{ Form::bs_submit_btn() }}
+                        @else
+                            {{ Form::bs_radio('type', 'Тип элемента*:', $types, old('type', $object->type),
+                                ['required' => true, 'disabled' => true]) }}
+                            {{ Form::bs_text('name', 'Название*:', null, ['required' => true, 'disabled' => true]) }}
+                            {{ Form::bs_simple_text('Тип объекта:', 'Системный') }}
+                            <br>
+                        @endif
 
-                        {{ Form::bs_title('Методы объекта') }}
+                        @if($object->is_system)
+                            {{ Form::bs_title('Системные методы объекта') }}
+
+                            <div class="form-group row">
+                                <label class="col-md-3"><i>Название метода</i></label>
+                                <div class="col-md-2"><i>Комментарий</i></div>
+                            </div>
+                            <div id="system_methods_div">
+                                @foreach($object->methods as $method)
+                                    @if($method->is_system)
+                                        <div class="form-group row" id="div{{$method->id}}">
+                                            <label class="col-md-3" id="name{{$method->id}}">
+                                                {{$method->name}}
+                                            </label>
+                                            <div class="col-md-2" id="comment{{$method->id}}">
+                                                {{ $method->comment }}
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+
+                            {{ Form::bs_title('Несистемные методы объекта') }}
+                        @else
+                            {{ Form::bs_title('Методы объекта') }}
+                        @endif
                             <div class="form-group row">
                                 <label class="col-md-3"><i>Название метода</i></label>
                                 <div class="col-md-3"><i>Простое действие</i></div>
@@ -42,34 +76,38 @@
                             </div>
                             <div id="methods_div">
                                 @foreach($object->methods as $method)
-                                <div class="form-group row" id="div{{$method->id}}">
-                                    <label class="col-md-3" id="name{{$method->id}}">
-                                        {{$method->name}}
-                                    </label>
-                                    <div class="col-md-3" id="easy{{$method->id}}">
-                                        {{ $method->easy }}
-                                    </div>
-                                    <div class="col-md-2" id="script{{$method->id}}">
-                                        {{ optional($method->escript)->name }}
-                                    </div>
-                                    <div class="col-md-2" id="comment{{$method->id}}">
-                                        {{ $method->comment }}
-                                    </div>
-                                    <div class="col-md-2 text-right">
-                                        <button type="button" data-id="{{ $method->id }}"
-                                                data-type="{{ $method->type }}"
-                                                data-script-id="{{ $method->script }}"
-                                                data-device="{{ $method->device_id }}"
-                                                data-port="{{ $method->port }}"
-                                                data-action="{{ $method->action }}"
-                                                class="btn btn-info btn-sm btn-rounded edit_btn">
-                                            <i class="fa fa-cog fa-lg"></i>
-                                        </button>
-                                        <button type="button" data-id="{{ $method->id }}" data-name="{{ $method->name }}" class="btn btn-danger btn-rounded btn-sm del_btn">
-                                            <i class="fa fa-trash fa-lg"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                    @if(!$method->is_system || !$object->is_system)
+                                        <div class="form-group row" id="div{{$method->id}}">
+                                            <label class="col-md-3" id="name{{$method->id}}">
+                                                {{$method->name}}
+                                            </label>
+                                            <div class="col-md-3" id="easy{{$method->id}}">
+                                                {{ $method->easy }}
+                                            </div>
+                                            <div class="col-md-2" id="script{{$method->id}}">
+                                                {{ optional($method->escript)->name }}
+                                            </div>
+                                            <div class="col-md-2" id="comment{{$method->id}}">
+                                                {{ $method->comment }}
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                @if(!$method->is_system)
+                                                    <button type="button" data-id="{{ $method->id }}"
+                                                            data-type="{{ $method->type }}"
+                                                            data-script-id="{{ $method->script }}"
+                                                            data-device="{{ $method->device_id }}"
+                                                            data-port="{{ $method->port }}"
+                                                            data-action="{{ $method->action }}"
+                                                            class="btn btn-info btn-sm btn-rounded edit_btn">
+                                                        <i class="fa fa-cog fa-lg"></i>
+                                                    </button>
+                                                    <button type="button" data-id="{{ $method->id }}" data-name="{{ $method->name }}" class="btn btn-danger btn-rounded btn-sm del_btn">
+                                                        <i class="fa fa-trash fa-lg"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endif
                                 @endforeach
                             </div>
                             <div class="form-group row">

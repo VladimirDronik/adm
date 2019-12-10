@@ -28,6 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Count whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Count whereUnit($value)
  * @mixin \Eloquent
+ * @property-read mixed $image
+ * @property-read mixed $rus_type
  */
 class Count extends Model
 {

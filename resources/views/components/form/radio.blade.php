@@ -6,6 +6,7 @@
                 <label class="btn btn-sm btn-success mt-2 @if($key == $checked_key) active @endif">
                     <input type="radio" name="{{ $name }}" autocomplete="off"
                            @if($key == $checked_key) checked @endif
+                           @if(isset($attributes['disabled'])) disabled @endif
                            value="{{ $key }}"> {{ $value }}
                 </label>
             @endforeach

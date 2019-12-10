@@ -4,6 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\HomeObject
+ *
+ * @property int $id
+ * @property string $name название объекта
+ * @property string $type
+ * @property string $status
+ * @property int $is_system
+ * @property-read mixed $rus_type
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Method[] $methods
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SchedulerTask[] $scheduler_tasks
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject whereIsSystem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject whereType($value)
+ * @mixin \Eloquent
+ */
 class HomeObject extends Model
 {
     protected $table = 'objects';

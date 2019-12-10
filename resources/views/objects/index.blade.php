@@ -47,8 +47,10 @@
                                 @foreach($objects as $object)
                                     <tr id="tr{{$object->id}}">
                                         <td  style="width: 40px;" class="text-center">
-                                            <input type="checkbox" style="cursor: pointer;" autocomplete="off"
-                                                   data-id="{{ $object->id }}" class="js-object-checkbox">
+                                            @if(!$object->is_system)
+                                                <input type="checkbox" style="cursor: pointer;" autocomplete="off"
+                                                       data-id="{{ $object->id }}" class="js-object-checkbox">
+                                            @endif
                                         </td>
                                         <td class="text-center">
                                             @include('objects.type_img', compact('object'))
@@ -67,10 +69,12 @@
                                             </a>
                                         </td>
                                         <td align="center" class="text-center">
-                                            <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                    data-id="{{ $object->id }}" data-name="{{ $object->name }}">
-                                                <i class="fa fa-trash fa-lg"></i>
-                                            </button>
+                                            @if(!$object->is_system)
+                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                                        data-id="{{ $object->id }}" data-name="{{ $object->name }}">
+                                                    <i class="fa fa-trash fa-lg"></i>
+                                                </button>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

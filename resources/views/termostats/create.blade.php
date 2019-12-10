@@ -28,6 +28,7 @@
                         <div class="form-body">
                             {{ Form::bs_alert() }}
 
+                            {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
                             {{ Form::bs_text('id_termometr', 'Код:', null, [], 'Например, ff750c311703') }}
                             {{ Form::bs_number('optimal', 'Оптимальная температура*:', null, ['min' => 0, 'max' => 40, 'required' => true],
                                 'Температура, которая должна быть в помещении') }}

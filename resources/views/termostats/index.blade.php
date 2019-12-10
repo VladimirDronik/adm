@@ -35,6 +35,7 @@
                             <thead>
                                 <tr>
                                     <th style="width: 60px;">ID</th>
+                                    <th>Название</th>
                                     <th>Код</th>
                                     <th>Текущая темп.</th>
                                     <th>Оптим. темп.</th>
@@ -49,6 +50,7 @@
                                 @foreach($termostats as $termostat)
                                     <tr id="tr{{$termostat->id}}">
                                         <td scope="row">{{ $termostat->id }}</td>
+                                        <td>{{ $termostat->name }}</td>
                                         <td><a href="{{ route('termostats.edit',[$termostat->id]) }}">
                                                 {{ $termostat->id_termometr }}</a></td>
                                         <td>{{ $termostat->current }} &#176;С</td>
@@ -77,6 +79,7 @@
                             <tfoot>
                                 <tr>
                                     <th style="width: 60px;">ID</th>
+                                    <th>Название</th>
                                     <th>Код</th>
                                     <th>Текущая темп.</th>
                                     <th>Оптим. темп.</th>

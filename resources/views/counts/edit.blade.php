@@ -7,7 +7,7 @@
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
        ['title' => 'Редактирование счетчика № '. $count->id . ' «' . $count->name .'»',
-        'links' => [ route('counts.index') => 'Устройства: счетчики'],
+        'links' => [ route('counts.index') => 'Счетчики'],
         'last_link' => 'Редактирование счетчика'])
 @endsection
 
@@ -44,7 +44,23 @@
                         </div>
 
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_autoselect_and_btn('id_object', 'Объект*:', $objects, old('id_object', $count->id_object), false, false, ['required' => true]) }}
+
+                        @if($count->object && $count->object->is_system)
+                            <div class="form-group row">
+                                <label class="control-label text-right col-md-3 label-fix" for="">
+                                    Объект:     </label>
+                                <div class="col-md-9">
+                                    <div class="mt-2">
+                                        <a class="a-color" href="{{ route('objects.edit', [$count->id_object]) }}">
+                                            {{ $count->object->name }} (системный) </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="id_object" value="{{ $count->id_object }}">
+                        @else
+                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект*:', $objects, old('id_object', $count->id_object), false, false, ['required' => true]) }}
+                        @endif
+
                         {{ Form::bs_text('impulse', 'Значение за один импульс (в '.$count->unit.')*:', old('impulse', $count->impulse), ['required' => true]) }}
                         {{ Form::bs_text('today_value', 'Значение за сегодня*:', old('today_value', $count->today_value), ['required' => true]) }}
                         {{ Form::bs_text('total_value', 'Общее значение*:', old('total_value', $count->total_value), ['required' => true]) }}
