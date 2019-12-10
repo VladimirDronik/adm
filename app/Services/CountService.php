@@ -18,22 +18,6 @@ class CountService {
     }
 
     /**
-     * Удаление объекта, созданного автоматически для счетчика.
-     * Удаление событий для системных методов этого объекта.
-     * Удаление методов происходит автоматически на уровне базы (по связям объекта).
-     *
-     * @param int $object_id
-     * @throws \Exception
-     */
-    public function deleteAutoObject(int $object_id)
-    {
-        $methods = Method::where('is_system', 1)
-            ->where('id_object', $object_id)->get();
-        SchedulerTask::whereIn('method', $methods->pluck('id')->toArray())->delete();
-        HomeObject::destroy($object_id);
-    }
-
-    /**
      * Удаление счетчика. Если связанный объект системный, то удаление объекта, методов, событий,
      * созданных автоматически при создании счетчика
      *
@@ -47,7 +31,9 @@ class CountService {
 
         if ($count->object && $count->object->is_system) {
             DB::transaction(function () use (&$count) {
-                $this->deleteAutoObject($count->id_object);
+                if (!HomeObject::isObjectUsed($count->id_object, $count->id, 'counts')) {
+                    HomeObject::deleteAutoObject($count->id_object);
+                }
                 $count->delete();
             });
         } else {

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\HomeObject
@@ -62,6 +63,67 @@ class HomeObject extends Model
             $index++;
         }
         return $unique_name;
+    }
+
+    /**
+     * Используется ли объект еще в какой-либо таблице,
+     * кроме таблицы $except_table_name в записи с id = $except_id.
+     * Methods и Scheduler_tasks не проверяются.
+     *
+     * @param int $object_id
+     * @param int $except_id
+     * @param string $except_table_name
+     * @return bool
+     */
+    public static function isObjectUsed(int $object_id, int $except_id, string $except_table_name): bool
+    {
+        $object_map = [
+            'counts' => 'id_object',
+            'ports' => 'object',
+            'termostats' => ['id_object', 'object'],
+            'view_items' => 'id_object',
+            //'methods' => 'id_object', // не надо
+            //'scheduler_tasks' => 'object', // не надо
+        ];
+
+        foreach ($object_map as $table_name => $column_names) {
+            if (is_string($column_names)) {
+                $column_names = [$column_names];
+            }
+            foreach ($column_names as $column_name) {
+                if ($except_table_name === $table_name) {
+                    if (DB::table($table_name)->where('id', '<>', $except_id)
+                        ->where($column_name, $object_id)->exists()) {
+                        return true;
+                    }
+                } else {
+                    if (DB::table($table_name)->where($column_name, $object_id)->exists()) {
+                        info($table_name);
+                        info($column_name);
+                        info($object_id);
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Удаление объекта, созданного автоматически для счетчика или термостата.
+     * Удаление событий для системных методов этого объекта.
+     * Удаление методов происходит автоматически на уровне базы (по связям объекта).
+     *
+     * @param int $object_id
+     * @throws \Exception
+     */
+    public static function deleteAutoObject(int $object_id)
+    {
+        $methods = Method::where('is_system', 1)
+            ->where('id_object', $object_id)->get();
+        SchedulerTask::whereIn('method', $methods->pluck('id')->toArray())->delete();
+        HomeObject::destroy($object_id);
     }
 
     public function getRusTypeAttribute()

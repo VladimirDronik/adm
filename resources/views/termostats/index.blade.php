@@ -69,7 +69,7 @@
                                         </td>
                                         <td align="center" class="text-center">
                                             <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                    data-id="{{ $termostat->id }}" data-name="{{ $termostat->id_termometr }}">
+                                                    data-id="{{ $termostat->id }}" data-name="{{ $termostat->name }}">
                                                 <i class="fa fa-trash fa-lg"></i>
                                             </button>
                                         </td>

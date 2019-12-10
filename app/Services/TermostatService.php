@@ -15,9 +15,30 @@ class TermostatService {
         $this->termostat_object_service = $termostat_object_service;
     }
 
-    public function delete(int $id)
+    /**
+     * Удаление термостата. Если связанный объект системный, то удаление объекта, метода, события,
+     * созданных автоматически при создании термостата
+     *
+     * @param int $id
+     * @return bool
+     * @throws \Throwable
+     */
+    public function delete(int $id): bool
     {
-        return Termostat::destroy($id);
+        $termostat = Termostat::findOrFail($id);
+
+        if ($termostat->iobject && $termostat->iobject->is_system) {
+            DB::transaction(function () use (&$termostat) {
+                if (!HomeObject::isObjectUsed($termostat->id_object, $termostat->id, 'termostats')) {
+                    HomeObject::deleteAutoObject($termostat->id_object);
+                }
+                $termostat->delete();
+            });
+        } else {
+            $termostat->delete();
+        }
+
+        return true;
     }
 
     public function prepare(Termostat $termostat, array $data)
