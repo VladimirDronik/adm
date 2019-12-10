@@ -27,7 +27,7 @@
                 <input type="hidden" id="id_device" value="{{ $device->id }}">
                 Тип: <span class="text-capitalize">{{ optional($device->devtype)->name }}</span>
                 <button type="button" id="updateDeviceBtn" class="btn btn-success m-b-10 m-l-5" data-toggle="modal" data-target="#device_modal">Сохранить</button>
-                <button type="button" class="btn btn-danger m-b-10 m-l-5 pull-right"  data-toggle="modal" data-target="#delete_modal">Удалить контроллер</button>
+                <button type="button" class="btn btn-outline-danger m-b-10 m-l-5 pull-right"  data-toggle="modal" data-target="#delete_modal">Удалить контроллер</button>
             </div>
         </div>
         <div class="card">

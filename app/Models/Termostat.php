@@ -51,9 +51,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Method|null $emethod_off
  * @property-read \App\Models\Method|null $emethod_on
  * @property-read mixed $rus_thermostat
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Graph[] $graphs
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\GraphTermostat[] $graphs
  * @property-read \App\Models\HomeObject|null $iobject
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Graph[] $last_graphs
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\GraphTermostat[] $last_graphs
  * @property string|null $name
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat whereName($value)
  */

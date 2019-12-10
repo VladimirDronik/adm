@@ -14,9 +14,7 @@ function validateCount() {
         return 'Не указано название';
     }
 
-    let object_type = $('#count_form input[name=object_type]');
-
-    if (object_type.length && $('#count_form input[name=object_type]:checked').val() === 'manual'
+    if ( $('#count_form input[name=object_type]').length && $('#count_form input[name=object_type]:checked').val() === 'manual'
             && isEmptyAutoSelect('id_object')) {
         return 'Не указан объект';
     }

@@ -26,7 +26,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::model($termostat, ['route' => ['termostats.update', $termostat->id], 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::model($termostat, ['route' => ['termostats.update', $termostat->id],
+                            'id' => 'termostat_form', 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
@@ -48,8 +49,23 @@
                         {{ Form::bs_number('max_alarm', 'Макс. аварийная температура*:', old('max_alarm', $termostat->max_alarm), ['min' => 0, 'max' => 40, 'required' => true],
                             '') }}
 
-                        {{ Form::bs_autoselect_and_btn('id_object', 'Объект термостата*:', $objects, old('id_object', $termostat->id_object),
-                            false, false, ['required' => true]) }}
+                        @if($termostat->iobject && $termostat->iobject->is_system)
+                            <div class="form-group row">
+                                <label class="control-label text-right col-md-3 label-fix" for="">
+                                    Объект термостата:     </label>
+                                <div class="col-md-9">
+                                    <div class="mt-2">
+                                        <a class="a-color" href="{{ route('objects.edit', [$termostat->id_object]) }}">
+                                            {{ $termostat->iobject->name }} (системный) </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="id_object" value="{{ $termostat->id_object }}">
+                        @else
+                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект термостата*:', $objects, old('id_object', $termostat->id_object),
+                                false, false, ['required' => true]) }}
+                        @endif
+
                         {{ Form::bs_autoselect_and_btn('object', 'Объект влияния*:', $objects, old('object', $termostat->object),
                             false, false, ['required' => true], '', '', null, 'Объект, у которого меняем состояние') }}
 
@@ -58,7 +74,7 @@
                         {{ Form::bs_autoselect('method_off', 'Метод при выключении*:', $methods, old('method_off', $termostat->method_off),
                             false, false, ['required' => true], null, 'Метод объекта влияния при срабатывании термостата на выключение') }}
 
-                        {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', is_null($termostat->room) ? -1 : $termostat->room ), false, false) }}
+                        {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', is_null($termostat->room) ? 0 : $termostat->room ), false, false) }}
 
                     </div>
                     {{ Form::bs_submit_btn() }}

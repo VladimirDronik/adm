@@ -87,7 +87,6 @@
         $(document).ready(function () {
             initCountForm();
 
-
             $('#auto_sel_btn_id_object').click(function() {
                 clearCreateObjectModal();
                 $('#create_object_modal_init_btn').click();

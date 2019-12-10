@@ -73,7 +73,8 @@ class CountService {
     }
 
     /**
-     * Создание счетчика. Если $data['type'] === 'auto', то еще создается объект с методами и событиями.
+     * Создание счетчика. Если $data['type'] === 'auto',
+     * то еще создается объект с методами и событиями.
      *
      * @param array $data
      * @return int
@@ -88,7 +89,8 @@ class CountService {
             $count->save();
         } else if ($data['object_type'] === 'auto') {
             DB::transaction(function () use (&$count) {
-                $object = $this->count_object_service->createCountObject($count->name);
+                $unique_name = HomeObject::getUniqueObjectName(0, $count->name);
+                $object = $this->count_object_service->createCountObject($unique_name);
                 $this->count_object_service->createCountObjectMethodsWithEvents($object->id);
                 $count->id_object = $object->id;
                 $count->save();
@@ -104,7 +106,8 @@ class CountService {
     }
 
     /**
-     * Обновление счетчика. Если изменилось название и у счетчика системный объект, то изменяем название объекта.
+     * Обновление счетчика. Если изменилось название и у счетчика системный объект,
+     * то изменяем название объекта.
      * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
      *
      * @param Count $count
@@ -116,33 +119,13 @@ class CountService {
     {
         DB::transaction(function () use (&$count, $data) {
             if ($this->isUpdateAutoObjectName($count, $data['name'])) {
-                $count->object->name = $this->getUniqueObjectName($count->object->id, trim($data['name']));
+                $count->object->name = HomeObject::getUniqueObjectName($count->object->id, trim($data['name']));
                 $count->object->save();
             }
-
             $this->prepareCount($count, $data);
             $count->save();
         });
 
         return $count->id;
-    }
-
-    /**
-     * Проверяет, уникально ли название $name в таблице объектов.
-     * Если нет, то добавляет в конец названия подходящее для уникальности число (2, 3 и т.д.)
-     *
-     * @param int $object_id
-     * @param string $name
-     * @return string
-     */
-    private function getUniqueObjectName(int $object_id, string $name): string
-    {
-        $index = 2;
-        $unique_name = $name;
-        while (HomeObject::where('id', '<>', $object_id)->where('name', $unique_name)->exists()) {
-            $unique_name = $name . ' ' .$index;
-            $index++;
-        }
-        return $unique_name;
     }
 }

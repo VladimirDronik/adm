@@ -44,9 +44,12 @@ function validateTermostat() {
     if (isEmptyInput('max_alarm')) {
         return 'Не указана макс. аварийная температура';
     }
-    if (isEmptyAutoSelect('id_object')) {
+
+    if ($('#termostat_form input[name=object_type]').length && $('#termostat_form input[name=object_type]:checked').val() === 'manual'
+        && isEmptyAutoSelect('id_object')) {
         return 'Не указан объект термостата';
     }
+
     if (isEmptyAutoSelect('object')) {
         return 'Не указан объект влияния';
     }

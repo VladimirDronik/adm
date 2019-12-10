@@ -44,6 +44,26 @@ class HomeObject extends Model
         return self::getFullTypeIds()[$id] ?? '';
     }
 
+    /**
+     * Проверяет, уникально ли название $name в таблице объектов.
+     * Если нет, то добавляет в конец названия подходящее для уникальности число (2, 3 и т.д.)
+     *
+     * @param int $object_id
+     * @param string $name
+     * @return string
+     */
+    public static function getUniqueObjectName(int $object_id, string $name): string
+    {
+        $index = 2;
+        $unique_name = $name;
+        while (HomeObject::where('id', '<>', $object_id)
+            ->where('name', $unique_name)->exists()) {
+            $unique_name = $name . ' ' .$index;
+            $index++;
+        }
+        return $unique_name;
+    }
+
     public function getRusTypeAttribute()
     {
         return self::getTypeById($this->type);

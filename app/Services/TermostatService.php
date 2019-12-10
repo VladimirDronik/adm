@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\HomeObject;
 use App\Models\Termostat;
 use Illuminate\Support\Facades\DB;
 
@@ -21,10 +22,22 @@ class TermostatService {
 
     public function prepare(Termostat $termostat, array $data)
     {
+        unset($data['object_type']);
+        if (($data['room'] ?? 0) == 0) {
+            $data['room'] = null;
+        }
         $termostat->fill($data);
     }
 
-    public function store(array $data)
+    /**
+     * Создание термостата. Если $data['type'] === 'auto',
+     * то еще создается объект с методом и событием.
+     *
+     * @param array $data
+     * @return int
+     * @throws \Throwable
+     */
+    public function store(array $data): int
     {
         $termostat = new Termostat();
         $this->prepare($termostat, $data);
@@ -32,9 +45,10 @@ class TermostatService {
 
         if ($data['object_type'] === 'manual') {
             $termostat->save();
-        } else {
+        } else if ($data['object_type'] === 'auto') {
             DB::transaction(function () use (&$termostat) {
-                $object = $this->termostat_object_service->createTermostatObject($termostat->name);
+                $unique_name = HomeObject::getUniqueObjectName(0, $termostat->name);
+                $object = $this->termostat_object_service->createTermostatObject($unique_name);
                 $this->termostat_object_service->createTermostatObjectMethodsWithEvents($object->id);
                 $termostat->id_object = $object->id;
                 $termostat->save();
@@ -44,10 +58,31 @@ class TermostatService {
         return $termostat->id;
     }
 
-    public function update(Termostat $termostat, array $data)
+    private function isUpdateAutoObjectName(Termostat $termostat, string $name): bool
     {
-        $this->prepare($termostat, $data);
-        $termostat->save();
+        return $termostat->name !== trim($name) && $termostat->iobject && $termostat->iobject->is_system;
+    }
+
+    /**
+     * Обновление термостата. Если изменилось название и у термостата системный объект, то
+     * изменяем название объекта.
+     * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
+     *
+     * @param Termostat $termostat
+     * @param array $data
+     * @return int
+     * @throws \Throwable
+     */
+    public function update(Termostat $termostat, array $data): int
+    {
+        DB::transaction(function () use (&$termostat, $data) {
+            if ($this->isUpdateAutoObjectName($termostat, $data['name'])) {
+                $termostat->iobject->name = HomeObject::getUniqueObjectName($termostat->iobject->id, trim($data['name']));
+                $termostat->iobject->save();
+            }
+            $this->prepare($termostat, $data);
+            $termostat->save();
+        });
 
         return $termostat->id;
     }

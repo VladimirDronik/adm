@@ -33,10 +33,11 @@ class CreateRequest extends FormRequest
             'max_threshold' => 'required|integer|max:100',
             'min_alarm' => 'required|integer',
             'max_alarm' => 'required|integer|max:100',
-            'room' => 'nullable|integer|min:0'
+            'room' => 'nullable|integer|min:0',
+            'id_object' => 'nullable|integer|min:1'
         ];
 
-        $ids = ['id_object', 'object', 'method_on', 'method_off'];
+        $ids = ['object', 'method_on', 'method_off'];
         foreach ($ids as $id) {
             $rules[$id] = 'required|integer|min:0';
         }
@@ -53,7 +54,7 @@ class CreateRequest extends FormRequest
             'optimal.required' => 'Не указана оптимальная температура',
             'gisteresis.required' => 'Не указан гистерезис',
             'thermostat.required' => 'Не указан режим',
-            'id_object.required' => 'Не указан объект',
+            'id_object.required' => 'Не указан объект термостата',
             'object.required' => 'Не указан объект влияния',
         ];
     }

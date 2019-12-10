@@ -23,7 +23,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::open(['route' => 'termostats.store', 'method' => 'post', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::open(['route' => 'termostats.store', 'method' => 'post',
+                            'id' => 'termostat_form', 'class' => 'form-horizontal form-bordered']) !!}
                         {{ csrf_field() }}
                         <div class="form-body">
                             {{ Form::bs_alert() }}
@@ -44,8 +45,55 @@
                             {{ Form::bs_number('max_alarm', 'Макс. аварийная температура*:', old('max_alarm', 40), ['min' => 0, 'max' => 40, 'required' => true],
                                 '') }}
 
-                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект термостата*:', $objects, old('id_object'),
-                                false, false, ['required' => true]) }}
+
+                            <div class="form-group row ">
+                                <label class="control-label text-right col-md-3 label-fix" for="id_object">
+                                    <strong>Объект термостата*:</strong>
+                                </label>
+                                <div class="col-sm-9">
+                                    <div class="form-group row">
+                                        <div class="col-md-12 p-0">
+                                            <div class="btn-group-toggle" data-toggle="buttons">
+                                                <label class="btn btn-success btn-sm active">
+                                                    <input type="radio" name="object_type" autocomplete="off" checked value="manual">  Выбор из списка
+                                                </label>
+                                                <label class="btn btn-success btn-sm">
+                                                    <input type="radio" name="object_type" autocomplete="off" value="auto"> Создать автоматически
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="manual_object_div">
+                                        <div class="col-sm-11 pr-0">
+                                            <select autocomplete="off" id="auto_sel_id_object"
+                                                    data-placeholder="не выбрано"
+                                                    name="id_object"
+                                                    class="chosen-select form-control"
+                                                    style="width:350px;">
+                                                <option value="">Не выбрано</option>
+                                                @foreach ($objects as $key => $value)
+                                                    <option value="{{ $key }}" @if($key == old('id_object')) selected @endif>
+                                                        {{ $value }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-1 pt-1 text-left">
+                                            <button type="button" id="auto_sel_btn_id_object" class="btn btn-default btn-sm" title=" Создать объект ">
+                                                <i class="fa fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="auto_object_div" style="display: none;">
+                                        <div class="col-sm-11 pr-0">
+                                            <p>При создании термостата будет создан объект с таким же названием.
+                                                У объекта будет создан метод «Проверка термостата».
+                                                Для метода будут создано событие «Проверка термостата» (каждые 5 мин).
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             {{ Form::bs_autoselect_and_btn('object', 'Объект влияния*:', $objects, old('object'),
                                 false, false, ['required' => true], '', '', null, 'Объект, у которого меняем состояние') }}
 
@@ -143,6 +191,17 @@
                 createObjectSelect('#auto_sel_id_object', objects, modal_btn_index === 1 ? selected : $('#auto_sel_id_object').val());
                 createObjectSelect('#auto_sel_object', objects, modal_btn_index === 2 ? selected : $('#auto_sel_object').val());
             }
+
+            $('#termostat_form [name=object_type]').change(function(){
+                if ($(this).val() === 'manual') {
+                    $('#auto_object_div').hide();
+                    $('#manual_object_div').show();
+                } else {
+                    $('#manual_object_div').hide();
+                    $('#auto_object_div').show();
+                }
+                return true;
+            });
         });
     </script>
 @endsection

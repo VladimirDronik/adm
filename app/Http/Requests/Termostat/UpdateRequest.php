@@ -24,7 +24,7 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required|string|max:250|unique:termostats,name,'.$this->termostat,
+            'name' => 'required|string|max:250|unique:termostats,name,'.$this->termostat->id,
             'id_termometr' => 'nullable|string|max:12',
             'optimal' => 'required|integer|min:0|max:40',
             'gisteresis' => 'required|integer|min:0|max:10',
@@ -38,7 +38,7 @@ class UpdateRequest extends FormRequest
 
         $ids = ['id_object', 'object', 'method_on', 'method_off'];
         foreach ($ids as $id) {
-            $rules[$id] = 'required|integer|min:0';
+            $rules[$id] = 'required|integer|min:1';
         }
 
         return $rules;

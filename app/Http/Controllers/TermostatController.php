@@ -59,7 +59,8 @@ class TermostatController extends Controller
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('termostats.edit',[$id])->with('success', 'Термостат успешно добавлен');
+                return redirect()->route('termostats.edit', [$id])
+                    ->with('success', 'Термостат успешно добавлен');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при добавлении термостата '.json_encode($r->all()).' '.$e->getMessage());
