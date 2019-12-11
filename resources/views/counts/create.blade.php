@@ -40,15 +40,15 @@
                                     <div class="col-md-12 p-0">
                                         <div class="btn-group-toggle" data-toggle="buttons">
                                             <label class="btn btn-success btn-sm active">
-                                                <input type="radio" name="object_type" autocomplete="off" checked value="manual">  Выбор из списка
+                                                <input type="radio" name="object_type" autocomplete="off" checked value="auto"> Создать автоматически
                                             </label>
                                             <label class="btn btn-success btn-sm">
-                                                <input type="radio" name="object_type" autocomplete="off" value="auto"> Создать автоматически
+                                                <input type="radio" name="object_type" autocomplete="off" value="manual">  Выбор из списка
                                             </label>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row" id="manual_object_div">
+                                <div class="row" id="manual_object_div" style="display: none;">
                                     <div class="col-sm-11 pr-0">
                                         <select autocomplete="off" id="auto_sel_id_object"
                                                 data-placeholder="не выбрано"
@@ -68,7 +68,7 @@
                                             <i class="fa fa-plus"></i></button>
                                     </div>
                                 </div>
-                                <div class="row" id="auto_object_div" style="display: none;">
+                                <div class="row" id="auto_object_div">
                                     <div class="col-sm-11 pr-0">
                                         <p>При создании счетчика будет создан объект с таким же названием.
                                             У объекта будут созданы методы «Проверка счетчика» и «Обнуление счетчика».
