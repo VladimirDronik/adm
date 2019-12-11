@@ -33,33 +33,88 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
                         {{ Form::bs_title('Основные данные') }}
-                        {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_checkbox('is_system', 'Системное:', $event->is_system, [], '&nbsp;&nbsp;Доступно для редактирования только администратору') }}
-                        {{ Form::bs_checkbox('is_hidden', 'Скрытое:', $event->is_hidden, [], '&nbsp;&nbsp;Доступно для просмотра только администратору') }}
-                        {{ Form::bs_hr() }}
-                        <div class="form-group row ">
-                            <label class="control-label text-right col-md-3 label-fix" for="type"><strong></strong></label>
-                            <div class="col-md-9">
-                                <div class="btn-group-toggle" data-toggle="buttons">
-                                    <label class="btn btn-success @if($event->has_method) active @endif ">
-                                        <input type="radio" name="type" autocomplete="off" @if($event->has_method) checked @endif  value="method">  Выбор объекта и метода
-                                    </label>
-                                    <label class="btn btn-success @if($event->has_script) active @endif">
-                                        <input type="radio" name="type" autocomplete="off" @if($event->has_script) checked @endif value="script"> Выбор скрипта
-                                    </label>
+
+                        @if(!optional($event->emethod)->is_system)
+                            {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
+                            {{ Form::bs_checkbox('is_system', 'Системное:', $event->is_system, [], '&nbsp;&nbsp;Доступно для редактирования только администратору') }}
+                            {{ Form::bs_checkbox('is_hidden', 'Скрытое:', $event->is_hidden, [], '&nbsp;&nbsp;Доступно для просмотра только администратору') }}
+                            {{ Form::bs_hr() }}
+                            <div class="form-group row ">
+                                <label class="control-label text-right col-md-3 label-fix" for="type"><strong></strong></label>
+                                <div class="col-md-9">
+                                    <div class="btn-group-toggle" data-toggle="buttons">
+                                        <label class="btn btn-success @if($event->has_method) active @endif ">
+                                            <input type="radio" name="type" autocomplete="off" @if($event->has_method) checked @endif  value="method">  Выбор объекта и метода
+                                        </label>
+                                        <label class="btn btn-success @if($event->has_script) active @endif">
+                                            <input type="radio" name="type" autocomplete="off" @if($event->has_script) checked @endif value="script"> Выбор скрипта
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div id="method_div" @if($event->has_script) style="display: none;" @endif>
-                            {{ Form::bs_autoselect('object', 'Объект:', $objects, old('object', $event->object),  false, false) }}
-                            {{ Form::bs_autoselect('method', 'Метод:', $methods, old('method', $event->method),  false, false) }}
-                        </div>
-                        <div id="script_div" @if(!$event->has_script) style="display: none;" @endif>
-                            {{ Form::bs_autoselect('script', 'Скрипт:', $scripts, old('script', $event->script),  false, false) }}
-                        </div>
+                            <div id="method_div" @if($event->has_script) style="display: none;" @endif>
+                                {{ Form::bs_autoselect('object', 'Объект:', $objects, old('object', $event->object),  false, false) }}
+                                {{ Form::bs_autoselect('method', 'Метод:', $methods, old('method', $event->method),  false, false) }}
+                            </div>
+                            <div id="script_div" @if(!$event->has_script) style="display: none;" @endif>
+                                {{ Form::bs_autoselect('script', 'Скрипт:', $scripts, old('script', $event->script),  false, false) }}
+                            </div>
+                            {{ Form::bs_submit_btn() }}
+                        @else
+                            {{ Form::bs_text('name', 'Название*:', null, ['required' => true, 'disabled' => true]) }}
+                            {{ Form::bs_checkbox('is_system', 'Системное:', $event->is_system, ['disabled' => true], '&nbsp;&nbsp;Доступно для редактирования только администратору') }}
+                            {{ Form::bs_checkbox('is_hidden', 'Скрытое:', $event->is_hidden, ['disabled' => true], '&nbsp;&nbsp;Доступно для просмотра только администратору') }}
+                            {{ Form::bs_hr() }}
+                            <div class="form-group row ">
+                                <label class="control-label text-right col-md-3 label-fix" for="type"><strong></strong></label>
+                                <div class="col-md-9">
+                                    <div class="btn-group-toggle" data-toggle="buttons">
+                                        <label class="btn btn-success @if($event->has_method) active @endif ">
+                                            <input type="radio" disabled name="type" autocomplete="off" @if($event->has_method) checked @endif  value="method">  Выбор объекта и метода
+                                        </label>
+                                        <label class="btn btn-success @if($event->has_script) active @endif">
+                                            <input type="radio" disabled name="type" autocomplete="off" @if($event->has_script) checked @endif value="script"> Выбор скрипта
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
 
-                        {{ Form::bs_submit_btn() }}
+                            <div id="method_div" @if($event->has_script) style="display: none;" @endif>
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3 label-fix" for="">
+                                        Объект:     </label>
+                                    <div class="col-md-9">
+                                        <div class="mt-2">
+                                            <a href="{{ route('objects.edit', [$event->object]) }}">
+                                                {{ optional($event->eobject)->name }}
+                                                @if($event->eobject && $event->eobject->is_system) (системный) @endif
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3 label-fix" for="">
+                                        Метод:     </label>
+                                    <div class="col-md-9">
+                                        <div class="mt-2">
+                                            <a href="{{ route('objects.edit', [$event->object]) }}">{{ optional($event->emethod)->name }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="script_div" @if(!$event->has_script) style="display: none;" @endif>
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3 label-fix" for="">
+                                        Скрипт:     </label>
+                                    <div class="col-md-9">
+                                        <div class="mt-2">
+                                            <a href="{{ route('scripts.edit', [$event->script]) }}">{{ optional($event->escript)->name }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
 
                         {{ Form::bs_title('Расписание события') }}
                         <div class="form-group row">
@@ -68,6 +123,7 @@
                             <div class="col-md-2 text-right"></div>
                         </div>
                         <div id="points_div">
+                            @php $is_point_editable = $event->is_point_editable; @endphp
                             @foreach($event->points as $point)
                                 <div class="form-group row" id="div{{$point->id}}">
                                     <label class="col-md-3" id="type{{$point->id}}">
@@ -77,11 +133,14 @@
                                         {!! $point->description !!}
                                     </div>
                                     <div class="col-md-2 text-right">
-                                        @if(!$point->is_close)
+                                        @if($is_point_editable)
                                             <button type="button" data-id="{{ $point->id }}"
                                                     data-type="{{ $point->type }}" data-time="{{ $point->time }}" data-days="{{ $point->days }}" class="btn btn-info btn-sm btn-rounded edit_btn">
                                                 <i class="fa fa-cog fa-lg"></i>
                                             </button>
+                                        @endif
+
+                                        @if(!optional($event->emethod)->is_system)
                                             <button type="button" data-id="{{ $point->id }}" data-type="{{ $point->type }}" class="btn btn-danger btn-rounded btn-sm del_btn">
                                                 <i class="fa fa-trash fa-lg"></i>
                                             </button>
@@ -90,13 +149,15 @@
                                 </div>
                             @endforeach
                         </div>
-                        <div class="form-group row">
-                            <div class="col-md-12 text-left">
-                                <button id="add_btn" type="button" class="btn btn-primary">
-                                    <i class="fa fa-plus fa-lg"></i> Добавить период
-                                </button>
+                        @if($is_point_editable)
+                            <div class="form-group row">
+                                <div class="col-md-12 text-left">
+                                    <button id="add_btn" type="button" class="btn btn-primary">
+                                        <i class="fa fa-plus fa-lg"></i> Добавить период
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        @endif
                     </div>
                     {!! Form::close() !!}
                 </div>

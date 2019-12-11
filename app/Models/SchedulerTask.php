@@ -55,6 +55,23 @@ class SchedulerTask extends Model
         return !is_null($this->script);
     }
 
+    /**
+     * Если есть системный термостат или нет системного метода, то расписание редактировать можно.
+     * Если есть системный счетчик, то нельзя.
+     *
+     * @return bool
+     */
+    public function getIsPointEditableAttribute()
+    {
+        if (!optional($this->emethod)->is_system) {
+            return true;
+        }
+
+        return Termostat::whereHas('iobject', function ($query) {
+            $query->where('is_system', 1)->where('id', $this->object);
+        })->exists();
+    }
+
     /* relations */
 
     public function eobject()

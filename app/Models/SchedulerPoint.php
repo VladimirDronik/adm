@@ -119,6 +119,11 @@ class SchedulerPoint extends Model
         return '';
     }
 
+    public function getIsSystemMethodAttribute()
+    {
+        return (bool)$this->etask->emethod->is_system;
+    }
+
     /* relations */
 
     public function etask()

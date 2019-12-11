@@ -101,11 +101,11 @@
                                     </td>
                                     <td class="text-center">
                                         <input type="checkbox" class="system_checkbox" style="cursor: pointer;"
-                                               data-id="{{$event->id}}" value="1" @if($event->is_system) checked @endif>
+                                               @if($event->emethod && $event->emethod->is_system) disabled @endif  data-id="{{$event->id}}" value="1" @if($event->is_system) checked @endif>
                                     </td>
                                     <td class="text-center">
                                         <input type="checkbox" class="hidden_checkbox" style="cursor: pointer;"
-                                               data-id="{{$event->id}}" value="1" @if($event->is_hidden) checked @endif>
+                                               @if($event->emethod && $event->emethod->is_system) disabled @endif data-id="{{$event->id}}" value="1" @if($event->is_hidden) checked @endif>
                                     </td>
                                     <td align="center">
                                         <a href="{{ route('events.edit',[$event->id]) }}" class="btn btn-info btn-sm btn-rounded">
@@ -113,10 +113,12 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                data-id="{{ $event->id }}" data-name="{{ $event->name }}">
-                                            <i class="fa fa-trash fa-lg"></i>
-                                        </button>
+                                        @if(!$event->emethod || !$event->emethod->is_system)
+                                            <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                                    data-id="{{ $event->id }}" data-name="{{ $event->name }}">
+                                                <i class="fa fa-trash fa-lg"></i>
+                                            </button>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

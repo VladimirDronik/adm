@@ -59,13 +59,14 @@ class HomeObject extends Model
         $unique_name = $name;
         while (HomeObject::where('id', '<>', $object_id)
             ->where('name', $unique_name)->exists()) {
-            $unique_name = $name . ' ' .$index;
+            $unique_name = $name . ' ' . $index;
             $index++;
         }
         return $unique_name;
     }
 
     /**
+     * Метод для удаления объекта, созданного автоматически для термостата или счетчика
      * Используется ли объект еще в какой-либо таблице,
      * кроме таблицы $except_table_name в записи с id = $except_id.
      * Methods и Scheduler_tasks не проверяются.
@@ -82,8 +83,8 @@ class HomeObject extends Model
             'ports' => 'object',
             'termostats' => ['id_object', 'object'],
             'view_items' => 'id_object',
-            //'methods' => 'id_object', // не надо
-            //'scheduler_tasks' => 'object', // не надо
+            //'methods' => 'id_object', // не надо проверять, так как есть методы объекта
+            //'scheduler_tasks' => 'object', // не надо проверять, так как есть события объекта
         ];
 
         foreach ($object_map as $table_name => $column_names) {
@@ -98,9 +99,6 @@ class HomeObject extends Model
                     }
                 } else {
                     if (DB::table($table_name)->where($column_name, $object_id)->exists()) {
-                        info($table_name);
-                        info($column_name);
-                        info($object_id);
                         return true;
                     }
                 }
