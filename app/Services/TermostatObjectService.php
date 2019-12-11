@@ -41,7 +41,7 @@ class TermostatObjectService {
         $method_id = Method::forceCreate([
             'name' => 'Проверка термостата',
             'id_object' => $object_id,
-            'comment' => 'Проверка термостата',
+            'comment' => 'Периодическая проверка текущих значений термостата',
             'is_system' => 1
         ])->id;
 

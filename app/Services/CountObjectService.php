@@ -40,7 +40,7 @@ class CountObjectService {
         $method_id = Method::forceCreate([
             'name' => 'Проверка счетчика',
             'id_object' => $object_id,
-            'comment' => 'Проверка счетчика',
+            'comment' => 'Периодическая проверка текущих значений счетчика',
             'is_system' => 1
         ])->id;
 
@@ -73,7 +73,7 @@ class CountObjectService {
         $method_id = Method::forceCreate([
             'name' => 'Обнуление счетчика',
             'id_object' => $object_id,
-            'comment' => 'Обнуление счетчика',
+            'comment' => 'Обнуление значений счетчика за текущий день',
             'is_system' => 1
         ])->id;
 

@@ -45,17 +45,17 @@
                             {{ Form::bs_title('Системные методы объекта') }}
 
                             <div class="form-group row">
-                                <label class="col-md-3"><i>Название метода</i></label>
-                                <div class="col-md-2"><i>Комментарий</i></div>
+                                <label class="col-md-5"><i>Название метода</i></label>
+                                <div class="col-md-7 text-left"><i>Комментарий</i></div>
                             </div>
                             <div id="system_methods_div">
                                 @foreach($object->methods as $method)
                                     @if($method->is_system)
                                         <div class="form-group row" id="div{{$method->id}}">
-                                            <label class="col-md-3" id="name{{$method->id}}">
+                                            <label class="col-md-5" id="name{{$method->id}}">
                                                 {{$method->name}}
                                             </label>
-                                            <div class="col-md-2" id="comment{{$method->id}}">
+                                            <div class="col-md-7" id="comment{{$method->id}}">
                                                 {{ $method->comment }}
                                             </div>
                                         </div>
@@ -63,7 +63,7 @@
                                 @endforeach
                             </div>
 
-                            {{ Form::bs_title('Несистемные методы объекта') }}
+                            {{ Form::bs_title('Пользовательские методы объекта') }}
                         @else
                             {{ Form::bs_title('Методы объекта') }}
                         @endif
