@@ -48,6 +48,7 @@ class FakeTermostatsTableSeeder extends Seeder
             $object = $this->getRandObject();
 
             $termostats[] = [
+                'name' => 'Термостат '.($i+1),
                 'id_object' => $this->getRandObject()->id,
                 'current' => rand(20, 30).'.'.rand(10, 99),
                 'optimal' => rand(20, 30),
