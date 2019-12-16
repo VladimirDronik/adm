@@ -66,14 +66,24 @@
                         {{ Form::bs_text('total_value', 'Общее значение*:', old('total_value', $count->total_value), ['required' => true]) }}
                     </div>
                     {{ Form::bs_submit_btn() }}
+
+                    @include('objects.methods', ['object' => $count->object])
+                    @include('objects.events', ['object' => $count->object])
+
                     {!! Form::close() !!}
                 </div>
                 <div style="height: 200px;">&nbsp;</div>
                 <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
+                <button type="button" id="init_method_btn" style="display: none;" data-toggle="modal" data-target="#method_modal">&nbsp;</button>
+
             </div>
         </div>
     </div>
+
+    @include('objects.method_modal')
+
     @include('components.info_modal')
+    @include('components.del_modal')
     @include('components.create_object_modal', compact('object_types'))
 @endsection
 
@@ -81,8 +91,14 @@
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/count.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
+        const store_url = '{{ route('ajax.methods.store') }}';
+        const del_url = '{{ route('ajax.methods.delete') }}';
+        const sub_data_url = '{{ route('ajax.load.data') }}';
+        const object_id = '{{ optional($count->object)->id }}';
+        let del_id;
 
         $(document).ready(function () {
             initCountForm();
@@ -132,6 +148,29 @@
                 }
                 createObjectSelect('#auto_sel_id_object', objects, selected);
             }
+
+            // methods
+
+            const cancel_btn = $('#cancel_btn');
+
+            $('#add_btn').click(showAddModal);
+
+            $('#apply_btn').click(clickApplyBtn);
+
+            // edit method
+            $('body').on('click', '.edit_btn', clickEditBtn);
+
+            // change easy/script/none in modal
+            $('input[type=radio][name=actions]').change(changeRadioActions);
+
+            // delete method
+            $('body').on('click', '.del_btn', function() {
+                del_id = $(this).attr('data-id');
+                $('#del_modal_body').text('Удалить метод «'+$(this).attr('data-name')+'»?');
+                $('#del_init_btn').click();
+            });
+
+            $('#del_modal_btn').click(clickDelBtn);
         });
     </script>
 @endsection

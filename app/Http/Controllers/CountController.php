@@ -8,6 +8,7 @@ use App\Models\Count;
 use App\Models\HomeObject;
 use App\Repositories\CountRepository;
 use App\Repositories\ObjectRepository;
+use App\Repositories\ScriptRepository;
 use App\Services\CountService;
 
 class CountController extends Controller
@@ -55,13 +56,15 @@ class CountController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении счетчика');
     }
 
-    public function edit(Count $count)
+    public function edit(Count $count, ScriptRepository $script_rep)
     {
         $types = Count::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
 
-        return view('counts.edit', compact('count', 'types', 'objects', 'object_types'));
+        $scripts = $script_rep->getAllToArray();
+
+        return view('counts.edit', compact('count', 'types', 'objects', 'object_types', 'scripts'));
     }
 
     public function update(UpdateRequest $r, Count $count)

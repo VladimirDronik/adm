@@ -12,22 +12,41 @@ class ScriptsTableSeeder extends Seeder
         $this->scripts = Script::pluck('name')->toArray();
     }
 
-    private function getScripts(): array
+    private function getCheckCountScript(): array
     {
         return [
+            'name' => 'Проверка счетчика',
+            'link' => 'check_count.php',
+            'count' => 0,
+            'system' => 1
+        ];
+    }
+
+    private function getResetCountScript(): array
+    {
+        return [
+            'name' => 'Сброс счетчика',
+            'link' => 'reset_count.php',
+            'count' => 0,
+            'system' => 1
+        ];
+    }
+
+    private function getScripts(): array
+    {
+        $scripts = [
             [
-                'name' => 'Системный скрипт',
-                'link' => 'system_script.php',
+                'name' => 'Очистка графиков',
+                'link' => 'reset_graphs.php',
                 'count' => 0,
                 'system' => 1
             ],
-            [
-                'name' => 'Скрипт',
-                'link' => 'script.php',
-                'count' => 0,
-                'system' => 0
-            ],
         ];
+
+        $scripts[] = $this->getCheckCountScript();
+        $scripts[] = $this->getResetCountScript();
+
+        return $scripts;
     }
 
     /**

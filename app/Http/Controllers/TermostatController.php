@@ -9,6 +9,7 @@ use App\Models\Termostat;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
+use App\Repositories\ScriptRepository;
 use App\Repositories\TermostatRepository;
 use App\Services\ObjectService;
 use App\Services\TermostatService;
@@ -69,15 +70,16 @@ class TermostatController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении термостата');
     }
 
-    public function edit(Termostat $termostat, ObjectService $object_service)
+    public function edit(Termostat $termostat, ObjectService $object_service, ScriptRepository $script_rep)
     {
         list($objects, $rooms, $types) = $this->getLists();
 
         $methods = $object_service->getMethodsByObjectIdToArray($termostat->object);
-        $object_types =  HomeObject::getFullTypeIds();
+        $object_types = HomeObject::getFullTypeIds();
+        $scripts = $script_rep->getAllToArray();
 
         return view('termostats.edit', compact('termostat', 'objects', 'rooms',
-            'types', 'methods', 'object_types'));
+            'types', 'methods', 'object_types', 'scripts'));
     }
 
     public function update(UpdateRequest $r, Termostat $termostat)
