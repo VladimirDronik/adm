@@ -34,7 +34,7 @@ class ObjtypesTableSeeder extends Seeder
                 'label' => 'Розетка'
             ],
             [
-                'name' => 'termostat',
+                'name' => ObjType::TYPE_TERMOSTAT,
                 'label' => 'Термостат'
             ],
             [
@@ -50,7 +50,7 @@ class ObjtypesTableSeeder extends Seeder
                 'label' => 'Выключатель'
             ],
             [
-                'name' => 'count',
+                'name' => ObjType::TYPE_COUNT,
                 'label' => 'Счетчик'
             ],
             [

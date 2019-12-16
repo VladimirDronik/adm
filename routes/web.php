@@ -19,6 +19,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('devices', 'DeviceController')->except('show','destroy');
     Route::resource('counts', 'CountController')->except('show','destroy');
+    Route::resource('dimmers', 'DimmerController')->except('show','destroy');
     Route::resource('settings', 'SettingController')->except('show','destroy');
     Route::resource('rooms', 'RoomController')->except('show','create','store','destroy');
     Route::resource('scenes', 'SceneController')->except('show','destroy');
@@ -61,6 +62,10 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'counts', 'as' => 'counts.'], function () {
             Route::post('delete', 'CountController@delete')->name('delete');
+        });
+
+        Route::group(['prefix' => 'dimmers', 'as' => 'dimmers.'], function () {
+            Route::post('delete', 'DimmerController@delete')->name('delete');
         });
 
         Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {

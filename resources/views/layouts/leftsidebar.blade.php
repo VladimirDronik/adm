@@ -43,6 +43,12 @@
                                 Счетчики
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('dimmers.index') }}">
+                                <i class="fa fa-bullseye"></i>
+                                Диммеры
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li>

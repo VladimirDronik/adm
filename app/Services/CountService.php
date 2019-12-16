@@ -4,8 +4,6 @@ namespace App\Services;
 
 use App\Models\Count;
 use App\Models\HomeObject;
-use App\Models\Method;
-use App\Models\SchedulerTask;
 use Illuminate\Support\Facades\DB;
 
 class CountService {
