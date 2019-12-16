@@ -60,6 +60,10 @@ class ScriptController extends Controller
     {
         $script = Script::findOrFail($id);
 
+        if (count($script->systemMethods)) {
+            return redirect()->route('scripts.edit', [$script->id])->with('error','Редактирование скрипта запрещено');
+        }
+
         try {
             if ($this->service->update($script, $r->except('_token'))) {
                 return redirect()->route('scripts.edit',[$script->id])

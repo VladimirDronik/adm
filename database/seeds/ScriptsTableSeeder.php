@@ -12,7 +12,7 @@ class ScriptsTableSeeder extends Seeder
         $this->scripts = Script::pluck('name')->toArray();
     }
 
-    private function getCheckCountScript(): array
+    public static function getCheckCountScript(): array
     {
         return [
             'name' => 'Проверка счетчика',
@@ -22,7 +22,7 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
-    private function getResetCountScript(): array
+    public static function getResetCountScript(): array
     {
         return [
             'name' => 'Сброс счетчика',

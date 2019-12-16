@@ -7,6 +7,8 @@ use App\Models\Method;
 use App\Models\ObjType;
 use App\Models\SchedulerPoint;
 use App\Models\SchedulerTask;
+use App\Models\Script;
+use ScriptsTableSeeder;
 
 class CountObjectService {
 
@@ -30,6 +32,22 @@ class CountObjectService {
         return $object;
     }
 
+    private function getScriptIdForCheckMethod(): int
+    {
+        $script_name = ScriptsTableSeeder::getCheckCountScript()['name'];
+
+        return Script::where('name', $script_name)
+            ->where('system', 1)->value('id');
+    }
+
+    private function getScriptIdForResetMethod(): int
+    {
+        $script_name = ScriptsTableSeeder::getResetCountScript()['name'];
+
+        return Script::where('name', $script_name)
+            ->where('system', 1)->value('id');
+    }
+
     /**
      * Создание метода 'Проверка счетчика' и события 'Проверка счетчика' (каждый час)
      *
@@ -37,9 +55,11 @@ class CountObjectService {
      */
     public function createCheckMethodWithEvent(int $object_id)
     {
+        $script_id = $this->getScriptIdForCheckMethod();
         $method_id = Method::forceCreate([
             'name' => 'Проверка счетчика',
             'id_object' => $object_id,
+            'script' => $script_id,
             'comment' => 'Периодическая проверка текущих значений счетчика',
             'is_system' => 1
         ])->id;
@@ -70,9 +90,12 @@ class CountObjectService {
      */
     public function createResetMethodWithEvent(int $object_id)
     {
+        $script_id = $this->getScriptIdForResetMethod();
+
         $method_id = Method::forceCreate([
             'name' => 'Обнуление счетчика',
             'id_object' => $object_id,
+            'script' => $script_id,
             'comment' => 'Обнуление значений счетчика за текущий день',
             'is_system' => 1
         ])->id;

@@ -55,15 +55,19 @@
                                             @endif
                                         </td>
                                         <td align="center" class="text-center">
-                                            <a href="{{ route('scripts.edit',[$script->id]) }}" class="btn btn-info btn-sm btn-rounded">
-                                                <i class="fa fa-cog fa-lg"></i>
-                                            </a>
+                                            @if(!$script->system_methods_count)
+                                                <a href="{{ route('scripts.edit',[$script->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                                    <i class="fa fa-cog fa-lg"></i>
+                                                </a>
+                                            @endif
                                         </td>
                                         <td align="center" class="text-center">
-                                            <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                    data-id="{{ $script->id }}" data-name="{{ $script->name }}">
-                                                <i class="fa fa-trash fa-lg"></i>
-                                            </button>
+                                            @if(!$script->system_methods_count)
+                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                                        data-id="{{ $script->id }}" data-name="{{ $script->name }}">
+                                                    <i class="fa fa-trash fa-lg"></i>
+                                                </button>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

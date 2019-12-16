@@ -94,4 +94,10 @@ class Script extends Model
 
         return Storage::disk('scripts')->get(self::LINK_PATH . $this->link);
     }
+
+    /* attributes */
+    public function systemMethods()
+    {
+        return $this->hasMany(Method::class, 'script', 'id')->where('is_system', 1);
+    }
 }

@@ -14,7 +14,7 @@ class ScriptRepository {
 
     public function getByName($name, $pagination_count = 30)
     {
-        $query = Script::query();
+        $query = Script::withCount(['systemMethods']);
 
         if (!empty($name)) {
             $query->where('name','like','%'.$name.'%');
