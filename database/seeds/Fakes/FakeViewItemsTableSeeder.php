@@ -16,7 +16,7 @@ class FakeViewItemsTableSeeder extends Seeder
         $rooms = Room::all();
         $objects = HomeObject::whereHas('methods')->with('methods')->get();
         $scenes = Scene::all();
-        $typeNames = View::getTypeNameIds();
+        $typeNames = View::getTypeIds();
         $faker = Factory::create();
 
         $views = [];
