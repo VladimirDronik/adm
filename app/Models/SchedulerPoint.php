@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read mixed $is_system
  * @property-read mixed $rus_type
  * @property-read mixed $single_rus_type
+ * @property-read mixed $is_system_method
  */
 class SchedulerPoint extends Model
 {

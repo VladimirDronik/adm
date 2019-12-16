@@ -33,6 +33,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read mixed $has_script
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereIsHidden($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereIsSystem($value)
+ * @property-read bool $is_point_editable
  */
 class SchedulerTask extends Model
 {

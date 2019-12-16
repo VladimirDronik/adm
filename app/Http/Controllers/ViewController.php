@@ -34,7 +34,7 @@ class ViewController extends Controller
 
     public function getLists()
     {
-        $types = View::getFullTypeNameIds();
+        $types = View::getFullTypeIds();
         $rooms = $this->room_rep->getAllToArray();
         $scenes = $this->scene_rep->getAll()->pluck('label', 'id')->toArray();
         $images = ImageService::getViewImages();
@@ -79,14 +79,16 @@ class ViewController extends Controller
         list($types, $rooms, $objects, $scenes, $images) = $this->getLists();
         $methods = $object_service->getMethodsByObjectIdToArray($view->id_object);
 
-        return view('views.edit', compact('view', 'types', 'rooms', 'methods', 'objects', 'scenes', 'images'));
+        return view('views.edit', compact('view', 'types',
+            'rooms', 'methods', 'objects', 'scenes', 'images'));
     }
 
     public function update(UpdateRequest $r, View $view)
     {
         try {
             if ($this->service->update($view, $r->except('_token'))) {
-                return redirect()->route('views.edit',[$view->id])->with('success','Отображение успешно изменено');
+                return redirect()->route('views.edit',[$view->id])
+                    ->with('success','Отображение успешно изменено');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении отображения '.$view->id.' '

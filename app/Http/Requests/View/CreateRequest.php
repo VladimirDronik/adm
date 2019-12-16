@@ -24,8 +24,7 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'type_name' => 'required|string|max:8',
-            'name' => 'required|string|max:100',
+            'type' => 'required|string|max:8',
             'description' => 'nullable|string|max:255',
             'room' => 'required|integer|min:0',
             'scene' => 'nullable|integer|min:0',
@@ -37,10 +36,8 @@ class CreateRequest extends FormRequest
     public function messages()
     {
         return [
-            'type_name.required' => 'Не указан тип элемента',
+            'type.required' => 'Не указан тип элемента',
             'room.required' => 'Не указано помещение',
-            'name.required' => 'Не указано название',
-            'name.max' => 'Название содержит более 100 символов',
             'description.max' => 'Описание содержит более 255 символов'
         ];
     }

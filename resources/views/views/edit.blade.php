@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование отображения «'. $view->name .'»',
+       ['title' => 'Редактирование отображения',
         'links' => [ route('views.index') => 'Отображения'],
         'last_link' => 'Редактирование отображения'])
 @endsection
@@ -32,8 +32,7 @@
                         {{ Form::bs_alert() }}
                         {{ Form::bs_title('Основные данные') }}
 
-                        {{ Form::bs_radio('type_name', 'Тип элемента*:', $types, old('type_name', $view->type_name), ['required' => true]) }}
-                        {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
+                        {{ Form::bs_radio('type', 'Тип элемента*:', $types, old('type', $view->type), ['required' => true]) }}
                         {{ Form::bs_text('description', 'Описание:') }}
                         {{ Form::bs_checkbox('active', 'Активность:') }}
 
@@ -42,14 +41,10 @@
 
                         {{ Form::bs_title('Текст и графика') }}
 
-                        {{ Form::bs_text('on_title_top','Надпись при включении:', null, [], 'Верхняя строка') }}
-                        {{ Form::bs_text('on_title_bottom','', null, [], 'Нижняя строка') }}
+                        {{ Form::bs_text('title_top','Надпись при включении:', null, [], 'Верхняя строка') }}
+                        {{ Form::bs_text('title_bottom','', null, [], 'Нижняя строка') }}
 
-                        {{ Form::bs_text('off_title_top','Надпись при выключении:', null, [], 'Верхняя строка') }}
-                        {{ Form::bs_text('off_title_bottom','', null, [], 'Нижняя строка') }}
-
-                        {{ Form::bs_image('on','Изображение при включении:', old('on_image',$view->on_image_path)) }}
-                        {{ Form::bs_image('off','Изображение при выключении:', old('off_image', $view->off_image_path)) }}
+                        {{ Form::bs_image('icon','Изображение при включении:', old('icon_image', $view->icon_path)) }}
 
                         {{ Form::bs_title('Расположение') }}
 
@@ -127,11 +122,8 @@
         }
 
         function validateView() {
-            if (!$("input[name=type_name]:checked").val()) {
+            if (!$("input[name=type]:checked").val()) {
                 return 'Не указан тип элемента';
-            }
-            if (isEmptyInput('name')) {
-                return 'Не указано название';
             }
             if (!$("select[name=room]").val()) {
                 return 'Не указано помещение';

@@ -63,27 +63,22 @@
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
-                            <tr>
-                                @if($filter_room != '')
-                                    <th>Сорт</th>
-                                @endif
-                                <th>Тип</th>
-                                <th>Название</th>
-                                <th>Статус</th>
-                                <th>Вкл</th>
-                                {{--                                <th>Выкл</th>--}}
-                                <th>Вкл_надпись</th>
-                                {{--                                <th>Выкл_надпись</th>--}}
-                                {{--                                <th>Значение</th>--}}
-                                <th>Объект</th>
-                                <th>Метод</th>
-                                <th>Помещение</th>
-                                <th>Сцена</th>
-                                {{--                                <th>Отступы</th>--}}
-                                <th>Активно</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
+                                <tr>
+                                    @if($filter_room != '')
+                                        <th>Сорт</th>
+                                    @endif
+                                    <th>Тип</th>
+                                    <th>Статус</th>
+                                    <th>Изображение</th>
+                                    <th>Надпись</th>
+                                    <th>Объект</th>
+                                    <th>Метод</th>
+                                    <th>Помещение</th>
+                                    <th>Сцена</th>
+                                    <th>Активно</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
                             </thead>
                             <tbody>
                             @foreach($views as $view)
@@ -91,30 +86,22 @@
                                     @if($filter_room != '')
                                         <td scope="row">{{ $view->sort }}</td>
                                     @endif
-                                    <td>{{ $view->rus_type_name }}</td>
                                     <td><a href="{{ route('views.edit',[$view->id]) }}"
-                                           title="{{ $view->description }}">{{ $view->name }}</a></td>
+                                           title="{{ $view->description }}">{{ $view->rus_type }}</a></td>
                                     <td>
-                                        @if($view->status === 'on')
+                                        @if(strtolower($view->status) === 'on')
                                             <span class="badge badge-success">{{ $view->status }}</span>
                                         @else
                                             <span class="badge badge-primary">{{ $view->status }}</span>
                                         @endif
                                     </td>
                                     <td scope="row">
-                                        @if(!empty($view->on_image))
-                                            <img src="{{ asset($view->on_image_path) }}" width="25" height="25"
+                                        @if(!empty($view->icon))
+                                            <img src="{{ asset($view->icon_path) }}" width="25" height="25"
                                                  style="fill: green; background-color: #e8e8e8;">
                                         @endif
                                     </td>
-                                    {{--                                <td scope="row">--}}
-                                    {{--                                    @if(!empty($view->off_image))--}}
-                                    {{--                                        <img src="{{ asset($view->off_image_path) }}" width="25" height="25" style="fill: green; background-color: #e8e8e8;">--}}
-                                    {{--                                    @endif--}}
-                                    {{--                                </td>--}}
-                                    <td scope="row">{{ $view->short_on_title }}</td>
-                                    {{--                                <td scope="row">{{ $view->short_off_title }}</td>--}}
-                                    {{--                                <td scope="row">{{ $view->value }}</td>--}}
+                                    <td scope="row">{{ $view->short_title }}</td>
                                     <td>
                                         @if($view->eobject)
                                             <button type="button" class="btn btn-warning m-b-10 btn-sm"
@@ -139,8 +126,7 @@
                                                     data-toggle="modal"
                                                     value="{{ $view->id_method}},{{optional($view->emethod)->name}},viewmethod_{{ $view->id }}"
                                                     data-target="#methodsModal"
-                                                    onclick="updateRedirectToCreateMethodBtn(this)"
-                                            >
+                                                    onclick="updateRedirectToCreateMethodBtn(this)">
                                                 <b>{{ optional($view->emethod)->name }}</b>
                                             </button>
                                         @else
@@ -161,7 +147,6 @@
                                             <a href="{{ route('scenes.edit',$view->scene) }}">{{ optional($view->escene)->label }}</a>
                                         @endif
                                     </td>
-                                    {{--                                <td scope="row">{{ $view->position_left }} / {{ $view->position_top }}</td>--}}
                                     <td scope="row" align="center">
                                         <input type="checkbox" class="active_checkbox" style="cursor: pointer;"
                                                data-id="{{$view->id}}" value="1" @if($view->active) checked @endif>
@@ -181,29 +166,26 @@
                                 </tr>
                             @endforeach
                             </tbody>
-                            <tfoot>
-                            <tr>
-                                @if($filter_room != '')
-                                    <th>Сорт</th>
-                                @endif
-                                <th>Тип</th>
-                                <th>Название</th>
-                                <th>Статус</th>
-                                <th>Вкл</th>
-                                {{--                                <th>Выкл</th>--}}
-                                <th>Вкл_надпись</th>
-                                {{--                                <th>Выкл_надпись</th>--}}
-                                {{--                                <th>Значение</th>--}}
-                                <th>Объект</th>
-                                <th>Метод</th>
-                                <th>Помещение</th>
-                                <th>Сцена</th>
-                                {{--                                <th>Отступы</th>--}}
-                                <th>Активно</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                            </tfoot>
+                            @if(count($views) > 10)
+                                <tfoot>
+                                    <tr>
+                                        @if($filter_room != '')
+                                            <th>Сорт</th>
+                                        @endif
+                                        <th>Тип</th>
+                                        <th>Статус</th>
+                                        <th>Изображение</th>
+                                        <th>Надпись</th>
+                                        <th>Объект</th>
+                                        <th>Метод</th>
+                                        <th>Помещение</th>
+                                        <th>Сцена</th>
+                                        <th>Активно</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            @endif
                         </table>
                     </div>
                     {{ $views->appends(request()->input())->links() }}

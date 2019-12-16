@@ -31,10 +31,10 @@ class FakeDimmersTableSeeder extends Seeder
                 'speed' => 2
             ],
             [
-                'name' => 'Диммер в спальне',
-                'id_object' => $objects[0]->id,
-                'value' => 100,
-                'speed' => 2
+                'name' => 'Диммер на кухне',
+                'id_object' => $objects[1]->id,
+                'value' => 50,
+                'speed' => 5
             ],
         ];
 

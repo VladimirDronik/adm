@@ -24,6 +24,7 @@ use Exception;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Script whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Script whereSystem($value)
  * @property-read string $code
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Method[] $systemMethods
  */
 class Script extends Model
 {

@@ -8,140 +8,117 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\View
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View query()
- * @mixin \Eloquent
  * @property int $id
- * @property string $type i=item, s=setting, e=event,  t=temp
- * @property string $type_name тип элемента: button, switch, temp, humidity, info
- * @property string $name Название элемента на русском языке
- * @property string $description описание элемнта на русском языке
+ * @property string $type тип элемента: button, switch, temp, humidity, info
+ * @property string $description описание элемента на русском языке
  * @property string $status
- * @property string $on_image
- * @property string|null $off_image
- * @property float|null $value
- * @property string|null $on_title
- * @property string|null $off_title
- * @property string $items
- * @property string $date
+ * @property int|null $id_object id объекта из таблицы объектов
+ * @property int|null $id_method метод объекта из таблицы методов
+ * @property string $icon
+ * @property string|null $title
  * @property int|null $position_left
  * @property int|null $position_top
  * @property int|null $room
  * @property int|null $scene
  * @property int $sort
  * @property bool $active
+ * @property-read \App\Models\Method|null $emethod
+ * @property-read \App\Models\HomeObject|null $eobject
  * @property-read \App\Models\Room|null $eroom
  * @property-read \App\Models\Scene|null $escene
+ * @property-read mixed $icon_path
  * @property-read mixed $is_active
- * @property-read mixed $off_image_path
- * @property-read mixed $off_title_bottom
- * @property-read mixed $off_title_top
- * @property-read mixed $on_image_path
- * @property-read mixed $on_title_bottom
- * @property-read mixed $on_title_top
+ * @property-read mixed $method_name
+ * @property-read mixed $object_name
  * @property-read mixed $room_name
- * @property-read mixed $rus_type_name
- * @property-read mixed $short_off_title
- * @property-read mixed $short_on_title
+ * @property-read mixed $rus_type
+ * @property-read mixed $short_title
+ * @property-read mixed $title_bottom
+ * @property-read mixed $title_top
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereIcon($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereItems($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereOffImage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereOffTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereOnImage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereOnTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereIdMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereIdObject($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View wherePositionLeft($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View wherePositionTop($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereRoom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereScene($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereSort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereTypeName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereValue($value)
- * @property int|null $id_object id объекта из таблицы объектов
- * @property int|null $id_method метод объекта из таблицы методов
- * @property-read \App\Models\Method|null $emethod
- * @property-read \App\Models\HomeObject|null $eobject
- * @property-read mixed $method_name
- * @property-read mixed $object_name
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereIdMethod($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereIdObject($value)
+ * @mixin \Eloquent
  */
 class View extends Model
 {
     protected $table = 'view_items';
     public $timestamps = false;
 
-    const TYPE_NAME_SWITCH = 'switch';
-    const TYPE_NAME_BUTTON = 'button';
-    const TYPE_NAME_TEMP = 'temp';
-    const TYPE_NAME_HUMIDITY = 'humidity';
-    const TYPE_NAME_INFO = 'info';
+    const TYPE_SWITCH = 'switch';
+    const TYPE_BUTTON = 'button';
+    const TYPE_TEMP = 'temp';
+    const TYPE_HUMIDITY = 'humidity';
+    const TYPE_INFO = 'info';
 
     protected $casts = ['active' => 'boolean'];
     protected $guarded = ['id'];
 
-    public static function getFullTypeNameIds()
+    public static function getFullTypeIds()
     {
         return [
-            self::TYPE_NAME_SWITCH => 'Переключатель',
-            self::TYPE_NAME_BUTTON => 'Кнопка',
-            self::TYPE_NAME_TEMP => 'Термометр',
-            self::TYPE_NAME_HUMIDITY => 'Гигрометр',
-            self::TYPE_NAME_INFO => 'Инфопанель',
+            self::TYPE_SWITCH => 'Переключатель',
+            self::TYPE_BUTTON => 'Кнопка',
+            self::TYPE_TEMP => 'Термометр',
+            self::TYPE_HUMIDITY => 'Гигрометр',
+            self::TYPE_INFO => 'Инфопанель',
         ];
     }
 
-    public static function getTypeNameIds()
+    public static function getTypeIds()
     {
-        return array_keys(self::getFullTypeNameIds());
+        return array_keys(self::getFullTypeIds());
     }
 
-    public static function getTypeNameById($id) {
-        return self::getFullTypeNameIds()[$id] ?? '';
+    public static function getTypeById($id) {
+        return self::getFullTypeIds()[$id] ?? '';
     }
 
     /* attributes */
 
-    public function getPartOfTitle($prefix = 'on', $part = 'top')
+    public function getPartOfTitle($part = 'top')
     {
         try {
-            if (empty($this->{$prefix.'_title'})) {
+            if (empty($this->title)) {
                 return '';
             }
 
-            return explode('<br>', $this->{$prefix.'_title'})[$part === 'top' ? 0 : 1] ?? '';
+            return explode('<br>', $this->title)[$part === 'top' ? 0 : 1] ?? '';
 
         } catch (\Throwable $e) {
-            \Log::alert('Некорректные данные в отображении № '.$this->id.' в поле '.$prefix.'_title');
+            \Log::alert('Некорректные данные в отображении № '.$this->id.' в поле title');
         }
 
         return '';
     }
 
-    public function getOnTitleTopAttribute()
+    public function getTitleTopAttribute()
     {
-        return $this->getPartOfTitle('on','top');
+        return $this->getPartOfTitle('top');
     }
 
-    public function getOnTitleBottomAttribute()
+    public function getTitleBottomAttribute()
     {
-        return $this->getPartOfTitle('on','bottom');
+        return $this->getPartOfTitle('bottom');
     }
 
-    public function getOffTitleTopAttribute()
+    public function getIconImageAttribute()
     {
-        return $this->getPartOfTitle('off','top');
-    }
-
-    public function getOffTitleBottomAttribute()
-    {
-        return $this->getPartOfTitle('off','bottom');
+        return $this->icon;
     }
 
     public function getIsActiveAttribute()
@@ -149,19 +126,14 @@ class View extends Model
         return $this->active ? 'Да' : 'Нет';
     }
 
-    public function getShortOnTitleAttribute()
+    public function getShortTitleAttribute()
     {
-        return str_replace('<br>',' | ',$this->on_title);
+        return str_replace('<br>',' | ',$this->title);
     }
 
-    public function getShortOffTitleAttribute()
+    public function getRusTypeAttribute()
     {
-        return str_replace('<br>',' | ',$this->off_title);
-    }
-
-    public function getRusTypeNameAttribute()
-    {
-        return self::getTypeNameById($this->type_name);
+        return self::getTypeById($this->type);
     }
 
     public function getRoomNameAttribute()
@@ -187,23 +159,13 @@ class View extends Model
         return optional($this->eobject)->name;
     }
 
-    public function getImagePath(string $prefix)
+    public function getIconPathAttribute()
     {
-        if (empty($this->{$prefix.'_image'})) {
+        if (empty($this->icon) || $this->icon === 'noimage') {
             return ImageService::NO_IMAGE_PATH;
         }
 
-        return ImageService::VIEW_PATH.'/'.$this->{$prefix.'_image'};
-    }
-
-    public function getOnImagePathAttribute()
-    {
-        return $this->getImagePath('on');
-    }
-
-    public function getOffImagePathAttribute()
-    {
-        return $this->getImagePath('off');
+        return ImageService::VIEW_PATH.'/'.$this->icon . '.svg';
     }
 
     /* relations */

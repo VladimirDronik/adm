@@ -29,8 +29,7 @@
                             {{ Form::bs_alert() }}
                             {{ Form::bs_title('Основные данные') }}
 
-                            {{ Form::bs_radio('type_name', 'Тип элемента*:', $types, null, ['required' => true]) }}
-                            {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
+                            {{ Form::bs_radio('type', 'Тип элемента*:', $types, null, ['required' => true]) }}
                             {{ Form::bs_text('description', 'Описание:') }}
                             {{ Form::bs_checkbox('active', 'Активность:', true) }}
 
@@ -39,14 +38,10 @@
 
                             {{ Form::bs_title('Текст и графика') }}
 
-                            {{ Form::bs_text('on_title_top','Надпись при включении:', null, [], 'Верхняя строка') }}
-                            {{ Form::bs_text('on_title_bottom','', null, [], 'Нижняя строка') }}
+                            {{ Form::bs_text('title_top','Надпись:', null, [], 'Верхняя строка') }}
+                            {{ Form::bs_text('title_bottom','', null, [], 'Нижняя строка') }}
 
-                            {{ Form::bs_text('off_title_top','Надпись при выключении:', null, [], 'Верхняя строка') }}
-                            {{ Form::bs_text('off_title_bottom','', null, [], 'Нижняя строка') }}
-
-                            {{ Form::bs_image('on','Изображение при включении:',old('on_image',\App\Services\ImageService::NO_IMAGE_PATH)) }}
-                            {{ Form::bs_image('off','Изображение при выключении:',old('off_image',\App\Services\ImageService::NO_IMAGE_PATH)) }}
+                            {{ Form::bs_image('icon','Изображение:', old('icon_image',\App\Services\ImageService::NO_IMAGE_PATH)) }}
 
                             {{ Form::bs_title('Расположение') }}
 
@@ -122,11 +117,8 @@
         }
 
         function validateView() {
-            if (!$("input[name=type_name]:checked").val()) {
+            if (!$("input[name=type]:checked").val()) {
                 return 'Не указан тип элемента';
-            }
-            if (isEmptyInput('name')) {
-                return 'Не указано название';
             }
             if (!$("select[name=room]").val()) {
                 return 'Не указано помещение';
