@@ -41,10 +41,10 @@
 
                         {{ Form::bs_title('Текст и графика') }}
 
-                        {{ Form::bs_text('title_top','Надпись при включении:', null, [], 'Верхняя строка') }}
+                        {{ Form::bs_text('title_top','Надпись:', null, [], 'Верхняя строка') }}
                         {{ Form::bs_text('title_bottom','', null, [], 'Нижняя строка') }}
 
-                        {{ Form::bs_image('icon','Изображение при включении:', old('icon_image', $view->icon_path)) }}
+                        {{ Form::bs_image('icon','Изображение:', old('icon_image', $view->icon_path)) }}
 
                         {{ Form::bs_title('Расположение') }}
 
