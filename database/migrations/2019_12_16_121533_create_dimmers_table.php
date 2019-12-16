@@ -13,10 +13,18 @@ class CreateDimmersTable extends Migration
      */
     public function up()
     {
-        Schema::create('dimmers', function (Blueprint $table) {
-            $table->increments('id');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('dimmers')) {
+            Schema::create('dimmers', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name', 100);
+                $table->unsignedInteger('id_object')->nullable();
+                $table->tinyInteger('value');
+                $table->tinyInteger('speed');
+
+                $table->foreign('id_object')->references('id')->on('objects')
+                    ->onUpdate('cascade')->onDelete('set null');
+            });
+        }
     }
 
     /**

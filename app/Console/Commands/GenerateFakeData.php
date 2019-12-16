@@ -33,7 +33,7 @@ class GenerateFakeData extends Command
 
     public function handle()
     {
-        $tables = ['Users', 'Objects', 'Scripts', 'Devices', 'Dimmies',
+        $tables = ['Users', 'Objects', 'Scripts', 'Devices', 'Dimmers',
             'Rooms', 'Methods', 'Termostats', 'Scenes', 'Counts', 'ViewItems', 'SchedulerTasks',
             'GraphCounts', 'GraphTermostats', 'GraphLights', 'GraphHumidities', 'Logs'];
 
