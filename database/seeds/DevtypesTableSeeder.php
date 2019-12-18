@@ -26,6 +26,10 @@ class DevtypesTableSeeder extends Seeder
                 'port_numbers' => 'in 0 6;out 7 13;in 15 21;out 22 28'
             ],
             [
+                'name' => 'MegaD-2561',
+                'port_numbers' => 'in 0 13;out 15 28'
+            ],
+            [
                 'name' => 'Mega328',
                 'port_numbers' => 'in 0 7;out 8 14'
             ],
