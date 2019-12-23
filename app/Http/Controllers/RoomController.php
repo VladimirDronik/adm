@@ -31,7 +31,11 @@ class RoomController extends Controller
 
     public function edit(Room $room)
     {
-        return view('rooms.edit', compact('room'));
+        if ($room->is_group) {
+            return view('rooms.edit_group', compact('room'));
+        }
+
+        return view('rooms.edit_room', compact('room'));
     }
 
     public function update(UpdateRequest $r, Room $room)

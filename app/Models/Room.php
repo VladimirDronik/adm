@@ -39,6 +39,18 @@ class Room extends Model
         return Color::getStyleByColor($this->style);
     }
 
+    /* scopes */
+
+    public function scopeGroup($query)
+    {
+        $query->where('is_group', 1);
+    }
+
+    public function scopeRoom($query)
+    {
+        $query->where('is_group', 0);
+    }
+
     /* relations */
 
     public function termostats()
@@ -49,5 +61,10 @@ class Room extends Model
     public function temperature()
     {
         return $this->hasOne(Temperature::class, 'id_room');
+    }
+
+    public function rooms()
+    {
+        return $this->hasMany(Room::class, 'group_room')->group();
     }
 }

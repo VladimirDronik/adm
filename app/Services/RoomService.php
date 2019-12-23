@@ -116,7 +116,6 @@ class RoomService {
     {
         DB::transaction(function() use ($room, $data) {
 
-            $room->lighting = (int)$data['lighting'];
             $room->save();
 
             $temperature = Temperature::where('id_room', $room->id)->first();

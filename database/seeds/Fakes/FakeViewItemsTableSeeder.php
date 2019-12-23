@@ -26,6 +26,9 @@ class FakeViewItemsTableSeeder extends Seeder
             $object = rand(0, 10) > 4 ? $objects[rand(0, count($objects)-1)] : null;
             $left = rand(0, 10) > 6 ? null : rand(50, 80);
             $top = is_null($left) ? null : rand(50, 90);
+            $room = rand(0, 10) > 6 ? null : $rooms[rand(0, count($rooms)-1)];
+            $room_group = (!is_null($room) &&  $room->is_group)
+                ? $room->group_foom : null;
             $views[] = [
                 'type' => $typeName,
                 'description' => $faker->sentence,
@@ -36,7 +39,8 @@ class FakeViewItemsTableSeeder extends Seeder
                 'title' => 'стол<br>свет вкл',
                 'position_left' => $left,
                 'position_top' => $top,
-                'room' => rand(0, 10) > 6 ? null : $rooms[rand(0, count($rooms)-1)]->id,
+                'room' => is_null($room) ? null : $room->id,
+                'room_group' => $room_group,
                 'scene' => rand(0, 10) > 6 ? null : $scenes[rand(0, count($scenes)-1)]->id,
                 'sort' => $i + 1,
                 'active' => rand(0, 10) > 6 ? 0 : 1

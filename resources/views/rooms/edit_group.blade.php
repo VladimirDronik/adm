@@ -53,11 +53,6 @@
                         {{ Form::bs_number('temperature_eco', 'Экорежим*:', old('temperature_eco', $room->temperature->eco ?? ''),
                             ['min' => 10, 'max' => 30, 'required' => true],'От 10 до 30') }}
 
-                        {{ Form::bs_title('Другие настройки') }}
-
-                        {{ Form::bs_number('lighting', 'Порог освещенности*:', old('lighting', $room->lighting),
-                            ['min' => 0, 'max' => 1024, 'required' => true],'От 0 до 1024') }}
-
                     </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
