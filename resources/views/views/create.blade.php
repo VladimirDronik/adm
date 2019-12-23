@@ -38,8 +38,7 @@
 
                             {{ Form::bs_title('Текст и графика') }}
 
-                            {{ Form::bs_text('title_top','Надпись:', null, [], 'Верхняя строка') }}
-                            {{ Form::bs_text('title_bottom','', null, [], 'Нижняя строка') }}
+                            {{ Form::bs_text('title','Надпись:') }}
 
                             {{ Form::bs_image('icon','Изображение:', old('icon_image',\App\Services\ImageService::NO_IMAGE_PATH)) }}
 

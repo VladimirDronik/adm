@@ -128,7 +128,7 @@ class View extends Model
 
     public function getShortTitleAttribute()
     {
-        return str_replace('<br>',' | ',$this->title);
+        return str_replace('<br>',' | ', $this->title);
     }
 
     public function getRusTypeAttribute()

@@ -544,12 +544,9 @@
             }
 
             function getYearDateButtonHtml(date) {
-                let html = `
-                    <button type="button" data-date="${date}" class="btn btn-outline-info btn-outline btn-addon m-b-10 m-l-5 year_date_btn">
+                return `<button type="button" data-date="${date}" class="btn btn-outline-info btn-outline btn-addon m-b-10 m-l-5 year_date_btn">
                         ${date} <i class="ti-close"></i>
-                    </button>
-                `;
-                return html;
+                    </button>`;
             }
 
             function addYearDateToList(date) {

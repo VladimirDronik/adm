@@ -6,15 +6,9 @@ use App\Models\View;
 
 class ViewService {
 
-    public function concatTitles(array $data)
-    {
-        return trim($data['title_top'] ?? '')
-            .'<br>'.trim($data['title_bottom'] ?? '');
-    }
-
     public function prepareView(View $view, array $data)
     {
-        $view->title = $this->concatTitles($data);
+        $view->title = trim($data['title']);
         $view->type = trim($data['type']);
         $view->scene = $data['scene'] ?? null;
         $view->position_top = (int)$data['position_top'];
