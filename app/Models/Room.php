@@ -39,6 +39,16 @@ class Room extends Model
         return Color::getStyleByColor($this->style);
     }
 
+    public function getPrefixNameAttribute()
+    {
+        return ($this->is_group ? 'Группа' : 'Помещение') .'«'.$this->name.'»';
+    }
+
+    public function getIsSeparateRoomAttribute()
+    {
+        return !$this->is_group && is_null($this->group_room);
+    }
+
     /* scopes */
 
     public function scopeGroup($query)
@@ -66,5 +76,10 @@ class Room extends Model
     public function rooms()
     {
         return $this->hasMany(Room::class, 'group_room')->group();
+    }
+
+    public function roomGroup()
+    {
+        return $this->belongsTo(Room::class, 'group_room');
     }
 }

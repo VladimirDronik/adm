@@ -6,6 +6,8 @@ use App\Models\Color;
 
 class FakeRoomsTableSeeder extends Seeder
 {
+    const GROUP_COUNT = 4;
+
     private $images;
     private $colors;
     private $room_names;
@@ -30,36 +32,19 @@ class FakeRoomsTableSeeder extends Seeder
 
     private function getGroups(): array
     {
-        return [
-            [
-                'name' => '1-й этаж',
-                'image' => '1et_.svg',
-                'style' => 'blue',
-                'sort' => 3,
+        $groups = [];
+
+        for ($i = 0; $i < self::GROUP_COUNT; $i++) {
+            $groups[] = [
+                'name' => ($i + 1).'-й этаж',
+                'image' => $this->getRandImage(),
+                'style' => $this->getRandColor(),
+                'sort' => $i + 1,
                 'is_group' => 1
-            ],
-            [
-                'name' => '2-й этаж',
-                'image' => '2et_.svg',
-                'style' => 'green',
-                'sort' => 2,
-                'is_group' => 1
-            ],
-            [
-                'name' => '3-й этаж',
-                'image' => 'kuhn.png',
-                'style' => 'blue',
-                'sort' => 1,
-                'is_group' => 1
-            ],
-            [
-                'name' => 'Улица',
-                'image' => 'ulica.svg',
-                'style' => 'red',
-                'sort' => 4,
-                'is_group' => 1
-            ],
-        ];
+            ];
+        }
+
+        return $groups;
     }
 
     private function getRooms(): array

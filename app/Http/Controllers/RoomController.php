@@ -22,11 +22,12 @@ class RoomController extends Controller
 
     public function index()
     {
-        $rooms = $this->room_rep->getPaginationSpecialRooms();
+        $rooms = $this->room_rep->getPaginationGroupsAndSeparateRooms();
+        $groups = $this->room_rep->getRoomGroups();
         $colors = ColorService::getAll();
         $images = ImageService::getRoomImages();
 
-        return view('rooms.index', compact('rooms', 'colors', 'images'));
+        return view('rooms.index', compact('rooms', 'groups', 'colors', 'images'));
     }
 
     public function edit(Room $room)
@@ -50,6 +51,5 @@ class RoomController extends Controller
         }
 
         return back()->withInput($r->all())->with('error','Ошибка при изменении настроек помещения');
-
     }
 }

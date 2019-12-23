@@ -1,7 +1,11 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs', ['title' => 'Помещения'])
+    @includeIf('components.breadcrumbs', [
+            'title' => 'Помещения группы «'.$group->name.'»',
+            'links' => [route('rooms.index') => 'Помещения'],
+            'last_link' => 'Помещения группы'
+        ])
 @endsection
 
 @section('content')
@@ -12,7 +16,7 @@
                 <div class="row">
                     <div class="col-md-12 col-lg-10">
                         @if(count($rooms))
-                            @include('rooms.tab_header', ['active' => 'groups'])
+                            @include('rooms.tab_header', ['active' => $group->id])
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
@@ -34,7 +38,7 @@
                                                 <a href="#" id="nameRoom_{{ $room->id }}"
                                                    onclick="edit_name({{ $room->id }});"
                                                    data-toggle="modal"
-                                                   data-target="#nameRoomModal">{{ $room->prefix_name }}</a>
+                                                   data-target="#nameRoomModal">{{ $room->name }}</a>
                                             </td>
                                             <td><img src="{{ asset('ela/images/rooms/'.$room->image) }}"
                                                      id="imageRoom_{{ $room->id }}" class="imageRoom"
@@ -205,8 +209,8 @@
 @section('scripts')
     <script src="{{ asset('ela/js/pagescripts/room.js') }}"></script>
     <script>
+        const url = '{{ route('rooms.group.index', [$group->id]) }}';
         let del_id;
-        const url = '{{ route('rooms.index') }}';
 
         function changeSort(id, direction) {
             $.ajax({

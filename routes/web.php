@@ -21,11 +21,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('counts', 'CountController')->except('show','destroy');
     Route::resource('dimmers', 'DimmerController')->except('show','destroy');
     Route::resource('settings', 'SettingController')->except('show','destroy');
-    Route::resource('rooms', 'RoomController')->except('show','create','store','destroy');
     Route::resource('scenes', 'SceneController')->except('show','destroy');
     Route::resource('termostats', 'TermostatController')->except('show','destroy');
     Route::resource('events', 'EventController')->except('show','destroy');
     Route::resource('logs', 'LogController')->only('index');
+
+    Route::resource('rooms', 'RoomController')->except('show','create','store','destroy');
+    Route::get('rooms/group/{id}', 'RoomGroupController@index')->name('rooms.group.index');
 
     Route::get('network', 'NetworkController@edit')->name('network.edit');
     Route::put('network', 'NetworkController@update')->name('network.update');

@@ -11,17 +11,37 @@ class RoomRepository
         return Room::orderBy('sort')->get();
     }
 
-    public function getPaginationSpecialRooms($pagination_count = 30)
+    public function getRoomGroups()
     {
-        return Room::orderBy('sort')->paginate($pagination_count);
+        return Room::group()->orderBy('name')->get();
     }
 
-    public function getAllToArray()
+    public function getPaginationGroupsAndSeparateRooms(int $pagination_count = 30)
     {
-        return [0 => Room::COMMON_NAME] + $this->getSpecialRooms()->pluck('name', 'id')->toArray();
+        return Room::group()
+            ->orWhere(function ($query) {
+                $query->room()->whereNull('group_room');
+            })->orderBy('sort')->paginate($pagination_count);
     }
 
-    public function getRoomName($room_id, $rooms = null)
+    public function getPaginationGroupRooms(int $groupId, int $pagination_count = 30)
+    {
+        return Room::room()->where('group_room', $groupId)
+            ->orderBy('sort')->paginate($pagination_count);
+    }
+
+    public function getGroup($id)
+    {
+        return Room::group()->where('id', $id)->first();
+    }
+
+    public function getAllToArray(): array
+    {
+        return [0 => Room::COMMON_NAME] +
+            $this->getSpecialRooms()->pluck('name', 'id')->toArray();
+    }
+
+    public function getRoomName($room_id, $rooms = null): string
     {
         if ($room_id === '') {
             return '';

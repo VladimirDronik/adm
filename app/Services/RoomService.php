@@ -6,7 +6,8 @@ use App\Models\Room;
 use App\Models\Temperature;
 use Illuminate\Support\Facades\DB;
 
-class RoomService {
+class RoomService
+{
 
     public function delete(int $id)
     {
@@ -17,13 +18,52 @@ class RoomService {
         }
 
         DB::transaction(function () use ($room) {
-            Room::where('sort','>', max($room->sort, 0))->update([
+            Room::where('sort', '>', max($room->sort, 0))->update([
                 'sort' => DB::raw('sort-1'),
             ]);
             $room->delete();
         });
 
         return true;
+    }
+
+    private function getSortMin($room): int
+    {
+        if ($room->is_group || $room->is_separate_room) {
+            return Room::group()
+                ->orWhere(function ($query) {
+                    $query->room()->whereNull('group_room');
+                })->min('sort');
+        }
+
+        return Room::room()->where('group_room', $room->group_room)->min('sort');
+    }
+
+    private function getSortMax($room): int
+    {
+        if ($room->is_group || $room->is_separate_room) {
+            return Room::group()
+                ->orWhere(function ($query) {
+                    $query->room()->whereNull('group_room');
+                })->max('sort');
+        }
+
+        return Room::room()->where('group_room', $room->group_room)->max('sort');
+    }
+
+    private function updatePreviousSortRoom($room, $previous_sort)
+    {
+        if ($room->is_group || $room->is_separate_room) {
+            Room::where(function ($query) {
+                $query->group()
+                    ->orWhere(function ($query) {
+                        $query->room()->whereNull('group_room');
+                    });
+            })->where('sort', $room->sort)->update(['sort' => $previous_sort]); info($room->sort);
+        } else {
+            Room::room()->where('group_room', $room->group_room)
+                ->where('sort', $room->sort)->update(['sort' => $previous_sort]);  info('+'.$room->sort);
+        }
     }
 
     public function sort(array $data)
@@ -34,9 +74,9 @@ class RoomService {
             return false;
         }
 
-        $min = Room::min('sort');
-        $max = Room::max('sort');
-
+        $min = $this->getSortMin($room);
+        $max = $this->getSortMax($room);
+info($min); info($max);
         if (($room->sort === $min && $data['direction'] === 'up')
             || ($room->sort === $max && $data['direction'] === 'down')) {
             return true;
@@ -44,9 +84,9 @@ class RoomService {
 
         $previous_sort = $room->sort;
         $room->sort += $data['direction'] === 'up' ? -1 : 1;
-
+info($previous_sort); info($room->sort);
         DB::transaction(function () use ($room, $previous_sort) {
-            Room::where('sort', $room->sort)->update(['sort' => $previous_sort]);
+            $this->updatePreviousSortRoom($room, $previous_sort);
             $room->save();
         });
 
@@ -86,7 +126,9 @@ class RoomService {
 
         $room->sort = Room::max('sort') + 1;
 
-        array_walk($data, function (&$value) { $value = trim($value); });
+        array_walk($data, function (&$value) {
+            $value = trim($value);
+        });
 
         $room->name = $this->setNameIfEmpty($data['name']);
         $room->image = $this->setImageIfEmpty($data['image']);
@@ -114,7 +156,7 @@ class RoomService {
 
     public function update(Room $room, array $data)
     {
-        DB::transaction(function() use ($room, $data) {
+        DB::transaction(function () use ($room, $data) {
 
             $room->save();
 
