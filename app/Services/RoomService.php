@@ -18,9 +18,24 @@ class RoomService
         }
 
         DB::transaction(function () use ($room) {
-            Room::where('sort', '>', max($room->sort, 0))->update([
-                'sort' => DB::raw('sort-1'),
-            ]);
+            if ($room->is_group || $room->is_separate_room) {
+                if ($room->is_group) {
+                    Room::room()->where('group_room', $room->id)->delete();
+                }
+                Room::where(function ($query) {
+                    $query->group()
+                        ->orWhere(function ($query) {
+                            $query->room()->whereNull('group_room');
+                        });
+                })->where('sort', '>', max($room->sort, 0))->update([
+                    'sort' => DB::raw('sort-1'),
+                ]);
+            } else {
+                Room::room()->where('group_room', $room->group_room)
+                    ->where('sort', '>', max($room->sort, 0))->update([
+                    'sort' => DB::raw('sort-1'),
+                ]);
+            }
             $room->delete();
         });
 
@@ -59,10 +74,10 @@ class RoomService
                     ->orWhere(function ($query) {
                         $query->room()->whereNull('group_room');
                     });
-            })->where('sort', $room->sort)->update(['sort' => $previous_sort]); info($room->sort);
+            })->where('sort', $room->sort)->update(['sort' => $previous_sort]);
         } else {
             Room::room()->where('group_room', $room->group_room)
-                ->where('sort', $room->sort)->update(['sort' => $previous_sort]);  info('+'.$room->sort);
+                ->where('sort', $room->sort)->update(['sort' => $previous_sort]);
         }
     }
 
@@ -76,7 +91,7 @@ class RoomService
 
         $min = $this->getSortMin($room);
         $max = $this->getSortMax($room);
-info($min); info($max);
+
         if (($room->sort === $min && $data['direction'] === 'up')
             || ($room->sort === $max && $data['direction'] === 'down')) {
             return true;
@@ -84,7 +99,7 @@ info($min); info($max);
 
         $previous_sort = $room->sort;
         $room->sort += $data['direction'] === 'up' ? -1 : 1;
-info($previous_sort); info($room->sort);
+
         DB::transaction(function () use ($room, $previous_sort) {
             $this->updatePreviousSortRoom($room, $previous_sort);
             $room->save();
@@ -120,11 +135,14 @@ info($previous_sort); info($room->sort);
         return $color;
     }
 
-    public function store(array $data)
+    private function storeGroup(array $data)
     {
         $room = new Room();
 
-        $room->sort = Room::max('sort') + 1;
+        $room->is_group = 1;
+        $room->group_room = null;
+
+        $room->sort = $this->getSortMax($room) + 1;
 
         array_walk($data, function (&$value) {
             $value = trim($value);
@@ -137,6 +155,39 @@ info($previous_sort); info($room->sort);
         $room->save();
 
         return $room->id;
+    }
+
+    private function storeRoom(array $data)
+    {
+        // todo if ($data['group_id'] == '0') ///
+        $group = Room::group()->where('id', $data['group_id'])->first();
+        $room = new Room();
+
+        $room->is_group = 0;
+        $room->group_room = $data['group_id'];
+
+        $room->sort = $this->getSortMax($room) + 1;
+
+        array_walk($data, function (&$value) {
+            $value = trim($value);
+        });
+
+        $room->name = $this->setNameIfEmpty($data['name']);
+        $room->image = $this->setImageIfEmpty($data['image']);
+        $room->style = $this->setColorIfEmpty($data['style']);
+
+        $room->save();
+
+        return $room->id;
+    }
+
+    public function store(array $data)
+    {
+        if ($data['type'] === 'group') {
+            return $this->storeGroup($data);
+        }
+
+        return $this->storeRoom($data);
     }
 
     public function updateName(int $id, string $name)

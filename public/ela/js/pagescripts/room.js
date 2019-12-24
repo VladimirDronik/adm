@@ -105,3 +105,76 @@ function updateColor(id, mode=true) {
     sessionStorage.setItem('idSelectRoom', id);
     sessionStorage.setItem('updateColor', mode);
 }
+
+function changeSort(id, direction) {
+    $.ajax({
+        url: sortUrl,
+        data: {'_token': _token, 'id': id, 'direction': direction},
+        success: function (data) {
+            if (data.result) {
+                window.location.href = url;
+            } else {
+                showErrorModal('Ошибка при сохранении изменений');
+            }
+        }
+    });
+}
+
+function del() {
+    $('#del_modal').modal('hide');
+    if (del_id) {
+        $.ajax({
+            url: deleteUrl,
+            data: {'_token': _token, 'id': del_id},
+            success: function (data) {
+                if (data.result) {
+                    window.location.href = url;
+                } else {
+                    showErrorModal('Ошибка при удалении');
+                }
+            }
+        });
+    }
+}
+
+function storeRoom() {
+    const name = $("#addNewRoom #nameRoom").val().trim();
+    const image = sessionStorage.getItem('imageRoom');
+    const style = sessionStorage.getItem('colorRoom');
+    const group_id = $("#addNewRoom #groupId").val();
+
+    sessionStorage.setItem('imageRoom', 'noimage.png');
+
+    $.ajax({
+        url: storeUrl,
+        data: {'_token': _token, 'name': name, 'image': image,
+            'style': style, 'group_id': group_id, 'type': 'room'},
+        success: function (data) {
+            if (data.result) {
+                window.location.href = url;
+            } else {
+                showErrorModal('Ошибка при добавлении помещения');
+            }
+        }
+    });
+}
+
+function storeGroup() {
+    const name = $("#addNewGroup #nameGroup").val().trim();
+    const image = sessionStorage.getItem('imageRoom');
+    const style = sessionStorage.getItem('colorRoom');
+
+    sessionStorage.setItem('imageRoom', 'noimage.png');
+
+    $.ajax({
+        url: storeUrl,
+        data: {'_token': _token, 'name': name, 'image': image, 'style': style, 'type': 'group'},
+        success: function (data) {
+            if (data.result) {
+                window.location.href = url;
+            } else {
+                showErrorModal('Ошибка при добавлении группы');
+            }
+        }
+    });
+}
