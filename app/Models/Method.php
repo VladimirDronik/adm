@@ -51,8 +51,8 @@ class Method extends Model
 
     private function getEasySecondPart($index)
     {
-        $ar = explode(";",$this->easy);
-        return explode(":",$ar[1] ?? 'отсутствует')[$index] ?? 'отсутствует';
+        $ar = explode(";", $this->easy);
+        return explode(":", $ar[1] ?? 'отсутствует')[$index] ?? 'отсутствует';
     }
 
     public function getPortAttribute()
@@ -76,10 +76,15 @@ class Method extends Model
     public function getDeviceIdAttribute()
     {
         if ($this->type === 'easy') {
-            return explode(";",$this->easy)[0] ?? 'отсутствует';
+            return explode(";", $this->easy)[0] ?? 'отсутствует';
         }
 
         return 'отсутствует';
+    }
+
+    public function getIsNeedParamAttribute()
+    {
+        return !is_null($this->params);
     }
 
     /* relations */

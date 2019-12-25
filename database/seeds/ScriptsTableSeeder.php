@@ -42,6 +42,12 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
+    /**
+     * Изменение скриптов в этой функции влияет на методы, которые
+     * автоматически создаются для объекта диммера
+     *
+     * @return array
+     */
     public static function getDimmerScripts(): array
     {
         return [
@@ -70,7 +76,7 @@ class ScriptsTableSeeder extends Seeder
                 'system' => 1
             ],
             [
-                'name' => 'Установить яркость диммера',
+                'name' => 'Установить яркость диммера', // изменение названия этого скрипта влияет на код в DimmerObjectService
                 'link' => 'set_dimmer.php',
                 'count' => 0,
                 'system' => 1

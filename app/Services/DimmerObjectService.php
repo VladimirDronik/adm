@@ -67,6 +67,7 @@ class DimmerObjectService {
                 'id_object' => $object_id,
                 'script' => $script_id,
                 'comment' => $script['name'],
+                'params' => mb_strpos($script['name'], 'Установить', 0, 'UTF-8') !== false ? 'Яркость (целое, 0-100)' : null,
                 'is_system' => 1
             ];
         }

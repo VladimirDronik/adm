@@ -11,6 +11,9 @@
                 <div class="form-group row" id="div{{$method->id}}">
                     <label class="col-md-5" id="name{{$method->id}}">
                         {{$method->name}}
+                        @if($method->is_need_param)
+                            <i class="fa fa-asterisk f-s-10" title="Метод с параметром"></i>
+                        @endif
                     </label>
                     <div class="col-md-7" id="comment{{$method->id}}">
                         {{ $method->comment }}
