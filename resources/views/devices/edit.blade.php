@@ -255,7 +255,6 @@
     <button type="button" id="methods_modal_init_btn" style="display: none;"
             data-toggle="modal" data-target="#methodsModal">&nbsp;</button>
 
-
     <div id="paramsModal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -419,7 +418,7 @@
                 const params = $('#paramsModal #param').val().trim();
                 const methodId = $('#paramsModal #paramsMethodId').val();
                 if (params === '') {
-                    $('#paramsModal #params_error_text').val('Не указано значение');
+                    $('#paramsModal #params_error_text').text('Не указано значение');
                     $('#paramsModal #params_error_div').show();
                     return false;
                 }
@@ -439,6 +438,9 @@
                 } else {
                     $('#paramsModal #paramsMethodId').val(methodId);
                     $('#paramsModal #paramsLabel').text(params + ':');
+                    $('#paramsModal #param').val('');
+                    $('#paramsModal #params_error_text').text('');
+                    $('#paramsModal #params_error_div').hide();
                     $('#params_modal_init_btn').click();
                 }
 
