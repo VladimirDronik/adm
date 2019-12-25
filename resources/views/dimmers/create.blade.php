@@ -23,7 +23,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::open(['route' => 'dimmers.store', 'method' => 'post', 'id' => 'dimmer_form', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::open(['route' => 'dimmers.store', 'method' => 'post', 'id' => 'dimmer_form',
+                        'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
@@ -70,9 +71,11 @@
                                 <div class="row" id="auto_object_div">
                                     <div class="col-sm-11 pr-0">
                                         <p>При создании диммера будет создан объект с таким же названием.
-                                            У объекта будут созданы методы «Проверка диммера» и «Обнуление диммера».
-                                            Для методов будут созданы соответствующие события «Проверка счетчика» (каждый час)
-                                            и «Обнуление счетчика» (каждый день в 23:55). TODO
+                                            У объекта будут созданы методы
+                                            «Включить диммер», «Выключить диммер»,
+                                            «Увеличить яркость диммера», «Уменьшить яркость диммера»,
+                                            «Установить яркость диммера».
+                                            У методов будут соответствующие скрипты.
                                         </p>
                                     </div>
                                 </div>
@@ -151,7 +154,7 @@
                 createObjectSelect('#auto_sel_id_object', objects, selected);
             }
 
-            $('#count_form [name=object_type]').change(function(){
+            $('#dimmer_form [name=object_type]').change(function(){
                 if ($(this).val() === 'manual') {
                     $('#auto_object_div').hide();
                     $('#manual_object_div').show();

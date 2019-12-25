@@ -26,8 +26,8 @@ class CreateRequest extends FormRequest
         return [
             'name' => 'required|string|max:100',
             'id_object' => 'nullable|integer|min:1',
-            'value' => 'required|numeric',
-            'speed' => 'required|numeric|min:0'
+            'value' => 'required|numeric|max:127',
+            'speed' => 'required|numeric|min:0|max:127'
         ];
     }
 
@@ -37,6 +37,8 @@ class CreateRequest extends FormRequest
             'name.required' => 'Не указано название',
             'value.required' => 'Не указано значение',
             'speed.required' => 'Не указана скорость',
+            'value.max' => 'Значение не может быть более 127',
+            'speed.max' => 'Скорость не может быть более 127',
         ];
     }
 }

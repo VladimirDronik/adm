@@ -22,6 +22,7 @@ class ObjType extends Model
 {
     const TYPE_COUNT = 'count';
     const TYPE_TERMOSTAT = 'termostat';
+    const TYPE_DIMMER = 'dimmer';
 
     protected $table = 'objtypes';
     public $timestamps = false;

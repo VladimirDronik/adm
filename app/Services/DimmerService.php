@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Count;
 use App\Models\Dimmer;
 use App\Models\HomeObject;
 use Illuminate\Support\Facades\DB;
@@ -16,11 +15,9 @@ class DimmerService {
         $this->dimmer_object_service = $dimmer_object_service;
     }
 
-    // todo below
-
     /**
-     * Удаление диммера. Если связанный объект системный, то удаление объекта, методов, событий,
-     * созданных автоматически при создании счетчика
+     * Удаление диммера. Если связанный объект системный, то еще удаление его объекта и методов,
+     * созданных автоматически при создании диммера
      *
      * @param int $id
      * @return bool
@@ -32,9 +29,8 @@ class DimmerService {
 
         if ($dimmer->object && $dimmer->object->is_system) {
             DB::transaction(function () use (&$dimmer) {
-                // todo
-                if (!HomeObject::isObjectUsed($count->id_object, $count->id, 'counts')) {
-                    HomeObject::deleteAutoObject($count->id_object);
+                if (!HomeObject::isObjectUsed($dimmer->id_object, $dimmer->id, 'dimmers')) {
+                    HomeObject::deleteAutoObject($dimmer->id_object);
                 }
                 $dimmer->delete();
             });
@@ -48,14 +44,14 @@ class DimmerService {
     public function prepareDimmer(Dimmer $dimmer, array $data)
     {
         $dimmer->name = trim($data['name']);
-        $dimmer->id_object = (int)$data['id_object'];
+        $dimmer->id_object = is_null($data['id_object']) ? null : (int)$data['id_object'];
         $dimmer->value = (int)$data['value'];
         $dimmer->speed= (int)$data['speed'];
     }
 
     /**
      * Создание диммера. Если $data['type'] === 'auto',
-     * то еще создается объект с методами и событиями.
+     * то еще создается объект с методами
      *
      * @param array $data
      * @return int
@@ -71,8 +67,8 @@ class DimmerService {
         } else if ($data['object_type'] === 'auto') {
             DB::transaction(function () use (&$dimmer) {
                 $unique_name = HomeObject::getUniqueObjectName(0, $dimmer->name);
-                $object = $this->dimmer_object_service->createCountObject($unique_name);
-                $this->dimmer_object_service->createCountObjectMethodsWithEvents($object->id);
+                $object = $this->dimmer_object_service->createDimmerObject($unique_name);
+                $this->dimmer_object_service->createDimmerObjectMethods($object->id);
                 $dimmer->id_object = $object->id;
                 $dimmer->save();
             });
@@ -81,9 +77,9 @@ class DimmerService {
         return $dimmer->id;
     }
 
-    private function isUpdateAutoObjectName(Count $count, string $name): bool
+    private function isUpdateAutoObjectName(Dimmer $dimmer, string $name): bool
     {
-        return $count->name !== trim($name) && $count->object && $count->object->is_system;
+        return $dimmer->name !== trim($name) && $dimmer->object && $dimmer->object->is_system;
     }
 
     /**

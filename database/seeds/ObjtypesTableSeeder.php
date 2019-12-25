@@ -69,6 +69,10 @@ class ObjtypesTableSeeder extends Seeder
                 'name' => 'reley',
                 'label' => 'Реле'
             ],
+            [
+                'name' => ObjType::TYPE_DIMMER,
+                'label' => 'Диммер'
+            ]
         ];
     }
 

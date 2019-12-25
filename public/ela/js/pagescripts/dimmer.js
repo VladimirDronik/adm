@@ -1,5 +1,5 @@
 function isEmptyInput(name) {
-    return $('#count_form input[name='+name+']').val().trim() == '';
+    return $('#dimmer_form input[name='+name+']').val().trim() == '';
 }
 
 function isEmptyAutoSelect(name) {

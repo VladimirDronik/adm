@@ -6,7 +6,7 @@
             </div>
             <div class="modal-body text-left" id="del_modal_body" style="font-size: larger;"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" id="del_modal_btn">Удалить</button>
+                <button type="button" class="btn btn-success" id="del_modal_btn" data-dismiss="modal">Удалить</button>
                 <button type="button" class="btn btn-default" id="del_cancel_btn" data-dismiss="modal">Отмена</button>
             </div>
         </div>

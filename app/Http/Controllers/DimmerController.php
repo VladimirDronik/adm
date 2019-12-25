@@ -35,7 +35,7 @@ class DimmerController extends Controller
     public function create()
     {
         $objects = $this->object_rep->getAllToArray();
-        $object_types =  HomeObject::getFullTypeIds();
+        $object_types = HomeObject::getFullTypeIds();
 
         return view('dimmers.create', compact('objects', 'object_types'));
     }
@@ -58,7 +58,7 @@ class DimmerController extends Controller
     public function edit(Dimmer $dimmer, ScriptRepository $script_rep)
     {
         $objects = $this->object_rep->getAllToArray();
-        $object_types =  HomeObject::getFullTypeIds();
+        $object_types = HomeObject::getFullTypeIds();
         $scripts = $script_rep->getAllToArray();
 
         return view('dimmers.edit', compact('dimmer',
@@ -77,6 +77,6 @@ class DimmerController extends Controller
                 .' ' .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении диммера');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении диммера');
     }
 }

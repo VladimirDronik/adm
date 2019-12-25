@@ -12,6 +12,16 @@ class ScriptsTableSeeder extends Seeder
         $this->scripts = Script::pluck('name')->toArray();
     }
 
+    public static function getResetGraphsScript(): array
+    {
+        return [
+            'name' => 'Очистка графиков',
+            'link' => 'reset_graphs.php',
+            'count' => 0,
+            'system' => 1
+        ];
+    }
+
     public static function getCheckCountScript(): array
     {
         return [
@@ -32,17 +42,47 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
-    private function getScripts(): array
+    public static function getDimmerScripts(): array
     {
-        $scripts = [
+        return [
             [
-                'name' => 'Очистка графиков',
-                'link' => 'reset_graphs.php',
+                'name' => 'Включить диммер',
+                'link' => 'on_dimmer.php',
+                'count' => 0,
+                'system' => 1
+            ],
+            [
+                'name' => 'Выключить диммер',
+                'link' => 'off_dimmer.php',
+                'count' => 0,
+                'system' => 1
+            ],
+            [
+                'name' => 'Увеличить яркость диммера',
+                'link' => 'up_dimmer.php',
+                'count' => 0,
+                'system' => 1
+            ],
+            [
+                'name' => 'Уменьшить яркость диммера',
+                'link' => 'down_dimmer.php',
+                'count' => 0,
+                'system' => 1
+            ],
+            [
+                'name' => 'Установить яркость диммера',
+                'link' => 'set_dimmer.php',
                 'count' => 0,
                 'system' => 1
             ],
         ];
+    }
 
+    private function getScripts(): array
+    {
+        $scripts = self::getDimmerScripts();
+
+        $scripts[] = $this->getResetGraphsScript();
         $scripts[] = $this->getCheckCountScript();
         $scripts[] = $this->getResetCountScript();
 

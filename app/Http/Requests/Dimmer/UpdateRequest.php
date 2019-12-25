@@ -26,8 +26,8 @@ class UpdateRequest extends FormRequest
         return [
             'name' => 'required|string|max:100',
             'id_object' => 'required|integer|min:1',
-            'value' => 'required|numeric',
-            'speed' => 'required|numeric|min:0'
+            'value' => 'required|numeric|max:127',
+            'speed' => 'required|numeric|min:0|max:127'
         ];
 
     }
@@ -39,6 +39,8 @@ class UpdateRequest extends FormRequest
             'id_object.required' => 'Не указан объект',
             'value.required' => 'Не указано значение',
             'speed.required' => 'Не указана скорость',
+            'value.max' => 'Значение не может быть более 127',
+            'speed.max' => 'Скорость не может быть более 127',
         ];
     }
 }

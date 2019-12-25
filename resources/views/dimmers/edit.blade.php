@@ -26,7 +26,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::model($dimmer, ['route' => ['dimmers.update', $dimmer->id], 'id' => 'dimmer_form', 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::model($dimmer, ['route' => ['dimmers.update', $dimmer->id], 'id' => 'dimmer_form',
+                            'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
