@@ -61,7 +61,7 @@ class ObjectService {
         if ($object_id) {
             return Method::where('id_object', $object_id)
                 ->orderBy('name')
-                ->select('id', 'name')->get()->toArray();
+                ->select('id', 'name', 'params')->get()->toArray();
         }
 
         return [];

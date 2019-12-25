@@ -7,6 +7,7 @@ use App\Models\Method;
 use App\Models\Port;
 use App\Models\Script;
 use App\Repositories\PortRepository;
+use Illuminate\Support\Facades\DB;
 
 class PortService {
 
@@ -173,16 +174,19 @@ class PortService {
             $data['object_id'] = $port->emethod->id_object;
             $data['method_name'] = $port->emethod->name;
             $data['object_name'] = optional($port->emethod->eobject)->name;
+            $data['params'] = $port->method_params;
         } elseif ($type === 'double' && $port->dcmethod) {
             $data['method_id'] = $port->dc_method;
             $data['object_id'] = $port->dcmethod->id_object;
             $data['method_name'] = $port->dcmethod->name;
             $data['object_name'] = optional($port->dcmethod->eobject)->name;
+            $data['params'] = $port->dc_method_params;
         }  elseif ($type === 'long' && $port->lcmethod) {
             $data['method_id'] = $port->lc_method;
             $data['object_id'] = $port->lcmethod->id_object;
             $data['method_name'] = $port->lcmethod->name;
             $data['object_name'] = optional($port->lcmethod->eobject)->name;
+            $data['params'] = $port->lc_method_params;
         } else {
             $data['method_id'] = 0;
             $data['object_id'] = 0;
@@ -221,8 +225,13 @@ class PortService {
     {
         $methodColumnName = $this->getMethodColumnName($data['type']);
 
-        Port::where('id_device', $data['device_id'])->where('id', $data['port_id'])
-            ->update([$methodColumnName => $data['method_id']]);
+        if ($data['params'] === '') {
+            Port::where('id_device', $data['device_id'])->where('id', $data['port_id'])
+                ->update([$methodColumnName => $data['method_id']]);
+        } else {
+            Port::where('id_device', $data['device_id'])->where('id', $data['port_id'])
+                ->update([$methodColumnName => $data['method_id'], $methodColumnName.'_params' => $data['params']]);
+        }
 
         $port = Port::find($data['port_id']);
 

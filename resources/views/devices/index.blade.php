@@ -38,7 +38,7 @@
                             <tr>
                                 <th>Название</th>
                                 <th>Тип</th>
-                                <th>ip адрес</th>
+                                <th>IP адрес</th>
                                 <th class="text-center">Статус</th>
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>
@@ -58,7 +58,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('devices.edit',[$device->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                        <a href="{{ route('devices.edit', [$device->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                             <i class="fa fa-cog fa-lg"></i>
                                         </a>
                                     </td>

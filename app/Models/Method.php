@@ -87,6 +87,11 @@ class Method extends Model
         return !is_null($this->params);
     }
 
+    public function getIsNeedParamsAttribute()
+    {
+        return $this->is_need_param;
+    }
+
     /* relations */
 
     public function escript()

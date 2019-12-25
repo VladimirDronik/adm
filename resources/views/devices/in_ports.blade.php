@@ -55,9 +55,10 @@
                             data-type="ordinary"
                             data-port-id="{{ $port->id }}"
                             data-method-id="{{ $port->method ? $port->method : '' }}"
-                            data-object-id="@if($port->method) {{ $port->emethod->id_object }} @endif">
-                        @if($port->method) Объект: {{ $port->emethod->eobject->name }}
-                            <br>&nbsp;&nbsp;Метод: {{ $port->emethod->name }}
+                            data-object-id="@if($port->method) {{ optional($port->emethod)->id_object }} @endif">
+                        @if($port->method) Объект: {{ optional($port->emethod)->eobject->name }}
+                            <br>&nbsp;&nbsp;Метод: {{ optional($port->emethod)->name }}
+                            @if(optional($port->emethod)->is_need_param) ({{ $port->method_params }}) @endif
                         @else <i class="f-s-14">Метод не указан</i> @endif
                     </span>
                 </td>
@@ -68,9 +69,10 @@
                             data-type="double"
                             data-port-id="{{ $port->id }}"
                             data-method-id="{{ $port->dcmethod ? $port->dcmethod : '' }}"
-                            data-object-id="@if($port->dcmethod) {{ $port->dcmethod->id_object }} @endif">
-                        @if($port->dcmethod) Объект: {{ $port->dcmethod->eobject->name }}
-                            <br>&nbsp;&nbsp;Метод: {{ $port->dcmethod->name }}
+                            data-object-id="@if($port->dcmethod) {{ optional($port->dcmethod)->id_object }} @endif">
+                        @if($port->dcmethod) Объект: {{ optional($port->dcmethod)->eobject->name }}
+                            <br>&nbsp;&nbsp;Метод: {{ optional($port->dcmethod)->name }}
+                            @if(optional($port->dcmethod)->is_need_param) ({{ $port->dc_method_params }}) @endif
                         @else <i class="f-s-14">Метод не указан</i> @endif
                     </span>
                 </td>
@@ -81,9 +83,10 @@
                             data-type="long"
                             data-port-id="{{ $port->id }}"
                             data-method-id="{{ $port->lcmethod ? $port->lcmethod : '' }}"
-                            data-object-id="@if($port->lcmethod) {{ $port->lcmethod->id_object }} @endif">
-                        @if($port->lcmethod) Объект: {{ $port->lcmethod->eobject->name }}
-                            <br>&nbsp;&nbsp;Метод: {{ $port->lcmethod->name }}
+                            data-object-id="@if($port->lcmethod) {{ optional($port->lcmethod)->id_object }} @endif">
+                        @if($port->lcmethod) Объект: {{ optional($port->lcmethod)->eobject->name }}
+                            <br>&nbsp;&nbsp;Метод: {{ optional($port->lcmethod)->name }}
+                            @if(optional($port->lcmethod)->is_need_param) ({{ $port->lc_method_params }}) @endif
                         @else <i class="f-s-14">Метод не указан</i> @endif
                     </span>
                 </td>

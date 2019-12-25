@@ -254,6 +254,31 @@
     </div>
     <button type="button" id="methods_modal_init_btn" style="display: none;"
             data-toggle="modal" data-target="#methodsModal">&nbsp;</button>
+
+
+    <div id="paramsModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Введите параметры метода</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger alert-dismissible fade show" id="params_error_div" style="display: none;">
+                        <span id="params_error_text"></span>
+                    </div>
+                    <input type="hidden" name="paramsMethodId" autocomplete="off" id="paramsMethodId" value="">
+                    <span class="" id="paramsLabel"></span>
+                    <input type="text" class="form-control input-default" id="param" placeholder="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="paramsApplyBtn">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="button" id="params_modal_init_btn" style="display: none;"
+            data-toggle="modal" data-target="#paramsModal">&nbsp;</button>
 @endsection
 
 @section('scripts')
@@ -370,15 +395,13 @@
 
             // выбор метода в таблице
 
-            $('body').on('click', '.js-method-td', function () {
-                if (port_id === 0 || type === '' || object_id === 0) {
-                    return false;
-                }
-                const methodId = $(this).data('id');
+            function ajaxUpdateMethod(methodId, params) {
                 $.ajax({
                     url: update_method_url,
-                    data: {'_token': _token, 'method_id': methodId, 'device_id': device_id,
-                        'port_id': port_id, 'type': type},
+                    data: {
+                        '_token': _token, 'method_id': methodId, 'device_id': device_id,
+                        'port_id': port_id, 'type': type, 'params': params
+                    },
                     success: function (data) {
                         if (data.result) {
                             object_id = data.object_id;
@@ -390,6 +413,34 @@
                         }
                     }
                 });
+            }
+
+            $('#paramsModal #paramsApplyBtn').click(function () {
+                const params = $('#paramsModal #param').val().trim();
+                const methodId = $('#paramsModal #paramsMethodId').val();
+                if (params === '') {
+                    $('#paramsModal #params_error_text').val('Не указано значение');
+                    $('#paramsModal #params_error_div').show();
+                    return false;
+                }
+
+                ajaxUpdateMethod(methodId, params);
+            });
+
+            $('body').on('click', '.js-method-td', function () {
+                if (port_id === 0 || type === '' || object_id === 0) {
+                    return false;
+                }
+                const methodId = $(this).data('id');
+                const params = $(this).data('params');
+
+                if (params === '') {
+                    ajaxUpdateMethod(methodId, params);
+                } else {
+                    $('#paramsModal #paramsMethodId').val(methodId);
+                    $('#paramsModal #paramsLabel').text(params + ':');
+                    $('#params_modal_init_btn').click();
+                }
 
                 return false;
             });
@@ -434,7 +485,12 @@
             btn.data('method-id', data.method_id);
             btn.data('object-id', data.object_id);
 
-            btn.html('Объект: ' + data.object_name + '<br>&nbsp;&nbsp;Метод: ' + data.method_name);
+            let html = 'Объект: ' + data.object_name + '<br>&nbsp;&nbsp;Метод: ' + data.method_name;
+
+            if (data.params) {
+                html += ' ('+data.params+')';
+            }
+            btn.html(html);
         }
 
         function selectObjectInTable(object_id) {
@@ -465,9 +521,11 @@
             for (let i = 0; i < data.objects.length; i++) {
                 selected_class = data.objects[i].id === data.object_id ? 'alert-info-bg' : '';
 
-                html += `<tr class="js-object-tr ${selected_class}" data-name="${data.objects[i].name.toLowerCase()}" id="object_tr_${data.objects[i].id}">
+                html += `<tr class="js-object-tr ${selected_class}" data-name="${data.objects[i].name.toLowerCase()}"
+                                id="object_tr_${data.objects[i].id}">
                             <td>
-                                <a href="#" class="js-object-td" data-id="${data.objects[i].id}" id="object_${data.objects[i].id}">${data.objects[i].name}</a>
+                                <a href="#" class="js-object-td" data-id="${data.objects[i].id}"
+                                    id="object_${data.objects[i].id}">${data.objects[i].name}</a>
                             </td>
                             <td class="text-center">
                                 ${data.objects[i].type_img}
@@ -500,10 +558,14 @@
             $('#methodsModal #modal_methods_table').show();
             for (let i = 0; i < methods.length; i++) {
                 selected_class = methods[i].id === method_id ? 'alert-info-bg' : '';
-
-                html += `<tr class="js-method-tr ${selected_class}" data-name="${methods[i].name.toLowerCase()}" id="method_tr_${methods[i].id}">
+                html += `<tr class="js-method-tr ${selected_class}"
+                            data-name="${methods[i].name.toLowerCase()}"
+                            id="method_tr_${methods[i].id}">
                             <td class="text-left">
-                                <a href="#" class="js-method-td" data-id="${methods[i].id}" id="method_${methods[i].id}">${methods[i].name}</a>
+                                <a href="#" class="js-method-td" data-id="${methods[i].id}"
+                                data-params="${methods[i].params ? methods[i].params : ''}"
+                                id="method_${methods[i].id}">${methods[i].name}</a>
+                                ${methods[i].params ? '<i class="fa fa-asterisk f-s-10" title="Метод с параметром"></i>' : ''}
                             </td>
                         </tr>`;
             }
