@@ -99,8 +99,37 @@
 
                             {{ Form::bs_autoselect('method_on', 'Метод при включении*:', [], old('method_on'),
                                 false, false, ['required' => true], null, 'Метод объекта влияния при срабатывании термостата на включение') }}
+
+                            <div class="form-group row" id="method_on_params_div"
+                                 @if(!old('method_on')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_on_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row ">
+                                        <label class="control-label text-right col-md-6 label-fix" id="method_on_params_label" for="method_on_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="method_on_params" name="method_on_params"
+                                                   type="text" value="{{ old('method_on_params') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             {{ Form::bs_autoselect('method_off', 'Метод при выключении*:', [], old('method_off'),
                                 false, false, ['required' => true], null, 'Метод объекта влияния при срабатывании термостата на выключение') }}
+
+                            <div class="form-group row" id="method_off_params_div"
+                                 @if(!old('method_off')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 label-fix" for="method_off_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row ">
+                                        <label class="control-label text-right col-md-6 label-fix" id="method_off_params_label" for="method_off_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="method_off_params" name="method_off_params"
+                                                   type="text" value="{{ old('method_off_params') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', -1), false, false) }}
 
@@ -125,6 +154,7 @@
         const url_methods = '{{ route('ajax.objects.methods') }}';
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         let modal_btn_index = -1;
+        let methods = [];
 
         $(document).ready(function () {
             initTermostatForm();

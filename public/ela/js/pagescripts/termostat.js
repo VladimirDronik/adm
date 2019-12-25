@@ -60,7 +60,35 @@ function validateTermostat() {
         return 'Не указан метод при выключении';
     }
 
+    let on_params = $("#termostat_form #method_on_params");
+    if (on_params.is(":visible") && on_params.val().trim() === '') {
+        return 'Не указан параметр метода при включении';
+    }
+    on_params_int = parseInt(on_params.val().trim());
+    if (on_params.is(":visible") &&
+            (on_params.val().trim() != on_params_int || on_params_int < 0 || on_params_int > 100)) {
+        return 'Недопустимое значение параметра метода при включении';
+    }
+    let off_params = $("#termostat_form #method_off_params");
+    if (off_params.is(":visible") && off_params.val().trim() === '') {
+        return 'Не указан параметр метода при выключении';
+    }
+    off_params_int = parseInt(off_params.val().trim());
+    if (off_params.is(":visible") &&
+            (off_params.val().trim() != off_params_int || off_params_int < 0 || off_params_int > 100)) {
+        return 'Недопустимое значение параметра метода при выключении';
+    }
     return '';
+}
+
+function initMethodsVar(object_id) {
+    $.ajax({
+        url: url_methods,
+        data: {'_token': _token, 'object_id': object_id},
+        success: function (data) {
+            methods = data.methods;
+        }
+    });
 }
 
 function initTermostatForm() {
@@ -77,6 +105,7 @@ function initTermostatForm() {
             url: url_methods,
             data: {'_token': _token, 'object_id': object_id},
             success: function (data) {
+                methods = data.methods;
                 createMethodSelect('#auto_sel_method_on', data.methods, -1);
                 $('#auto_sel_method_on').trigger("chosen:updated");
                 createMethodSelect('#auto_sel_method_off', data.methods, -1);
@@ -91,6 +120,51 @@ function initTermostatForm() {
             $('#info_modal_body').html('<span class="text-danger">'+message+'</span>');
             $('#init_btn').click();
             return false;
+        }
+    });
+
+    // params
+
+    function getMethodParams(methodId) {
+        for (let i = 0; i < methods.length; i++) {
+            if (methods[i].id === methodId) {
+                return methods[i].params ? methods[i].params : '';
+            }
+        }
+
+        return '';
+    }
+
+    function hideParamsFields(id) {
+        $('#termostat_form #'+id+'_div').hide();
+        $('#termostat_form #'+id).val('');
+    }
+
+    function showParamsFields(id, params) {
+        $('#termostat_form #'+id+'_label').text(params+'*:');
+        $('#termostat_form #'+id).val('');
+        $('#termostat_form #'+id+'_div').show();
+    }
+
+    $("#auto_sel_method_on").chosen().change(function() {
+        const methodId = parseInt($(this).val());
+        const params = getMethodParams(methodId);
+
+        if (params === '') {
+            hideParamsFields('method_on_params');
+        } else {
+            showParamsFields('method_on_params', params);
+        }
+    });
+
+    $("#auto_sel_method_off").chosen().change(function() {
+        const methodId = parseInt($(this).val());
+        const params = getMethodParams(methodId);
+
+        if (params === '') {
+            hideParamsFields('method_off_params');
+        } else {
+            showParamsFields('method_off_params', params);
         }
     });
 }
