@@ -157,13 +157,12 @@
             let del_id;
 
             $('.del_btn').click(function() {
-                del_id = $(this).attr('data-id');
-                $('#del_modal_body').text('Удалить событие «'+$(this).attr('data-name')+'»?');
-                $('#del_modal').modal('show');
+                del_id = $(this).data('id');
+                $('#del_modal_body').text('Удалить событие «'+$(this).data('name')+'»?');
+                $('#del_init_btn').click();
             });
 
             $('#del_modal_btn').click(function(){
-                $('#del_modal').modal('hide');
                 if (del_id) {
                     $.ajax({
                         url: '{{ route('ajax.events.delete') }}',
