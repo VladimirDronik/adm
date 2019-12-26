@@ -38,6 +38,14 @@ class CreateUser extends Command
      */
     public function handle()
     {
+        $userTypes = User::getTypes();
+        $type = $this->ask('input user role ('.implode(', ', $userTypes).')');
+
+        if (!in_array(trim($type), $userTypes, true)) {
+            $this->error("user role is not valid");
+            return;
+        }
+
         $login = $this->ask('input user login');
 
         if (User::where('login', $login)->exists()) {
@@ -53,6 +61,7 @@ class CreateUser extends Command
         }
 
         $user = new User();
+        $user->type = $type;
         $user->login = $login;
         $user->password = bcrypt($password);
         $user->save();

@@ -34,13 +34,17 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    const TYPE_USER = 'user';
+    const TYPE_ADMIN = 'admin';
+    const TYPE_SUPERADMIN = 'superadmin';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'password',
     ];
 
     /**
@@ -51,4 +55,20 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public static function getTypes(bool $is_full = false)
+    {
+        $types = [
+            self::TYPE_USER => 'Пользователь',
+            self::TYPE_ADMIN => 'Администратор',
+            self::TYPE_SUPERADMIN => 'Суперадминистратор'
+        ];
+
+        return $is_full ? $types : array_keys($types);
+    }
+
+    public function getRusTypeAttribute()
+    {
+        return self::getTypes(true)[$this->type] ?? '';
+    }
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\User;
 
 class FakeUsersTableSeeder extends Seeder
 {
@@ -18,10 +19,60 @@ class FakeUsersTableSeeder extends Seeder
     {
         return [
             'login' => 'admin',
+            'type' => User::TYPE_ADMIN,
             'password' => bcrypt(self::PASSWORD),
             'created_at' => $this->now,
             'updated_at' => $this->now
         ];
+    }
+
+    public function getSuperAdmin()
+    {
+        return [
+            'login' => 'superadmin',
+            'type' => User::TYPE_SUPERADMIN,
+            'password' => bcrypt(self::PASSWORD),
+            'created_at' => $this->now,
+            'updated_at' => $this->now
+        ];
+    }
+
+    public function getUser()
+    {
+        return [
+            'login' => 'user',
+            'type' => User::TYPE_USER,
+            'password' => bcrypt(self::PASSWORD),
+            'created_at' => $this->now,
+            'updated_at' => $this->now
+        ];
+    }
+
+    public function insertAdmin()
+    {
+        try {
+            DB::table('users')->insert($this->getAdmin());
+        } catch (\Throwable $e) {
+
+        }
+    }
+
+    public function insertSuperAdmin()
+    {
+        try {
+            DB::table('users')->insert($this->getSuperAdmin());
+        } catch (\Throwable $e) {
+
+        }
+    }
+
+    public function insertUser()
+    {
+        try {
+            DB::table('users')->insert($this->getUser());
+        } catch (\Throwable $e) {
+
+        }
     }
 
     /**
@@ -31,10 +82,8 @@ class FakeUsersTableSeeder extends Seeder
      */
     public function run()
     {
-        try {
-            DB::table('users')->insert($this->getAdmin());
-        } catch (\Throwable $e) {
-
-        }
+       $this->insertSuperAdmin();
+       $this->insertAdmin();
+       $this->insertUser();
     }
 }

@@ -15,8 +15,8 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12 col-lg-10">
+                        @include('rooms.tab_header', ['active' => $group->id])
                         @if(count($rooms))
-                            @include('rooms.tab_header', ['active' => $group->id])
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
