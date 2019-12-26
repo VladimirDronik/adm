@@ -106,7 +106,7 @@
                             {{ $rooms->appends(request()->input())->links() }}
                             <p class="text-right">Найдено: {{ $rooms->total() }}</p>
                         @else
-                            <p>Помещения не найдены</p>
+                            <p class="mt-3">Помещения не найдены</p>
                         @endif
                     </div>
                 </div>
