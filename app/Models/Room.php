@@ -51,7 +51,7 @@ class Room extends Model
 
     public function getPrefixNameAttribute()
     {
-        return ($this->is_group ? 'Группа' : 'Помещение') .'«'.$this->name.'»';
+        return ($this->is_group ? 'Группа' : 'Помещение') .' «'.$this->name.'»';
     }
 
     public function getIsSeparateRoomAttribute()

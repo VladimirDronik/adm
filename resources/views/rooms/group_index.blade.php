@@ -137,6 +137,24 @@
             });
 
             $('#del_modal_btn').click(del);
+
+            // add
+
+            $('#addRoomBtn').click(function() {
+                $('#modalRoom #modalRoomTitle').text('Добавить новое помещение');
+                $('#modalRoom #modalType').val('room');
+                $('#modalRoom #modal_groups_div').show();
+                $('#modalRoom #nameRoom').val('');
+                $('#modal_room_init_btn').click();
+            });
+
+            $('#addGroupBtn').click(function() {
+                $('#modalRoom #modalRoomTitle').text('Добавить новую группу');
+                $('#modalRoom #modalType').val('group');
+                $('#modalRoom #modal_groups_div').hide();
+                $('#modalRoom #nameRoom').val('');
+                $('#modal_room_init_btn').click();
+            });
         });
     </script>
 @endsection

@@ -16,25 +16,29 @@
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
-                                    <tr>
-                                        <th style="width: 50px;">ID</th>
-                                        <th>Название</th>
-                                        <th>Изображение</th>
-                                        <th>Цвет</th>
-                                        <th class="text-center">Сортировка</th>
-                                        <th class="text-center" style="width: 80px;"></th>
-                                        <th class="text-center" style="width: 80px;"></th>
-                                    </tr>
+                                        <tr>
+                                            <th style="width: 50px;">ID</th>
+                                            <th>Тип</th>
+                                            <th>Название</th>
+                                            <th>Изображение</th>
+                                            <th>Цвет</th>
+                                            <th class="text-center">Сортировка</th>
+                                            <th class="text-center" style="width: 80px;"></th>
+                                            <th class="text-center" style="width: 80px;"></th>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                     @foreach($rooms as $room)
                                         <tr>
                                             <td>{{ $room->id }}</td>
                                             <td>
+                                                @if($room->is_group) Группа @else Помещение @endif
+                                            </td>
+                                            <td>
                                                 <a href="#" id="nameRoom_{{ $room->id }}"
                                                    onclick="edit_name({{ $room->id }});"
                                                    data-toggle="modal"
-                                                   data-target="#nameRoomModal">{{ $room->prefix_name }}</a>
+                                                   data-target="#nameRoomModal">{{ $room->name }}</a>
                                             </td>
                                             <td><img src="{{ asset('ela/images/rooms/'.$room->image) }}"
                                                      id="imageRoom_{{ $room->id }}" class="imageRoom"
@@ -68,10 +72,12 @@
                                                 </div>
                                             </td>
                                             <td class="text-center">
-                                                <a href="{{ route('rooms.edit',[$room->id]) }}"
-                                                   class="btn btn-info btn-sm btn-rounded">
-                                                    <i class="fa fa-cog fa-lg"></i>
-                                                </a>
+                                                @if(!$room->is_group)
+                                                    <a href="{{ route('rooms.edit', [$room->id]) }}"
+                                                       class="btn btn-info btn-sm btn-rounded">
+                                                        <i class="fa fa-cog fa-lg"></i>
+                                                    </a>
+                                                @endif
                                             </td>
                                             <td class="text-center">
                                                 <button type="button"
@@ -87,15 +93,16 @@
                                     </tbody>
                                     @if(count($rooms) > 10)
                                         <tfoot>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Название</th>
-                                            <th>Изображение</th>
-                                            <th>Цвет</th>
-                                            <th>Сортировка</th>
-                                            <th></th>
-                                            <th></th>
-                                        </tr>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Тип</th>
+                                                <th>Название</th>
+                                                <th>Изображение</th>
+                                                <th>Цвет</th>
+                                                <th>Сортировка</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
                                         </tfoot>
                                     @endif
                                 </table>
@@ -137,6 +144,24 @@
             });
 
             $('#del_modal_btn').click(del);
+
+            // add
+
+            $('#addRoomBtn').click(function() {
+                $('#modalRoom #modalRoomTitle').text('Добавить новое помещение');
+                $('#modalRoom #modalType').val('room');
+                $('#modalRoom #modal_groups_div').show();
+                $('#modalRoom #nameRoom').val('');
+                $('#modal_room_init_btn').click();
+            });
+
+            $('#addGroupBtn').click(function() {
+                $('#modalRoom #modalRoomTitle').text('Добавить новую группу');
+                $('#modalRoom #modalType').val('group');
+                $('#modalRoom #modal_groups_div').hide();
+                $('#modalRoom #nameRoom').val('');
+                $('#modal_room_init_btn').click();
+            });
         });
     </script>
 @endsection

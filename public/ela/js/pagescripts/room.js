@@ -138,42 +138,23 @@ function del() {
 }
 
 function storeRoom() {
-    const name = $("#addNewRoom #nameRoom").val().trim();
+    const name = $("#modalRoom #nameRoom").val().trim();
     const image = sessionStorage.getItem('imageRoom');
     const style = sessionStorage.getItem('colorRoom');
-    const group_id = $("#addNewRoom #groupId").val();
+    const type = $("#modalRoom #modalType").val();
+    const group_id = $("#modalRoom #modalGroupId").val();
 
     sessionStorage.setItem('imageRoom', 'noimage.png');
 
     $.ajax({
         url: storeUrl,
         data: {'_token': _token, 'name': name, 'image': image,
-            'style': style, 'group_id': group_id, 'type': 'room'},
+            'style': style, 'group_id': group_id, 'type': type},
         success: function (data) {
             if (data.result) {
                 window.location.href = url;
             } else {
-                showErrorModal('Ошибка при добавлении помещения');
-            }
-        }
-    });
-}
-
-function storeGroup() {
-    const name = $("#addNewGroup #nameGroup").val().trim();
-    const image = sessionStorage.getItem('imageRoom');
-    const style = sessionStorage.getItem('colorRoom');
-
-    sessionStorage.setItem('imageRoom', 'noimage.png');
-
-    $.ajax({
-        url: storeUrl,
-        data: {'_token': _token, 'name': name, 'image': image, 'style': style, 'type': 'group'},
-        success: function (data) {
-            if (data.result) {
-                window.location.href = url;
-            } else {
-                showErrorModal('Ошибка при добавлении группы');
+                showErrorModal('Ошибка при добавлении ' + (type === 'room' ? 'помещения' : 'группы'));
             }
         }
     });

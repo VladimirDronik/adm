@@ -26,6 +26,10 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
                         <h3>Настройки помещения «{{ $room->name }}»</h3>
+                        {{ Form::bs_title('Основные настройки') }}
+
+                        {{ Form::bs_select('group_room', 'Группа:', ["0" => "Без группы"] + $groups) }}
+
                         {{ Form::bs_title('Термостаты') }}
 
                         @forelse($room->termostats as $termostat)

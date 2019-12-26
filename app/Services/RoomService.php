@@ -63,7 +63,7 @@ class RoomService
                 })->max('sort');
         }
 
-        return Room::room()->where('group_room', $room->group_room)->max('sort');
+        return (int) Room::room()->where('group_room', $room->group_room)->max('sort');
     }
 
     private function updatePreviousSortRoom($room, $previous_sort)
@@ -159,12 +159,14 @@ class RoomService
 
     private function storeRoom(array $data)
     {
-        // todo if ($data['group_id'] == '0') ///
-        $group = Room::group()->where('id', $data['group_id'])->first();
+        $group = null;
+        if ($data['group_id'] !== '0') {
+            $group = Room::group()->where('id', $data['group_id'])->first();
+        }
         $room = new Room();
 
         $room->is_group = 0;
-        $room->group_room = $data['group_id'];
+        $room->group_room = $group ? $group->id : null;
 
         $room->sort = $this->getSortMax($room) + 1;
 
@@ -209,6 +211,32 @@ class RoomService
     {
         DB::transaction(function () use ($room, $data) {
 
+            if (is_null($room->group_room) && $data['group_room'] !== '0') {
+                // из отдельных в конкретную
+                Room::where(function ($query) {
+                    $query->group()
+                        ->orWhere(function ($query) {
+                            $query->room()->whereNull('group_room');
+                        });
+                })->where('sort', '>', $room->sort)->update([
+                    'sort' => DB::raw('sort-1'),
+                ]);
+                $room->group_room = $data['group_room'];
+            } elseif (!is_null($room->group_room) && $data['group_room'] === '0') {
+                // из конкретных в отдельную
+                Room::room()->where('group_room', $room->group_room)->where('sort', '>', $room->sort)->update([
+                    'sort' => DB::raw('sort-1'),
+                ]);
+                $room->group_room = null;
+            } elseif (!is_null($room->group_room) && $room->group_room !== (int)$data['group_room']) {
+                // из отдельной в отдельную
+                Room::room()->where('group_room', $room->group_room)->where('sort', '>', $room->sort)->update([
+                    'sort' => DB::raw('sort-1'),
+                ]);
+                $room->group_room = (int)$data['group_room'];
+            }
+
+            $room->sort = $this->getSortMax($room) + 1;
             $room->save();
 
             $temperature = Temperature::where('id_room', $room->id)->first();

@@ -33,10 +33,12 @@ class RoomController extends Controller
     public function edit(Room $room)
     {
         if ($room->is_group) {
-            return view('rooms.edit_group', compact('room'));
+            return redirect()->route('rooms.index');
         }
 
-        return view('rooms.edit_room', compact('room'));
+        $groups = $this->room_rep->getRoomGroups()->pluck('name', 'id')->toArray();
+
+        return view('rooms.edit_room', compact('room', 'groups'));
     }
 
     public function update(UpdateRequest $r, Room $room)

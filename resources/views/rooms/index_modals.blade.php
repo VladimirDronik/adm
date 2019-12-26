@@ -1,44 +1,22 @@
-
-<!-- модальное окно добавления новой группы -->
-<div class="modal" id="addNewGroup">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title"> Добавить новую группу</h4>
-            </div>
-            <div class="modal-body">
-                Название группы: <input type="text" class="form-control input-default col-sm-12" id="nameGroup"
-                                           size="15"><br><br>
-                Изображение: <img src="{{ asset('ela/images/rooms/noimage.png') }}" id="image"
-                                  style="background: black;">
-                <button data-toggle="modal" data-target="#selectImage" class="btn btn-default btn-sm m-b-5"
-                        onclick="updateImage(0, false);"> Выбрать
-                </button>
-                <br><br>
-                Цветовая схема: <label class="btn btn-default" id="color"></label> &nbsp; &nbsp;
-                <button data-toggle="modal" data-target="#selectColor" onclick="updateColor({{ 0 }}, false)"
-                        class="btn btn-default btn-sm m-b-5">Выбрать
-                </button>
-                <br><br>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="storeGroup();">Добавить
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- модальное окно добавления нового помещения -->
-<div class="modal" id="addNewRoom">
+<div class="modal" id="modalRoom">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"> Добавить новое помещение</h4>
+                <h4 class="modal-title" id="modalRoomTitle"> Добавить новое помещение</h4>
             </div>
             <div class="modal-body">
-                Название помещения: <input type="text" class="form-control input-default col-sm-12" id="nameRoom"
+                <input type="hidden" name="type" id="modalType" value="">
+                <div id="modal_groups_div">
+                    Группа: <select class="form-control input-default col-sm-12" id="modalGroupId">
+                        <option value="0">Без группы</option>
+                        @foreach($groups as $group)
+                            <option value="{{ $group->id }}">{{ $group->name }}</option>
+                        @endforeach
+                    </select>
+                    <br>
+                </div>
+                Название: <input type="text" class="form-control input-default col-sm-12" id="nameRoom"
                                            size="15"><br><br>
                 Изображение: <img src="{{ asset('ela/images/rooms/noimage.png') }}" id="image"
                                   style="background: black;">
@@ -60,6 +38,7 @@
         </div>
     </div>
 </div>
+<button type="button" id="modal_room_init_btn" style="display: none;" data-toggle="modal" data-target="#modalRoom">&nbsp;</button>
 
 <!-- модальное окно выбора изображения -->
 <div class="modal" id="selectImage">
