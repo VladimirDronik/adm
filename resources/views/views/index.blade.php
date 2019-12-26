@@ -127,7 +127,9 @@
                                                     value="{{ $view->id_method}},{{optional($view->emethod)->name}},viewmethod_{{ $view->id }}"
                                                     data-target="#methodsModal"
                                                     onclick="updateRedirectToCreateMethodBtn(this)">
-                                                <b>{{ optional($view->emethod)->name }}</b>
+                                                <b>{{ optional($view->emethod)->name }}
+                                                    @if(optional($view->emethod)->is_need_param) ({{ $view->id_method_params }}) @endif
+                                                </b>
                                             </button>
                                         @else
                                             <button type="button" id="viewmethodempty_{{ $view->id }}"
@@ -246,6 +248,7 @@
     </div>
     @include('components.info_modal')
     @include('components.del_modal')
+    @include('components.params_modal')
 @endsection
 
 @section('scripts')
@@ -414,6 +417,21 @@
                 if (search !== "") {
                     $(".modal_object_tr:not([data-name*='" + search + "'])").hide();
                 }
+            });
+
+            // params
+
+            $('#paramsModal #paramsApplyBtn').click(function () {
+                const params = $('#paramsModal #param').val().trim();
+                const methodId = $('#paramsModal #paramsMethodId').val();
+                const methodName = $('#paramsModal #paramsMethodName').val();
+                if (params === '') {
+                    $('#paramsModal #params_error_text').text('Не указано значение');
+                    $('#paramsModal #params_error_div').show();
+                    return false;
+                }
+
+                selectMethod(methodId, methodName, '', params);
             });
         });
     </script>

@@ -46,7 +46,12 @@ class ViewRepository {
         if (empty($data['id_method'])) {
             View::where('id', $data['id_view'])->update(['id_method' => null]);
         } else {
-            View::where('id', $data['id_view'])->update(['id_method' => $data['id_method']]);
+            if (empty($data['params'])) {
+                View::where('id', $data['id_view'])->update(['id_method' => $data['id_method']]);
+            } else {
+                View::where('id', $data['id_view'])
+                    ->update(['id_method' => $data['id_method'], 'id_method_params' => $data['params']]);
+            }
         }
     }
 }

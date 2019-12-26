@@ -46,10 +46,10 @@ class ViewObjectController extends Controller
 
     public function getMethodAll(Request $r)
     {
-        $method_array = explode(',',$r->input('method'));
+        $method_array = explode(',', $r->input('method'));
         $method_name = $method_array[0] != 'empty' ? $method_array[1] : 'empty';
         $view = View::find($r->input('id'));
-        $methods = Method::where('id_object',$view->id_object)->orderBy('name')->get();
+        $methods = Method::where('id_object', $view->id_object)->orderBy('name')->get();
         $html = (String) view('ajax.view_methods', ['methods' => $methods, 'view' => $method_array[2]]);
 
         return response()->json(['success' => true] + compact('html', 'method_name'));

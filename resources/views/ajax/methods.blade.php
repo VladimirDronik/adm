@@ -13,9 +13,14 @@
                     <tr>
                         <td>{{$method->id}}</td>
                         <td class="text-left">
-                            <a href="#" id="object_{{$method->id}}"
-                               onclick="select_script({{$method->id}}, '{{$method->name}}')"
-                               data-dismiss="modal" >{{$method->name}}</a>
+                            <a href="#" id="object_{{ $method->id }}"
+                               onclick="select_script({{ $method->id }}, '{{ $method->name }}')"
+                               data-dismiss="modal">
+                                {{ $method->name }}
+                                @if($method->is_need_param)
+                                    <i class="fa fa-asterisk f-s-10" title="Метод с параметром"></i>
+                                @endif
+                            </a>
                         </td>
                     </tr>
                 @endforeach
