@@ -56,6 +56,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\GraphTermostat[] $last_graphs
  * @property string|null $name
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat whereName($value)
+ * @property string|null $method_on_params
+ * @property string|null $method_off_params
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat whereMethodOffParams($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat whereMethodOnParams($value)
  */
 class Termostat extends Model
 {

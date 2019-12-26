@@ -44,6 +44,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereLcMethod($value)
  * @property-read \App\Models\Method|null $dcmethod
  * @property-read \App\Models\Method|null $lcmethod
+ * @property string|null $method_params
+ * @property string|null $dc_method_params
+ * @property string|null $lc_method_params
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereDcMethodParams($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereLcMethodParams($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereMethodParams($value)
  */
 class Port extends Model
 {

@@ -23,7 +23,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::open(['route' => 'events.store', 'method' => 'post', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::open(['route' => 'events.store', 'method' => 'post', 'id' => 'event_form',
+                        'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
@@ -48,6 +49,20 @@
                         <div id="method_div">
                             {{ Form::bs_autoselect('object', 'Объект:', $objects, null,  false, false) }}
                             {{ Form::bs_autoselect('method', 'Метод:', [], null,  false, false) }}
+
+                            <div class="form-group row" id="method_params_div"
+                                 @if(!old('method')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 label-fix" for="method_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-6 label-fix" id="method_params_label" for="method_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="method_params" name="method_params"
+                                                   type="text" value="{{ old('method_params') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div id="script_div" style="display: none;">
                             {{ Form::bs_autoselect('script', 'Скрипт:', $scripts, null,  false, false) }}
@@ -67,7 +82,8 @@
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script>
-        let url_methods = '{{ route('ajax.objects.methods') }}';
+        const url_methods = '{{ route('ajax.objects.methods') }}';
+        let methods = [];
 
         function createMethodSelect(target, options, selected) {
             let sel = $(target);
@@ -104,28 +120,40 @@
             if (type === 'method' && isEmptyAutoSelect('object')) {
                 return 'Не указан объект';
             }
+            if (type === 'method') {
+                let params = $("#event_form #method_params");
+                if (params.is(":visible") && params.val().trim() === '') {
+                    return 'Не указан параметр метода';
+                }
+                params_int = parseInt(params.val().trim());
+                if (params.is(":visible") &&
+                    (params.val().trim() != params_int || params_int < 0 || params_int > 100)) {
+                    return 'Недопустимое значение параметра метода';
+                }
+            }
             return '';
         }
 
         $(document).ready(function () {
-            $("#auto_sel_object").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_method").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_script").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#event_form #auto_sel_object").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#event_form #auto_sel_method").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#event_form #auto_sel_script").chosen({width:"100%", no_results_text: "Не найдено"});
 
-            $("#auto_sel_object").chosen().change(function() {
+            $("#event_form #auto_sel_object").chosen().change(function() {
                 let object_id = $(this).val();
-
+                hideParamsFields('method_params');
                 $.ajax({
                     url: url_methods,
                     data: {'_token': _token, 'object_id': object_id},
                     success: function (data) {
+                        methods = data.methods;
                         createMethodSelect('#auto_sel_method', data.methods, -1);
                         $('#auto_sel_method').trigger("chosen:updated");
                     }
                 });
             });
 
-            $('button[type=submit]').click(function(){
+            $('#event_form button[type=submit]').click(function(){
                 let message = validateEvent();
                 if (message !== '') {
                     $('#info_modal_body').html('<span class="text-danger">'+message+'</span>');
@@ -134,7 +162,7 @@
                 }
             });
 
-            $('[name=type]').change(function(){
+            $('#event_form [name=type]').change(function(){
                if ($(this).val() === 'method') {
                    $('#script_div').hide();
                    $('#method_div').show();
@@ -143,6 +171,40 @@
                    $('#script_div').show();
                }
                return true;
+            });
+
+            // params
+
+            function getMethodParams(methodId) {
+                for (let i = 0; i < methods.length; i++) {
+                    if (methods[i].id === methodId) {
+                        return methods[i].params ? methods[i].params : '';
+                    }
+                }
+
+                return '';
+            }
+
+            function hideParamsFields(id) {
+                $('#event_form #'+id+'_div').hide();
+                $('#event_form #'+id).val('');
+            }
+
+            function showParamsFields(id, params) {
+                $('#event_form #'+id+'_label').text(params+'*:');
+                $('#event_form #'+id).val('');
+                $('#event_form #'+id+'_div').show();
+            }
+
+            $("#event_form #auto_sel_method").chosen().change(function() {
+                const methodId = parseInt($(this).val());
+                const params = getMethodParams(methodId);
+
+                if (params === '') {
+                    hideParamsFields('method_params');
+                } else {
+                    showParamsFields('method_params', params);
+                }
             });
         });
     </script>

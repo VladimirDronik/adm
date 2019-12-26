@@ -100,7 +100,8 @@ function initTermostatForm() {
 
     $("#auto_sel_object").chosen().change(function() {
         let object_id = $(this).val();
-
+        hideParamsFields('method_on_params');
+        hideParamsFields('method_off_params');
         $.ajax({
             url: url_methods,
             data: {'_token': _token, 'object_id': object_id},

@@ -23,7 +23,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::open(['route' => 'views.store', 'method' => 'post', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::open(['route' => 'views.store', 'method' => 'post', 'id' => 'view_form',
+                            'class' => 'form-horizontal form-bordered']) !!}
                         {{ csrf_field() }}
                         <div class="form-body">
                             {{ Form::bs_alert() }}
@@ -35,6 +36,20 @@
 
                             {{ Form::bs_autoselect('id_object', 'Объект:', $objects, old('id_object'), false, false) }}
                             {{ Form::bs_autoselect('id_method', 'Метод объекта:', [], old('id_method'), false, false) }}
+
+                            <div class="form-group row" id="id_method_params_div"
+                                 @if(!old('id_method')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 label-fix" for="id_method_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-6 label-fix" id="id_method_params_label" for="id_method_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="id_method_params" name="id_method_params"
+                                                   type="text" value="{{ old('id_method_params') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             {{ Form::bs_title('Текст и графика') }}
 
@@ -83,7 +98,8 @@
     <script>
         let image_id;
         let url = '{{ asset('/') }}';
-        let url_methods = '{{ route('ajax.objects.methods') }}';
+        const url_methods = '{{ route('ajax.objects.methods') }}';
+        let methods = [];
 
         function setViewImage(image) {
             $('#img_'+image_id).prop('src', url + image);
@@ -122,6 +138,15 @@
             if (!$("select[name=room]").val()) {
                 return 'Не указано помещение';
             }
+            let params = $("#view_form #id_method_params");
+            if (params.is(":visible") && params.val().trim() === '') {
+                return 'Не указан параметр метода';
+            }
+            params_int = parseInt(params.val().trim());
+            if (params.is(":visible") &&
+                (params.val().trim() != params_int || params_int < 0 || params_int > 100)) {
+                return 'Недопустимое значение параметра метода';
+            }
             return '';
         }
 
@@ -132,18 +157,19 @@
 
             $("#auto_sel_id_object").chosen().change(function() {
                 let object_id = $(this).val();
-
+                hideParamsFields('id_method_params');
                 $.ajax({
                     url: url_methods,
                     data: {'_token': _token, 'object_id': object_id},
                     success: function (data) {
+                        methods = data.methods;
                         createMethodSelect('#auto_sel_id_method', data.methods, -1);
                         $('#auto_sel_id_method').trigger("chosen:updated");
                     }
                 });
             });
 
-            $('button[type=submit]').click(function(){
+            $('#view_form button[type=submit]').click(function(){
                 let message = validateView();
                 if (message !== '') {
                     $('#info_modal_body').html('<span class="text-danger">'+message+'</span>');
@@ -151,6 +177,41 @@
                     return false;
                 }
             });
+
+            // params
+
+            function getMethodParams(methodId) {
+                for (let i = 0; i < methods.length; i++) {
+                    if (methods[i].id === methodId) {
+                        return methods[i].params ? methods[i].params : '';
+                    }
+                }
+
+                return '';
+            }
+
+            function hideParamsFields(id) {
+                $('#view_form #'+id+'_div').hide();
+                $('#view_form #'+id).val('');
+            }
+
+            function showParamsFields(id, params) {
+                $('#view_form #'+id+'_label').text(params+'*:');
+                $('#view_form #'+id).val('');
+                $('#view_form #'+id+'_div').show();
+            }
+
+            $("#view_form #auto_sel_id_method").chosen().change(function() {
+                const methodId = parseInt($(this).val());
+                const params = getMethodParams(methodId);
+
+                if (params === '') {
+                    hideParamsFields('id_method_params');
+                } else {
+                    showParamsFields('id_method_params', params);
+                }
+            });
+
         });
     </script>
 @endsection

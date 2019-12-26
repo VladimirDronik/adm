@@ -34,6 +34,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereIsHidden($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereIsSystem($value)
  * @property-read bool $is_point_editable
+ * @property string|null $method_params
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereMethodParams($value)
  */
 class SchedulerTask extends Model
 {

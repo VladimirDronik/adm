@@ -31,6 +31,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Method whereEasy($value)
  * @property int $is_system
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Method whereIsSystem($value)
+ * @property string|null $params Если null, то метод без параметров, иначе названия параметров через символ ;
+ * @property-read mixed $is_need_param
+ * @property-read mixed $is_need_params
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Method whereParams($value)
  */
 class Method extends Model
 {

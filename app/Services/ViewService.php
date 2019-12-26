@@ -21,6 +21,7 @@ class ViewService {
         $view->active = $data['active'] ?? 0;
         $view->sort = 0;
         $view->icon = pathinfo($data['icon_image'], PATHINFO_FILENAME);
+        $view->id_method_params = $data['id_method_params'];
     }
 
     public function store(array $data)

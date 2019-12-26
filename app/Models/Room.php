@@ -26,6 +26,16 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereLighting($value)
  * @property-read mixed $color_style
  * @property-read \App\Models\Temperature $temperature
+ * @property int|null $group_room
+ * @property int $is_group
+ * @property-read mixed $is_separate_room
+ * @property-read mixed $prefix_name
+ * @property-read \App\Models\Room|null $roomGroup
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Room[] $rooms
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room group()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room room()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereGroupRoom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereIsGroup($value)
  */
 class Room extends Model
 {

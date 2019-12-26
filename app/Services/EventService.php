@@ -15,6 +15,7 @@ class EventService {
         } else {
             $data['object'] = null;
             $data['method'] = null;
+            $data['method_params'] = null;
         }
         unset($data['type']);
 
