@@ -14,30 +14,31 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('profile','ProfileController@edit')->name('profile.edit');
     Route::put('profile','ProfileController@update')->name('profile.update');
 
-    Route::resource('views', 'ViewController')->except('show','destroy');
-    Route::resource('objects', 'ObjectController')->except('show','destroy');
+    Route::resource('views', 'ViewController')->except('show','destroy')->middleware('can:views');
+    Route::resource('objects', 'ObjectController')->except('show','destroy')->middleware('can:objects');
 
-    Route::resource('devices', 'DeviceController')->except('show','destroy');
-    Route::resource('counts', 'CountController')->except('show','destroy');
-    Route::resource('dimmers', 'DimmerController')->except('show','destroy');
-    Route::resource('settings', 'SettingController')->except('show','destroy');
-    Route::resource('scenes', 'SceneController')->except('show','destroy');
-    Route::resource('termostats', 'TermostatController')->except('show','destroy');
-    Route::resource('events', 'EventController')->except('show','destroy');
-    Route::resource('logs', 'LogController')->only('index');
+    Route::resource('devices', 'DeviceController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('counts', 'CountController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('dimmers', 'DimmerController')->except('show','destroy')->middleware('can:devices');
 
-    Route::resource('rooms', 'RoomController')->except('show','create','store','destroy');
-    Route::get('rooms/group/{id}', 'RoomGroupController@index')->name('rooms.group.index');
+    Route::resource('settings', 'SettingController')->except('show','destroy')->middleware('can:settings');
+    Route::resource('scenes', 'SceneController')->except('show','destroy')->middleware('can:scenes');
+    Route::resource('termostats', 'TermostatController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('events', 'EventController')->except('show','destroy')->middleware('can:events');
+    Route::resource('logs', 'LogController')->only('index')->middleware('can:logs');
 
-    Route::get('network', 'NetworkController@edit')->name('network.edit');
-    Route::put('network', 'NetworkController@update')->name('network.update');
-    Route::get('menu', 'MenuController@index')->name('menu.index');
-    Route::get('graphs/termostats', 'GraphController@termostats')->name('graphs.termostats.index');
-    Route::get('graphs/lights', 'GraphController@lights')->name('graphs.lights.index');
-    Route::get('graphs/humidities', 'GraphController@humidities')->name('graphs.humidities.index');
-    Route::get('graphs/counts', 'GraphController@counts')->name('graphs.counts.index');
+    Route::resource('rooms', 'RoomController')->except('show','create','store','destroy')->middleware('can:rooms');
+    Route::get('rooms/group/{id}', 'RoomGroupController@index')->name('rooms.group.index')->middleware('can:rooms');
 
-    Route::resource('scripts', 'ScriptController')->except('show','destroy');
+    Route::get('network', 'NetworkController@edit')->name('network.edit')->middleware('can:network');
+    Route::put('network', 'NetworkController@update')->name('network.update')->middleware('can:network');
+    Route::get('menu', 'MenuController@index')->name('menu.index')->middleware('can:menu');
+    Route::get('graphs/termostats', 'GraphController@termostats')->name('graphs.termostats.index')->middleware('can:graphs');
+    Route::get('graphs/lights', 'GraphController@lights')->name('graphs.lights.index')->middleware('can:graphs');
+    Route::get('graphs/humidities', 'GraphController@humidities')->name('graphs.humidities.index')->middleware('can:graphs');
+    Route::get('graphs/counts', 'GraphController@counts')->name('graphs.counts.index')->middleware('can:graphs');
+
+    Route::resource('scripts', 'ScriptController')->except('show','destroy')->middleware('can:scripts');
 
     Route::group(['namespace' => 'Ajax', 'as' => 'ajax.'], function () {
 

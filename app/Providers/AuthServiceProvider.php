@@ -39,5 +39,18 @@ class AuthServiceProvider extends ServiceProvider
                 return $user->hasAccess($slug);
             });
         }
+
+        Gate::define('superadmin', function (User $user) {
+            return $user->is_super_admin;
+        });
+
+        Gate::define('admin', function (User $user) {
+            return $user->is_admin;
+        });
+
+
+        Gate::define('user', function (User $user) {
+            return $user->is_user;
+        });
     }
 }

@@ -87,7 +87,7 @@ class UserPermission
 
         $slugs = explode('.', $slug);
 
-        $sectionPermissions = $userPermissions[$slugs[0]] ?? null;
+        $sectionPermissions = $permissions[$slugs[0]] ?? null;
 
         if (is_null($sectionPermissions)) {
             return true;
@@ -136,11 +136,11 @@ class UserPermission
                 }
 
                 foreach ($actions as $action => $value) {
-                    $slugs[] = $section.'.'.$action;
+                    $slugs[] = $section . '.' . $action;
                 }
             }
         }
 
-        return $slugs;
+        return array_values(array_unique($slugs));
     }
 }

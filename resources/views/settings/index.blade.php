@@ -10,7 +10,9 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('settings.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить параметр</a>
+                        @can('settings.create')
+                            <a href="{{ route('settings.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить параметр</a>
+                        @endcan
                         <a href="{{ route('settings.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
@@ -28,7 +30,9 @@
                                     <th>Значение</th>
                                     <th>Описание</th>
                                     <th style="width: 60px;"></th>
-                                    <th style="width: 60px;"></th>
+                                    @can('settings.delete')
+                                        <th style="width: 60px;"></th>
+                                    @endcan
                                 </tr>
                             </thead>
                             <tbody>
@@ -42,12 +46,14 @@
                                                 <i class="fa fa-cog fa-lg"></i>
                                             </a>
                                         </td>
-                                        <td align="center" class="text-center">
-                                            <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                    data-id="{{ $setting->id }}" data-name="{{ $setting->name }}">
-                                                <i class="fa fa-trash fa-lg"></i>
-                                            </button>
-                                        </td>
+                                        @can('settings.delete')
+                                            <td align="center" class="text-center">
+                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                                        data-id="{{ $setting->id }}" data-name="{{ $setting->name }}">
+                                                    <i class="fa fa-trash fa-lg"></i>
+                                                </button>
+                                            </td>
+                                        @endcan
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -57,7 +63,9 @@
                                     <th>Значение</th>
                                     <th>Описание</th>
                                     <th style="width: 60px;"></th>
-                                    <th style="width: 60px;"></th>
+                                    @can('settings.delete')
+                                        <th style="width: 60px;"></th>
+                                    @endcan
                                 </tr>
                             </tfoot>
                         </table>
@@ -75,34 +83,35 @@
 @endsection
 
 @section('scripts')
-    <script>
-        let url = '{{ route('settings.index') }}';
+    @can('settings.delete')
+        <script>
+            let url = '{{ route('settings.index') }}';
 
-        $(document).ready(function(){
-            let del_id;
+            $(document).ready(function(){
+                let del_id;
 
-            $('.del_btn').click(function() {
-                del_id = $(this).attr('data-id');
-                $('#del_modal_body').text('Удалить параметр «'+$(this).attr('data-name')+'»?');
-                $('#del_modal').modal('show');
-            });
+                $('.del_btn').click(function() {
+                    del_id = $(this).data('id');
+                    $('#del_modal_body').text('Удалить параметр «'+$(this).data('name')+'»?');
+                    $('#del_init_btn').click();
+                });
 
-            $('#del_modal_btn').click(function(){
-                $('#del_modal').modal('hide');
-                if (del_id) {
-                    $.ajax({
-                        url: '{{ route('ajax.settings.delete') }}',
-                        data: { '_token': _token, 'id': del_id },
-                        success: function (data) {
-                            if (data.result) {
-                                $('#tr'+del_id).hide();
-                            } else {
-                                showErrorModal('Ошибка при удалении параметра');
+                $('#del_modal_btn').click(function(){
+                    if (del_id) {
+                        $.ajax({
+                            url: '{{ route('ajax.settings.delete') }}',
+                            data: { '_token': _token, 'id': del_id },
+                            success: function (data) {
+                                if (data.result) {
+                                    $('#tr'+del_id).hide();
+                                } else {
+                                    showErrorModal('Ошибка при удалении параметра');
+                                }
                             }
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             });
-        });
-    </script>
+        </script>
+    @endcan
 @endsection

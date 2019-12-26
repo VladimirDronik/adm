@@ -17,7 +17,7 @@ class SettingController extends Controller
 
     public function delete(Request $r)
     {
-        abort_if(!ajaxHas($r, ['id']), 400);
+        abort_if(!ajaxHas($r, ['id']) || !\Gate::allows('settings.delete'), 400);
 
         return response()->json(['result' => (bool)$this->service->delete((int)$r->id)]);
     }

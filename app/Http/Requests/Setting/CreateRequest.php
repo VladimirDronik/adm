@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Setting;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Gate;
 
 class CreateRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class CreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Gate::allows('settings.create');
     }
 
     /**
