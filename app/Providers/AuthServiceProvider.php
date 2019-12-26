@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\UserPermission;
+use App\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -25,6 +27,17 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        $this->register();
+    }
+
+    public function register()
+    {
+        $slugs = UserPermission::slugs();
+
+        foreach ($slugs as $slug) {
+            Gate::define($slug, function (User $user) use ($slug) {
+                return $user->hasAccess($slug);
+            });
+        }
     }
 }
