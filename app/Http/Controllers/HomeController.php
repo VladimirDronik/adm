@@ -41,4 +41,9 @@ class HomeController extends Controller
 
         return back();
     }
+
+    public function accessError()
+    {
+        return 'Доступ запрещен. <a href="'.route('home').'">На главную</a>';
+    }
 }
