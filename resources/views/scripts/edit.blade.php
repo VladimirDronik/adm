@@ -22,7 +22,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-10 col-xl-9">
-                    {!! Form::model($script, ['route' => ['scripts.update', $script->id], 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::model($script, ['route' => ['scripts.update', $script->id], 'method' => 'put',
+                            'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
@@ -39,8 +40,8 @@
                                             <pre>{{ $script->code }}</pre>
                                         </div>
                                     </div>
-
-                                @else
+                                </div>
+                            @else
                                 <div class="alert alert-danger alert-dismissible fade show">
                                     Файл {{ $script->link }} не найден.
                                 </div>
@@ -52,6 +53,7 @@
                                     Файл {{ $script->link }} не найден. Код будет сохранен в новый файл с таким названием.
                                 </div>
                             @endif
+
                             {{ Form::bs_textarea('code', 'Код скрипта*:', $script->code, ['required'=>true, 'rows' => 20]) }}
 
                             {{ Form::bs_submit_btn() }}

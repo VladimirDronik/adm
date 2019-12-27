@@ -7,7 +7,6 @@ use App\Models\Method;
 use App\Models\ObjType;
 use App\Models\SchedulerPoint;
 use App\Models\SchedulerTask;
-use App\Models\Termostat;
 
 class TermostatObjectService {
 

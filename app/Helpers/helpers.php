@@ -24,8 +24,12 @@ if (!function_exists('logout')) {
 }
 
 if (!function_exists('gates')) {
-    function gates(array $slugs): array
+    function gates($slugs): array
     {
+        if (!is_array($slugs)) {
+            $slugs = [$slugs];
+        }
+
         $allows = [];
 
         foreach ($slugs as $slug) {

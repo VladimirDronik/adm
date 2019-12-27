@@ -36,7 +36,9 @@
                                     <th>Название</th>
                                     <th>Скрипт</th>
                                     <th>Кол-во выполнений</th>
-                                    <th>Системный</th>
+                                    @if($can['scripts.show-system'])
+                                        <th>Системный</th>
+                                    @endif
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
@@ -44,25 +46,31 @@
                             <tbody>
                                 @foreach($scripts as $script)
                                     <tr id="tr{{$script->id}}">
-                                        <td><a href="{{ route('scripts.edit',[$script->id]) }}">{{ $script->name }}</a></td>
-                                        <td><a href="{{ route('scripts.edit',[$script->id]) }}">{{ $script->link }}</a></td>
-                                        <td>{{ (int)$script->count }}</td>
                                         <td>
-                                            @if($script->system)
-                                                <span class="badge badge-success">Да</span>
-                                            @else
-                                                <span class="badge badge-default">Нет</span>
-                                            @endif
+                                            <a href="{{ route('scripts.edit', [$script->id]) }}">{{ $script->name }}</a>
                                         </td>
+                                        <td>
+                                            <a href="{{ route('scripts.edit', [$script->id]) }}">{{ $script->link }}</a>
+                                        </td>
+                                        <td>{{ (int)$script->count }}</td>
+                                        @if($can['scripts.show-system'])
+                                            <td>
+                                                @if($script->system)
+                                                    <span class="badge badge-success">Да</span>
+                                                @else
+                                                    <span class="badge badge-default">Нет</span>
+                                                @endif
+                                            </td>
+                                        @endif
                                         <td align="center" class="text-center">
                                             @if(!$script->system_methods_count)
-                                                <a href="{{ route('scripts.edit',[$script->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                                <a href="{{ route('scripts.edit', [$script->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                     <i class="fa fa-cog fa-lg"></i>
                                                 </a>
                                             @endif
                                         </td>
                                         <td align="center" class="text-center">
-                                            @if(!$script->system_methods_count)
+                                            @if(!$script->system_methods_count && (!$script->system || $can['scripts.delete-system']))
                                                 <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
                                                         data-id="{{ $script->id }}" data-name="{{ $script->name }}">
                                                     <i class="fa fa-trash fa-lg"></i>
@@ -77,7 +85,9 @@
                                     <th>Название</th>
                                     <th>Скрипт</th>
                                     <th>Кол-во выполнений</th>
-                                    <th>Системный</th>
+                                    @if($can['scripts.show-system'])
+                                        <th>Системный</th>
+                                    @endif
                                     <th></th>
                                     <th></th>
                                 </tr>
@@ -102,8 +112,8 @@
             let del_id;
 
             $('.del_btn').click(function() {
-                del_id = $(this).attr('data-id');
-                $('#del_modal_body').text('Удалить скрипт «'+$(this).attr('data-name')+'»?');
+                del_id = $(this).data('id');
+                $('#del_modal_body').text('Удалить скрипт «'+$(this).data('name')+'»?');
                 $('#del_init_btn').click();
             });
 

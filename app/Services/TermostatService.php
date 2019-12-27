@@ -66,7 +66,7 @@ class TermostatService {
 
         if ($data['object_type'] === 'manual') {
             $termostat->save();
-        } else if ($data['object_type'] === 'auto') {
+        } elseif ($data['object_type'] === 'auto') {
             DB::transaction(function () use (&$termostat) {
                 $unique_name = HomeObject::getUniqueObjectName(0, $termostat->name);
                 $object = $this->termostat_object_service->createTermostatObject($unique_name);

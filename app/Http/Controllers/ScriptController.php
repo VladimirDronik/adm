@@ -23,21 +23,25 @@ class ScriptController extends Controller
     public function index(Request $r)
     {
         $filter_name = $r->input('name', '');
-        $scripts = $this->script_rep->getByName($filter_name);
+        $can = gates('scripts.*-system');
+        $scripts = $this->script_rep->getByName($filter_name, $can['scripts.show-system']);
 
-        return view('scripts.index', compact('scripts','filter_name'));
+        return view('scripts.index', compact('scripts','filter_name', 'can'));
     }
 
     public function create()
     {
-        return view('scripts.create');
+        $can = gates('scripts.*-system');
+
+        return view('scripts.create', compact('can'));
     }
 
     public function store(CreateRequest $r)
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('scripts.index')->with('success', 'Скрипт успешно добавлен');
+                return redirect()->route('scripts.index')
+                    ->with('success', 'Скрипт успешно добавлен');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при добавлении скрипта '
@@ -50,7 +54,8 @@ class ScriptController extends Controller
     public function edit(int $id)
     {
         if ($script = Script::find($id)) {
-            return view('scripts.edit', compact('script'));
+            $can = gates('scripts.*-system');
+            return view('scripts.edit', compact('script', 'can'));
         }
 
         return redirect()->route('scripts.index');
@@ -61,19 +66,20 @@ class ScriptController extends Controller
         $script = Script::findOrFail($id);
 
         if (count($script->systemMethods)) {
-            return redirect()->route('scripts.edit', [$script->id])->with('error','Редактирование скрипта запрещено');
+            return redirect()->route('scripts.edit', [$script->id])
+                ->with('error','Редактирование скрипта запрещено');
         }
 
         try {
             if ($this->service->update($script, $r->except('_token'))) {
                 return redirect()->route('scripts.edit',[$script->id])
-                    ->with('success','Скрипт успешно изменен');
+                    ->with('success', 'Скрипт успешно изменен');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении скрипта '.$script->id.' '
                 .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении скрипта');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении скрипта');
     }
 }
