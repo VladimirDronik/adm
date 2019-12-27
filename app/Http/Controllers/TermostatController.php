@@ -52,8 +52,9 @@ class TermostatController extends Controller
     {
         list($objects, $rooms, $types) = $this->getLists();
         $object_types =  HomeObject::getFullTypeIds();
+        $can = gates('devices.show-object');
 
-        return view('termostats.create', compact('objects','rooms', 'types', 'object_types'));
+        return view('termostats.create', compact('objects','rooms', 'types', 'object_types', 'can'));
     }
 
     public function store(CreateRequest $r)
@@ -77,9 +78,10 @@ class TermostatController extends Controller
         $methods = $object_service->getMethodsByObjectIdToArray($termostat->object);
         $object_types = HomeObject::getFullTypeIds();
         $scripts = $script_rep->getAllToArray();
+        $can = gates('devices.show-object');
 
         return view('termostats.edit', compact('termostat', 'objects', 'rooms',
-            'types', 'methods', 'object_types', 'scripts'));
+            'types', 'methods', 'object_types', 'scripts', 'can'));
     }
 
     public function update(UpdateRequest $r, Termostat $termostat)

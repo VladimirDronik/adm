@@ -60,9 +60,10 @@ class DimmerController extends Controller
         $objects = $this->object_rep->getAllToArray();
         $object_types = HomeObject::getFullTypeIds();
         $scripts = $script_rep->getAllToArray();
+        $can = gates('devices.show-object');
 
         return view('dimmers.edit', compact('dimmer',
-            'objects', 'object_types', 'scripts'));
+            'objects', 'object_types', 'scripts', 'can'));
     }
 
     public function update(UpdateRequest $r, Dimmer $dimmer)

@@ -57,9 +57,11 @@
                                                 <label class="btn btn-success btn-sm active">
                                                     <input type="radio" name="object_type" autocomplete="off" checked value="auto"> Создать автоматически
                                                 </label>
-                                                <label class="btn btn-success btn-sm">
-                                                    <input type="radio" name="object_type" autocomplete="off" value="manual">  Выбор из списка
-                                                </label>
+                                                @can('devices.create-manual-object')
+                                                    <label class="btn btn-success btn-sm">
+                                                        <input type="radio" name="object_type" autocomplete="off" value="manual">  Выбор из списка
+                                                    </label>
+                                                @endcan
                                             </div>
                                         </div>
                                     </div>
@@ -95,7 +97,7 @@
                             </div>
 
                             {{ Form::bs_autoselect_and_btn('object', 'Объект влияния*:', $objects, old('object'),
-                                false, false, ['required' => true], '', '', null, 'Объект, у которого меняем состояние') }}
+                                false, false, ['required' => true], '', '', null, 'Объект, у которого меняем состояние', 3, $can['devices.show-object']) }}
 
                             {{ Form::bs_autoselect('method_on', 'Метод при включении*:', [], old('method_on'),
                                 false, false, ['required' => true], null, 'Метод объекта влияния при срабатывании термостата на включение') }}

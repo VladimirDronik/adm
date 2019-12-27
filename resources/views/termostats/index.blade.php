@@ -41,7 +41,9 @@
                                     <th>Оптим. темп.</th>
                                     <th>Гистерезис</th>
                                     <th>Режим</th>
-                                    <th>Объект влияния</th>
+                                    @can('devices.show-object')
+                                        <th>Объект влияния</th>
+                                    @endcan
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
@@ -57,11 +59,13 @@
                                         <td>{{ $termostat->optimal }} &#176;С</td>
                                         <td>{{ $termostat->gisteresis }}</td>
                                         <td>{{ $termostat->rus_thermostat }}</td>
-                                        <td>
-                                            @if($termostat->object)
-                                                <a href="{{ route('objects.edit',[$termostat->object]) }}" target="_blank">{{ optional($termostat->eobject)->name }}</a>
-                                            @endif
-                                        </td>
+                                        @can('devices.show-object')
+                                            <td>
+                                                @if($termostat->object)
+                                                    <a href="{{ route('objects.edit',[$termostat->object]) }}" target="_blank">{{ optional($termostat->eobject)->name }}</a>
+                                                @endif
+                                            </td>
+                                        @endcan
                                         <td align="center" class="text-center">
                                             <a href="{{ route('termostats.edit',[$termostat->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>
@@ -85,7 +89,9 @@
                                     <th>Оптим. темп.</th>
                                     <th>Гистерезис</th>
                                     <th>Режим</th>
-                                    <th>Объект влияния</th>
+                                    @can('devices.show-object')
+                                        <th>Объект влияния</th>
+                                    @endcan
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>

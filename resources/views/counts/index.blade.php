@@ -37,7 +37,9 @@
                                     <th>Тип</th>
                                     <th style="width: 60px;">ID</th>
                                     <th>Название</th>
-                                    <th>Объект</th>
+                                    @can('devices.show-object')
+                                        <th>Объект</th>
+                                    @endcan
                                     <th>Значение за один импульс</th>
                                     <th>Значение за сегодня</th>
                                     <th>Общее значение</th>
@@ -54,12 +56,14 @@
                                         </td>
                                         <td scope="row">{{ $count->id }}</td>
                                         <td><a href="{{ route('counts.edit', [$count->id]) }}">{{ $count->name }}</a></td>
-                                        <td>@if($count->object)
-                                                <a href="{{ route('objects.edit', [$count->id_object]) }}">{{ optional($count->object)->name }}</a>
-                                            @else
-                                                Не указан
-                                            @endif
-                                        </td>
+                                        @can('devices.show-object')
+                                            <td>@if($count->object)
+                                                    <a href="{{ route('objects.edit', [$count->id_object]) }}">{{ optional($count->object)->name }}</a>
+                                                @else
+                                                    Не указан
+                                                @endif
+                                            </td>
+                                        @endcan
                                         <td>{{ $count->impulse }} {{ $count->unit }}</td>
                                         <td>{{ $count->today_value}} {{ $count->unit }}</td>
                                         <td>{{ $count->total_value}} {{ $count->unit }}</td>
@@ -82,7 +86,9 @@
                                     <th>Тип</th>
                                     <th style="width: 60px;">ID</th>
                                     <th>Название</th>
-                                    <th>Объект</th>
+                                    @can('devices.show-object')
+                                        <th>Объект</th>
+                                    @endcan
                                     <th>Значение за один импульс</th>
                                     <th>Значение за сегодня</th>
                                     <th>Общее значение</th>

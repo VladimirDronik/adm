@@ -35,14 +35,15 @@
                         {{ Form::bs_simple_text('ID:', $dimmer->id) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-                        @if($dimmer->object && $dimmer->object->is_system)
+                        @if(($dimmer->object && $dimmer->object->is_system) || !$can['devices.show-object'])
                             <div class="form-group row">
                                 <label class="control-label text-right col-md-3 label-fix" for="">
                                     Объект:     </label>
                                 <div class="col-md-9">
                                     <div class="mt-2">
                                         <a class="a-color" href="{{ route('objects.edit', [$dimmer->id_object]) }}">
-                                            {{ $dimmer->object->name }} (системный) </a>
+                                            {{ $dimmer->object->name }}
+                                            @if($dimmer->object && $dimmer->object->is_system) (системный) @endif</a>
                                     </div>
                                 </div>
                             </div>

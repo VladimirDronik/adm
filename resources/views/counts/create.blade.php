@@ -42,9 +42,11 @@
                                             <label class="btn btn-success btn-sm active">
                                                 <input type="radio" name="object_type" autocomplete="off" checked value="auto"> Создать автоматически
                                             </label>
+                                            @can('devices.create-manual-object')
                                             <label class="btn btn-success btn-sm">
                                                 <input type="radio" name="object_type" autocomplete="off" value="manual">  Выбор из списка
                                             </label>
+                                            @endcan
                                         </div>
                                     </div>
                                 </div>

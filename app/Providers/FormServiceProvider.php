@@ -53,7 +53,7 @@ class FormServiceProvider extends ServiceProvider
         \Form::component('bs_autoselect_and_btn',
             self::PATH.'autoselect_and_btn', ['name', 'label', 'values' => null, 'selected' => null, 'show_id' => false,
                 'multiple' => false, 'attributes' => [], 'btn_label' => '', 'btn_title' => '',
-                'multiple_id' => null, 'help' => null, 'col' => 3]);
+                'multiple_id' => null, 'help' => null, 'col' => 3, 'is_btn' => true]);
         \Form::component('bs_checkbox',
             self::PATH.'checkbox', ['name', 'label', 'is_checked' => false, 'attributes' => [], 'help' => null, 'col' => 3]);
         \Form::component('bs_color',

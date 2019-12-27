@@ -63,8 +63,10 @@ class CountController extends Controller
         $object_types =  HomeObject::getFullTypeIds();
 
         $scripts = $script_rep->getAllToArray();
+        $can = gates('devices.show-object');
 
-        return view('counts.edit', compact('count', 'types', 'objects', 'object_types', 'scripts'));
+        return view('counts.edit', compact('count', 'types',
+            'objects', 'object_types', 'scripts', 'can'));
     }
 
     public function update(UpdateRequest $r, Count $count)

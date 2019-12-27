@@ -49,14 +49,14 @@
                         {{ Form::bs_number('max_alarm', 'Макс. аварийная температура*:', old('max_alarm', $termostat->max_alarm), ['min' => 0, 'max' => 40, 'required' => true],
                             '') }}
 
-                        @if($termostat->iobject && $termostat->iobject->is_system)
+                        @if(($termostat->iobject && $termostat->iobject->is_system) || !$can['devices.show-object'])
                             <div class="form-group row">
                                 <label class="control-label text-right col-md-3 label-fix" for="">
                                     Объект термостата:     </label>
                                 <div class="col-md-9">
                                     <div class="mt-2">
                                         <a class="a-color" href="{{ route('objects.edit', [$termostat->id_object]) }}">
-                                            {{ $termostat->iobject->name }} (системный) </a>
+                                            {{ $termostat->iobject->name }} @if($termostat->iobject && $termostat->iobject->is_system) (системный) @endif </a>
                                     </div>
                                 </div>
                             </div>
@@ -67,7 +67,7 @@
                         @endif
 
                         {{ Form::bs_autoselect_and_btn('object', 'Объект влияния*:', $objects, old('object', $termostat->object),
-                            false, false, ['required' => true], '', '', null, 'Объект, у которого меняем состояние') }}
+                            false, false, ['required' => true], '', '', null, 'Объект, у которого меняем состояние', 3, $can['devices.show-object']) }}
 
                         {{ Form::bs_autoselect('method_on', 'Метод при включении*:', $methods, old('method_on', $termostat->method_on),
                             false, false, ['required' => true], null, 'Метод объекта влияния при срабатывании термостата на включение') }}
