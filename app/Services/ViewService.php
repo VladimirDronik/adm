@@ -20,7 +20,7 @@ class ViewService {
             $view->room_group = null;
         } else {
             $room = Room::find($view->room);
-            if ($room->is_group) {
+            if (!$room->is_group && !$room->is_separate_room) {
                 $view->room_group = $room->group_room;
             } else {
                 $view->room_group = $view->room;
