@@ -22,6 +22,28 @@ if (!function_exists('logout')) {
         Auth::logout();
     }
 }
+
+if (!function_exists('gates')) {
+    function gates(array $slugs): array
+    {
+        $allows = [];
+
+        foreach ($slugs as $slug) {
+            if (strpos($slug, '*') === false) {
+                $allows[$slug] = Gate::allows($slug);
+            } else {
+                $slugs = explode('*', $slug);
+                foreach (['show', 'create', 'edit', 'delete'] as $action) {
+                    $slug = $slugs[0].$action.($slugs[1] ?? '');
+                    $allows[$slug] = Gate::allows($slug);
+                }
+            }
+        }
+
+        return $allows;
+    }
+}
+
 /* request */
 
 if (!function_exists('ajaxHas')) {

@@ -12,6 +12,7 @@ use App\Repositories\ScriptRepository;
 use App\Services\EventService;
 use App\Services\ObjectService;
 use Illuminate\Http\Request;
+use Gate;
 
 class EventController extends Controller
 {
@@ -42,10 +43,11 @@ class EventController extends Controller
     public function index(Request $r)
     {
         $filter = $this->getFilter($r);
-        $events = $this->event_rep->getByNameAndType($filter);
+        $can = gates(['events.*-system', 'events.*-hidden', 'objects', 'scripts']);
+        $events = $this->event_rep->getByNameAndType($filter, $can['events.show-system'], $can['events.show-hidden']);
         $types = SchedulerPoint::getFullTypeIds();
 
-        return view('events.index', compact('events', 'types', 'filter'));
+        return view('events.index', compact('events', 'types', 'filter', 'can'));
     }
 
     public function create()
@@ -53,7 +55,9 @@ class EventController extends Controller
         $objects = $this->object_rep->getAllToArray();
         $scripts = $this->script_rep->getAllToArray();
 
-        return view('events.create', compact('objects', 'scripts'));
+        $can = gates(['events.*-system', 'events.*-hidden']);
+
+        return view('events.create', compact('objects', 'scripts', 'can'));
     }
 
     public function store(CreateRequest $r)
@@ -86,7 +90,10 @@ class EventController extends Controller
         $types = SchedulerPoint::getFullTypeIds();
         $cron_periods = SchedulerPoint::CRON_PERIODS;
 
-        return view('events.edit', compact('event', 'objects', 'methods', 'scripts', 'types', 'cron_periods'));
+        $can = gates(['events.*-system', 'events.*-hidden']);
+
+        return view('events.edit', compact('event', 'objects', 'methods', 'scripts',
+            'types', 'cron_periods', 'can'));
     }
 
     public function update(UpdateRequest $r, int $id)

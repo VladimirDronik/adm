@@ -39,8 +39,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SchedulerTask extends Model
 {
-    const SYSTEM = 1;
+    const SYSTEM = 1;      // for tasks and for points
     const NOT_SYSTEM = 0;
+    const HIDDEN = 1;
+    const NOT_HIDDEN = 0;
 
     protected $table = 'scheduler_tasks';
     public $timestamps = false;
@@ -73,6 +75,28 @@ class SchedulerTask extends Model
         return Termostat::whereHas('iobject', function ($query) {
             $query->where('is_system', 1)->where('id', $this->object);
         })->exists();
+    }
+
+    /* scopes */
+
+    public function scopeSystem($query)
+    {
+        $query->where('is_system', self::SYSTEM);
+    }
+
+    public function scopeHidden($query)
+    {
+        $query->where('is_hidden', self::HIDDEN);
+    }
+
+    public function scopeNotSystem($query)
+    {
+        $query->where('is_system', self::NOT_SYSTEM);
+    }
+
+    public function scopeNotHidden($query)
+    {
+        $query->where('is_hidden', self::NOT_HIDDEN);
     }
 
     /* relations */

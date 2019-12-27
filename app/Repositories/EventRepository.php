@@ -11,7 +11,7 @@ class EventRepository {
         return SchedulerTask::with('points','emethod')->orderBy('name')->paginate($pagination_count);
     }
 
-    public function getByNameAndType(array $filter, $pagination_count = 30)
+    public function getByNameAndType(array $filter, bool $with_system = true, bool $with_hidden = true, $pagination_count = 30)
     {
         $name = trim($filter['name']);
         $type = trim($filter['type']);
@@ -31,6 +31,14 @@ class EventRepository {
         $query->withCount(['points' => function ($q) {
             $q->where('system', SchedulerTask::SYSTEM);
         }]);
+
+        if (!$with_system) {
+            $query->notSystem();
+        }
+
+        if (!$with_hidden) {
+            $query->notHidden();
+        }
 
         $query->orderBy('points_count', 'desc');
 

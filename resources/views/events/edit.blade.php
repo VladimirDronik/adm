@@ -37,8 +37,19 @@
 
                         @if(!optional($event->emethod)->is_system)
                             {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                            {{ Form::bs_checkbox('is_system', 'Системное:', $event->is_system, [], '&nbsp;&nbsp;Доступно для редактирования только администратору') }}
-                            {{ Form::bs_checkbox('is_hidden', 'Скрытое:', $event->is_hidden, [], '&nbsp;&nbsp;Доступно для просмотра только администратору') }}
+                            @if($can['events.edit-system'])
+                                {{ Form::bs_checkbox('is_system', 'Системное:', $event->is_system, [], '&nbsp;&nbsp;Доступно для редактирования только администратору') }}
+                            @else
+                                {{ Form::bs_simple_text('Системное:', $event->is_system ? 'Да' : 'Нет') }}
+                                <input type="hidden" name="is_system" value="{{ $event->is_system ? 1 : 0 }}">
+                            @endif
+
+                            @if($can['events.edit-hidden'])
+                                {{ Form::bs_checkbox('is_hidden', 'Скрытое:', $event->is_hidden, [], '&nbsp;&nbsp;Доступно для просмотра только администратору') }}
+                            @else
+                                {{ Form::bs_simple_text('Скрытое:', $event->is_hidden ? 'Да' : 'Нет') }}
+                                <input type="hidden" name="is_hidden" value="{{ $event->is_hidden ? 1 : 0 }}">
+                            @endif
                             {{ Form::bs_hr() }}
                             <div class="form-group row ">
                                 <label class="control-label text-right col-md-3 label-fix" for="type"><strong></strong></label>
@@ -76,11 +87,29 @@
                             <div id="script_div" @if(!$event->has_script) style="display: none;" @endif>
                                 {{ Form::bs_autoselect('script', 'Скрипт:', $scripts, old('script', $event->script),  false, false) }}
                             </div>
-                            {{ Form::bs_submit_btn() }}
+                            @if(($event->is_system && $can['events.edit-system'])
+                                || ($event->is_hidden && $can['events.edit-hidden'] && !$event->is_system)
+                                || (!$event->is_system && !$event->is_hidden))
+                                {{ Form::bs_submit_btn() }}
+                            @endif
                         @else
                             {{ Form::bs_text('name', 'Название*:', null, ['required' => true, 'disabled' => true]) }}
-                            {{ Form::bs_checkbox('is_system', 'Системное:', $event->is_system, ['disabled' => true], '&nbsp;&nbsp;Доступно для редактирования только администратору') }}
-                            {{ Form::bs_checkbox('is_hidden', 'Скрытое:', $event->is_hidden, ['disabled' => true], '&nbsp;&nbsp;Доступно для просмотра только администратору') }}
+                            @if($can['events.edit-system'])
+                                {{ Form::bs_checkbox('is_system', 'Системное:', $event->is_system, [],
+                                    '&nbsp;&nbsp;Доступно для редактирования только администратору') }}
+                            @else
+                                {{ Form::bs_simple_text('Системное:', $event->is_system ? 'Да' : 'Нет') }}
+                                <input type="hidden" name="is_system" value="{{ $event->is_system ? 1 : 0 }}">
+                            @endif
+
+                            @if($can['events.edit-hidden'])
+                                {{ Form::bs_checkbox('is_hidden', 'Скрытое:', $event->is_hidden, [],
+                                    '&nbsp;&nbsp;Доступно для просмотра только администратору') }}
+                            @else
+                                {{ Form::bs_simple_text('Скрытое:', $event->is_hidden ? 'Да' : 'Нет') }}
+                                <input type="hidden" name="is_hidden" value="{{ $event->is_hidden ? 1 : 0 }}">
+                            @endif
+
                             {{ Form::bs_hr() }}
                             <div class="form-group row ">
                                 <label class="control-label text-right col-md-3 label-fix" for="type"><strong></strong></label>
@@ -149,17 +178,21 @@
                                         {!! $point->description !!}
                                     </div>
                                     <div class="col-md-2 text-right">
-                                        @if($is_point_editable)
-                                            <button type="button" data-id="{{ $point->id }}"
-                                                    data-type="{{ $point->type }}" data-time="{{ $point->time }}" data-days="{{ $point->days }}" class="btn btn-info btn-sm btn-rounded edit_btn">
-                                                <i class="fa fa-cog fa-lg"></i>
-                                            </button>
-                                        @endif
+                                        @if(($event->is_system && $can['events.edit-system'])
+                                           || ($event->is_hidden && $can['events.edit-hidden'] && !$event->is_system)
+                                           || (!$event->is_system && !$event->is_hidden))
+                                            @if($is_point_editable)
+                                                <button type="button" data-id="{{ $point->id }}"
+                                                        data-type="{{ $point->type }}" data-time="{{ $point->time }}" data-days="{{ $point->days }}" class="btn btn-info btn-sm btn-rounded edit_btn">
+                                                    <i class="fa fa-cog fa-lg"></i>
+                                                </button>
+                                            @endif
 
-                                        @if(!optional($event->emethod)->is_system)
-                                            <button type="button" data-id="{{ $point->id }}" data-type="{{ $point->type }}" class="btn btn-danger btn-rounded btn-sm del_btn">
-                                                <i class="fa fa-trash fa-lg"></i>
-                                            </button>
+                                            @if(!optional($event->emethod)->is_system)
+                                                <button type="button" data-id="{{ $point->id }}" data-type="{{ $point->type }}" class="btn btn-danger btn-rounded btn-sm del_btn">
+                                                    <i class="fa fa-trash fa-lg"></i>
+                                                </button>
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
@@ -168,9 +201,13 @@
                         @if($is_point_editable)
                             <div class="form-group row">
                                 <div class="col-md-12 text-left">
+                                    @if(($event->is_system && $can['events.edit-system'])
+                                       || ($event->is_hidden && $can['events.edit-hidden'] && !$event->is_system)
+                                       || (!$event->is_system && !$event->is_hidden))
                                     <button id="add_btn" type="button" class="btn btn-primary">
                                         <i class="fa fa-plus fa-lg"></i> Добавить период
                                     </button>
+                                    @endif
                                 </div>
                             </div>
                         @endif

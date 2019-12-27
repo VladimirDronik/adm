@@ -30,8 +30,17 @@
                         {{ Form::bs_alert() }}
                         {{ Form::bs_title('Основные данные') }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_checkbox('is_system', 'Системное:', false, [], '&nbsp;&nbsp;Доступно для редактирования только администратору') }}
-                        {{ Form::bs_checkbox('is_hidden', 'Скрытое:', false, [], '&nbsp;&nbsp;Доступно для просмотра только администратору') }}
+                        @if($can['events.create-system'])
+                            {{ Form::bs_checkbox('is_system', 'Системное:', false, [], '&nbsp;&nbsp;Доступно для редактирования только администратору') }}
+                        @else
+                            <input type="hidden" name="is_system" value="0">
+                        @endif
+                        @if($can['events.create-hidden'])
+                            {{ Form::bs_checkbox('is_hidden', 'Скрытое:', false, [], '&nbsp;&nbsp;Доступно для просмотра только администратору') }}
+                        @else
+                            <input type="hidden" name="is_hidden" value="0">
+                        @endif
+
                         {{ Form::bs_hr() }}
                         <div class="form-group row">
                             <label class="control-label text-right col-md-3 label-fix" for="type"><strong></strong></label>

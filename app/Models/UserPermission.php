@@ -35,7 +35,16 @@ class UserPermission
                     'edit-system' => false,
                     'delete-system' => false,
                 ],
-                'events' => true,
+                'events' => [
+                    'show-system' => true,
+                    'create-system' => false,
+                    'edit-system' => false,
+                    'delete-system' => false,
+                    'show-hidden' => true,
+                    'create-hidden' => true,
+                    'edit-hidden' => true,
+                    'delete-hidden' => true
+                ],
                 'settings' => [
                     'create' => false,
                     'delete' => false
@@ -54,8 +63,14 @@ class UserPermission
                 'menu' => false,
                 'scripts' => false,
                 'events' => [
-                    'system' => false,
-                    'hidden' => false,
+                    'show-system' => false,
+                    'create-system' => false,
+                    'edit-system' => false,
+                    'delete-system' => false,
+                    'show-hidden' => false,
+                    'create-hidden' => false,
+                    'edit-hidden' => false,
+                    'delete-hidden' => false
                 ],
                 'settings' => false,
                 'logs' => false,

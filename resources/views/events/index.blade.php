@@ -52,8 +52,12 @@
                                     <th>Расписание</th>
                                     <th>Метод</th>
                                     <th>Скрипт</th>
-                                    <th class="text-center">Системное</th>
-                                    <th class="text-center">Скрытое</th>
+                                    @if($can['events.show-system'])
+                                        <th class="text-center">Системное</th>
+                                    @endif
+                                    @if($can['events.show-hidden'])
+                                        <th class="text-center">Скрытое</th>
+                                    @endif
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
@@ -61,7 +65,16 @@
                             <tbody>
                             @foreach($events as $event)
                                 <tr id="tr{{$event->id}}">
-                                    <td><a href="{{ route('events.edit',[$event->id]) }}" title="{{ $event->name }}">{{ $event->name }}</a></td>
+                                    <td>
+                                        @if(!$event->is_system && !$event->is_hidden)
+                                            <a href="{{ route('events.edit',[$event->id]) }}" title="{{ $event->name }}">{{ $event->name }}</a>
+                                        @elseif(($event->is_system && $can['events.edit-system'])
+                                            || ($event->is_hidden && $can['events.edit-hidden'] && !$event->is_system))
+                                            <a href="{{ route('events.edit',[$event->id]) }}" title="{{ $event->name }}">{{ $event->name }}</a>
+                                        @else
+                                            {{ $event->name }}
+                                        @endif
+                                    </td>
                                     <td>
                                         @php $count = count($event->points); @endphp
                                         @if($count > 0 && $count <= 3)
@@ -87,55 +100,93 @@
                                     </td>
                                     <td>
                                         @if(optional($event->emethod)->id_object)
-                                            <a href="{{ route('objects.edit',[optional($event->emethod)->id_object]) }}">
+                                            @if($can['objects'])
+                                                <a href="{{ route('objects.edit',[optional($event->emethod)->id_object]) }}">
+                                                    {{ optional($event->emethod)->name }}
+                                                </a>
+                                            @else
                                                 {{ optional($event->emethod)->name }}
-                                            </a>
+                                            @endif
                                         @endif
                                     </td>
                                     <td>
                                         @if($event->escript)
-                                            <a href="{{ route('scripts.edit',[$event->script]) }}">
+                                            @if($can['scripts'])
+                                                <a href="{{ route('scripts.edit', [$event->script]) }}">
+                                                    {{ optional($event->escript)->name }}
+                                                </a>
+                                            @else
                                                 {{ optional($event->escript)->name }}
+                                            @endif
+                                        @endif
+                                    </td>
+                                    @if($can['events.show-system'])
+                                        <td class="text-center">
+                                            <input type="checkbox" class="system_checkbox" style="cursor: pointer;"
+                                                   @if(($event->emethod && $event->emethod->is_system) || !$can['events.edit-system']) disabled @endif data-id="{{$event->id}}" value="1" @if($event->is_system) checked @endif>
+                                        </td>
+                                    @endif
+                                    @if($can['events.show-hidden'])
+                                        <td class="text-center">
+                                            <input type="checkbox" class="hidden_checkbox" style="cursor: pointer;"
+                                                   @if(($event->emethod && $event->emethod->is_system) || !$can['events.edit-hidden'] || ($event->is_system && !$can['events.edit-system'])) disabled @endif data-id="{{$event->id}}" value="1" @if($event->is_hidden) checked @endif>
+                                        </td>
+                                    @endif
+                                    <td align="center">
+                                        @if($event->is_system && $can['events.edit-system'])
+                                            <a href="{{ route('events.edit', [$event->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                                <i class="fa fa-cog fa-lg"></i>
+                                            </a>
+                                        @elseif($event->is_hidden && $can['events.edit-hidden'] && !$event->is_system)
+                                            <a href="{{ route('events.edit', [$event->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                                <i class="fa fa-cog fa-lg"></i>
+                                            </a>
+                                        @elseif(!$event->is_system && !$event->is_hidden)
+                                            <a href="{{ route('events.edit', [$event->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                                <i class="fa fa-cog fa-lg"></i>
                                             </a>
                                         @endif
                                     </td>
-                                    <td class="text-center">
-                                        <input type="checkbox" class="system_checkbox" style="cursor: pointer;"
-                                               @if($event->emethod && $event->emethod->is_system) disabled @endif  data-id="{{$event->id}}" value="1" @if($event->is_system) checked @endif>
-                                    </td>
-                                    <td class="text-center">
-                                        <input type="checkbox" class="hidden_checkbox" style="cursor: pointer;"
-                                               @if($event->emethod && $event->emethod->is_system) disabled @endif data-id="{{$event->id}}" value="1" @if($event->is_hidden) checked @endif>
-                                    </td>
-                                    <td align="center">
-                                        <a href="{{ route('events.edit',[$event->id]) }}" class="btn btn-info btn-sm btn-rounded">
-                                            <i class="fa fa-cog fa-lg"></i>
-                                        </a>
-                                    </td>
                                     <td>
-                                        @if(!$event->emethod || !$event->emethod->is_system)
-                                            <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                    data-id="{{ $event->id }}" data-name="{{ $event->name }}">
-                                                <i class="fa fa-trash fa-lg"></i>
-                                            </button>
+                                        @if(!$event->emethod || !$event->emethod->is_system || user()->is_super_admin)
+                                            @if($event->is_system && $can['events.delete-system'])
+                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                                        data-id="{{ $event->id }}" data-name="{{ $event->name }}">
+                                                    <i class="fa fa-trash fa-lg"></i>
+                                                </button>
+                                            @elseif($event->is_hidden && $can['events.delete-hidden'] && !$event->is_system)
+                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                                        data-id="{{ $event->id }}" data-name="{{ $event->name }}">
+                                                    <i class="fa fa-trash fa-lg"></i>
+                                                </button>
+                                            @elseif(!$event->is_system && !$event->is_hidden)
+                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                                        data-id="{{ $event->id }}" data-name="{{ $event->name }}">
+                                                    <i class="fa fa-trash fa-lg"></i>
+                                                </button>
+                                            @endif
                                         @endif
                                     </td>
                                 </tr>
                             @endforeach
                             </tbody>
                             @if(count($events) > 10)
-                            <tfoot>
-                                <tr>
-                                    <th>Название</th>
-                                    <th>Расписание</th>
-                                    <th>Метод</th>
-                                    <th>Скрипт</th>
-                                    <th class="text-center">Системное</th>
-                                    <th class="text-center">Скрытое</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
+                                <tfoot>
+                                    <tr>
+                                        <th>Название</th>
+                                        <th>Расписание</th>
+                                        <th>Метод</th>
+                                        <th>Скрипт</th>
+                                        @if($can['events.show-system'])
+                                            <th class="text-center">Системное</th>
+                                        @endif
+                                        @if($can['events.show-hidden'])
+                                            <th class="text-center">Скрытое</th>
+                                        @endif
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
                             @endif
                         </table>
                     </div>
@@ -194,39 +245,43 @@
 
             // system and hidden checkboxes
 
-            $('.system_checkbox').change(function(){
-                let is_system = this.checked ? 1 : 0;
-                let id = $(this).attr('data-id');
+            @if($can['events.edit-system'])
+                $('.system_checkbox').change(function(){
+                    let is_system = this.checked ? 1 : 0;
+                    let id = $(this).attr('data-id');
 
-                $.ajax({
-                    url: '{{ route('ajax.events.system') }}',
-                    data: { '_token': _token, 'id': id, 'is_system': is_system},
-                    success: function (data) {
-                        if (data.result) {
-                            showSuccessModal('Изменения успешно сохранены');
-                        } else {
-                            showErrorModal('Ошибка при изменении свойств события');
-                        }
-                    },
+                    $.ajax({
+                        url: '{{ route('ajax.events.system') }}',
+                        data: { '_token': _token, 'id': id, 'is_system': is_system},
+                        success: function (data) {
+                            if (data.result) {
+                                showSuccessModal('Изменения успешно сохранены');
+                            } else {
+                                showErrorModal('Ошибка при изменении свойств события');
+                            }
+                        },
+                    });
                 });
-            });
+            @endif
 
-            $('.hidden_checkbox').change(function(){
-                let is_hidden = this.checked ? 1 : 0;
-                let id = $(this).attr('data-id');
+            @if($can['events.edit-hidden'])
+                $('.hidden_checkbox').change(function(){
+                    let is_hidden = this.checked ? 1 : 0;
+                    let id = $(this).attr('data-id');
 
-                $.ajax({
-                    url: '{{ route('ajax.events.hidden') }}',
-                    data: { '_token': _token, 'id': id, 'is_hidden': is_hidden },
-                    success: function (data) {
-                        if (data.result) {
-                            showSuccessModal('Изменения успешно сохранены');
-                        } else {
-                            showErrorModal('Ошибка при изменении свойств события');
-                        }
-                    },
+                    $.ajax({
+                        url: '{{ route('ajax.events.hidden') }}',
+                        data: { '_token': _token, 'id': id, 'is_hidden': is_hidden },
+                        success: function (data) {
+                            if (data.result) {
+                                showSuccessModal('Изменения успешно сохранены');
+                            } else {
+                                showErrorModal('Ошибка при изменении свойств события');
+                            }
+                        },
+                    });
                 });
-            });
+            @endif
         });
     </script>
 @endsection
