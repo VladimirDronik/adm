@@ -8,7 +8,7 @@ class RoomRepository
 {
     public function getSpecialRooms()
     {
-        return Room::orderBy('sort')->get();
+        return Room::room()->orderBy('group_room')->get();
     }
 
     public function getRoomGroups()

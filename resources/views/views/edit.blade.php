@@ -157,13 +157,15 @@
         }
 
         function initMethodsVar(object_id) {
-            $.ajax({
-                url: url_methods,
-                data: {'_token': _token, 'object_id': object_id},
-                success: function (data) {
-                    methods = data.methods;
-                }
-            });
+            if (object_id) {
+                $.ajax({
+                    url: url_methods,
+                    data: {'_token': _token, 'object_id': object_id},
+                    success: function (data) {
+                        methods = data.methods;
+                    }
+                });
+            }
         }
 
         $(document).ready(function () {

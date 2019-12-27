@@ -45,7 +45,8 @@ function validateTermostat() {
         return 'Не указана макс. аварийная температура';
     }
 
-    if ($('#termostat_form input[name=object_type]').length && $('#termostat_form input[name=object_type]:checked').val() === 'manual'
+    if ($('#termostat_form input[name=object_type]').length
+        && $('#termostat_form input[name=object_type]:checked').val() === 'manual'
         && isEmptyAutoSelect('id_object')) {
         return 'Не указан объект термостата';
     }
@@ -82,13 +83,15 @@ function validateTermostat() {
 }
 
 function initMethodsVar(object_id) {
-    $.ajax({
-        url: url_methods,
-        data: {'_token': _token, 'object_id': object_id},
-        success: function (data) {
-            methods = data.methods;
-        }
-    });
+    if (object_id) {
+        $.ajax({
+            url: url_methods,
+            data: {'_token': _token, 'object_id': object_id},
+            success: function (data) {
+                methods = data.methods;
+            }
+        });
+    }
 }
 
 function initTermostatForm() {

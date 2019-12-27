@@ -13,7 +13,7 @@ class FakeViewItemsTableSeeder extends Seeder
 
     public function getViewItems()
     {
-        $rooms = Room::all();
+        $rooms = Room::room()->get();
         $objects = HomeObject::whereHas('methods')->with('methods')->get();
         $scenes = Scene::all();
         $typeNames = View::getTypeIds();
@@ -27,8 +27,9 @@ class FakeViewItemsTableSeeder extends Seeder
             $left = rand(0, 10) > 6 ? null : rand(50, 80);
             $top = is_null($left) ? null : rand(50, 90);
             $room = rand(0, 10) > 6 ? null : $rooms[rand(0, count($rooms)-1)];
-            $room_group = (!is_null($room) &&  $room->is_group)
-                ? $room->group_foom : null;
+            $room_group = !is_null($room)
+                ? (is_null($room->group_room) ? $room->id : $room->group_room)
+                : null;
             $views[] = [
                 'type' => $typeName,
                 'description' => $faker->sentence,

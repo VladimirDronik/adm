@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Room;
 use App\Models\Temperature;
+use App\Models\View;
 use Illuminate\Support\Facades\DB;
 
 class RoomService
@@ -45,19 +46,19 @@ class RoomService
     private function getSortMin($room): int
     {
         if ($room->is_group || $room->is_separate_room) {
-            return Room::group()
+            return (int) Room::group()
                 ->orWhere(function ($query) {
                     $query->room()->whereNull('group_room');
                 })->min('sort');
         }
 
-        return Room::room()->where('group_room', $room->group_room)->min('sort');
+        return (int) Room::room()->where('group_room', $room->group_room)->min('sort');
     }
 
     private function getSortMax($room): int
     {
         if ($room->is_group || $room->is_separate_room) {
-            return Room::group()
+            return (int) Room::group()
                 ->orWhere(function ($query) {
                     $query->room()->whereNull('group_room');
                 })->max('sort');
@@ -221,18 +222,21 @@ class RoomService
                 })->where('sort', '>', $room->sort)->update([
                     'sort' => DB::raw('sort-1'),
                 ]);
+                View::where('room', $room->id)->update(['room_group' => (int)$data['group_room']]);
                 $room->group_room = $data['group_room'];
             } elseif (!is_null($room->group_room) && $data['group_room'] === '0') {
                 // из конкретных в отдельную
                 Room::room()->where('group_room', $room->group_room)->where('sort', '>', $room->sort)->update([
                     'sort' => DB::raw('sort-1'),
                 ]);
+                View::where('room', $room->id)->update(['room_group' => $room->id]);
                 $room->group_room = null;
             } elseif (!is_null($room->group_room) && $room->group_room !== (int)$data['group_room']) {
-                // из отдельной в отдельную
+                // из конкретной в конкретную
                 Room::room()->where('group_room', $room->group_room)->where('sort', '>', $room->sort)->update([
                     'sort' => DB::raw('sort-1'),
                 ]);
+                View::where('room', $room->id)->update(['room_group' => (int)$data['group_room']]);
                 $room->group_room = (int)$data['group_room'];
             }
 
