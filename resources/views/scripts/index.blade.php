@@ -10,7 +10,9 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('scripts.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить скрипт</a>
+                        @if($can['scripts.edit'])
+                            <a href="{{ route('scripts.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить скрипт</a>
+                        @endif
                         <a href="{{ route('scripts.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                         <div class="pull-right">
                             <form class="form-inline my-2 my-lg-0" method="get">
@@ -37,10 +39,12 @@
                                     <th>Скрипт</th>
                                     <th>Кол-во выполнений</th>
                                     @if($can['scripts.show-system'])
-                                        <th>Системный</th>
+                                        <th class="text-left">Системный</th>
                                     @endif
-                                    <th style="width: 60px;"></th>
-                                    <th style="width: 60px;"></th>
+                                    @if($can['scripts.edit'])
+                                        <th style="width: 60px;"></th>
+                                        <th style="width: 60px;"></th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -54,7 +58,7 @@
                                         </td>
                                         <td>{{ (int)$script->count }}</td>
                                         @if($can['scripts.show-system'])
-                                            <td>
+                                            <td class="text-left">
                                                 @if($script->system)
                                                     <span class="badge badge-success">Да</span>
                                                 @else
@@ -62,21 +66,23 @@
                                                 @endif
                                             </td>
                                         @endif
-                                        <td align="center" class="text-center">
-                                            @if(!$script->system_methods_count)
-                                                <a href="{{ route('scripts.edit', [$script->id]) }}" class="btn btn-info btn-sm btn-rounded">
-                                                    <i class="fa fa-cog fa-lg"></i>
-                                                </a>
-                                            @endif
-                                        </td>
-                                        <td align="center" class="text-center">
-                                            @if(!$script->system_methods_count && (!$script->system || $can['scripts.delete-system']))
-                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                        data-id="{{ $script->id }}" data-name="{{ $script->name }}">
-                                                    <i class="fa fa-trash fa-lg"></i>
-                                                </button>
-                                            @endif
-                                        </td>
+                                        @if($can['scripts.edit'])
+                                            <td align="center" class="text-center">
+                                                @if(!$script->system_methods_count)
+                                                    <a href="{{ route('scripts.edit', [$script->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                                        <i class="fa fa-cog fa-lg"></i>
+                                                    </a>
+                                                @endif
+                                            </td>
+                                            <td align="center" class="text-center">
+                                                @if(!$script->system_methods_count && (!$script->system || $can['scripts.delete-system']))
+                                                    <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                                            data-id="{{ $script->id }}" data-name="{{ $script->name }}">
+                                                        <i class="fa fa-trash fa-lg"></i>
+                                                    </button>
+                                                @endif
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -86,10 +92,12 @@
                                     <th>Скрипт</th>
                                     <th>Кол-во выполнений</th>
                                     @if($can['scripts.show-system'])
-                                        <th>Системный</th>
+                                        <th class="text-left">Системный</th>
                                     @endif
-                                    <th></th>
-                                    <th></th>
+                                    @if($can['scripts.edit'])
+                                        <th></th>
+                                        <th></th>
+                                    @endif
                                 </tr>
                             </tfoot>
                         </table>

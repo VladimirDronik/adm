@@ -23,7 +23,7 @@ class ScriptController extends Controller
     public function index(Request $r)
     {
         $filter_name = $r->input('name', '');
-        $can = gates('scripts.*-system');
+        $can = gates(['scripts.*-system', 'scripts.edit']);
         $scripts = $this->script_rep->getByName($filter_name, $can['scripts.show-system']);
 
         return view('scripts.index', compact('scripts','filter_name', 'can'));
@@ -31,7 +31,11 @@ class ScriptController extends Controller
 
     public function create()
     {
-        $can = gates('scripts.*-system');
+        $can = gates(['scripts.*-system', 'scripts.edit']);
+
+        if (!$can['scripts.edit']) {
+            return redirect()->route('scripts.index');
+        }
 
         return view('scripts.create', compact('can'));
     }
@@ -54,8 +58,10 @@ class ScriptController extends Controller
     public function edit(int $id)
     {
         if ($script = Script::find($id)) {
-            $can = gates('scripts.*-system');
-            return view('scripts.edit', compact('script', 'can'));
+            $can = gates(['scripts.*-system', 'scripts.edit']);
+            if ($can['scripts.edit']) {
+                return view('scripts.edit', compact('script', 'can'));
+            }
         }
 
         return redirect()->route('scripts.index');

@@ -31,6 +31,7 @@ class UserPermission
                 'network' => true,
                 'menu' => false,
                 'scripts' => [
+                    'edit' => false,
                     'show-system' => true,
                     'create-system' => false,
                     'edit-system' => false,
