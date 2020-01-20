@@ -7,6 +7,7 @@ use App\Models\Method;
 use App\Models\ObjType;
 use App\Models\SchedulerPoint;
 use App\Models\SchedulerTask;
+use App\Models\Script;
 
 class TermostatObjectService {
 
@@ -37,11 +38,19 @@ class TermostatObjectService {
      */
     public function createCheckMethodWithEvent(int $object_id)
     {
+        $script_id = Script::forceCreate([
+            'name' => 'Проверка термостата',
+            'link' => 'check_termostat.php',
+            'count' => 0,
+            'system' => 1
+        ])->id;
+
         $method_id = Method::forceCreate([
             'name' => 'Проверка термостата',
             'id_object' => $object_id,
             'comment' => 'Периодическая проверка текущих значений термостата',
-            'is_system' => 1
+            'is_system' => 1,
+            'script' => $script_id
         ])->id;
 
         $scheduler_task_id = SchedulerTask::forceCreate([
