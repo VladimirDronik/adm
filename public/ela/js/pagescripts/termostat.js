@@ -51,15 +51,15 @@ function validateTermostat() {
         return 'Не указан объект термостата';
     }
 
-    if (isEmptyAutoSelect('object')) {
-        return 'Не указан объект влияния';
-    }
-    if (isEmptyAutoSelect('method_on')) {
-        return 'Не указан метод при включении';
-    }
-    if (isEmptyAutoSelect('method_off')) {
-        return 'Не указан метод при выключении';
-    }
+    // if (isEmptyAutoSelect('object')) {
+    //     return 'Не указан объект влияния';
+    // }
+    // if (isEmptyAutoSelect('method_on')) {
+    //     return 'Не указан метод при включении';
+    // }
+    // if (isEmptyAutoSelect('method_off')) {
+    //     return 'Не указан метод при выключении';
+    // }
 
     let on_params = $("#termostat_form #method_on_params");
     if (on_params.is(":visible") && on_params.val().trim() === '') {

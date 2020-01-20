@@ -96,11 +96,11 @@
                                 </div>
                             </div>
 
-                            {{ Form::bs_autoselect_and_btn('object', 'Объект влияния*:', $objects, old('object'),
-                                false, false, ['required' => true], '', '', null, 'Объект, у которого меняем состояние', 3, $can['devices.show-object']) }}
+                            {{ Form::bs_autoselect_and_btn('object', 'Объект влияния:', $objects, old('object'),
+                                false, false, [], '', '', null, 'Объект, у которого меняем состояние', 3, $can['devices.show-object']) }}
 
-                            {{ Form::bs_autoselect('method_on', 'Метод при включении*:', [], old('method_on'),
-                                false, false, ['required' => true], null, 'Метод объекта влияния при срабатывании термостата на включение') }}
+                            {{ Form::bs_autoselect('method_on', 'Метод при включении:', [], old('method_on'),
+                                false, false, [], null, 'Метод объекта влияния при срабатывании термостата на включение') }}
 
                             <div class="form-group row" id="method_on_params_div"
                                  @if(!old('method_on')) style="display: none;" @endif>
@@ -116,8 +116,8 @@
                                 </div>
                             </div>
 
-                            {{ Form::bs_autoselect('method_off', 'Метод при выключении*:', [], old('method_off'),
-                                false, false, ['required' => true], null, 'Метод объекта влияния при срабатывании термостата на выключение') }}
+                            {{ Form::bs_autoselect('method_off', 'Метод при выключении:', [], old('method_off'),
+                                false, false, [], null, 'Метод объекта влияния при срабатывании термостата на выключение') }}
 
                             <div class="form-group row" id="method_off_params_div"
                                  @if(!old('method_off')) style="display: none;" @endif>

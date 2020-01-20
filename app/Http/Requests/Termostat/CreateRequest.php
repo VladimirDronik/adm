@@ -39,7 +39,7 @@ class CreateRequest extends FormRequest
 
         $ids = ['object', 'method_on', 'method_off'];
         foreach ($ids as $id) {
-            $rules[$id] = 'required|integer|min:0';
+            $rules[$id] = 'nullable|integer|min:0';
         }
 
         return $rules;

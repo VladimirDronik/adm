@@ -33,12 +33,13 @@ class UpdateRequest extends FormRequest
             'max_threshold' => 'required|integer|max:100',
             'min_alarm' => 'required|integer',
             'max_alarm' => 'required|integer|max:100',
-            'room' => 'nullable|integer|min:0'
+            'room' => 'nullable|integer|min:0',
+            'id_object' => 'required|integer|min:1'
         ];
 
-        $ids = ['id_object', 'object', 'method_on', 'method_off'];
+        $ids = ['object', 'method_on', 'method_off'];
         foreach ($ids as $id) {
-            $rules[$id] = 'required|integer|min:1';
+            $rules[$id] = 'nullable|integer|min:1';
         }
 
         return $rules;
