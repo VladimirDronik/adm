@@ -8,6 +8,7 @@ use App\Models\ObjType;
 use App\Models\SchedulerPoint;
 use App\Models\SchedulerTask;
 use App\Models\Script;
+use ScriptsTableSeeder;
 
 class TermostatObjectService {
 
@@ -31,6 +32,18 @@ class TermostatObjectService {
         return $object;
     }
 
+    public function getOrCreateCheckTermostatScriptId(): int
+    {
+        $script_id = Script::where('link', 'check_termostat.php')
+            ->where('system', 1)->value('id');
+
+        if ($script_id) {
+            return $script_id;
+        }
+
+        return Script::forceCreate(ScriptsTableSeeder::getCheckTermostatScript())->id;
+    }
+
     /**
      * Создание метода 'Проверка термостата' и события 'Проверка термостата' (каждые 5 мин)
      *
@@ -38,12 +51,7 @@ class TermostatObjectService {
      */
     public function createCheckMethodWithEvent(int $object_id)
     {
-        $script_id = Script::forceCreate([
-            'name' => 'Проверка термостата',
-            'link' => 'check_termostat.php',
-            'count' => 0,
-            'system' => 1
-        ])->id;
+        $script_id = $this->getOrCreateCheckTermostatScriptId();
 
         $method_id = Method::forceCreate([
             'name' => 'Проверка термостата',

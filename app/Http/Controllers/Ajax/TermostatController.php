@@ -15,6 +15,11 @@ class TermostatController extends Controller
         $this->service = $service;
     }
 
+    /**
+     * @param Request $r
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Throwable
+     */
     public function delete(Request $r)
     {
         abort_if(!ajaxHas($r, ['id']), 400);

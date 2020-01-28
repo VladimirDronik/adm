@@ -42,6 +42,16 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
+    public static function getCheckTermostatScript(): array
+    {
+        return [
+            'name' => 'Проверка термостата',
+            'link' => 'check_termostat.php', // используется в TermostatObjectService
+            'count' => 0,
+            'system' => 1
+        ];
+    }
+
     /**
      * Изменение скриптов в этой функции влияет на методы, которые
      * автоматически создаются для объекта диммера
@@ -88,9 +98,10 @@ class ScriptsTableSeeder extends Seeder
     {
         $scripts = self::getDimmerScripts();
 
-        $scripts[] = $this->getResetGraphsScript();
-        $scripts[] = $this->getCheckCountScript();
-        $scripts[] = $this->getResetCountScript();
+        $scripts[] = self::getResetGraphsScript();
+        $scripts[] = self::getCheckCountScript();
+        $scripts[] = self::getResetCountScript();
+        $scripts[] = self::getCheckTermostatScript();
 
         return $scripts;
     }
