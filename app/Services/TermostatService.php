@@ -29,9 +29,9 @@ class TermostatService {
 
         if ($termostat->iobject && $termostat->iobject->is_system) {
             DB::transaction(function () use (&$termostat) {
-                if (!HomeObject::isObjectUsed($termostat->id_object, $termostat->id, 'termostats')) {
+                //if (!HomeObject::isObjectUsed($termostat->id_object, $termostat->id, 'termostats')) {
                     HomeObject::deleteAutoObject($termostat->id_object);
-                }
+                //}
                 $termostat->delete();
             });
         } else {

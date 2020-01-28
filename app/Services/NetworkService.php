@@ -9,6 +9,11 @@ class NetworkService {
 
     /**
      * Установка параметров для сетевого интерфейса
+     *
+     * @param $address
+     * @param $netmask
+     * @param bool $gateway
+     * @throws \Exception
      */
     public function setIface($address, $netmask, $gateway = false) {
         if (!$address || !$netmask) {
@@ -70,7 +75,12 @@ EOT2;
     }
 
     /**
-     * Установка параметров для VPN соединения
+     *  Установка параметров для VPN соединения
+     *
+     * @param $server
+     * @param $username
+     * @param $password
+     * @throws \Exception
      */
     public function setVpn($server, $username, $password) {
 

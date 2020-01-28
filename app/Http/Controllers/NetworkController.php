@@ -30,7 +30,7 @@ class NetworkController extends Controller
             $service->reload();
             return redirect()->route('network.edit')->with('success', 'Данные успешно обновлены');
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при обновлении данных Сеть и VPN',[$e->getMessage()]);
+            \Log::error('Ошибка при обновлении данных Сеть и VPN', [$e->getMessage()]);
         }
         return redirect()->route('network.edit')->with('error','Ошибка при сохранении изменений');
     }

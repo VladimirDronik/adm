@@ -10,6 +10,18 @@ class DeviceService {
 
     private $device;
 
+    private $networkService;
+
+    public function __construct(NetworkService $networkService)
+    {
+        $this->networkService = $networkService;
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     * @throws \Throwable
+     */
     public function delete(int $id)
     {
         DB::transaction(function () use ($id) {
@@ -25,6 +37,38 @@ class DeviceService {
         Port::insert($this->device->devtype->getPortsForInserting($this->device->id));
     }
 
+    private function getDeviceIpNotificationParams(string $eip, string $sip): string
+    {
+        return "cf=1&eip={$eip}&pwd=to1&gw=255.255.255.255&sip={$sip}&sct=md.php&pr=&gsm=&srvt=0";
+    }
+
+    /**
+     * Передача ip нового устройства на удаленный сервер
+     *
+     * @param string $ip
+     * @throws \Exception
+     */
+    public function notifyDeviceIp(string $ip)
+    {
+        $sip = $this->networkService->getIface()[0];
+
+        if (empty($sip)) {
+            throw new \Exception('Не указан ip-адрес для подсети устройств в разделе «Сеть и VPN»');
+        }
+
+        $answer = file_get_contents($this->getDeviceIpNotificationParams($ip, $sip));
+
+        if ($answer === false) {
+            throw new \Exception('Некорректный ответ от удаленного сервера');
+        }
+    }
+
+    /**
+     * Создание устройства с оповещением на удаленный сервер ip и созданием портов
+     *
+     * @param array $data
+     * @throws \Exception
+     */
     public function storeDevice(array $data)
     {
         $this->device = new Device();
@@ -33,8 +77,15 @@ class DeviceService {
         $this->device->active = 0;
 
         $this->device->save();
+
+        $this->notifyDeviceIp($data['ip_address']);
     }
 
+    /**
+     * @param array $data
+     * @return mixed
+     * @throws \Throwable
+     */
     public function store(array $data)
     {
         DB::beginTransaction();
@@ -65,6 +116,13 @@ class DeviceService {
         return filter_var($ip, FILTER_VALIDATE_IP);
     }
 
+    /**
+     * Изменение устройства с оповещением ip удаленного сервера
+     *
+     * @param array $data
+     * @return array
+     * @throws \Exception
+     */
     public function update(array $data)
     {
         trimArray($data);
@@ -84,11 +142,38 @@ class DeviceService {
         }
 
         $device->description = $data['description'];
-        $device->ip_address = $data['ip_address'];
 
-        $device->save();
+        if (trim($data['ip_address']) !== $device->ip_address) {
 
-        return [true, ''];
+            $device->ip_address = $data['ip_address'];
+
+            DB::beginTransaction();
+
+            try {
+
+                $device->save();
+
+                $this->notifyDeviceIp($data['ip_address']);
+
+                DB::commit();
+
+                return [true, ''];
+
+            } catch (\Throwable $e) {
+
+                DB::rollback();
+
+                \Log::error('Ошибка при обновлении устройства', [$e->getMessage()]);
+            }
+
+        } else {
+
+            $device->save();
+            return [true, ''];
+
+        }
+
+        return [false, 'Не удалось изменить данные устройства'];
     }
 
     public function updatePort(array $data)

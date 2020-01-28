@@ -22,8 +22,8 @@
         </div>
         <div class="card">
             <div class="card-body">
-                Название: <input name="description" value="{{ $device->description}}" size="15">
-                ip адрес: <input name="ip_address" value="{{ $device->ip_address }}" size="15">
+                Название: <input name="description" autocomplete="off" value="{{ $device->description}}" size="15">
+                ip адрес: <input name="ip_address" autocomplete="off" value="{{ $device->ip_address }}" size="15">
                 <input type="hidden" id="id_device" value="{{ $device->id }}">
                 Тип: <span class="text-capitalize">{{ optional($device->devtype)->name }}</span>
                 <button type="button" id="updateDeviceBtn" class="btn btn-success m-b-10 m-l-5" data-toggle="modal" data-target="#device_modal">Сохранить</button>
