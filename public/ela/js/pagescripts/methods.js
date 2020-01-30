@@ -84,12 +84,16 @@ function showEditModal(data) {
 }
 
 function addMethod(data) {
-    let html = `<div class="form-group row" id="div${data.id}">
+    const id_html = !is_super_admin ? '' :
+        `<label class="col-md-1" id="methodid${data.id}}">${data.id}</label>`;
+    const col_id_html = is_super_admin ? 1 : 2;
+    const html = `<div class="form-group row" id="div${data.id}">
+                     ${id_html}
                      <label class="col-md-3" id="name${data.id}">${data.name}</label>
                      <div class="col-md-3" id="easy${data.id}">${data.easy}</div>
                      <div class="col-md-2" id="script${data.id}">${data.script_name}</div>
                      <div class="col-md-2" id="comment${data.id}">${data.comment}</div>
-                     <div class="col-md-2 text-right">
+                     <div class="col-md-${col_id_html} text-right">
                          <button type="button" data-id="${data.id}"
                                 data-type="${data.type}"
                                 data-script-id="${data.script_id}"

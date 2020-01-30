@@ -2,20 +2,28 @@
     {{ Form::bs_title('Системные методы') }}
 
     <div class="form-group row">
+        @can('superadmin')
+            <div class="col-md-1"><i>ID</i></div>
+        @endcan
         <label class="col-md-5"><i>Название метода</i></label>
-        <div class="col-md-7 text-left"><i>Комментарий</i></div>
+        <div class="col-md-6 text-left"><i>Комментарий</i></div>
     </div>
     <div id="system_methods_div">
         @foreach($object->methods as $method)
             @if($method->is_system)
                 <div class="form-group row" id="div{{$method->id}}">
+                    @can('superadmin')
+                        <div class="col-md-1" id="methodid{{$method->id}}">
+                            {{ $method->id }}
+                        </div>
+                    @endcan
                     <label class="col-md-5" id="name{{$method->id}}">
                         {{$method->name}}
                         @if($method->is_need_param)
                             <i class="fa fa-asterisk f-s-10 text-muted" title="Метод с параметром"></i>
                         @endif
                     </label>
-                    <div class="col-md-7" id="comment{{$method->id}}">
+                    <div class="col-md-6" id="comment{{$method->id}}">
                         {{ $method->comment }}
                     </div>
                 </div>
@@ -28,16 +36,24 @@
     {{ Form::bs_title('Методы') }}
 @endif
 <div class="form-group row">
+    @can('superadmin')
+        <div class="col-md-1"><i>ID</i></div>
+    @endcan
     <label class="col-md-3"><i>Название метода</i></label>
     <div class="col-md-3"><i>Простое действие</i></div>
     <div class="col-md-2"><i>Скрипт</i></div>
     <div class="col-md-2"><i>Комментарий</i></div>
-    <div class="col-md-2 text-right"></div>
+    <div class="col-md-1 text-right"></div>
 </div>
 <div id="methods_div">
     @foreach($object->methods as $method)
         @if(!$method->is_system || !$object->is_system)
             <div class="form-group row" id="div{{$method->id}}">
+                @can('superadmin')
+                    <label class="col-md-1" id="methodid{{$method->id}}">
+                        {{$method->id}}
+                    </label>
+                @endcan
                 <label class="col-md-3" id="name{{$method->id}}">
                     {{$method->name}}
                 </label>
@@ -50,7 +66,7 @@
                 <div class="col-md-2" id="comment{{$method->id}}">
                     {{ $method->comment }}
                 </div>
-                <div class="col-md-2 text-right">
+                <div class="col-md-1 text-right">
                     @if(!$method->is_system)
                         <button type="button" data-id="{{ $method->id }}"
                                 data-type="{{ $method->type }}"
