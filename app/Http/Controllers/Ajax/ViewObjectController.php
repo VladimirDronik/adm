@@ -59,4 +59,20 @@ class ViewObjectController extends Controller
     {
         $view_rep->updateMethod($r->all());
     }
+
+    public function getMethodOffAll(Request $r)
+    {
+        $method_array = explode(',', $r->input('method'));
+        $method_name = $method_array[0] != 'empty' ? $method_array[1] : 'empty';
+        $view = View::find($r->input('id'));
+        $methods = Method::where('id_object', $view->id_object)->orderBy('name')->get();
+        $html = (String) view('ajax.view_off_methods', ['methods' => $methods, 'view' => $method_array[2]]);
+
+        return response()->json(['success' => true] + compact('html', 'method_name'));
+    }
+
+    public function addOffMethodToView(Request $r, ViewRepository $view_rep)
+    {
+        $view_rep->updateOffMethod($r->all());
+    }
 }

@@ -35,7 +35,10 @@ class FakeViewItemsTableSeeder extends Seeder
                 'description' => $faker->sentence,
                 'status' => rand(0, 10) > 6 ? 'off' : 'on',
                 'id_object' => is_null($object) ? null : $object->id,
-                'id_method' => is_null($object) ? null : $object->methods[rand(0, count($object->methods)-1)]->id,
+                'on_method' => is_null($object) ? null
+                    : $object->methods[rand(0, count($object->methods)-1)]->id,
+                'off_method' => (is_null($object) || $typeName !== View::TYPE_SWITCH) ? null
+                    : $object->methods[rand(0, count($object->methods)-1)]->id,
                 'icon' => rand(0, 10) > 6 ? 'lamp' : 'noimage',
                 'title' => 'стол<br>свет вкл',
                 'position_left' => $left,

@@ -28,7 +28,7 @@ class ViewService {
         }
 
         $view->id_object = $data['id_object'] ?? null;
-        $view->id_method = $data['id_method'] ?? null;
+        $view->on_method = $data['id_method'] ?? null;
         $view->description = trim($data['description']);
         $view->status = 'off';
         $view->active = $data['active'] ?? 0;

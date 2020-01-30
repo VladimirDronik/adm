@@ -131,6 +131,11 @@ class View extends Model
         return $this->active ? 'Да' : 'Нет';
     }
 
+    public function getIsSwitchAttribute()
+    {
+        return $this->type === self::TYPE_SWITCH;
+    }
+
     public function getShortTitleAttribute()
     {
         return str_replace('<br>',' | ', $this->title);
@@ -157,6 +162,11 @@ class View extends Model
     public function getMethodNameAttribute()
     {
         return optional($this->emethod)->name;
+    }
+
+    public function getOffMethodNameAttribute()
+    {
+        return optional($this->offmethod)->name;
     }
 
     public function getObjectNameAttribute()
@@ -192,6 +202,11 @@ class View extends Model
 
     public function emethod()
     {
-        return $this->belongsTo(Method::class, 'id_method', 'id');
+        return $this->belongsTo(Method::class, 'on_method', 'id');
+    }
+
+    public function offmethod()
+    {
+        return $this->belongsTo(Method::class, 'off_method', 'id');
     }
 }

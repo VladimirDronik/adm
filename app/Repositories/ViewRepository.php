@@ -13,7 +13,9 @@ class ViewRepository {
 
     public function getAllToArray()
     {
-        $views = View::select('id','name')->orderBy('name')->pluck('name', 'id')->toArray();
+        $views = View::select('id', 'name')->orderBy('name')
+            ->pluck('name', 'id')->toArray();
+
         array_walk($views, function (&$view, $key) { $view = $key.' - '.$view; });
 
         return $views;
@@ -35,7 +37,8 @@ class ViewRepository {
     public function updateObject(array $data)
     {
         if (empty($data['id_object'])) {
-            View::where('id', $data['id_view'])->update(['id_object' => null, 'id_method' => null]);
+            View::where('id', $data['id_view'])->update(['id_object' => null, 'on_method' => null,
+                'off_method' => null, 'id_method_params' => null, 'off_method_params' => null]);
         } else {
             View::where('id', $data['id_view'])->update(['id_object' => $data['id_object']]);
         }
@@ -44,13 +47,31 @@ class ViewRepository {
     public function updateMethod(array $data)
     {
         if (empty($data['id_method'])) {
-            View::where('id', $data['id_view'])->update(['id_method' => null]);
+            View::where('id', $data['id_view'])
+                ->update(['on_method' => null, 'id_method_params' => null]);
         } else {
             if (empty($data['params'])) {
-                View::where('id', $data['id_view'])->update(['id_method' => $data['id_method']]);
+                View::where('id', $data['id_view'])
+                    ->update(['on_method' => $data['id_method'], 'id_method_params' => null]);
             } else {
                 View::where('id', $data['id_view'])
-                    ->update(['id_method' => $data['id_method'], 'id_method_params' => $data['params']]);
+                    ->update(['on_method' => $data['id_method'], 'id_method_params' => $data['params']]);
+            }
+        }
+    }
+
+    public function updateOffMethod(array $data)
+    {
+        if (empty($data['id_method'])) {
+            View::where('id', $data['id_view'])
+                ->update(['off_method' => null, 'off_method_params' => null]);
+        } else {
+            if (empty($data['params'])) {
+                View::where('id', $data['id_view'])
+                    ->update(['off_method' => $data['id_method'], 'off_method_params' => null]);
+            } else {
+                View::where('id', $data['id_view'])
+                    ->update(['off_method' => $data['id_method'], 'off_method_params' => $data['params']]);
             }
         }
     }

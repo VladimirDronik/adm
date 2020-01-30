@@ -10,8 +10,8 @@
                 @foreach($methods as $method)
                     <tr>
                         <td class="text-left">
-                            <a href="#" id="method_{{ $method->id }}"
-                               onclick="selectMethod({{ $method->id }},'{{ $method->name }}', '{{ $method->params ? $method->params : '' }}')"
+                            <a href="#" id="off_method_{{ $method->id }}"
+                               onclick="selectOffMethod({{ $method->id }},'{{ $method->name }}', '{{ $method->params ? $method->params : '' }}')"
                                data-dismiss="modal">
                                 {{$method->name}}
                                 @if($method->is_need_param)
@@ -27,7 +27,7 @@
 </div>
 
 <script>
-    function selectMethod(id, name, params = '', paramValue = '') {
+    function selectOffMethod(id, name, params = '', paramValue = '') {
         let view_name = '{{ $view }}';
         let arr_view = view_name.split('_');
 
@@ -40,7 +40,7 @@
             data['params'] = paramValue;
 
             $.ajax({
-                url: '/add_method_to_view',
+                url: '/add_off_method_to_view',
                 data: data,
                 success: function (data) {
                     //alert(data.status);
@@ -49,7 +49,7 @@
             });
 
             //Отдаем данные странице
-            let html = $('#method_' + id).html();
+            let html = $('#off_method_' + id).html();
             if (typeof html === 'undefined') {
                 html = 'Отсутствует';
             } else {

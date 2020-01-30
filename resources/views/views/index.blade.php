@@ -69,10 +69,11 @@
                                     @endif
                                     <th>Тип</th>
                                     <th>Статус</th>
-                                    <th>Изображение</th>
+                                    <th></th>
                                     <th>Надпись</th>
                                     <th>Объект</th>
-                                    <th>Метод</th>
+                                    <th>Метод вкл</th>
+                                    <th>Метод выкл</th>
                                     <th>Помещение</th>
                                     <th>Сцена</th>
                                     <th>Активно</th>
@@ -143,6 +144,32 @@
                                                     Отсутствует @endif</button>
                                         @endif
                                     </td>
+                                    <td>
+                                        @if($view->is_switch)
+                                            @if($view->eobject && $view->offmethod)
+                                                <button type="button" id="viewoffmethod_{{ $view->id }}"
+                                                        name="offmethod" class="btn btn-warning m-b-10 btn-sm"
+                                                        data-toggle="modal"
+                                                        value="{{ $view->id_method}},{{optional($view->offmethod)->name}},viewoffmethod_{{ $view->id }}"
+                                                        data-target="#methodsOffModal"
+                                                        onclick="updateRedirectToCreateOffMethodBtn(this)">
+                                                    <b>{{ optional($view->offmethod)->name }}
+                                                        @if(optional($view->offmethod)->is_need_param) ({{ $view->off_method_params }}) @endif
+                                                    </b>
+                                                </button>
+                                            @else
+                                                <button type="button" id="viewoffmethodempty_{{ $view->id }}"
+                                                        name="offmethod"
+                                                        class="btn @if($view->eobject) btn-warning @else btn-default @endif m-b-10 btn-sm"
+                                                        data-toggle="modal"
+                                                        value="empty,empty,viewoffmethodempty_{{ $view->id }}"
+                                                        data-target="#methodsOffModal"
+                                                        onclick="updateRedirectToCreateOffMethodBtn(this)">
+                                                    @if($view->eobject) <b class="text-danger">Метод не выбран</b> @else
+                                                        Отсутствует @endif</button>
+                                            @endif
+                                        @endif
+                                    </td>
                                     <td scope="row">{{ $view->room_name }}</td>
                                     <td scope="row">
                                         @if($view->scene)
@@ -176,10 +203,11 @@
                                         @endif
                                         <th>Тип</th>
                                         <th>Статус</th>
-                                        <th>Изображение</th>
+                                        <th></th>
                                         <th>Надпись</th>
                                         <th>Объект</th>
-                                        <th>Метод</th>
+                                        <th>Метод вкл</th>
+                                        <th>Метод выкл</th>
                                         <th>Помещение</th>
                                         <th>Сцена</th>
                                         <th>Активно</th>
@@ -246,6 +274,29 @@
             </div>
         </div>
     </div>
+
+    <div id="methodsOffModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Выбор метода</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <label id="selected_off_method"></label><br>
+                    </div>
+                    <div id="offmethodframe"></div>
+                </div>
+                <div class="modal-footer space-between" id="methodOffModalFooter">
+                    <button type="button" onclick="redirectToCreateOffMethod(this)" data-object-id="" id="methodOffRedirectBtn" class="btn btn-outline-info btn-outline">
+                        Создать метод
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="methodsOffModalCloseBtn">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @include('components.info_modal')
     @include('components.del_modal')
     @include('components.params_modal')
@@ -255,6 +306,7 @@
     <script>
         const createObjectUrl = '{{ route('objects.create') }}';
         const createMethodInitUrl = '{{ route('objects.index') }}';
+        let selectedMethodType = '';
 
         function redirectToCreateObject() {
             $('#objectsModalCloseBtn').click();
@@ -303,10 +355,16 @@
             $('#' + id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
             $('#' + view).val('empty,empty,' + id);
             let mid = view.split('_')[1];
+
             $('#viewmethod_' + mid).html('<b>Метод не выбран</b>');
             $('#viewmethod_' + mid).val("empty,empty,viewmethod_" + mid);
             $('#viewmethodempty_' + mid).html('<b>Метод не выбран</b>');
             $('#viewmethodempty_' + mid).val("empty,empty,viewmethodempty_" + mid);
+
+            $('#viewoffmethod_' + mid).html('<b>Метод не выбран</b>');
+            $('#viewoffmethod_' + mid).val("empty,empty,viewoffmethod_" + mid);
+            $('#viewoffmethodempty_' + mid).html('<b>Метод не выбран</b>');
+            $('#viewoffmethodempty_' + mid).val("empty,empty,viewoffmethodempty_" + mid);
         }
 
         function resetMethod(id, view) {
@@ -320,10 +378,13 @@
         $(document).ready(function () {
             let objects_url = '{{ route('ajax.view_objects.view.all') }}';
             let methods_url = '{{ route('ajax.view_objects.method.all') }}';
+            let methods_off_url = '{{ route('ajax.view_objects.method.off.all') }}';
             let del_id;
 
             //Вызов модального окна с методами
             $('button[type=button][name=method]').click(function () {
+
+                selectedMethodType = 'on';
 
                 let method_val = this.value;
                 let view_id = this.id;
@@ -362,7 +423,8 @@
                 if (object_arr[0] != 'empty') {
                     $('#selected_object').html('Выбран объект: ' + object_arr[1] +
                         '   <button type="button" class="btn btn-danger m-b-2 btn-xs" data-dismiss="modal" ' +
-                        'id = "reset_object"  value="' + view_id + '" onclick="resetObject(\'' + view_id + '\',\'' + object_arr[2] + '\');">Убрать</button>');
+                        'id = "reset_object"  value="' + view_id +
+                        '" onclick="resetObject(\'' + view_id + '\',\'' + object_arr[2] + '\');">Убрать</button>');
                 } else {
                     $('#selected_object').html('Объект не выбран');
                 }
@@ -431,8 +493,82 @@
                     return false;
                 }
 
-                selectMethod(methodId, methodName, '', params);
+                if (selectedMethodType === 'on') {
+                    selectMethod(methodId, methodName, '', params);
+                } else if (selectedMethodType === 'off'){
+                    selectOffMethod(methodId, methodName, '', params);
+                }
+            });
+
+            // off method
+
+            //Вызов модального окна с off методами
+            $('button[type=button][name=offmethod]').click(function () {
+
+                selectedMethodType = 'off';
+
+                let method_val = this.value;
+                let view_id = this.id;
+                let method_arr = method_val.split(',');
+
+                let data = {};
+                data['method'] = method_val;
+                data['id'] = view_id.split('_')[1];
+
+                ajax_html(data, methods_off_url, '#offmethodframe');
+
+                if (method_arr[0] != 'empty') {
+                    $('#selected_off_method').html('Выбран метод: ' + method_arr[1] +
+                        '   <button type="button" class="btn btn-danger m-b-2 btn-xs" data-dismiss="modal" ' +
+                        'id = "reset_off_method"  value="' + view_id +
+                        '" onclick="resetOffMethod(\'' + view_id + '\',\'' + method_arr[2] + '\');">Убрать</button>');
+                } else {
+                    $('#selected_off_method').html('Метод не выбран');
+                }
             });
         });
+
+        function updateRedirectToCreateOffMethodBtn(element) {
+            const viewId = $(element).attr('id').split('_')[1];
+            let objectBtn = $('#viewobj_'+viewId);
+            if (objectBtn.length && objectBtn.text !== 'Отсутствует') {
+                const objectId = objectBtn.attr('value').split(',')[0];
+                if (objectId !== 'empty') {
+                    $('#methodOffModalFooter').addClass('space-between');
+                    $('#methodOffRedirectBtn').data('object-id', objectId).show();
+                } else {
+                    $('#methodOffRedirectBtn').hide();
+                    $('#methodOffModalFooter').removeClass('space-between');
+                }
+            } else {
+                objectBtn = $('#viewobjempty_'+viewId);
+                if (objectBtn.length && objectBtn.text !== 'Отсутствует') {
+                    const objectId = objectBtn.attr('value').split(',')[0];
+                    if (objectId !== 'empty') {
+                        $('#methodOffModalFooter').addClass('space-between');
+                        $('#methodOffRedirectBtn').data('object-id', objectId).show();
+                    } else {
+                        $('#methodOffRedirectBtn').hide();
+                        $('#methodOffModalFooter').removeClass('space-between');
+                    }
+                } else {
+                    $('#methodOffRedirectBtn').hide();
+                    $('#methodOffModalFooter').removeClass('space-between');
+                }
+            }
+        }
+
+        function redirectToCreateOffMethod(element) {
+            $('#methodsOffModalCloseBtn').click();
+            window.open(createMethodInitUrl + '/' + $(element).data('object-id') + '/edit', '_blank');
+        }
+
+        function resetOffMethod(id, view) {
+            //Внесение изменений в БД
+            selectOffMethod(null, null);
+
+            $('#' + id).attr({"class": "btn btn-default  m-b-10 btn-sm"});
+            $('#' + view).val('empty,empty,' + id);
+        }
     </script>
 @endsection
