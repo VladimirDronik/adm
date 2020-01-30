@@ -53,3 +53,7 @@
 .a-color {
     color: #607d8b !important;
 }
+
+.event-not-active {
+    color: #343a40 !important;
+}

@@ -73,27 +73,27 @@
                                     <td>
                                         @if(!$event->is_system && !$event->is_hidden)
                                             <a href="{{ route('events.edit',[$event->id]) }}" title="{{ $event->name }}">
-                                                <span @if($event->active) style="color: #343a40 !important;" @endif>{{ $event->name }}</span>
+                                                <span @if($event->active) class="event-not-active" @endif>{{ $event->name }}</span>
                                             </a>
                                         @elseif(($event->is_system && $can['events.edit-system'])
                                             || ($event->is_hidden && $can['events.edit-hidden'] && !$event->is_system))
                                             <a href="{{ route('events.edit',[$event->id]) }}" title="{{ $event->name }}">
-                                                <span @if($event->active) style="color: #343a40 !important;" @endif>{{ $event->name }}</span>
+                                                <span @if($event->active) class="event-not-active" @endif>{{ $event->name }}</span>
                                             </a>
                                         @else
-                                            <span @if($event->active) style="color: #343a40 !important;" @endif>{{ $event->name }}</span>
+                                            <span @if($event->active) class="event-not-active" @endif>{{ $event->name }}</span>
                                         @endif
                                     </td>
                                     <td>
                                         @php $count = count($event->points); @endphp
                                         @if($count > 0 && $count <= 3)
-                                            <div @if($event->active) style="color: #343a40 !important;" @endif>
+                                            <div @if($event->active) class="event-not-active" @endif>
                                                 @foreach($event->points as $index => $point)
                                                     {!! $point->description !!}<br>
                                                 @endforeach
                                             </div>
                                         @elseif($count > 3)
-                                            <div @if($event->active) style="color: #343a40 !important;" @endif>
+                                            <div @if($event->active) class="event-not-active" @endif>
                                                 {!! $event->points[0]->description !!} <br>
                                                 {!! $event->points[1]->description !!}
                                             </div>
@@ -115,12 +115,12 @@
                                         @if(optional($event->emethod)->id_object)
                                             @if($can['objects'])
                                                 <a href="{{ route('objects.edit',[optional($event->emethod)->id_object]) }}">
-                                                    <span @if($event->active) style="color: #343a40 !important;" @endif>
+                                                    <span @if($event->active) class="event-not-active" @endif>
                                                         {{ optional($event->emethod)->name }}
                                                     </span>
                                                 </a>
                                             @else
-                                                <span @if($event->active) style="color: #343a40 !important;" @endif>
+                                                <span @if($event->active) class="event-not-active" @endif>
                                                     {{ optional($event->emethod)->name }}
                                                 </span>
                                             @endif
@@ -130,12 +130,12 @@
                                         @if($event->escript)
                                             @if($can['scripts'])
                                                 <a href="{{ route('scripts.edit', [$event->script]) }}">
-                                                    <span @if($event->active) style="color: #343a40 !important;" @endif>
+                                                    <span @if($event->active) class="event-not-active" @endif>
                                                         {{ optional($event->escript)->name }}
                                                     </span>
                                                 </a>
                                             @else
-                                                <span @if($event->active) style="color: #343a40 !important;" @endif>
+                                                <span @if($event->active) class="event-not-active" @endif>
                                                     {{ optional($event->escript)->name }}
                                                 </span>
                                             @endif
