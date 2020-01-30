@@ -48,6 +48,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th>Активность</th>
                                     <th>Название</th>
                                     <th>Расписание</th>
                                     <th>Метод</th>
@@ -65,29 +66,41 @@
                             <tbody>
                             @foreach($events as $event)
                                 <tr id="tr{{$event->id}}">
+                                    <td class="text-center">
+                                        <input type="checkbox" class="active_checkbox" style="cursor: pointer;"
+                                               data-id="{{$event->id}}" value="1" @if($event->active) checked @endif>
+                                    </td>
                                     <td>
                                         @if(!$event->is_system && !$event->is_hidden)
-                                            <a href="{{ route('events.edit',[$event->id]) }}" title="{{ $event->name }}">{{ $event->name }}</a>
+                                            <a href="{{ route('events.edit',[$event->id]) }}" title="{{ $event->name }}">
+                                                <span @if($event->active) style="color: #343a40 !important;" @endif>{{ $event->name }}</span>
+                                            </a>
                                         @elseif(($event->is_system && $can['events.edit-system'])
                                             || ($event->is_hidden && $can['events.edit-hidden'] && !$event->is_system))
-                                            <a href="{{ route('events.edit',[$event->id]) }}" title="{{ $event->name }}">{{ $event->name }}</a>
+                                            <a href="{{ route('events.edit',[$event->id]) }}" title="{{ $event->name }}">
+                                                <span @if($event->active) style="color: #343a40 !important;" @endif>{{ $event->name }}</span>
+                                            </a>
                                         @else
-                                            {{ $event->name }}
+                                            <span @if($event->active) style="color: #343a40 !important;" @endif>{{ $event->name }}</span>
                                         @endif
                                     </td>
                                     <td>
                                         @php $count = count($event->points); @endphp
                                         @if($count > 0 && $count <= 3)
-                                            @foreach($event->points as $index => $point)
-                                                {!! $point->description !!}<br>
-                                            @endforeach
+                                            <div @if($event->active) style="color: #343a40 !important;" @endif>
+                                                @foreach($event->points as $index => $point)
+                                                    {!! $point->description !!}<br>
+                                                @endforeach
+                                            </div>
                                         @elseif($count > 3)
-                                            {!! $event->points[0]->description !!} <br>
-                                            {!! $event->points[1]->description !!}
+                                            <div @if($event->active) style="color: #343a40 !important;" @endif>
+                                                {!! $event->points[0]->description !!} <br>
+                                                {!! $event->points[1]->description !!}
+                                            </div>
                                             <button class="btn btn-sm btn-outline-info btn-outline btn-addon" type="button" data-toggle="collapse" data-target="#collapse{{$event->id}}" aria-expanded="false" aria-controls="{{$event->id}}">
                                                 Еще ({{ $count - 2 }})
                                             </button>
-                                            <div class="collapse" id="collapse{{$event->id}}">
+                                            <div class="collapse" id="collapse{{$event->id}}" @if($event->active) style="color: #343a40 !important;" @endif>
                                                 @foreach($event->points as $index => $point)
                                                     @if($index > 1)
                                                         {!! $point->description !!} <br>
@@ -102,10 +115,14 @@
                                         @if(optional($event->emethod)->id_object)
                                             @if($can['objects'])
                                                 <a href="{{ route('objects.edit',[optional($event->emethod)->id_object]) }}">
-                                                    {{ optional($event->emethod)->name }}
+                                                    <span @if($event->active) style="color: #343a40 !important;" @endif>
+                                                        {{ optional($event->emethod)->name }}
+                                                    </span>
                                                 </a>
                                             @else
-                                                {{ optional($event->emethod)->name }}
+                                                <span @if($event->active) style="color: #343a40 !important;" @endif>
+                                                    {{ optional($event->emethod)->name }}
+                                                </span>
                                             @endif
                                         @endif
                                     </td>
@@ -113,10 +130,14 @@
                                         @if($event->escript)
                                             @if($can['scripts'])
                                                 <a href="{{ route('scripts.edit', [$event->script]) }}">
-                                                    {{ optional($event->escript)->name }}
+                                                    <span @if($event->active) style="color: #343a40 !important;" @endif>
+                                                        {{ optional($event->escript)->name }}
+                                                    </span>
                                                 </a>
                                             @else
-                                                {{ optional($event->escript)->name }}
+                                                <span @if($event->active) style="color: #343a40 !important;" @endif>
+                                                    {{ optional($event->escript)->name }}
+                                                </span>
                                             @endif
                                         @endif
                                     </td>
@@ -173,6 +194,7 @@
                             @if(count($events) > 10)
                                 <tfoot>
                                     <tr>
+                                        <th>Активность</th>
                                         <th>Название</th>
                                         <th>Расписание</th>
                                         <th>Метод</th>
@@ -248,7 +270,7 @@
             @if($can['events.edit-system'])
                 $('.system_checkbox').change(function(){
                     let is_system = this.checked ? 1 : 0;
-                    let id = $(this).attr('data-id');
+                    let id = $(this).data('id');
 
                     $.ajax({
                         url: '{{ route('ajax.events.system') }}',
@@ -267,7 +289,7 @@
             @if($can['events.edit-hidden'])
                 $('.hidden_checkbox').change(function(){
                     let is_hidden = this.checked ? 1 : 0;
-                    let id = $(this).attr('data-id');
+                    let id = $(this).data('id');
 
                     $.ajax({
                         url: '{{ route('ajax.events.hidden') }}',
@@ -282,6 +304,24 @@
                     });
                 });
             @endif
+
+            $('.active_checkbox').change(function(){
+                let active = this.checked ? 1 : 0;
+                let id = $(this).data('id');
+
+                $.ajax({
+                    url: '{{ route('ajax.events.active') }}',
+                    data: { '_token': _token, 'id': id, 'active': active },
+                    success: function (data) {
+                        if (data.result) {
+                            //showSuccessModal('Изменения успешно сохранены');
+                            location.reload();
+                        } else {
+                            showErrorModal('Ошибка при изменении свойств события');
+                        }
+                    },
+                });
+            });
         });
     </script>
 @endsection

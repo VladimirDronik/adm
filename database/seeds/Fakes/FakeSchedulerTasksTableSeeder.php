@@ -49,6 +49,7 @@ class FakeSchedulerTasksTableSeeder extends Seeder
         $task->is_hidden = rand(0, 1);
         $task->is_system = rand(0, 1);
         $task->name = 'Тестовое событие '.($index + 1);
+        $task->active = rand(0, 1);
 
         $task->save();
 

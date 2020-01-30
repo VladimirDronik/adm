@@ -73,11 +73,7 @@ class FakeMethodsTableSeeder extends Seeder
      */
     public function run()
     {
-        try {
-            DB::table('methods')->insert($this->getMethods());
-        } catch (\Throwable $e) {
-
-        }
+        DB::table('methods')->insert($this->getMethods());
     }
 
     public function getNames()

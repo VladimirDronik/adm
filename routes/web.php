@@ -128,6 +128,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('events/validation/name', 'EventController@validateName')->name('events.validation.name');
         Route::post('events/system', 'EventController@system')->name('events.system');
         Route::post('events/hidden', 'EventController@hidden')->name('events.hidden');
+        Route::post('events/active', 'EventController@active')->name('events.active');
 
         Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
             Route::post('delete', 'SchedulerPointController@delete')->name('delete');

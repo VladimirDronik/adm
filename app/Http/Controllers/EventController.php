@@ -12,7 +12,6 @@ use App\Repositories\ScriptRepository;
 use App\Services\EventService;
 use App\Services\ObjectService;
 use Illuminate\Http\Request;
-use Gate;
 
 class EventController extends Controller
 {

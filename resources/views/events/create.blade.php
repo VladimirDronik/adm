@@ -30,6 +30,9 @@
                         {{ Form::bs_alert() }}
                         {{ Form::bs_title('Основные данные') }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
+
+                        {{ Form::bs_checkbox('active', 'Активность:', true, [], '&nbsp;&nbsp;Включить или выключить событие') }}
+
                         @if($can['events.create-system'])
                             {{ Form::bs_checkbox('is_system', 'Системное:', false, [], '&nbsp;&nbsp;Доступно для редактирования только администратору') }}
                         @else

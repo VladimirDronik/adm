@@ -21,6 +21,7 @@ class EventService {
 
         $data['is_system'] = $data['is_system'] ?? 0;
         $data['is_hidden'] = $data['is_hidden'] ?? 0;
+        $data['active'] = $data['active'] ?? 0;
 
         $task->fill($data);
     }
@@ -149,6 +150,13 @@ class EventService {
     public function changeHidden(int $id, int $is_hidden)
     {
         SchedulerTask::where('id', $id)->update(['is_hidden' => $is_hidden]);
+
+        return true;
+    }
+
+    public function changeActive(int $id, int $active)
+    {
+        SchedulerTask::where('id', $id)->update(['active' => $active]);
 
         return true;
     }

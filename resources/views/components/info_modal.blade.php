@@ -11,3 +11,5 @@
         </div>
     </div>
 </div>
+
+<button type="button" id="info_init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>

@@ -11,12 +11,16 @@ class FakeTermostatsTableSeeder extends Seeder
     private $rooms;
     private $objects;
 
+    /**
+     * FakeTermostatsTableSeeder constructor.
+     * @throws Exception
+     */
     public function __construct()
     {
         $this->rooms = Room::all();
         $this->objects = HomeObject::with('methods')->whereHas('methods')->get();
         if (!count($this->objects)) {
-            throw new Exception('Termostats seeder: Objects which methods not found');
+            throw new Exception('Termostats seeder: Objects with methods not found');
         }
     }
 

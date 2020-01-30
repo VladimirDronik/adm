@@ -69,7 +69,7 @@ class DeviceService {
      * @param array $data
      * @throws \Exception
      */
-    public function storeDevice(array $data)
+    public function storeDevice(array $data, bool $is_notify = true)
     {
         $this->device = new Device();
 
@@ -78,7 +78,9 @@ class DeviceService {
 
         $this->device->save();
 
-        $this->notifyDeviceIp($data['ip_address']);
+        if ($is_notify) {
+            $this->notifyDeviceIp($data['ip_address']);
+        }
     }
 
     /**
@@ -86,13 +88,13 @@ class DeviceService {
      * @return mixed
      * @throws \Throwable
      */
-    public function store(array $data)
+    public function store(array $data, bool $is_notify = true)
     {
         DB::beginTransaction();
 
         try {
 
-            $this->storeDevice($data);
+            $this->storeDevice($data, $is_notify);
             $this->storePorts();
 
             DB::commit();

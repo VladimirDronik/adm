@@ -14,6 +14,11 @@ class FakeDevicesTableSeeder extends Seeder
     private $devtypes;
     private $device_service;
 
+    /**
+     * FakeDevicesTableSeeder constructor.
+     * @param DeviceService $device_service
+     * @throws Exception
+     */
     public function __construct(DeviceService $device_service)
     {
         $this->faker = Factory::create();
@@ -27,24 +32,21 @@ class FakeDevicesTableSeeder extends Seeder
     }
 
     /**
-     * Run the database seeds.
-     *
-     * @return void
+     * @throws Throwable
      */
     public function run()
     {
         for ($i = 0; $i < self::COUNT; $i++) {
-
-            try {
-                $this->createDevice($i);
-            } catch (\Throwable $e) {
-
-            }
+            $this->createDevice($i);
         }
 
         Device::inRandomOrder()->limit((int)(self::COUNT/3))->update(['active' => 1]);
     }
 
+    /**
+     * @param $index
+     * @throws Throwable
+     */
     public function createDevice($index)
     {
         $data = [
@@ -53,13 +55,11 @@ class FakeDevicesTableSeeder extends Seeder
             'ip_address' => $this->faker->ipv4
         ];
 
-        $this->device_service->store($data);
+        $this->device_service->store($data, false);
     }
 
     public function getRandTypeId()
     {
-        $count = count($this->devtypes);
-
-        return $this->devtypes[rand(0, $count-1)]->id;
+        return $this->devtypes[rand(0, count($this->devtypes)-1)]->id;
     }
 }

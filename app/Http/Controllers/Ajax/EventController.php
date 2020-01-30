@@ -42,6 +42,13 @@ class EventController extends Controller
 
         return response()->json(['result' => $this->service->changeHidden((int)$r->id, (int)$r->is_hidden)]);
     }
+
+    public function active(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['id', 'active']), 400);
+
+        return response()->json(['result' => $this->service->changeActive((int)$r->id, (int)$r->active)]);
+    }
 }
 
 
