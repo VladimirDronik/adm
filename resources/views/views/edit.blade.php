@@ -38,7 +38,7 @@
                         {{ Form::bs_checkbox('active', 'Активность:') }}
 
                         {{ Form::bs_autoselect('id_object', 'Объект:', $objects, old('id_object', $view->id_object), false, false) }}
-                        {{ Form::bs_autoselect('id_method', 'Метод объекта:', $methods, old('id_method', $view->id_method), false, false) }}
+                        {{ Form::bs_autoselect('id_method', 'Метод вкл:', $methods, old('id_method', $view->on_method), false, false) }}
 
                         <div class="form-group row" id="id_method_params_div"
                              @if(is_null($view->id_method_params) && !old('id_method')) style="display: none;" @endif>
@@ -50,6 +50,26 @@
                                     <div class="col-md-6">
                                         <input class="form-control" autocomplete="off" id="id_method_params" name="id_method_params"
                                                type="text" value="{{ old('id_method_params', $view->id_method_params) }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="off_method_div" @if(!$view->is_switch && !old('off_method')) style="display: none;" @endif>
+                            {{ Form::bs_autoselect('off_method', 'Метод выкл:', $methods, old('off_method', $view->off_method), false, false) }}
+                        </div>
+
+                        <div class="form-group row" id="off_method_params_div"
+                             @if(!$view->is_switch || (is_null($view->off_method_params) && !old('off_method'))) style="display: none;" @endif>
+                            <label class="control-label text-right col-md-3 label-fix" for="off_method_params"></label>
+                            <div class="col-md-9 pr-0">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-6 label-fix" id="id_method_params_label" for="off_method_params">
+                                        {{ optional($view->offmethod)->params }}*:
+                                    </label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" autocomplete="off" id="off_method_params" name="off_method_params"
+                                               type="text" value="{{ old('off_method_params', $view->off_method_params) }}">
                                     </div>
                                 </div>
                             </div>
@@ -153,6 +173,16 @@
                 (params.val().trim() != params_int || params_int < 0 || params_int > 100)) {
                 return 'Недопустимое значение параметра метода';
             }
+
+            params = $("#view_form #off_method_params");
+            if (params.is(":visible") && params.val().trim() === '') {
+                return 'Не указан параметр метода';
+            }
+            params_int = parseInt(params.val().trim());
+            if (params.is(":visible") &&
+                (params.val().trim() != params_int || params_int < 0 || params_int > 100)) {
+                return 'Недопустимое значение параметра метода';
+            }
             return '';
         }
 
@@ -173,10 +203,12 @@
 
             $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_id_method").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_off_method").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_id_object").chosen().change(function() {
                 let object_id = $(this).val();
                 hideParamsFields('id_method_params');
+                hideParamsFields('off_method_params');
                 $.ajax({
                     url: url_methods,
                     data: {'_token': _token, 'object_id': object_id},
@@ -184,6 +216,8 @@
                         methods = data.methods;
                         createMethodSelect('#auto_sel_id_method', data.methods, -1);
                         $('#auto_sel_id_method').trigger("chosen:updated");
+                        createMethodSelect('#auto_sel_off_method', data.methods, -1);
+                        $('#auto_sel_off_method').trigger("chosen:updated");
                     }
                 });
             });
@@ -229,6 +263,29 @@
                 } else {
                     showParamsFields('id_method_params', params);
                 }
+            });
+
+            $("#view_form #auto_sel_off_method").chosen().change(function() {
+                const methodId = parseInt($(this).val());
+                const params = getMethodParams(methodId);
+
+                if (params === '') {
+                    hideParamsFields('off_method_params');
+                } else {
+                    showParamsFields('off_method_params', params);
+                }
+            });
+
+            //
+
+            $('#view_form [name=type]').change(function(){
+                if ($(this).val() === 'switch') {
+                    $('#view_form #off_method_div').show();
+                } else {
+                    $('#view_form #off_method_div').hide();
+                    $('#view_form #off_method_params_div').hide();
+                }
+                return true;
             });
         });
     </script>

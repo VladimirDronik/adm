@@ -35,6 +35,14 @@ class ViewService {
         $view->sort = 0;
         $view->icon = pathinfo($data['icon_image'], PATHINFO_FILENAME);
         $view->id_method_params = $data['id_method_params'];
+
+        if ($view->type === View::TYPE_SWITCH) {
+            $view->off_method = $data['off_method'] ?? null;
+            $view->off_method_params = $data['off_method_params'];
+        } else {
+            $view->off_method = null;
+            $view->off_method_params = null;
+        }
     }
 
     public function store(array $data)
