@@ -33,7 +33,9 @@ class ViewService {
         $view->description = trim($data['description']);
         $view->status = 'off';
         $view->active = $data['active'] ?? 0;
-        $view->sort = 0;
+        if (!$view->sort) {
+            $view->sort = $this->getSortMax($view) + 1;
+        }
         $view->icon = pathinfo($data['icon_image'], PATHINFO_FILENAME);
         $view->id_method_params = $data['id_method_params'];
 
