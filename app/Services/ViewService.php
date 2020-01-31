@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Room;
 use App\Models\View;
+use Illuminate\Support\Facades\DB;
 
 class ViewService {
 
@@ -70,6 +71,53 @@ class ViewService {
     public function changeActive(int $id, int $active)
     {
         View::where('id', $id)->update(['active' => $active]);
+
+        return true;
+    }
+
+    //
+
+    private function getSortMin($view): int
+    {
+        return (int)View::where('room', $view->room)
+            ->where('room_group', $view->room_group)->min('sort');
+    }
+
+    private function getSortMax($view): int
+    {
+        return (int)View::where('room', $view->room)
+            ->where('room_group', $view->room_group)->max('sort');
+    }
+
+    private function updatePreviousSortView($view, $previous_sort)
+    {
+        View::where('room', $view->room)->where('room_group', $view->room_group)
+            ->where('sort', $view->sort)->update(['sort' => $previous_sort]);
+    }
+
+    public function sort(array $data)
+    {
+        $view = View::find($data['id']);
+
+        if (!$view) {
+            return false;
+        }
+
+        $min = $this->getSortMin($view);
+        $max = $this->getSortMax($view);
+
+        if (($view->sort === $min && $data['direction'] === 'up')
+            || ($view->sort === $max && $data['direction'] === 'down')) {
+            return true;
+        }
+
+        $previous_sort = $view->sort;
+        $view->sort += $data['direction'] === 'up' ? -1 : 1;
+
+        DB::transaction(function () use ($view, $previous_sort) {
+            $this->updatePreviousSortView($view, $previous_sort);
+            $view->save();
+        });
 
         return true;
     }

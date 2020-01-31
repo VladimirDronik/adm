@@ -21,17 +21,19 @@ class ViewRepository {
         return $views;
     }
 
-    public function getByRoom($room_id, $pagination_count = 30)
+    public function getByRoom($room_id, $pagination_count = 50)
     {
         $query = View::with('eroom', 'escene', 'eobject', 'emethod');
 
         if ($room_id === '0') {
-            $query->whereNull('room');
+            $query->whereNull('room')->orderBy('sort');
         } elseif (!is_null($room_id)) {
-            $query->where('room', $room_id);
+            $query->where('room', $room_id)->orderBy('sort');
+        } else {
+            $query->orderBy('id');
         }
 
-        return $query->orderBy('id')->paginate($pagination_count);
+        return $query->paginate($pagination_count);
     }
 
     public function updateObject(array $data)

@@ -30,7 +30,7 @@ class RoomController extends Controller
     }
 
     public function store(Request $r)
-    {info($r->all());
+    {
         abort_if(!ajaxHas($r, ['name', 'image', 'style', 'type']), 400);
 
         return response()->json(['result' => (bool)$this->service->store($r->all())]);

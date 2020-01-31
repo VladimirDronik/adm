@@ -64,9 +64,6 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    @if($filter_room != '')
-                                        <th>Сорт</th>
-                                    @endif
                                     <th>Тип</th>
                                     <th>Статус</th>
                                     <th></th>
@@ -77,6 +74,9 @@
                                     <th>Помещение</th>
                                     <th>Сцена</th>
                                     <th>Активно</th>
+                                    @if($filter_room != '')
+                                        <th class="text-center">Сортировка</th>
+                                    @endif
                                     <th></th>
                                     <th></th>
                                 </tr>
@@ -84,9 +84,6 @@
                             <tbody>
                             @foreach($views as $view)
                                 <tr id="tr{{$view->id}}">
-                                    @if($filter_room != '')
-                                        <td scope="row">{{ $view->sort }}</td>
-                                    @endif
                                     <td><a href="{{ route('views.edit',[$view->id]) }}"
                                            title="{{ $view->description }}">{{ $view->rus_type }}</a></td>
                                     <td>
@@ -180,6 +177,27 @@
                                         <input type="checkbox" class="active_checkbox" style="cursor: pointer;"
                                                data-id="{{$view->id}}" value="1" @if($view->active) checked @endif>
                                     </td>
+                                    @if($filter_room != '')
+                                        <td style="width: 150px;">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control input-default" readonly
+                                                           value="{{ $view->sort }}">
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <button type="button" class="btn btn-info btn-xs"
+                                                            id="sortBtn{{ $view->id }}"
+                                                            onclick="changeSort({{ $view->id }}, 'up');">выше
+                                                    </button>
+
+                                                    <button type="button" class="btn btn-info btn-xs"
+                                                            id="sortBtn{{ $view->id }}"
+                                                            onclick="changeSort({{ $view->id }}, 'down');">ниже
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    @endif
                                     <td align="center">
                                         <a href="{{ route('views.edit',[$view->id]) }}"
                                            class="btn btn-info btn-sm btn-rounded">
@@ -198,9 +216,6 @@
                             @if(count($views) > 10)
                                 <tfoot>
                                     <tr>
-                                        @if($filter_room != '')
-                                            <th>Сорт</th>
-                                        @endif
                                         <th>Тип</th>
                                         <th>Статус</th>
                                         <th></th>
@@ -211,6 +226,9 @@
                                         <th>Помещение</th>
                                         <th>Сцена</th>
                                         <th>Активно</th>
+                                        @if($filter_room != '')
+                                            <th class="text-center">Сортировка</th>
+                                        @endif
                                         <th></th>
                                         <th></th>
                                     </tr>
@@ -306,7 +324,23 @@
     <script>
         const createObjectUrl = '{{ route('objects.create') }}';
         const createMethodInitUrl = '{{ route('objects.index') }}';
+        const sortUrl = '{{ route('ajax.views.sort') }}';
         let selectedMethodType = '';
+
+        function changeSort(id, direction) {
+            $.ajax({
+                url: sortUrl,
+                data: {'_token': _token, 'id': id, 'direction': direction},
+                success: function (data) {
+                    if (data.result) {
+                        location.reload();
+                        //window.location.href = url;
+                    } else {
+                        showErrorModal('Ошибка при сохранении изменений');
+                    }
+                }
+            });
+        }
 
         function redirectToCreateObject() {
             $('#objectsModalCloseBtn').click();

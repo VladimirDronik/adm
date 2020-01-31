@@ -61,7 +61,7 @@ class FakeRoomsTableSeeder extends Seeder
             $count = rand(2, count($this->room_names));
             for ($i = 0; $i < $count; $i++) {
                 $rooms[] = [
-                    'name' => $this->room_names[$i],
+                    'name' => $group->name.' '.$this->room_names[$i],
                     'image' => $this->getRandImage(),
                     'style' => $this->getRandColor(),
                     'sort' => $i + 1,

@@ -54,6 +54,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::group(['prefix' => 'views', 'as' => 'views.'], function () {
             Route::post('delete', 'ViewController@delete')->name('delete');
             Route::post('active', 'ViewController@active')->name('active');
+            Route::post('sort', 'ViewController@sort')->name('sort');
         });
 
         Route::post('termostats/delete', 'TermostatController@delete')->name('termostats.delete');

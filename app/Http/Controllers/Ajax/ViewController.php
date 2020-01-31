@@ -28,6 +28,13 @@ class ViewController extends Controller
 
         return response()->json(['result' => $this->service->changeActive((int)$r->id, (int)$r->active)]);
     }
+
+    public function sort(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['id', 'direction']), 400);
+
+        return response()->json(['result' => $this->service->sort($r->all())]);
+    }
 }
 
 
