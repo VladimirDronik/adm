@@ -57,3 +57,8 @@
 .event-not-active {
     color: #343a40 !important;
 }
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #007bff;
+    background-color: transparent;
+}

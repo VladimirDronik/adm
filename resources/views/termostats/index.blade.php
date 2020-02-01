@@ -3,11 +3,12 @@
 @section('breadcrumbs')
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Устройства: термостаты</h3></div>
+            <h3 class="text-primary">Датчики: термостаты</h3></div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
                 <li class="breadcrumb-item breadcrumb-item-no-link">Устройства</li>
+                <li class="breadcrumb-item breadcrumb-item-no-link">Датчики</li>
                 <li class="breadcrumb-item active">Термостаты</li>
             </ol>
         </div>
@@ -16,6 +17,7 @@
 
 @section('content')
     <div class="container-fluid">
+        @include('detectors.tab_header', ['active' => 'termostats'])
         <div class="row">
             <div class="col-12">
                 <div class="card">

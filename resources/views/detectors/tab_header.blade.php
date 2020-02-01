@@ -1,0 +1,58 @@
+@inject('detectorsService', 'App\Services\DetectorsService')
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a class="nav-link @if($active === 'termostats') active show @endif" href="{{ route('termostats.index') }}">
+                            <span>
+                                <img width="18" height="20" title="" src="{{ asset('ela/images/objects/termostat.png') }}">
+                                Термостаты ({{ $detectorsService->getTermostatsCount() }})
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if($active === '') active show @endif" href="#">
+                            <span>
+                                <img width="18" height="20" title="" src="{{ asset('ela/images/objects/hygrometer.png') }}">
+                                Гигростаты (0)
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if($active === '') active show @endif" href="#">
+                            <span>
+                                <img width="18" height="20" title="" src="{{ asset('ela/images/objects/Motion_sens.png') }}">
+                                Датчики движения (0)
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if($active === '') active show @endif" href="#">
+                            <span>
+                                <i class="ti-home"></i> Универсальные датчики (0)
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if($active === '') active show @endif" href="#">
+                            <span>
+                                <img width="18" height="20" title="" src="{{ asset('ela/images/objects/dry_contact.png') }}">
+                                Сухие контакты (0)
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if($active === '') active show @endif" href="#">
+                            <span>
+                                <img width="18" height="20" title="" src="{{ asset('ela/images/objects/pass_sensor.png') }}">
+                                Датчики прохода (0)
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

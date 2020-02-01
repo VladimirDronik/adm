@@ -26,13 +26,7 @@
                             <li>
                                 <a href="{{ route('termostats.index') }}">
                                     <i class="fa fa-tasks"></i>
-                                    Термостаты
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i class="fa fa-tachometer"></i>
-                                    Датчики движения
+                                    Датчики
                                 </a>
                             </li>
                             <li>
