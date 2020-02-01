@@ -172,6 +172,38 @@
         $(document).ready(function () {
             initTermostatForm();
 
+            $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            $("#auto_sel_object").chosen().change(function() {
+                let object_id = $(this).val();
+                hideParamsFields('method_on_params');
+                hideParamsFields('method_off_params');
+                $.ajax({
+                    url: url_methods,
+                    data: {'_token': _token, 'object_id': object_id},
+                    success: function (data) {
+                        methods = data.methods;
+                        createMethodSelect('#auto_sel_method_on', data.methods, -1);
+                        $('#auto_sel_method_on').trigger("chosen:updated");
+                        createMethodSelect('#auto_sel_method_off', data.methods, -1);
+                        $('#auto_sel_method_off').trigger("chosen:updated");
+                    }
+                });
+            });
+
+            $("#auto_sel_device_id").chosen().change(function() {
+                let device_id = $(this).val();
+                $.ajax({
+                    url: url_ports,
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'in'},
+                    success: function (data) {
+                        createMethodSelect('#auto_sel_port_id', data.ports, -1);
+                        $('#auto_sel_port_id').trigger("chosen:updated");
+                    }
+                });
+            });
+
             $('#auto_sel_btn_id_object').click(function() {
                 modal_btn_index = 1;
                 clearCreateObjectModal();

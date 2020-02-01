@@ -78,6 +78,13 @@
                                             и «Обнуление счетчика» (каждый день в 23:55).
                                         </p>
                                     </div>
+                                    <div class="col-sm-12 pr-0 mt-4">
+                                        {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'),
+                                           false, false, [], null) }}
+
+                                        {{ Form::bs_autoselect('port_id', 'Порт:', [], old('port_id'),
+                                            false, false, [], null) }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -105,9 +112,25 @@
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
+        const url_ports = '{{ route('ajax.devices.objects_ports') }}';
 
         $(document).ready(function () {
             initCountForm();
+
+            $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            $("#auto_sel_device_id").chosen().change(function() {
+                let device_id = $(this).val();
+                $.ajax({
+                    url: url_ports,
+                    data: {'_token': _token, 'device_id': device_id},
+                    success: function (data) {
+                        createMethodSelect('#auto_sel_port_id', data.ports, -1);
+                        $('#auto_sel_port_id').trigger("chosen:updated");
+                    }
+                });
+            });
 
             $('#auto_sel_btn_id_object').click(function() {
                 clearCreateObjectModal();
@@ -124,6 +147,19 @@
 
                 storeObject();
             });
+
+            function createMethodSelect(target, options, selected) {
+                let sel = $(target);
+                sel.html('');
+                let s = '<option value="">Не выбрано</option>';
+                for (let i = 0; i < options.length; i++) {
+                    if (selected == options[i].id)
+                        s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
+                    else
+                        s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
+                }
+                sel.append(s);
+            }
 
             function storeObject() {
                 const name = $("#create_object_modal input[name=object_name]").val().trim();

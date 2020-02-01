@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Count;
 use App\Models\HomeObject;
+use App\Models\Port;
 use Illuminate\Support\Facades\DB;
 
 class CountService {
@@ -72,12 +73,16 @@ class CountService {
         if ($data['object_type'] === 'manual') {
             $count->save();
         } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$count) {
+            DB::transaction(function () use (&$count, $data) {
                 $unique_name = HomeObject::getUniqueObjectName(0, $count->name);
                 $object = $this->count_object_service->createCountObject($unique_name);
                 $this->count_object_service->createCountObjectMethodsWithEvents($object->id);
                 $count->id_object = $object->id;
                 $count->save();
+
+                if ($data['port_id']) {
+                    Port::where('id', $data['port_id'])->update(['object' => $object->id]);
+                }
             });
         }
 

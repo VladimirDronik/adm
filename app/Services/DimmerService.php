@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Dimmer;
 use App\Models\HomeObject;
+use App\Models\Port;
 use Illuminate\Support\Facades\DB;
 
 class DimmerService {
@@ -65,12 +66,16 @@ class DimmerService {
         if ($data['object_type'] === 'manual') {
             $dimmer->save();
         } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$dimmer) {
+            DB::transaction(function () use (&$dimmer, $data) {
                 $unique_name = HomeObject::getUniqueObjectName(0, $dimmer->name);
                 $object = $this->dimmer_object_service->createDimmerObject($unique_name);
                 $this->dimmer_object_service->createDimmerObjectMethods($object->id);
                 $dimmer->id_object = $object->id;
                 $dimmer->save();
+
+                if ($data['port_id']) {
+                    Port::where('id', $data['port_id'])->update(['object' => $object->id]);
+                }
             });
         }
 

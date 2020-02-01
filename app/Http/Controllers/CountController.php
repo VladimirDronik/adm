@@ -7,6 +7,7 @@ use App\Http\Requests\Count\UpdateRequest;
 use App\Models\Count;
 use App\Models\HomeObject;
 use App\Repositories\CountRepository;
+use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
 use App\Services\CountService;
@@ -15,13 +16,15 @@ class CountController extends Controller
 {
     private $count_rep;
     private $object_rep;
+    private $device_rep;
     private $service;
 
-    public function __construct(CountRepository $count_rep, ObjectRepository $object_rep,
+    public function __construct(CountRepository $count_rep, ObjectRepository $object_rep, DeviceRepository $device_rep,
                                 CountService $service)
     {
         $this->count_rep = $count_rep;
         $this->object_rep = $object_rep;
+        $this->device_rep = $device_rep;
         $this->service = $service;
     }
 
@@ -37,8 +40,9 @@ class CountController extends Controller
         $types = Count::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
+        $devices = $this->device_rep->getAllToArray();
 
-        return view('counts.create', compact('types', 'objects', 'object_types'));
+        return view('counts.create', compact('types', 'objects', 'object_types', 'devices'));
     }
 
     public function store(CreateRequest $r)

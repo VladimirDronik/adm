@@ -63,7 +63,7 @@ class TermostatService {
     {
         $termostat = new Termostat();
 
-        $port_id = $data['port_id'];
+        $port_id = $data['port_id'] ?? null;
         unset($data['port_id']);
         unset($data['device_id']);
 

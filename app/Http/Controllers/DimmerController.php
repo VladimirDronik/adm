@@ -6,6 +6,7 @@ use App\Http\Requests\Dimmer\CreateRequest;
 use App\Http\Requests\Dimmer\UpdateRequest;
 use App\Models\Dimmer;
 use App\Models\HomeObject;
+use App\Repositories\DeviceRepository;
 use App\Repositories\DimmerRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
@@ -15,13 +16,15 @@ class DimmerController extends Controller
 {
     private $dimmer_rep;
     private $object_rep;
+    private $device_rep;
     private $service;
 
-    public function __construct(DimmerRepository $dimmer_rep, ObjectRepository $object_rep,
+    public function __construct(DimmerRepository $dimmer_rep, ObjectRepository $object_rep, DeviceRepository $device_rep,
                                 DimmerService $service)
     {
         $this->dimmer_rep = $dimmer_rep;
         $this->object_rep = $object_rep;
+        $this->device_rep = $device_rep;
         $this->service = $service;
     }
 
@@ -36,8 +39,9 @@ class DimmerController extends Controller
     {
         $objects = $this->object_rep->getAllToArray();
         $object_types = HomeObject::getFullTypeIds();
+        $devices = $this->device_rep->getAllToArray();
 
-        return view('dimmers.create', compact('objects', 'object_types'));
+        return view('dimmers.create', compact('objects', 'object_types', 'devices'));
     }
 
     public function store(CreateRequest $r)

@@ -74,7 +74,7 @@ class TermostatController extends Controller
 
     public function edit(Termostat $termostat, ObjectService $object_service, ScriptRepository $script_rep)
     {
-        list($objects, $rooms, $types) = $this->getLists();
+        list($objects, $rooms, $types, $devices) = $this->getLists();
 
         $methods = $object_service->getMethodsByObjectIdToArray($termostat->object);
         $object_types = HomeObject::getFullTypeIds();
@@ -82,7 +82,7 @@ class TermostatController extends Controller
         $can = gates('devices.show-object');
 
         return view('termostats.edit', compact('termostat', 'objects', 'rooms',
-            'types', 'methods', 'object_types', 'scripts', 'can'));
+            'types', 'devices', 'methods', 'object_types', 'scripts', 'can'));
     }
 
     public function update(UpdateRequest $r, Termostat $termostat)
