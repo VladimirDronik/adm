@@ -20,6 +20,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('devices', 'DeviceController')->except('show','destroy')->middleware('can:devices');
     Route::resource('counts', 'CountController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('switches', 'SwitchController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('relays', 'RelayController')->except('show','destroy')->middleware('can:devices');
     Route::resource('dimmers', 'DimmerController')->except('show','destroy')->middleware('can:devices');
 
     Route::resource('settings', 'SettingController')->except('show','destroy')->middleware('can:settings');
@@ -68,6 +70,14 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'counts', 'as' => 'counts.'], function () {
             Route::post('delete', 'CountController@delete')->name('delete');
+        });
+
+        Route::group(['prefix' => 'switches', 'as' => 'switches.'], function () {
+            Route::post('delete', 'SwitchController@delete')->name('delete');
+        });
+
+        Route::group(['prefix' => 'relays', 'as' => 'relays.'], function () {
+            Route::post('delete', 'RelayController@delete')->name('delete');
         });
 
         Route::group(['prefix' => 'dimmers', 'as' => 'dimmers.'], function () {

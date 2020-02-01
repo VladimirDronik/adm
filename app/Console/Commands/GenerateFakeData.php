@@ -35,7 +35,8 @@ class GenerateFakeData extends Command
     {
         $tables = ['Users', 'Objects', 'Scripts', 'Devices', 'Dimmers',
             'Rooms', 'Methods', 'Termostats', 'Scenes', 'Counts', 'ViewItems', 'SchedulerTasks',
-            'GraphCounts', 'GraphTermostats', 'GraphLights', 'GraphHumidities', 'Logs'];
+            'GraphCounts', 'GraphTermostats', 'GraphLights', 'GraphHumidities', 'Logs',
+            'Switches', 'Relays'];
 
         foreach ($tables as $table) {
             Artisan::call('db:seed', ['--class' => 'Fake'.$table.'TableSeeder']);

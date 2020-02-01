@@ -18,27 +18,39 @@
                         </a>
                         <ul aria-expanded="false" class="collapse">
                             <li>
-                                <a href="{{ route('devices.index') }}">
-                                    <i class="fa fa-building"></i>
-                                    Контроллеры
-                                </a>
-                            </li>
-                            <li>
                                 <a href="{{ route('termostats.index') }}">
                                     <i class="fa fa-tasks"></i>
                                     Датчики
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('counts.index') }}">
-                                    <i class="fa fa-tachometer"></i>
-                                    Счетчики
+                                <a href="{{ route('devices.index') }}">
+                                    <i class="fa fa-building"></i>
+                                    Контроллеры
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('switches.index') }}">
+                                    <i class="fa fa-bullseye"></i>
+                                    Выключатели
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('dimmers.index') }}">
                                     <i class="fa fa-bullseye"></i>
                                     Диммеры
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('relays.index') }}">
+                                    <i class="fa fa-bullseye"></i>
+                                    Реле
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('counts.index') }}">
+                                    <i class="fa fa-bullseye"></i>
+                                    Счетчики
                                 </a>
                             </li>
                         </ul>
