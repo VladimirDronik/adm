@@ -1,4 +1,4 @@
-@if($object->is_system)
+@if($object && $object->is_system)
     {{ Form::bs_title('Системные методы') }}
 
     <div class="form-group row">

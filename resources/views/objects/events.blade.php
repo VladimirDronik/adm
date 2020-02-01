@@ -1,5 +1,5 @@
 {{ Form::bs_title('Cобытия') }}
-@if(count($object->scheduler_tasks))
+@if($object && count($object->scheduler_tasks))
     <div class="form-group row">
         <label class="col-md-5"><i>Событие</i></label>
         <div class="col-md-5"><i>Метод</i></div>

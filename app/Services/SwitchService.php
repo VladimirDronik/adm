@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\DeviceSwitch;
 use App\Models\HomeObject;
 use App\Models\Port;
 use Illuminate\Support\Facades\DB;
@@ -16,8 +17,8 @@ class SwitchService {
     }
 
     /**
-     * Удаление счетчика. Если связанный объект системный, то удаление объекта, методов, событий,
-     * созданных автоматически при создании счетчика
+     * Удаление выключателя. Если связанный объект системный, то удаление объекта,
+     * созданного автоматически при создании выключателя
      *
      * @param int $id
      * @return bool
@@ -25,40 +26,34 @@ class SwitchService {
      */
     public function delete(int $id): bool
     {
-        $count = Count::findOrFail($id);
+        $switch = DeviceSwitch::findOrFail($id);
 
-        if ($count->object && $count->object->is_system) {
-            DB::transaction(function () use (&$count) {
-                if (!HomeObject::isObjectUsed($count->id_object, $count->id, 'counts')) {
-                    HomeObject::deleteAutoObject($count->id_object);
-                }
-                $count->delete();
+        if ($switch->object && $switch->object->is_system) {
+            DB::transaction(function () use (&$switch) {
+                //if (!HomeObject::isObjectUsed($switch->id_object, $switch->id, 'switches')) {
+                    HomeObject::deleteAutoObject($switch->id_object);
+                //}
+                $switch->delete();
             });
         } else {
-            $count->delete();
+            $switch->delete();
         }
 
         return true;
     }
 
-    public function prepareCount(Count $count, array $data)
+    public function prepareSwitch(DeviceSwitch $switch, array $data)
     {
-        $count->name = trim($data['name']);
+        $switch->name = trim($data['name']);
         if (isset($data['type'])) {
-            $count->type = $data['type'];
+            $switch->type = $data['type'];
         }
-        $count->id_object = (int)$data['id_object'];
-        $count->impulse = $data['impulse'];
-        if (isset($data['unit'])) {
-            $count->unit = trim($data['unit']);
-        }
-        $count->today_value = $data['today_value'] ?? 0;
-        $count->total_value = $data['total_value'] ?? 0;
+        $switch->id_object = (int)$data['id_object'];
     }
 
     /**
-     * Создание счетчика. Если $data['type'] === 'auto',
-     * то еще создается объект с методами и событиями.
+     * Создание выключателя. Если $data['type'] === 'auto',
+     * то еще создается объект
      *
      * @param array $data
      * @return int
@@ -66,18 +61,17 @@ class SwitchService {
      */
     public function store(array $data): int
     {
-        $count = new Count();
-        $this->prepareCount($count, $data);
+        $switch = new DeviceSwitch();
+        $this->prepareSwitch($switch, $data);
 
         if ($data['object_type'] === 'manual') {
-            $count->save();
+            $switch->save();
         } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$count, $data) {
-                $unique_name = HomeObject::getUniqueObjectName(0, $count->name);
-                $object = $this->count_object_service->createCountObject($unique_name);
-                $this->count_object_service->createCountObjectMethodsWithEvents($object->id);
-                $count->id_object = $object->id;
-                $count->save();
+            DB::transaction(function () use (&$switch, $data) {
+                $unique_name = HomeObject::getUniqueObjectName(0, $switch->name);
+                $object = $this->switch_object_service->createSwitchObject($unique_name, $switch->type);
+                $switch->id_object = $object->id;
+                $switch->save();
 
                 if ($data['port_id']) {
                     Port::where('id', $data['port_id'])->update(['object' => $object->id]);
@@ -85,35 +79,35 @@ class SwitchService {
             });
         }
 
-        return $count->id;
+        return $switch->id;
     }
 
-    private function isUpdateAutoObjectName(Count $count, string $name): bool
+    private function isUpdateAutoObjectName(DeviceSwitch $switch, string $name): bool
     {
-        return $count->name !== trim($name) && $count->object && $count->object->is_system;
+        return $switch->name !== trim($name) && $switch->object && $switch->object->is_system;
     }
 
     /**
-     * Обновление счетчика. Если изменилось название и у счетчика системный объект,
+     * Обновление выключателя. Если изменилось название и у выключателя системный объект,
      * то изменяем название объекта.
      * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
      *
-     * @param Count $count
+     * @param DeviceSwitch $switch
      * @param array $data
      * @return int
      * @throws \Throwable
      */
-    public function update(Count $count, array $data): int
+    public function update(DeviceSwitch $switch, array $data): int
     {
-        DB::transaction(function () use (&$count, $data) {
-            if ($this->isUpdateAutoObjectName($count, $data['name'])) {
-                $count->object->name = HomeObject::getUniqueObjectName($count->object->id, trim($data['name']));
-                $count->object->save();
+        DB::transaction(function () use (&$switch, $data) {
+            if ($this->isUpdateAutoObjectName($switch, $data['name'])) {
+                $switch->object->name = HomeObject::getUniqueObjectName($switch->object->id, trim($data['name']));
+                $switch->object->save();
             }
-            $this->prepareCount($count, $data);
-            $count->save();
+            $this->prepareSwitch($switch, $data);
+            $switch->save();
         });
 
-        return $count->id;
+        return $switch->id;
     }
 }

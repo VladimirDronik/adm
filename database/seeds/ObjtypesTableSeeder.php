@@ -22,7 +22,7 @@ class ObjtypesTableSeeder extends Seeder
     {
         return [
             [
-                'name' => 'button',
+                'name' => ObjType::TYPE_BUTTON,
                 'label' => 'Кнопка'
             ],
             [
@@ -30,7 +30,7 @@ class ObjtypesTableSeeder extends Seeder
                 'label' => 'Лампа'
             ],
             [
-                'name' => 'socket',
+                'name' => ObjType::TYPE_SOCKET,
                 'label' => 'Розетка'
             ],
             [
@@ -46,7 +46,7 @@ class ObjtypesTableSeeder extends Seeder
                 'label' => 'Датчик движения'
             ],
             [
-                'name' => 'switch',
+                'name' => ObjType::TYPE_SWITCH,
                 'label' => 'Выключатель'
             ],
             [
@@ -66,7 +66,7 @@ class ObjtypesTableSeeder extends Seeder
                 'label' => 'Сухой контакт'
             ],
             [
-                'name' => 'reley',
+                'name' => ObjType::TYPE_RELAY,
                 'label' => 'Реле'
             ],
             [

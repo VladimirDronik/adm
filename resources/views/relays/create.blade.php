@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление выключателя', 'links' => [ route('switches.index') => 'Выключатели']])
+       ['title' => 'Добавление реле', 'links' => [ route('relays.index') => 'Реле']])
 @endsection
 
 @section('content')
@@ -15,7 +15,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('switches.index') }}" class="btn btn-success m-b-10 m-l-5">Список выключателей</a>
+                        <a href="{{ route('relays.index') }}" class="btn btn-success m-b-10 m-l-5">Список реле</a>
                     </div>
                 </div>
             </div>
@@ -23,12 +23,13 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::open(['route' => 'switches.store', 'method' => 'post', 'id' => 'switch_form', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::open(['route' => 'relays.store', 'method' => 'post', 'id' => 'relay_form',
+                            'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_radio('type', 'Тип выключателя*:', $types, old('type', -1), ['required' => true]) }}
+                        {{ Form::bs_radio('type', 'Тип реле*:', $types, old('type', -1), ['required' => true]) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
                         <div class="form-group row ">
@@ -73,7 +74,8 @@
                                 <div class="row" id="auto_object_div">
                                     <div class="col-sm-11 pr-0">
                                         <p>
-                                            При создании выключателя будет создан объект с таким же названием.
+                                            При создании реле будет создан объект с таким же названием.
+                                            У объекта будут созданы методы «Включить реле» и «Выключить реле».
                                         </p>
                                     </div>
                                     <div class="col-sm-12 pr-0 mt-4">
@@ -101,14 +103,14 @@
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
-    <script src="{{ asset('ela/js/pagescripts/switch.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/relay.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
 
         $(document).ready(function () {
-            initSwitchForm();
+            initRelayForm();
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
@@ -117,7 +119,7 @@
                 let device_id = $(this).val();
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': device_id, 'status': 'in'},
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'out'},
                     success: function (data) {
                         createMethodSelect('#auto_sel_port_id', data.ports, -1);
                         $('#auto_sel_port_id').trigger("chosen:updated");
@@ -184,7 +186,7 @@
                 createObjectSelect('#auto_sel_id_object', objects, selected);
             }
 
-            $('#switch_form [name=object_type]').change(function(){
+            $('#relay_form [name=object_type]').change(function(){
                 if ($(this).val() === 'manual') {
                     $('#auto_object_div').hide();
                     $('#manual_object_div').show();

@@ -5,24 +5,21 @@ namespace App\Services;
 use App\Models\HomeObject;
 use App\Models\Method;
 use App\Models\ObjType;
-use App\Models\SchedulerPoint;
-use App\Models\SchedulerTask;
-use App\Models\Script;
-use ScriptsTableSeeder;
+use App\Models\Relay;
 
 class RelayObjectService {
 
     /**
-     * Автосоздание объекта для счетчика
+     * Автосоздание объекта для реле
      *
      * @param string $name
      * @return HomeObject
      */
-    public function createCountObject(string $name): HomeObject
+    public function createRelayObject(string $name, string $type): HomeObject
     {
         $object = new HomeObject();
 
-        $object->type = ObjType::TYPE_COUNT;
+        $object->type = $type === Relay::TYPE_SOCKET ? ObjType::TYPE_SOCKET : ObjType::TYPE_RELAY;
         $object->name = $name;
         $object->status = 'off';
         $object->is_system = 1;
@@ -32,103 +29,48 @@ class RelayObjectService {
         return $object;
     }
 
-    private function getScriptIdForCheckMethod(): int
-    {
-        $script_name = ScriptsTableSeeder::getCheckCountScript()['name'];
-
-        return Script::where('name', $script_name)
-            ->where('system', 1)->value('id');
-    }
-
-    private function getScriptIdForResetMethod(): int
-    {
-        $script_name = ScriptsTableSeeder::getResetCountScript()['name'];
-
-        return Script::where('name', $script_name)
-            ->where('system', 1)->value('id');
-    }
-
     /**
-     * Создание метода 'Проверка счетчика' и события 'Проверка счетчика' (каждый час)
+     * Создание метода 'Выключить реле'
      *
      * @param int $object_id
      */
-    public function createCheckMethodWithEvent(int $object_id)
+    public function createMethodOff(int $object_id)
     {
-        $script_id = $this->getScriptIdForCheckMethod();
-        $method_id = Method::forceCreate([
-            'name' => 'Проверка счетчика',
+        Method::forceCreate([
+            'name' => 'Выключить реле',
             'id_object' => $object_id,
-            'script' => $script_id,
-            'comment' => 'Периодическая проверка текущих значений счетчика',
+            'script' => null,
+            'comment' => 'Выключить реле',
             'is_system' => 1
-        ])->id;
-
-        $scheduler_task_id = SchedulerTask::forceCreate([
-            'name' => 'Проверка счетчика',
-            'is_system' => 1,
-            'is_hidden' => 1,
-            'object' => $object_id,
-            'method' => $method_id
-        ])->id;
-
-        // каждый час
-        SchedulerPoint::forceCreate([
-            'id_task' => $scheduler_task_id,
-            'type' => 'c',
-            'time' => '60',
-            'days' => '',
-            'close' => 1,
-            'system' => 1
         ]);
     }
 
     /**
-     * Создание метода 'Обнуление счетчика' и события 'Обнуление счетчика' (каждый день в 23:55)
+     * Создание метода 'Включить реле'
      *
      * @param int $object_id
      */
-    public function createResetMethodWithEvent(int $object_id)
+    public function createMethodOn(int $object_id)
     {
-        $script_id = $this->getScriptIdForResetMethod();
-
-        $method_id = Method::forceCreate([
-            'name' => 'Обнуление счетчика',
+         Method::forceCreate([
+            'name' => 'Включить реле',
             'id_object' => $object_id,
-            'script' => $script_id,
-            'comment' => 'Обнуление значений счетчика за текущий день',
+            'script' => null,
+            'comment' => 'Включить реле',
             'is_system' => 1
-        ])->id;
-
-        $scheduler_task_id = SchedulerTask::forceCreate([
-            'name' => 'Обнуление счетчика',
-            'is_system' => 1,
-            'is_hidden' => 1,
-            'object' => $object_id,
-            'method' => $method_id
-        ])->id;
-
-        // каждый день в 23:55
-        SchedulerPoint::forceCreate([
-            'id_task' => $scheduler_task_id,
-            'type' => 'w',
-            'time' => '23:55',
-            'days' => '0,1,2,3,4,5,6',
-            'close' => 1,
-            'system' => 1
         ]);
     }
 
     /**
-     * Автосоздание методов и их событий для объекта, который был
-     * создан автоматически для счетчика
+     * Автосоздание методов для объекта, который был
+     * создан автоматически для реле
      *
      * @param int $object_id
      * @return void
      */
-    public function createCountObjectMethodsWithEvents(int $object_id)
+    public function createRelayObjectMethods(int $object_id)
     {
-        $this->createCheckMethodWithEvent($object_id);
-        $this->createResetMethodWithEvent($object_id);
+        $this->createMethodOn($object_id);
+        $this->createMethodOff($object_id);
     }
 }

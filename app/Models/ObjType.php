@@ -23,6 +23,10 @@ class ObjType extends Model
     const TYPE_COUNT = 'count';
     const TYPE_TERMOSTAT = 'termostat';
     const TYPE_DIMMER = 'dimmer';
+    const TYPE_BUTTON = 'button';
+    const TYPE_SWITCH = 'switch';
+    const TYPE_RELAY = 'reley';
+    const TYPE_SOCKET = 'socket';
 
     protected $table = 'objtypes';
     public $timestamps = false;

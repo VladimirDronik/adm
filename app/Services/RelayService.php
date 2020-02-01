@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\HomeObject;
 use App\Models\Port;
+use App\Models\Relay;
 use Illuminate\Support\Facades\DB;
 
 class RelayService {
@@ -16,8 +17,8 @@ class RelayService {
     }
 
     /**
-     * Удаление счетчика. Если связанный объект системный, то удаление объекта, методов, событий,
-     * созданных автоматически при создании счетчика
+     * Удаление реле. Если связанный объект системный, то удаление объекта и методов,
+     * созданных автоматически при создании реле
      *
      * @param int $id
      * @return bool
@@ -25,40 +26,34 @@ class RelayService {
      */
     public function delete(int $id): bool
     {
-        $count = Count::findOrFail($id);
+        $relay = Relay::findOrFail($id);
 
-        if ($count->object && $count->object->is_system) {
-            DB::transaction(function () use (&$count) {
-                if (!HomeObject::isObjectUsed($count->id_object, $count->id, 'counts')) {
-                    HomeObject::deleteAutoObject($count->id_object);
-                }
-                $count->delete();
+        if ($relay->object && $relay->object->is_system) {
+            DB::transaction(function () use (&$relay) {
+                //if (!HomeObject::isObjectUsed($relay->id_object, $relay->id, 'relays')) {
+                    HomeObject::deleteAutoObject($relay->id_object);
+                //}
+                $relay->delete();
             });
         } else {
-            $count->delete();
+            $relay->delete();
         }
 
         return true;
     }
 
-    public function prepareCount(Count $count, array $data)
+    public function prepareRelay(Relay $relay, array $data)
     {
-        $count->name = trim($data['name']);
+        $relay->name = trim($data['name']);
         if (isset($data['type'])) {
-            $count->type = $data['type'];
+            $relay->type = $data['type'];
         }
-        $count->id_object = (int)$data['id_object'];
-        $count->impulse = $data['impulse'];
-        if (isset($data['unit'])) {
-            $count->unit = trim($data['unit']);
-        }
-        $count->today_value = $data['today_value'] ?? 0;
-        $count->total_value = $data['total_value'] ?? 0;
+        $relay->id_object = (int)$data['id_object'];
     }
 
     /**
-     * Создание счетчика. Если $data['type'] === 'auto',
-     * то еще создается объект с методами и событиями.
+     * Создание реле. Если $data['type'] === 'auto',
+     * то еще создается объект с методами
      *
      * @param array $data
      * @return int
@@ -66,18 +61,18 @@ class RelayService {
      */
     public function store(array $data): int
     {
-        $count = new Count();
-        $this->prepareCount($count, $data);
+        $relay = new Relay();
+        $this->prepareRelay($relay, $data);
 
         if ($data['object_type'] === 'manual') {
-            $count->save();
+            $relay->save();
         } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$count, $data) {
-                $unique_name = HomeObject::getUniqueObjectName(0, $count->name);
-                $object = $this->count_object_service->createCountObject($unique_name);
-                $this->count_object_service->createCountObjectMethodsWithEvents($object->id);
-                $count->id_object = $object->id;
-                $count->save();
+            DB::transaction(function () use (&$relay, $data) {
+                $unique_name = HomeObject::getUniqueObjectName(0, $relay->name);
+                $object = $this->relay_object_service->createRelayObject($unique_name, $relay->type);
+                $this->relay_object_service->createRelayObjectMethods($object->id);
+                $relay->id_object = $object->id;
+                $relay->save();
 
                 if ($data['port_id']) {
                     Port::where('id', $data['port_id'])->update(['object' => $object->id]);
@@ -85,35 +80,35 @@ class RelayService {
             });
         }
 
-        return $count->id;
+        return $relay->id;
     }
 
-    private function isUpdateAutoObjectName(Count $count, string $name): bool
+    private function isUpdateAutoObjectName(Relay $relay, string $name): bool
     {
-        return $count->name !== trim($name) && $count->object && $count->object->is_system;
+        return $relay->name !== trim($name) && $relay->object && $relay->object->is_system;
     }
 
     /**
-     * Обновление счетчика. Если изменилось название и у счетчика системный объект,
+     * Обновление реле. Если изменилось название и у реле системный объект,
      * то изменяем название объекта.
      * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
      *
-     * @param Count $count
+     * @param Relay $relay
      * @param array $data
      * @return int
      * @throws \Throwable
      */
-    public function update(Count $count, array $data): int
+    public function update(Relay $relay, array $data): int
     {
-        DB::transaction(function () use (&$count, $data) {
-            if ($this->isUpdateAutoObjectName($count, $data['name'])) {
-                $count->object->name = HomeObject::getUniqueObjectName($count->object->id, trim($data['name']));
-                $count->object->save();
+        DB::transaction(function () use (&$relay, $data) {
+            if ($this->isUpdateAutoObjectName($relay, $data['name'])) {
+                $relay->object->name = HomeObject::getUniqueObjectName($relay->object->id, trim($data['name']));
+                $relay->object->save();
             }
-            $this->prepareCount($count, $data);
-            $count->save();
+            $this->prepareRelay($relay, $data);
+            $relay->save();
         });
 
-        return $count->id;
+        return $relay->id;
     }
 }
