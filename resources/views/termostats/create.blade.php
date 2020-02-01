@@ -86,7 +86,7 @@
                                         </div>
                                     </div>
                                     <div class="row" id="auto_object_div">
-                                        <div class="col-sm-11 pr-0">
+                                        <div class="col-sm-12 pr-0">
                                             <p>
                                                 При создании термостата будет создан объект с таким же названием.
                                                 У объекта будет создан метод «Проверка термостата».
@@ -94,6 +94,13 @@
                                                 (если такого скрипта нет, то он будет создан) и
                                                 будет создано событие «Проверка термостата» (каждые 5 мин).
                                             </p>
+                                        </div>
+                                        <div class="col-sm-12 pr-0 mt-4">
+                                            {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'),
+                                               false, false, [], null) }}
+
+                                            {{ Form::bs_autoselect('port_id', 'Порт:', [], old('port_id'),
+                                                false, false, [], null) }}
                                         </div>
                                     </div>
                                 </div>
@@ -157,6 +164,7 @@
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script>
         const url_methods = '{{ route('ajax.objects.methods') }}';
+        const url_ports = '{{ route('ajax.devices.objects_ports') }}';
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         let modal_btn_index = -1;
         let methods = [];

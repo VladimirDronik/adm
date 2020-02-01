@@ -31,6 +31,15 @@ class DeviceController extends Controller
         return response()->json(compact('result','message'));
     }
 
+    public function objectsPorts(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['device_id']), 400);
+
+        $ports = $this->service->getPortsWithObjectsByDeviceId((int)$r->device_id);
+
+        return response()->json(['result' => true, 'ports' => $ports]);
+    }
+
     // todo
     public function updatePort(Request $r)
     {

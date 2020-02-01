@@ -20,8 +20,8 @@ class DeviceRepository {
 
     public function getAllToArray()
     {
-        $devices = Device::select('id','description')->orderBy('description')->pluck('description','id')->toArray();
-        array_walk($devices, function (&$device, $key) { $device = $key.' - '.$device; });
+        $devices = Device::select('id', 'description')->orderBy('description')
+            ->pluck('description','id')->toArray();
 
         return $devices;
     }

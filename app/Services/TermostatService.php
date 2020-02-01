@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\HomeObject;
+use App\Models\Port;
 use App\Models\Termostat;
 use Illuminate\Support\Facades\DB;
 
@@ -61,18 +62,27 @@ class TermostatService {
     public function store(array $data): int
     {
         $termostat = new Termostat();
+
+        $port_id = $data['port_id'];
+        unset($data['port_id']);
+        unset($data['device_id']);
+
         $this->prepare($termostat, $data);
         $termostat->current = 0;
 
         if ($data['object_type'] === 'manual') {
             $termostat->save();
         } elseif ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$termostat) {
+            DB::transaction(function () use (&$termostat, $port_id) {
                 $unique_name = HomeObject::getUniqueObjectName(0, $termostat->name);
                 $object = $this->termostat_object_service->createTermostatObject($unique_name);
                 $this->termostat_object_service->createTermostatObjectMethodsWithEvents($object->id);
                 $termostat->id_object = $object->id;
                 $termostat->save();
+
+                if ($port_id) {
+                    Port::where('id', $port_id)->update(['object' => $object->id]);
+                }
             });
         }
 

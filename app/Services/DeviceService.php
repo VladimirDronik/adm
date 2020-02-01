@@ -205,4 +205,31 @@ class DeviceService {
 
         return array_values($ports);
     }
+
+    public function getPortsWithObjectsByDeviceId(int $device_id, string $status = '')
+    {
+        if (!$device_id) {
+            return [];
+        }
+
+        $ports = Port::with('eobject')->where('id_device', $device_id);
+
+        if ($status !== '') {
+            $ports->where('status', $status);
+        }
+
+        $ports = $ports->orderBy('status')->orderBy('num_port')->get();
+
+        $arrayPorts = [];
+
+        foreach ($ports as $port) {
+            $arrayPorts[] = [
+                'id' => $port->id,
+                'name' => $port->status.' '.$port->num_port
+                    .($port->eobject ? ' ('.optional($port->eobject)->name.')' : '')
+            ];
+        }
+
+        return $arrayPorts;
+    }
 }

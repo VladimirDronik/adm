@@ -44,17 +44,18 @@ class TermostatController extends Controller
         $objects = $this->object_rep->getAllToArray();
         $rooms = $this->room_rep->getAllToArray();
         $types = Termostat::getFullThermostatIds();
+        $devices = $this->device_rep->getAllToArray();
 
-        return [$objects, $rooms, $types];
+        return [$objects, $rooms, $types, $devices];
     }
 
     public function create()
     {
-        list($objects, $rooms, $types) = $this->getLists();
+        list($objects, $rooms, $types, $devices) = $this->getLists();
         $object_types =  HomeObject::getFullTypeIds();
         $can = gates('devices.show-object');
 
-        return view('termostats.create', compact('objects','rooms', 'types', 'object_types', 'can'));
+        return view('termostats.create', compact('objects','rooms', 'types', 'devices', 'object_types', 'can'));
     }
 
     public function store(CreateRequest $r)
