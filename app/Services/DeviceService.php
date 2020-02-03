@@ -39,7 +39,9 @@ class DeviceService {
 
     private function getDeviceIpNotificationParams(string $eip, string $sip): string
     {
-        return "http://192.168.99.50/to1/?cf=1&eip={$eip}&pwd=to1&gw=10.2.0.1&sip={$sip}&sct=md.php";
+        $gw = explode(':', $sip)[0];
+
+        return "http://192.168.99.50/to1/?cf=1&eip={$eip}&pwd=to1&gw={$gw}&sip={$sip}&sct=md.php";
     }
 
     /**
