@@ -41,7 +41,9 @@ class DeviceService {
     {
         $gw = explode(':', $sip)[0];
 
-        return "http://192.168.99.50/to1/?cf=1&eip={$eip}&pwd=to1&gw={$gw}&sip={$sip}&sct=md.php";
+        $sip_with_port = strpos($sip, ':') === false ? $sip.'%3A8080' : $sip;
+
+        return "http://192.168.99.50/to1/?cf=1&eip={$eip}&pwd=to1&gw={$gw}&sip={$sip_with_port}&sct=md.php";
     }
 
     /**
@@ -76,7 +78,7 @@ class DeviceService {
         $this->device = new Device();
 
         $this->device->fill($data);
-        $this->device->active = 0;
+        $this->device->active = 1;
 
         $this->device->save();
 
