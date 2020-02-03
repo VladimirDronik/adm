@@ -22,6 +22,11 @@ class DeviceController extends Controller
         return response()->json(['result' => (bool)$this->service->delete((int)$r->id)]);
     }
 
+    /**
+     * @param Request $r
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
     public function update(Request $r)
     {
         abort_if(!ajaxHas($r, ['id','description','ip_address']), 400);
