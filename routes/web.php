@@ -27,6 +27,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('settings', 'SettingController')->except('show','destroy')->middleware('can:settings');
     Route::resource('scenes', 'SceneController')->except('show','destroy')->middleware('can:scenes');
     Route::resource('termostats', 'TermostatController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('usensors', 'UsensorController')->except('show','destroy')->middleware('can:devices');
     Route::resource('events', 'EventController')->except('show','destroy')->middleware('can:events');
     Route::resource('logs', 'LogController')->only('index')->middleware('can:logs');
 

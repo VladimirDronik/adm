@@ -78,6 +78,7 @@ class View extends Model
     const TYPE_TEMP = 'temp';
     const TYPE_HUMIDITY = 'humidity';
     const TYPE_INFO = 'info';
+    const TYPE_DIMMER = 'dimmer';
 
     protected $casts = ['active' => 'boolean'];
     protected $guarded = ['id'];
@@ -90,6 +91,7 @@ class View extends Model
             self::TYPE_TEMP => 'Термометр',
             self::TYPE_HUMIDITY => 'Гигрометр',
             self::TYPE_INFO => 'Инфопанель',
+            self::TYPE_DIMMER => 'Диммер',
         ];
     }
 

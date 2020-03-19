@@ -26,7 +26,7 @@ class UpdateRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'id_object' => 'required|integer|min:1',
-            'impulse' => 'required|numeric|min:1',
+            'impulse' => 'required|numeric|min:0',
             'today_value' => 'required|numeric|min:0',
             'total_value' => 'required|numeric|min:0',
         ];

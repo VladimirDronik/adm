@@ -10,4 +10,9 @@ class DetectorsService {
     {
         return Termostat::count();
     }
+
+    public function getUsensorsCount(): int
+    {
+        return Usensors::count();
+    }
 }
