@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Termostat;
+use App\Models\Usensor;
 
 class DetectorsService {
 
@@ -13,6 +14,6 @@ class DetectorsService {
 
     public function getUsensorsCount(): int
     {
-        return Usensors::count();
+        return Usensor::count();
     }
 }

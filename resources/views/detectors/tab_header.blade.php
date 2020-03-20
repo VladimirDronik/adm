@@ -31,7 +31,7 @@
                     <li class="nav-item">
                         <a class="nav-link @if($active === 'usensors') active show @endif" href="{{ route('usensors.index') }}">
                             <span>
-                                <i class="ti-home"></i> Универсальные датчики ({{ $detectorsService->getUsensorCount() }})
+                                <i class="ti-home"></i> Универсальные датчики ({{ $detectorsService->getUsensorsCount() }})
                             </span>
                         </a>
                     </li>
