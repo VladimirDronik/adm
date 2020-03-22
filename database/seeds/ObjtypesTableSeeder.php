@@ -38,6 +38,10 @@ class ObjtypesTableSeeder extends Seeder
                 'label' => 'Термостат'
             ],
             [
+                'name' => ObjType::TYPE_USENSOR,
+                'label' => 'Универсальный датчик'
+            ],
+            [
                 'name' => 'hygrometer',
                 'label' => 'Гигрометр'
             ],

@@ -62,7 +62,7 @@ Route::group(['middleware' => ['auth']], function () {
         });
 
         Route::post('termostats/delete', 'TermostatController@delete')->name('termostats.delete');
-        Route::post('usensors/delete', 'UsensorsController@delete')->name('usensors.delete');
+        Route::post('usensors/delete', 'UsensorController@delete')->name('usensors.delete');
 
         Route::group(['prefix' => 'scenes', 'as' => 'scenes.'], function () {
             Route::post('delete', 'SceneController@delete')->name('delete');

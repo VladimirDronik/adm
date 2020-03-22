@@ -78,17 +78,19 @@
                                                 К методу будет привязан системный скрипт «Проверка датчика».
                                             </p>
                                         </div>
-                                        <div class="col-sm-12 pr-0 mt-4">
-                                            {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'),
-                                               false, false, [], null) }}
 
-                                            {{ Form::bs_autoselect('port_SCL', 'Порт SCL:', [], old('SCL'),
-                                                false, false, [], null) }}
-
-                                            {{ Form::bs_autoselect('port_SDA', 'Порт SDA:', [], old('SDA'),
-                                                false, false, [], null) }}
-                                        </div>
                                     </div>
+
+                                </div>
+                                <div class="col-sm-12 pr-0 mt-4">
+                                    {{ Form::bs_autoselect('device_id', 'Контроллер*:', $devices, old('device_id'),
+                                       false, false, [], null) }}
+
+                                    {{ Form::bs_autoselect('port_SCL', 'Порт SCL*:', [], old('SCL'),
+                                        false, false, [], null) }}
+
+                                    {{ Form::bs_autoselect('port_SDA', 'Порт SDA*:', [], old('SDA'),
+                                        false, false, [], null) }}
                                 </div>
                             </div>
 
@@ -124,6 +126,8 @@
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_SCL").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_port_SDA").chosen({width:"100%", no_results_text: "Не найдено"});
+
 
             $("#auto_sel_object").chosen().change(function() {
                 let object_id = $(this).val();
@@ -150,6 +154,9 @@
                     success: function (data) {
                         createMethodSelect('#auto_sel_port_SCL', data.ports, -1);
                         $('#auto_sel_port_SCL').trigger("chosen:updated");
+
+                        createMethodSelect('#auto_sel_port_SDA', data.ports, -1);
+                        $('#auto_sel_port_SDA').trigger("chosen:updated");
                     }
                 });
             });

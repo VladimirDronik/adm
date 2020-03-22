@@ -10,6 +10,10 @@ class Usensor extends Model
     public $timestamps = false;
     protected $guarded = ['id'];
 
+    public function iobject()
+    {
+        return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+    }
 
     public function eobject()
     {

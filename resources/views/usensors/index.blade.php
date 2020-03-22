@@ -22,14 +22,14 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('usensors.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить датчик</a>
+                        <a href="{{ route('usensors.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить универсальный датчик</a>
                         <a href="{{ route('usensors.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card">
-            <div class="card-title"><h4>Термостаты</h4></div>
+            <div class="card-title"><h4>Универсальные датчики</h4></div>
             <div class="card-body">
                 @if(count($usensors))
                     <div class="table-responsive">

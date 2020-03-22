@@ -110,7 +110,7 @@ class HomeObject extends Model
     }
 
     /**
-     * Удаление объекта, созданного автоматически для счетчика, термостата или диммера.
+     * Удаление объекта, созданного автоматически для счетчика, термостата, универсального датчика или диммера.
      * Удаление событий для системных методов этого объекта.
      * Удаление методов происходит автоматически на уровне базы (по связям объекта).
      *
@@ -119,9 +119,9 @@ class HomeObject extends Model
      */
     public static function deleteAutoObject(int $object_id)
     {
-        $methods = Method::where('is_system', 1)
-            ->where('id_object', $object_id)->get();
-        SchedulerTask::whereIn('method', $methods->pluck('id')->toArray())->delete();
+       // $methods = Method::where('is_system', 1)
+         //   ->where('id_object', $object_id)->get();
+       // SchedulerTask::whereIn('method', $methods->pluck('id')->toArray())->delete();
         HomeObject::destroy($object_id);
     }
 

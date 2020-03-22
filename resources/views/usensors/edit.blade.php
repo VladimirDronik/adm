@@ -6,9 +6,9 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование термостата № '. $termostat->id,
-        'links' => [ route('termostats.index') => 'Термостаты'],
-        'last_link' => 'Редактирование термостата'])
+       ['title' => 'Редактирование универсального датчка № '. $usensor->id,
+        'links' => [ route('usensors.index') => 'Универсальные датчики'],
+        'last_link' => 'Редактирование универсальногодатчика'])
 @endsection
 
 @section('content')
@@ -17,8 +17,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('termostats.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок термостатов</a>
-                        <a href="{{ route('termostats.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить термостат</a>
+                        <a href="{{ route('usensors.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок универсальных датчиков</a>
+                        <a href="{{ route('usensors.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить универсальный датчик</a>
                     </div>
                 </div>
             </div>
@@ -26,93 +26,39 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::model($termostat, ['route' => ['termostats.update', $termostat->id],
-                            'id' => 'termostat_form', 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::model($usensor, ['route' => ['usensors.update', $usensor->id],
+                            'id' => 'usensor_form', 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID:', $termostat->id) }}
+                        {{ Form::bs_simple_text('ID:', $usensor->id) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_text('id_termometr', 'Код:', null, [], 'Например, ff750c311703') }}
-                        {{ Form::bs_number('optimal', 'Оптимальная температура*:', null, ['min' => 0, 'max' => 40, 'required' => true],
-                            'Температура, которая должна быть в помещении') }}
-                        {{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', $termostat->gisteresis), ['min' => 0, 'max' => 10, 'required' => true]) }}
-                        {{ Form::bs_radio('thermostat', 'Режим*:', $types, old('thermostat', $termostat->thermostat), ['required' => true]) }}
 
-                        {{ Form::bs_number('min_threshold', 'Минимальная температура*:', old('min_threshold', $termostat->min_threshold), ['min' => 0, 'max' => 40, 'required' => true],
-                            '') }}
-                        {{ Form::bs_number('max_threshold', 'Максимальная температура*:', old('max_threshold', $termostat->max_threshold), ['min' => 0, 'max' => 40, 'required' => true],
-                            '') }}
-                        {{ Form::bs_number('min_alarm', 'Мин. аварийная температура*:', old('min_alarm', $termostat->min_alarm), ['min' => 0, 'max' => 40, 'required' => true],
-                            '') }}
-                        {{ Form::bs_number('max_alarm', 'Макс. аварийная температура*:', old('max_alarm', $termostat->max_alarm), ['min' => 0, 'max' => 40, 'required' => true],
-                            '') }}
-
-                        @if(($termostat->iobject && $termostat->iobject->is_system) || !$can['devices.show-object'])
+                        @if(($usensor->iobject && $usensor->iobject->is_system) || !$can['devices.show-object'])
                             <div class="form-group row">
                                 <label class="control-label text-right col-md-3 label-fix" for="">
-                                    Объект термостата:     </label>
+                                    Объект универсального датчика:     </label>
                                 <div class="col-md-9">
                                     <div class="mt-2">
-                                        <a class="a-color" href="{{ route('objects.edit', [$termostat->id_object]) }}">
-                                            {{ $termostat->iobject->name }} @if($termostat->iobject && $termostat->iobject->is_system) (системный) @endif </a>
+                                        <a class="a-color" href="{{ route('objects.edit', [$usensor->id_object]) }}">
+                                            {{ $usensor->iobject->name }} @if($usensor->iobject && $usensor->iobject->is_system) (системный) @endif </a>
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" name="id_object" value="{{ $termostat->id_object }}">
+                            <input type="hidden" name="id_object" value="{{ $usensor->id_object }}">
                         @else
-                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект термостата*:', $objects, old('id_object', $termostat->id_object),
+                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект универсалього датчика*:', $objects, old('id_object', $usensor->id_object),
                                 false, false, ['required' => true]) }}
                         @endif
 
-                        {{ Form::bs_autoselect_and_btn('object', 'Объект влияния:', $objects, old('object', $termostat->object),
-                            false, false, [], '', '', null, 'Объект, у которого меняем состояние', 3, $can['devices.show-object']) }}
-
-                        {{ Form::bs_autoselect('method_on', 'Метод при включении:', $methods, old('method_on', $termostat->method_on),
-                            false, false, [], null, 'Метод объекта влияния при срабатывании термостата на включение') }}
-
-                        <div class="form-group row" id="method_on_params_div"
-                             @if(is_null($termostat->method_on_params) && !old('method_on')) style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_on_params"></label>
-                            <div class="col-md-9 pr-0">
-                                <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="method_on_params_label" for="method_on_params">
-                                        {{ optional($termostat->emethod_on)->params }}*:</label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="method_on_params" name="method_on_params"
-                                               type="text" value="{{ old('method_on_params', $termostat->method_on_params) }}">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{ Form::bs_autoselect('method_off', 'Метод при выключении:', $methods, old('method_off', $termostat->method_off),
-                            false, false, [], null, 'Метод объекта влияния при срабатывании термостата на выключение') }}
-
-                        <div class="form-group row" id="method_off_params_div"
-                             @if(is_null($termostat->method_off_params) && !old('method_off')) style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 label-fix" for="method_off_params"></label>
-                            <div class="col-md-9 pr-0">
-                                <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="method_off_params_label" for="method_off_params">
-                                        {{ optional($termostat->emethod_off)->params }}*:
-                                    </label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="method_off_params" name="method_off_params"
-                                               type="text" value="{{ old('method_off_params', $termostat->method_off_params) }}">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', is_null($termostat->room) ? 0 : $termostat->room ), false, false) }}
+                        {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', is_null($usensor->room) ? 0 : $usensor->room ), false, false) }}
 
                     </div>
                     {{ Form::bs_submit_btn() }}
 
-                    @include('objects.methods', ['object' => $termostat->iobject])
-                    @include('objects.events', ['object' => $termostat->iobject])
+                    @include('objects.methods', ['object' => $usensor->iobject])
+                    @include('objects.events', ['object' => $usensor->iobject])
 
                     {!! Form::close() !!}
                 </div>
@@ -140,7 +86,7 @@
         const store_url = '{{ route('ajax.methods.store') }}';
         const del_url = '{{ route('ajax.methods.delete') }}';
         const sub_data_url = '{{ route('ajax.load.data') }}';
-        const object_id = '{{ optional($termostat->iobject)->id }}';
+        const object_id = '{{ optional($usensor->iobject)->id }}';
         const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
         let del_id;
         let modal_btn_index = -1;
@@ -148,7 +94,7 @@
 
         $(document).ready(function () {
             initTermostatForm();
-            initMethodsVar({{ optional($termostat->eobject)->id }});
+            initMethodsVar({{ optional($usensor->eobject)->id }});
 
             $('#auto_sel_btn_id_object').click(function() {
                 modal_btn_index = 1;

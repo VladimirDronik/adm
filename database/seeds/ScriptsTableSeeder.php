@@ -52,6 +52,16 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
+    public static function getCheckUsensorScript(): array
+    {
+        return [
+            'name' => 'Проверка универсального датчика',
+            'link' => 'check_usensor.php', // используется в UsensorObjectService
+            'count' => 0,
+            'system' => 1
+        ];
+    }
+
     /**
      * Изменение скриптов в этой функции влияет на методы, которые
      * автоматически создаются для объекта диммера
