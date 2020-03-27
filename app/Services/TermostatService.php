@@ -66,6 +66,7 @@ class TermostatService {
         $port_id = $data['port_id'] ?? null;
         unset($data['port_id']);
         unset($data['device_id']);
+        unset($data['place_type']);
 
         $this->prepare($termostat, $data);
         $termostat->current = 0;

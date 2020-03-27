@@ -94,7 +94,6 @@
                                 </div>
                             </div>
 
-
                             {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', -1), false, false) }}
 
                         </div>

@@ -30,20 +30,6 @@
                             {{ Form::bs_alert() }}
 
                             {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                            {{ Form::bs_text('id_termometr', 'Код:', null, [], 'Например, ff750c311703') }}
-                            {{ Form::bs_number('optimal', 'Оптимальная температура*:', null, ['min' => 0, 'max' => 40, 'required' => true],
-                                'Температура, которая должна быть в помещении') }}
-                            {{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', 1), ['min' => 0, 'max' => 10, 'required' => true]) }}
-                            {{ Form::bs_radio('thermostat', 'Режим*:', $types, old('thermostat', -1), ['required' => true]) }}
-
-                            {{ Form::bs_number('min_threshold', 'Минимальная температура*:', old('min_threshold', 0), ['min' => 0, 'max' => 40, 'required' => true],
-                                '') }}
-                            {{ Form::bs_number('max_threshold', 'Максимальная температура*:', old('max_threshold', 30), ['min' => 0, 'max' => 40, 'required' => true],
-                                '') }}
-                            {{ Form::bs_number('min_alarm', 'Мин. аварийная температура*:', old('min_alarm', 0), ['min' => 0, 'max' => 40, 'required' => true],
-                                '') }}
-                            {{ Form::bs_number('max_alarm', 'Макс. аварийная температура*:', old('max_alarm', 40), ['min' => 0, 'max' => 40, 'required' => true],
-                                '') }}
 
 
                             <div class="form-group row ">
@@ -95,16 +81,68 @@
                                                 будет создано событие «Проверка термостата» (каждые 5 мин).
                                             </p>
                                         </div>
-                                        <div class="col-sm-12 pr-0 mt-4">
+                                        <div class="col-sm-12 pr-0  mt-4">
+                                            <div class="btn-group-toggle" data-toggle="buttons">
+                                                <label class="btn btn-success btn-sm active">
+                                                    <input type="radio" name="place_type" autocomplete="off" checked value="port"> Термостат на отдельном порту
+                                                </label>
+
+                                                <label class="btn btn-success btn-sm">
+                                                    <input type="radio" name="place_type" autocomplete="off" value="1wbus">  Термостат на шине
+                                                </label>
+
+                                                <label class="btn btn-success btn-sm">
+                                                    <input type="radio" name="place_type" autocomplete="off" value="usensor">  Термостат на унив. датчике
+                                                </label>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12 pr-0 mt-4" id="single_port_div">
                                             {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'),
                                                false, false, [], null) }}
 
                                             {{ Form::bs_autoselect('port_id', 'Порт:', [], old('port_id'),
                                                 false, false, [], null) }}
                                         </div>
+
+                                        <div class="col-sm-12 pr-0 mt-4" id="1wbus_port_div"  style="display: none;">
+                                            {{ Form::bs_text('id_termometr', 'Код:', null, [], 'Уникальный ID термодатчика. Например, ff750c311703') }}
+                                        </div>
+
+                                        <div class="col-sm-12 pr-0 mt-4" id="usensor_div"  style="display: none;">
+                                            {{ Form::bs_autoselect('usensor_id', 'Универсальный датчик:', $usensors, old('usensor_id'),
+                                               false, false, [], null) }}
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
+
+                            <div style="height: 10px;">&nbsp;</div>
+                            <hr>
+                            <div style="height: 40px;">&nbsp;</div>
+
+                            {{ Form::bs_radio('thermostat', 'Режим*:', $types, old('thermostat', -1), ['required' => true]) }}
+
+                            {{ Form::bs_number('optimal', 'Оптимальная температура*:', null, ['min' => 0, 'max' => 40, 'required' => true],
+                                'Температура, которая должна быть в помещении') }}
+                            {{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', 1), ['min' => 0, 'max' => 10, 'required' => true]) }}
+
+
+                            {{ Form::bs_number('min_threshold', 'Минимальная температура*:', old('min_threshold', 0), ['min' => 0, 'max' => 40, 'required' => true],
+                                '') }}
+                            {{ Form::bs_number('max_threshold', 'Максимальная температура*:', old('max_threshold', 30), ['min' => 0, 'max' => 40, 'required' => true],
+                                '') }}
+                            {{ Form::bs_number('min_alarm', 'Мин. аварийная температура*:', old('min_alarm', 0), ['min' => 0, 'max' => 40, 'required' => true],
+                                '') }}
+                            {{ Form::bs_number('max_alarm', 'Макс. аварийная температура*:', old('max_alarm', 40), ['min' => 0, 'max' => 40, 'required' => true],
+                                '') }}
+
+
+                            <div style="height: 10px;">&nbsp;</div>
+                            <hr>
+                            <div style="height: 40px;">&nbsp;</div>
 
                             {{ Form::bs_autoselect_and_btn('object', 'Объект влияния:', $objects, old('object'),
                                 false, false, [], '', '', null, 'Объект, у которого меняем состояние', 3, $can['devices.show-object']) }}
@@ -143,6 +181,8 @@
                                 </div>
                             </div>
 
+
+
                             {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', -1), false, false) }}
 
                         </div>
@@ -174,6 +214,7 @@
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_usensor_id").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_object").chosen().change(function() {
                 let object_id = $(this).val();
@@ -275,6 +316,24 @@
                     $('#manual_object_div').hide();
                     $('#auto_object_div').show();
                 }
+                return true;
+            });
+
+            $('#termostat_form [name=place_type]').change(function(){
+                if ($(this).val() === 'port') {
+                    $('#1wbus_port_div').hide();
+                    $('#usensor_div').hide();
+                    $('#single_port_div').show();
+                } else if ($(this).val() === '1wbus') {
+                    $('#single_port_div').hide();
+                    $('#usensor_div').hide();
+                    $('#1wbus_port_div').show();
+                } else {
+                    $('#usensor_div').show();
+                    $('#single_port_div').hide();
+                    $('#1wbus_port_div').hide();
+                }
+
                 return true;
             });
         });

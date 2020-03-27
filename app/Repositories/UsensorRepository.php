@@ -10,4 +10,10 @@ class UsensorRepository {
     {
         return Usensor::with('eobject')->orderBy('id')->paginate($pagination_count);
     }
+
+    public function getAllToArray()
+    {
+        return Usensor::select('id', 'name')->orderBy('name')
+            ->pluck('name','id')->toArray();
+    }
 }

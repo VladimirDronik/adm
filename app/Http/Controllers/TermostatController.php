@@ -11,23 +11,27 @@ use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\TermostatRepository;
+use App\Repositories\UsensorRepository;
 use App\Services\ObjectService;
 use App\Services\TermostatService;
+
 
 class TermostatController extends Controller
 {
     private $termostat_rep;
     private $object_rep;
     private $device_rep;
+    private $usensors_rep;
     private $room_rep;
     private $service;
 
-    public function __construct(TermostatRepository $termostat_rep, ObjectRepository $object_rep,
+    public function __construct(TermostatRepository $termostat_rep, ObjectRepository $object_rep, UsensorRepository $usensor_rep,
                                 DeviceRepository $device_rep, RoomRepository $room_rep, TermostatService $service)
     {
         $this->termostat_rep = $termostat_rep;
         $this->object_rep = $object_rep;
         $this->device_rep = $device_rep;
+        $this->usensors_rep = $usensor_rep;
         $this->room_rep = $room_rep;
         $this->service = $service;
     }
@@ -45,17 +49,18 @@ class TermostatController extends Controller
         $rooms = $this->room_rep->getAllToArray();
         $types = Termostat::getFullThermostatIds();
         $devices = $this->device_rep->getAllToArray();
+        $usensors = $this->usensors_rep->getAllToArray();
 
-        return [$objects, $rooms, $types, $devices];
+        return [$objects, $rooms, $types, $devices, $usensors];
     }
 
     public function create()
     {
-        list($objects, $rooms, $types, $devices) = $this->getLists();
+        list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
         $object_types =  HomeObject::getFullTypeIds();
         $can = gates('devices.show-object');
 
-        return view('termostats.create', compact('objects','rooms', 'types', 'devices', 'object_types', 'can'));
+        return view('termostats.create', compact('objects','rooms', 'types', 'devices', 'usensors', 'object_types', 'can'));
     }
 
     public function store(CreateRequest $r)

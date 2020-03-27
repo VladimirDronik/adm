@@ -34,20 +34,6 @@
 
                         {{ Form::bs_simple_text('ID:', $termostat->id) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_text('id_termometr', 'Код:', null, [], 'Например, ff750c311703') }}
-                        {{ Form::bs_number('optimal', 'Оптимальная температура*:', null, ['min' => 0, 'max' => 40, 'required' => true],
-                            'Температура, которая должна быть в помещении') }}
-                        {{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', $termostat->gisteresis), ['min' => 0, 'max' => 10, 'required' => true]) }}
-                        {{ Form::bs_radio('thermostat', 'Режим*:', $types, old('thermostat', $termostat->thermostat), ['required' => true]) }}
-
-                        {{ Form::bs_number('min_threshold', 'Минимальная температура*:', old('min_threshold', $termostat->min_threshold), ['min' => 0, 'max' => 40, 'required' => true],
-                            '') }}
-                        {{ Form::bs_number('max_threshold', 'Максимальная температура*:', old('max_threshold', $termostat->max_threshold), ['min' => 0, 'max' => 40, 'required' => true],
-                            '') }}
-                        {{ Form::bs_number('min_alarm', 'Мин. аварийная температура*:', old('min_alarm', $termostat->min_alarm), ['min' => 0, 'max' => 40, 'required' => true],
-                            '') }}
-                        {{ Form::bs_number('max_alarm', 'Макс. аварийная температура*:', old('max_alarm', $termostat->max_alarm), ['min' => 0, 'max' => 40, 'required' => true],
-                            '') }}
 
                         @if(($termostat->iobject && $termostat->iobject->is_system) || !$can['devices.show-object'])
                             <div class="form-group row">
@@ -65,6 +51,32 @@
                             {{ Form::bs_autoselect_and_btn('id_object', 'Объект термостата*:', $objects, old('id_object', $termostat->id_object),
                                 false, false, ['required' => true]) }}
                         @endif
+
+                        {{ Form::bs_text('id_termometr', 'Код:', null, [], 'Например, ff750c311703') }}
+
+                        <div style="height: 10px;">&nbsp;</div>
+                        <hr>
+                        <div style="height: 40px;">&nbsp;</div>
+
+
+
+                        {{ Form::bs_number('optimal', 'Оптимальная температура*:', null, ['min' => 0, 'max' => 40, 'required' => true],
+                            'Температура, которая должна быть в помещении') }}
+                        {{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', $termostat->gisteresis), ['min' => 0, 'max' => 10, 'required' => true]) }}
+                        {{ Form::bs_radio('thermostat', 'Режим*:', $types, old('thermostat', $termostat->thermostat), ['required' => true]) }}
+
+                        {{ Form::bs_number('min_threshold', 'Минимальная температура*:', old('min_threshold', $termostat->min_threshold), ['min' => 0, 'max' => 40, 'required' => true],
+                            '') }}
+                        {{ Form::bs_number('max_threshold', 'Максимальная температура*:', old('max_threshold', $termostat->max_threshold), ['min' => 0, 'max' => 40, 'required' => true],
+                            '') }}
+                        {{ Form::bs_number('min_alarm', 'Мин. аварийная температура*:', old('min_alarm', $termostat->min_alarm), ['min' => 0, 'max' => 40, 'required' => true],
+                            '') }}
+                        {{ Form::bs_number('max_alarm', 'Макс. аварийная температура*:', old('max_alarm', $termostat->max_alarm), ['min' => 0, 'max' => 40, 'required' => true],
+                            '') }}
+
+                        <div style="height: 10px;">&nbsp;</div>
+                        <hr>
+                        <div style="height: 40px;">&nbsp;</div>
 
                         {{ Form::bs_autoselect_and_btn('object', 'Объект влияния:', $objects, old('object', $termostat->object),
                             false, false, [], '', '', null, 'Объект, у которого меняем состояние', 3, $can['devices.show-object']) }}
