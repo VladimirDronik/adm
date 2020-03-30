@@ -118,27 +118,29 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if($view->eobject && $view->emethod)
-                                            <button type="button" id="viewmethod_{{ $view->id }}"
-                                                    name="method" class="btn btn-warning m-b-10 btn-sm"
-                                                    data-toggle="modal"
-                                                    value="{{ $view->id_method}},{{optional($view->emethod)->name}},viewmethod_{{ $view->id }}"
-                                                    data-target="#methodsModal"
-                                                    onclick="updateRedirectToCreateMethodBtn(this)">
-                                                <b>{{ optional($view->emethod)->name }}
-                                                    @if(optional($view->emethod)->is_need_param) ({{ $view->id_method_params }}) @endif
-                                                </b>
-                                            </button>
-                                        @else
-                                            <button type="button" id="viewmethodempty_{{ $view->id }}"
-                                                    name="method"
-                                                    class="btn @if($view->eobject) btn-warning @else btn-default @endif m-b-10 btn-sm"
-                                                    data-toggle="modal"
-                                                    value="empty,empty,viewmethodempty_{{ $view->id }}"
-                                                    data-target="#methodsModal"
-                                                    onclick="updateRedirectToCreateMethodBtn(this)">
-                                                @if($view->eobject) <b class="text-danger">Метод не выбран</b> @else
-                                                    Отсутствует @endif</button>
+                                        @if(!$view->is_dimmer)
+                                            @if($view->eobject && $view->emethod)
+                                                <button type="button" id="viewmethod_{{ $view->id }}"
+                                                        name="method" class="btn btn-warning m-b-10 btn-sm"
+                                                        data-toggle="modal"
+                                                        value="{{ $view->id_method}},{{optional($view->emethod)->name}},viewmethod_{{ $view->id }}"
+                                                        data-target="#methodsModal"
+                                                        onclick="updateRedirectToCreateMethodBtn(this)">
+                                                    <b>{{ optional($view->emethod)->name }}
+                                                        @if(optional($view->emethod)->is_need_param) ({{ $view->id_method_params }}) @endif
+                                                    </b>
+                                                </button>
+                                            @else
+                                                <button type="button" id="viewmethodempty_{{ $view->id }}"
+                                                        name="method"
+                                                        class="btn @if($view->eobject) btn-warning @else btn-default @endif m-b-10 btn-sm"
+                                                        data-toggle="modal"
+                                                        value="empty,empty,viewmethodempty_{{ $view->id }}"
+                                                        data-target="#methodsModal"
+                                                        onclick="updateRedirectToCreateMethodBtn(this)">
+                                                    @if($view->eobject) <b class="text-danger">Метод не выбран</b> @else
+                                                        Отсутствует @endif</button>
+                                            @endif
                                         @endif
                                     </td>
                                     <td>
