@@ -45,6 +45,10 @@ class TermostatService {
     public function prepare(Termostat $termostat, array $data)
     {
         unset($data['object_type']);
+        unset($data['device_id']);
+        unset($data['port_id']);
+        unset($data['placetype_radio']);
+
         if (($data['room'] ?? 0) == 0) {
             $data['room'] = null;
         }
@@ -107,15 +111,24 @@ class TermostatService {
      */
     public function update(Termostat $termostat, array $data): int
     {
+
         DB::transaction(function () use (&$termostat, $data) {
             if ($this->isUpdateAutoObjectName($termostat, $data['name'])) {
                 $termostat->iobject->name = HomeObject::getUniqueObjectName($termostat->iobject->id, trim($data['name']));
                 $termostat->iobject->save();
+
             }
+
+            if ($data['port_id']) {
+                Port::where('object', $termostat->id_object)->update(['object' => NULL]);
+                Port::where('id', $data['port_id'])->update(['object' => $termostat->id_object]);
+            }
+
             $this->prepare($termostat, $data);
             $termostat->save();
         });
 
         return $termostat->id;
     }
+
 }

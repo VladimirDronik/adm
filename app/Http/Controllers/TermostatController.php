@@ -8,11 +8,13 @@ use App\Models\HomeObject;
 use App\Models\Termostat;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
+use App\Repositories\PortRepository;
 use App\Repositories\RoomRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\TermostatRepository;
 use App\Repositories\UsensorRepository;
 use App\Services\ObjectService;
+use App\Services\PortService;
 use App\Services\TermostatService;
 
 
@@ -51,6 +53,8 @@ class TermostatController extends Controller
         $devices = $this->device_rep->getAllToArray();
         $usensors = $this->usensors_rep->getAllToArray();
 
+
+
         return [$objects, $rooms, $types, $devices, $usensors];
     }
 
@@ -62,6 +66,8 @@ class TermostatController extends Controller
 
         return view('termostats.create', compact('objects','rooms', 'types', 'devices', 'usensors', 'object_types', 'can'));
     }
+
+
 
     public function store(CreateRequest $r)
     {
@@ -77,18 +83,32 @@ class TermostatController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении термостата');
     }
 
-    public function edit(Termostat $termostat, ObjectService $object_service, ScriptRepository $script_rep)
+
+
+    public function edit(Termostat $termostat, ObjectService $object_service, ScriptRepository $script_rep,
+                         PortService $portsService)
     {
-        list($objects, $rooms, $types, $devices) = $this->getLists();
+        list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
+
 
         $methods = $object_service->getMethodsByObjectIdToArray($termostat->object);
         $object_types = HomeObject::getFullTypeIds();
         $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
+        $deviceAndPort = $portsService->getIdDeviceAndPortId($termostat->id_object);
+
+        $deviceId = $deviceAndPort->id_device;
+        $portId = $deviceAndPort->id;
+
+        $ports =  $portsService->getPortsIntoList($deviceId);
+
         return view('termostats.edit', compact('termostat', 'objects', 'rooms',
-            'types', 'devices', 'methods', 'object_types', 'scripts', 'can'));
+            'types', 'devices', 'methods', 'object_types', 'scripts', 'usensors', 'placetype', 'deviceId', 'portId', 'ports', 'can'));
     }
+
+
+
 
     public function update(UpdateRequest $r, Termostat $termostat)
     {

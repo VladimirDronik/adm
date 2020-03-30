@@ -35,25 +35,67 @@
                         {{ Form::bs_simple_text('ID:', $termostat->id) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-                        @if(($termostat->iobject && $termostat->iobject->is_system) || !$can['devices.show-object'])
-                            <div class="form-group row">
-                                <label class="control-label text-right col-md-3 label-fix" for="">
-                                    Объект термостата:     </label>
-                                <div class="col-md-9">
-                                    <div class="mt-2">
-                                        <a class="a-color" href="{{ route('objects.edit', [$termostat->id_object]) }}">
-                                            {{ $termostat->iobject->name }} @if($termostat->iobject && $termostat->iobject->is_system) (системный) @endif </a>
+                        <div class="form-group row ">
+
+                            @if(($termostat->iobject && $termostat->iobject->is_system) || !$can['devices.show-object'])
+                                <div class="form-group row">
+                                                <label class="control-label text-right col-md-3 label-fix" for="">
+                                                    Объект термостата:
+                                                </label>
+                                                <div class="col-md-9">
+                                                    <div class="mt-2">
+                                                        <a class="a-color" href="{{ route('objects.edit', [$termostat->id_object]) }}">
+                                                            {{ $termostat->iobject->name }} @if($termostat->iobject && $termostat->iobject->is_system) (системный) @endif </a>
+                                                    </div>
+
+                                            <input type="hidden" name="id_object" value="{{ $termostat->id_object }}">
+                                        @else
+                                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект термостата*:', $objects, old('id_object', $termostat->id_object),
+                                                false, false, ['required' => true]) }}
+                                        @endif
+
+
+                                        <div class="row" id="auto_object_div">
+
+                                            <div class="col-sm-12 pr-0 mt-4">
+                                                <div class="btn-group-toggle" data-toggle="buttons">
+                                                    <label class="btn btn-success btn-sm @if($termostat->placetype == 'port') active @endif">
+                                                        <input type="radio" name="placetype_radio" autocomplete="off"  value="port"> Термостат на отдельном порту
+                                                    </label>
+
+                                                    <label class="btn btn-success btn-sm @if($termostat->placetype == '1wbus') active @endif">
+                                                        <input type="radio" name="placetype_radio" autocomplete="off"  value="1wbus" >  Термостат на шине
+                                                    </label>
+
+                                                    <label class="btn btn-success btn-sm @if($termostat->placetype == 'usensor') active @endif">
+                                                        <input type="radio" name="placetype_radio" autocomplete="off" value="usensor">  Термостат на унив. датчике
+                                                    </label>
+
+                                                    <input type="hidden" id="placetype" name="placetype" value="{{$termostat->placetype}}">
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 pr-0 mt-4" id="single_port_div" @if(($termostat->placetype != 'port') && ($termostat->placetype != '1wbus'))  style="display: none;" @endif>
+                                                {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', is_null($deviceId) ? 0 : $deviceId),
+                                                   false, false, [], null) }}
+
+                                                {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', is_null($portId) ? 0 : $portId),
+                                                    false, false, [], null) }}
+                                            </div>
+
+                                            <div class="col-sm-12 pr-0 mt-4" id="1wbus_port_div"  @if($termostat->placetype != '1wbus') style="display: none;" @endif>
+                                                {{ Form::bs_text('id_termometr', 'Код:', null, [], 'Уникальный ID термодатчика. Например, ff750c311703') }}
+                                            </div>
+
+                                            <div class="col-sm-12 pr-0 mt-4" id="usensor_div"  @if($termostat->placetype != 'usensor') style="display: none;" @endif>
+                                                {{ Form::bs_autoselect('usensor_id', 'Универсальный датчик:', $usensors, old('usensor_id', is_null($termostat->usensor_id) ? 0 : $termostat->usensor_id),
+                                                   false, false, [], null) }}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <input type="hidden" name="id_object" value="{{ $termostat->id_object }}">
-                        @else
-                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект термостата*:', $objects, old('id_object', $termostat->id_object),
-                                false, false, ['required' => true]) }}
-                        @endif
-
-                        {{ Form::bs_text('id_termometr', 'Код:', null, [], 'Например, ff750c311703') }}
-
+                        </div>
                         <div style="height: 10px;">&nbsp;</div>
                         <hr>
                         <div style="height: 40px;">&nbsp;</div>
@@ -148,6 +190,7 @@
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script>
         const url_methods = '{{ route('ajax.objects.methods') }}';
+        const url_ports = '{{ route('ajax.devices.objects_ports') }}';
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const store_url = '{{ route('ajax.methods.store') }}';
         const del_url = '{{ route('ajax.methods.delete') }}';
@@ -162,6 +205,10 @@
             initTermostatForm();
             initMethodsVar({{ optional($termostat->eobject)->id }});
 
+            $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_usensor_id").chosen({width:"100%", no_results_text: "Не найдено"});
+
             $('#auto_sel_btn_id_object').click(function() {
                 modal_btn_index = 1;
                 clearCreateObjectModal();
@@ -174,6 +221,35 @@
                 clearCreateObjectModal();
                 $('#create_object_modal_init_btn').click();
                 return false;
+            });
+
+            $("#auto_sel_device_id").chosen().change(function() {
+                let device_id = $(this).val();
+                $.ajax({
+                    url: url_ports,
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'in'},
+                    success: function (data) {
+                        createMethodSelect('#auto_sel_port_id', data.ports, -1);
+                        $('#auto_sel_port_id').trigger("chosen:updated");
+                    }
+                });
+            });
+
+            $("#auto_sel_port_id").click(function() {
+                alert();
+                /*
+                let device_id = $("#auto_sel_device_id").val();
+                alert(device_id);
+                $.ajax({
+                    url: url_ports,
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'in'},
+                    success: function (data) {
+                        createMethodSelect('#auto_sel_port_id', data.ports, -1);
+                        $('#auto_sel_port_id').trigger("chosen:updated");
+                    }
+
+                });
+                 */
             });
 
             $('#create_object_modal_btn').click(function() {
@@ -250,5 +326,29 @@
 
             $('#del_modal_btn').click(clickDelBtn);
         });
+
+
+        $('#termostat_form [name=placetype_radio]').change(function(){
+            if ($(this).val() === 'port') {
+                $('#1wbus_port_div').hide();
+                $('#usensor_div').hide();
+                $('#single_port_div').show();
+                $('#placetype').val('port');
+            } else if ($(this).val() === '1wbus') {
+                $('#single_port_div').show();
+                $('#usensor_div').hide();
+                $('#1wbus_port_div').show();
+                $('#placetype').val('1wbus');
+            } else {
+                $('#usensor_div').show();
+                $('#single_port_div').hide();
+                $('#1wbus_port_div').hide();
+                $('#placetype').val('usensor');
+            }
+
+            return true;
+        });
+
+
     </script>
 @endsection

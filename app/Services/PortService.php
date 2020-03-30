@@ -237,4 +237,37 @@ class PortService {
 
         return $this->getPortMethod($port, $data['type']);
     }
+
+    /**
+     * Добавление портов для вывода в выподающем списке
+     *
+     * @param int $deviceId - ИД устройства, для которого отбираем порты
+    */
+    public function getPortsIntoList($deviceId)
+    {
+
+        $ports = $this->rep->getInPortsByDeviceId($deviceId);
+        foreach ($ports AS $port) {
+
+            if($port->comment)
+                $commentString = ' ('.$port->comment.')';
+            else $commentString = '';
+
+            $portsArray[$port->id] = $port->status.' '.$port->num_port. $commentString;
+
+        }
+
+        return $portsArray;
+    }
+
+    /**
+     * Получаем текущий контроллер и порт, на котором находится объект
+    */
+    public function getIdDeviceAndPortId($idObject)
+    {
+        $port = Port::where('object', $idObject)->first();
+
+        return $port;
+    }
+
 }

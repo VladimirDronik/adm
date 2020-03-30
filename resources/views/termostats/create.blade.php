@@ -45,7 +45,7 @@
                                                 </label>
                                                 @can('devices.create-manual-object')
                                                     <label class="btn btn-success btn-sm">
-                                                        <input type="radio" name="object_type" autocomplete="off" value="manual">  Выбор из списка
+                                                        <input type="radio" name="object_type" autocomplete="off"  value="manual">  Выбор из списка
                                                     </label>
                                                 @endcan
                                             </div>
@@ -71,6 +71,8 @@
                                                 <i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
+
+
                                     <div class="row" id="auto_object_div">
                                         <div class="col-sm-12 pr-0">
                                             <p>
@@ -83,17 +85,19 @@
                                         </div>
                                         <div class="col-sm-12 pr-0  mt-4">
                                             <div class="btn-group-toggle" data-toggle="buttons">
-                                                <label class="btn btn-success btn-sm active">
-                                                    <input type="radio" name="place_type" autocomplete="off" checked value="port"> Термостат на отдельном порту
+                                                <label class="btn btn-success btn-sm  active ">
+                                                    <input type="radio" name="placetype_radio" autocomplete="off"  value="port"> Термостат на отдельном порту
                                                 </label>
 
                                                 <label class="btn btn-success btn-sm">
-                                                    <input type="radio" name="place_type" autocomplete="off" value="1wbus">  Термостат на шине
+                                                    <input type="radio" name="placetype_radio" autocomplete="off"  value="1wbus" >  Термостат на шине
                                                 </label>
 
                                                 <label class="btn btn-success btn-sm">
-                                                    <input type="radio" name="place_type" autocomplete="off" value="usensor">  Термостат на унив. датчике
+                                                    <input type="radio" name="placetype_radio" autocomplete="off" value="usensor">  Термостат на унив. датчике
                                                 </label>
+
+                                                <input type="hidden" id="placetype" name="placetype" value="port">
 
                                             </div>
                                         </div>
@@ -116,6 +120,7 @@
                                         </div>
 
                                     </div>
+
                                 </div>
                             </div>
 
@@ -319,23 +324,28 @@
                 return true;
             });
 
-            $('#termostat_form [name=place_type]').change(function(){
+
+            $('#termostat_form [name=placetype_radio]').change(function(){
                 if ($(this).val() === 'port') {
                     $('#1wbus_port_div').hide();
                     $('#usensor_div').hide();
                     $('#single_port_div').show();
+                    $('#placetype').val('port');
                 } else if ($(this).val() === '1wbus') {
-                    $('#single_port_div').hide();
+                    $('#single_port_div').show();
                     $('#usensor_div').hide();
                     $('#1wbus_port_div').show();
+                    $('#placetype').val('1wbus');
                 } else {
                     $('#usensor_div').show();
                     $('#single_port_div').hide();
                     $('#1wbus_port_div').hide();
+                    $('#placetype').val('usensor');
                 }
 
                 return true;
             });
+
         });
     </script>
 @endsection

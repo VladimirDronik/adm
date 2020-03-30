@@ -13,7 +13,7 @@ class UsensorRepository {
 
     public function getAllToArray()
     {
-        return Usensor::select('id', 'name')->orderBy('name')
-            ->pluck('name','id')->toArray();
+        return Usensor::select('id_object', 'name')->orderBy('name')
+            ->pluck('name','id_object')->toArray();
     }
 }
