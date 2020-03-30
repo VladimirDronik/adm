@@ -38,7 +38,10 @@
                         {{ Form::bs_checkbox('active', 'Активность:') }}
 
                         {{ Form::bs_autoselect('id_object', 'Объект:', $objects, old('id_object', $view->id_object), false, false) }}
+
+                        <div id="on_method_div" @if($view->is_dimmer) style="display: none;" @endif>
                         {{ Form::bs_autoselect('id_method', 'Метод вкл:', $methods, old('id_method', $view->on_method), false, false) }}
+                        </div>
 
                         <div class="form-group row" id="id_method_params_div"
                              @if(is_null($view->id_method_params) && !old('id_method')) style="display: none;" @endif>
@@ -281,7 +284,11 @@
             $('#view_form [name=type]').change(function(){
                 if ($(this).val() === 'switch') {
                     $('#view_form #off_method_div').show();
+                } else if ($(this).val() === 'dimmer'){
+                    $('#view_form #off_method_div').hide();
+                    $('#view_form #on_method_div').hide();
                 } else {
+                    $('#view_form #on_method_div').show();
                     $('#view_form #off_method_div').hide();
                     $('#view_form #off_method_params_div').hide();
                 }

@@ -62,6 +62,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $off_method
  * @property string|null $off_method_params
  * @property-read mixed $is_switch
+ * @property-read mixed $is_dimmer
  * @property-read mixed $off_method_name
  * @property-read \App\Models\Method|null $offmethod
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereOffMethod($value)
@@ -145,6 +146,11 @@ class View extends Model
     public function getIsSwitchAttribute()
     {
         return $this->type === self::TYPE_SWITCH;
+    }
+
+    public function getIsDimmerAttribute()
+    {
+        return $this->type === self::TYPE_DIMMER;
     }
 
     public function getShortTitleAttribute()

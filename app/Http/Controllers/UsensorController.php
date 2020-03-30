@@ -87,7 +87,7 @@ class UsensorController extends Controller
         $can = gates('devices.show-object');
 
         return view('usensors.edit', compact('usensor', 'objects', 'rooms',
-            'types', 'devices', 'methods', 'object_types', 'scripts', 'can'));
+            'devices', 'methods', 'object_types', 'scripts', 'can'));
     }
 
     public function update(UpdateRequest $r, Usensor $usensor)
