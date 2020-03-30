@@ -21,10 +21,15 @@ class PortRepository {
             ->orderBy('num_port')->get();
     }
 
-    public function getInPortsByDeviceId(int $device_id)
+    public function getInPortsByDeviceId($device_id)
     {
-        return Port::where('id_device', $device_id)->where('status', 'in')
-            ->orderBy('num_port')->get();
+
+        if($device_id)
+            return Port::where('id_device', $device_id)->where('status', 'in')
+                ->orderBy('num_port')->get();
+        else
+            return Port::where('num_port', 0)->where('status', 'in')
+                ->orderBy('num_port')->get();
     }
 
     public function updateEasy($port_id, $easy = '')

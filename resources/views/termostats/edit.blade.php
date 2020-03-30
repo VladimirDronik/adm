@@ -76,12 +76,13 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-sm-12 pr-0 mt-4" id="single_port_div" @if(($termostat->placetype != 'port') && ($termostat->placetype != '1wbus'))  style="display: none;" @endif>
+                                            <div class="col-sm-12 pr-0 mt-4" id="single_port_div" @if(($termostat->placetype != 'port') && ($termostat->placetype != '1wbus') )  style="display: none;" @endif>
                                                 {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', is_null($deviceId) ? 0 : $deviceId),
                                                    false, false, [], null) }}
 
                                                 {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', is_null($portId) ? 0 : $portId),
                                                     false, false, [], null) }}
+
                                             </div>
 
                                             <div class="col-sm-12 pr-0 mt-4" id="1wbus_port_div"  @if($termostat->placetype != '1wbus') style="display: none;" @endif>

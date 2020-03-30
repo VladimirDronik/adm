@@ -246,18 +246,18 @@ class PortService {
     public function getPortsIntoList($deviceId)
     {
 
-        $ports = $this->rep->getInPortsByDeviceId($deviceId);
-        foreach ($ports AS $port) {
+            $ports = $this->rep->getInPortsByDeviceId($deviceId);
 
-            if($port->comment)
-                $commentString = ' ('.$port->comment.')';
-            else $commentString = '';
+            foreach ($ports AS $port) {
 
-            $portsArray[$port->id] = $port->status.' '.$port->num_port. $commentString;
+                if ($port->comment)
+                    $commentString = ' (' . $port->comment . ')';
+                else $commentString = '';
 
-        }
+                $portsArray[$port->id] = $port->status . ' ' . $port->num_port . $commentString;
+            }
 
-        return $portsArray;
+            return $portsArray;
     }
 
     /**
@@ -265,9 +265,15 @@ class PortService {
     */
     public function getIdDeviceAndPortId($idObject)
     {
-        $port = Port::where('object', $idObject)->first();
+        if($port = Port::where('object', $idObject)->first()) {
+            $deviceId = $port->id_device;
+            $portId = $port->id;
+        } else {
+            $deviceId = null;
+            $portId = null;
+        }
 
-        return $port;
+        return array('id_device' => $deviceId, 'id_port' => $portId);
     }
 
 }
