@@ -15,6 +15,7 @@
                 <div class="card">
                     <div class="card-body">
                         <a href="{{ route('logs.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
+                        <a href="{{ route('logs.settings') }}" class="btn btn-success m-b-10 m-l-5">Настройки</a>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <div class="pull-right">
                             <form class="form-inline my-2 my-lg-0" method="get">

@@ -41,6 +41,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('graphs/lights', 'GraphController@lights')->name('graphs.lights.index')->middleware('can:graphs');
     Route::get('graphs/humidities', 'GraphController@humidities')->name('graphs.humidities.index')->middleware('can:graphs');
     Route::get('graphs/counts', 'GraphController@counts')->name('graphs.counts.index')->middleware('can:graphs');
+    Route::get('logs/settings', 'LogController@settings')->name('logs.settings')->middleware('can:logs');
+
 
     Route::resource('scripts', 'ScriptController')->except('show','destroy')->middleware('can:scripts');
 
@@ -63,6 +65,10 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::post('termostats/delete', 'TermostatController@delete')->name('termostats.delete');
         Route::post('usensors/delete', 'UsensorController@delete')->name('usensors.delete');
+
+        Route::group(['prefix' => 'logs', 'as' => 'logs.'], function () {
+            Route::post('active', 'LogsController@active')->name('active');
+        });
 
         Route::group(['prefix' => 'scenes', 'as' => 'scenes.'], function () {
             Route::post('delete', 'SceneController@delete')->name('delete');

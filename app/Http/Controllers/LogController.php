@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Logging;
 use App\Repositories\LogRepository;
 use Illuminate\Http\Request;
 
@@ -30,5 +31,26 @@ class LogController extends Controller
         $types = $this->log_rep->getTypes();
 
         return view('logs.index', compact('logs', 'types', 'filter'));
+    }
+
+    public function settings(Logging $logging)
+    {
+
+        $settings = $logging->orderBy('point')->get();
+
+        return view('logs.settings',  compact('settings', $settings));
+
+    }
+
+    public function update(Request $r)
+    {
+        dd($r);
+
+    }
+
+    public function active()
+    {
+
+
     }
 }
