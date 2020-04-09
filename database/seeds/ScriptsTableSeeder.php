@@ -62,6 +62,18 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
+    public static function getDrycontactsScript(): array
+    {
+        return [
+            'name' => 'Проверка состояния сухого контакта',
+            'link' => 'check_drycontact.php',
+            'count' => 0,
+            'system' => 1
+        ];
+    }
+
+
+
     /**
      * Изменение скриптов в этой функции влияет на методы, которые
      * автоматически создаются для объекта диммера
@@ -96,11 +108,12 @@ class ScriptsTableSeeder extends Seeder
                 'system' => 1
             ],
             [
-                'name' => 'Установить яркость диммера', // изменение названия этого скрипта влияет на код в DimmerObjectService
+                'name' => 'Установить яркость диммера',
                 'link' => 'set_dimmer.php',
                 'count' => 0,
                 'system' => 1
             ],
+
         ];
     }
 

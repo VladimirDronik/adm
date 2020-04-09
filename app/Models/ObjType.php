@@ -28,6 +28,7 @@ class ObjType extends Model
     const TYPE_SWITCH = 'switch';
     const TYPE_RELAY = 'reley';
     const TYPE_SOCKET = 'socket';
+    const TYPE_DRYCONTACT = 'drycontact';
 
     protected $table = 'objtypes';
     public $timestamps = false;

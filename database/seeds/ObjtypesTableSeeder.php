@@ -76,6 +76,10 @@ class ObjtypesTableSeeder extends Seeder
             [
                 'name' => ObjType::TYPE_DIMMER,
                 'label' => 'Диммер'
+            ],
+            [
+                'name' => ObjType::TYPE_DRYCONTACT,
+                'label' => 'Сухой контакт'
             ]
         ];
     }

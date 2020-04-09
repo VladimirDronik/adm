@@ -36,10 +36,10 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @if($active === '') active show @endif" href="#">
+                        <a class="nav-link @if($active === 'drycontacts') active show @endif" href="{{ route('drycontacts.index') }}">
                             <span>
                                 <img width="18" height="20" title="" src="{{ asset('ela/images/objects/dry_contact.png') }}">
-                                Сухие контакты (0)
+                                Сухие контакты ({{ $detectorsService->getDrycontactsCount() }})
                             </span>
                         </a>
                     </li>

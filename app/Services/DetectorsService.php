@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Termostat;
 use App\Models\Usensor;
+use App\Models\Drycontact;
 
 class DetectorsService {
 
@@ -15,5 +16,10 @@ class DetectorsService {
     public function getUsensorsCount(): int
     {
         return Usensor::count();
+    }
+
+    public function getDrycontactsCount(): int
+    {
+        return Drycontact::count();
     }
 }
