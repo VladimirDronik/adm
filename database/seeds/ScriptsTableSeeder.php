@@ -113,6 +113,20 @@ class ScriptsTableSeeder extends Seeder
                 'count' => 0,
                 'system' => 1
             ],
+            [
+                'name' => 'Выключить диммер',
+                'link' => 'off_dimmer.php',
+                'count' => 0,
+                'system' => 1
+            ],
+            [
+                'name' => 'Включить диммер на последнем уровне яркости',
+                'link' => 'on_dimmer.php',
+                'count' => 0,
+                'system' => 1
+            ],
+
+
 
         ];
     }
@@ -125,6 +139,8 @@ class ScriptsTableSeeder extends Seeder
         $scripts[] = self::getCheckCountScript();
         $scripts[] = self::getResetCountScript();
         $scripts[] = self::getCheckTermostatScript();
+        $scripts[] = self::getCheckUsensorScript();
+        $scripts[] = self::getDrycontactsScript();
 
         return $scripts;
     }
