@@ -43,7 +43,7 @@ class DrycontactController extends Controller
         $object_types =  HomeObject::getFullTypeIds();
         $devices = $this->device_rep->getAllToArray();
 
-        return view('drycontacts.create', compact('types', 'objects', 'object_types', 'devices'));
+        return view('drycontacts.create', compact('objects', 'object_types', 'devices'));
     }
 
     public function store(CreateRequest $r)

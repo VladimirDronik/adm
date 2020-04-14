@@ -92,7 +92,7 @@ class DeviceService {
      * @return mixed
      * @throws \Throwable
      */
-    public function store(array $data, bool $is_notify = true)
+    public function store(array $data, bool $is_notify = false) //true для реализации функции настройки устройства с дефолтным адресом
     {
         DB::beginTransaction();
 
