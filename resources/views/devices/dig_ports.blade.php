@@ -9,13 +9,12 @@
                 <th>Один. нажатие</th>
                 <th>Двойн. нажатие</th>
                 <th class="text-left">Длит. нажатие</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
         @php $port_count = 0; @endphp
         @foreach($device->ports as $port)
-            @if($port->type === 'in')
+            @if($port->type === 'dig')
             @php $port_count++; @endphp
             @php  switch ($port->status) {
 
@@ -43,7 +42,9 @@
             @endphp
             <tr>
                 <th scope="row">{{ $port->num_port }}</th>
-                <td><a href="{{ route('ports.edit', [$port->id,'tab=1']) }}"><span class="badge {{ $badge }}">{{ $port->status }}</span></a></td>
+                <td>
+                    <a href="{{ route('ports.edit', [$port->id,'tab=3']) }}"><span class="badge {{ $badge }}">{{ $port->status }}</span></a>
+                </td>
                 <td>
                     <a href="#" data-toggle="modal" data-target="#name_modal"
                        id="name_port_{{ $port->id }}" onclick="getPortComment('{{ $port->id }}');">
@@ -116,9 +117,9 @@
                     </span>
                 </td>
                 <td>
-                <a href="{{ route('ports.edit', [$port->id,'tab=1']) }}" class="btn btn-info btn-sm btn-rounded">
-                    <i class="fa fa-cog fa-lg"></i>
-                </a>
+                    <a href="{{ route('ports.edit', [$port->id,'tab=3']) }}" class="btn btn-info btn-sm btn-rounded">
+                        <i class="fa fa-cog fa-lg"></i>
+                    </a>
                 </td>
             </tr>
             @endif
@@ -134,10 +135,9 @@
                     <th>Один. нажатие</th>
                     <th>Двойн. нажатие</th>
                     <th class="text-left">Длит. нажатие</th>
-                    <th></th>
                 </tr>
             </tfoot>
         @endif
     </table>
 </div>
-<p class="text-right">Всего портов IN: {{ $port_count }}</p>
+<p class="text-right">Всего портов DIG: {{ $port_count }}</p>

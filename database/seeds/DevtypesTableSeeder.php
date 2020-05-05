@@ -23,7 +23,7 @@ class DevtypesTableSeeder extends Seeder
         $devtypes = [
             [
                 'name' => 'Monoblock 14IN/14OUT',
-                'port_numbers' => 'in 0 6;out 7 13;in 15 21;out 22 28'
+                'port_numbers' => 'in 0 6;out 7 13;dig 14 14;in 15 21;out 22 28;dig 29 37'
             ],
             [
                 'name' => 'MegaD-2561',

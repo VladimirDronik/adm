@@ -57,11 +57,13 @@ class Port extends Model
 
     /* attributes */
 
+
     public function getIsEmptyCommentAttribute()
     {
         return empty($this->comment) || mb_strtolower($this->comment, 'UTF-8') === 'отсутствует'
             ||  mb_strtolower($this->comment, 'UTF-8') === 'без названия';
     }
+
 
     /* relations */
 

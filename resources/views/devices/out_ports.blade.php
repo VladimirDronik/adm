@@ -11,12 +11,36 @@
         <tbody>
         @php $port_count = 0; @endphp
         @foreach($device->ports as $port)
-            @if($port->status === 'out')
+            @if($port->type === 'out')
                 @php $port_count++; @endphp
+                @php  switch ($port->status) {
+
+                        case 'NC': $badge = 'badge-secondary';
+                        break;
+
+                        case 'IN': $badge = 'badge-success';
+                        break;
+
+                        case 'OUT': $badge = 'badge-primary';
+                        break;
+
+                        case '1WIRE': $badge = 'badge-warning';
+                        break;
+
+                        case '1W-BUS': $badge = 'badge-warning';
+                        break;
+
+                        case 'I2C': $badge = 'badge-danger';
+                        break;
+
+                        default: $badge = 'badge-secondary';
+
+                     }
+                @endphp
                 <tr>
                     <th scope="row"> {{ $port->num_port }}</th>
                     <td>
-                        <span class="badge badge-primary">{{ $port->status }}</span>
+                        <a href="{{ route('ports.edit', [$port->id,'tab=2']) }}"><span class="badge {{ $badge }}">{{ $port->status }}</span></a>
                     </td>
                     <td>
                         <a href="#" data-toggle="modal" data-target="#name_modal"
@@ -46,6 +70,11 @@
                                 Отсутствует
                             </button>
                         @endif
+                    </td>
+                    <td>
+                        <a href="{{ route('ports.edit', [$port->id,'tab=2']) }}" class="btn btn-info btn-sm btn-rounded">
+                            <i class="fa fa-cog fa-lg"></i>
+                        </a>
                     </td>
                 </tr>
             @endif

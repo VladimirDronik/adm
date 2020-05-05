@@ -52,7 +52,7 @@ class DevType extends Model
                 continue;
             }
 
-            $status = $values[0];
+            $type = $values[0];
             $min = (int)$values[1];
             $max = (int)$values[2];
 
@@ -60,7 +60,8 @@ class DevType extends Model
                 $ports[] = [
                     'id_device' => $device_id,
                     'num_port' => $num_port,
-                    'status' => $status,
+                    'type' => $type,
+                    'status' => 'NC',
                     'comment' => ''
                 ];
             }

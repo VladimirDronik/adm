@@ -18,6 +18,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('views', 'ViewController')->except('show','destroy')->middleware('can:views');
     Route::resource('objects', 'ObjectController')->except('show','destroy')->middleware('can:objects');
 
+
+    Route::get('devices/{idDevice}/editport/{idPort}', 'DeviceController@editPort')->middleware('can:devices');
+
+    Route::resource('ports', 'PortController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('devices', 'DeviceController')->except('show','destroy')->middleware('can:devices');
     Route::resource('counts', 'CountController')->except('show','destroy')->middleware('can:devices');
     Route::resource('switches', 'SwitchController')->except('show','destroy')->middleware('can:devices');
@@ -46,6 +50,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     Route::resource('scripts', 'ScriptController')->except('show','destroy')->middleware('can:scripts');
+
+
 
     Route::group(['namespace' => 'Ajax', 'as' => 'ajax.'], function () {
 

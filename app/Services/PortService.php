@@ -276,4 +276,86 @@ class PortService {
         return array('id_device' => $deviceId, 'id_port' => $portId);
     }
 
+    /**
+     * Подготовка данных для изменения у порта
+     *
+     * @param array $data Массив с данными
+     * @param Port $port - объект модели порта
+     */
+    private function preparePort(array $data, Port $port)
+    {
+        $port->id_device = (int)$data['id_controller'];
+        $port->status = $data['status'];
+        $port->comment = trim($data['comment']);
+    }
+
+
+
+    /**
+     * Подготовка команды для отправки на устройство
+     *
+     * @param Port $port - данные порта
+     */
+    private function prepareSendInDevice(Port $port)
+    {
+        $device = Device::where('id',$port->id_device)->first();
+
+        switch ($port->status) {
+
+            case 'IN': $paramString = "&pty=0";
+                        break;
+
+            case 'OUT': $paramString = "&pty=1";
+                break;
+
+            case '1WIRE': $paramString = "&pty=3&d=3";
+                break;
+
+            case '1W-BUS': $paramString = "&pty=3&m=0&misc=0.00&hst=0.00&ecmd=&eth=&d=5";
+                break;
+
+            case 'I2C': $paramString = "&pty=4&d=5";
+                break;
+
+            default: $paramString = "&pty=255&m=0&misc=0.00&hst=0.00&ecmd=&eth=&d=3";
+                break;
+        }
+
+        return "http://{$device->ip_address}/sec/?pn={$port->num_port}$paramString";
+
+    }
+
+    /**
+     * Сохранение измененых данных на порту
+     *
+     * @param array $data - данные порта с формы
+     * @return bool - резульат выполнения
+     */
+    public function store(array $data)
+    {
+
+        $port = Port::where('id', $data['id_port'])->first();
+
+        if (!$port) {
+            $result = false;
+        }
+
+        $this->preparePort($data, $port);
+
+        DB::transaction(function () use (&$port, $data, &$result) {
+
+            $answer = file_get_contents($this->prepareSendInDevice($port));
+
+            if ($answer === false) {
+                throw new \Exception('Некорректный ответ от удаленного сервера');
+            } else {
+                $port->save();
+                $result = true;
+            }
+
+        });
+
+        return $result;
+    }
+
 }

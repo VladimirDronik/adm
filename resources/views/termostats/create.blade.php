@@ -86,15 +86,15 @@
                                         <div class="col-sm-12 pr-0  mt-4">
                                             <div class="btn-group-toggle" data-toggle="buttons">
                                                 <label class="btn btn-success btn-sm  active ">
-                                                    <input type="radio" name="placetype_radio" autocomplete="off"  value="port"> Термостат на отдельном порту
+                                                    <input type="radio" name="placetype_radio" autocomplete="off"  value="port"> На отдельном порту
                                                 </label>
 
                                                 <label class="btn btn-success btn-sm">
-                                                    <input type="radio" name="placetype_radio" autocomplete="off"  value="1wbus" >  Термостат на шине
+                                                    <input type="radio" name="placetype_radio" autocomplete="off"  value="1wbus" >  На шине
                                                 </label>
 
                                                 <label class="btn btn-success btn-sm">
-                                                    <input type="radio" name="placetype_radio" autocomplete="off" value="usensor">  Термостат на унив. датчике
+                                                    <input type="radio" name="placetype_radio" autocomplete="off" value="usensor">  В составе унив. датчика
                                                 </label>
 
                                                 <input type="hidden" id="placetype" name="placetype" value="port">

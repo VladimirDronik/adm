@@ -35,15 +35,20 @@
             <div class="card-body">
                 @if(count($device->ports))
                     <ul class="nav nav-tabs customtab" role="tablist">
-                        <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#portstab1" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Порты IN</span></a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#portstab2" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты OUT</span></a> </li>
+
+                        <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Порты IN</span></a> </li>
+                        <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты OUT</span></a> </li>
+                        <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты DIG</span></a> </li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane p-20 active" id="portstab1" role="tabpanel">
+                        <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
                             @include('devices.in_ports')
                         </div>
-                        <div class="tab-pane p-20" id="portstab2" role="tabpanel">
+                        <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
                             @include('devices.out_ports')
+                        </div>
+                        <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
+                            @include('devices.dig_ports')
                         </div>
                     </div>
                 @else
@@ -52,6 +57,7 @@
             </div>
         </div>
     </div>
+
     @include('components.info_modal')
 
     <div id="name_modal" class="modal">
@@ -276,6 +282,7 @@
         let object_id = 0;
         let method_id = 0;
         let type = '';
+
 
         // in-port methods
 

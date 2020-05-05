@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Device\CreateRequest;
 use App\Models\Device;
+use App\Models\Port;
 use App\Repositories\DeviceRepository;
 use App\Services\DeviceService;
+use Illuminate\Http\Request;
+
 
 class DeviceController extends Controller
 {
@@ -45,8 +48,11 @@ class DeviceController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении устройства');
     }
 
-    public function edit(int $id)
+    public function edit(int $id, Request $request)
     {
+        $tab = $request['tab'];
+        if(!$tab) $tab=1;
+
         $device = Device::where('id', $id)
             ->with('ports', 'ports.eobject', 'ports.emethod', 'ports.dcmethod', 'ports.lcmethod',
                 'ports.emethod.eobject', 'ports.dcmethod.eobject', 'ports.lcmethod.eobject'
@@ -56,6 +62,8 @@ class DeviceController extends Controller
             return redirect()->route('devices.index')->with('error', 'Устройство не найдено');
         }
 
-        return view('devices.edit', compact('device'));
+        return view('devices.edit', compact('device', 'tab'));
     }
+
+
 }
