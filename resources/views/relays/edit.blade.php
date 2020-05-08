@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование реле № '. $relay->id . ' «' . $relay->name .'»',
+       ['title' => 'Редактирование реле № '. $relay->object['id'] . ' «' . $relay->name .'»',
         'links' => [ route('relays.index') => 'Реле'],
         'last_link' => 'Редактирование выключателя'])
 @endsection
@@ -32,7 +32,7 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID:', $relay->id) }}
+                        {{ Form::bs_simple_text('ID объекта:', $relay->object['id']) }}
                         <div class="form-group row">
                             <label class="control-label text-right col-md-3 label-fix" for="">
                                 Тип реле:     </label>

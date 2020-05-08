@@ -52,7 +52,7 @@
                             <tbody>
                                 @foreach($lightstats as $lightstat)
                                     <tr id="tr{{$lightstat->id}}">
-                                        <td scope="row">{{ $lightstat->id }}</td>
+                                        <td scope="row">{{ $lightstat->iobject['id'] }}</td>
                                         <td><a href="{{ route('termostats.edit',[$lightstat->id]) }}">
                                                 {{ $lightstat->name }}</a></td>
                                         <td>{{ $lightstat->current }}</td>

@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование термостата № '. $termostat->id,
+       ['title' => 'Редактирование термостата № '. $termostat->iobject['id'],
         'links' => [ route('termostats.index') => 'Термостаты'],
         'last_link' => 'Редактирование термостата'])
 @endsection
@@ -32,7 +32,7 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID:', $termostat->id) }}
+                        {{ Form::bs_simple_text('ID объекта:', $termostat->iobject['id']) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
                         <div class="form-group row ">

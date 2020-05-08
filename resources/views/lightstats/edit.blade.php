@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование светостата № '. $lightstat->id,
+       ['title' => 'Редактирование светостата № '. $lightstat->iobject['id'],
         'links' => [ route('lightstats.index') => 'Светостаты'],
         'last_link' => 'Редактирование светостата'])
 @endsection
@@ -32,7 +32,7 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID:', $lightstat->id) }}
+                        {{ Form::bs_simple_text('ID объекта:', $lightstat->iobject['id']) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
                         <div class="form-group row ">

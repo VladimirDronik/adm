@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование диммера № '. $dimmer->id . ' «' . $dimmer->name .'»',
+       ['title' => 'Редактирование диммера № '. $dimmer->object['id'] . ' «' . $dimmer->name .'»',
         'links' => [ route('dimmers.index') => 'Диммеры'],
         'last_link' => 'Редактирование диммера'])
 @endsection
@@ -32,7 +32,7 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID:', $dimmer->id) }}
+                        {{ Form::bs_simple_text('ID объект:', $dimmer->object['id']) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
                         @if(($dimmer->object && $dimmer->object->is_system) || !$can['devices.show-object'])

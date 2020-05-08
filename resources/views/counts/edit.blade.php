@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование счетчика № '. $count->id . ' «' . $count->name .'»',
+       ['title' => 'Редактирование счетчика № '. $count->object['id'] . ' «' . $count->name .'»',
         'links' => [ route('counts.index') => 'Счетчики'],
         'last_link' => 'Редактирование счетчика'])
 @endsection
@@ -31,7 +31,7 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID:', $count->id) }}
+                        {{ Form::bs_simple_text('ID объекта:', $count->object['id']) }}
                         <div class="form-group row">
                             <label class="control-label text-right col-md-3 label-fix" for="">
                                 Тип счетчика:     </label>

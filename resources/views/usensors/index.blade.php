@@ -48,7 +48,7 @@
                             <tbody>
                                 @foreach($usensors as $usensor)
                                     <tr id="tr{{$usensor->id}}">
-                                        <td scope="row">{{ $usensor->id }}</td>
+                                        <td scope="row">{{ $usensor->iobject['id'] }}</td>
                                         <td><a href="{{ route('usensors.edit',[$usensor->id]) }}">
                                                 {{ $usensor->name }}</a></td>
                                         <td>{{ $usensor->temp }} &#176;С</td>

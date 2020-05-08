@@ -48,7 +48,7 @@
                             <tbody>
                                 @foreach($dimmers as $dimmer)
                                     <tr id="tr{{$dimmer->id}}">
-                                        <td scope="row">{{ $dimmer->id }}</td>
+                                        <td scope="row">{{ $dimmer->object['id'] }}</td>
                                         <td><a href="{{ route('dimmers.edit', [$dimmer->id]) }}">{{ $dimmer->name }}</a></td>
                                         @can('devices.show-object')
                                         <td>@if($dimmer->object)

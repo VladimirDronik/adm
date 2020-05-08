@@ -34,8 +34,8 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Тип</th>
                                     <th style="width: 60px;">ID</th>
+                                    <th>Тип</th>
                                     <th>Название</th>
                                     @can('devices.show-object')
                                         <th>Объект</th>
@@ -47,10 +47,10 @@
                             <tbody>
                                 @foreach($switches as $switch)
                                     <tr id="tr{{$switch->id}}">
+                                        <td scope="row">{{ $switch->object['id'] }}</td>
                                         <td>
                                             {{ $switch->rus_type }}
                                         </td>
-                                        <td scope="row">{{ $switch->id }}</td>
                                         <td><a href="{{ route('switches.edit', [$switch->id]) }}">{{ $switch->name }}</a></td>
                                         @can('devices.show-object')
                                             <td>@if($switch->object)
@@ -76,8 +76,8 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>Тип</th>
                                     <th style="width: 60px;">ID</th>
+                                    <th>Тип</th>
                                     <th>Название</th>
                                     @can('devices.show-object')
                                         <th>Объект</th>

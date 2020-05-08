@@ -34,8 +34,8 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Тип</th>
                                     <th style="width: 60px;">ID</th>
+                                    <th>Тип</th>
                                     <th>Название</th>
                                     @can('devices.show-object')
                                         <th>Объект</th>
@@ -47,10 +47,10 @@
                             <tbody>
                                 @foreach($relays as $relay)
                                     <tr id="tr{{$relay->id}}">
+                                        <td scope="row">{{ $relay->object['id'] }}</td>
                                         <td>
                                             {{ $relay->rus_type }}
                                         </td>
-                                        <td scope="row">{{ $relay->id }}</td>
                                         <td><a href="{{ route('relays.edit', [$relay->id]) }}">{{ $relay->name }}</a></td>
                                         @can('devices.show-object')
                                             <td>@if($relay->object)
@@ -76,8 +76,8 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>Тип</th>
                                     <th style="width: 60px;">ID</th>
+                                    <th>Тип</th>
                                     <th>Название</th>
                                     @can('devices.show-object')
                                         <th>Объект</th>

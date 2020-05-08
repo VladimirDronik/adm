@@ -54,7 +54,7 @@
                                             <img src="{{ asset('ela/images/counts/'.$count->image) }}"
                                                  title="{{ $count->rus_type }}" alt="{{ $count->rus_type }}" width="25" height="25">
                                         </td>
-                                        <td scope="row">{{ $count->id }}</td>
+                                        <td scope="row">{{ $count->object['id'] }}</td>
                                         <td><a href="{{ route('counts.edit', [$count->id]) }}">{{ $count->name }}</a></td>
                                         @can('devices.show-object')
                                             <td>@if($count->object)

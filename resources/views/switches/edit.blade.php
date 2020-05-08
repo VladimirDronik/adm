@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование выключателя № '. $switch->id . ' «' . $switch->name .'»',
+       ['title' => 'Редактирование выключателя № '. $switch->object['id'] . ' «' . $switch->name .'»',
         'links' => [ route('switches.index') => 'Выключатели'],
         'last_link' => 'Редактирование выключателя'])
 @endsection
@@ -32,7 +32,7 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID:', $switch->id) }}
+                        {{ Form::bs_simple_text('ID объекта:', $switch->object['id']) }}
                         <div class="form-group row">
                             <label class="control-label text-right col-md-3 label-fix" for="">
                                 Тип выключателя:     </label>

@@ -53,7 +53,7 @@
                             <tbody>
                                 @foreach($termostats as $termostat)
                                     <tr id="tr{{$termostat->id}}">
-                                        <td scope="row">{{ $termostat->id }}</td>
+                                        <td scope="row">{{ $termostat->iobject['id'] }}</td>
                                         <td><a href="{{ route('termostats.edit',[$termostat->id]) }}">
                                                 {{ $termostat->name }}</a></td>
                                         <td><a href="{{ route('termostats.edit',[$termostat->id]) }}">

@@ -42,6 +42,7 @@ class TermostatController extends Controller
     {
         $termostats = $this->termostat_rep->getAll();
 
+
         return view('termostats.index', compact('termostats'));
     }
 

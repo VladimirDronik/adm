@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование универсального датчка № '. $usensor->id,
+       ['title' => 'Редактирование универсального датчка № '. $usensor->iobject['id'],
         'links' => [ route('usensors.index') => 'Универсальные датчики'],
         'last_link' => 'Редактирование универсальногодатчика'])
 @endsection
@@ -32,7 +32,7 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID:', $usensor->id) }}
+                        {{ Form::bs_simple_text('ID объекта:', $usensor->iobject['id']) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
                         @if(($usensor->iobject && $usensor->iobject->is_system) || !$can['devices.show-object'])
