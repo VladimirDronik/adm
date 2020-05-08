@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\DB;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject whereType($value)
  * @mixin \Eloquent
+ * @property-read int|null $methods_count
+ * @property-read int|null $scheduler_tasks_count
  */
 class HomeObject extends Model
 {

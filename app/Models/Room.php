@@ -36,6 +36,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room room()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereGroupRoom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereIsGroup($value)
+ * @property-read int|null $rooms_count
+ * @property-read int|null $termostats_count
  */
 class Room extends Model
 {

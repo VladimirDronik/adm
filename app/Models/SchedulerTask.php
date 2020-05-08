@@ -42,6 +42,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask notSystem()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask system()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereActive($value)
+ * @property-read int|null $not_system_points_count
+ * @property-read int|null $points_count
+ * @property-read int|null $system_points_count
  */
 class SchedulerTask extends Model
 {

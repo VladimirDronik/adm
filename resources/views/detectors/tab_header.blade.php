@@ -21,6 +21,14 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link @if($active === '') active show @endif" href="{{ route('lightstats.index') }}">
+                            <span>
+                                <img width="18" height="20" title="" src="{{ asset('ela/images/objects/lightstat.png') }}">
+                                Светостаты ({{ $detectorsService->getLightstatsCount() }})
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link @if($active === '') active show @endif" href="#">
                             <span>
                                 <img width="18" height="20" title="" src="{{ asset('ela/images/objects/Motion_sens.png') }}">

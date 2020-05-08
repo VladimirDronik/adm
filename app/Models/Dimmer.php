@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dimmer whereSpeed($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dimmer whereValue($value)
  * @mixin \Eloquent
+ * @property int|null $oldvalue
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dimmer whereOldvalue($value)
  */
 class Dimmer extends Model
 {

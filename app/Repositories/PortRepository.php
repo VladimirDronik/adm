@@ -32,6 +32,17 @@ class PortRepository {
                 ->orderBy('num_port')->get();
     }
 
+    public function getI2CPortsByDeviceId($device_id)
+    {
+
+        if($device_id)
+            return Port::where('id_device', $device_id)->where('status', 'I2C')
+                ->orderBy('num_port')->get();
+        else
+            return Port::where('num_port', 0)->where('status', 'I2C')
+                ->orderBy('num_port')->get();
+    }
+
     public function updateEasy($port_id, $easy = '')
     {
         Port::where('id', $port_id)->update(['easy' => $easy, 'object' => null,

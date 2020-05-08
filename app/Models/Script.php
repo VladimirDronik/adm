@@ -25,6 +25,7 @@ use Exception;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Script whereSystem($value)
  * @property-read string $code
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Method[] $systemMethods
+ * @property-read int|null $system_methods_count
  */
 class Script extends Model
 {

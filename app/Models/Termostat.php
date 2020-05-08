@@ -60,6 +60,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $method_off_params
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat whereMethodOffParams($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat whereMethodOnParams($value)
+ * @property int|null $usensor_id
+ * @property string|null $placetype
+ * @property-read int|null $graphs_count
+ * @property-read int|null $last_graphs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat wherePlacetype($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat whereUsensorId($value)
  */
 class Termostat extends Model
 {

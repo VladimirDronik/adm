@@ -50,6 +50,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereDcMethodParams($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereLcMethodParams($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereMethodParams($value)
+ * @property string $type
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Port whereType($value)
  */
 class Port extends Model
 {

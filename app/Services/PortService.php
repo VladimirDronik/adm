@@ -239,14 +239,26 @@ class PortService {
     }
 
     /**
-     * Добавление портов для вывода в выподающем списке
+     * Добавление портов для вывода в выпадающем списке
      *
      * @param int $deviceId - ИД устройства, для которого отбираем порты
+     * @param string $typePort - тип выбираемых портов
     */
-    public function getPortsIntoList($deviceId)
+    public function getPortsIntoList($deviceId, $typePort = 'IN')
     {
 
-            $ports = $this->rep->getInPortsByDeviceId($deviceId);
+        switch ($typePort) {
+
+            case 'IN': $ports = $this->rep->getInPortsByDeviceId($deviceId);
+                       break;
+
+            case 'I2C': $ports = $this->rep->getI2CPortsByDeviceId($deviceId);
+                break;
+
+
+        }
+
+        $portsArray = [];
 
             foreach ($ports AS $port) {
 
@@ -258,6 +270,7 @@ class PortService {
             }
 
             return $portsArray;
+
     }
 
     /**

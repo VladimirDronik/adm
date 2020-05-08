@@ -216,10 +216,23 @@ class DeviceService {
             return [];
         }
 
+        $statuses_array = explode(',',$status);
+
         $ports = Port::with('eobject')->where('id_device', $device_id);
 
         if ($status !== '') {
-            $ports->where('status', $status);
+
+            $cnt=0;
+            foreach ($statuses_array as $statusPort) {
+
+                if($cnt==0)
+                $ports->where('status', $statusPort);
+                else
+                    $ports->orWhere('status', $statusPort);
+
+                $cnt++;
+            }
+
         }
 
         $ports = $ports->orderBy('status')->orderBy('num_port')->get();
@@ -229,7 +242,7 @@ class DeviceService {
         foreach ($ports as $port) {
             $arrayPorts[] = [
                 'id' => $port->id,
-                'name' => $port->status.' '.$port->num_port
+                'name' => $port->status.' ['.$port->num_port.']'
                     .($port->eobject ? ' ('.optional($port->eobject)->name.')' : '')
             ];
         }

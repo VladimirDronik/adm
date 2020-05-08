@@ -44,7 +44,7 @@ class LogController extends Controller
 
     public function update(Request $r)
     {
-        dd($r);
+
 
     }
 

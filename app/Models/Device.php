@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device whereType($value)
  * @property-read \App\Models\DevType $devtype
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Port[] $ports
+ * @property-read int|null $ports_count
  */
 class Device extends Model
 {

@@ -31,6 +31,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('settings', 'SettingController')->except('show','destroy')->middleware('can:settings');
     Route::resource('scenes', 'SceneController')->except('show','destroy')->middleware('can:scenes');
     Route::resource('termostats', 'TermostatController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('lightstats', 'LightstatController')->except('show','destroy')->middleware('can:devices');
     Route::resource('usensors', 'UsensorController')->except('show','destroy')->middleware('can:devices');
     Route::resource('drycontacts', 'DrycontactController')->except('show','destroy')->middleware('can:devices');
     Route::resource('events', 'EventController')->except('show','destroy')->middleware('can:events');
@@ -71,6 +72,7 @@ Route::group(['middleware' => ['auth']], function () {
         });
 
         Route::post('termostats/delete', 'TermostatController@delete')->name('termostats.delete');
+        Route::post('lightstats/delete', 'LightstatController@delete')->name('lightstats.delete');
         Route::post('usensors/delete', 'UsensorController@delete')->name('usensors.delete');
         Route::post('drycontacts/delete', 'DrycontactController@delete')->name('drycontacts.delete');
 
