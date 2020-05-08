@@ -101,7 +101,7 @@ class LightstatController extends Controller
 
         return view('lightstats.edit', compact('lightstat', 'objects', 'rooms',
             'types', 'devices', 'methods', 'object_types',
-            'scripts', 'usensors', 'deviceId', 'portId', 'portsSCL', 'portsSDA', 'port_SCL', 'port_SDA', 'can'));
+            'scripts', 'usensors', 'deviceId', 'portsSCL', 'portsSDA', 'port_SCL', 'port_SDA', 'can'));
     }
 
     public function create()
