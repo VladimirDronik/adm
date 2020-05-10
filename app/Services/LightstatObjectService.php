@@ -32,16 +32,16 @@ class LightstatObjectService {
         return $object;
     }
 
-    public function getOrCreateCheckTermostatScriptId(): int
+    public function getOrCreateCheckLightstatScriptId(): int
     {
-        $script_id = Script::where('link', 'check_termostat.php')
+        $script_id = Script::where('link', 'check_lightstat.php')
             ->where('system', 1)->value('id');
 
         if ($script_id) {
             return $script_id;
         }
 
-        return Script::forceCreate(ScriptsTableSeeder::getCheckTermostatScript())->id;
+        return Script::forceCreate(ScriptsTableSeeder::getCheckLightstatScript())->id;
     }
 
     /**
@@ -51,7 +51,7 @@ class LightstatObjectService {
      */
     public function createCheckMethodWithEvent(int $object_id)
     {
-        $script_id = $this->getOrCreateCheckTermostatScriptId();
+        $script_id = $this->getOrCreateCheckLightstatScriptId();
 
         $method_id = Method::forceCreate([
             'name' => 'Проверка светостата',

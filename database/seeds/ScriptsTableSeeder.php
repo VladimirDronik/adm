@@ -52,6 +52,17 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
+    public static function getCheckLightstatScript(): array
+    {
+        return [
+            'name' => 'Проверка светостата',
+            'link' => 'check_lightstat.php', // используется в LightstatObjectService
+            'count' => 0,
+            'system' => 1
+        ];
+
+    }
+
     public static function getCheckUsensorScript(): array
     {
         return [
