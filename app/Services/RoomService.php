@@ -181,6 +181,16 @@ class RoomService
 
         $room->save();
 
+
+        $temperature = new Temperature();
+        $temperature->id_room = $room->id;
+        $temperature->normal = null;
+        $temperature->night = null;
+        $temperature->eco = null;
+        $temperature->sort = 1;
+
+        $temperature->save();
+
         return $room->id;
     }
 
@@ -259,5 +269,31 @@ class RoomService
         });
 
         return $room->id;
+    }
+
+    /**
+     * Добавление термостата к комнате.
+     */
+    static public function addTermostat($idRoom, $termostatValue)
+    {
+
+        $temperature = Temperature::where('id_room', $idRoom)->first();
+
+
+
+        if ($temperature->id) {
+
+            if($temperature->normal == null)
+                $temperature->normal = $termostatValue;
+
+            if($temperature->night == null)
+                $temperature->night = $termostatValue;
+
+            if($temperature->eco == null)
+                $temperature->eco = $termostatValue;
+
+            $temperature->save();
+        }
+
     }
 }

@@ -28,4 +28,7 @@ class Temperature extends Model
 {
     protected $table = 'temperatures';
     public $timestamps = false;
+
+
+
 }

@@ -82,6 +82,10 @@ class TermostatService {
                 $unique_name = HomeObject::getUniqueObjectName(0, $termostat->name);
                 $object = $this->termostat_object_service->createTermostatObject($unique_name);
                 $this->termostat_object_service->createTermostatObjectMethodsWithEvents($object->id);
+
+                if($termostat->room != null)
+                RoomService::addTermostat($termostat->room, $termostat->optimal);
+
                 $termostat->id_object = $object->id;
                 $termostat->save();
 
@@ -123,6 +127,9 @@ class TermostatService {
                 Port::where('object', $termostat->id_object)->update(['object' => NULL]);
                 Port::where('id', $data['port_id'])->update(['object' => $termostat->id_object]);
             }
+
+            if($data['room'] != null)
+                RoomService::addTermostat($data['room'], $data['optimal']);
 
             $this->prepare($termostat, $data);
             $termostat->save();
