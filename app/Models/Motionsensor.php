@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Motionsensor extends Model
+{
+    protected $table = 'motionsensors';
+    public $timestamps = false;
+
+    public function object()
+    {
+        return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+    }
+}

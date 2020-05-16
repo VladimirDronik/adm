@@ -30,6 +30,7 @@ class ObjType extends Model
     const TYPE_RELAY = 'reley';
     const TYPE_SOCKET = 'socket';
     const TYPE_DRYCONTACT = 'drycontact';
+    const TYPE_MOTIONSENSOR = 'motionsensor';
 
     protected $table = 'objtypes';
     public $timestamps = false;

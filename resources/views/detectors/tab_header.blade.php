@@ -29,7 +29,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @if($active === '') active show @endif" href="#">
+                        <a class="nav-link @if($active === '') active show @endif" href="{{ route('motionsensors.index') }}">
                             <span>
                                 <img width="18" height="20" title="" src="{{ asset('ela/images/objects/Motion_sens.png') }}">
                                 Датчики движения (0)

@@ -92,7 +92,6 @@ class LightstatController extends Controller
         $deviceAndPort = $portsService->getIdDeviceAndPortId($lightstat->id_object);
 
         $deviceId = $deviceAndPort['id_device'];
-        //$portId = $deviceAndPort['id_port'];
         $port_SCL = $lightstat->port_SCL;
         $port_SDA = $lightstat->port_SDA;
 

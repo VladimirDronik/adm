@@ -27,4 +27,5 @@ class ObjectRepository {
 
         return $query->orderBy('id')->paginate($pagination_count);
     }
+
 }

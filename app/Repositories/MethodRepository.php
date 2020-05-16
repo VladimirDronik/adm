@@ -10,4 +10,17 @@ class MethodRepository
     {
         return Method::select('id','name')->orderBy('id')->pluck('name', 'id')->toArray();
     }
+
+    public function getAllMethodsByObjectToArray($objectID)
+    {
+        return Method::select('id','name')->where('id_object', $objectID)->orderBy('id')->pluck('name', 'id')->toArray();
+
+    }
+
+    public function getObjectByMethod($idMethod)
+    {
+        $return = Method::select('id_object')->where('id', $idMethod)->orderBy('id')->first();
+
+        return $return->id_object;
+    }
 }
