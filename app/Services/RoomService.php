@@ -184,9 +184,9 @@ class RoomService
 
         $temperature = new Temperature();
         $temperature->id_room = $room->id;
-        $temperature->normal = null;
-        $temperature->night = null;
-        $temperature->eco = null;
+        $temperature->normal = 0.00;
+        $temperature->night = 0.00;
+        $temperature->eco = 0.00;
         $temperature->sort = 1;
 
         $temperature->save();
@@ -278,7 +278,6 @@ class RoomService
     {
 
         $temperature = Temperature::where('id_room', $idRoom)->first();
-
 
 
         if ($temperature->id) {
