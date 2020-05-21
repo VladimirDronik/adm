@@ -19,8 +19,12 @@ class MethodRepository
 
     public function getObjectByMethod($idMethod)
     {
-        $return = Method::select('id_object')->where('id', $idMethod)->orderBy('id')->first();
 
-        return $return->id_object;
+        if($idMethod) {
+
+            $return = Method::select('id_object')->where('id', $idMethod)->orderBy('id')->first();
+            return $return->id_object;
+        }
+        else return null;
     }
 }
