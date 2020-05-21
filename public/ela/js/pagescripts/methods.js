@@ -83,6 +83,35 @@ function showEditModal(data) {
     $('#init_method_btn').click();
 }
 
+function showEditMessageModal(data) {
+    clearModal();
+
+    $('#m_id').val(data.id);
+    $('#method_modal_title').text('Редактирование оповещения');
+    $('#apply_btn').text('Сохранить изменения');
+
+   // $('input[name=m_name]').val($('#name'+data.id).text().trim());
+    $('input[name=m_message]').val($('#message'+data.id).text().trim());
+    if (data.type === 'script') {
+        $('select[name=m_script]').val(data.script_id);
+        $("input[name=actions][value=script]").prop("checked",true);
+        $("#script_button").addClass("active");
+        $('#script_div').show();
+    } else if (data.type === 'easy') {
+        $("input[name=actions][value=easy]").prop("checked",true);
+        $("#easy_button").addClass("active");
+        $('#easy_div').show();
+        $('#easy_device').text(data.device_id);
+        $('#easy_port').text(data.port);
+        $('#easy_action').text(data.action);
+    } else if (data.type === 'none') {
+        $("input[name=actions][value=none]").prop("checked",true);
+        $("#none_button").addClass("active");
+    }
+
+    $('#init_method_btn').click();
+}
+
 function addMethod(data) {
     const id_html = !is_super_admin ? '' :
         `<label class="col-md-1" id="methodid${data.id}}">${data.id}</label>`;
@@ -191,6 +220,23 @@ function clickApplyBtn() {
     });
 }
 
+/**
+ * Функция настройки отправки сообщения пользователю по акому-либо событию
+ */
+
+function clickEditMessageBtn() {
+    let data = {};
+
+     data.object = $(this).attr('data-object'); //ИД объекта, который вызывает оповещение
+     data.method = $(this).attr('data-method'); //ИД метода, который вызывает оповещение
+     data.priority = $(this).attr('data-priority'); //Приоритет оповещения, 1 - важное, 2 - все остальное
+     data.state = $(this).attr('data-state'); // Режим объекта, на который реагировать (включение, выключение и т.д.)
+     data.mess = $(this).attr('data-message'); // Сообщение, которое отправлять пользователю
+
+     showEditMessageModal(data);
+
+}
+
 function clickEditBtn() {
     let data = {};
 
@@ -203,6 +249,7 @@ function clickEditBtn() {
 
     showEditModal(data);
 }
+
 
 function changeRadioActions() {
     if (this.value === 'easy') {

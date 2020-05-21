@@ -163,6 +163,8 @@
 
                         {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', is_null($termostat->room) ? 0 : $termostat->room ), false, false) }}
 
+                    @include('messages.methods')
+
                     </div>
                     {{ Form::bs_submit_btn() }}
 
@@ -312,8 +314,13 @@
 
             $('#apply_btn').click(clickApplyBtn);
 
+
+            // edit messages method
+            $('body').on('click', '.edit_message_btn', clickEditMessageBtn);
+
             // edit method
             $('body').on('click', '.edit_btn', clickEditBtn);
+
 
             // change easy/script/none in modal
             $('input[type=radio][name=actions]').change(changeRadioActions);
