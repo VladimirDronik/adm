@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Motionsensor;
 use App\Models\Termostat;
 use App\Models\Usensor;
 use App\Models\Drycontact;
@@ -28,4 +29,10 @@ class DetectorsService {
     {
         return Lightstat::count();
     }
+
+    public function getMotionsensorsCount(): int
+    {
+        return Motionsensor::count();
+    }
+
 }

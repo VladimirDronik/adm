@@ -48,7 +48,7 @@
                             <tbody>
                                 @foreach($motionsensors as $motionsensor)
                                     <tr id="tr{{$motionsensor->id}}">
-                                        <td scope="row">{{ $motionsensor->id }}</td>
+                                        <td scope="row">{{ $motionsensor->iobject['id'] }}</td>
                                         <td><a href="{{ route('motionsensors.edit', [$motionsensor->id]) }}">{{ $motionsensor->name }}</a></td>
                                         @can('devices.show-object')
                                             <td>@if($motionsensor->object)
@@ -89,7 +89,7 @@
                     {{ $motionsensors->appends(request()->input())->links() }}
                     <p class="text-right">Найдено: {{ $motionsensors->total() }}</p>
                 @else
-                    <p>Сухие контакты не найдены</p>
+                    <p>Датчики движения не найдены</p>
                 @endif
             </div>
         </div>
