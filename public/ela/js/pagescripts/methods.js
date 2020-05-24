@@ -87,29 +87,28 @@ function showEditMessageModal(data) {
     clearModal();
 
     $('#m_id').val(data.id);
-    $('#method_modal_title').text('Редактирование оповещения');
+    $('#message_modal_title').text('Редактирование оповещения');
+
     $('#apply_btn').text('Сохранить изменения');
 
-   // $('input[name=m_name]').val($('#name'+data.id).text().trim());
-    $('input[name=m_message]').val($('#message'+data.id).text().trim());
-    if (data.type === 'script') {
-        $('select[name=m_script]').val(data.script_id);
-        $("input[name=actions][value=script]").prop("checked",true);
-        $("#script_button").addClass("active");
-        $('#script_div').show();
-    } else if (data.type === 'easy') {
-        $("input[name=actions][value=easy]").prop("checked",true);
-        $("#easy_button").addClass("active");
-        $('#easy_div').show();
-        $('#easy_device').text(data.device_id);
-        $('#easy_port').text(data.port);
-        $('#easy_action').text(data.action);
-    } else if (data.type === 'none') {
-        $("input[name=actions][value=none]").prop("checked",true);
-        $("#none_button").addClass("active");
+    $('input[name=m_message]').val($('#message-txt-'+data.state).text().trim());
+    $('input[name=m_object]').val(data.object);
+    $('input[name=m-state]').val(data.state);
+
+    if (data.priority === '1') {
+        $("input[name=priority][value=hight]").prop("checked",true);
+        $("input[name=priority][value=low]").prop("checked", false);
+        $("#hight_button").addClass("active");
+        $("#low_button").removeClass("active");
+    } else {
+        $("input[name=priority][value=low]").prop("checked", false);
+        $("input[name=priority][value=hight]").prop("checked",false);
+        $("#hight_button").removeClass("active");
+        $("#low_button").addClass("active");
     }
 
-    $('#init_method_btn').click();
+    $('#init_message_btn').click();
+
 }
 
 function addMethod(data) {
@@ -146,6 +145,10 @@ function editMethod(data) {
     $('#easy'+data.id).text(data.easy);
 }
 
+function editMessage(data, state) {
+    $('#message-txt-'+state).text(data);
+}
+
 function validateMethod(data) {
     if (data.name == '') {
         return 'Не указано название';
@@ -165,6 +168,15 @@ function validateMethod(data) {
         if (data.action === 'отсутствует') {
             return 'Не указано действие';
         }
+    }
+
+    return '';
+}
+
+
+function validateMessage(data) {
+    if (data.message == '') {
+        return 'Не указано сообщение';
     }
 
     return '';
@@ -195,6 +207,22 @@ function getModalData() {
     return data;
 }
 
+
+function getMessageModalData() {
+    let data = {};
+
+    data.object_id = object_id;
+
+     if($("input[name=priority]:checked").val() == 'hight')
+         data.priority = 1;
+     else data.priority = 2;
+
+    data.message = $('input[name=m_message]').val().trim();
+    data.state = $('input[name=m-state]').val().trim();
+
+    return data;
+}
+
 function clickApplyBtn() {
     let data = getModalData();
     let message = validateMethod(data);
@@ -220,6 +248,29 @@ function clickApplyBtn() {
     });
 }
 
+
+function clickApplyMessageBtn() {
+
+    let data = getMessageModalData();
+    let message = validateMessage(data);
+
+    if (message !== '') {
+        showModalError(message);
+        return false;
+    }
+
+    $.ajax({
+        url: store_message_url,
+        data: {'_token': _token, 'data': data},
+        success: function (resp) {
+            if (resp.result) {
+                    editMessage(resp.data, data.state);
+            }
+            cancel_message_btn.click();
+        }
+    });
+}
+
 /**
  * Функция настройки отправки сообщения пользователю по акому-либо событию
  */
@@ -227,8 +278,6 @@ function clickApplyBtn() {
 function clickEditMessageBtn() {
     let data = {};
 
-     data.object = $(this).attr('data-object'); //ИД объекта, который вызывает оповещение
-     data.method = $(this).attr('data-method'); //ИД метода, который вызывает оповещение
      data.priority = $(this).attr('data-priority'); //Приоритет оповещения, 1 - важное, 2 - все остальное
      data.state = $(this).attr('data-state'); // Режим объекта, на который реагировать (включение, выключение и т.д.)
      data.mess = $(this).attr('data-message'); // Сообщение, которое отправлять пользователю
@@ -267,6 +316,8 @@ function changeRadioActions() {
 
 function clickDelBtn() {
     $('#del_cancel_btn').click();
+
+    //Если указан id, значит удаляем метод
     if (del_id) {
         $.ajax({
             url: del_url,
@@ -281,4 +332,24 @@ function clickDelBtn() {
             }
         });
     }
+
+    //Если указан метод вызова уведомеления, то удаляем это уведомление
+    if(del_message) {
+
+        $.ajax({
+            url: del_message_url,
+            data: { '_token': _token, 'message': del_message, 'id_object': object_id },
+            success: function (data) {
+                if (data.result) {
+                    $('#message-txt-'+del_message).text('Нет оповещения');
+                } else {
+                    showErrorModal('Ошибка при удалении уведомления');
+                }
+            }
+        });
+    }
+
+
+
+
 }

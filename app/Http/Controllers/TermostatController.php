@@ -13,6 +13,7 @@ use App\Repositories\RoomRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\TermostatRepository;
 use App\Repositories\UsensorRepository;
+use App\Services\MessageService;
 use App\Services\ObjectService;
 use App\Services\PortService;
 use App\Services\TermostatService;
@@ -87,7 +88,7 @@ class TermostatController extends Controller
 
 
     public function edit(Termostat $termostat, ObjectService $object_service, ScriptRepository $script_rep,
-                         PortService $portsService)
+                         PortService $portsService, MessageService $messagesService)
     {
         list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
 
@@ -104,9 +105,11 @@ class TermostatController extends Controller
 
         $ports =  $portsService->getPortsIntoList($deviceId);
 
+        $messages = $messagesService->getNotifications($termostat->id_object);
 
         return view('termostats.edit', compact('termostat', 'objects', 'rooms',
-            'types', 'devices', 'methods', 'object_types', 'scripts', 'usensors', 'deviceId', 'portId', 'ports', 'can'));
+            'types', 'devices', 'methods', 'object_types', 'scripts',
+            'usensors', 'deviceId', 'portId', 'ports', 'messages', 'can'));
     }
 
 

@@ -142,6 +142,12 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('store', 'MethodController@store')->name('store');
         });
 
+        Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
+            Route::post('delete', 'MessageController@delete')->name('delete');
+            Route::post('store', 'MessageController@store')->name('store');
+        });
+
+
         Route::group(['prefix' => 'ports', 'as' => 'ports.'], function () {
             Route::post('update/comment', 'PortController@updateComment')->name('update.comment');
             Route::post('method/all', 'PortController@getMethodAll')->name('method.all');
