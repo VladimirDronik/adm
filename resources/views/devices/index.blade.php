@@ -36,6 +36,7 @@
                     <table class="table">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Название</th>
                                 <th>Тип</th>
                                 <th>IP адрес</th>
@@ -47,6 +48,7 @@
                         <tbody>
                             @foreach($devices as $device)
                                 <tr id="tr{{$device->id}}">
+                                    <td>{{ $device->id }}</td>
                                     <td>{{ $device->description }}</td>
                                     <td>{{ optional($device->devtype)->name }}</td>
                                     <td>{{ $device->ip_address }}</td>

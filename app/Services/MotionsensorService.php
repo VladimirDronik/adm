@@ -35,7 +35,7 @@ class MotionsensorService {
         unset($data['device_id']);
         unset($data['port_id']);
 
-        $motionsensor->forceFill($data);
+        $motionsensor->Fill($data);
     }
 
 

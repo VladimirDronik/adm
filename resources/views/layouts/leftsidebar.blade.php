@@ -86,9 +86,9 @@
                     <li> <a class="has-arrow" href="{{ route('network.edit') }}" aria-expanded="false">
                             <i class="fa fa-plug"></i><span class="hide-menu">Сеть и VPN</span></a></li>
                 @endcan
-                @can('superadmin')
-                    <li> <a class="has-arrow" href="#" aria-expanded="false">
-                            <i class="fa fa-bell-o"></i><span class="hide-menu">Оповещения</span></a></li>
+                @can('scenes')
+                    <li> <a class="has-arrow" href="{{ route('users.index') }}" aria-expanded="false">
+                            <i class="fa fa-user-o"></i><span class="hide-menu">Пользователи</span></a></li>
                 @endcan
                 <!--@can('menu')
                     <li> <a class="has-arrow" href="{{ route('menu.index') }}" aria-expanded="false">

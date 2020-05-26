@@ -8,6 +8,7 @@ class Motionsensor extends Model
 {
     protected $table = 'motionsensors';
     public $timestamps = false;
+    protected $guarded = ['id'];
 
     public function object()
     {

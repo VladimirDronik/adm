@@ -37,6 +37,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('drycontacts', 'DrycontactController')->except('show','destroy')->middleware('can:devices');
     Route::resource('events', 'EventController')->except('show','destroy')->middleware('can:events');
     Route::resource('logs', 'LogController')->only('index')->middleware('can:logs');
+    Route::resource('users', 'UserController')->except('show','destroy')->middleware('can:rooms');
 
     Route::resource('rooms', 'RoomController')->except('show','create','store','destroy')->middleware('can:rooms');
     Route::get('rooms/group/{id}', 'RoomGroupController@index')->name('rooms.group.index')->middleware('can:rooms');
@@ -106,6 +107,10 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
             Route::post('delete', 'SettingController@delete')->name('delete');
+        });
+
+        Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
+            Route::post('delete', 'UserController@delete')->name('delete');
         });
 
         Route::group(['prefix' => 'menu', 'as' => 'menu.'], function () {
