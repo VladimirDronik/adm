@@ -18,7 +18,7 @@ class CreateMessagesTable extends Migration
             $table->string('text')->nullable();
             $table->tinyInteger('priority')->nullable();
             $table->dateTime('date')->nullable();
-            $table->tinyInteger('is_read')->nullable();
+            $table->tinyInteger('is_read')->default('0');
         });
     }
 
