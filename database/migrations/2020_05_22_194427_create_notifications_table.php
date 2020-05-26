@@ -13,17 +13,19 @@ class CreateNotificationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('notifications', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('id_object')->nullable()->comment('id из таблицы объектов');
-            $table->string('message_on')->nullable();
-            $table->tinyInteger('priority_on')->nullable();
-            $table->string('message_off')->nullable();
-            $table->tinyInteger('priority_off')->nullable();
+        if (!Schema::hasTable('notifications')) {
+            Schema::create('notifications', function (Blueprint $table) {
+                $table->increments('id');
+                $table->unsignedInteger('id_object')->nullable()->comment('id из таблицы объектов');
+                $table->string('message_on')->nullable();
+                $table->tinyInteger('priority_on')->nullable();
+                $table->string('message_off')->nullable();
+                $table->tinyInteger('priority_off')->nullable();
 
-            $table->foreign('id_object')->references('id')->on('objects')
-                ->onUpdate('cascade')->onDelete('cascade');
-        });
+                $table->foreign('id_object')->references('id')->on('objects')
+                    ->onUpdate('cascade')->onDelete('cascade');
+            });
+        }
     }
 
     /**
