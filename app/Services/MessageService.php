@@ -28,8 +28,13 @@ class MessageService
 
     public function store(array $data)
     {
+        $idObject = Notification::getIdByIdObject($data['object_id']);
 
-        $notification = Notification::findOrFail(Notification::getIdByIdObject($data['object_id'])->id);
+        if ($idObject)
+        $notification = Notification::findOrFail(Notification::getIdByIdObject($idObject));
+        else
+            $notification = null;
+
 
         if(!$notification)
         $notification = new Notification();

@@ -12,6 +12,10 @@ class Notification extends Model
 
     public static function getIdByIdObject(int $idObject) {
 
-        return Notification::select('id')->where('id_object', $idObject)->first();
+        $result = Notification::select('id')->where('id_object', $idObject)->first();
+
+        if ($result)
+        return $result->id;
+        else return false;
     }
 }
