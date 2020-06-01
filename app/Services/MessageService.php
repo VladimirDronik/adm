@@ -31,7 +31,7 @@ class MessageService
         $idObject = Notification::getIdByIdObject($data['object_id']);
 
         if ($idObject)
-        $notification = Notification::findOrFail(Notification::getIdByIdObject($idObject));
+        $notification = Notification::findOrFail($idObject);
         else
             $notification = null;
 

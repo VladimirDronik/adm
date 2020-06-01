@@ -74,7 +74,10 @@ class SwitchService {
                 $switch->save();
 
                 if ($data['port_id']) {
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id]);
+                    Port::where('id', $data['port_id'])->update(['object' => $object->id,
+                        'method' => $data['method'], 'method_params' => $data['method_params'],
+                        'dc_method' => $data['method_dc'], 'dc_method_params' => $data['method_dc_params'],
+                        'lc_method' => $data['method_lc'], 'lc_method_params' => $data['method_lc_params'] ]);
                 }
             });
         }

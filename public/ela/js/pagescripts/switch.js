@@ -22,6 +22,11 @@ function validateSwitch() {
     return '';
 }
 
+function hideParamsFields(id) {
+    $('#switch_form #'+id+'_div').hide();
+    $('#switch_form #'+id).val('');
+}
+
 function initSwitchForm() {
     $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});
 

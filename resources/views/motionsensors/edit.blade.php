@@ -221,7 +221,7 @@
 
                             </div>
                         </div>
-
+                        @include('messages.two')
                     </div>
                     {{ Form::bs_submit_btn() }}
 
@@ -233,11 +233,12 @@
                 <div style="height: 200px;">&nbsp;</div>
                 <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
                 <button type="button" id="init_method_btn" style="display: none;" data-toggle="modal" data-target="#method_modal">&nbsp;</button>
-
+                <button type="button" id="init_message_btn" style="display: none;" data-toggle="modal" data-target="#message_modal">
             </div>
         </div>
     </div>
 
+    @include('objects.message_modal')
     @include('objects.method_modal')
 
     @include('components.info_modal')
@@ -250,17 +251,21 @@
     <script src="{{ asset('ela/js/pagescripts/switch.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const url_methods = '{{ route('ajax.objects.methods') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
         const store_url = '{{ route('ajax.methods.store') }}';
+        const store_message_url = '{{ route('ajax.messages.store') }}';
         const del_url = '{{ route('ajax.methods.delete') }}';
+        const del_message_url = '{{ route('ajax.messages.delete') }}';;
         const sub_data_url = '{{ route('ajax.load.data') }}';
         const object_id = '{{ optional($motionsensor->object)->id }}';
         const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
         let del_id;
         let methods = [];
+        let del_message;
 
         $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
         $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
@@ -464,6 +469,19 @@
                 }
                 sel.append(s);
             }
+
+            //messages
+            $('#apply_message_btn').click(clickApplyMessageBtn);
+
+            // edit messages method
+            $('body').on('click', '.edit_message_btn', clickEditMessageBtn);
+
+            //delete message
+            $('body').on('click', '.del_message_btn', function() {
+                del_message = $(this).attr('data-method');
+                $('#del_modal_body').text('Удалить уведомление ?');
+                $('#del_init_btn').click();
+            });
 
             // methods
 

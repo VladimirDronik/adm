@@ -163,7 +163,7 @@
 
                         {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', is_null($termostat->room) ? 0 : $termostat->room ), false, false) }}
 
-                    @include('messages.methods')
+                    @include('messages.two')
 
                     </div>
                     {{ Form::bs_submit_btn() }}
@@ -193,6 +193,7 @@
     <script src="{{ asset('ela/js/pagescripts/termostat.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
     <script>
         const url_methods = '{{ route('ajax.objects.methods') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
@@ -320,12 +321,17 @@
             $('#apply_btn').click(clickApplyBtn);
 
             //messages
-
             $('#apply_message_btn').click(clickApplyMessageBtn);
-
 
             // edit messages method
             $('body').on('click', '.edit_message_btn', clickEditMessageBtn);
+
+            //delete message
+            $('body').on('click', '.del_message_btn', function() {
+                del_message = $(this).attr('data-method');
+                $('#del_modal_body').text('Удалить уведомление ?');
+                $('#del_init_btn').click();
+            });
 
             // edit method
             $('body').on('click', '.edit_btn', clickEditBtn);
@@ -341,12 +347,7 @@
                 $('#del_init_btn').click();
             });
 
-            //delete message
-            $('body').on('click', '.del_message_btn', function() {
-                del_message = $(this).attr('data-method');
-                $('#del_modal_body').text('Удалить уведомление ?');
-                $('#del_init_btn').click();
-            });
+
 
             $('#del_modal_btn').click(clickDelBtn);
         });

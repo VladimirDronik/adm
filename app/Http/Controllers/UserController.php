@@ -50,7 +50,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $priority = [1 => 'Важные', 2 => 'Обычные' ];
+        $priority = [1 => 'Важные', 2 => 'Обычные', 3 => 'Все', 0 => 'Не назначено' ];
         return view('users.edit', compact('user', 'priority'));
     }
 

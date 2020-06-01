@@ -41,8 +41,9 @@ class SwitchController extends Controller
         $objects = $this->object_rep->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
         $devices = $this->device_rep->getAllToArray();
+        $can = gates('devices.show-object');
 
-        return view('switches.create', compact('types', 'objects', 'object_types', 'devices'));
+        return view('switches.create', compact('types', 'objects', 'object_types', 'devices', 'can'));
     }
 
     public function store(CreateRequest $r)

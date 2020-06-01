@@ -62,7 +62,82 @@
                             {{ Form::bs_autoselect_and_btn('id_object', 'Объект*:', $objects, old('id_object', $switch->id_object), false, false, ['required' => true]) }}
                         @endif
 
+
+
+                        {{ Form::bs_title('Одиночное нажатие') }}
+
+                        {{ Form::bs_autoselect('object', 'Объект:', $objects, old('object'),
+                            false, false, [], null, 'Объект, на который воздействуем') }}
+
+                        {{ Form::bs_autoselect('method', 'Метод:', [], old('method'),
+                            false, false, [], null, 'Метод объекта при одиночном нажатии кнопки') }}
+
+                        <div class="form-group row" id="method_params_div"
+                             @if(!old('method')) style="display: none;" @endif>
+                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_params"></label>
+                            <div class="col-md-9 pr-0">
+                                <div class="form-group row ">
+                                    <label class="control-label text-right col-md-6 label-fix" id="method_params_label" for="method_params">...</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" autocomplete="off" id="method_params" name="method_params"
+                                               type="text" value="{{ old('method_params') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        {{ Form::bs_title('Двойное нажатие') }}
+
+
+                        {{ Form::bs_autoselect('object_dc', 'Объект:', $objects, old('object_dc'),
+                            false, false, [], null, 'Объект, на который воздействуем') }}
+
+                        {{ Form::bs_autoselect('method_dc', 'Метод:', [], old('method_dc'),
+                            false, false, [], null, 'Метод объекта при двойном нажатии кнопки') }}
+
+                        <div class="form-group row" id="method_dc_params_div"
+                             @if(!old('method')) style="display: none;" @endif>
+                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_dc_params"></label>
+                            <div class="col-md-9 pr-0">
+                                <div class="form-group row ">
+                                    <label class="control-label text-right col-md-6 label-fix" id="method_dc_params_label" for="method_dc_params">...</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" autocomplete="off" id="method_dc_params" name="method_dc_params"
+                                               type="text" value="{{ old('method_params') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        {{ Form::bs_title('Длительное нажатие') }}
+
+                        {{ Form::bs_autoselect('object_lc', 'Объект:', $objects, old('object_lc'),
+                            false, false, [], null, 'Объект, на который воздействуем') }}
+
+                        {{ Form::bs_autoselect('method_lc', 'Метод:', [], old('method_lc'),
+                            false, false, [], null, 'Метод объекта при длительном нажатии кнопки') }}
+
+                        <div class="form-group row" id="method_lc_params_div"
+                             @if(!old('method_lc')) style="display: none;" @endif>
+                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_lc_params"></label>
+                            <div class="col-md-9 pr-0">
+                                <div class="form-group row ">
+                                    <label class="control-label text-right col-md-6 label-fix" id="method_lc_params_label" for="method_lc_params">...</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" autocomplete="off" id="method_lc_params" name="method_lc_params"
+                                               type="text" value="{{ old('method_lc_params') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
+
+
+                </div>
                     {{ Form::bs_submit_btn() }}
 
                     @include('objects.methods', ['object' => $switch->object])

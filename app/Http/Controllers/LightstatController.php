@@ -11,6 +11,7 @@ use App\Repositories\RoomRepository;
 use App\Repositories\UsensorRepository;
 use App\Services\LightstatService;
 use App\Models\HomeObject;
+use App\Services\MessageService;
 use App\Services\ObjectService;
 use App\Repositories\ScriptRepository;
 use App\Services\PortService;
@@ -79,7 +80,7 @@ class LightstatController extends Controller
     }
 
     public function edit(Lightstat $lightstat, ObjectService $object_service, ScriptRepository $script_rep,
-                         PortService $portsService)
+                         PortService $portsService, MessageService $messagesService)
     {
         list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
 
@@ -98,8 +99,13 @@ class LightstatController extends Controller
         $portsSCL =  $portsService->getPortsIntoList($deviceId, 'I2C');
         $portsSDA =  $portsService->getPortsIntoList($deviceId, 'I2C');
 
+        $messages = $messagesService->getNotifications($lightstat->id_object);
+
+        $messages['first'] = 'При включении';
+        $messages['second'] = 'При выключении';
+
         return view('lightstats.edit', compact('lightstat', 'objects', 'rooms',
-            'types', 'devices', 'methods', 'object_types',
+            'types', 'devices', 'methods', 'object_types', 'messages',
             'scripts', 'usensors', 'deviceId', 'portsSCL', 'portsSDA', 'port_SCL', 'port_SDA', 'can'));
     }
 

@@ -107,6 +107,9 @@ class TermostatController extends Controller
 
         $messages = $messagesService->getNotifications($termostat->id_object);
 
+        $messages['first'] = 'При включении';
+        $messages['second'] = 'При выключении';
+
         return view('termostats.edit', compact('termostat', 'objects', 'rooms',
             'types', 'devices', 'methods', 'object_types', 'scripts',
             'usensors', 'deviceId', 'portId', 'ports', 'messages', 'can'));

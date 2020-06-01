@@ -41,9 +41,9 @@
                                     <tr id="tr{{$devuser->id}}">
                                         <td><a href="{{ route('users.edit', [$devuser->id]) }}">{{ $devuser->dev_id }}</a></td>
                                         <td>{{ $devuser->name }}</td>
-                                        <td>@if($devuser->telegram_send == 1) <span class="badge badge-danger">важные</span> @elseif($devuser->telegram_send == 2) <span class="badge badge-info">обычные</span> @else <span class="badge badge-secondary">не назначено</span> @endif </td>
-                                        <td>@if($devuser->push_send == 1) <span class="badge badge-danger">важные</span> @elseif($devuser->push_send == 2) <span class="badge badge-info">обычные</span> @else <span class="badge badge-secondary">не назначено</span> @endif </td>
-                                        <td>@if($devuser->sms_send == 1) <span class="badge badge-danger">важные</span> @elseif($devuser->sms_send == 2) <span class="badge badge-info">обычные</span> @else <span class="badge badge-secondary">не назначено</span> @endif </td>
+                                        <td>@if($devuser->telegram_send == 1) <span class="badge badge-danger">важные</span> @elseif($devuser->telegram_send == 2) <span class="badge badge-info">обычные</span> @elseif($devuser->telegram_send == 3) <span class="badge badge-success">все</span> @else <span class="badge badge-secondary">не назначено</span> @endif </td>
+                                        <td>@if($devuser->push_send == 1) <span class="badge badge-danger">важные</span> @elseif($devuser->push_send == 2) <span class="badge badge-info">обычные</span> @elseif($devuser->push_send == 3) <span class="badge badge-success">все</span>  @else <span class="badge badge-secondary">не назначено</span> @endif </td>
+                                        <td>@if($devuser->sms_send == 1) <span class="badge badge-danger">важные</span> @elseif($devuser->sms_send == 2) <span class="badge badge-info">обычные</span> @elseif($devuser->sms_send  == 3) <span class="badge badge-success">все</span>  @else <span class="badge badge-secondary">не назначено</span> @endif </td>
                                         <td align="center" class="text-center">
                                             <a href="{{ route('users.edit', [$devuser->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Motionsensor;
 use App\Repositories\LightstatRepository;
 use App\Repositories\MethodRepository;
+use App\Services\MessageService;
 use App\Services\MotionsensorService;
 use Illuminate\Http\Request;
 use App\Repositories\MotionsensorRepository;
@@ -76,7 +77,8 @@ class MotionsensorsController extends Controller
     }
 
 
-    public function edit(int $id, ScriptRepository $script_rep, PortService $portsService)
+    public function edit(int $id, ScriptRepository $script_rep, PortService $portsService,
+        MessageService $messageService)
     {
         $motionsensor = Motionsensor::findOrFail($id);
 
@@ -107,12 +109,16 @@ class MotionsensorsController extends Controller
         $portId = $deviceAndPort['id_port'];
         $ports = $portsService->getPortsIntoList($deviceId, 'IN');
 
+        $messages = $messageService->getNotifications($motionsensor->id_object);
+        $messages['first'] = 'При любом срабатывании';
+        $messages['second'] = 'Срабатывание в реж. охраны';
+
         $scripts = $script_rep->getAllToArray();
         $can = gates('motionsensors.show-object');
 
         return view('motionsensors.edit', compact('motionsensor',
             'objects', 'object_types', 'scripts', 'lightstats', 'can', 'equality',
-            'object_normal', 'methods_normal', 'object_eco', 'methods_eco',
+            'object_normal', 'methods_normal', 'object_eco', 'methods_eco', 'messages',
             'object_night', 'methods_night', 'object_evening', 'methods_evening',
             'object_morning', 'methods_morning', 'object_guard', 'methods_guard',
             'object_light', 'methods_light', 'deviceId', 'portId', 'devices', 'ports'));

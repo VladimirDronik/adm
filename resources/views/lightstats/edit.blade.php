@@ -159,6 +159,8 @@
 
                         {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', is_null($lightstat->room) ? 0 : $lightstat->room ), false, false) }}
 
+                        @include('messages.two')
+
                     </div>
                     {{ Form::bs_submit_btn() }}
 
@@ -170,9 +172,11 @@
                 <div style="height: 200px;">&nbsp;</div>
                 <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
                 <button type="button" id="init_method_btn" style="display: none;" data-toggle="modal" data-target="#method_modal">&nbsp;</button>
+                <button type="button" id="init_message_btn" style="display: none;" data-toggle="modal" data-target="#message_modal">
             </div>
         </div>
     </div>
+    @include('objects.message_modal')
     @include('objects.method_modal')
 
     @include('components.info_modal')
@@ -185,18 +189,22 @@
     <script src="{{ asset('ela/js/pagescripts/lightstat.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
     <script>
         const url_methods = '{{ route('ajax.objects.methods') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const store_url = '{{ route('ajax.methods.store') }}';
+        const store_message_url = '{{ route('ajax.messages.store') }}';
         const del_url = '{{ route('ajax.methods.delete') }}';
+        const del_message_url = '{{ route('ajax.messages.delete') }}';;
         const sub_data_url = '{{ route('ajax.load.data') }}';
         const object_id = '{{ optional($lightstat->iobject)->id }}';
         const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
         let del_id;
         let modal_btn_index = -1;
         let methods = [];
+        let del_message;
 
         $(document).ready(function () {
 
@@ -306,6 +314,19 @@
                 createObjectSelect('#auto_sel_object', objects,
                     modal_btn_index === 2 ? selected : $('#auto_sel_object').val());
             }
+
+            //messages
+            $('#apply_message_btn').click(clickApplyMessageBtn);
+
+            // edit messages method
+            $('body').on('click', '.edit_message_btn', clickEditMessageBtn);
+
+            //delete message
+            $('body').on('click', '.del_message_btn', function() {
+                del_message = $(this).attr('data-method');
+                $('#del_modal_body').text('Удалить уведомление ?');
+                $('#del_init_btn').click();
+            });
 
             // methods
 
