@@ -3,7 +3,7 @@
     <div class="container">
         <div class="form-group row">
             <div class="col-3">
-            {{ $messages['first'] }}
+            {{ $messagePoint['first'] }}
             </div>
             <div class="col-8">
                 <i id="message-txt-on">@if( $messages['message_on'] ) {{ $messages['message_on'] }} @else Нет оповещения @endif </i>
@@ -23,7 +23,7 @@
 
         <div class="form-group row">
             <div class="col-3">
-                {{ $messages['second'] }}
+                {{ $messagePoint['second'] }}
             </div>
             <div class="col-8">
                 <i id="message-txt-off">@if( $messages['message_off'] ) {{ $messages['message_off'] }} @else Нет оповещения @endif </i>

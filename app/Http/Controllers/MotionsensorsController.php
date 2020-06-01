@@ -110,8 +110,8 @@ class MotionsensorsController extends Controller
         $ports = $portsService->getPortsIntoList($deviceId, 'IN');
 
         $messages = $messageService->getNotifications($motionsensor->id_object);
-        $messages['first'] = 'При любом срабатывании';
-        $messages['second'] = 'Срабатывание в реж. охраны';
+        $messagePoint['first'] = 'При любом срабатывании';
+        $messagePoint['second'] = 'Срабатывание в реж. охраны';
 
         $scripts = $script_rep->getAllToArray();
         $can = gates('motionsensors.show-object');
@@ -121,7 +121,7 @@ class MotionsensorsController extends Controller
             'object_normal', 'methods_normal', 'object_eco', 'methods_eco', 'messages',
             'object_night', 'methods_night', 'object_evening', 'methods_evening',
             'object_morning', 'methods_morning', 'object_guard', 'methods_guard',
-            'object_light', 'methods_light', 'deviceId', 'portId', 'devices', 'ports'));
+            'object_light', 'methods_light', 'deviceId', 'portId', 'devices', 'messagePoint', 'ports'));
     }
 
 

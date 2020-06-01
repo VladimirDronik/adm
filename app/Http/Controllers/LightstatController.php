@@ -101,12 +101,12 @@ class LightstatController extends Controller
 
         $messages = $messagesService->getNotifications($lightstat->id_object);
 
-        $messages['first'] = 'При включении';
-        $messages['second'] = 'При выключении';
+        $messagePoint['first'] = 'При включении';
+        $messagePoint['second'] = 'При выключении';
 
         return view('lightstats.edit', compact('lightstat', 'objects', 'rooms',
             'types', 'devices', 'methods', 'object_types', 'messages',
-            'scripts', 'usensors', 'deviceId', 'portsSCL', 'portsSDA', 'port_SCL', 'port_SDA', 'can'));
+            'scripts', 'usensors', 'deviceId', 'portsSCL', 'portsSDA', 'port_SCL', 'messagePoint', 'port_SDA', 'can'));
     }
 
     public function create()
