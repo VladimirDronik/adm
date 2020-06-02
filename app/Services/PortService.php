@@ -195,12 +195,25 @@ class PortService {
         return $data;
     }
 
+    /**
+     * @param array $data
+     */
     public function deletePortMethod(array $data)
     {
         $methodColumnName = $this->getMethodColumnName($data['type']);
 
         Port::where('id_device', $data['device_id'])->where('id', $data['port_id'])
             ->update([$methodColumnName => null]);
+    }
+
+    /**
+     * Удаление всех методов для порта
+     */
+    public static function deleteAllMethodsForPort($idObject)
+    {
+        Port::where('object', $idObject)
+            ->update(['method' => null, 'dc_method' => null, 'lc_method' => null,
+                'method_params' => null, 'dc_method_params' => null, 'lc_method_params' => null]);
     }
 
     private function getMethodColumnName(string $type): string
@@ -370,5 +383,15 @@ class PortService {
 
         return $result;
     }
+
+    /**  Вывод методов для порта
+     *
+     */
+    public function getMethodsByObject($idObject)
+    {
+       return Port::where('object', $idObject)->first();
+    }
+
+
 
 }

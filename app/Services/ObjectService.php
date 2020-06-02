@@ -92,4 +92,18 @@ class ObjectService {
     {
         return HomeObject::orderBy('name')->get();
     }
+
+    /**
+     * Возвращает id объекта, соответсвующего методу
+     * @param $idMethod - id метода
+     */
+    public function getObjectByMethod($idMethod)
+    {
+        if ($idMethod) {
+            $return =  Method::where('id', $idMethod)->first();
+            return $return->id_object;
+        }
+
+        return null;
+    }
 }

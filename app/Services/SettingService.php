@@ -29,6 +29,8 @@ class SettingService {
 
     public function update(Setting $setting, array $data)
     {
+
+
         $this->prepareSetting($setting, $data);
         $setting->save();
 
