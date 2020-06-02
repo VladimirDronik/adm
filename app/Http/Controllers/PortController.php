@@ -32,7 +32,7 @@ class PortController extends Controller
             \Log::error('Ошибка при изменении порта ' .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении порта');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении порта'.$e->getMessage());
 
 
 

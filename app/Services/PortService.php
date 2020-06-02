@@ -382,7 +382,7 @@ class PortService {
                 }
 
             });
-        }
+        } else  throw new \Exception(': контроллер не доступен');
 
         return $result;
     }
