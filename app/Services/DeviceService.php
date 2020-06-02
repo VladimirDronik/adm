@@ -249,4 +249,12 @@ class DeviceService {
 
         return $arrayPorts;
     }
+
+    /**
+     * Получение статуса устройства, активно или нет
+     */
+    public static function getStatus($idDevice)
+    {
+        return Device::where('id', $idDevice)->first()->active;
+    }
 }

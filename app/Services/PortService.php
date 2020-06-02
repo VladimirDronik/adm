@@ -368,18 +368,21 @@ class PortService {
 
         $this->preparePort($data, $port);
 
-        DB::transaction(function () use (&$port, $data, &$result) {
+        if(DeviceService::getStatus($port->id_device) === 1) {
 
-            $answer = file_get_contents($this->prepareSendInDevice($port));
+            DB::transaction(function () use (&$port, $data, &$result) {
 
-            if ($answer === false) {
-                throw new \Exception('Некорректный ответ от удаленного сервера');
-            } else {
-                $port->save();
-                $result = true;
-            }
+                $answer = file_get_contents($this->prepareSendInDevice($port));
 
-        });
+                if ($answer === false) {
+                    throw new \Exception('Некорректный ответ от удаленного сервера');
+                } else {
+                    $port->save();
+                    $result = true;
+                }
+
+            });
+        }
 
         return $result;
     }
