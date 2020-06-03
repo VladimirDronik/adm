@@ -6,6 +6,7 @@ use App\Models\Device;
 use App\Models\Method;
 use App\Models\Port;
 use App\Models\Script;
+use App\Repositories\DeviceRepository;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
 
@@ -15,11 +16,13 @@ class PortService {
 
     private $rep;
     private $object_service;
+    private $device_rep;
 
-    public function __construct(PortRepository $rep, ObjectService $object_service)
+    public function __construct(PortRepository $rep, ObjectService $object_service, DeviceRepository $device_rep)
     {
         $this->rep = $rep;
         $this->object_service = $object_service;
+        $this->device_rep = $device_rep;
     }
 
     public function updateComment(array $data)
@@ -382,7 +385,7 @@ class PortService {
                 }
 
             });
-        } else  throw new \Exception(': контроллер не доступен');
+        } else  throw new \Exception(': контроллер недоступен');
 
         return $result;
     }
@@ -395,6 +398,23 @@ class PortService {
        return Port::where('object', $idObject)->first();
     }
 
+    /**
+     * Возвращает массив с значениями текущего порта и устройства для выбранного объекта,
+     * а также все устройства и порты для выбранного устройства
+     * @param $idObject
+     * @return array
+     */
+    public function getCurrentDevPort($idObject)
+    {
+        $deviceAndPort = $this->getIdDeviceAndPortId($idObject);
+        $idDevice =  $deviceAndPort['id_device'];
+        $idPort = $deviceAndPort['id_port'];
+
+        $devices = $this->device_rep->getAllToArray();
+        $ports =  $this->getPortsIntoList($idDevice);
+
+        return [$idDevice, $idPort, $devices, $ports];
+    }
 
 
 }

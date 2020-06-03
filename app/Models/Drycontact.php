@@ -23,6 +23,7 @@ class Drycontact extends Model
 {
     protected $table = 'drycontacts';
     public $timestamps = false;
+    protected $guarded = ['id'];
 
     public function object()
     {

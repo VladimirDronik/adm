@@ -86,6 +86,49 @@
                             </div>
                         </div>
                     </div>
+                    {{ Form::bs_title('Действие при замыкании') }}
+
+                    {{ Form::bs_autoselect('object_on', 'Объект:', $objects, old('object_on'),
+                        false, false, [], null, 'Объект, на который воздействуем') }}
+
+                    {{ Form::bs_autoselect('method_on', 'Метод:', [], old('method_on'),
+                        false, false, [], null, 'Метод объекта при замыкании контакта') }}
+
+                    <div class="form-group row" id="method_on_params_div"
+                         @if(!old('method_on')) style="display: none;" @endif>
+                        <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_on_params"></label>
+                        <div class="col-md-9 pr-0">
+                            <div class="form-group row ">
+                                <label class="control-label text-right col-md-6 label-fix" id="method_on_params_label" for="method_on_params">...</label>
+                                <div class="col-md-6">
+                                    <input class="form-control" autocomplete="off" id="method_on_params" name="method_on_params"
+                                           type="text" value="{{ old('method_on_params') }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{ Form::bs_title('Действие при размыкании') }}
+
+                    {{ Form::bs_autoselect('object_off', 'Объект:', $objects, old('object_off'),
+                        false, false, [], null, 'Объект, на который воздействуем') }}
+
+                    {{ Form::bs_autoselect('method_off', 'Метод:', [], old('method_off'),
+                        false, false, [], null, 'Метод объекта при размыкании контакта') }}
+
+                    <div class="form-group row" id="method_off_params_div"
+                         @if(!old('method_off')) style="display: none;" @endif>
+                        <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_off_params"></label>
+                        <div class="col-md-9 pr-0">
+                            <div class="form-group row ">
+                                <label class="control-label text-right col-md-6 label-fix" id="method_off_params_label" for="method_off_params">...</label>
+                                <div class="col-md-6">
+                                    <input class="form-control" autocomplete="off" id="method_off_params" name="method_off_params"
+                                           type="text" value="{{ old('method_off_params') }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
                 </div>
@@ -105,12 +148,50 @@
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
+        const url_methods = '{{ route('ajax.objects.methods') }}';
 
         $(document).ready(function () {
             initSwitchForm();
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            $("#auto_sel_object_on").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_method_on").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_object_off").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_method_off").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            $("#auto_sel_object_on").chosen().change(function() {
+                let object_id = $(this).val();
+                hideParamsFields('method_on_params');
+
+                $.ajax({
+                    url: url_methods,
+                    data: {'_token': _token, 'object_id': object_id},
+                    success: function (data) {
+
+                        methods = data.methods;
+                        createMethodSelect('#auto_sel_method_on', data.methods, -1);
+                        $('#auto_sel_method_on').trigger("chosen:updated");
+                    }
+                });
+            });
+
+            $("#auto_sel_object_off").chosen().change(function() {
+                let object_id = $(this).val();
+                hideParamsFields('method_off_params');
+
+                $.ajax({
+                    url: url_methods,
+                    data: {'_token': _token, 'object_id': object_id},
+                    success: function (data) {
+
+                        methods = data.methods;
+                        createMethodSelect('#auto_sel_method_off', data.methods, -1);
+                        $('#auto_sel_method_off').trigger("chosen:updated");
+                    }
+                });
+            });
 
             $("#auto_sel_device_id").chosen().change(function() {
                 let device_id = $(this).val();

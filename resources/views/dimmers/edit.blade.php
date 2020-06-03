@@ -55,6 +55,8 @@
                         {{ Form::bs_number('value', 'Значение*:', old('value', $dimmer->value), ['required' => true]) }}
                         {{ Form::bs_number('speed', 'Скорость*:', old('speed', $dimmer->speed), ['required' => true]) }}
 
+
+
                     </div>
                     {{ Form::bs_submit_btn() }}
 

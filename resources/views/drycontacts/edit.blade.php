@@ -53,6 +53,62 @@
                             {{ Form::bs_autoselect_and_btn('id_object', 'Объект*:', $objects, old('id_object', $drycontact->id_object), false, false, ['required' => true]) }}
                         @endif
 
+
+                        <div class="col-sm-12 pr-0 mt-4">
+                            {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', $idDevice),
+                               false, false, [], null) }}
+
+                            {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
+                                false, false, [], null) }}
+                        </div>
+
+
+                        {{ Form::bs_title('Действие при замыкании') }}
+
+                        {{ Form::bs_autoselect('object_on', 'Объект:', $objects, old('object_on', $object_on),
+                            false, false, [], null, 'Объект, на который воздействуем') }}
+
+                        {{ Form::bs_autoselect('method_on', 'Метод:', $methods_on, old('method_on', $method_on),
+                            false, false, [], null, 'Метод объекта при замыкании контакта') }}
+
+                        <div class="form-group row" id="method_on_params_div"
+                             @if(!old('method_on')) style="display: none;" @endif>
+                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_on_params"></label>
+                            <div class="col-md-9 pr-0">
+                                <div class="form-group row ">
+                                    <label class="control-label text-right col-md-6 label-fix" id="method_on_params_label" for="method_on_params">...</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" autocomplete="off" id="method_on_params" name="method_on_params"
+                                               type="text" value="{{ old('method_on_params') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        {{ Form::bs_title('Действие при размыкании') }}
+
+                        {{ Form::bs_autoselect('object_off', 'Объект:', $objects, old('object_off', $object_off),
+                            false, false, [], null, 'Объект, на который воздействуем') }}
+
+                        {{ Form::bs_autoselect('method_off', 'Метод:', $methods_off, old('method_off', $method_off),
+                            false, false, [], null, 'Метод объекта при размыкании контакта') }}
+
+                        <div class="form-group row" id="method_off_params_div"
+                             @if(!old('method')) style="display: none;" @endif>
+                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_off_params"></label>
+                            <div class="col-md-9 pr-0">
+                                <div class="form-group row ">
+                                    <label class="control-label text-right col-md-6 label-fix" id="method_off_params_label" for="method_off_params">...</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" autocomplete="off" id="method_off_params" name="method_off_params"
+                                               type="text" value="{{ old('method_off_params') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @include('messages.two')
                     </div>
                     {{ Form::bs_submit_btn() }}
 
@@ -64,11 +120,12 @@
                 <div style="height: 200px;">&nbsp;</div>
                 <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
                 <button type="button" id="init_method_btn" style="display: none;" data-toggle="modal" data-target="#method_modal">&nbsp;</button>
+                <button type="button" id="init_message_btn" style="display: none;" data-toggle="modal" data-target="#message_modal">
 
             </div>
         </div>
     </div>
-
+    @include('objects.message_modal')
     @include('objects.method_modal')
 
     @include('components.info_modal')
@@ -81,17 +138,65 @@
     <script src="{{ asset('ela/js/pagescripts/switch.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const store_url = '{{ route('ajax.methods.store') }}';
+        const store_message_url = '{{ route('ajax.messages.store') }}';
         const del_url = '{{ route('ajax.methods.delete') }}';
+        const del_message_url = '{{ route('ajax.messages.delete') }}';
         const sub_data_url = '{{ route('ajax.load.data') }}';
         const object_id = '{{ optional($drycontact->object)->id }}';
         const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
+        const url_methods = '{{ route('ajax.objects.methods') }}';
         let del_id;
+        let del_message;
 
         $(document).ready(function () {
             initSwitchForm();
+
+            $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            $("#auto_sel_object_on").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_method_on").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_object_off").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_method_off").chosen({width:"100%", no_results_text: "Не найдено"});
+
+
+            $("#auto_sel_object_on").chosen().change(function() {
+                let object_id = $(this).val();
+                hideParamsFields('method_params_on');
+
+                $.ajax({
+                    url: url_methods,
+                    data: {'_token': _token, 'object_id': object_id},
+                    success: function (data) {
+
+                        methods = data.methods;
+                        createMethodSelect('#auto_sel_method_on', data.methods, -1);
+                        $('#auto_sel_method_on').trigger("chosen:updated");
+
+                    }
+                });
+            });
+
+            $("#auto_sel_object_off").chosen().change(function() {
+                let object_id = $(this).val();
+                hideParamsFields('method_params_off');
+
+                $.ajax({
+                    url: url_methods,
+                    data: {'_token': _token, 'object_id': object_id},
+                    success: function (data) {
+
+                        methods = data.methods;
+                        createMethodSelect('#auto_sel_method_off', data.methods, -1);
+                        $('#auto_sel_method_off').trigger("chosen:updated");
+
+                    }
+                });
+            });
 
             $('#auto_sel_btn_id_object').click(function() {
                 clearCreateObjectModal();
@@ -139,6 +244,19 @@
                 createObjectSelect('#auto_sel_id_object', objects, selected);
             }
 
+            //messages
+            $('#apply_message_btn').click(clickApplyMessageBtn);
+
+            // edit messages method
+            $('body').on('click', '.edit_message_btn', clickEditMessageBtn);
+
+            //delete message
+            $('body').on('click', '.del_message_btn', function() {
+                del_message = $(this).attr('data-method');
+                $('#del_modal_body').text('Удалить уведомление ?');
+                $('#del_init_btn').click();
+            });
+
             // methods
 
             const cancel_btn = $('#cancel_btn');
@@ -162,5 +280,19 @@
 
             $('#del_modal_btn').click(clickDelBtn);
         });
+
+
+        function createMethodSelect(target, options, selected) {
+            let sel = $(target);
+            sel.html('');
+            let s = '<option value="">Не выбрано</option>';
+            for (let i = 0; i < options.length; i++) {
+                if (selected == options[i].id)
+                    s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
+                else
+                    s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
+            }
+            sel.append(s);
+        }
     </script>
 @endsection

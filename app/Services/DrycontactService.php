@@ -19,21 +19,32 @@ class DrycontactService
 {
 
     private $drycontact_object_service;
+    private $objectService;
 
-    public function __construct(DryContactObjectService $drycontact_object_service)
+    public function __construct(DryContactObjectService $drycontact_object_service, ObjectService $objectService)
     {
         $this->drycontact_object_service = $drycontact_object_service;
+        $this->objectService = $objectService;
     }
 
     public function prepareDrycontact(Drycontact $drycontact, array $data)
     {
+
+
         $drycontact->name = trim($data['name']);
         $drycontact->id_object = (int)$data['id_object'];
+        $drycontact->method_on = $data['method_on'];
+        $drycontact->method_off = $data['method_off'];
+        $drycontact->param_method_on = $data['method_on_params'];
+        $drycontact->param_method_off = $data['method_off_params'];
+
+
     }
 
 
     public function store(array $data): int
     {
+
 
         $drycontact = new Drycontact();
         $this->prepareDrycontact($drycontact, $data);
@@ -45,12 +56,12 @@ class DrycontactService
                 $unique_name = HomeObject::getUniqueObjectName(0, $drycontact->name);
                 $object = $this->drycontact_object_service->createDrycontactObject($unique_name);
                 $drycontact->id_object = $object->id;
-                $this->drycontact_object_service->createDryContactObjectMethods($object->id);
+                $idNewMethod = $this->drycontact_object_service->createDryContactObjectMethods($object->id);
 
                 $drycontact->save();
 
                 if ($data['port_id']) {
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id]);
+                    Port::where('id', $data['port_id'])->update(['object' => $object->id, 'method' => $idNewMethod]);
                 }
             });
         }
@@ -85,6 +96,15 @@ class DrycontactService
             $drycontact->save();
         });
 
+        if ($data['port_id']) {
+
+            Port::where('object', $drycontact->object->id)->update(['object' => null, 'method' => null]);
+            Port::where('id', $data['port_id'])->update(['object' => $drycontact->object->id,
+                'method' => $this->objectService->getMethodByObject($drycontact->object->id)]);
+
+
+        }
+
         return $drycontact->id;
     }
 
@@ -110,6 +130,8 @@ class DrycontactService
         } else {
             $drycontact->delete();
         }
+
+        Port::where('object', $drycontact->id_object)->update(['object' => null, 'method' => null]);
 
         return true;
     }

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Drycontact;
 use App\Services\DrycontactService;
+use App\Services\MessageService;
+use App\Services\ObjectService;
+use App\Services\PortService;
 use Illuminate\Http\Request;
 use App\Http\Requests\DryContact\CreateRequest;
 use App\Http\Requests\DryContact\UpdateRequest;
@@ -19,14 +22,16 @@ class DrycontactController extends Controller
     private $object_rep;
     private $device_rep;
     private $service;
+    private $portService;
 
     public function __construct(DrycontactRepository $drycontact_rep, DeviceRepository $device_rep,
-                                ObjectRepository $object_rep, DrycontactService $service)
+                                ObjectRepository $object_rep, DrycontactService $service, PortService $portService)
     {
         $this->drycontact_rep = $drycontact_rep;
         $this->device_rep = $device_rep;
         $this->object_rep = $object_rep;
         $this->service = $service;
+        $this->portService = $portService;
     }
 
     public function index()
@@ -62,18 +67,37 @@ class DrycontactController extends Controller
     }
 
 
-    public function edit(int $id, ScriptRepository $script_rep)
+    public function edit(int $id, ScriptRepository $script_rep, ObjectService $objectService,
+                         MessageService $messagesService)
     {
         $drycontact = Drycontact::findOrFail($id);
 
         $objects = $this->object_rep->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
 
+
+        list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($drycontact->id_object);
+
+        $method_on = $drycontact->method_on;
+        $object_on = $objectService->getObjectByMethod($method_on);
+        $methods_on = $objectService->getMethodsByObjectIdToArray($object_on);
+
+        $method_off = $drycontact->method_off;
+        $object_off = $objectService->getObjectByMethod($method_off);
+        $methods_off = $objectService->getMethodsByObjectIdToArray($object_off);
+
+        $messages = $messagesService->getNotifications($drycontact->id_object);
+
+        $messagePoint['first'] = 'При замыкании';
+        $messagePoint['second'] = 'При размыкании';
+
         $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
-        return view('drycontacts.edit', compact('drycontact',
-            'objects', 'object_types', 'scripts', 'can'));
+        return view('drycontacts.edit', compact('drycontact', 'messagePoint',
+            'method_on', 'object_on', 'method_off', 'object_off', 'methods_on', 'methods_off',
+            'idDevice', 'idPort', 'devices', 'ports',
+            'objects', 'object_types', 'scripts', 'messages', 'can'));
     }
 
 

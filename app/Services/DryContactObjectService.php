@@ -69,19 +69,22 @@ class DryContactObjectService
     {
         $script = ScriptsTableSeeder::getDrycontactsScript();
 
-        $methods = [];
 
             $script_id = $this->getScriptId($script);
 
-            $methods[] = [
-                'name' => $script['name'],
-                'id_object' => $object_id,
-                'script' => $script_id,
-                'comment' => $script['name'],
-                'params' => null,
-                'is_system' => 1
-            ];
 
-        Method::insert($methods);
+        $method = new Method();
+
+        $method->name = $script['name'];
+        $method->id_object = $object_id;
+        $method->script = $script_id;
+        $method->comment = $script['name'];
+        $method->params = null;
+        $method->is_system = 1;
+
+
+        $method->save();
+        return $method->id;
     }
+
 }

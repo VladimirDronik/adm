@@ -76,7 +76,8 @@ class ScriptsTableSeeder extends Seeder
     public static function getDrycontactsScript(): array
     {
         return [
-            'name' => 'Проверка состояния сухого контакта',
+
+            'name' => 'Проверка текущего состояния контакта',
             'link' => 'check_drycontact.php',
             'count' => 0,
             'system' => 1

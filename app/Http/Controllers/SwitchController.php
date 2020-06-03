@@ -11,6 +11,7 @@ use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\SwitchRepository;
+use App\Services\MessageService;
 use App\Services\MethodService;
 use App\Services\ObjectService;
 use App\Services\PortService;
@@ -66,7 +67,8 @@ class SwitchController extends Controller
     }
 
     public function edit(int $id, ScriptRepository $script_rep,
-                         ObjectService $objectService, PortService $portService, DeviceRepository $device_rep)
+                         ObjectService $objectService, PortService $portService,
+                         MessageService $messagesService,DeviceRepository $device_rep)
     {
         $switch = DeviceSwitch::findOrFail($id);
 
@@ -83,18 +85,36 @@ class SwitchController extends Controller
 
         $port = $portService->getMethodsByObject($switch->id_object);
 
-        $method = $port->method;
-        $object = $objectService->getObjectByMethod($method);
-        $methods = $objectService->getMethodsByObjectIdToArray($object);
+        if($port) {
+            $method = $port->method;
+            $object = $objectService->getObjectByMethod($method);
+            $methods = $objectService->getMethodsByObjectIdToArray($object);
 
-        $method_dc = $port->dc_method;
-        $object_dc = $objectService->getObjectByMethod($method_dc);
-        $methods_dc = $objectService->getMethodsByObjectIdToArray($object_dc);
+            $method_dc = $port->dc_method;
+            $object_dc = $objectService->getObjectByMethod($method_dc);
+            $methods_dc = $objectService->getMethodsByObjectIdToArray($object_dc);
 
-        $method_lc = $port->lc_method;
-        $object_lc = $objectService->getObjectByMethod($method_lc);
-        $methods_lc = $objectService->getMethodsByObjectIdToArray($object_lc);
+            $method_lc = $port->lc_method;
+            $object_lc = $objectService->getObjectByMethod($method_lc);
+            $methods_lc = $objectService->getMethodsByObjectIdToArray($object_lc);
+        } else {
 
+            $method = null;
+            $object = null;
+            $methods = [];
+            $method_dc =  null;
+            $object_dc =  null;
+            $methods_dc =  [];
+            $method_lc =  null;
+            $object_lc =  null;
+            $methods_lc =  [];
+        }
+
+
+        $messages = $messagesService->getNotifications($switch->id_object);
+
+        $messagePoint['first'] = 'При включении';
+        $messagePoint['second'] = 'При выключении';
 
         $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
@@ -102,6 +122,7 @@ class SwitchController extends Controller
         return view('switches.edit', compact('switch', 'types',
             'object', 'method', 'methods', 'object_dc', 'method_dc', 'methods_dc',
             'object_lc', 'method_lc', 'methods_lc', 'idDevice', 'idPort', 'devices', 'ports',
+            'messages', 'messagePoint',
             'objects', 'object_types', 'scripts', 'can'));
     }
 

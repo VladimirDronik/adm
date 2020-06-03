@@ -3,9 +3,9 @@
 
     <div class="form-group row">
         @can('superadmin')
-            <div class="col-md-1"><i>ID</i></div>
+            <div class="col-md-2"><i>ID</i></div>
         @endcan
-        <label class="col-md-5"><i>Название метода</i></label>
+        <label class="col-md-4"><i>Название метода</i></label>
         <div class="col-md-6 text-left"><i>Комментарий</i></div>
     </div>
     <div id="system_methods_div">
@@ -13,11 +13,11 @@
             @if($method->is_system)
                 <div class="form-group row" id="div{{$method->id}}">
                     @can('superadmin')
-                        <div class="col-md-1" id="methodid{{$method->id}}">
+                        <div class="col-md-2" id="methodid{{$method->id}}">
                             {{ $method->id }}
                         </div>
                     @endcan
-                    <label class="col-md-5" id="name{{$method->id}}">
+                    <label class="col-md-4" id="name{{$method->id}}">
                         {{$method->name}}
                         @if($method->is_need_param)
                             <i class="fa fa-asterisk f-s-10 text-muted" title="Метод с параметром"></i>

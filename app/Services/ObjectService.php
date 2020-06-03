@@ -106,4 +106,17 @@ class ObjectService {
 
         return null;
     }
+
+    /**
+     * Возвращает первый попавшийся (или единственный) метод для объекта
+     */
+    public function getMethodByObject($idOject)
+    {
+        if($idOject) {
+            $return = Method::where('id_object', $idOject)->first();
+            return $return->id;
+        }
+
+        return null;
+    }
 }

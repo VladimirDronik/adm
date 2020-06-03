@@ -41,6 +41,11 @@ class SwitchService {
             $switch->delete();
         }
 
+        Port::where('object', $switch->id_object)->update([
+            'object' => null,
+            'method' => null, 'method_params' => null,
+            'dc_method' => null, 'dc_method_params' => null,
+            'lc_method' => null, 'lc_method_params' => null ]);
 
 
         return true;
@@ -116,6 +121,13 @@ class SwitchService {
         });
 
         if ($data['port_id']) {
+
+            Port::where('object', $switch->object->id)->update([
+                'object' => null,
+                'method' => null, 'method_params' => null,
+                'dc_method' => null, 'dc_method_params' => null,
+                'lc_method' => null, 'lc_method_params' => null ]);
+
             Port::where('id', $data['port_id'])->update([
                 'method' => $data['method'], 'method_params' => $data['method_params'],
                 'dc_method' => $data['method_dc'], 'dc_method_params' => $data['method_dc_params'],
