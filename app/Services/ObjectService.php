@@ -110,11 +110,11 @@ class ObjectService {
     /**
      * Возвращает первый попавшийся (или единственный) метод для объекта
      */
-    public function getMethodByObject($idOject)
+    public function getMethodByObject($idObject)
     {
-        if($idOject) {
-            $return = Method::where('id_object', $idOject)->first();
-            return $return->id;
+        if($idObject) {
+            $return = Method::where('id_object', $idObject)->where('is_system', 1)->first();
+            if($return) return $return->id;
         }
 
         return null;

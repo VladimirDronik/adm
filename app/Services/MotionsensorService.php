@@ -12,10 +12,12 @@ use App\Models\Port;
 class MotionsensorService {
 
     private $motionsensor_object_service;
+    private $objectService;
 
-    public function __construct(MotionSensorObjectService $motionsensor_object_service)
+    public function __construct(MotionSensorObjectService $motionsensor_object_service, ObjectService $objectService)
     {
         $this->motionsensor_object_service = $motionsensor_object_service;
+        $this->objectService = $objectService;
     }
 
     public function prepareMotionsensor(Motionsensor $motionsensor, array $data)
@@ -55,8 +57,10 @@ class MotionsensorService {
 
                 $motionsensor->save();
 
+                $idNewMethod = $this->motionsensor_object_service->createMotionsensorObjectMethods($object->id);
+
                 if ($data['port_id']) {
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id]);
+                    Port::where('id', $data['port_id'])->update(['object' => $object->id, 'method' => $idNewMethod]);
                 }
             });
         }
@@ -71,7 +75,7 @@ class MotionsensorService {
 
     public function update(Motionsensor $motionsensor, array $data): int
     {
-
+;
         DB::transaction(function () use (&$motionsensor, $data) {
             if ($this->isUpdateAutoObjectName($motionsensor, $data['name'])) {
                 $motionsensor->iobject->name = HomeObject::getUniqueObjectName($motionsensor->iobject->id, trim($data['name']));
@@ -79,12 +83,14 @@ class MotionsensorService {
 
             }
 
-            /*
+
             if ($data['port_id']) {
-                Port::where('object', $motionsensor->id_object)->update(['object' => NULL]);
-                Port::where('id', $data['port_id'])->update(['object' => $motionsensor->id_object]);
+
+                Port::where('object', $motionsensor->id_object)->update(['object' => null, 'method' => null]);
+                Port::where('id', $data['port_id'])->update(['object' => $motionsensor->id_object,
+                    'method' => $this->objectService->getMethodByObject($motionsensor->id_object)]);
+
             }
-*/
 
 
             $this->prepareMotionsensor($motionsensor, $data);
@@ -114,6 +120,8 @@ class MotionsensorService {
         } else {
             $motionsensor->delete();
         }
+
+        Port::where('object', $motionsensor->id_object)->update(['object' => null, 'method' => null]);
 
         return true;
     }

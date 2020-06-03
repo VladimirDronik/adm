@@ -84,6 +84,17 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
+    public static function getMotionsensorScript(): array
+    {
+        return [
+
+            'name' => 'Срабатывание датчика движения',
+            'link' => 'run_motionsensor.php',
+            'count' => 0,
+            'system' => 1
+        ];
+    }
+
 
 
     /**

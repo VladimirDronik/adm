@@ -46,7 +46,6 @@ class DryContactObjectService
      */
     private function getScriptId(array $scriptArray): int
     {
-        //dd($scriptArray);
 
         $script = Script::where('name', $scriptArray['name'])
             ->where('system', 1)->first();
