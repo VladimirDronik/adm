@@ -262,31 +262,36 @@ class PortService {
     */
     public function getPortsIntoList($deviceId, $typePort = 'IN')
     {
+        if($deviceId) {
 
-        switch ($typePort) {
+            switch ($typePort) {
 
-            case 'IN': $ports = $this->rep->getInPortsByDeviceId($deviceId);
-                       break;
+                case 'IN': $ports = $this->rep->getInPortsByDeviceId($deviceId);
+                           break;
 
-            case 'I2C': $ports = $this->rep->getI2CPortsByDeviceId($deviceId);
-                break;
+                case 'OUT': $ports = $this->rep->getOutPortsByDeviceId($deviceId);
+                    break;
+
+                case 'I2C': $ports = $this->rep->getI2CPortsByDeviceId($deviceId);
+                    break;
 
 
-        }
-
-        $portsArray = [];
-
-            foreach ($ports AS $port) {
-
-                if ($port->comment)
-                    $commentString = ' (' . $port->comment . ')';
-                else $commentString = '';
-
-                $portsArray[$port->id] = $port->status . ' ' . $port->num_port . $commentString;
             }
 
-            return $portsArray;
 
+            $portsArray = [];
+
+                foreach ($ports AS $port) {
+
+                    if ($port->comment)
+                        $commentString = ' (' . $port->comment . ')';
+                    else $commentString = '';
+
+                    $portsArray[$port->id] = $port->status . ' ' . $port->num_port . $commentString;
+                }
+
+                return $portsArray;
+        } else return null;
     }
 
     /**
@@ -297,12 +302,14 @@ class PortService {
         if($port = Port::where('object', $idObject)->first()) {
             $deviceId = $port->id_device;
             $portId = $port->id;
+            $typePort = $port->status;
         } else {
             $deviceId = null;
             $portId = null;
+            $typePort = null;
         }
 
-        return array('id_device' => $deviceId, 'id_port' => $portId);
+        return array('id_device' => $deviceId, 'id_port' => $portId, 'type_port' => $typePort);
     }
 
     /**
@@ -409,9 +416,15 @@ class PortService {
         $deviceAndPort = $this->getIdDeviceAndPortId($idObject);
         $idDevice =  $deviceAndPort['id_device'];
         $idPort = $deviceAndPort['id_port'];
+        $typePort = $deviceAndPort['type_port'];
 
         $devices = $this->device_rep->getAllToArray();
-        $ports =  $this->getPortsIntoList($idDevice);
+        $ports =  $this->getPortsIntoList($idDevice, $typePort);
+
+        if(!$devices || !$ports) {
+            $devices = $this->device_rep->getAllToArray();
+            $ports = [];
+        }
 
         return [$idDevice, $idPort, $devices, $ports];
     }

@@ -10,21 +10,26 @@ use App\Repositories\DeviceRepository;
 use App\Repositories\DimmerRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
+use App\Services\DeviceService;
 use App\Services\DimmerService;
+use App\Services\NetworkService;
+use App\Services\PortService;
 
 class DimmerController extends Controller
 {
     private $dimmer_rep;
     private $object_rep;
     private $device_rep;
+    private $portService;
     private $service;
 
     public function __construct(DimmerRepository $dimmer_rep, ObjectRepository $object_rep, DeviceRepository $device_rep,
-                                DimmerService $service)
+                                DimmerService $service, PortService $portService)
     {
         $this->dimmer_rep = $dimmer_rep;
         $this->object_rep = $object_rep;
         $this->device_rep = $device_rep;
+        $this->portService = $portService;
         $this->service = $service;
     }
 
@@ -66,7 +71,11 @@ class DimmerController extends Controller
         $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
+        list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($dimmer->id_object);
+
+
         return view('dimmers.edit', compact('dimmer',
+            'idDevice','idPort','devices','ports',
             'objects', 'object_types', 'scripts', 'can'));
     }
 

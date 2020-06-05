@@ -66,6 +66,15 @@
                         {{ Form::bs_text('today_value', 'Значение за сегодня*:', old('today_value', $count->today_value), ['required' => true]) }}
                         {{ Form::bs_text('total_value', 'Общее значение*:', old('total_value', $count->total_value), ['required' => true]) }}
                     </div>
+
+                    <div class="col-sm-12 pr-0 mt-4">
+                        {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', $idDevice),
+                           false, false, [], null) }}
+
+                        {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
+                            false, false, [], null) }}
+                    </div>
+
                     {{ Form::bs_submit_btn() }}
 
                     @include('objects.methods', ['object' => $count->object])
@@ -95,6 +104,7 @@
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
+        const url_ports = '{{ route('ajax.devices.objects_ports') }}';
         const store_url = '{{ route('ajax.methods.store') }}';
         const del_url = '{{ route('ajax.methods.delete') }}';
         const sub_data_url = '{{ route('ajax.load.data') }}';
@@ -104,6 +114,24 @@
 
         $(document).ready(function () {
             initCountForm();
+
+
+            $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            $("#auto_sel_device_id").chosen().change(function() {
+                let object_id = $(this).val();
+
+                $.ajax({
+                    url: url_ports,
+                    data: {'_token': _token, 'device_id': object_id, 'status': 'IN'},
+                    success: function (data) {
+                        methods = data.ports;
+                        createMethodSelect('#auto_sel_port_id', data.ports, -1);
+                        $('#auto_sel_port_id').trigger("chosen:updated");
+                    }
+                });
+            });
 
             $('#auto_sel_btn_id_object').click(function() {
                 clearCreateObjectModal();
@@ -174,5 +202,18 @@
 
             $('#del_modal_btn').click(clickDelBtn);
         });
+
+        function createMethodSelect(target, options, selected) {
+            let sel = $(target);
+            sel.html('');
+            let s = '<option value="">Не выбрано</option>';
+            for (let i = 0; i < options.length; i++) {
+                if (selected == options[i].id)
+                    s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
+                else
+                    s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
+            }
+            sel.append(s);
+        }
     </script>
 @endsection

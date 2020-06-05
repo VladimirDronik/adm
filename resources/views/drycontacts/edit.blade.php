@@ -141,6 +141,7 @@
     <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
+        const url_ports = '{{ route('ajax.devices.objects_ports') }}';
         const store_url = '{{ route('ajax.methods.store') }}';
         const store_message_url = '{{ route('ajax.messages.store') }}';
         const del_url = '{{ route('ajax.methods.delete') }}';
@@ -163,6 +164,19 @@
             $("#auto_sel_object_off").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_method_off").chosen({width:"100%", no_results_text: "Не найдено"});
 
+            $("#auto_sel_device_id").chosen().change(function() {
+                let object_id = $(this).val();
+
+                $.ajax({
+                    url: url_ports,
+                    data: {'_token': _token, 'device_id': object_id, 'status': 'IN'},
+                    success: function (data) {
+                        methods = data.ports;
+                        createMethodSelect('#auto_sel_port_id', data.ports, -1);
+                        $('#auto_sel_port_id').trigger("chosen:updated");
+                    }
+                });
+            });
 
             $("#auto_sel_object_on").chosen().change(function() {
                 let object_id = $(this).val();

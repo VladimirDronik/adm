@@ -32,7 +32,7 @@
                             <li>
                                 <a href="{{ route('switches.index') }}">
                                     <i class="fa fa-bullseye"></i>
-                                    Выключатели
+                                    Выключатели (кнопки)
                                 </a>
                             </li>
                             <li>
@@ -44,7 +44,7 @@
                             <li>
                                 <a href="{{ route('relays.index') }}">
                                     <i class="fa fa-bullseye"></i>
-                                    Реле
+                                    Реле (розетки)
                                 </a>
                             </li>
                             <li>

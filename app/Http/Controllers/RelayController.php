@@ -10,6 +10,8 @@ use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\RelayRepository;
 use App\Repositories\ScriptRepository;
+use App\Services\MessageService;
+use App\Services\PortService;
 use App\Services\RelayService;
 
 class RelayController extends Controller
@@ -18,13 +20,15 @@ class RelayController extends Controller
     private $object_rep;
     private $device_rep;
     private $service;
+    private $portService;
 
     public function __construct(RelayRepository $relay_rep, ObjectRepository $object_rep, DeviceRepository $device_rep,
-                                RelayService $service)
+                                RelayService $service, PortService $portService)
     {
         $this->relay_rep = $relay_rep;
         $this->object_rep = $object_rep;
         $this->device_rep = $device_rep;
+        $this->portService = $portService;
         $this->service = $service;
     }
 
@@ -60,7 +64,7 @@ class RelayController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении реле');
     }
 
-    public function edit(Relay $relay, ScriptRepository $script_rep)
+    public function edit(Relay $relay, ScriptRepository $script_rep, MessageService $messageService)
     {
         $types = Relay::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
@@ -69,7 +73,15 @@ class RelayController extends Controller
         $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
+        list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($relay->id_object);
+
+        $messages = $messageService->getNotifications($relay->id_object);
+
+        $messagePoint['first'] = 'При включении';
+        $messagePoint['second'] = 'При выключении';
+
         return view('relays.edit', compact('relay', 'types',
+            'idDevice','idPort','devices','ports', 'messagePoint', 'messages',
             'objects', 'object_types', 'scripts', 'can'));
     }
 

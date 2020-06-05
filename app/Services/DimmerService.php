@@ -39,6 +39,8 @@ class DimmerService {
             $dimmer->delete();
         }
 
+        Port::where('object', $dimmer->id_object)->update(['object' => null, 'method' => null]);
+
         return true;
     }
 
@@ -108,7 +110,14 @@ class DimmerService {
             }
             $this->prepareDimmer($dimmer, $data);
             $dimmer->save();
+
+            if ($data['port_id']) {
+                Port::where('object', $dimmer->id_object)->update(['object' => null, 'method' => null]);
+                Port::where('id', $data['port_id'])->update(['object' => $dimmer->id_object]);
+            }
         });
+
+
 
         return $dimmer->id;
     }

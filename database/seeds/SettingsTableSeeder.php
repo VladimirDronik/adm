@@ -55,6 +55,11 @@ class SettingsTableSeeder extends Seeder
                 'value' => '30',
                 'comment' => 'Количество дней хранения логов'
             ],
+            [
+                'name' => 'guard_mode',
+                'value' => 'false',
+                'comment' => 'Режим охраны'
+            ],
         ];
 
         $result_settings = [];

@@ -39,6 +39,8 @@ class RelayService {
             $relay->delete();
         }
 
+        Port::where('object', $relay->id_object)->update(['object' => null, 'method' => null]);
+
         return true;
     }
 
@@ -107,6 +109,11 @@ class RelayService {
             }
             $this->prepareRelay($relay, $data);
             $relay->save();
+
+            if ($data['port_id']) {
+                Port::where('object', $relay->id_object)->update(['object' => null, 'method' => null]);
+                Port::where('id', $data['port_id'])->update(['object' => $relay->id_object]);
+            }
         });
 
         return $relay->id;

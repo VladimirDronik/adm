@@ -11,21 +11,24 @@ use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
 use App\Services\CountService;
+use App\Services\PortService;
 
 class CountController extends Controller
 {
     private $count_rep;
     private $object_rep;
     private $device_rep;
+    private $portService;
     private $service;
 
     public function __construct(CountRepository $count_rep, ObjectRepository $object_rep, DeviceRepository $device_rep,
-                                CountService $service)
+                                CountService $service, PortService $portService)
     {
         $this->count_rep = $count_rep;
         $this->object_rep = $object_rep;
         $this->device_rep = $device_rep;
         $this->service = $service;
+        $this->portService = $portService;
     }
 
     public function index()
@@ -41,6 +44,7 @@ class CountController extends Controller
         $objects = $this->object_rep->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
         $devices = $this->device_rep->getAllToArray();
+
 
         return view('counts.create', compact('types', 'objects', 'object_types', 'devices'));
     }
@@ -69,7 +73,11 @@ class CountController extends Controller
         $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
+        list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($count->id_object);
+
+
         return view('counts.edit', compact('count', 'types',
+            'idDevice','idPort','devices','ports',
             'objects', 'object_types', 'scripts', 'can'));
     }
 

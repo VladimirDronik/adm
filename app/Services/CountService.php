@@ -39,6 +39,8 @@ class CountService {
             $count->delete();
         }
 
+        Port::where('object', $count->id_object)->update(['object' => null, 'method' => null]);
+
         return true;
     }
 
@@ -113,7 +115,15 @@ class CountService {
             }
             $this->prepareCount($count, $data);
             $count->save();
+
+            if ($data['port_id']) {
+                Port::where('object', $count->id_object)->update(['object' => null, 'method' => null]);
+                Port::where('id', $data['port_id'])->update(['object' => $count->id_object]);
+            }
+
         });
+
+
 
         return $count->id;
     }
