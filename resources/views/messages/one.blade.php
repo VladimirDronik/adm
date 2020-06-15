@@ -6,7 +6,7 @@
             При включении
             </div>
             <div class="col-8">
-                <i id="message-txt-on">@if( $messages['message_on'] ) {{ $messages['message_on'] }} @else Нет оповещения @endif </i>
+                <i id="message-txt-on">@if( $messages['message_1'] ) {{ $messages['message_1'] }} @else Нет оповещения @endif </i>
             </div>
             <div class="col-1">
                 <button type="button"

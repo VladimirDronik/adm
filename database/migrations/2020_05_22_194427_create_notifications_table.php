@@ -17,10 +17,10 @@ class CreateNotificationsTable extends Migration
             Schema::create('notifications', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('id_object')->nullable()->comment('id из таблицы объектов');
-                $table->string('message_on')->nullable();
-                $table->tinyInteger('priority_on')->nullable();
-                $table->string('message_off')->nullable();
-                $table->tinyInteger('priority_off')->nullable();
+                $table->string('message_1')->nullable();
+                $table->tinyInteger('priority_1')->nullable();
+                $table->string('message_2')->nullable();
+                $table->tinyInteger('priority_2')->nullable();
 
                 $table->foreign('id_object')->references('id')->on('objects')
                     ->onUpdate('cascade')->onDelete('cascade');

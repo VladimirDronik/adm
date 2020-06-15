@@ -90,6 +90,10 @@
                     <li> <a class="has-arrow" href="{{ route('users.index') }}" aria-expanded="false">
                             <i class="fa fa-user-o"></i><span class="hide-menu">Пользователи</span></a></li>
                 @endcan
+                @can('scenes')
+                    <li> <a class="has-arrow" href="{{ route('notifications.index') }}" aria-expanded="false">
+                            <i class="fa fa-bell-o"></i><span class="hide-menu">Оповещения</span></a></li>
+                @endcan
                 <!--@can('menu')
                     <li> <a class="has-arrow" href="{{ route('menu.index') }}" aria-expanded="false">
                             <i class="fa fa-th-list"></i><span class="hide-menu">Меню</span></a></li>

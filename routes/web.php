@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('events', 'EventController')->except('show','destroy')->middleware('can:events');
     Route::resource('logs', 'LogController')->only('index')->middleware('can:logs');
     Route::resource('users', 'UserController')->except('show','destroy')->middleware('can:rooms');
+    Route::resource('notifications', 'NotificationController')->except('show','destroy')->middleware('can:settings');
 
     Route::resource('rooms', 'RoomController')->except('show','create','store','destroy')->middleware('can:rooms');
     Route::get('rooms/group/{id}', 'RoomGroupController@index')->name('rooms.group.index')->middleware('can:rooms');

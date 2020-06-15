@@ -9,6 +9,7 @@ use App\Models\Script;
 use App\Repositories\DeviceRepository;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
+use function Sodium\library_version_major;
 
 class PortService {
 
@@ -262,6 +263,7 @@ class PortService {
     */
     public function getPortsIntoList($deviceId, $typePort = 'IN')
     {
+
         if($deviceId) {
 
             switch ($typePort) {
@@ -275,7 +277,8 @@ class PortService {
                 case 'I2C': $ports = $this->rep->getI2CPortsByDeviceId($deviceId);
                     break;
 
-
+                default: $ports = [];
+                    break;
             }
 
 
@@ -291,7 +294,7 @@ class PortService {
                 }
 
                 return $portsArray;
-        } else return null;
+        } else return [];
     }
 
     /**

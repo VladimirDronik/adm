@@ -42,11 +42,11 @@ class MessageService
         $notification->id_object = (int)$data['object_id'];
 
         if ($data['state'] == 'on') {
-            $notification->message_on = trim($data['message']);
-            $notification->priority_on = trim($data['priority']);
+            $notification->message_1 = trim($data['message']);
+            $notification->priority_1 = trim($data['priority']);
         } else {
-            $notification->message_off = trim($data['message']);
-            $notification->priority_off = trim($data['priority']);
+            $notification->message_2 = trim($data['message']);
+            $notification->priority_2 = trim($data['priority']);
         }
 
         $notification->save();
@@ -65,12 +65,12 @@ class MessageService
     {
 
         if ($message === 'on') {
-            $message = 'message_on';
-            $priority = 'priority_on';
+            $message = 'message_1';
+            $priority = 'priority_1';
         }
         else {
-            $message = 'message_off';
-            $priority = 'priority_off';
+            $message = 'message_2';
+            $priority = 'priority_2';
         }
 
         Notification::where('id_object', $id_object)->update([$message => null, $priority => null]);

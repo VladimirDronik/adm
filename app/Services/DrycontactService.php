@@ -56,12 +56,12 @@ class DrycontactService
                 $unique_name = HomeObject::getUniqueObjectName(0, $drycontact->name);
                 $object = $this->drycontact_object_service->createDrycontactObject($unique_name);
                 $drycontact->id_object = $object->id;
-                $idNewMethod = $this->drycontact_object_service->createDryContactObjectMethods($object->id);
+               // $idNewMethod = $this->drycontact_object_service->createDryContactObjectMethods($object->id);
 
                 $drycontact->save();
 
                 if ($data['port_id']) {
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id, 'method' => $idNewMethod]);
+                    Port::where('id', $data['port_id'])->update(['object' => $object->id, 'method' => null]);
                 }
             });
         }
@@ -100,7 +100,7 @@ class DrycontactService
 
             Port::where('object', $drycontact->object->id)->update(['object' => null, 'method' => null]);
             Port::where('id', $data['port_id'])->update(['object' => $drycontact->object->id,
-                'method' => $this->objectService->getMethodByObject($drycontact->object->id)]);
+                'method' => null]);
 
 
         }
