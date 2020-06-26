@@ -16,6 +16,7 @@ class UserService
     {
         $data['name'] = trim($data['name']);
         $data['dev_id'] = trim($data['dev_id']);
+        $data['def_scene'] = 0;
 
         $user->fill($data);
     }
