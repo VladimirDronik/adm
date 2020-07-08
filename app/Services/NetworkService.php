@@ -5,7 +5,7 @@ namespace App\Services;
 class NetworkService {
 
     private $pathNet = "/etc/network/interfaces";
-    private $pathVpn = "/etc/ppp/peers/vpn";
+    private $pathVpn = "/etc/ppp/peers/l2tp.client";
 
     /**
      * Установка параметров для сетевого интерфейса
@@ -22,7 +22,7 @@ class NetworkService {
 
         $tplA = <<<EOT1
     			address {$address}
-    			network {$netmask}
+    			netmask {$netmask}
     			gateway {$gateway}
     			
 EOT1;
@@ -89,6 +89,15 @@ EOT2;
         }
 
         $tpl = <<<EOT
+        noauth
+        nodefaultroute
+        name demostand
+        password totpass
+EOT;
+
+
+/*
+        $tpl = <<<EOT
 				pty "pptp {$server} --nolaunchpppd"
 				#require-mschap-v2
 				#require-mppe-128
@@ -103,7 +112,7 @@ EOT2;
 				maxfail 10 #количество попыток пере подключения
 				holdoff 15 #интервал между подключениями
 EOT;
-
+*/
         //$tmpfname = tempnam("/tmp", "vpn");
         file_put_contents($this->pathVpn, $tpl);
 

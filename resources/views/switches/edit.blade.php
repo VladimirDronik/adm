@@ -218,6 +218,18 @@
                 });
             });
 
+            $("#auto_sel_device_id").chosen().change(function() {
+                let device_id = $(this).val();
+                $.ajax({
+                    url: url_ports,
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'in'},
+                    success: function (data) {
+                        createMethodSelect('#auto_sel_port_id', data.ports, -1);
+                        $('#auto_sel_port_id').trigger("chosen:updated");
+                    }
+                });
+            });
+
             $("#auto_sel_object_lc").chosen().change(function() {
                 let object_id = $(this).val();
                 hideParamsFields('method_lc_params');
