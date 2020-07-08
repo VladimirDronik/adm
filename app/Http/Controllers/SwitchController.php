@@ -63,7 +63,7 @@ class SwitchController extends Controller
                 json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении выключателя');
+        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении выключателя: '.$e->getMessage());
     }
 
     public function edit(int $id, ScriptRepository $script_rep,
