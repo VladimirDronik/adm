@@ -10,7 +10,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('settings.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
+                        <a href="{{ route('notifications.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
             </div>

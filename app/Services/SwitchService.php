@@ -121,7 +121,7 @@ class SwitchService {
         });
 
         if ($data['port_id']) {
-            
+
             Port::where('object', $switch->object->id)->update([
                 'object' => null,
                 'method' => null, 'method_params' => null,
