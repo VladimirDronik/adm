@@ -3,21 +3,18 @@ function isEmptyInput(name) {
 }
 
 function isEmptyAutoSelect(name) {
-    return $('#lamp_form #auto_sel_'+name).val().trim() == '';
+    return $('#relay_form #auto_sel_'+name).val().trim() == '';
 }
 
-function validateLamp() {
-    /*
-    if ($("#lamp_form input[name=type]").length && !$("#relay_form input[name=type]:checked").val()) {
-
+function validateRelay() {
+    if ($("#relay_form input[name=type]").length && !$("#relay_form input[name=type]:checked").val()) {
         return 'Не указан тип';
     }
-     */
     if (isEmptyInput('name')) {
         return 'Не указано название';
     }
 
-    if ( $('#lamp_form input[name=object_type]').length && $('#lamp_form input[name=object_type]:checked').val() === 'manual'
+    if ( $('#relay_form input[name=object_type]').length && $('#relay_form input[name=object_type]:checked').val() === 'manual'
             && isEmptyAutoSelect('id_object')) {
         return 'Не указан объект';
     }
@@ -25,12 +22,12 @@ function validateLamp() {
     return '';
 }
 
-function initRelayForm() {
+function initLampForm() {
     $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});
 
-    $('#lamp_form button[type=submit]').click(function(){
+    $('#relay_form button[type=submit]').click(function(){
 
-        let message = validateLamp();
+        let message = validateRelay();
         if (message !== '') {
             $('#info_modal_body').html('<span class="text-danger">'+message+'</span>');
             $('#init_btn').click();

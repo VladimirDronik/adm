@@ -29,7 +29,7 @@
                         {{ Form::bs_text('mask', 'Маска*:', old('mask', $network[1]), ['required' => true]) }}
 
                         {{ Form::bs_title('Настройки VPN') }}
-                        {{ Form::bs_text('vpn_address', 'Адрес сервера*:', old('vpn_address', $vpn[0]), ['required' => true]) }}
+                        //{{  Form::bs_text('vpn_address', 'Адрес сервера*:', old('vpn_address', $vpn[0]), ['required' => true]) }}
                         {{ Form::bs_text('vpn_login', 'Логин*:', old('vpn_login', $vpn[1]), ['required' => true]) }}
                         {{ Form::bs_text('vpn_password', 'Пароль*:', old('vpn_password', $vpn[2]), ['required' => true], 'Не менее 6 символов') }}
                     </div>

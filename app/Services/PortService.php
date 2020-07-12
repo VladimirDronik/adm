@@ -266,7 +266,7 @@ class PortService {
 
         if($deviceId) {
 
-            switch ($typePort) {
+            switch (mb_strtoupper($typePort)) {
 
                 case 'IN': $ports = $this->rep->getInPortsByDeviceId($deviceId);
                            break;

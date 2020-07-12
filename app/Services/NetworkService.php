@@ -91,8 +91,8 @@ EOT2;
         $tpl = <<<EOT
         noauth
         nodefaultroute
-        name demostand
-        password totpass
+        name "{$username}"
+        password "{$password}"
 EOT;
 
 

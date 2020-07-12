@@ -26,6 +26,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('counts', 'CountController')->except('show','destroy')->middleware('can:devices');
     Route::resource('switches', 'SwitchController')->except('show','destroy')->middleware('can:devices');
     Route::resource('relays', 'RelayController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('lamps', 'LampController')->except('show','destroy')->middleware('can:devices');
     Route::resource('dimmers', 'DimmerController')->except('show','destroy')->middleware('can:devices');
 
     Route::resource('settings', 'SettingController')->except('show','destroy')->middleware('can:settings');
@@ -100,6 +101,10 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'relays', 'as' => 'relays.'], function () {
             Route::post('delete', 'RelayController@delete')->name('delete');
+        });
+
+        Route::group(['prefix' => 'lamps', 'as' => 'lamps.'], function () {
+            Route::post('delete', 'LampController@delete')->name('delete');
         });
 
         Route::group(['prefix' => 'dimmers', 'as' => 'dimmers.'], function () {
