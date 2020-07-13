@@ -116,7 +116,7 @@ class SwitchService {
 
                 if ($data['port_id']) {
 
-                    $answer = $this->setPort($data['port_id'], $data['type']);
+                    //$answer = $this->setPort($data['port_id'], $data['type']);
 
                     Port::where('id', $data['port_id'])->update(['object' => $object->id,
                         'method' => $data['method'], 'method_params' => $data['method_params'],
@@ -125,13 +125,16 @@ class SwitchService {
                 }
 
 
+                $switch->save();
+                $result = true;
+                /*
                 if ($answer === false) {
                     throw new \Exception('Некорректный ответ от удаленного сервера');
                 } else {
                     $switch->save();
                     $result = true;
                 }
-
+                */
 
             });
         }
