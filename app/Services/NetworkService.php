@@ -169,9 +169,10 @@ EOT;
      */
     public function getVpn() {
         $bn = file($this->pathVpn);
-        $server = explode(" ", $bn[0]); //2
-        $user = explode(" ", $bn[3]); //1
-        $pass = explode(" ", $bn[4]); //1
+        //$server = explode(" ", $bn[0]); //2
+        $server = '';
+        $user = explode(" ", $bn[2]); //1
+        $pass = explode(" ", $bn[3]); //1
 
         return [trim($server[2]), trim(trim($user[1]),'\"'), trim(trim($pass[1]),'\"')];
     }

@@ -53,6 +53,11 @@ return [
             'root' => env('APP_SCRIPTS_PATH', storage_path('app/scripts')),
         ],
 
+        'devices' => [
+            'driver' => 'local',
+            'root' => env('APP_DEVICES_PATH', storage_path('app/devices')),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

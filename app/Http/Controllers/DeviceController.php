@@ -8,22 +8,27 @@ use App\Models\Port;
 use App\Repositories\DeviceRepository;
 use App\Services\DeviceService;
 use Illuminate\Http\Request;
+use App\Services\ConfigMegaService;
 
 
 class DeviceController extends Controller
 {
     private $device_rep;
     private $service;
+    private $megaService;
 
-    public function __construct(DeviceRepository $device_rep, DeviceService $service)
+    public function __construct(DeviceRepository $device_rep, DeviceService $service, ConfigMegaService $megaService)
     {
         $this->device_rep = $device_rep;
         $this->service = $service;
+        $this->megaService = $megaService;
     }
 
     public function index()
     {
         $devices = $this->device_rep->getByName();
+
+        $this->megaService->setPortSetting(1,3,'test params');
 
         return view('devices.index', compact('devices'));
     }
