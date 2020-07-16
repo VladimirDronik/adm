@@ -183,6 +183,7 @@ class ConfigMegaService
 
         $countResult = 0; //количество успешных шагов
         $countAll = 0; //общее количество шагов
+        $error = '';
 
         $ipAddress = DeviceService::getDeviceIP($idDevice);
 
