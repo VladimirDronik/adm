@@ -36,7 +36,7 @@ class DeviceController extends Controller
 
         list($result, $message) = $this->service->update($r->all());
 
-        return response()->json(compact('result','message', 'count_all', 'count_result'));
+        return response()->json(compact('result','message'));
     }
 
     public function objectsPorts(Request $r)
