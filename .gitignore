@@ -3,6 +3,7 @@
 /public/storage
 /public/phpmyadmin
 /storage/*.key
+/storage/app/devices/*.cfg
 /vendor
 /.idea
 /.vagrant
