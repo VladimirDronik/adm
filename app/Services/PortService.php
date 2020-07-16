@@ -9,6 +9,7 @@ use App\Models\Script;
 use App\Repositories\DeviceRepository;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
+use App\Services\ConfigMegaService;
 use function Sodium\library_version_major;
 
 class PortService {
@@ -337,30 +338,29 @@ class PortService {
      */
     private function prepareSendInDevice(Port $port)
     {
-        $device = Device::where('id',$port->id_device)->first();
 
         switch ($port->status) {
 
-            case 'IN': $paramString = "&pty=0";
+            case 'IN': $paramString = "pty=0";
                         break;
 
-            case 'OUT': $paramString = "&pty=1";
+            case 'OUT': $paramString = "pty=1";
                 break;
 
-            case '1WIRE': $paramString = "&pty=3&d=3";
+            case '1WIRE': $paramString = "pty=3&d=3";
                 break;
 
-            case '1W-BUS': $paramString = "&pty=3&m=0&misc=0.00&hst=0.00&ecmd=&eth=&d=5";
+            case '1W-BUS': $paramString = "pty=3&m=0&misc=0.00&hst=0.00&ecmd=&eth=&d=5";
                 break;
 
-            case 'I2C': $paramString = "&pty=4&d=5";
+            case 'I2C': $paramString = "pty=4&d=5";
                 break;
 
-            default: $paramString = "&pty=255&m=0&misc=0.00&hst=0.00&ecmd=&eth=&d=3";
+            default: $paramString = "pty=255&m=0&misc=0.00&hst=0.00&ecmd=&eth=&d=3";
                 break;
         }
 
-        return "http://{$device->ip_address}/sec/?pn={$port->num_port}$paramString";
+        return $paramString;
 
     }
 
@@ -381,11 +381,11 @@ class PortService {
 
         $this->preparePort($data, $port);
 
-        if(DeviceService::getStatus($port->id_device) === 1) {
+
 
             DB::transaction(function () use (&$port, $data, &$result) {
 
-                $answer = file_get_contents($this->prepareSendInDevice($port));
+                $answer = ConfigMegaService::setPortSetting($port->id_device, $port->num_port, $this->prepareSendInDevice($port));
 
                 if ($answer === false) {
                     throw new \Exception('Некорректный ответ от удаленного сервера');
@@ -395,7 +395,7 @@ class PortService {
                 }
 
             });
-        } else  throw new \Exception(': контроллер недоступен');
+
 
         return $result;
     }

@@ -8,6 +8,8 @@
 
 namespace App\Services;
 
+use App\Models\Device;
+use App\Repositories\DeviceRepository;
 use Illuminate\Support\Facades\Storage;
 
 class ConfigMegaService
@@ -21,7 +23,7 @@ class ConfigMegaService
      * @param int $idDevice - id устройства, конфиг которого интересует
      * @return array - возвращает прочтенный файл построчно в массиве
      */
-    private function readConfig($idDevice)
+    static private function readConfig($idDevice)
     {
 
         //Если есть файл, который соответсвует устройству
@@ -33,8 +35,8 @@ class ConfigMegaService
 
             return $strings;
 
-        }// else //иначе создаем такой файл
-
+        } else
+            Storage::disk('devices')->put(self::LINK_PATH . $idDevice.'.cfg','');
 
 
     }
@@ -48,7 +50,7 @@ class ConfigMegaService
      * @return mixed - если нашли искомый порт в конфиг файле, значит выводим его настройки в виде массива, если не
      *                 наши, значит такой строки нет в файле и выводим false
      */
-    private function findPort($stringsFromConfig, $numPort)
+    static private function findPort($stringsFromConfig, $numPort)
     {
 
         if($stringsFromConfig)
@@ -56,7 +58,7 @@ class ConfigMegaService
 
             $stringArray = explode('&',$string);
 
-            //если нашли порт в конфиг файле, вызвращаем его настройки
+            //если нашли порт в конфиг файле, возвращаем его настройки
             if($stringArray[0] == 'pn='.$numPort) {
 
                 array_unshift($stringArray,$key);
@@ -79,7 +81,7 @@ class ConfigMegaService
      * @return mixed - если нашли искомую настройку в конфиг файле, значит выводим его настройки в виде массива, если не
      *                 наши, значит такой строки нет в файле и выводим false
      */
-    private function findSetting($stringsFromConfig, $numSetting)
+    static private function findSetting($stringsFromConfig, $numSetting)
     {
 
         if($stringsFromConfig)
@@ -108,14 +110,17 @@ class ConfigMegaService
      * @param int $idDevice - ИД устройства
      * @param int $numPort - номер порта в рамках устройства
      * @param string $params - устанавливаемые параметры порта
+     * @return bool
      */
-    public function setPortSetting($idDevice, $numPort, $params)
+    static public function setPortSetting($idDevice, $numPort, $params)
     {
-        $megaConfig = $this->readConfig($idDevice);
-        $foundValue = $this->findPort($megaConfig, $numPort);
+        $megaConfig = self::readConfig($idDevice);
+        $foundValue = self::findPort($megaConfig, $numPort);
         $stringIntoConfig = 'pn='.$numPort.'&'.$params;
 
-        $this->saveChanges($idDevice, $megaConfig, $foundValue, $stringIntoConfig);
+        self::saveChanges($idDevice, $megaConfig, $foundValue, $stringIntoConfig);
+
+        return true;
 
     }
 
@@ -127,6 +132,7 @@ class ConfigMegaService
 
         $this->saveChanges($idDevice, $megaConfig, $foundValue, $stringIntoConfig);
 
+        return true;
     }
 
     public function setPWM($idDevice, $numPort, $params)
@@ -134,11 +140,12 @@ class ConfigMegaService
         
     }
     
-    private function saveChanges($idDevice, $megaConfig, $foundValue, $stringIntoConfig)
+    static private function saveChanges($idDevice, $megaConfig, $foundValue, $stringIntoConfig)
     {
 
         //Если есть запрошенный файл
         if($foundValue) {
+
             //Если нашли порт с такими настройками, то удаляем его из конфига и вставляем вместо него своё
             if ($foundValue) {
 
@@ -149,7 +156,7 @@ class ConfigMegaService
                 Storage::disk('devices')->put(self::LINK_PATH . $idDevice . '.cfg','');
 
                 foreach ($resultArray as $string) {
-
+                    if($string != '')
                     Storage::disk('devices')->append(self::LINK_PATH . $idDevice . '.cfg', $string);
 
                 }
@@ -157,7 +164,7 @@ class ConfigMegaService
 
             } else { //Если не нашли нужный порт в файле, то добавляем порт в файл
 
-                Storage::disk('devices')->append(self::LINK_PATH . $idDevice . '.cfg', $string);
+                Storage::disk('devices')->append(self::LINK_PATH . $idDevice . '.cfg', $stringIntoConfig);
 
             }
 
@@ -165,6 +172,47 @@ class ConfigMegaService
 
             Storage::disk('devices')->append(self::LINK_PATH . $idDevice . '.cfg', $stringIntoConfig);
         }
+
+    }
+
+    /**
+     * Отправить текущий конфиг на физическое устройство
+     */
+     static public function sendConfigToDevice($idDevice)
+    {
+
+        $countResult = 0; //количество успешных шагов
+        $countAll = 0; //общее количество шагов
+
+        $ipAddress = DeviceService::getDeviceIP($idDevice);
+
+        //Если устройство доступно
+        if (DeviceService::getStatus($idDevice) == 1) {
+
+            //Если есть файл, который соответсвует устройству
+            if (Storage::disk('devices')->exists(self::LINK_PATH . $idDevice.'.cfg')) {
+
+                $text = Storage::disk('devices')->get(self::LINK_PATH . $idDevice . '.cfg');
+                $strings = preg_split('/\\r\\n?|\\n/', $text);
+
+                foreach ($strings as $string) {
+
+                    if($string != '') {
+                        $result = file_get_contents("http://" . $ipAddress . "/sec/?" . $string);
+
+                        if (!$result)
+                            $countResult++;
+
+                        $countAll++;
+                    }
+                }
+
+
+            } else $error = 'Отсутсвует конфигурационный файл для контроллера.';
+        }  else $error = 'Контроллер недоступен';
+
+
+        return ['error' => $error, 'count_all' => $countAll, 'count_result' => $countResult];
 
     }
 

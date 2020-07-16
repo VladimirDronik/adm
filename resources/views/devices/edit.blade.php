@@ -107,11 +107,11 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Сохранить название и ip адрес контроллера?</h4>
+                    <h4 class="modal-title">Текущая конфигурация будет загружена в контроллер.</h4>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
-                    <button type="button"   class="btn btn-primary" data-dismiss="modal" onclick="updateDevice();" >Сохранить</button>
+                    <button type="button"   class="btn btn-primary" data-dismiss="modal" onclick="updateDevice();" >Продолжить</button>
                 </div>
             </div>
         </div>
@@ -140,7 +140,7 @@
                 <div class="modal-body">
                     <div class="alert alert-info">
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        Сервер перезагружается... Пожалуйста, дождитесь завершения перезагрузки.
+                        Конфигурация загружается в устройство... Пожалуйста, дождитесь завершения операции.
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -6,6 +6,7 @@ use App\Models\Device;
 use App\Models\Port;
 use Illuminate\Support\Facades\DB;
 
+
 class DeviceService {
 
     private $device;
@@ -37,33 +38,36 @@ class DeviceService {
         Port::insert($this->device->devtype->getPortsForInserting($this->device->id));
     }
 
-    private function getDeviceIpNotificationParams(string $eip, string $sip): string
+    private function getDeviceIpNotificationParams(string $oldIP, string $eip, string $sip): string
     {
         $gw = explode(':', $sip)[0];
 
         $sip_with_port = strpos($sip, ':') === false ? $sip.'%3A8080' : $sip;
 
-        return "http://192.168.99.50/to1/?cf=1&eip={$eip}&pwd=to1&gw={$gw}&sip={$sip_with_port}&sct=md.php";
+        return "http://{$oldIP}/sec/?cf=1&eip={$eip}&pwd=sec&gw={$gw}&sip={$sip_with_port}&sct=md.php";
     }
 
     /**
      * Передача ip нового устройства на удаленный сервер
      *
-     * @param string $ip
+     * @param array $data
      * @throws \Exception
      */
-    public function notifyDeviceIp(string $ip)
+    public function notifyDeviceIp(array $data)
     {
         $sip = $this->networkService->getIface()[0];
+        $oldIP = DeviceService::getDeviceIP($data['id']);
 
         if (empty($sip)) {
             throw new \Exception('Не указан ip-адрес для подсети устройств в разделе «Сеть и VPN»');
         }
 
-        $answer = file_get_contents($this->getDeviceIpNotificationParams($ip, $sip));
+        if(self::getStatus($data['id']))
+        $answer = file_get_contents($this->getDeviceIpNotificationParams($oldIP, $data['ip_address'], $sip));
+        else $answer = false;
 
         if ($answer === false) {
-            throw new \Exception('Некорректный ответ от удаленного сервера');
+            throw new \Exception('Некорректный ответ от устройства или устройство недоступно');
         }
     }
 
@@ -82,8 +86,9 @@ class DeviceService {
 
         $this->device->save();
 
+
         if ($is_notify) {
-            $this->notifyDeviceIp($data['ip_address']);
+            $this->notifyDeviceIp($data);
         }
     }
 
@@ -117,9 +122,17 @@ class DeviceService {
             ->where('description',$data['description'])->exists();
     }
 
-    private function isValidIpAddress(string $ip)
+    private function isValidIpAddress(array $data)
     {
-        return filter_var($ip, FILTER_VALIDATE_IP);
+        $doubleAddress = Device::where('id','!=',$data['id'])
+            ->where('ip_address',$data['ip_address'])->exists();
+
+
+        $filterAddress = filter_var($data['ip_address'], FILTER_VALIDATE_IP);
+
+        (!$doubleAddress && $filterAddress) ? $return = true : $return = false;
+
+        return $return;
     }
 
     /**
@@ -134,20 +147,24 @@ class DeviceService {
         trimArray($data);
 
         if ($this->isDoubleDescription($data)) {
-            return [false, 'Устройство с таким название уже существует. Необходимо изменить название'];
+            return [false, 'Устройство с таким названием уже существует. Необходимо изменить название', '', ''];
         }
 
-        if (!$this->isValidIpAddress($data['ip_address'])) {
-            return [false, 'Недопустимый ip адрес'];
+
+        if (!$this->isValidIpAddress($data)) {
+            return [false, 'Недопустимый ip адрес'.$this->isValidIpAddress($data), '', ''];
         }
 
         $device = Device::find($data['id']);
 
         if (!$device) {
-            return [false, 'Устройство не найдено'];
+            return [false, 'Устройство не найдено', '', ''];
         }
 
         $device->description = $data['description'];
+
+        //Заливаем конфиг на устройство
+        $configResult = ConfigMegaService::sendConfigToDevice($data['id']);
 
         if (trim($data['ip_address']) !== $device->ip_address) {
 
@@ -159,11 +176,16 @@ class DeviceService {
 
                 $device->save();
 
-                $this->notifyDeviceIp($data['ip_address']);
+                //Меняем адрес устойства
+                $this->notifyDeviceIp($data);
 
                 DB::commit();
 
-                return [true, ''];
+                if($configResult['error'] == '')
+                    return [true, '', $configResult['count_all'], $configResult['count_result']];
+                else
+                    return [false, $configResult['error'], '', ''];
+
 
             } catch (\Throwable $e) {
 
@@ -175,12 +197,19 @@ class DeviceService {
         } else {
 
             $device->save();
-            return [true, ''];
+
+            if($configResult['error'] == '')
+                return [true, '', $configResult['count_all'], $configResult['count_result']];
+            else
+                return [false, $configResult['error'], '', ''];
 
         }
 
-        return [false, 'Не удалось изменить данные устройства'];
+        return [false, 'Не удалось изменить данные устройства: '.$e->getMessage(), '', ''];
     }
+
+
+
 
     public function updatePort(array $data)
     {
@@ -256,5 +285,14 @@ class DeviceService {
     public static function getStatus($idDevice)
     {
         return Device::where('id', $idDevice)->first()->active;
+    }
+
+    /**
+     * Выводит ip адрес устройства
+     * @param $idDevice
+     */
+    public static function getDeviceIP($idDevice)
+    {
+        return Device::where('id', $idDevice)->first()->ip_address;
     }
 }

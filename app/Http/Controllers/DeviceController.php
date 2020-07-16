@@ -28,7 +28,6 @@ class DeviceController extends Controller
     {
         $devices = $this->device_rep->getByName();
 
-        $this->megaService->setPortSetting(1,3,'test params');
 
         return view('devices.index', compact('devices'));
     }

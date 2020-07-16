@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use App\Services\ConfigMegaService;
 use App\Services\DeviceService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -9,10 +10,12 @@ use App\Http\Controllers\Controller;
 class DeviceController extends Controller
 {
     private $service;
+    private $megaService;
 
-    public function __construct(DeviceService $service)
+    public function __construct(DeviceService $service, ConfigMegaService $megaService)
     {
         $this->service = $service;
+        $this->megaService = $megaService;
     }
 
     public function delete(Request $r)
@@ -33,7 +36,7 @@ class DeviceController extends Controller
 
         list($result, $message) = $this->service->update($r->all());
 
-        return response()->json(compact('result','message'));
+        return response()->json(compact('result','message', 'count_all', 'count_result'));
     }
 
     public function objectsPorts(Request $r)
@@ -67,6 +70,8 @@ class DeviceController extends Controller
     {
         return response()->json(['result' => true]);
     }
+
+
 }
 
 

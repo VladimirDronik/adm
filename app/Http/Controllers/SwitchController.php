@@ -11,6 +11,7 @@ use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\SwitchRepository;
+use App\Services\DeviceService;
 use App\Services\MessageService;
 use App\Services\MethodService;
 use App\Services\ObjectService;
@@ -63,7 +64,7 @@ class SwitchController extends Controller
                 json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении выключателя: '.$e->getMessage());
+        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении выключателя');
     }
 
     public function edit(int $id, ScriptRepository $script_rep,

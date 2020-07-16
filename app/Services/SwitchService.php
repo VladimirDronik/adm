@@ -72,19 +72,17 @@ class SwitchService {
      */
     private function setPort($idPort, $typeObject)
     {
-        $answer = false;
 
         $port = Port::where('id', $idPort)->first();
-        $device = Device::where('id', $port->id_device)->first();
 
-        if (DeviceService::getStatus($port->id_device) === 1) {
 
             if ($typeObject == 'button')
-                $answer = file_get_contents("http://{$device->ip_address}/sec/?pn={$port->num_port}&pty=0");
+                $paramsString = 'pty=0&m=0';
             else
-                $answer = file_get_contents("http://{$device->ip_address}/sec/?pn={$port->num_port}&pty=1");
+                $paramsString = 'pty=0&m=1';
 
-        } else throw new \Exception(': контроллер недоступен');
+            $answer = ConfigMegaService::setPortSetting($port->id_device, $port->num_port, $paramsString);
+
 
         return $answer;
 
@@ -103,8 +101,8 @@ class SwitchService {
         $switch = new DeviceSwitch();
         $this->prepareSwitch($switch, $data);
 
-        $result = false;
-        $answer = true;
+
+
 
         if ($data['object_type'] === 'manual') {
             $switch->save();
@@ -116,7 +114,7 @@ class SwitchService {
 
                 if ($data['port_id']) {
 
-                    //$answer = $this->setPort($data['port_id'], $data['type']);
+                    $this->setPort($data['port_id'], $data['type']);
 
                     Port::where('id', $data['port_id'])->update(['object' => $object->id,
                         'method' => $data['method'], 'method_params' => $data['method_params'],
@@ -127,20 +125,13 @@ class SwitchService {
 
                 $switch->save();
                 $result = true;
-                /*
-                if ($answer === false) {
-                    throw new \Exception('Некорректный ответ от удаленного сервера');
-                } else {
-                    $switch->save();
-                    $result = true;
-                }
-                */
+
 
             });
         }
 
 
-        return $result;
+        return $switch->id;
     }
 
     private function isUpdateAutoObjectName(DeviceSwitch $switch, string $name): bool
