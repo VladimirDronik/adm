@@ -10,4 +10,6 @@ class SwitchRepository {
     {
         return DeviceSwitch::with('object')->orderBy('id', 'desc')->paginate($pagination_count);
     }
+
+
 }

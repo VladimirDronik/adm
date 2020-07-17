@@ -68,4 +68,10 @@ class PortRepository {
             Port::where('id', $data['id_view'])->update(['method' => $data['id_method']]);
         }
     }
+
+    public function getPortByObject($idObject)
+    {
+        return Port::where('object', $idObject)->first()->id;
+
+    }
 }

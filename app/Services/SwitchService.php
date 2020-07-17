@@ -6,16 +6,19 @@ use App\Models\DeviceSwitch;
 use App\Models\HomeObject;
 use App\Models\Port;
 use App\Models\Device;
+use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
 use App\Services\DeviceService;
 
 class SwitchService {
 
     private $switch_object_service;
+    private $portRepository;
 
-    public function __construct(SwitchObjectService $switch_object_service)
+    public function __construct(SwitchObjectService $switch_object_service, PortRepository $portRepository)
     {
         $this->switch_object_service = $switch_object_service;
+        $this->portRepository = $portRepository;
 
     }
 
@@ -32,6 +35,7 @@ class SwitchService {
         $switch = DeviceSwitch::findOrFail($id);
 
         PortService::deleteAllMethodsForPort($switch->id_object);
+        $this->setPort($this->portRepository->getPortByObject($switch->id_object), 'button');
 
         if ($switch->object && $switch->object->is_system) {
             DB::transaction(function () use (&$switch) {
@@ -44,11 +48,6 @@ class SwitchService {
             $switch->delete();
         }
 
-        Port::where('object', $switch->id_object)->update([
-            'object' => null,
-            'method' => null, 'method_params' => null,
-            'dc_method' => null, 'dc_method_params' => null,
-            'lc_method' => null, 'lc_method_params' => null ]);
 
 
         return true;
@@ -161,6 +160,9 @@ class SwitchService {
         });
 
         if ($data['port_id']) {
+
+            $this->setPort($this->portRepository->getPortByObject($switch->object->id), 'button');
+            $this->setPort($data['port_id'], $switch->type);
 
             Port::where('object', $switch->object->id)->update([
                 'object' => null,

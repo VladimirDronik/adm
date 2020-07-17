@@ -634,6 +634,7 @@
         }
 
         function updateDevice() {
+            $('#reloadDeviceBtn').click();
 
             let description = $("input[name=description]").val().trim();
             let ip_address = $("input[name=ip_address]").val().trim();
@@ -652,8 +653,9 @@
                     if (!data.result) {
                         showErrorModal(data.message);
                     } else {
-                        $('#reloadDeviceBtn').click();
-                        setTimeout(checkServer, autoreload_period);
+                        location.reload();
+                       // $('#reloadDeviceBtn').click();
+                        //setTimeout(checkServer, autoreload_period);
                     }
                 }
             });
