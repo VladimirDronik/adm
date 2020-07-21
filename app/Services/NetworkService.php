@@ -82,7 +82,7 @@ EOT2;
      * @param $password
      * @throws \Exception
      */
-    public function setVpn($server, $username, $password) {
+    public function setVpn($server = '188.120.233.76', $username, $password, $VPNStatus) {
 
         if (!$server || !$username || !$password) {
             throw new \Exception('Не хватает данных');
@@ -95,6 +95,10 @@ EOT2;
         password "{$password}"
 EOT;
 
+        if ($VPNStatus == 'enable')
+            exec('sudo systemctl enable xl2tpd.service');
+        else
+            exec('sudo systemctl disable xl2tpd.service');
 
 /*
         $tpl = <<<EOT

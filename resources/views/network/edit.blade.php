@@ -29,9 +29,26 @@
                         {{ Form::bs_text('mask', 'Маска*:', old('mask', $network[1]), ['required' => true]) }}
 
                         {{ Form::bs_title('Настройки VPN') }}
+                        <div class="col-sm-12 pr-0  mt-4">
+                            <div class="btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-success btn-sm  active ">
+                                    <input type="radio" name="VPN_radio" autocomplete="off"  value="disable"> Не используется
+                                </label>
+
+                                <label class="btn btn-success btn-sm">
+                                    <input type="radio" name="VPN_radio" autocomplete="off"  value="enable" >  Не используется
+                                </label>
+
+                                <input type="hidden" id="VPN_status" name="VPN_status" value=disable>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-12 pr-0 mt-4" id="VPN_div"  style="display: none;">
                         //{{  Form::bs_text('vpn_address', 'Адрес сервера*:', old('vpn_address', $vpn[0]), ['required' => true]) }}
                         {{ Form::bs_text('vpn_login', 'Логин*:', old('vpn_login', $vpn[1]), ['required' => true]) }}
                         {{ Form::bs_text('vpn_password', 'Пароль*:', old('vpn_password', $vpn[2]), ['required' => true], 'Не менее 6 символов') }}
+                        </div>
+
                     </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
@@ -114,6 +131,19 @@
             $('#confirm_modal_btn').click(function(){
                 $('#form').submit();
             });
+
+
+            $('#form [name=VPN_radio]').change(function(){
+                if ($(this).val() === 'disable') {
+                    $('#VPN_div').hide();
+                    $('#VPN_status').val('disable');
+                } else if ($(this).val() === 'enable') {
+                    $('#VPN_div').show();
+                    $('#VPN_status').val('enable');
+                }
+                return true;
+            });
+
         });
     </script>
     @endif

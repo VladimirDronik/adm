@@ -26,7 +26,7 @@ class NetworkController extends Controller
         try {
             $service->setIface($r->ip, $r->mask);
             $service->setIface($r->main_ip, $r->main_mask, $r->main_gateway);
-            $service->setVpn($r->vpn_address, trim($r->vpn_login), $r->vpn_password);
+            $service->setVpn($r->vpn_address, trim($r->vpn_login), $r->vpn_password, $r->VPN_status);
             $service->reload();
             return redirect()->route('network.edit')->with('success', 'Данные успешно обновлены');
         } catch (\Throwable $e) {
