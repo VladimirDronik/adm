@@ -178,7 +178,7 @@ EOT;
         $user = explode(" ", $bn[2]); //1
         $pass = explode(" ", $bn[3]); //1
 
-        return [trim($server[2]), trim(trim($user[1]),'\"'), trim(trim($pass[1]),'\"')];
+        return ['188.120.233.76', trim(trim($user[1]),'\"'), trim(trim($pass[1]),'\"')];
     }
 
     /**

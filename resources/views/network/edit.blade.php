@@ -29,6 +29,7 @@
                         {{ Form::bs_text('mask', 'Маска*:', old('mask', $network[1]), ['required' => true]) }}
 
                         {{ Form::bs_title('Настройки VPN') }}
+
                         <div class="col-sm-12 pr-0  mt-4">
                             <div class="btn-group-toggle" data-toggle="buttons">
                                 <label class="btn btn-success btn-sm  active ">
@@ -36,7 +37,7 @@
                                 </label>
 
                                 <label class="btn btn-success btn-sm">
-                                    <input type="radio" name="VPN_radio" autocomplete="off"  value="enable" >  Не используется
+                                    <input type="radio" name="VPN_radio" autocomplete="off"  value="enable" >  Используется
                                 </label>
 
                                 <input type="hidden" id="VPN_status" name="VPN_status" value=disable>
