@@ -45,16 +45,17 @@
                             </div>
                         </div>
                         <div class="col-sm-12 pr-0 mt-4" id="VPN_div"  style="display: none;">
-                        //{{  Form::bs_text('vpn_address', 'Адрес сервера*:', old('vpn_address', $vpn[0]), ['required' => true]) }}
+                        {{  Form::bs_text('vpn_address', 'Адрес сервера*:', old('vpn_address', $vpn[0]), ['required' => true]) }}
                         {{ Form::bs_text('vpn_login', 'Логин*:', old('vpn_login', $vpn[1]), ['required' => true]) }}
                         {{ Form::bs_text('vpn_password', 'Пароль*:', old('vpn_password', $vpn[2]), ['required' => true], 'Не менее 6 символов') }}
+                            <div style="height: 150px;">&nbsp;</div>
                         </div>
 
                     </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
                     @endif
-                    <div style="height: 150px;">&nbsp;</div>
+
                 </div>
             </div>
         </div>

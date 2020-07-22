@@ -96,9 +96,9 @@ EOT2;
 EOT;
 
         if ($VPNStatus == 'enable')
-            exec('sudo systemctl enable xl2tpd.service');
+            exec('sudo /lib/systemd/systemd-sysv-install enable xl2tpd');
         else
-            exec('sudo systemctl disable xl2tpd.service');
+            exec('sudo /lib/systemd/systemd-sysv-install disable xl2tpd');
 
 /*
         $tpl = <<<EOT
@@ -175,8 +175,8 @@ EOT;
         $bn = file($this->pathVpn);
         //$server = explode(" ", $bn[0]); //2
         $server = '';
-        $user = explode(" ", $bn[2]); //1
-        $pass = explode(" ", $bn[3]); //1
+        $user = explode(" ", trim($bn[2])); //1
+        $pass = explode(" ", trim($bn[3])); //1
 
         return ['188.120.233.76', trim(trim($user[1]),'\"'), trim(trim($pass[1]),'\"')];
     }
