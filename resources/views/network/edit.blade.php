@@ -40,7 +40,7 @@
                                     <input type="radio" name="VPN_radio" autocomplete="off"  value="enable" >  Используется
                                 </label>
 
-                                <input type="text" id="VPN_status" name="VPN_status" value=$useVPN>
+                                <input type="text" id="VPN_status" name="VPN_status" value={{$useVPN}}>
 
                             </div>
                         </div>
