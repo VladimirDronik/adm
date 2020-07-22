@@ -32,19 +32,19 @@
 
                         <div class="col-sm-12 pr-0  mt-4">
                             <div class="btn-group-toggle" data-toggle="buttons">
-                                <label class="btn btn-success btn-sm @if(!$useVPN) active @endif ">
+                                <label class="btn btn-success btn-sm @if($useVPN == 'false') active @endif ">
                                     <input type="radio" name="VPN_radio" autocomplete="off"  value="disable"> Не используется
                                 </label>
 
-                                <label class="btn btn-success btn-sm @if($useVPN) active @endif">
+                                <label class="btn btn-success btn-sm @if($useVPN == 'true') active @endif">
                                     <input type="radio" name="VPN_radio" autocomplete="off"  value="enable" >  Используется
                                 </label>
 
-                                <input type="hidden" id="VPN_status" name="VPN_status" value=$useVPN>
+                                <input type="text" id="VPN_status" name="VPN_status" value=$useVPN>
 
                             </div>
                         </div>
-                        <div class="col-sm-12 pr-0 mt-4" id="VPN_div" @if($useVPN) style="display: block;" @else style="display: none;"  @endif >
+                        <div class="col-sm-12 pr-0 mt-4" id="VPN_div" @if($useVPN == 'true') style="display: block;" @else style="display: none;"  @endif >
                         {{  Form::bs_text('vpn_address', 'Адрес сервера*:', old('vpn_address', $vpn[0]), ['required' => true]) }}
                         {{ Form::bs_text('vpn_login', 'Логин*:', old('vpn_login', $vpn[1]), ['required' => true]) }}
                         {{ Form::bs_text('vpn_password', 'Пароль*:', old('vpn_password', $vpn[2]), ['required' => true], 'Не менее 6 символов') }}
@@ -138,10 +138,10 @@
             $('#form [name=VPN_radio]').change(function(){
                 if ($(this).val() === 'disable') {
                     $('#VPN_div').hide();
-                    $('#VPN_status').val('disable');
+                    $('#VPN_status').val('false');
                 } else if ($(this).val() === 'enable') {
                     $('#VPN_div').show();
-                    $('#VPN_status').val('enable');
+                    $('#VPN_status').val('true');
                 }
                 return true;
             });
