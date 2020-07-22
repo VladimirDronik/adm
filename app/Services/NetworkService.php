@@ -95,10 +95,14 @@ EOT2;
         password "{$password}"
 EOT;
 
-        if ($VPNStatus == 'enable')
+        if ($VPNStatus == 'true') {
             exec('sudo /lib/systemd/systemd-sysv-install enable xl2tpd');
-        else
+            SettingService::set('VPN', 'true');
+        }
+        else {
             exec('sudo /lib/systemd/systemd-sysv-install disable xl2tpd');
+            SettingService::set('VPN', 'false');
+        }
 
 /*
         $tpl = <<<EOT

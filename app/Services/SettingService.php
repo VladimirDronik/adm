@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Setting;
+use App\Repositories\SettingRepository;
 
 class SettingService {
 
@@ -35,5 +36,26 @@ class SettingService {
         $setting->save();
 
         return $setting->id;
+    }
+
+    /**
+     * Отдает значение настройки по имени\
+     *
+     * @param string $name
+     */
+    static public function get(string $name)
+    {
+       return SettingRepository::get($name);
+    }
+
+    /**
+     * Устанавливает значение для выбранной настройки
+     *
+     * @param string $name
+     * @param string $value
+     */
+    static public function set(string $name, string $value)
+    {
+        SettingRepository::set($name, $value);
     }
 }

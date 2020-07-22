@@ -60,6 +60,11 @@ class SettingsTableSeeder extends Seeder
                 'value' => 'false',
                 'comment' => 'Режим охраны'
             ],
+            [
+                'name' => 'VPN',
+                'value' => 'false',
+                'comment' => 'Использование VPN'
+            ],
         ];
 
         $result_settings = [];
