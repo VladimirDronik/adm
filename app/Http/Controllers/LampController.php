@@ -13,6 +13,7 @@ use App\Models\HomeObject;
 use App\Http\Requests\Lamp\CreateRequest;
 use App\Repositories\ScriptRepository;
 use App\Services\MessageService;
+use App\Http\Requests\Lamp\UpdateRequest;
 
 class LampController extends Controller
 {
@@ -63,6 +64,23 @@ class LampController extends Controller
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении лампы');
+    }
+
+    public function update(UpdateRequest $r, int $id)
+    {
+        $lamp = Lamp::findOrFail($id);
+
+        try {
+            if ($this->service->update($lamp, $r->except('_token'))) {
+                return redirect()->route('lamps.edit', [$lamp->id])
+                    ->with('success', 'Лампа успешно изменена');
+            }
+        } catch (\Throwable $e) {
+            \Log::error('Ошибка при изменении лампы '.$lamp->id
+                .' ' .json_encode($r->all()).' '.$e->getMessage());
+        }
+
+        return back()->withInput($r->all())->with('error','Ошибка при изменении лампы');
     }
 
     public function edit(Lamp $lamp, ScriptRepository $script_rep, MessageService $messageService)

@@ -35,6 +35,7 @@ class LampService {
      */
     public function store(array $data): int
     {
+
         $lamp = new Lamp();
         $this->prepareLamp($lamp, $data);
 
@@ -44,7 +45,7 @@ class LampService {
             DB::transaction(function () use (&$lamp, $data) {
                 $unique_name = HomeObject::getUniqueObjectName(0, $lamp->name);
                 $object = $this->lamp_object_service->createLampObject($unique_name, $lamp->type);
-                $this->lamp_object_service->createLampObjectMethods($object->id);
+                $this->lamp_object_service->createLampObjectMethods($object->id, $data['device_id'], $data['port_id']);
                 $lamp->id_object = $object->id;
                 $lamp->save();
 
@@ -84,6 +85,45 @@ class LampService {
         Port::where('object', $lamp->id_object)->update(['object' => null, 'method' => null]);
 
         return true;
+    }
+
+    private function isUpdateAutoObjectName(Lamp $lamp, string $name): bool
+    {
+        return $lamp->name !== trim($name) && $lamp->object && $lamp->object->is_system;
+    }
+
+    /**
+     * Обновление лампы. Если изменилось название и у лампы есть системный объект,
+     * то изменяем название объекта.
+     * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
+     *
+     * @param array $data
+     * @return int
+     * @throws \Throwable
+     */
+    public function update(Lamp $lamp, array $data): int
+    {
+        DB::transaction(function () use (&$lamp, $data) {
+            if ($this->isUpdateAutoObjectName($lamp, $data['name'])) {
+                $lamp->object->name = HomeObject::getUniqueObjectName($lamp->object->id, trim($data['name']));
+                $lamp->object->save();
+            }
+
+            $this->lamp_object_service->updateLampObjectMethods($lamp->object->id, $data['device_id'], $data['port_id']);
+            $this->prepareLamp($lamp, $data);
+
+            $lamp->save();
+        });
+
+        if ($data['port_id']) {
+
+            Port::where('object', $lamp->object->id)->update(['object' => null, 'method' => null]);
+            Port::where('id', $data['port_id'])->update(['object' => $lamp->object->id,
+                'method' => null]);
+
+        }
+
+        return $lamp->id;
     }
 
 }
