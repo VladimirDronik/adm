@@ -74,4 +74,9 @@ class PortRepository {
         return Port::where('object', $idObject)->first()->id;
 
     }
+
+    public function getNumPortByID($idPort)
+    {
+        return Port::where('id', $idPort)->first()->num_port;
+    }
 }

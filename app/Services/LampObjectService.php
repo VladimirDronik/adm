@@ -26,7 +26,7 @@ class LampObjectService
     {
         $object = new HomeObject();
 
-        $object->type = $type === Lamp::TYPE_LAMP;
+        $object->type = Lamp::TYPE_LAMP;
         $object->name = $name;
         $object->status = 'off';
         $object->is_system = 1;
@@ -92,11 +92,11 @@ class LampObjectService
         else $easyString = null;
 
         Method::forceCreate([
-            'name' => 'Смана состояния лампы',
+            'name' => 'Смена состояния лампы',
             'id_object' => $object_id,
             'script' => null,
             'easy' => $easyString,
-            'comment' => 'Смана состояния лампы',
+            'comment' => 'Смена состояния лампы',
             'is_system' => 1
         ]);
     }
@@ -127,7 +127,7 @@ class LampObjectService
             $easyString = $device_id.';'.$port_id.':2';
         else $easyString = null;
 
-        Method::where('id_object', $object_id)->where('name', 'Смана состояния лампы')->
+        Method::where('id_object', $object_id)->where('name', 'Смена состояния лампы')->
         update(['easy' => $easyString]);
     }
 

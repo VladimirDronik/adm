@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Models\HomeObject;
 use App\Models\Port;
+use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
 use App\Models\Lamp;
 
@@ -12,10 +13,12 @@ use App\Models\Lamp;
 class LampService {
 
     private $lamp_object_service;
+    private $port_repository;
 
-    public function __construct(LampObjectService $lamp_object_service)
+    public function __construct(LampObjectService $lamp_object_service, PortRepository $portRepository)
     {
         $this->lamp_object_service = $lamp_object_service;
+        $this->port_repository = $portRepository;
     }
 
     public function prepareLamp(Lamp $lamp, array $data)
@@ -45,7 +48,7 @@ class LampService {
             DB::transaction(function () use (&$lamp, $data) {
                 $unique_name = HomeObject::getUniqueObjectName(0, $lamp->name);
                 $object = $this->lamp_object_service->createLampObject($unique_name, $lamp->type);
-                $this->lamp_object_service->createLampObjectMethods($object->id, $data['device_id'], $data['port_id']);
+                $this->lamp_object_service->createLampObjectMethods($object->id, $data['device_id'], $this->port_repository->getNumPortByID($data['port_id']));
                 $lamp->id_object = $object->id;
                 $lamp->save();
 
@@ -109,7 +112,8 @@ class LampService {
                 $lamp->object->save();
             }
 
-            $this->lamp_object_service->updateLampObjectMethods($lamp->object->id, $data['device_id'], $data['port_id']);
+
+            $this->lamp_object_service->updateLampObjectMethods($lamp->object->id, $data['device_id'], $this->port_repository->getNumPortByID($data['port_id']));
             $this->prepareLamp($lamp, $data);
 
             $lamp->save();
