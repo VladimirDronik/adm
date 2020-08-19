@@ -57,6 +57,7 @@ class DeviceController extends Controller
         $tab = $request['tab'];
         if(!$tab) $tab=1;
 
+
         $device = Device::where('id', $id)
             ->with('ports', 'ports.eobject', 'ports.emethod', 'ports.dcmethod', 'ports.lcmethod',
                 'ports.emethod.eobject', 'ports.dcmethod.eobject', 'ports.lcmethod.eobject'
@@ -66,7 +67,16 @@ class DeviceController extends Controller
             return redirect()->route('devices.index')->with('error', 'Устройство не найдено');
         }
 
-        return view('devices.edit', compact('device', 'tab'));
+        if ($this->device_rep->getDevTypeByIdDevice($id) == 'Hite-pro') {
+
+            dd($devstorage = DeviceService::getHiteproDevices('192.168.99.35'));
+
+            $devstorage = json_decode($devstorage);
+
+            return view('devices.edit_hitepro', compact('device', 'devstorage', 'tab'));
+        }
+        else
+            return view('devices.edit', compact('device', 'tab'));
     }
 
 

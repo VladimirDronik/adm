@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Device;
 use App\Models\Port;
+use App\Repositories\DeviceRepository;
 use Illuminate\Support\Facades\DB;
 
 
@@ -12,10 +13,12 @@ class DeviceService {
     private $device;
 
     private $networkService;
+    private $deviceRepository;
 
-    public function __construct(NetworkService $networkService)
+    public function __construct(NetworkService $networkService, DeviceRepository $deviceRepository)
     {
         $this->networkService = $networkService;
+        $this->deviceRepository = $deviceRepository;
     }
 
     /**
@@ -99,11 +102,14 @@ class DeviceService {
      */
     public function store(array $data, bool $is_notify = false) //true для реализации функции настройки устройства с дефолтным адресом
     {
+        $typeDevice = $this->deviceRepository->getDevTypeById($data['type']);
+
         DB::beginTransaction();
 
         try {
 
             $this->storeDevice($data, $is_notify);
+            if($typeDevice != 'Hite-pro')
             $this->storePorts();
 
             DB::commit();
@@ -294,5 +300,26 @@ class DeviceService {
     public static function getDeviceIP($idDevice)
     {
         return Device::where('id', $idDevice)->first()->ip_address;
+    }
+
+    /**
+     * Загружает устройства, которые висят на контроллере hite-pro
+     */
+    public static function getHiteproDevices($ipHitepro)
+    {
+        $url = $ipHitepro.'/rest/devices';
+
+            $options = [
+                'http' => [
+                    'method'  => 'GET',
+                    'header'  => [
+                        'Content-type: application/json',
+                    ],
+                ],
+            ];
+            $context = stream_context_create($options);
+            $contents = file_get_contents($url, false, $context);
+            return json_decode($contents)[0];
+
     }
 }

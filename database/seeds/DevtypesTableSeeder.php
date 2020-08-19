@@ -41,6 +41,10 @@ class DevtypesTableSeeder extends Seeder
                 'name' => 'wifi-out',
                 'port_numbers' => 'out 0 2'
             ],
+            [
+                'name' => 'Hite-pro',
+                'port_numbers' => ''
+            ],
         ];
 
         $result_devtypes = [];

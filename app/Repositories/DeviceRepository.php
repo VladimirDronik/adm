@@ -30,4 +30,14 @@ class DeviceRepository {
     {
         return DevType::orderBy('id')->pluck('name','id')->toArray();
     }
+
+    public function getDevTypeById($id)
+    {
+        return DevType::select('name')->where('id', $id)->first()->name;
+    }
+
+    public function getDevTypeByIdDevice($id)
+    {
+        return $this->getDevTypeById(Device::where('id', $id)->with('devtype')->first()->type);
+    }
 }
