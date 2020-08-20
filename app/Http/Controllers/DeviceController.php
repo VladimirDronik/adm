@@ -72,7 +72,7 @@ class DeviceController extends Controller
 
         if ($controller['type'] == 'Hite-pro') {
 
-            dd($devstorage = DeviceService::getHiteproDevices($controller['address']));
+            $devstorage = DeviceService::getHiteproDevices($controller['address'], $controller['password']);
 
             $devstorage = json_decode($devstorage);
 

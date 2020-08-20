@@ -305,7 +305,7 @@ class DeviceService {
     /**
      * Загружает устройства, которые висят на контроллере hite-pro
      */
-    public static function getHiteproDevices($ipHitepro)
+    public static function getHiteproDevices($ipHitepro, $password)
     {
         $url = 'http://'.$ipHitepro.'/rest/devices';
 
@@ -314,7 +314,7 @@ class DeviceService {
                     'method'  => 'GET',
                     'header'  => [
                         'Content-type: application/json',
-                        'Authorization: Basic ' . 'dm5Ac3Ryb3l0ZWxlY29tLmNvbTpBbGxpODBlZCE=',
+                        'Authorization: Basic ' . $password,
                     ],
                 ],
             ];
