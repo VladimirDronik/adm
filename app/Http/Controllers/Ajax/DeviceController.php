@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use App\Models\Device;
+use App\Repositories\DeviceRepository;
 use App\Services\ConfigMegaService;
 use App\Services\DeviceService;
 use Illuminate\Http\Request;
@@ -43,10 +45,25 @@ class DeviceController extends Controller
     {
         abort_if(!ajaxHas($r, ['device_id']), 400);
 
-        $ports = $this->service->getPortsWithObjectsByDeviceId((int)$r->device_id,
-            $r->has('status') ? $r->status : '');
+        $typeDevice = '';
 
-        return response()->json(['result' => true, 'ports' => $ports]);
+        if($r->device_id)
+        $typeDevice = DeviceRepository::getDevByIdDevice((int)$r->device_id)['type'];
+
+        if($typeDevice == 'Hite-pro') {
+
+            $hiteProDevices = DeviceService::getHPDevices((int)$r->device_id);
+            $ports = [];
+        }
+            else {
+                $hiteProDevices = [];
+                $ports = $this->service->getPortsWithObjectsByDeviceId((int)$r->device_id,
+                    $r->has('status') ? $r->status : '');
+            }
+
+
+        return response()->json(['result' => true, 'ports' => $ports, 'hiteProDevices' => $hiteProDevices,
+                                'type_device' => $typeDevice]);
     }
 
     // todo

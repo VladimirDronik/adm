@@ -97,6 +97,7 @@ class SwitchService {
      */
     public function store(array $data): int
     {
+
         $switch = new DeviceSwitch();
         $this->prepareSwitch($switch, $data);
 

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\HiteproDev;
 use App\Models\HomeObject;
 use App\Models\Port;
 use App\Models\Relay;
@@ -63,6 +64,7 @@ class RelayService {
      */
     public function store(array $data): int
     {
+
         $relay = new Relay();
         $this->prepareRelay($relay, $data);
 
@@ -76,8 +78,11 @@ class RelayService {
                 $relay->id_object = $object->id;
                 $relay->save();
 
-                if ($data['port_id']) {
+                if ($data['port_id'] && $data['place'] == 'port') {
                     Port::where('id', $data['port_id'])->update(['object' => $object->id]);
+                } elseif ($data['place'] == 'Hite-pro') {
+                    HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
+                                ->update(['id_object' => $object->id]);
                 }
             });
         }

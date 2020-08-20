@@ -103,6 +103,7 @@ class DeviceService {
      */
     public function store(array $data, bool $is_notify = false) //true для реализации функции настройки устройства с дефолтным адресом
     {
+
         $typeDevice = $this->deviceRepository->getDevTypeById($data['type']);
 
         DB::beginTransaction();
@@ -306,7 +307,7 @@ class DeviceService {
     /**
      * Загружает устройства, которые висят на контроллере hite-pro
      */
-    public static function getHiteproDevices($ipHitepro, $password)
+    public static function readHiteproDevices($id, $ipHitepro, $password)
     {
         $url = 'http://'.$ipHitepro.'/rest/devices';
 
@@ -320,23 +321,48 @@ class DeviceService {
                 ],
             ];
             $context = stream_context_create($options);
+
             $contents = file_get_contents($url, false, $context);
 
             $devicesArray = json_decode($contents);
 
-            HiteproDev::truncate();
+
+            HiteproDev::where('id_controller', $id)->delete();
 
             foreach ($devicesArray AS $device) {
 
                 $HiteProDevice = new HiteproDev();
-                $HiteProDevice->id = $device['id'];
-                $HiteProDevice->name = $device['name'];
-                $HiteProDevice->type = $device['type'];
-                $HiteProDevice->status = $device['status'];
+                $HiteProDevice->id = $device->id;
+                $HiteProDevice->id_controller = $id;
+                $HiteProDevice->name = $device->name;
+                $HiteProDevice->type = $device->type;
+                $HiteProDevice->status = $device->status;
                 $HiteProDevice->save();
             }
 
             return json_decode($contents);
 
+    }
+
+    public static function getHPDevices($idDevice) {
+
+
+        if (!$idDevice) {
+            return [];
+        }
+
+        $devices = HiteproDev::where('id_controller', $idDevice)->get();
+
+
+            $arrayDevices = [];
+
+            foreach ($devices as $device) {
+                $arrayDevices[] = [
+                    'id' => $device->id,
+                    'name' => '['.$device->type.'] '.$device->name
+                ];
+            }
+
+            return $arrayDevices;
     }
 }

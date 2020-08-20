@@ -82,8 +82,17 @@
                                         {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'),
                                            false, false, [], null) }}
 
+                                        <div id='port_id_div' style="display: none">
                                         {{ Form::bs_autoselect('port_id', 'Порт:', [], old('port_id'),
                                             false, false, [], null) }}
+                                        </div>
+
+                                        <div id='hitepro_devices_div' style="display: none">
+                                        {{ Form::bs_autoselect('hitepro_devices', 'Устройство:', [], old('hiteProDevices'),
+                                            false, false, [], null) }}
+                                        </div>
+
+                                        <input type="hidden" name="place" id="place">
                                     </div>
                                 </div>
                             </div>
@@ -114,6 +123,7 @@
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_hitepro_devices").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_device_id").chosen().change(function() {
                 let device_id = $(this).val();
@@ -121,8 +131,20 @@
                     url: url_ports,
                     data: {'_token': _token, 'device_id': device_id, 'status': 'out'},
                     success: function (data) {
-                        createMethodSelect('#auto_sel_port_id', data.ports, -1);
-                        $('#auto_sel_port_id').trigger("chosen:updated");
+                        if (data.type_device == 'Hite-pro') {
+                            $('#port_id_div').hide();
+                            $('#hitepro_devices_div').show();
+                            createPortSelect('#auto_sel_hitepro_devices', data.hiteProDevices, -1);
+                            $('#auto_sel_hitepro_devices').trigger("chosen:updated");
+                            $('#place').val('Hite-pro');
+                        }
+                            else {
+                            $('#port_id_div').show();
+                            $('#hitepro_devices_div').hide();
+                            createPortSelect('#auto_sel_port_id', data.ports, -1);
+                            $('#auto_sel_port_id').trigger("chosen:updated");
+                            $('#place').val('port');
+                        }
                     }
                 });
             });
@@ -143,7 +165,7 @@
                 storeObject();
             });
 
-            function createMethodSelect(target, options, selected) {
+            function createPortSelect(target, options, selected) {
                 let sel = $(target);
                 sel.html('');
                 let s = '<option value="">Не выбрано</option>';
@@ -155,6 +177,8 @@
                 }
                 sel.append(s);
             }
+
+
 
             function storeObject() {
                 const name = $("#create_object_modal input[name=object_name]").val().trim();

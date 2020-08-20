@@ -31,17 +31,18 @@ class DeviceRepository {
         return DevType::orderBy('id')->pluck('name','id')->toArray();
     }
 
-    public function getDevTypeById($id)
+    public static function getDevTypeById($id)
     {
         return DevType::select('name')->where('id', $id)->first()->name;
     }
 
-    public function getDevByIdDevice($id)
+    public static function getDevByIdDevice($id)
     {
+        $device = Device::where('id', $id)->first();
+        $type = self::getDevTypeById(Device::where('id', $id)->with('devtype')->first()->type);
+        $address = $device->ip_address;
+        $password = $device->password;
 
-        $type = $this->getDevTypeById(Device::where('id', $id)->with('devtype')->first()->type);
-        $address = Device::where('id', $id)->first()->ip_address;
-
-        return ['type' => $type, 'address' => $address, 'password' => 'dm5Ac3Ryb3l0ZWxlY29tLmNvbTpBbGxpODBlZCE='];
+        return ['type' => $type, 'address' => $address, 'password' => $password];
     }
 }

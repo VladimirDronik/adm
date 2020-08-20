@@ -67,13 +67,14 @@ class DeviceController extends Controller
             return redirect()->route('devices.index')->with('error', 'Устройство не найдено');
         }
 
-        $controller = $this->device_rep->getDevByIdDevice($id);
+        $controller = DeviceRepository::getDevByIdDevice($id);
 
 
         if ($controller['type'] == 'Hite-pro') {
 
-            $devstorage = DeviceService::getHiteproDevices($controller['address'], $controller['password']);
-
+            if(DeviceService::getStatus($id))
+            $devstorage = DeviceService::readHiteproDevices($id, $controller['address'], $controller['password']);
+            else $devstorage = null;
 
             return view('devices.edit_hitepro', compact('device', 'devstorage', 'tab'));
         }
