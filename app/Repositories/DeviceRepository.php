@@ -36,8 +36,8 @@ class DeviceRepository {
         return DevType::select('name')->where('id', $id)->first()->name;
     }
 
-    public function getDevTypeByIdDevice($id)
+    public function getDevByIdDevice($id)
     {
-        return $this->getDevTypeById(Device::where('id', $id)->with('devtype')->first()->type);
+        return $this->getDevTypeById(Device::where('id', $id)->with('devtype')->first());
     }
 }
