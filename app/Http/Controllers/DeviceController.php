@@ -67,12 +67,12 @@ class DeviceController extends Controller
             return redirect()->route('devices.index')->with('error', 'Устройство не найдено');
         }
 
-        $devType = $this->device_rep->getDevByIdDevice($id)->type;
-        $devAddress =  $this->device_rep->getDevByIdDevice($id)->ip_address;
+        $controller = $this->device_rep->getDevByIdDevice($id);
 
-        if ($devType == 'Hite-pro') {
 
-            dd($devstorage = DeviceService::getHiteproDevices($devAddress));
+        if ($controller['type'] == 'Hite-pro') {
+
+            dd($devstorage = DeviceService::getHiteproDevices($controller['address']));
 
             $devstorage = json_decode($devstorage);
 

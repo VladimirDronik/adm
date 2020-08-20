@@ -38,6 +38,10 @@ class DeviceRepository {
 
     public function getDevByIdDevice($id)
     {
-        return $this->getDevTypeById(Device::where('id', $id)->with('devtype')->first());
+
+        $type = $this->getDevTypeById(Device::where('id', $id)->with('devtype')->first()->type);
+        $address = Device::where('id', $id)->first()->ip_address;
+
+        return ['type' => $type, 'address' => $address];
     }
 }
