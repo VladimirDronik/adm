@@ -307,13 +307,14 @@ class DeviceService {
      */
     public static function getHiteproDevices($ipHitepro)
     {
-        $url = $ipHitepro.'/rest/devices';
+        $url = 'http://'.$ipHitepro.'/rest/devices';
 
             $options = [
                 'http' => [
                     'method'  => 'GET',
                     'header'  => [
                         'Content-type: application/json',
+                        'Authorization: Basic ' . 'dGVzdDp0ZXN0',
                     ],
                 ],
             ];
