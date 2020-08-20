@@ -74,7 +74,6 @@ class DeviceController extends Controller
 
             $devstorage = DeviceService::getHiteproDevices($controller['address'], $controller['password']);
 
-            $devstorage = json_decode($devstorage);
 
             return view('devices.edit_hitepro', compact('device', 'devstorage', 'tab'));
         }

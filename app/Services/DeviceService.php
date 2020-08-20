@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Device;
+use App\Models\HiteproDev;
 use App\Models\Port;
 use App\Repositories\DeviceRepository;
 use Illuminate\Support\Facades\DB;
@@ -320,7 +321,22 @@ class DeviceService {
             ];
             $context = stream_context_create($options);
             $contents = file_get_contents($url, false, $context);
-            return json_decode($contents)[0];
+
+            $devicesArray = json_decode($contents);
+
+            HiteproDev::truncate();
+
+            foreach ($devicesArray AS $device) {
+
+                $HiteProDevice = new HiteproDev();
+                $HiteProDevice->id = $device['id'];
+                $HiteProDevice->name = $device['name'];
+                $HiteProDevice->type = $device['type'];
+                $HiteProDevice->status = $device['status'];
+                $HiteProDevice->save();
+            }
+
+            return json_decode($contents);
 
     }
 }
