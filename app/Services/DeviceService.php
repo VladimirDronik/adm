@@ -314,7 +314,7 @@ class DeviceService {
                     'method'  => 'GET',
                     'header'  => [
                         'Content-type: application/json',
-                        'Authorization: Basic ' . 'dGVzdDp0ZXN0',
+                        'Authorization: Basic ' . 'dm5Ac3Ryb3l0ZWxlY29tLmNvbTpBbGxpODBlZCE=',
                     ],
                 ],
             ];
