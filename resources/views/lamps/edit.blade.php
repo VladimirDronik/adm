@@ -222,7 +222,7 @@
         function createMethodSelect(target, options, selected) {
             let sel = $(target);
             sel.html('');
-            let s = '<option value="">Не выбрано</option>';
+            let s = '<option value="null">Не выбрано</option>';
             for (let i = 0; i < options.length; i++) {
                 if (selected == options[i].id)
                     s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';

@@ -44,9 +44,12 @@ class LampObjectService
      */
     private function createMethodOff(int $object_id,  $device_id,  $port_id)
     {
-        if($device_id && $port_id)
+        if($device_id && !is_null($port_id))
         $easyString = $device_id.';'.$port_id.':0';
             else $easyString = null;
+
+        //Обнуляем все простые действия, которые были назначены для этого порта
+        Method::where('easy', $easyString)->update(['easy' => NULL]);
 
 
         Method::forceCreate([
@@ -66,9 +69,12 @@ class LampObjectService
      */
     private function createMethodOn(int $object_id,  $device_id,  $port_id)
     {
-        if($device_id && $port_id)
+        if($device_id && !is_null($port_id))
             $easyString = $device_id.';'.$port_id.':1';
         else $easyString = null;
+
+        //Обнуляем все простые действия, которые были назначены для этого порта
+        Method::where('easy', $easyString)->update(['easy' => NULL]);
 
         Method::forceCreate([
             'name' => 'Включить лампу',
@@ -87,9 +93,12 @@ class LampObjectService
      */
     private function createMethodOnOff(int $object_id,  $device_id,  $port_id)
     {
-        if($device_id && $port_id)
+        if($device_id && !is_null($port_id))
             $easyString = $device_id.';'.$port_id.':2';
         else $easyString = null;
+
+        //Обнуляем все простые действия, которые были назначены для этого порта
+        Method::where('easy', $easyString)->update(['easy' => NULL]);
 
         Method::forceCreate([
             'name' => 'Смена состояния лампы',
@@ -103,9 +112,13 @@ class LampObjectService
 
     private function updateMethodOff(int $object_id,  $device_id,  $port_id)
     {
-        if($device_id && $port_id)
+
+        if($device_id && !is_null($port_id))
             $easyString = $device_id.';'.$port_id.':0';
         else $easyString = null;
+
+        //Обнуляем все простые действия, которые были назначены для этого порта
+        Method::where('easy', $easyString)->update(['easy' => NULL]);
 
         Method::where('id_object', $object_id)->where('name', 'Выключить лампу')->
         update(['easy' => $easyString]);
@@ -113,9 +126,12 @@ class LampObjectService
 
     private function updateMethodOn(int $object_id,  $device_id,  $port_id)
     {
-        if($device_id && $port_id)
+        if($device_id && !is_null($port_id))
             $easyString = $device_id.';'.$port_id.':1';
         else $easyString = null;
+
+        //Обнуляем все простые действия, которые были назначены для этого порта
+        Method::where('easy', $easyString)->update(['easy' => NULL]);
 
         Method::where('id_object', $object_id)->where('name', 'Включить лампу')->
         update(['easy' => $easyString]);
@@ -123,9 +139,13 @@ class LampObjectService
 
     private function updateMethodOnOff(int $object_id,  $device_id,  $port_id)
     {
-        if($device_id && $port_id)
+
+        if($device_id && !is_null($port_id))
             $easyString = $device_id.';'.$port_id.':2';
         else $easyString = null;
+
+        //Обнуляем все простые действия, которые были назначены для этого порта
+        Method::where('easy', $easyString)->update(['easy' => NULL]);
 
         Method::where('id_object', $object_id)->where('name', 'Смена состояния лампы')->
         update(['easy' => $easyString]);
@@ -149,6 +169,7 @@ class LampObjectService
 
     public function updateLampObjectMethods(int $object_id,  $device_id,  $port_id)
     {
+
         $this->updateMethodOff($object_id,  $device_id,  $port_id);
         $this->updateMethodOn($object_id,  $device_id,  $port_id);
         $this->updateMethodOnOff($object_id,  $device_id,  $port_id);

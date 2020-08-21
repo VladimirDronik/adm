@@ -8,7 +8,7 @@ use App\Models\Port;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
 use App\Models\Lamp;
-
+use App\Models\HiteproDev;
 
 class LampService {
 
@@ -42,6 +42,7 @@ class LampService {
         $lamp = new Lamp();
         $this->prepareLamp($lamp, $data);
 
+
         if ($data['object_type'] === 'manual') {
             $lamp->save();
         } else if ($data['object_type'] === 'auto') {
@@ -52,9 +53,14 @@ class LampService {
                 $lamp->id_object = $object->id;
                 $lamp->save();
 
-                if ($data['port_id']) {
+
+                if ($data['port_id'] && $data['place'] == 'port') {
                     Port::where('id', $data['port_id'])->update(['object' => $object->id]);
+                } elseif ($data['place'] == 'Hite-pro') {
+                    HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
+                        ->update(['id_object' => $object->id]);
                 }
+
             });
         }
 
@@ -119,7 +125,7 @@ class LampService {
             $lamp->save();
         });
 
-        if ($data['port_id']) {
+        if (!is_null($data['port_id'])) {
 
             Port::where('object', $lamp->object->id)->update(['object' => null, 'method' => null]);
             Port::where('id', $data['port_id'])->update(['object' => $lamp->object->id,

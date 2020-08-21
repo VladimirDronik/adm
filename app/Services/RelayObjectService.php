@@ -41,7 +41,7 @@ class RelayObjectService {
             'id_object' => $object_id,
             'script' => null,
             'comment' => 'Выключить реле',
-            'is_system' => 0
+            'is_system' => 1
         ]);
     }
 
@@ -57,7 +57,7 @@ class RelayObjectService {
             'id_object' => $object_id,
             'script' => null,
             'comment' => 'Включить реле',
-            'is_system' => 0
+            'is_system' => 1
         ]);
     }
 

@@ -77,6 +77,11 @@ class PortRepository {
 
     public function getNumPortByID($idPort)
     {
-        return Port::where('id', $idPort)->first()->num_port;
+
+        if(!is_null($idPort) && $idPort != 'null'){
+            return Port::where('id', $idPort)->first()->num_port;
+        }
+        else return null;
+
     }
 }
