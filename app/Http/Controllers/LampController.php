@@ -92,7 +92,8 @@ class LampController extends Controller
         $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
-        list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($lamp->id_object);
+        list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) = $this->portService->getCurrentDevPort($lamp->id_object);
+
 
         $messages = $messageService->getNotifications($lamp->id_object);
 
@@ -101,6 +102,6 @@ class LampController extends Controller
 
         return view('lamps.edit', compact('lamp',
             'idDevice','idPort','devices','ports', 'messagePoint', 'messages',
-            'objects', 'object_types', 'scripts', 'can'));
+            'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'can'));
     }
 }

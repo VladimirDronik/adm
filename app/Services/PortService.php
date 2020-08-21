@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Models\Device;
+use App\Models\HiteproDev;
 use App\Models\Method;
 use App\Models\Port;
 use App\Models\Script;
 use App\Repositories\DeviceRepository;
+use App\Repositories\HiteProDevRepository;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
 use App\Services\ConfigMegaService;
@@ -19,12 +21,15 @@ class PortService {
     private $rep;
     private $object_service;
     private $device_rep;
+    private $hiteproDevRep;
 
-    public function __construct(PortRepository $rep, ObjectService $object_service, DeviceRepository $device_rep)
+    public function __construct(PortRepository $rep, ObjectService $object_service,
+                                DeviceRepository $device_rep, HiteProDevRepository $hiteproDevRep)
     {
         $this->rep = $rep;
         $this->object_service = $object_service;
         $this->device_rep = $device_rep;
+        $this->hiteproDevRep = $hiteproDevRep;
     }
 
     public function updateComment(array $data)
@@ -298,6 +303,37 @@ class PortService {
         } else return [];
     }
 
+    private function getHPDevicesIntoList($deviceID, $hpType = 'relay')
+    {
+        if($deviceID) {
+
+            switch ($hpType) {
+
+                case 'relay': $HPdevices = $this->hiteproDevRep->getRelaysByDeviceId($deviceID);
+                    break;
+/*
+                case 'switch': $HPdevices = $this->hiteproDevRep->getSwitchesByDeviceId($deviceID);
+                    break;
+
+                case 'dimmer': $HPdevices = $this->hiteproDevRep->getInPortsByDeviceId($deviceID);
+                    break;
+*/
+                default: $HPdevices = [];
+                    break;
+            }
+
+
+            $HPdevicesArray = [];
+
+            foreach ($HPdevices AS $HPdevice) {
+
+                $HPdevicesArray[$HPdevice->id] = '['.$HPdevice->type.']'. ' ' . $HPdevice->name;
+            }
+
+            return $HPdevicesArray;
+        } else return [];
+    }
+
     /**
      * Получаем текущий контроллер и порт, на котором находится объект
     */
@@ -421,15 +457,49 @@ class PortService {
         $idPort = $deviceAndPort['id_port'];
         $typePort = $deviceAndPort['type_port'];
 
+        $hp_device = null;
+        $hp_type = null;
+
+        //Если не нашли в портах устройство, пробуем искать на hitepro
+        if($idDevice === null) {
+            $controllerAndDevice = $this->getCurrentDevHitepro($idObject);
+            $idDevice = $controllerAndDevice['id_device'];
+            $hp_device = $controllerAndDevice['hp_device'];
+            $hp_type = $controllerAndDevice['hp_type'];
+        }
+
         $devices = $this->device_rep->getAllToArray();
         $ports =  $this->getPortsIntoList($idDevice, $typePort);
+        $hp_devices = $this->getHPDevicesIntoList($idDevice, $hp_type);
 
         if(!$devices || !$ports) {
             $devices = $this->device_rep->getAllToArray();
             $ports = [];
         }
 
-        return [$idDevice, $idPort, $devices, $ports];
+        return [$idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices];
+    }
+
+    /**
+     * Возвращает id контроллера hite-pro и устройства к которому привязан объект
+     * @param $idObject
+     */
+    private function getCurrentDevHitepro($idObject)
+    {
+        if($hitepro = HiteproDev::where('id_object', $idObject)->first()){
+
+            $deviceId = $hitepro->id_controller;
+            $HPDevice = $hitepro->id;
+            $HPType = $hitepro->type;
+        } else {
+            $deviceId = null;
+            $HPDevice = null;
+            $HPType = null;
+        }
+
+
+        return array('id_device' => $deviceId, 'hp_device' => $HPDevice, 'hp_type' => $HPType);
+
     }
 
 

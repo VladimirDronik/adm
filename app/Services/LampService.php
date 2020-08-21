@@ -4,6 +4,7 @@ namespace App\Services;
 
 
 use App\Models\HomeObject;
+use App\Models\Method;
 use App\Models\Port;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
@@ -112,24 +113,36 @@ class LampService {
      */
     public function update(Lamp $lamp, array $data): int
     {
+
         DB::transaction(function () use (&$lamp, $data) {
             if ($this->isUpdateAutoObjectName($lamp, $data['name'])) {
                 $lamp->object->name = HomeObject::getUniqueObjectName($lamp->object->id, trim($data['name']));
                 $lamp->object->save();
             }
 
-
-            $this->lamp_object_service->updateLampObjectMethods($lamp->object->id, $data['device_id'], $this->port_repository->getNumPortByID($data['port_id']));
             $this->prepareLamp($lamp, $data);
 
             $lamp->save();
         });
 
-        if (!is_null($data['port_id'])) {
+        if (!is_null($data['port_id']) && $data['place'] == 'port') {
 
             Port::where('object', $lamp->object->id)->update(['object' => null, 'method' => null]);
             Port::where('id', $data['port_id'])->update(['object' => $lamp->object->id,
                 'method' => null]);
+            HiteproDev::where('id_object', $lamp->object->id)->update(['id_object' => null]);
+
+            //Меняем метод easy для всех трех системных методов лампы
+            $this->lamp_object_service->updateLampObjectMethods($lamp->object->id, $data['device_id'], $this->port_repository->getNumPortByID($data['port_id']));
+
+
+        }elseif ($data['place'] == 'Hite-pro') {
+            Port::where('object', $lamp->object->id)->update(['object' => null, 'method' => null]);
+            HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
+                ->update(['id_object' => $lamp->object->id]);
+
+            //Меняем метод easy для всех трех системных методов лампы
+            $this->lamp_object_service->updateLampObjectMethods($lamp->object->id, $data['device_id'], $this->port_repository->getNumPortByID($data['port_id']));
 
         }
 

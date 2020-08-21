@@ -68,8 +68,17 @@
                         {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', $idDevice),
                            false, false, [], null) }}
 
-                        {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
-                            false, false, [], null) }}
+                        <div id='port_id_div' @if ($ports==null) style="display: none" @endif>
+                            {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
+                                false, false, [], null) }}
+                        </div>
+
+                        <div id='hitepro_devices_div' @if ($hp_devices==null) style="display: none" @endif>
+                            {{ Form::bs_autoselect('hitepro_devices', 'Устройство:', $hp_devices, old('hiteProDevices', $hp_device),
+                                false, false, [], null) }}
+                        </div>
+
+                        <input type="hidden" name="place" id="place" value="@if ($ports==null) Hite-pro @else port @endif">
                     </div>
 
                     @include('messages.two')
@@ -121,6 +130,7 @@
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_hitepro_devices").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_device_id").chosen().change(function() {
                 let object_id = $(this).val();
@@ -130,8 +140,20 @@
                     data: {'_token': _token, 'device_id': object_id, 'status': 'OUT'},
                     success: function (data) {
                         methods = data.ports;
-                        createMethodSelect('#auto_sel_port_id', data.ports, -1);
-                        $('#auto_sel_port_id').trigger("chosen:updated");
+                        if (data.type_device == 'Hite-pro') {
+                            $('#port_id_div').hide();
+                            $('#hitepro_devices_div').show();
+                            createPortSelect('#auto_sel_hitepro_devices', data.hiteProDevices, -1);
+                            $('#auto_sel_hitepro_devices').trigger("chosen:updated");
+                            $('#place').val('Hite-pro');
+                        }
+                        else {
+                            $('#port_id_div').show();
+                            $('#hitepro_devices_div').hide();
+                            createPortSelect('#auto_sel_port_id', data.ports, -1);
+                            $('#auto_sel_port_id').trigger("chosen:updated");
+                            $('#place').val('port');
+                        }
                     }
                 });
             });
@@ -219,7 +241,7 @@
             $('#del_modal_btn').click(clickDelBtn);
         });
 
-        function createMethodSelect(target, options, selected) {
+        function createPortSelect(target, options, selected) {
             let sel = $(target);
             sel.html('');
             let s = '<option value="null">Не выбрано</option>';
