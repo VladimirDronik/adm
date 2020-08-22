@@ -142,7 +142,7 @@ class LampService {
                 ->update(['id_object' => $lamp->object->id]);
 
             //Меняем метод easy для всех трех системных методов лампы
-            $this->lamp_object_service->updateLampObjectMethods($lamp->object->id, $data['device_id'], $this->port_repository->getNumPortByID($data['port_id']));
+            $this->lamp_object_service->updateLampObjectMethods($lamp->object->id, $data['device_id'], $data['hitepro_devices']);
 
         }
 

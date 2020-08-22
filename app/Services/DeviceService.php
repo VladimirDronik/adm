@@ -344,14 +344,14 @@ class DeviceService {
 
     }
 
-    public static function getHPDevices($idDevice) {
+    public static function getHPDevices($idDevice, $type) {
 
 
         if (!$idDevice) {
             return [];
         }
 
-        $devices = HiteproDev::where('id_controller', $idDevice)->get();
+        $devices = HiteproDev::where('id_controller', $idDevice)->where('type', $type)->get();
 
 
             $arrayDevices = [];

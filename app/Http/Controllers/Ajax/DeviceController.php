@@ -52,7 +52,7 @@ class DeviceController extends Controller
 
         if($typeDevice == 'Hite-pro') {
 
-            $hiteProDevices = DeviceService::getHPDevices((int)$r->device_id);
+            $hiteProDevices = DeviceService::getHPDevices((int)$r->device_id, $r->has('type') ? $r->type : '');
             $ports = [];
         }
             else {
