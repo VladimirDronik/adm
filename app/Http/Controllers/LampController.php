@@ -85,7 +85,6 @@ class LampController extends Controller
 
     public function edit(Lamp $lamp, ScriptRepository $script_rep, MessageService $messageService)
     {
-        //$types = Lamp::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
 

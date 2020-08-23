@@ -137,6 +137,8 @@ class LampService {
 
 
         }elseif ($data['place'] == 'Hite-pro') {
+
+            HiteproDev::where('id_object', $lamp->object->id)->update(['id_object' => null]);
             Port::where('object', $lamp->object->id)->update(['object' => null, 'method' => null]);
             HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
                 ->update(['id_object' => $lamp->object->id]);

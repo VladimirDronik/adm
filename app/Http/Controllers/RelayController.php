@@ -73,7 +73,7 @@ class RelayController extends Controller
         $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
-        list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($relay->id_object);
+        list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) = $this->portService->getCurrentDevPort($relay->id_object);
 
         $messages = $messageService->getNotifications($relay->id_object);
 
@@ -82,7 +82,7 @@ class RelayController extends Controller
 
         return view('relays.edit', compact('relay', 'types',
             'idDevice','idPort','devices','ports', 'messagePoint', 'messages',
-            'objects', 'object_types', 'scripts', 'can'));
+            'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'can'));
     }
 
     public function update(UpdateRequest $r, Relay $relay)

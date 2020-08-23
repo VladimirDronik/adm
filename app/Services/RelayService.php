@@ -115,9 +115,27 @@ class RelayService {
             $this->prepareRelay($relay, $data);
             $relay->save();
 
-            if ($data['port_id']) {
-                Port::where('object', $relay->id_object)->update(['object' => null, 'method' => null]);
-                Port::where('id', $data['port_id'])->update(['object' => $relay->id_object]);
+            if (!is_null($data['port_id']) && $data['place'] == 'port') {
+
+                Port::where('object', $relay->object->id)->update(['object' => null, 'method' => null]);
+                Port::where('id', $data['port_id'])->update(['object' => $relay->object->id,
+                    'method' => null]);
+                HiteproDev::where('id_object', $relay->object->id)->update(['id_object' => null]);
+
+                //Меняем метод easy для всех трех системных методов лампы
+                $this->relay_object_service->updateRelayObjectMethods($relay->object->id, $data['device_id'], $this->port_repository->getNumPortByID($data['port_id']));
+
+
+            }elseif ($data['place'] == 'Hite-pro') {
+
+                HiteproDev::where('id_object', $relay->object->id)->update(['id_object' => null]);
+                Port::where('object', $relay->object->id)->update(['object' => null, 'method' => null]);
+                HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
+                    ->update(['id_object' => $relay->object->id]);
+
+                //Меняем метод easy для всех трех системных методов реле
+                $this->relay_object_service->updateRelayObjectMethods($relay->object->id, $data['device_id'], $data['hitepro_devices']);
+
             }
         });
 
