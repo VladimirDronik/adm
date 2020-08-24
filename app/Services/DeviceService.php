@@ -309,6 +309,7 @@ class DeviceService {
      */
     public static function readHiteproDevices($id, $ipHitepro, $password)
     {
+
         $url = 'http://'.$ipHitepro.'/rest/devices';
 
             $options = [
@@ -327,18 +328,36 @@ class DeviceService {
             $devicesArray = json_decode($contents);
 
 
-            HiteproDev::where('id_controller', $id)->delete();
+           // HiteproDev::where('id_controller', $id)->delete();
 
+        $HPDevices = HiteproDev::where('id_controller', $id)->toarray();
+
+        dd($HPDevices);
+
+        //Проверяем какие есть устройства и добавляем новое, если его нет в таблице
             foreach ($devicesArray AS $device) {
 
-                $HiteProDevice = new HiteproDev();
-                $HiteProDevice->id = $device->id;
-                $HiteProDevice->id_controller = $id;
-                $HiteProDevice->name = $device->name;
-                $HiteProDevice->type = $device->type;
-                $HiteProDevice->status = $device->status;
-                $HiteProDevice->save();
+
+                $array1[] = $device->id;
+
+                if(!HiteproDev::where('id_controller', $id)->where('id', $device->id)->first()->id) {
+                    $HiteProDevice = new HiteproDev();
+                    $HiteProDevice->id = $device->id;
+                    $HiteProDevice->id_controller = $id;
+                    $HiteProDevice->name = $device->name;
+                    $HiteProDevice->type = $device->type;
+                    $HiteProDevice->status = $device->status;
+                    $HiteProDevice->save();
+                }
+
+                $IDsArray[] = $device->id;
             }
+
+        //Перебираем в таблице все записи и если есть лишняя, то удаляем её
+
+
+
+
 
             return json_decode($contents);
 
