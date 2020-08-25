@@ -352,10 +352,11 @@ class DeviceService {
             }
 
         $difArray = array_diff($HPDevices, $IDsArray);
+
         //Удаляем все записи массива, которые лишние
-        dd($difArray);
-
-
+        foreach ($difArray AS $idToDel) {
+            HiteproDev::where('id', $idToDel)->delete();
+        }
 
             return json_decode($contents);
 
