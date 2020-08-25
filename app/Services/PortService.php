@@ -322,6 +322,9 @@ class PortService {
                                         case 'dimmer': $HPdevices = $this->hiteproDevRep->getInPortsByDeviceId($deviceID);
                                             break;
                         */
+
+                        default: $HPdevices = [];
+                        break;
                     }
             }
 
