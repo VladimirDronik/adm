@@ -330,17 +330,15 @@ class DeviceService {
 
            // HiteproDev::where('id_controller', $id)->delete();
 
-        $HPDevices = HiteproDev::where('id_controller', $id)->toarray();
+        $HPDevices = HiteproDev::select('id')->where('id_controller', $id)->pluck('id')->toArray();
 
-        dd($HPDevices);
+
 
         //Проверяем какие есть устройства и добавляем новое, если его нет в таблице
             foreach ($devicesArray AS $device) {
 
-
-                $array1[] = $device->id;
-
-                if(!HiteproDev::where('id_controller', $id)->where('id', $device->id)->first()->id) {
+                //Если нашли такой id устройства в таблице изменяем его, значит перезаписываем его заново
+                if(!HiteproDev::where('id_controller', $id)->where('id', $device->id)->update(['name' => $device->name])) {
                     $HiteProDevice = new HiteproDev();
                     $HiteProDevice->id = $device->id;
                     $HiteProDevice->id_controller = $id;
@@ -353,9 +351,9 @@ class DeviceService {
                 $IDsArray[] = $device->id;
             }
 
-        //Перебираем в таблице все записи и если есть лишняя, то удаляем её
-
-
+        $difArray = array_diff($HPDevices, $IDsArray);
+        //Удаляем все записи массива, которые лишние
+        dd($difArray);
 
 
 
