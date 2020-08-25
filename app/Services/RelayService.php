@@ -6,15 +6,18 @@ use App\Models\HiteproDev;
 use App\Models\HomeObject;
 use App\Models\Port;
 use App\Models\Relay;
+use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
 
 class RelayService {
 
     private $relay_object_service;
+    private $portRepository;
 
-    public function __construct(RelayObjectService $relay_object_service)
+    public function __construct(RelayObjectService $relay_object_service, PortRepository $portRepository)
     {
         $this->relay_object_service = $relay_object_service;
+        $this->portRepository = $portRepository;
     }
 
     /**
@@ -74,7 +77,7 @@ class RelayService {
             DB::transaction(function () use (&$relay, $data) {
                 $unique_name = HomeObject::getUniqueObjectName(0, $relay->name);
                 $object = $this->relay_object_service->createRelayObject($unique_name, $relay->type);
-                $this->relay_object_service->createRelayObjectMethods($object->id);
+                $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $this->portRepository->getNumPortByID($data['port_id']));
                 $relay->id_object = $object->id;
                 $relay->save();
 
