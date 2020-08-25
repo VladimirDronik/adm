@@ -138,7 +138,7 @@ class RelayObjectService {
         //Обнуляем все простые действия, которые были назначены для этого порта
         Method::where('easy', $easyString)->update(['easy' => NULL]);
 
-        Method::where('id_object', $object_id)->where('name', 'Смена состояния реле')->
+        Method::where('id_object', $object_id)->where('name', 'Переключить реле')->
         update(['easy' => $easyString]);
     }
 
