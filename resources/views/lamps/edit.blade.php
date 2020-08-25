@@ -137,7 +137,7 @@
 
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': object_id, 'status': 'OUT', 'type': 'relay'},
+                    data: {'_token': _token, 'device_id': object_id, 'status': 'OUT', 'type': 'switch, socket'},
                     success: function (data) {
                         methods = data.ports;
                         if (data.type_device == 'Hite-pro') {

@@ -6,14 +6,23 @@ use App\Models\HiteproDev;
 
 class HiteProDevRepository {
 
-     public function getRelaysByDeviceId($idDevice){
+     public function getSwitchByDeviceId($idDevice){
 
 
          if($idDevice)
-             return HiteproDev::where('id_controller', $idDevice)->where('type', 'relay')
+             return HiteproDev::where('id_controller', $idDevice)->where('type', 'switch')
                  ->orderBy('name')->get();
          else return null;
      }
+
+    public function getSocketByDeviceId($idDevice){
+
+
+        if($idDevice)
+            return HiteproDev::where('id_controller', $idDevice)->where('type', 'socket')
+                ->orderBy('name')->get();
+        else return null;
+    }
 
 
 

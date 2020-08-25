@@ -303,25 +303,29 @@ class PortService {
         } else return [];
     }
 
-    private function getHPDevicesIntoList($deviceID, $hpType = 'relay')
+    private function getHPDevicesIntoList($deviceID, $hpType = 'switch')
     {
+        $hpTypes = explode(',',$hpType);
+
         if($deviceID) {
 
-            switch ($hpType) {
+            foreach ( $hpTypes As $type) {
 
-                case 'relay': $HPdevices = $this->hiteproDevRep->getRelaysByDeviceId($deviceID);
-                    break;
-/*
-                case 'switch': $HPdevices = $this->hiteproDevRep->getSwitchesByDeviceId($deviceID);
-                    break;
+                    switch ($type) {
 
-                case 'dimmer': $HPdevices = $this->hiteproDevRep->getInPortsByDeviceId($deviceID);
-                    break;
-*/
-                default: $HPdevices = [];
-                    break;
+                        case 'switch': $HPdevices = $this->hiteproDevRep->getSwitchByDeviceId($deviceID);
+                            break;
+
+                        case 'socket': $HPdevices = $this->hiteproDevRep->getSocketByDeviceId($deviceID);
+                            break;
+                        /*
+                                        case 'dimmer': $HPdevices = $this->hiteproDevRep->getInPortsByDeviceId($deviceID);
+                                            break;
+                        */
+                        default: $HPdevices = [];
+                            break;
+                    }
             }
-
 
             $HPdevicesArray = [];
 
