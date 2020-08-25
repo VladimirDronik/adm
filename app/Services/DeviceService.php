@@ -338,7 +338,9 @@ class DeviceService {
             foreach ($devicesArray AS $device) {
 
                 //Если нашли такой id устройства в таблице изменяем его, значит перезаписываем его заново
-                if(!HiteproDev::where('id_controller', $id)->where('id', $device->id)->update(['name' => $device->name])) {
+                if(HiteproDev::where('id_controller', $id)->where('id', $device->id)->first() != null)
+                HiteproDev::where('id_controller', $id)->where('id', $device->id)->update(['name' => $device->name]));
+                else {
                     $HiteProDevice = new HiteproDev();
                     $HiteProDevice->id = $device->id;
                     $HiteProDevice->id_controller = $id;
