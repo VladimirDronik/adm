@@ -369,7 +369,9 @@ class DeviceService {
             return [];
         }
 
-        $devices = HiteproDev::where('id_controller', $idDevice)->where('type', $type)->get();
+        $typesArray = explode(',',$type);
+
+        $devices = HiteproDev::where('id_controller', $idDevice)->where('type', trim($typesArray[0]))->orwhere('type', trim($typesArray[1]))->get();
 
 
             $arrayDevices = [];

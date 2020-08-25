@@ -311,7 +311,7 @@ class PortService {
 
             foreach ( $hpTypes As $type) {
 
-                    switch ($type) {
+                    switch (trim($type)) {
 
                         case 'switch': $HPdevices = $this->hiteproDevRep->getSwitchByDeviceId($deviceID);
                             break;
@@ -322,8 +322,6 @@ class PortService {
                                         case 'dimmer': $HPdevices = $this->hiteproDevRep->getInPortsByDeviceId($deviceID);
                                             break;
                         */
-                        default: $HPdevices = [];
-                            break;
                     }
             }
 
