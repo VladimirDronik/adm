@@ -90,4 +90,36 @@ class CarbmonoxideService
 
         return true;
     }
+
+    private function isUpdateAutoObjectName(Carbmonoxide $carbmonoxide, string $name): bool
+    {
+        return $carbmonoxide->name !== trim($name) && $carbmonoxide->iobject && $carbmonoxide->iobject->is_system;
+    }
+
+    public function update(Carbmonoxide $carbmonoxide, array $data): int
+    {
+
+        DB::transaction(function () use (&$carbmonoxide, $data) {
+            if ($this->isUpdateAutoObjectName($carbmonoxide, $data['name'])) {
+                $carbmonoxide->iobject->name = HomeObject::getUniqueObjectName($carbmonoxide->iobject->id, trim($data['name']));
+                $carbmonoxide->iobject->save();
+
+            }
+
+            //Убираем датчик портов, если он где-то был до этого
+            if($data['port'])
+                Port::where('object', $carbmonoxide->id_object)->update(['object' => NULL]);
+
+
+            if ($data['port']) {
+                Port::where('id', $data['port'])->update(['object' => $carbmonoxide->id_object]);
+            }
+
+
+            $this->prepare($carbmonoxide, $data);
+            $carbmonoxide->save();
+        });
+
+        return $carbmonoxide->id;
+    }
 }

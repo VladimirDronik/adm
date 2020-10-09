@@ -71,7 +71,7 @@
 
                         <div style="height: 60px;">&nbsp;</div>
 
-                        {{ Form::bs_number('high_value', 'Верхний аварийный порог*:', old('high_value', 100), ['min' => 0, 'max' => 54612, 'required' => true],
+                        {{ Form::bs_number('high_value', 'Верхний аварийный порог*:', old('high_value', $carbmonoxide->high_value), ['min' => 0, 'max' => 5000, 'required' => true],
                             '') }}
 
                         {{ Form::bs_autoselect('high_object', 'Объект влияния:', $objects, old('high_object', $carbmonoxide->high_object),
@@ -268,19 +268,6 @@
         });
 
 
-        $('#carbmonoxide_form [name=placetype_radio]').change(function(){
-            if ($(this).val() === 'port') {
-                $('#usensor_div').hide();
-                $('#single_port_div').show();
-                $('#placetype').val('port');
-            } else {
-                $('#usensor_div').show();
-                $('#single_port_div').hide();
-                $('#placetype').val('usensor');
-            }
-
-            return true;
-        });
 
 
     </script>

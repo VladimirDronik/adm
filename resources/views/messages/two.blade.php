@@ -17,7 +17,7 @@
                 <button type="button" data-method="on" class="btn btn-danger btn-rounded btn-sm del_message_btn">
                     <i class="fa fa-trash fa-lg"></i>
                 </button>
-                <input type="hidden" id="data-priority-on" value="{{ $messages['priority_on'] }}">
+                <input type="hidden" id="data-priority-on" value="{{ $messages['priority_1'] }}">
             </div>
         </div>
 
@@ -37,7 +37,7 @@
                 <button type="button" data-method="off" class="btn btn-danger btn-rounded btn-sm del_message_btn">
                     <i class="fa fa-trash fa-lg"></i>
                 </button>
-                <input type="hidden" id="data-priority-off" value="{{ $messages['priority_off'] }}">
+                <input type="hidden" id="data-priority-off" value="{{ $messages['priority_2'] }}">
             </div>
         </div>
     </div>

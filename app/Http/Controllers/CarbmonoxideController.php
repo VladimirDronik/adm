@@ -19,6 +19,7 @@ use App\Services\ObjectService;
 use App\Repositories\ScriptRepository;
 use App\Services\PortService;
 use App\Services\MessageService;
+use App\Http\Requests\Carbmonoxide\UpdateRequest;
 
 class CarbmonoxideController extends Controller
 {
@@ -83,13 +84,13 @@ class CarbmonoxideController extends Controller
         try {
             if ($id = $this->service->store($r->except('_token'))) {
                 return redirect()->route('carbmonoxide.edit', [$id])
-                    ->with('success', 'Датчика УГ успешно добавлен');
+                    ->with('success', 'Датчик CO2 успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении датчика УГ '.json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при добавлении датчика CO2 '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении датчика УГ');
+        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении датчика CO2');
 
     }
 
@@ -124,6 +125,20 @@ class CarbmonoxideController extends Controller
         return view('carbmonoxide.edit', compact('carbmonoxide', 'objects', 'rooms',
             'devices', 'low_methods', 'high_methods', 'object_types', 'messages',
             'scripts', 'deviceId', 'ports', 'messagePoint', 'port', 'can'));
+    }
+
+
+    public function update(UpdateRequest $r, Carbmonoxide $carbmonoxide)
+    {
+        try {
+            if ($this->service->update($carbmonoxide, $r->except('_token'))) {
+                return redirect()->route('carbmonoxide.edit', [$carbmonoxide->id])->with('success','Датчик CO2 успешно изменен');
+            }
+        } catch (\Throwable $e) {
+            \Log::error('Ошибка при изменении датчика CO2 '.$carbmonoxide->id.' ' .json_encode($r->all()).' '.$e->getMessage());
+        }
+
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении датчика CO2');
     }
 
 }
