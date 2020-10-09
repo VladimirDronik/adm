@@ -34,6 +34,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('termostats', 'TermostatController')->except('show','destroy')->middleware('can:devices');
     Route::resource('motionsensors', 'MotionsensorsController')->except('show','destroy')->middleware('can:devices');
     Route::resource('lightstats', 'LightstatController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('carbmonoxide', 'CarbmonoxideController')->except('show','destroy')->middleware('can:devices');
     Route::resource('usensors', 'UsensorController')->except('show','destroy')->middleware('can:devices');
     Route::resource('drycontacts', 'DrycontactController')->except('show','destroy')->middleware('can:devices');
     Route::resource('events', 'EventController')->except('show','destroy')->middleware('can:events');
@@ -80,6 +81,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('usensors/delete', 'UsensorController@delete')->name('usensors.delete');
         Route::post('drycontacts/delete', 'DrycontactController@delete')->name('drycontacts.delete');
         Route::post('motionsensors/delete', 'MotionsensorController@delete')->name('motionsensors.delete');
+        Route::post('carbmonoxide/delete', 'CarbmonoxideController@delete')->name('carbmonoxide.delete');
 
         Route::group(['prefix' => 'logs', 'as' => 'logs.'], function () {
             Route::post('active', 'LogsController@active')->name('active');

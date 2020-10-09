@@ -54,7 +54,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereType($value)
  * @mixin \Eloquent
  * @property int|null $room_group
- * @property string|null $id_method_params
+ * @property string|null $on_method_params
  * @property-read mixed $icon_image
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereIdMethodParams($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereRoomGroup($value)

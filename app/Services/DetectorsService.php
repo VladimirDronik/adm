@@ -7,6 +7,7 @@ use App\Models\Termostat;
 use App\Models\Usensor;
 use App\Models\Drycontact;
 use App\Models\Lightstat;
+use App\Models\Carbmonoxide;
 
 class DetectorsService {
 
@@ -33,6 +34,11 @@ class DetectorsService {
     public function getMotionsensorsCount(): int
     {
         return Motionsensor::count();
+    }
+
+    public function getCarbMonoxideCount(): int
+    {
+        return Carbmonoxide::count();
     }
 
 }

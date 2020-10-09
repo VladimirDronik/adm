@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\HiteproDev;
 
+
 class HiteProDevRepository {
 
      public function getSwitchByDeviceId($idDevice){
@@ -25,5 +26,11 @@ class HiteProDevRepository {
     }
 
 
+    public function getHPDevByDeviceId(int $device_id)
+    {
+
+            return HiteproDev::where('id_controller', $device_id)->where('type', 'switch')->orwhere('type', 'socket')
+              ->orderBy('name')->get();
+    }
 
 }

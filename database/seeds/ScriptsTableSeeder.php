@@ -95,6 +95,30 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
+    public static function getCheckCarbmonoxideScript(): array
+    {
+        return [
+            'name' => 'Проверка датчика CO2',
+            'link' => 'check_carbmonoxide.php',
+            'count' => 0,
+            'system' => 1
+        ];
+
+    }
+
+    private static function deleteLogsScript(): array {
+
+        return [
+            'name' => 'Удаление старых логов',
+            'link' => 'delete_logs.php',
+            'count' => 0,
+            'system' => 1
+        ];
+
+    }
+
+
+
 
 
     /**
@@ -164,6 +188,10 @@ class ScriptsTableSeeder extends Seeder
         $scripts[] = self::getCheckTermostatScript();
         $scripts[] = self::getCheckUsensorScript();
         $scripts[] = self::getDrycontactsScript();
+        $scripts[] = self::getMotionsensorScript();
+        $scripts[] = self::getCheckCarbmonoxideScript();
+        $scripts[] = self::deleteLogsScript();
+
 
         return $scripts;
     }

@@ -37,7 +37,7 @@ class ViewService {
             $view->sort = $this->getSortMax($view) + 1;
         }
         $view->icon = pathinfo($data['icon_image'], PATHINFO_FILENAME);
-        $view->id_method_params = $data['id_method_params'];
+        $view->on_method_params = $data['on_method_params'];
 
         if ($view->type === View::TYPE_SWITCH) {
             $view->off_method = $data['off_method'] ?? null;

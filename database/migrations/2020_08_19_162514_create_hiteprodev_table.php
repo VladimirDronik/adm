@@ -14,7 +14,8 @@ class CreateHiteprodevTable extends Migration
     public function up()
     {
         Schema::create('hiteprodev', function (Blueprint $table) {
-            $table->integer('id');
+            $table->increments('id');
+            $this->string('name',100);
             $table->unsignedInteger('id_controller');
             $table->string('type', 20);
             $table->string('name', '100');
@@ -40,3 +41,4 @@ class CreateHiteprodevTable extends Migration
         Schema::dropIfExists('hiteprodev');
     }
 }
+

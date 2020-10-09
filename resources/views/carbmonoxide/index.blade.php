@@ -3,13 +3,13 @@
 @section('breadcrumbs')
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Датчики: светостат</h3></div>
+            <h3 class="text-primary">Датчики: углекислого газа</h3></div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
                 <li class="breadcrumb-item breadcrumb-item-no-link">Устройства</li>
-                <li class="breadcrumb-item breadcrumb-item-no-link"><a href="{{ route('lightstats.index') }}">Датчики</a></li>
-                <li class="breadcrumb-item active">Светостаты</li>
+                <li class="breadcrumb-item breadcrumb-item-no-link"><a href="{{ route('carbmonoxide.index') }}">Датчики</a></li>
+                <li class="breadcrumb-item active">Датчики углекислого газа</li>
             </ol>
         </div>
     </div>
@@ -17,63 +17,60 @@
 
 @section('content')
     <div class="container-fluid">
-        @include('detectors.tab_header', ['active' => 'lightstats'])
+        @include('detectors.tab_header', ['active' => 'carbmonoxide'])
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('lightstats.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить светостат</a>
-                        <a href="{{ route('lightstats.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
+                        <a href="{{ route('carbmonoxide.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить датчик</a>
+                        <a href="{{ route('carbmonoxide.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card">
-            <div class="card-title"><h4>Светостаты</h4></div>
+            <div class="card-title"><h4>Датчики углекислого газа</h4></div>
             <div class="card-body">
-                @if(count($lightstats))
+                @if(count($carbmonoxides))
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
                                     <th style="width: 60px;">ID</th>
                                     <th>Название</th>
-                                    <th>Текущая осв.</th>
-                                    <th>Оптим. осв.</th>
-                                    <th>Гистерезис</th>
-                                    <th>Режим</th>
-                                    @can('devices.show-object')
-                                        <th>Объект влияния</th>
-                                    @endcan
+                                    <th>Текущее знач.</th>
+                                    <th>Мин. порог</th>
+                                    <th>Макс. порог</th>
+                                    <th>Корректировка</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($lightstats as $lightstat)
-                                    <tr id="tr{{$lightstat->id}}">
-                                        <td scope="row">{{ $lightstat->iobject['id'] }}</td>
-                                        <td><a href="{{ route('lightstats.edit',[$lightstat->id]) }}">
-                                                {{ $lightstat->name }}</a></td>
-                                        <td>{{ $lightstat->current }}</td>
-                                        <td>{{ $lightstat->optimal }}</td>
-                                        <td>{{ $lightstat->gisteresis }}</td>
-                                        <td>{{ $lightstat->rus_lightstat }}</td>
+                                @foreach($carbmonoxides as $carbmonoxide)
+                                    <tr id="tr{{$carbmonoxide->id}}">
+                                        <td scope="row">{{ $carbmonoxide->iobject['id'] }}</td>
+                                        <td><a href="{{ route('carbmonoxide.edit',[$carbmonoxide->id]) }}">
+                                                {{ $carbmonoxide->name }}</a></td>
+                                        <td>{{ $carbmonoxide->cur_value }}</td>
+                                        <td>{{ $carbmonoxide->low_value }}</td>
+                                        <td>{{ $carbmonoxide->high_value }}</td>
+                                        <td>{{ $carbmonoxide->calibration }}</td>
                                         @can('devices.show-object')
                                             <td>
-                                                @if($lightstat->object)
-                                                    <a href="{{ route('objects.edit',[$lightstat->object]) }}" target="_blank">{{ optional($lightstat->eobject)->name }}</a>
+                                                @if($carbmonoxide->object)
+                                                    <a href="{{ route('objects.edit',[$carbmonoxide->object]) }}" target="_blank">{{ optional($carbmonoxide->eobject)->name }}</a>
                                                 @endif
                                             </td>
                                         @endcan
                                         <td align="center" class="text-center">
-                                            <a href="{{ route('lightstats.edit',[$lightstat->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                            <a href="{{ route('carbmonoxide.edit',[$carbmonoxide->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>
                                             </a>
                                         </td>
                                         <td align="center" class="text-center">
                                             <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                    data-id="{{ $lightstat->id }}" data-name="{{ $lightstat->name }}">
+                                                    data-id="{{ $carbmonoxide->id }}" data-name="{{ $carbmonoxide->name }}">
                                                 <i class="fa fa-trash fa-lg"></i>
                                             </button>
                                         </td>
@@ -84,13 +81,10 @@
                                 <tr>
                                     <th style="width: 60px;">ID</th>
                                     <th>Название</th>
-                                    <th>Текущая темп.</th>
-                                    <th>Оптим. темп.</th>
-                                    <th>Гистерезис</th>
-                                    <th>Режим</th>
-                                    @can('devices.show-object')
-                                        <th>Объект влияния</th>
-                                    @endcan
+                                    <th>Текущее знач.</th>
+                                    <th>Мин. порог</th>
+                                    <th>Макс. порог</th>
+                                    <th>Корректировка</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
@@ -99,10 +93,10 @@
                     </div>
 
 
-                    {{ $lightstats->appends(request()->input())->links() }}
-                    <p class="text-right">Найдено: {{ $lightstats->total() }}</p>
+                    {{ $carbmonoxides->appends(request()->input())->links() }}
+                    <p class="text-right">Найдено: {{ $carbmonoxides->total() }}</p>
                 @else
-                    <p>Светостаты не найдены</p>
+                    <p>Датчики не найдены</p>
                 @endif
             </div>
         </div>
@@ -117,20 +111,20 @@
 
             $('.del_btn').click(function() {
                 del_id = $(this).data('id');
-                $('#del_modal_body').text('Удалить светостат № '+del_id+' «'+$(this).data('name')+'»?');
+                $('#del_modal_body').text('Удалить датчик № '+del_id+' «'+$(this).data('name')+'»?');
                 $('#del_init_btn').click();
             });
 
             $('#del_modal_btn').click(function(){
                 if (del_id) {
                     $.ajax({
-                        url: '{{ route('ajax.lightstats.delete') }}',
+                        url: '{{ route('ajax.carbmonoxide.delete') }}',
                         data: { '_token': _token, 'id': del_id },
                         success: function (data) {
                             if (data.result) {
                                 $('#tr'+del_id).hide();
                             } else {
-                                showErrorModal('Ошибка при удалении светостата');
+                                showErrorModal('Ошибка при удалении датчика');
                             }
                         }
                     });

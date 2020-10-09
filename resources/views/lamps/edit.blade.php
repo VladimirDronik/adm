@@ -225,6 +225,7 @@
 
             $('#apply_btn').click(clickApplyBtn);
 
+
             // edit method
             $('body').on('click', '.edit_btn', clickEditBtn);
 

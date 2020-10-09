@@ -42,8 +42,8 @@ class AddMethodParamsColumns extends Migration
         });
 
         Schema::table('view_items', function (Blueprint $table) {
-            if (!Schema::hasColumn('view_items', 'id_method_params')) {
-                $table->string('id_method_params', 100)->nullable();
+            if (!Schema::hasColumn('view_items', 'on_method_params')) {
+                $table->string('on_method_params', 100)->nullable();
             }
         });
 

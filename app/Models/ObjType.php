@@ -27,10 +27,11 @@ class ObjType extends Model
     const TYPE_DIMMER = 'dimmer';
     const TYPE_BUTTON = 'button';
     const TYPE_SWITCH = 'switch';
-    const TYPE_RELAY = 'reley';
+    const TYPE_RELAY = 'relay';
     const TYPE_SOCKET = 'socket';
     const TYPE_DRYCONTACT = 'drycontact';
     const TYPE_MOTIONSENSOR = 'motionsensor';
+    const TYPE_CARBMONOXIDE = 'CO2sens';
 
     protected $table = 'objtypes';
     public $timestamps = false;

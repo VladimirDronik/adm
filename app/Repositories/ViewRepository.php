@@ -40,7 +40,7 @@ class ViewRepository {
     {
         if (empty($data['id_object'])) {
             View::where('id', $data['id_view'])->update(['id_object' => null, 'on_method' => null,
-                'off_method' => null, 'id_method_params' => null, 'off_method_params' => null]);
+                'off_method' => null, 'on_method_params' => null, 'off_method_params' => null]);
         } else {
             View::where('id', $data['id_view'])->update(['id_object' => $data['id_object']]);
         }
@@ -50,14 +50,14 @@ class ViewRepository {
     {
         if (empty($data['id_method'])) {
             View::where('id', $data['id_view'])
-                ->update(['on_method' => null, 'id_method_params' => null]);
+                ->update(['on_method' => null, 'on_method_params' => null]);
         } else {
             if (empty($data['params'])) {
                 View::where('id', $data['id_view'])
-                    ->update(['on_method' => $data['id_method'], 'id_method_params' => null]);
+                    ->update(['on_method' => $data['id_method'], 'on_method_params' => null]);
             } else {
                 View::where('id', $data['id_view'])
-                    ->update(['on_method' => $data['id_method'], 'id_method_params' => $data['params']]);
+                    ->update(['on_method' => $data['id_method'], 'on_method_params' => $data['params']]);
             }
         }
     }

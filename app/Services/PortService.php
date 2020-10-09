@@ -88,9 +88,17 @@ class PortService {
                 $html = (String)view('ajax.devices', compact('devices'));
                 break;
             case 'port':
+                //Определяем, если девайс - хитпро, то выводим устройство вместо портов
+                if(DeviceRepository::getDevByIdDevice((int)$r->device)['type'] == 'Hite-pro') {
+                    $devices = $this->hiteproDevRep->getHPDevByDeviceId((int)$r->device);
+                    $title_action = 'Выбор устройства';
+                    $html = (String)view('ajax.HPDevices', compact('devices'));
+                }else {
+
                 $ports = $this->rep->getOutPortsByDeviceId((int)$r->device);
                 $title_action = 'Выбор порта';
                 $html = (String)view('ajax.ports', compact('ports'));
+                }
                 break;
             case 'action':
                 $title_action = 'Выбор действия';

@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Models\Device;
+use App\Models\HiteproDev;
 use App\Models\Port;
 
 class PortRepository {
@@ -17,6 +19,7 @@ class PortRepository {
 
     public function getOutPortsByDeviceId(int $device_id)
     {
+
         return Port::where('id_device', $device_id)->where('status', 'out')
             ->orderBy('num_port')->get();
     }

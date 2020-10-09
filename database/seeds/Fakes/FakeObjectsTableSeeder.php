@@ -53,7 +53,7 @@ class FakeObjectsTableSeeder extends Seeder
             ['name' => 'Тестовый объект 3', 'type' => 'IR_transmitter', 'status' => 'off'],
             ['name' => 'Тестовый объект 4', 'type' => 'pass_sensor', 'status' => 'off'],
             ['name' => 'Тестовый объект 5', 'type' => 'dry_contact', 'status' => 'off'],
-            ['name' => 'Тестовый объект 6', 'type' => 'reley', 'status' => 'off'],
+            ['name' => 'Тестовый объект 6', 'type' => 'relay', 'status' => 'off'],
         ];
     }
 

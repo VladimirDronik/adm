@@ -43,16 +43,16 @@
                         {{ Form::bs_autoselect('id_method', 'Метод вкл:', $methods, old('id_method', $view->on_method), false, false) }}
                         </div>
 
-                        <div class="form-group row" id="id_method_params_div"
-                             @if(is_null($view->id_method_params) && !old('id_method')) style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="id_method_params"></label>
+                        <div class="form-group row" id="on_method_params_div"
+                             @if(is_null($view->on_method_params) && !old('id_method')) style="display: none;" @endif>
+                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="on_method_params"></label>
                             <div class="col-md-9 pr-0">
                                 <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="id_method_params_label" for="id_method_params">
+                                    <label class="control-label text-right col-md-6 label-fix" id="on_method_params_label" for="on_method_params">
                                         {{ optional($view->emethod)->params }}*:</label>
                                     <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="id_method_params" name="id_method_params"
-                                               type="text" value="{{ old('id_method_params', $view->id_method_params) }}">
+                                        <input class="form-control" autocomplete="off" id="on_method_params" name="on_method_params"
+                                               type="text" value="{{ old('on_method_params', $view->on_method_params) }}">
                                     </div>
                                 </div>
                             </div>
@@ -67,7 +67,7 @@
                             <label class="control-label text-right col-md-3 label-fix" for="off_method_params"></label>
                             <div class="col-md-9 pr-0">
                                 <div class="form-group row">
-                                    <label class="control-label text-right col-md-6 label-fix" id="id_method_params_label" for="off_method_params">
+                                    <label class="control-label text-right col-md-6 label-fix" id="on_method_params_label" for="off_method_params">
                                         {{ optional($view->offmethod)->params }}*:
                                     </label>
                                     <div class="col-md-6">
@@ -89,8 +89,8 @@
                         {{ Form::bs_select('room', 'Помещение*:', ["" => "Не указано"] + $rooms,
                             is_null($view->room) ? 0 : $view->room, ['required' => true]) }}
                         {{ Form::bs_select('scene', 'Сцена:', ["" => "Не указана"] + $scenes) }}
-                        {{ Form::bs_number('position_left','Левый отступ (px):') }}
-                        {{ Form::bs_number('position_top','Верхний отступ (px):') }}
+                        {{ Form::bs_number('position_left','Левый отступ (%):', old('position_left', $view->position_left), ['min' => 0, 'max' => 100, 'required' => false] ) }}
+                        {{ Form::bs_number('position_top','Верхний отступ (%):', old('position_top', $view->position_right), ['min' => 0, 'max' => 100, 'required' => false] ) }}
 
                     </div>
                     {{ Form::bs_submit_btn() }}
@@ -161,13 +161,15 @@
         }
 
         function validateView() {
+
             if (!$("input[name=type]:checked").val()) {
                 return 'Не указан тип элемента';
             }
             if (!$("select[name=room]").val()) {
                 return 'Не указано помещение';
             }
-            let params = $("#view_form #id_method_params");
+
+            let params = $("#view_form #on_method_params");
             if (params.is(":visible") && params.val().trim() === '') {
                 return 'Не указан параметр метода';
             }
@@ -186,6 +188,7 @@
                 (params.val().trim() != params_int || params_int < 0 || params_int > 100)) {
                 return 'Недопустимое значение параметра метода';
             }
+
             return '';
         }
 
@@ -210,7 +213,7 @@
 
             $("#auto_sel_id_object").chosen().change(function() {
                 let object_id = $(this).val();
-                hideParamsFields('id_method_params');
+                hideParamsFields('on_method_params');
                 hideParamsFields('off_method_params');
                 $.ajax({
                     url: url_methods,
@@ -262,9 +265,9 @@
                 const params = getMethodParams(methodId);
 
                 if (params === '') {
-                    hideParamsFields('id_method_params');
+                    hideParamsFields('on_method_params');
                 } else {
-                    showParamsFields('id_method_params', params);
+                    showParamsFields('on_method_params', params);
                 }
             });
 

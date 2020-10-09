@@ -126,7 +126,7 @@ class RelayService {
                 HiteproDev::where('id_object', $relay->object->id)->update(['id_object' => null]);
 
                 //Меняем метод easy для всех трех системных методов лампы
-                $this->relay_object_service->updateRelayObjectMethods($relay->object->id, $data['device_id'], $this->port_repository->getNumPortByID($data['port_id']));
+                $this->relay_object_service->updateRelayObjectMethods($relay->object->id, $data['device_id'], $this->portRepository->getNumPortByID($data['port_id']));
 
 
             }elseif ($data['place'] == 'Hite-pro') {

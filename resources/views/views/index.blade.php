@@ -127,7 +127,7 @@
                                                         data-target="#methodsModal"
                                                         onclick="updateRedirectToCreateMethodBtn(this)">
                                                     <b>{{ optional($view->emethod)->name }}
-                                                        @if(optional($view->emethod)->is_need_param) ({{ $view->id_method_params }}) @endif
+                                                        @if(optional($view->emethod)->is_need_param) ({{ $view->on_method_params }}) @endif
                                                     </b>
                                                 </button>
                                             @else

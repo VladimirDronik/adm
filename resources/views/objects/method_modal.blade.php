@@ -5,8 +5,8 @@
                 <h4 class="modal-title" id="method_modal_title">Добавление метода</h4>
             </div>
             <div class="modal-body">
-                <div class="alert alert-danger alert-dismissible fade show" id="error_div" style="display: none;">
-                    <span id="error_text"></span>
+                <div class="alert alert-danger alert-dismissible fade show" id="methods_error_div" style="display: none;">
+                    <span id="methods_error_text"></span>
                 </div>
                 <input type="hidden" id="m_id" name="m_id" value="">
                 <div class="form-group row">

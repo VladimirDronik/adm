@@ -333,7 +333,6 @@ class DeviceService {
         $HPDevices = HiteproDev::select('id')->where('id_controller', $id)->pluck('id')->toArray();
 
 
-
         //Проверяем какие есть устройства и добавляем новое, если его нет в таблице
             foreach ($devicesArray AS $device) {
 

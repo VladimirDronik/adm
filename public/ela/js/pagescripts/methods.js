@@ -26,8 +26,8 @@ function loadSubData(mode, object_id) {
 }
 
 function showModalError(message) {
-    $('#error_text').text(message);
-    $('#error_div').show();
+    $('#methods_error_text').text(message);
+    $('#methods_error_div').show();
 }
 
 function clearModal() {
@@ -40,7 +40,7 @@ function clearModal() {
     $("#easy_button").removeClass("active");
     $('#easy_div').hide();
     $('#script_div').hide();
-    $('#error_div').hide();
+    $('#methods_error_div').hide();
 }
 
 function showAddModal() {
@@ -177,6 +177,7 @@ function getModalData() {
 
 
 function clickApplyBtn() {
+
     let data = getModalData();
     let message = validateMethod(data);
 
@@ -228,7 +229,7 @@ function changeRadioActions() {
         $('#easy_div').hide();
         $('#script_div').hide();
     }
-    $('#error_div').hide();
+    $('#methods_error_div').hide();
 }
 
 function clickDelBtn() {

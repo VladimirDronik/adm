@@ -50,7 +50,7 @@
 
                                             <input type="hidden" name="id_object" value="{{ $lightstat->id_object }}">
                                         @else
-                                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект термостата*:', $objects, old('id_object', $lightstat->id_object),
+                                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект светостата*:', $objects, old('id_object', $lightstat->id_object),
                                                 false, false, ['required' => true]) }}
                                         @endif
 

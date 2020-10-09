@@ -48,10 +48,6 @@ class LightstatController extends Controller
         return view('lightstats.index', compact('lightstats'));
     }
 
-    public function delete()
-    {
-
-    }
 
     public function store(CreateRequest $r)
     {
