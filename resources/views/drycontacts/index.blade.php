@@ -48,7 +48,7 @@
                             <tbody>
                                 @foreach($drycontacts as $drycontact)
                                     <tr id="tr{{$drycontact->id}}">
-                                        <td scope="row">{{ $drycontact->id }}</td>
+                                        <td scope="row">{{ $drycontact->object['id'] }}</td>
                                         <td><a href="{{ route('drycontacts.edit', [$drycontact->id]) }}">{{ $drycontact->name }}</a></td>
                                         @can('devices.show-object')
                                             <td>@if($drycontact->object)

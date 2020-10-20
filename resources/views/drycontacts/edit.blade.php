@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование датчика № '. $drycontact->id . ' «' . $drycontact->name .'»',
+       ['title' => 'Редактирование датчика № '. $drycontact->object['id']  . ' «' . $drycontact->name .'»',
         'links' => [ route('drycontacts.index') => 'Сухие контакты'],
         'last_link' => 'Редактирование датчика'])
 @endsection
@@ -32,7 +32,7 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID:', $drycontact->id) }}
+                        {{ Form::bs_simple_text('ID:', $drycontact->object['id'] ) }}
 
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 

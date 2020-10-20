@@ -29,4 +29,14 @@ class Drycontact extends Model
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
     }
+
+    public function eobject()
+    {
+        return $this->belongsTo(HomeObject::class, 'object', 'id');
+    }
+
+    public function iobject()
+    {
+        return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+    }
 }

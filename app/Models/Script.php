@@ -98,8 +98,10 @@ class Script extends Model
     }
 
     /* attributes */
-    public function systemMethods()
-    {
+    public function systemMethods() {
+
         return $this->hasMany(Method::class, 'script', 'id')->where('is_system', 1);
     }
+
+
 }

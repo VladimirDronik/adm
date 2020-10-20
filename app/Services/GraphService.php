@@ -34,6 +34,7 @@ class GraphService {
     {
         $termostat_ids = GraphTermostat::select('id_termostat')
             ->distinct()->pluck('id_termostat')->toArray();
+
         $rooms_ids = Termostat::select('room')->whereIn('id', $termostat_ids)
             ->distinct()->pluck('room')->toArray();
 

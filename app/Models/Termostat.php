@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -132,7 +133,7 @@ class Termostat extends Model
 
     public function last_graphs()
     {
-        return $this->hasMany(GraphTermostat::class, 'id_termostat', 'id')
+        return $this->hasMany(GraphTermostat::class, 'id_termostat', 'id')->where('datetime','>=', Carbon::now()->subDays(7))
             ->orderBy('datetime');
     }
 }

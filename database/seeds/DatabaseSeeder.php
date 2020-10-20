@@ -19,5 +19,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ObjtypesTableSeeder::class);
         $this->call(LogsSettingsTableSeeder::class);
         $this->call(NotifsettingsTableSeeder::class);
+        $this->call(ShedullerTableSeeder::class);
     }
 }
