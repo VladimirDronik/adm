@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление датчика CO2', 'links' => [ route('carbmonoxide.index') => 'Датчик CO2']])
+       ['title' => 'Добавление датчика УГ', 'links' => [ route('carbmonoxide.index') => 'Датчик УГ']])
 @endsection
 
 @section('content')
@@ -15,7 +15,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('carbmonoxide.index') }}" class="btn btn-success m-b-10 m-l-5">Список датчиков CO2</a>
+                        <a href="{{ route('carbmonoxide.index') }}" class="btn btn-success m-b-10 m-l-5">Список датчиков УГ</a>
                     </div>
                 </div>
             </div>

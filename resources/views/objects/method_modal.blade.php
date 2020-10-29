@@ -38,7 +38,7 @@
                     <label class="control-label text-right col-md-3 label-fix"></label>
                     <div class="col-md-9">
                         <button type="button" class="btn btn-success m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal" id="dev_select_button" onclick="loadSubData('device');">Контроллер: <span id="easy_device">отсутствует</span></button>&nbsp;
-                        <button type="button" class="btn btn-success m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal" id="port_btn" onclick="loadSubData('port');">Порт: <span id="easy_port">отсутствует</span></button>&nbsp;
+                        <button type="button" class="btn btn-success m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal" id="port_btn" onclick="loadSubData('port');"><span id="portordevice">Порт: </span><span id="easy_port">отсутствует</span></button>&nbsp;
                         <button type="button" class="btn btn-success m-b-10 btn-sm" data-toggle="modal" data-target="#methodsModal" id="action_btn" onclick="loadSubData('action');">Действие: <span id="easy_action">отсутствует</span></button>
                     </div>
                 </div>

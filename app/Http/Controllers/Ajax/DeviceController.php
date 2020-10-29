@@ -88,6 +88,14 @@ class DeviceController extends Controller
         return response()->json(['result' => true]);
     }
 
+    public function typeController(Request $r) {
+
+        if($r->id_device)
+            $typeDevice = DeviceRepository::getDevByIdDevice((int)$r->id_device)['type'];
+
+        return response()->json(['result' => true, 'type' =>  $typeDevice]);
+    }
+
 
 }
 

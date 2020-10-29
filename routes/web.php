@@ -5,7 +5,7 @@ Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::get('generate/fake', 'HomeController@generateFake')->name('generate.fake');
-Route::get('access/error', 'HomeController@accessError')->name('access.error');
+Route::get('access/error', 'HomeController@accessError')->name('accescarbmonoxides.error');
 
 Route::group(['middleware' => ['auth']], function () {
 
@@ -68,6 +68,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('ports/update', 'DeviceController@updatePort')->name('ports.update');
             Route::post('check/server', 'DeviceController@checkServer')->name('check.server');
             Route::post('objects_ports', 'DeviceController@objectsPorts')->name('objects_ports');
+            Route::post('type_controller', 'DeviceController@typeController')->name('type_controller');
         });
 
         Route::group(['prefix' => 'views', 'as' => 'views.'], function () {

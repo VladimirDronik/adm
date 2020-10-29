@@ -22,9 +22,30 @@
 </div>
 
 <script>
+
+
     function select_device(id_device) {
         //$('#dev_select_button').html('Устройство: ' + id_device);
         $('#easy_device').text(id_device);
         $('#easy_port').text('отсутствует');
+
+        const url_device = '{{ route('ajax.devices.type_controller') }}';
+
+        $.ajax({
+            url: url_device,
+            data: {'_token': _token, 'id_device': id_device},
+            success: function (data) {
+
+                if(data.type == 'Hite-pro')
+                    $('#portordevice').text('Устройство: ');
+                else
+                    $('#portordevice').text('Порт: ');
+               // methods = data.methods;
+                //createMethodSelect('#auto_sel_method_off', data.methods, -1);
+                //$('#auto_sel_method_off').trigger("chosen:updated");
+
+            }
+        });
+
     }
 </script>

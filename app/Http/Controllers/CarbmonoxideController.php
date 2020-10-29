@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 
 
 
-
-
 use App\Repositories\CarbmonoxideRepository;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;

@@ -6,9 +6,9 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование датчика CO2 № '. $carbmonoxide->iobject['id'],
-        'links' => [ route('carbmonoxide.index') => 'Датчики CO2'],
-        'last_link' => 'Редактирование датчика CO2'])
+       ['title' => 'Редактирование датчика УГ № '. $carbmonoxide->iobject['id'],
+        'links' => [ route('carbmonoxide.index') => 'Датчики УГ'],
+        'last_link' => 'Редактирование датчика УГ'])
 @endsection
 
 @section('content')
@@ -17,8 +17,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('carbmonoxide.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок датчиков CO2</a>
-                        <a href="{{ route('carbmonoxide.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить датчик СO2</a>
+                        <a href="{{ route('carbmonoxide.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок датчиков УГ</a>
+                        <a href="{{ route('carbmonoxide.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить датчик УГ</a>
                     </div>
                 </div>
             </div>
