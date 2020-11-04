@@ -98,7 +98,7 @@ class ScriptsTableSeeder extends Seeder
     public static function getCheckCarbmonoxideScript(): array
     {
         return [
-            'name' => 'Проверка датчика CO2',
+            'name' => 'Проверка датчика УГ',
             'link' => 'check_carbmonoxide.php',
             'count' => 0,
             'system' => 1

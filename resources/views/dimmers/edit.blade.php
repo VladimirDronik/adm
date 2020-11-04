@@ -101,6 +101,7 @@
         const sub_data_url = '{{ route('ajax.load.data') }}';
         const object_id = '{{ optional($dimmer->object)->id }}';
         const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
+        const url_device = '{{ route('ajax.devices.type_controller') }}';
         let del_id;
 
         $(document).ready(function () {

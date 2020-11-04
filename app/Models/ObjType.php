@@ -31,7 +31,7 @@ class ObjType extends Model
     const TYPE_SOCKET = 'socket';
     const TYPE_DRYCONTACT = 'drycontact';
     const TYPE_MOTIONSENSOR = 'motionsensor';
-    const TYPE_CARBMONOXIDE = 'CO2sens';
+    const TYPE_CARBMONOXIDE = 'COsens';
 
     protected $table = 'objtypes';
     public $timestamps = false;

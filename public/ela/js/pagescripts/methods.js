@@ -57,6 +57,20 @@ function showAddModal() {
 function showEditModal(data) {
     clearModal();
 
+
+    $.ajax({
+        url: url_device,
+        data: {'_token': _token, 'id_device': data.device_id},
+        success: function (datares) {
+
+            if(datares.type == 'Hite-pro')
+                $('#portordevice').text('Устройство: ');
+            else
+                $('#portordevice').text('Порт: ');
+
+        }
+    });
+
     $('#m_id').val(data.id);
     $('#method_modal_title').text('Редактирование метода');
     $('#apply_btn').text('Сохранить изменения');

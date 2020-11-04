@@ -26,7 +26,7 @@
 
 <script>
     function select_port(device) {
-        $('#port_btn').html('Устройство: ' + '<span id="easy_port">'+device+'</span>');
+        $('#port_btn').html('<span id="portordevice">Устройство: </span>' + '<span id="easy_port">'+device+'</span>');
        // $('#easy_port').text(device);
     }
 </script>

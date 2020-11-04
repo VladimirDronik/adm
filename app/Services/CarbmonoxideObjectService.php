@@ -54,15 +54,15 @@ class CarbmonoxideObjectService {
         $script_id = $this->getOrCreateChecScriptId();
 
         $method_id = Method::forceCreate([
-            'name' => 'Проверка датчика CO2',
+            'name' => 'Проверка датчика УГ',
             'id_object' => $object_id,
-            'comment' => 'Периодическая проверка текущих значений датчика CO2',
+            'comment' => 'Периодическая проверка текущих значений датчика УГ',
             'is_system' => 1,
             'script' => $script_id
         ])->id;
 
         $scheduler_task_id = SchedulerTask::forceCreate([
-            'name' => 'Проверка датчика CO2',
+            'name' => 'Проверка датчика УГ',
             'is_system' => 1,
             'is_hidden' => 1,
             'object' => $object_id,

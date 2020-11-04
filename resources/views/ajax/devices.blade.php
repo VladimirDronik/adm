@@ -40,9 +40,6 @@
                     $('#portordevice').text('Устройство: ');
                 else
                     $('#portordevice').text('Порт: ');
-               // methods = data.methods;
-                //createMethodSelect('#auto_sel_method_off', data.methods, -1);
-                //$('#auto_sel_method_off').trigger("chosen:updated");
 
             }
         });
