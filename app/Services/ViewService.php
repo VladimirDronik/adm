@@ -16,6 +16,18 @@ class ViewService {
         $view->position_top = (int)$data['position_top'];
         $view->position_left = (int)$data['position_left'];
 
+        if(trim($data['type']) == 'temp') {
+
+            $stringMethod = 'enable='.$data['enabletermostat'].';';
+            $stringMethod.='lowval='.$data['lowval_termostat'].';';
+            $stringMethod.='lowval='.$data['highval_termostat'].';';
+
+            $data['on_method_params'] = $stringMethod;
+        } else
+            $data['on_method_params'] = null;
+
+
+
         $view->room = ((int)$data['room'] === 0) ? null : (int)$data['room'];
         if (is_null($view->room)) {
             $view->room_group = null;
@@ -50,6 +62,7 @@ class ViewService {
 
     public function store(array $data)
     {
+
         $view = new View();
         $this->prepareView($view, $data);
         $view->save();

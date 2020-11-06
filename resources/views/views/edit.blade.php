@@ -44,7 +44,7 @@
                         </div>
 
                         <div class="form-group row" id="on_method_params_div"
-                             @if(is_null($view->on_method_params) && !old('id_method')) style="display: none;" @endif>
+                             @if((is_null($view->on_method_params) && !old('id_method')) || ($view->type =='temp')) style="display: none;" @endif>
                             <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="on_method_params"></label>
                             <div class="col-md-9 pr-0">
                                 <div class="form-group row ">
@@ -92,6 +92,15 @@
                         {{ Form::bs_number('position_left','Левый отступ (%):', old('position_left', $view->position_left), ['min' => 0, 'max' => 100, 'required' => false] ) }}
                         {{ Form::bs_number('position_top','Верхний отступ (%):', old('position_top', $view->position_right), ['min' => 0, 'max' => 100, 'required' => false] ) }}
 
+                        <div id="additionallydiv"  @if($view->type == 'temp') style="display: block;" @else style="display: none;" @endif >
+                            <br>
+                            {{ Form::bs_title('Дополнительно') }}
+                            <div id="termostatdiv" @if($view->type == 'temp') style="display: block;" @else style="display: none;" @endif >
+                                {{ Form::bs_radio('enabletermostat', 'Настройка из приложения:', ['true' => 'да', 'false' => 'нет'], old('enabletermostat', $enabletermostat)) }}
+                                {{ Form::bs_number('lowval_termostat','Нижний порог шкалы:', old('lowval_termostat', $lowval_termostat), ['min' => 0, 'max' => 30, 'required' => false] ) }}
+                                {{ Form::bs_number('highval_termostat','Верхний порог шкалы:', old('highval_termostat', $highval_termostat), ['min' => 0, 'max' => 50, 'required' => false] )  }}
+                            </div>
+                        </div>
                     </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
@@ -285,11 +294,18 @@
             //
 
             $('#view_form [name=type]').change(function(){
+
+                $('#additionallydiv').hide();
+                $('#termostatdiv').hide();
+
                 if ($(this).val() === 'switch') {
                     $('#view_form #off_method_div').show();
                 } else if ($(this).val() === 'dimmer'){
                     $('#view_form #off_method_div').hide();
                     $('#view_form #on_method_div').hide();
+                } else if ($(this).val() === 'temp') {
+                    $('#additionallydiv').show();
+                    $('#termostatdiv').show();
                 } else {
                     $('#view_form #on_method_div').show();
                     $('#view_form #off_method_div').hide();

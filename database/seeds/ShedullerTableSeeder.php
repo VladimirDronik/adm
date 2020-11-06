@@ -13,8 +13,6 @@ class ShedullerTableSeeder extends Seeder
 
     public function __construct()
     {
-
-        //$this->shedullerPoint = SchedulerPoint::pluck('name')->toArray();
         $this->shedullerTask = SchedulerTask::pluck('name')->toArray();
     }
 

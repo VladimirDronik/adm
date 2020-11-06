@@ -79,8 +79,22 @@ class ViewController extends Controller
         list($types, $rooms, $objects, $scenes, $images) = $this->getLists();
         $methods = $object_service->getMethodsByObjectIdToArray($view->id_object);
 
+        $enabletermostat = null;
+        $lowval_termostat = null;
+        $highval_termostat = null;
+
+        if($view->type == 'temp') {
+
+            $onmethodparams = explode(';',$view->on_method_params);
+            $enabletermostat = explode('=',$onmethodparams[0])[1];
+            $lowval_termostat = explode('=',$onmethodparams[1])[1];
+            $highval_termostat = explode('=',$onmethodparams[2])[1];
+        }
+
+
+
         return view('views.edit', compact('view', 'types',
-            'rooms', 'methods', 'objects', 'scenes', 'images'));
+            'rooms', 'methods', 'objects', 'scenes', 'images', 'enabletermostat', 'lowval_termostat', 'highval_termostat'));
     }
 
     public function update(UpdateRequest $r, View $view)

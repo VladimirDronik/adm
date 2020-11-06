@@ -84,6 +84,18 @@
                             {{ Form::bs_select('scene', 'Сцена:', ["" => "Не указана"] + $scenes) }}
                             {{ Form::bs_number('position_left','Левый отступ (%):', old('position_left', 0), ['min' => 0, 'max' => 100, 'required' => false] ) }}
                             {{ Form::bs_number('position_top','Верхний отступ (%):', old('position_top', 0), ['min' => 0, 'max' => 100, 'required' => false] )  }}
+
+                            <div id="additionallydiv" style="display: none;" >
+                                <br>
+                            {{ Form::bs_title('Дополнительно') }}
+                                <div id="termostatdiv" style="display: none;" >
+                                    {{ Form::bs_radio('enabletermostat', 'Настройка из приложения:', ['true' => 'дa', 'false' => 'нет'], 'true') }}
+                                    {{ Form::bs_number('lowval_termostat','Нижний порог шкалы:', old('lowval_termostat', 10), ['min' => 0, 'max' => 30, 'required' => false] ) }}
+                                    {{ Form::bs_number('highval_termostat','Верхний порог шкалы:', old('highval_termostat', 26), ['min' => 0, 'max' => 50, 'required' => false] )  }}
+                                </div>
+                            </div>
+
+
                         </div>
                         {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
@@ -262,11 +274,18 @@
             //
 
             $('#view_form [name=type]').change(function(){
+
+                $('#additionallydiv').hide();
+                $('#termostatdiv').hide();
+
                 if ($(this).val() === 'switch') {
                     $('#view_form #off_method_div').show();
-                } else if ($(this).val() === 'dimmer'){
+                } else if ($(this).val() === 'dimmer') {
                     $('#view_form #off_method_div').hide();
                     $('#view_form #on_method_div').hide();
+                } else if ($(this).val() === 'temp') {
+                    $('#additionallydiv').show();
+                    $('#termostatdiv').show();
                 } else {
                     $('#view_form #on_method_div').show();
                     $('#view_form #off_method_div').hide();
