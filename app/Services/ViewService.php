@@ -18,9 +18,9 @@ class ViewService {
 
         if(trim($data['type']) == 'temp') {
 
-            $stringMethod = 'enable='.$data['enabletermostat'].';';
+            $stringMethod = 'editable='.$data['enabletermostat'].';';
             $stringMethod.='lowval='.$data['lowval_termostat'].';';
-            $stringMethod.='lowval='.$data['highval_termostat'].';';
+            $stringMethod.='highval='.$data['highval_termostat'];
 
             $data['on_method_params'] = $stringMethod;
         } else

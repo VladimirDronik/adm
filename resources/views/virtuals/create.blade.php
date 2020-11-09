@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление реле', 'links' => [ route('relays.index') => 'Реле']])
+       ['title' => 'Добавление виртуального устройства', 'links' => [ route('virtuals.index') => 'Виртуальное устройство']])
 @endsection
 
 @section('content')
@@ -15,7 +15,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('relays.index') }}" class="btn btn-success m-b-10 m-l-5">Список реле</a>
+                        <a href="{{ route('virtuals.index') }}" class="btn btn-success m-b-10 m-l-5">Список виртуальных устрйоств</a>
                     </div>
                 </div>
             </div>
@@ -23,13 +23,12 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::open(['route' => 'relays.store', 'method' => 'post', 'id' => 'relay_form',
+                    {!! Form::open(['route' => 'virtuals.store', 'method' => 'post', 'id' => 'virtuals_form',
                             'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_radio('type', 'Тип реле*:', $types, old('type', -1), ['required' => true]) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
                         <div class="form-group row ">

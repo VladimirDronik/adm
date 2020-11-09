@@ -59,6 +59,12 @@
                                     Счетчики
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('virtuals.index') }}">
+                                    <i class="fa fa-connectdevelop"></i>
+                                    Виртуальное устр-во
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 @endcan
