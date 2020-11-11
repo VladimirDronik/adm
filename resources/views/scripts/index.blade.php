@@ -35,6 +35,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th>ID</th>
                                     <th>Название</th>
                                     <th>Скрипт</th>
                                     <th>Кол-во выполнений</th>
@@ -50,6 +51,9 @@
                             <tbody>
                                 @foreach($scripts as $script)
                                     <tr id="tr{{$script->id}}">
+                                        <td>
+                                            {{$script->id}}
+                                        </td>
                                         <td>
                                             <a href="{{ route('scripts.edit', [$script->id]) }}">{{ $script->name }}</a>
                                         </td>
