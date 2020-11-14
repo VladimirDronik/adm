@@ -1,0 +1,159 @@
+@extends('layouts._layout')
+
+@section('css')
+    <link href="{{ asset('ela/css/lib/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+@endsection
+
+@section('breadcrumbs')
+    @includeIf('components.breadcrumbs',
+       ['title' => 'Добавление виртуального устройства', 'links' => [ route('virtuals.index') => 'Виртуальное устройство']])
+@endsection
+
+@section('content')
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <a href="{{ route('virtuals.index') }}" class="btn btn-success m-b-10 m-l-5">Список виртуальных устрйоств</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="col-md-12 col-lg-8 col-xl-8">
+                    {!! Form::open(['route' => 'virtuals.store', 'method' => 'post', 'id' => 'virtuals_form',
+                            'class' => 'form-horizontal form-bordered']) !!}
+                    {{ csrf_field() }}
+                    <div class="form-body">
+                        {{ Form::bs_alert() }}
+
+                        {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
+
+                    </div>
+                    {{ Form::bs_submit_btn() }}
+                    {!! Form::close() !!}
+                </div>
+                <div style="height: 200px;">&nbsp;</div>
+                <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
+            </div>
+        </div>
+    </div>
+    @include('components.info_modal')
+    @include('components.create_object_modal', compact('object_types'))
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/relay.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
+    <script>
+        const storeObjectUrl = '{{ route('ajax.objects.store') }}';
+        const url_ports = '{{ route('ajax.devices.objects_ports') }}';
+
+        $(document).ready(function () {
+            initRelayForm();
+
+            $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_hitepro_devices").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            $("#auto_sel_device_id").chosen().change(function() {
+                let device_id = $(this).val();
+                $.ajax({
+                    url: url_ports,
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'switch, socket'},
+                    success: function (data) {
+                        if (data.type_device == 'Hite-pro') {
+                            $('#port_id_div').hide();
+                            $('#hitepro_devices_div').show();
+                            createPortSelect('#auto_sel_hitepro_devices', data.hiteProDevices, -1);
+                            $('#auto_sel_hitepro_devices').trigger("chosen:updated");
+                            $('#place').val('Hite-pro');
+                        }
+                            else {
+                            $('#port_id_div').show();
+                            $('#hitepro_devices_div').hide();
+                            createPortSelect('#auto_sel_port_id', data.ports, -1);
+                            $('#auto_sel_port_id').trigger("chosen:updated");
+                            $('#place').val('port');
+                        }
+                    }
+                });
+            });
+
+            $('#auto_sel_btn_id_object').click(function() {
+                clearCreateObjectModal();
+                $('#create_object_modal_init_btn').click();
+                return false;
+            });
+
+            $('#create_object_modal_btn').click(function() {
+                let message = validateCreateObject();
+                if (message !== '') {
+                    showCreateObjectError(message);
+                    return false;
+                }
+
+                storeObject();
+            });
+
+            function createPortSelect(target, options, selected) {
+                let sel = $(target);
+                sel.html('');
+                let s = '<option value="">Не выбрано</option>';
+                for (let i = 0; i < options.length; i++) {
+                    if (selected == options[i].id)
+                        s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
+                    else
+                        s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
+                }
+                sel.append(s);
+            }
+
+
+
+            function storeObject() {
+                const name = $("#create_object_modal input[name=object_name]").val().trim();
+                const type = $("#create_object_modal input[name=object_type]:checked").val().trim();
+
+                $.ajax({
+                    url: storeObjectUrl,
+                    data: {'_token': _token, 'name': name, 'type': type},
+                    success: function (data) {
+                        if (data.result) {
+                            hideCreateObjectError();
+                            updateObjectSelects(data.objects, data.id);
+                            $('#create_object_cancel_btn').click();
+                        } else {
+                            showCreateObjectError(data.message);
+                        }
+                    },
+                    error: function () {
+                        showCreateObjectError('Сервер временно недоступен');
+                    }
+                });
+            }
+
+            function updateObjectSelects(objects, selected) {
+                const id = $('#auto_sel_id_object').val();
+                if (id) {
+                    selected = id;
+                }
+                createObjectSelect('#auto_sel_id_object', objects, selected);
+            }
+
+            $('#relay_form [name=object_type]').change(function(){
+                if ($(this).val() === 'manual') {
+                    $('#auto_object_div').hide();
+                    $('#manual_object_div').show();
+                } else {
+                    $('#manual_object_div').hide();
+                    $('#auto_object_div').show();
+                }
+                return true;
+            });
+        });
+    </script>
+@endsection
