@@ -8,4 +8,12 @@ class Virtual extends Model
 {
     protected $table = 'virtualsdev';
     public $timestamps = false;
+
+
+    /* relations */
+
+    public function object()
+    {
+        return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+    }
 }

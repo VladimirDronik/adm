@@ -2,22 +2,22 @@
 
 namespace App\Services;
 
+use App\Http\Requests\Virtual\UpdateRequest;
 use App\Models\HiteproDev;
 use App\Models\HomeObject;
 use App\Models\Port;
-use App\Models\Relay;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
+use App\Models\Virtual;
 
-class RelayService {
 
-    private $relay_object_service;
-    private $portRepository;
+class VirtualService {
 
-    public function __construct(RelayObjectService $relay_object_service, PortRepository $portRepository)
+    private $virtual_object_service;
+
+    public function __construct(VirtualObjectService $virtual_object_service)
     {
-        $this->relay_object_service = $relay_object_service;
-        $this->portRepository = $portRepository;
+        $this->virtual_object_service = $virtual_object_service;
     }
 
     /**
@@ -48,18 +48,13 @@ class RelayService {
         return true;
     }
 
-    public function prepareRelay(Relay $relay, array $data)
+    public function prepareVirtual(Virtual $virtual, array $data)
     {
-        $relay->name = trim($data['name']);
-        if (isset($data['type'])) {
-            $relay->type = $data['type'];
-        }
-        $relay->id_object = (int)$data['id_object'];
+        $virtual->name = trim($data['name']);
     }
 
     /**
-     * Создание реле. Если $data['type'] === 'auto',
-     * то еще создается объект с методами
+     * Создание виртуального устройства.
      *
      * @param array $data
      * @return int
@@ -68,80 +63,48 @@ class RelayService {
     public function store(array $data): int
     {
 
-        $relay = new Relay();
-        $this->prepareRelay($relay, $data);
+        $virtual = new Virtual();
+        $this->preparevirtual($virtual, $data);
 
-        if ($data['object_type'] === 'manual') {
-            $relay->save();
-        } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$relay, $data) {
-                $unique_name = HomeObject::getUniqueObjectName(0, $relay->name);
-                $object = $this->relay_object_service->createRelayObject($unique_name, $relay->type);
-                $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $this->portRepository->getNumPortByID($data['port_id']));
-                $relay->id_object = $object->id;
-                $relay->save();
+            DB::transaction(function () use (&$virtual, $data) {
+                $unique_name = HomeObject::getUniqueObjectName(0, $virtual->name);
+                $object = $this->virtual_object_service->createVirtualObject($unique_name);
+                $this->virtual_object_service->createVirtualObjectMethods($object->id);
+                $virtual->id_object = $object->id;
+                $virtual->save();
 
-                if ($data['port_id'] && $data['place'] == 'port') {
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id]);
-                } elseif ($data['place'] == 'Hite-pro') {
-                    HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
-                                ->update(['id_object' => $object->id]);
-                }
             });
-        }
 
-        return $relay->id;
+
+        return $virtual->id;
     }
 
-    private function isUpdateAutoObjectName(Relay $relay, string $name): bool
+    private function isUpdateAutoObjectName(Virtual $virtual, string $name): bool
     {
-        return $relay->name !== trim($name) && $relay->object && $relay->object->is_system;
+        return $virtual->name !== trim($name) && $virtual->object && $virtual->object->is_system;
     }
 
     /**
-     * Обновление реле. Если изменилось название и у реле системный объект,
-     * то изменяем название объекта.
-     * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
+     * Обновление виртульного устройства.
      *
-     * @param Relay $relay
+     * @param Virtual $virtual
      * @param array $data
      * @return int
      * @throws \Throwable
      */
-    public function update(Relay $relay, array $data): int
+    public function update(Virtual $virtual, array $data): int
     {
-        DB::transaction(function () use (&$relay, $data) {
-            if ($this->isUpdateAutoObjectName($relay, $data['name'])) {
-                $relay->object->name = HomeObject::getUniqueObjectName($relay->object->id, trim($data['name']));
-                $relay->object->save();
+        DB::transaction(function () use (&$virtual, $data) {
+            if ($this->isUpdateAutoObjectName($virtual, $data['name'])) {
+                $virtual->object->name = HomeObject::getUniqueObjectName($virtual->object->id, trim($data['name']));
+                $virtual->object->save();
             }
-            $this->prepareRelay($relay, $data);
-            $relay->save();
+            $this->prepareVirtual($virtual, $data);
+            $virtual->save();
 
-            if (!is_null($data['port_id']) && $data['place'] == 'port') {
-
-                Port::where('object', $relay->object->id)->update(['object' => null, 'method' => null]);
-                Port::where('id', $data['port_id'])->update(['object' => $relay->object->id,
-                    'method' => null]);
-                HiteproDev::where('id_object', $relay->object->id)->update(['id_object' => null]);
-
-                //Меняем метод easy для всех трех системных методов лампы
-                $this->relay_object_service->updateRelayObjectMethods($relay->object->id, $data['device_id'], $this->portRepository->getNumPortByID($data['port_id']));
-
-
-            }elseif ($data['place'] == 'Hite-pro') {
-
-                HiteproDev::where('id_object', $relay->object->id)->update(['id_object' => null]);
-                Port::where('object', $relay->object->id)->update(['object' => null, 'method' => null]);
-                HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
-                    ->update(['id_object' => $relay->object->id]);
-
-                //Меняем метод easy для всех трех системных методов реле
-                $this->relay_object_service->updateRelayObjectMethods($relay->object->id, $data['device_id'], $data['hitepro_devices']);
-
-            }
         });
 
-        return $relay->id;
+        return $virtual->id;
     }
+
 }

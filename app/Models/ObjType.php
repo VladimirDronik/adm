@@ -32,6 +32,7 @@ class ObjType extends Model
     const TYPE_DRYCONTACT = 'drycontact';
     const TYPE_MOTIONSENSOR = 'motionsensor';
     const TYPE_CARBMONOXIDE = 'COsens';
+    const TYPE_VIRTUAL = 'virtual';
 
     protected $table = 'objtypes';
     public $timestamps = false;

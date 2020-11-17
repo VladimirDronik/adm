@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление виртуального устройства', 'links' => [ route('virtuals.index') => 'Виртуальное устройство']])
+       ['title' => 'Добавление реле', 'links' => [ route('relays.index') => 'Реле']])
 @endsection
 
 @section('content')
@@ -15,7 +15,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('virtuals.index') }}" class="btn btn-success m-b-10 m-l-5">Список виртуальных устрйоств</a>
+                        <a href="{{ route('relays.index') }}" class="btn btn-success m-b-10 m-l-5">Список реле</a>
                     </div>
                 </div>
             </div>
@@ -23,14 +23,71 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::open(['route' => 'virtuals.store', 'method' => 'post', 'id' => 'virtuals_form',
+                    {!! Form::open(['route' => 'relays.store', 'method' => 'post', 'id' => 'relay_form',
                             'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
+                        {{ Form::bs_radio('type', 'Тип реле*:', $types, old('type', -1), ['required' => true]) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
+                        <div class="form-group row ">
+                            <label class="control-label text-right col-md-3 label-fix" for="id_object">
+                                <strong>Объект*:</strong>
+                            </label>
+                            <div class="col-sm-9">
+                                <div class="form-group row">
+                                    <div class="col-md-12 p-0">
+                                        <div class="btn-group-toggle" data-toggle="buttons">
+                                            <label class="btn btn-success btn-sm active">
+                                                <input type="radio" name="object_type" autocomplete="off" checked value="auto"> Создать автоматически
+                                            </label>
+                                            @can('devices.create-manual-object')
+                                                <label class="btn btn-success btn-sm">
+                                                    <input type="radio" name="object_type" autocomplete="off" value="manual">  Выбор из списка
+                                                </label>
+                                            @endcan
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" id="manual_object_div" style="display: none;">
+                                    <div class="col-sm-11 pr-0">
+                                        <select autocomplete="off" id="auto_sel_id_object"
+                                                data-placeholder="не выбрано"
+                                                name="id_object"
+                                                class="chosen-select form-control"
+                                                style="width:350px;">
+                                            <option value="">Не выбрано</option>
+                                            @foreach ($objects as $key => $value)
+                                                <option value="{{ $key }}" @if($key == old('id_object')) selected @endif>
+                                                    {{ $value }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-1 pt-1 text-left">
+                                        <button type="button" id="auto_sel_btn_id_object" class="btn btn-default btn-sm" title=" Создать объект ">
+                                            <i class="fa fa-plus"></i></button>
+                                    </div>
+                                </div>
+                                <div class="row" id="auto_object_div">
+                                    <div class="col-sm-11 pr-0">
+                                        <p>
+                                            При создании реле будет создан объект с таким же названием.
+                                            У объекта будут созданы методы «Включить реле» и «Выключить реле».
+                                        </p>
+                                    </div>
+                                    <div class="col-sm-12 pr-0 mt-4">
+                                        {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'),
+                                           false, false, [], null) }}
+
+                                        {{ Form::bs_autoselect('port_id', 'Порт:', [], old('port_id'),
+                                            false, false, [], null) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
@@ -51,55 +108,35 @@
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
-
         $(document).ready(function () {
             initRelayForm();
-
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_hitepro_devices").chosen({width:"100%", no_results_text: "Не найдено"});
-
             $("#auto_sel_device_id").chosen().change(function() {
                 let device_id = $(this).val();
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'switch, socket'},
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'out'},
                     success: function (data) {
-                        if (data.type_device == 'Hite-pro') {
-                            $('#port_id_div').hide();
-                            $('#hitepro_devices_div').show();
-                            createPortSelect('#auto_sel_hitepro_devices', data.hiteProDevices, -1);
-                            $('#auto_sel_hitepro_devices').trigger("chosen:updated");
-                            $('#place').val('Hite-pro');
-                        }
-                            else {
-                            $('#port_id_div').show();
-                            $('#hitepro_devices_div').hide();
-                            createPortSelect('#auto_sel_port_id', data.ports, -1);
-                            $('#auto_sel_port_id').trigger("chosen:updated");
-                            $('#place').val('port');
-                        }
+                        createMethodSelect('#auto_sel_port_id', data.ports, -1);
+                        $('#auto_sel_port_id').trigger("chosen:updated");
                     }
                 });
             });
-
             $('#auto_sel_btn_id_object').click(function() {
                 clearCreateObjectModal();
                 $('#create_object_modal_init_btn').click();
                 return false;
             });
-
             $('#create_object_modal_btn').click(function() {
                 let message = validateCreateObject();
                 if (message !== '') {
                     showCreateObjectError(message);
                     return false;
                 }
-
                 storeObject();
             });
-
-            function createPortSelect(target, options, selected) {
+            function createMethodSelect(target, options, selected) {
                 let sel = $(target);
                 sel.html('');
                 let s = '<option value="">Не выбрано</option>';
@@ -111,13 +148,9 @@
                 }
                 sel.append(s);
             }
-
-
-
             function storeObject() {
                 const name = $("#create_object_modal input[name=object_name]").val().trim();
                 const type = $("#create_object_modal input[name=object_type]:checked").val().trim();
-
                 $.ajax({
                     url: storeObjectUrl,
                     data: {'_token': _token, 'name': name, 'type': type},
@@ -135,7 +168,6 @@
                     }
                 });
             }
-
             function updateObjectSelects(objects, selected) {
                 const id = $('#auto_sel_id_object').val();
                 if (id) {
@@ -143,7 +175,6 @@
                 }
                 createObjectSelect('#auto_sel_id_object', objects, selected);
             }
-
             $('#relay_form [name=object_type]').change(function(){
                 if ($(this).val() === 'manual') {
                     $('#auto_object_div').hide();

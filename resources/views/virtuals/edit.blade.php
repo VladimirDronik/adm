@@ -6,9 +6,9 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование реле № '. $relay->object['id'] . ' «' . $relay->name .'»',
-        'links' => [ route('relays.index') => 'Реле'],
-        'last_link' => 'Редактирование выключателя'])
+       ['title' => 'Редактирование виртуального устройства № '. $virtual->object['id'] . ' «' . $virtual->name .'»',
+        'links' => [ route('virtuals.index') => 'Виртуальное устройство'],
+        'last_link' => 'Редактирование виртуального устройства'])
 @endsection
 
 @section('content')
@@ -17,8 +17,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('relays.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок реле</a>
-                        <a href="{{ route('relays.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить реле</a>
+                        <a href="{{ route('virtuals.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок вирт. устройств</a>
+                        <a href="{{ route('virtuals.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить вирт. устройство</a>
                     </div>
                 </div>
             </div>
@@ -26,68 +26,42 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::model($relay, ['route' => ['relays.update', $relay->id], 'id' => 'relay_form',
+                    {!! Form::model($virtual, ['route' => ['virtuals.update', $virtual->id], 'id' => 'virtual_form',
                         'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID объекта:', $relay->object['id']) }}
-                        <div class="form-group row">
-                            <label class="control-label text-right col-md-3 label-fix" for="">
-                                Тип реле:     </label>
-                            <div class="col-md-9">
-                                <div class="mt-2">
-                                    {{ $relay->rus_type }}
-                                </div>
-                            </div>
-                        </div>
+                        {{ Form::bs_simple_text('ID объекта:', $virtual->object['id']) }}
 
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-                        @if(($relay->object && $relay->object->is_system) || !$can['devices.show-object'])
+                        @if(($virtual->object && $virtual->object->is_system) || !$can['devices.show-object'])
                             <div class="form-group row">
                                 <label class="control-label text-right col-md-3 label-fix" for="">
                                     Объект:     </label>
                                 <div class="col-md-9">
                                     <div class="mt-2">
-                                        <a class="a-color" href="{{ route('objects.edit', [$relay->id_object]) }}">
-                                            {{ $relay->object->name }}
-                                            @if($relay->object && $relay->object->is_system) (системный) @endif</a>
+                                        <a class="a-color" href="{{ route('objects.edit', [$virtual->id_object]) }}">
+                                            {{ $virtual->object->name }}
+                                            @if($virtual->object && $virtual->object->is_system) (системный) @endif</a>
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" name="id_object" value="{{ $relay->id_object }}">
+                            <input type="hidden" name="id_object" value="{{ $virtual->id_object }}">
                         @else
-                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект*:', $objects, old('id_object', $relay->id_object), false, false, ['required' => true]) }}
+                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект*:', $objects, old('id_object', $virtual->id_object), false, false, ['required' => true]) }}
                         @endif
 
                     </div>
 
-                    <div class="col-sm-12 pr-0 mt-4">
-                        {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', $idDevice),
-                           false, false, [], null) }}
-
-
-                        <div id='port_id_div' @if ($ports==null) style="display: none" @endif>
-                            {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
-                                false, false, [], null) }}
-                        </div>
-
-                        <div id='hitepro_devices_div' @if ($hp_devices==null) style="display: none" @endif>
-                            {{ Form::bs_autoselect('hitepro_devices', 'Устройство:', $hp_devices, old('hiteProDevices', $hp_device),
-                                false, false, [], null) }}
-                        </div>
-
-                        <input type="hidden" name="place" id="place" value="@if ($ports==null) Hite-pro @else port @endif">
-                    </div>
 
                     @include('messages.two')
 
                     {{ Form::bs_submit_btn() }}
 
-                    @include('objects.methods', ['object' => $relay->object])
-                    @include('objects.events', ['object' => $relay->object])
+                    @include('objects.methods', ['object' => $virtual->object])
+                    @include('objects.events', ['object' => $virtual->object])
 
                     {!! Form::close() !!}
                 </div>
@@ -110,7 +84,7 @@
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
-    <script src="{{ asset('ela/js/pagescripts/relay.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/virtual.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
@@ -122,43 +96,19 @@
         const del_url = '{{ route('ajax.methods.delete') }}';
         const del_message_url = '{{ route('ajax.messages.delete') }}';
         const sub_data_url = '{{ route('ajax.load.data') }}';
-        const object_id = '{{ optional($relay->object)->id }}';
+        const object_id = '{{ optional($virtual->object)->id }}';
         const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
         const url_device = '{{ route('ajax.devices.type_controller') }}';
         let del_id;
 
         $(document).ready(function () {
-            initRelayForm();
+            initVirtualForm();
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_hitepro_devices").chosen({width:"100%", no_results_text: "Не найдено"});
 
-            $("#auto_sel_device_id").chosen().change(function() {
-                let object_id = $(this).val();
 
-                $.ajax({
-                    url: url_ports,
-                    data: {'_token': _token, 'device_id': object_id, 'status': 'OUT', 'type': 'switch, socket'},
-                    success: function (data) {
-                        methods = data.ports;
-                        if (data.type_device == 'Hite-pro') {
-                            $('#port_id_div').hide();
-                            $('#hitepro_devices_div').show();
-                            createPortSelect('#auto_sel_hitepro_devices', data.hiteProDevices, -1);
-                            $('#auto_sel_hitepro_devices').trigger("chosen:updated");
-                            $('#place').val('Hite-pro');
-                        }
-                        else {
-                            $('#port_id_div').show();
-                            $('#hitepro_devices_div').hide();
-                            createPortSelect('#auto_sel_port_id', data.ports, -1);
-                            $('#auto_sel_port_id').trigger("chosen:updated");
-                            $('#place').val('port');
-                        }
-                    }
-                });
-            });
 
             $('#auto_sel_btn_id_object').click(function() {
                 clearCreateObjectModal();

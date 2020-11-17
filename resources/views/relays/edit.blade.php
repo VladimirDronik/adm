@@ -68,18 +68,8 @@
                         {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', $idDevice),
                            false, false, [], null) }}
 
-
-                        <div id='port_id_div' @if ($ports==null) style="display: none" @endif>
-                            {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
-                                false, false, [], null) }}
-                        </div>
-
-                        <div id='hitepro_devices_div' @if ($hp_devices==null) style="display: none" @endif>
-                            {{ Form::bs_autoselect('hitepro_devices', 'Устройство:', $hp_devices, old('hiteProDevices', $hp_device),
-                                false, false, [], null) }}
-                        </div>
-
-                        <input type="hidden" name="place" id="place" value="@if ($ports==null) Hite-pro @else port @endif">
+                        {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
+                            false, false, [], null) }}
                     </div>
 
                     @include('messages.two')
@@ -124,62 +114,39 @@
         const sub_data_url = '{{ route('ajax.load.data') }}';
         const object_id = '{{ optional($relay->object)->id }}';
         const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
-        const url_device = '{{ route('ajax.devices.type_controller') }}';
         let del_id;
-
         $(document).ready(function () {
             initRelayForm();
-
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_hitepro_devices").chosen({width:"100%", no_results_text: "Не найдено"});
-
             $("#auto_sel_device_id").chosen().change(function() {
                 let object_id = $(this).val();
-
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': object_id, 'status': 'OUT', 'type': 'switch, socket'},
+                    data: {'_token': _token, 'device_id': object_id, 'status': 'OUT'},
                     success: function (data) {
                         methods = data.ports;
-                        if (data.type_device == 'Hite-pro') {
-                            $('#port_id_div').hide();
-                            $('#hitepro_devices_div').show();
-                            createPortSelect('#auto_sel_hitepro_devices', data.hiteProDevices, -1);
-                            $('#auto_sel_hitepro_devices').trigger("chosen:updated");
-                            $('#place').val('Hite-pro');
-                        }
-                        else {
-                            $('#port_id_div').show();
-                            $('#hitepro_devices_div').hide();
-                            createPortSelect('#auto_sel_port_id', data.ports, -1);
-                            $('#auto_sel_port_id').trigger("chosen:updated");
-                            $('#place').val('port');
-                        }
+                        createMethodSelect('#auto_sel_port_id', data.ports, -1);
+                        $('#auto_sel_port_id').trigger("chosen:updated");
                     }
                 });
             });
-
             $('#auto_sel_btn_id_object').click(function() {
                 clearCreateObjectModal();
                 $('#create_object_modal_init_btn').click();
                 return false;
             });
-
             $('#create_object_modal_btn').click(function() {
                 let message = validateCreateObject();
                 if (message !== '') {
                     showCreateObjectError(message);
                     return false;
                 }
-
                 storeObject();
             });
-
             function storeObject() {
                 const name = $("#create_object_modal input[name=object_name]").val().trim();
                 const type = $("#create_object_modal input[name=object_type]:checked").val().trim();
-
                 $.ajax({
                     url: storeObjectUrl,
                     data: {'_token': _token, 'name': name, 'type': type},
@@ -197,7 +164,6 @@
                     }
                 });
             }
-
             function updateObjectSelects(objects, selected) {
                 const id = $('#auto_sel_id_object').val();
                 if (id) {
@@ -205,45 +171,33 @@
                 }
                 createObjectSelect('#auto_sel_id_object', objects, selected);
             }
-
             //messages
             $('#apply_message_btn').click(clickApplyMessageBtn);
-
             // edit messages method
             $('body').on('click', '.edit_message_btn', clickEditMessageBtn);
-
             //delete message
             $('body').on('click', '.del_message_btn', function() {
                 del_message = $(this).attr('data-method');
                 $('#del_modal_body').text('Удалить уведомление ?');
                 $('#del_init_btn').click();
             });
-
             // methods
-
             const cancel_btn = $('#cancel_btn');
-
             $('#add_btn').click(showAddModal);
-
             $('#apply_btn').click(clickApplyBtn);
-
             // edit method
             $('body').on('click', '.edit_btn', clickEditBtn);
-
             // change easy/script/none in modal
             $('input[type=radio][name=actions]').change(changeRadioActions);
-
             // delete method
             $('body').on('click', '.del_btn', function() {
                 del_id = $(this).attr('data-id');
                 $('#del_modal_body').text('Удалить метод «'+$(this).attr('data-name')+'»?');
                 $('#del_init_btn').click();
             });
-
             $('#del_modal_btn').click(clickDelBtn);
         });
-
-        function createPortSelect(target, options, selected) {
+        function createMethodSelect(target, options, selected) {
             let sel = $(target);
             sel.html('');
             let s = '<option value="">Не выбрано</option>';

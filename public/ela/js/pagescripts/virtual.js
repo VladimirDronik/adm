@@ -8,7 +8,7 @@ function isEmptyAutoSelect(name) {
 
 function validateLamp() {
     /*
-    if ($("#lamp_form input[name=type]").length && !$("#relay_form input[name=type]:checked").val()) {
+    if ($("#lamp_form input[namerelay=type]").length && !$("#relay_form input[name=type]:checked").val()) {
 
         return 'Не указан тип';
     }
@@ -25,7 +25,7 @@ function validateLamp() {
     return '';
 }
 
-function initRelayForm() {
+function initVirtualForm() {
     $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});
 
     $('#lamp_form button[type=submit]').click(function(){

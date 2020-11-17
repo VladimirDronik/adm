@@ -7,7 +7,7 @@ use App\Models\Method;
 use App\Models\ObjType;
 use App\Models\Relay;
 
-class RelayObjectService {
+class VirtualObjectService {
 
     /**
      * Автосоздание объекта для реле
@@ -15,11 +15,11 @@ class RelayObjectService {
      * @param string $name
      * @return HomeObject
      */
-    public function createRelayObject(string $name, string $type): HomeObject
+    public function createVirtualObject(string $name): HomeObject
     {
         $object = new HomeObject();
 
-        $object->type = $type === Relay::TYPE_SOCKET ? ObjType::TYPE_SOCKET : ObjType::TYPE_RELAY;
+        $object->type = ObjType::TYPE_VIRTUAL;
         $object->name = $name;
         $object->status = 'off';
         $object->is_system = 1;
@@ -30,73 +30,52 @@ class RelayObjectService {
     }
 
     /**
-     * Создание метода 'Выключить реле'
+     * Создание метода 'Выключить виртуальное устройство'
      *
      * @param int $object_id
      */
-    public function createMethodOff(int $object_id,  $device_id,  $port_id)
+    public function createMethodOff(int $object_id)
     {
-        if($device_id && !is_null($port_id))
-            $easyString = $device_id.';'.$port_id.':0';
-        else $easyString = null;
-
-        //Обнуляем все простые действия, которые были назначены для этого порта
-        Method::where('easy', $easyString)->update(['easy' => NULL]);
-
         Method::forceCreate([
-            'name' => 'Выключить реле',
+            'name' => 'Выключить виртуальное устройство',
             'id_object' => $object_id,
             'script' => null,
-            'easy' => $easyString,
-            'comment' => 'Выключить реле',
+            'easy' => null,
+            'comment' => 'Выключить виртуальное устройство',
             'is_system' => 1
         ]);
     }
 
     /**
-     * Создание метода 'Включить реле'
+     * Создание метода 'Включить виртуальное устройство'
      *
      * @param int $object_id
      */
-    public function createMethodOn(int $object_id,  $device_id,  $port_id)
+    public function createMethodOn(int $object_id)
     {
-        if($device_id && !is_null($port_id))
-            $easyString = $device_id.';'.$port_id.':1';
-        else $easyString = null;
-
-        //Обнуляем все простые действия, которые были назначены для этого порта
-        Method::where('easy', $easyString)->update(['easy' => NULL]);
-
          Method::forceCreate([
-            'name' => 'Включить реле',
+            'name' => 'Включить виртуальное устройство',
             'id_object' => $object_id,
             'script' => null,
-             'easy' => $easyString,
-            'comment' => 'Включить реле',
+             'easy' => null,
+            'comment' => 'Включить виртуальное устройство',
             'is_system' => 1
         ]);
     }
 
     /**
-     * Создание метода 'Включить реле'
+     * Создание метода 'Переключить виртуальное устройство'
      *
      * @param int $object_id
      */
-    public function createMethodOnOff(int $object_id,  $device_id,  $port_id)
+    public function createMethodOnOff(int $object_id)
     {
-        if($device_id && !is_null($port_id))
-            $easyString = $device_id.';'.$port_id.':2';
-        else $easyString = null;
-
-        //Обнуляем все простые действия, которые были назначены для этого порта
-        Method::where('easy', $easyString)->update(['easy' => NULL]);
-
         Method::forceCreate([
-            'name' => 'Переключить реле',
+            'name' => 'Переключить виртуальное устройство',
             'id_object' => $object_id,
             'script' => null,
-            'easy' => $easyString,
-            'comment' => 'Переключить реле',
+            'easy' => null,
+            'comment' => 'Переключить виртуальное устройство',
             'is_system' => 1
         ]);
     }
@@ -149,11 +128,11 @@ class RelayObjectService {
      * @param int $object_id
      * @return void
      */
-    public function createRelayObjectMethods(int $object_id, $device_id, $port_id)
+    public function createVirtualObjectMethods(int $object_id)
     {
-        $this->createMethodOn($object_id, $device_id, $port_id);
-        $this->createMethodOff($object_id, $device_id, $port_id);
-        $this->createMethodOnOff($object_id, $device_id, $port_id);
+        $this->createMethodOn($object_id);
+        $this->createMethodOff($object_id);
+        $this->createMethodOnOff($object_id);
     }
 
     public function updateRelayObjectMethods(int $object_id,  $device_id,  $port_id)

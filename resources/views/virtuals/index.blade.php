@@ -20,8 +20,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('relays.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить устройство</a>
-                        <a href="{{ route('relays.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
+                        <a href="{{ route('virtuals.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить устройство</a>
+                        <a href="{{ route('virtuals.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
             </div>
@@ -35,7 +35,6 @@
                             <thead>
                                 <tr>
                                     <th style="width: 60px;">ID</th>
-                                    <th>Тип</th>
                                     <th>Название</th>
                                     @can('devices.show-object')
                                         <th>Объект</th>
@@ -48,10 +47,7 @@
                                 @foreach($virtuals as $virtual)
                                     <tr id="tr{{$virtual->id}}">
                                         <td scope="row">{{ $virtual->object['id'] }}</td>
-                                        <td>
-                                            {{ $virtual->rus_type }}
-                                        </td>
-                                        <td><a href="{{ route('relays.edit', [$virtual->id]) }}">{{ $virtual->name }}</a></td>
+                                        <td><a href="{{ route('virtuals.edit', [$virtual->id]) }}">{{ $virtual->name }}</a></td>
                                         @can('devices.show-object')
                                             <td>@if($virtual->object)
                                                     <a href="{{ route('objects.edit', [$virtual->id_object]) }}">{{ optional($virtual->object)->name }}</a>
@@ -61,7 +57,7 @@
                                             </td>
                                         @endcan
                                         <td align="center" class="text-center">
-                                            <a href="{{ route('relays.edit', [$virtual->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                            <a href="{{ route('virtuals.edit', [$virtual->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>
                                             </a>
                                         </td>
@@ -77,7 +73,6 @@
                             <tfoot>
                                 <tr>
                                     <th style="width: 60px;">ID</th>
-                                    <th>Тип</th>
                                     <th>Название</th>
                                     @can('devices.show-object')
                                         <th>Объект</th>
