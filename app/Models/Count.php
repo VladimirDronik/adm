@@ -35,6 +35,7 @@ class Count extends Model
 {
     const TYPE_WATER = 'water';
     const TYPE_ELECTRO = 'electro';
+    const TYPE_GAS = 'gas';
 
     protected $table = 'counts';
     public $timestamps = false;
@@ -43,7 +44,8 @@ class Count extends Model
     {
         $types = [
             self::TYPE_WATER => 'Вода',
-            self::TYPE_ELECTRO => 'Электричество'
+            self::TYPE_ELECTRO => 'Электричество',
+            self::TYPE_GAS => 'Газ'
         ];
 
         return $is_full ? $types : array_keys($types);
