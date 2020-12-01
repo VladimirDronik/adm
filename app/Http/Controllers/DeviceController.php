@@ -67,6 +67,8 @@ class DeviceController extends Controller
             return redirect()->route('devices.index')->with('error', 'Устройство не найдено');
         }
 
+
+        if($id)
         $controller = DeviceRepository::getDevByIdDevice($id);
 
 

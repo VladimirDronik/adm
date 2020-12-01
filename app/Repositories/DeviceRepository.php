@@ -39,9 +39,15 @@ class DeviceRepository {
     public static function getDevByIdDevice($id)
     {
         $device = Device::where('id', $id)->first();
-        $type = self::getDevTypeById(Device::where('id', $id)->with('devtype')->first()->type);
-        $address = $device->ip_address;
-        $password = $device->password;
+        $type = '';
+        $address = '';
+        $password = '';
+
+        if($id) {
+            $type = self::getDevTypeById(Device::where('id', $id)->with('devtype')->first()->type);
+            $address = $device->ip_address;
+            $password = $device->password;
+        }
 
         return ['type' => $type, 'address' => $address, 'password' => $password];
     }

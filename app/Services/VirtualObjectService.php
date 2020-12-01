@@ -22,7 +22,7 @@ class VirtualObjectService {
         $object->type = ObjType::TYPE_VIRTUAL;
         $object->name = $name;
         $object->status = 'off';
-        $object->is_system = 1;
+        $object->is_system = 0;
 
         $object->save();
 
@@ -42,7 +42,7 @@ class VirtualObjectService {
             'script' => null,
             'easy' => null,
             'comment' => 'Выключить виртуальное устройство',
-            'is_system' => 1
+            'is_system' => 0
         ]);
     }
 
@@ -59,7 +59,7 @@ class VirtualObjectService {
             'script' => null,
              'easy' => null,
             'comment' => 'Включить виртуальное устройство',
-            'is_system' => 1
+            'is_system' => 0
         ]);
     }
 
@@ -76,7 +76,7 @@ class VirtualObjectService {
             'script' => null,
             'easy' => null,
             'comment' => 'Переключить виртуальное устройство',
-            'is_system' => 1
+            'is_system' => 0
         ]);
     }
 
