@@ -30,9 +30,9 @@ class VirtualService {
      */
     public function delete(int $id): bool
     {
-        $relay = Relay::findOrFail($id);
+        $virtual = Virtual::findOrFail($id);
 
-        if ($relay->object && $relay->object->is_system) {
+        if ($virtual->object && $virtual->object->is_system) {
             DB::transaction(function () use (&$relay) {
                 //if (!HomeObject::isObjectUsed($relay->id_object, $relay->id, 'relays')) {
                     HomeObject::deleteAutoObject($relay->id_object);
@@ -40,10 +40,10 @@ class VirtualService {
                 $relay->delete();
             });
         } else {
-            $relay->delete();
+            $virtual->delete();
         }
 
-        Port::where('object', $relay->id_object)->update(['object' => null, 'method' => null]);
+        Port::where('object', $virtual->id_object)->update(['object' => null, 'method' => null]);
 
         return true;
     }
