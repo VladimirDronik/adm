@@ -33,11 +33,11 @@ class VirtualService {
         $virtual = Virtual::findOrFail($id);
 
         if ($virtual->object && $virtual->object->is_system) {
-            DB::transaction(function () use (&$relay) {
+            DB::transaction(function () use (&$virtual) {
                 //if (!HomeObject::isObjectUsed($relay->id_object, $relay->id, 'relays')) {
-                    HomeObject::deleteAutoObject($relay->id_object);
+                    HomeObject::deleteAutoObject($virtual->id_object);
                 //}
-                $relay->delete();
+                $virtual->delete();
             });
         } else {
             $virtual->delete();

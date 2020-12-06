@@ -22,7 +22,7 @@ class VirtualObjectService {
         $object->type = ObjType::TYPE_VIRTUAL;
         $object->name = $name;
         $object->status = 'off';
-        $object->is_system = 0;
+        $object->is_system = 1;
 
         $object->save();
 
