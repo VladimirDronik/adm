@@ -89,7 +89,7 @@
                             </div>
                         </div>
 
-                        {{ Form::bs_text('unit', 'Единица измерения*:', null, ['required' => true, 'maxlength' => 4], 'Например, кв/ч или л') }}
+                        {{ Form::bs_text('unit', 'Единица измерения*:', null, ['required' => true, 'maxlength' => 6], 'Например, КВт/ч, куб.м. или л.') }}
                         {{ Form::bs_text('impulse', 'Значение за один импульс*:', old('impulse'), ['required' => true]) }}
                         {{ Form::bs_text('today_value', 'Значение за сегодня*:', old('today_value', 0), ['required' => true]) }}
                         {{ Form::bs_text('total_value', 'Общее значение*:', old('total_value', 0), ['required' => true]) }}
@@ -198,6 +198,17 @@
                 } else {
                     $('#manual_object_div').hide();
                     $('#auto_object_div').show();
+                }
+                return true;
+            });
+
+
+            $('#count_form [name=type]').change(function(){
+
+                if ($(this).val() === 'electro') {
+                    $('#count_form [name=unit]').val('КВт/ч');
+                } else {
+                    $('#count_form [name=unit]').val("куб.м");
                 }
                 return true;
             });

@@ -28,7 +28,7 @@ class CreateRequest extends FormRequest
             'type' => 'required|string|max:10',
             'id_object' => 'nullable|integer|min:1',
             'impulse' => 'required|numeric|min:0',
-            'unit' => 'required|string|max:4'
+            'unit' => 'required|string|max:6'
         ];
     }
 
