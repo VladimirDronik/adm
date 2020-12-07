@@ -82,8 +82,17 @@
                                         {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'),
                                            false, false, [], null) }}
 
-                                        {{ Form::bs_autoselect('port_id', 'Порт:', [], old('port_id'),
-                                            false, false, [], null) }}
+                                        <div id='port_id_div' style="display: none">
+                                            {{ Form::bs_autoselect('port_id', 'Порт:', [], old('port_id'),
+                                                false, false, [], null) }}
+                                        </div>
+
+                                        <div id='hitepro_devices_div' style="display: none">
+                                            {{ Form::bs_autoselect('hitepro_devices', 'Устройство:', [], old('hiteProDevices'),
+                                                false, false, [], null) }}
+                                        </div>
+
+                                        <input type="hidden" name="place" id="place">
                                     </div>
                                 </div>
                             </div>
@@ -108,26 +117,46 @@
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
+
+
         $(document).ready(function () {
             initRelayForm();
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_hitepro_devices").chosen({width:"100%", no_results_text: "Не найдено"});
+
             $("#auto_sel_device_id").chosen().change(function() {
                 let device_id = $(this).val();
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': device_id, 'status': 'out'},
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'switch, socket'},
                     success: function (data) {
-                        createMethodSelect('#auto_sel_port_id', data.ports, -1);
-                        $('#auto_sel_port_id').trigger("chosen:updated");
+                       // createMethodSelect('#auto_sel_port_id', data.ports, -1);
+                       // $('#auto_sel_port_id').trigger("chosen:updated");
+                        if (data.type_device == 'Hite-pro') {
+                            $('#port_id_div').hide();
+                            $('#hitepro_devices_div').show();
+                            createPortSelect('#auto_sel_hitepro_devices', data.hiteProDevices, -1);
+                            $('#auto_sel_hitepro_devices').trigger("chosen:updated");
+                            $('#place').val('Hite-pro');
+                        }
+                        else {
+                            $('#port_id_div').show();
+                            $('#hitepro_devices_div').hide();
+                            createPortSelect('#auto_sel_port_id', data.ports, -1);
+                            $('#auto_sel_port_id').trigger("chosen:updated");
+                            $('#place').val('port');
+                        }
                     }
                 });
             });
+
             $('#auto_sel_btn_id_object').click(function() {
                 clearCreateObjectModal();
                 $('#create_object_modal_init_btn').click();
                 return false;
             });
+
             $('#create_object_modal_btn').click(function() {
                 let message = validateCreateObject();
                 if (message !== '') {
@@ -136,7 +165,7 @@
                 }
                 storeObject();
             });
-            function createMethodSelect(target, options, selected) {
+            function createPortSelect(target, options, selected) {
                 let sel = $(target);
                 sel.html('');
                 let s = '<option value="">Не выбрано</option>';
@@ -148,6 +177,8 @@
                 }
                 sel.append(s);
             }
+
+
             function storeObject() {
                 const name = $("#create_object_modal input[name=object_name]").val().trim();
                 const type = $("#create_object_modal input[name=object_type]:checked").val().trim();
@@ -168,6 +199,9 @@
                     }
                 });
             }
+
+
+
             function updateObjectSelects(objects, selected) {
                 const id = $('#auto_sel_id_object').val();
                 if (id) {
@@ -175,6 +209,9 @@
                 }
                 createObjectSelect('#auto_sel_id_object', objects, selected);
             }
+
+
+
             $('#relay_form [name=object_type]').change(function(){
                 if ($(this).val() === 'manual') {
                     $('#auto_object_div').hide();
