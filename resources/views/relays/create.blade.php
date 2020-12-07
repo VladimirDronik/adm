@@ -131,8 +131,6 @@
                     url: url_ports,
                     data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'switch, socket'},
                     success: function (data) {
-                       // createMethodSelect('#auto_sel_port_id', data.ports, -1);
-                       // $('#auto_sel_port_id').trigger("chosen:updated");
                         if (data.type_device == 'Hite-pro') {
                             $('#port_id_div').hide();
                             $('#hitepro_devices_div').show();
