@@ -15,10 +15,9 @@ class CreateHiteprodevTable extends Migration
     {
         Schema::create('hiteprodev', function (Blueprint $table) {
             $table->increments('id');
-            $this->string('name',100);
             $table->unsignedInteger('id_controller');
             $table->string('type', 20);
-            $table->string('name', '100');
+            $table->string('name', 100);
             $table->string('status',200);
 
             $table->unsignedInteger('id_object')->nullable();
