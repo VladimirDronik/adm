@@ -17,6 +17,7 @@
 
 @section('content')
     <div class="container-fluid">
+        @include('detectors.tab_header', ['active' => 'drycontacts'])
         <div class="row">
             <div class="col-12">
                 <div class="card">

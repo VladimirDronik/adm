@@ -162,7 +162,7 @@ class SwitchService {
 
         if ($data['port_id']) {
 
-            $this->setPort($this->portRepository->getPortByObject($switch->object->id), 'button');
+            //$this->setPort($this->portRepository->getPortByObject($switch->object->id), 'button');
             $this->setPort($data['port_id'], $switch->type);
 
             Port::where('object', $switch->object->id)->update([
