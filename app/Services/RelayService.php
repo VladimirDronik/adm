@@ -77,15 +77,17 @@ class RelayService {
             DB::transaction(function () use (&$relay, $data) {
                 $unique_name = HomeObject::getUniqueObjectName(0, $relay->name);
                 $object = $this->relay_object_service->createRelayObject($unique_name, $relay->type);
-                $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $this->portRepository->getNumPortByID($data['port_id']));
                 $relay->id_object = $object->id;
                 $relay->save();
 
                 if ($data['port_id'] && $data['place'] == 'port') {
+                    $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $this->portRepository->getNumPortByID($data['port_id']));
                     Port::where('id', $data['port_id'])->update(['object' => $object->id]);
                 } elseif ($data['place'] == 'Hite-pro') {
+                    $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $this->portRepository->getNumPortByID($data['hitepro_devices']));
                     HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
                                 ->update(['id_object' => $object->id]);
+
                 }
             });
         }
