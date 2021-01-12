@@ -84,7 +84,7 @@ class RelayService {
                     $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $this->portRepository->getNumPortByID($data['port_id']));
                     Port::where('id', $data['port_id'])->update(['object' => $object->id]);
                 } elseif ($data['place'] == 'Hite-pro') {
-                    $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $this->portRepository->getNumPortByID($data['hitepro_devices']));
+                    $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $data['hitepro_devices']);
                     HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
                                 ->update(['id_object' => $object->id]);
 
