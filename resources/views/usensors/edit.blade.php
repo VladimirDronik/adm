@@ -52,6 +52,17 @@
                                 false, false, ['required' => true]) }}
                         @endif
 
+                        <div class="col-sm-12 pr-0 mt-4">
+                            {{ Form::bs_autoselect('device_id', 'Контроллер*:', $devices, old('device_id', $usensor->device_id),
+                               false, false, [], null) }}
+
+                            {{ Form::bs_autoselect('port_SCL', 'Порт SCL*:', $SCL, old('SCL', $usensor->port_SCL),
+                                false, false, [], null) }}
+
+                            {{ Form::bs_autoselect('port_SDA', 'Порт SDA*:', $SDA, old('SDA', $usensor->port_SDA),
+                                false, false, [], null) }}
+                        </div>
+
                         {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', is_null($usensor->room) ? 0 : $usensor->room ), false, false) }}
 
                     </div>
@@ -83,6 +94,7 @@
     <script>
         const url_methods = '{{ route('ajax.objects.methods') }}';
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
+        const url_ports = '{{ route('ajax.devices.objects_ports') }}';
         const store_url = '{{ route('ajax.methods.store') }}';
         const del_url = '{{ route('ajax.methods.delete') }}';
         const sub_data_url = '{{ route('ajax.load.data') }}';
@@ -95,7 +107,28 @@
 
         $(document).ready(function () {
             initTermostatForm();
+
+            $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_port_SCL").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_port_SDA").chosen({width:"100%", no_results_text: "Не найдено"});
+
             initMethodsVar({{ optional($usensor->eobject)->id }});
+
+            $("#auto_sel_device_id").chosen().change(function() {
+                let device_id = $(this).val();
+                $.ajax({
+                    url: url_ports,
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'I2C'},
+                    success: function (data) {
+                        createMethodSelect('#auto_sel_port_SCL', data.ports, -1);
+                        $('#auto_sel_port_SCL').trigger("chosen:updated");
+
+                        createMethodSelect('#auto_sel_port_SDA', data.ports, -1);
+                        $('#auto_sel_port_SDA').trigger("chosen:updated");
+                    }
+                });
+            });
+
 
             $('#auto_sel_btn_id_object').click(function() {
                 modal_btn_index = 1;

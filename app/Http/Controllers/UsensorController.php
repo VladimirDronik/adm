@@ -14,6 +14,7 @@ use App\Repositories\UsensorRepository;
 use App\Repositories\ScriptRepository;
 use App\Services\UsensorService;
 use App\Services\ObjectService;
+use App\Services\PortService;
 
 
 
@@ -26,15 +27,18 @@ class UsensorController extends Controller
     private $device_rep;
     private $room_rep;
     private $service;
+    private $portService;
 
     public function __construct(UsensorRepository $usensor_rep, ObjectRepository $object_rep,
-                                DeviceRepository $device_rep, RoomRepository $room_rep, UsensorService $service)
+                                DeviceRepository $device_rep, RoomRepository $room_rep, UsensorService $service,
+                                PortService $port_service)
     {
         $this->usensor_rep = $usensor_rep;
         $this->object_rep = $object_rep;
         $this->device_rep = $device_rep;
         $this->room_rep = $room_rep;
         $this->service = $service;
+        $this->portService = $port_service;
     }
 
     public function index()
@@ -77,7 +81,7 @@ class UsensorController extends Controller
     }
 
 
-    public function edit(Usensor $usensor, ObjectService $object_service, ScriptRepository $script_rep)
+    public function edit(Usensor $usensor, ObjectService $object_service, ScriptRepository $script_rep, PortService $portService)
     {
         list($objects, $rooms, $devices) = $this->getLists();
 
@@ -85,9 +89,13 @@ class UsensorController extends Controller
         $object_types = HomeObject::getFullTypeIds();
         $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
+        $SCL = $SDA = $portService->getPortsIntoList($usensor->device_id, 'I2C');
+
+
+
 
         return view('usensors.edit', compact('usensor', 'objects', 'rooms',
-            'devices', 'methods', 'object_types', 'scripts', 'can'));
+            'devices', 'methods', 'object_types', 'scripts', 'can', 'SCL', 'SDA'));
     }
 
     public function update(UpdateRequest $r, Usensor $usensor)

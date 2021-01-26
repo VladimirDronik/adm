@@ -18,20 +18,23 @@ use App\Services\ObjectService;
 use App\Services\PortService;
 use App\Services\SwitchService;
 
+
 class SwitchController extends Controller
 {
     private $switch_rep;
     private $object_rep;
     private $device_rep;
     private $service;
+    private $portService;
 
     public function __construct(SwitchRepository $switch_rep, ObjectRepository $object_rep, DeviceRepository $device_rep,
-                                SwitchService $service)
+                                SwitchService $service, PortService $portService)
     {
         $this->switch_rep = $switch_rep;
         $this->object_rep = $object_rep;
         $this->device_rep = $device_rep;
         $this->service = $service;
+        $this->portService = $portService;
     }
 
     public function index()
@@ -78,13 +81,16 @@ class SwitchController extends Controller
         $object_types =  HomeObject::getFullTypeIds();
 
         $deviceAndPort = $portService->getIdDeviceAndPortId($switch->id_object);
-        $idDevice =  $deviceAndPort['id_device'];
-        $idPort = $deviceAndPort['id_port'];
+        //$idDevice =  $deviceAndPort['id_device'];
+        //$idPort = $deviceAndPort['id_port'];
 
-        $devices = $this->device_rep->getAllToArray();
-        $ports =  $portService->getPortsIntoList($idDevice);
+        //$devices = $this->device_rep->getAllToArray();
+        //$ports =  $portService->getPortsIntoList($idDevice);
 
         $port = $portService->getMethodsByObject($switch->id_object);
+
+        list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) = $this->portService->getCurrentDevPort($switch->id_object);
+
 
         if($port) {
             $method = $port->method;
@@ -123,7 +129,7 @@ class SwitchController extends Controller
         return view('switches.edit', compact('switch', 'types',
             'object', 'method', 'methods', 'object_dc', 'method_dc', 'methods_dc',
             'object_lc', 'method_lc', 'methods_lc', 'idDevice', 'idPort', 'devices', 'ports',
-            'messages', 'messagePoint',
+            'messages', 'messagePoint',  'hp_device', 'hp_devices',
             'objects', 'object_types', 'scripts', 'can'));
     }
 

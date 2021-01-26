@@ -66,8 +66,16 @@
                             {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', $idDevice),
                                false, false, [], null) }}
 
-                            {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
-                                false, false, [], null) }}
+
+                            <div id='port_id_div' @if ($ports==null) style="display: none" @endif>
+                                {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
+                                  false, false, [], null) }}
+                            </div>
+
+                            <div id='hitepro_devices_div' @if ($hp_devices==null) style="display: none" @endif>
+                                {{ Form::bs_autoselect('hitepro_devices', 'Устройство:', $hp_devices, old('hiteProDevices', $hp_device),
+                                    false, false, [], null) }}
+                            </div>
                         </div>
 
 
@@ -194,6 +202,7 @@
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_hitepro_devices").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_object").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_method").chosen({width:"100%", no_results_text: "Не найдено"});
@@ -201,6 +210,7 @@
             $("#auto_sel_method_lc").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_object_dc").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_method_dc").chosen({width:"100%", no_results_text: "Не найдено"});
+
 
             $("#auto_sel_object").chosen().change(function() {
                 let object_id = $(this).val();
@@ -223,10 +233,23 @@
                 let device_id = $(this).val();
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': device_id, 'status': 'in'},
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'IN', 'type': 'switch, socket'},
                     success: function (data) {
-                        createMethodSelect('#auto_sel_port_id', data.ports, -1);
-                        $('#auto_sel_port_id').trigger("chosen:updated");
+                        methods = data.ports;
+                        if (data.type_device == 'Hite-pro') {
+                            $('#port_id_div').hide();
+                            $('#hitepro_devices_div').show();
+                            createPortSelect('#auto_sel_hitepro_devices', data.hiteProDevices, -1);
+                            $('#auto_sel_hitepro_devices').trigger("chosen:updated");
+                            $('#place').val('Hite-pro');
+                        }
+                        else {
+                            $('#port_id_div').show();
+                            $('#hitepro_devices_div').hide();
+                            createPortSelect('#auto_sel_port_id', data.ports, -1);
+                            $('#auto_sel_port_id').trigger("chosen:updated");
+                            $('#place').val('port');
+                        }
                     }
                 });
             });
@@ -347,6 +370,19 @@
             $('#del_modal_btn').click(clickDelBtn);
         });
 
+
+        function createPortSelect(target, options, selected) {
+            let sel = $(target);
+            sel.html('');
+            let s = '<option value="null">Не выбрано</option>';
+            for (let i = 0; i < options.length; i++) {
+                if (selected == options[i].id)
+                    s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
+                else
+                    s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
+            }
+            sel.append(s);
+        }
 
         function createMethodSelect(target, options, selected) {
             let sel = $(target);

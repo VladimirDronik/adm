@@ -24,7 +24,7 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required|string|max:250|unique:usensors,name',
+            'name' => 'required|string|max:250',
             'room' => 'nullable|integer|min:0'
         ];
 
