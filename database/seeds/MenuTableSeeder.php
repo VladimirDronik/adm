@@ -21,52 +21,67 @@ class MenuTableSeeder extends Seeder
     {
         $menu = [
             [
-                'name' => 'dashboard',
-                'title' => 'Избранное',
-                'link' => '/app/dashboard',
-                'image' => 'favorites.svg',
+                'name' => 'Инженерное',
+                'title' => 'Инженерное',
+                'link' => 'ing',
+                'image' => 'ing',
+                'parent' => 0,
                 'sort' => 1,
                 'active' => 1
             ],
             [
-                'name' => 'lighting',
-                'title' => 'Освещение',
-                'link' => '',
-                'image' => 'light.svg',
-                'sort' => 3,
-                'active' => 0
+                'name' => 'Котёл',
+                'title' => 'Котёл',
+                'link' => 'kotel',
+                'image' => 'kotel',
+                'parent' => 1,
+                'sort' => 1,
+                'active' => 1
             ],
             [
-                'name' => 'temperature',
-                'title' => 'Температура',
-                'link' => '/app/temperature',
-                'image' => 'temperatura.svg',
+                'name' => 'Бойлер ГВС',
+                'title' => 'Бойлер ГВС',
+                'link' => 'boiler',
+                'image' => 'boiler',
+                'parent' => 1,
                 'sort' => 2,
                 'active' => 1
             ],
             [
-                'name' => 'graphics',
-                'title' => 'Графики',
-                'link' => '',
-                'image' => 'graphics.svg',
+                'name' => 'Теплый пол',
+                'title' => 'Теплый пол',
+                'link' => 'tpol',
+                'image' => 'tpol',
+                'parent' => 1,
+                'sort' => 3,
+                'active' => 1
+            ],
+            [
+                'name' => 'Насосы',
+                'title' => 'Насосы',
+                'link' => 'nasos',
+                'image' => 'nasos',
+                'parent' => 1,
                 'sort' => 4,
                 'active' => 1
             ],
             [
-                'name' => 'events',
-                'title' => 'События',
-                'link' => '/app/events',
-                'image' => 'events.svg',
+                'name' => 'Электрооборудование',
+                'title' => 'Электрооборудование',
+                'link' => 'electro',
+                'image' => 'electro',
+                'parent' => 1,
                 'sort' => 5,
-                'active' => 0
+                'active' => 1
             ],
             [
-                'name' => 'settings',
-                'title' => 'Настройки',
-                'link' => '/app/settings',
-                'image' => 'events.svg',
+                'name' => 'Вентиляция',
+                'title' => 'Вентиляция',
+                'link' => 'vent',
+                'image' => 'vent',
+                'parent' => 1,
                 'sort' => 6,
-                'active' => 0
+                'active' => 1
             ],
         ];
 

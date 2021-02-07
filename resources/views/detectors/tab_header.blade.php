@@ -31,7 +31,7 @@
                     <li class="nav-item">
                         <a class="nav-link @if($active === '') active show @endif" href="{{ route('motionsensors.index') }}">
                             <span>
-                                <img width="18" height="20" title="" src="{{ asset('ela/images/objects/Motion_sens.png') }}">
+                                <img width="18" height="20" title="" src="{{ asset('ela/images/objects/motionsensor.png') }}">
                                 Датчики движения ({{ $detectorsService->getMotionsensorsCount() }})
                             </span>
                         </a>
@@ -46,7 +46,7 @@
                     <li class="nav-item">
                         <a class="nav-link @if($active === 'drycontacts') active show @endif" href="{{ route('drycontacts.index') }}">
                             <span>
-                                <img width="18" height="20" title="" src="{{ asset('ela/images/objects/dry_contact.png') }}">
+                                <img width="18" height="20" title="" src="{{ asset('ela/images/objects/drycontact.png') }}">
                                 Сухие контакты ({{ $detectorsService->getDrycontactsCount() }})
                             </span>
                         </a>
@@ -62,7 +62,7 @@
                     <li class="nav-item">
                         <a class="nav-link @if($active === '') active show @endif" href="{{ route('carbmonoxide.index') }}">
                             <span>
-                                 <img width="28" height="20" title="" src="{{ asset('ela/images/objects/co.png') }}">
+                                 <img width="28" height="20" title="" src="{{ asset('ela/images/objects/CO2sens.png') }}">
                                 Датчики УГ ({{ $detectorsService->getCarbMonoxideCount() }})
                             </span>
                         </a>

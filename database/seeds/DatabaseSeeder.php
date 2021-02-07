@@ -20,5 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(LogsSettingsTableSeeder::class);
         $this->call(NotifsettingsTableSeeder::class);
         $this->call(ShedullerTableSeeder::class);
+        $this->call(PagesTableSeeder::class);
+        $this->call(ElementsTableSeeder::class);
     }
 }

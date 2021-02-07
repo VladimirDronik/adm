@@ -78,6 +78,12 @@ class PortRepository {
 
     }
 
+    /**
+     * Выводит номер реального физического порта по id
+     *
+     * @param $idPort
+     * @return mixed|null
+     */
     public function getNumPortByID($idPort)
     {
 

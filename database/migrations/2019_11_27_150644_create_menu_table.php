@@ -22,6 +22,7 @@ class CreateMenuTable extends Migration
                 $table->string('image', 20);
                 $table->tinyInteger('sort');
                 $table->boolean('active');
+
             });
         }
     }

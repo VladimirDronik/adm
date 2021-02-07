@@ -19,7 +19,7 @@ class CreateCountsTable extends Migration
                 $table->string('name');
                 $table->string('type', 10);
                 $table->unsignedInteger('id_object')->nullable();
-                $table->float('impulse');
+                $table->double('impulse',10,7);
                 $table->string('unit', 6);
                 $table->float('today_value');
                 $table->float('total_value');

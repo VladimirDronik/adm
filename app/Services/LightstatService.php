@@ -11,6 +11,7 @@ namespace App\Services;
 
 use App\Models\Lightstat;
 use App\Models\HomeObject;
+use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
 use App\Services\LightstatObjectService;
 use App\Models\Port;
@@ -19,10 +20,12 @@ use App\Models\Port;
 class LightstatService
 {
     private $lightstat_object_service;
+    private $portRepository;
 
-    public function __construct(LightstatObjectService $lightstat_object_service)
+    public function __construct(LightstatObjectService $lightstat_object_service, PortRepository $port_rep)
     {
         $this->lightstat_object_service = $lightstat_object_service;
+        $this->portRepository = $port_rep;
     }
 
 
@@ -51,10 +54,12 @@ class LightstatService
      */
     public function store(array $data): int
     {
+
         $lightstat = new Lightstat();
 
         $port_SDA = $data['port_SDA'] ?? null;
         $port_SCL = $data['port_SCL'] ?? null;
+        $deviceId = $data['device_id'];
 
         $this->prepare($lightstat, $data);
         $lightstat->current = 0;
@@ -64,7 +69,7 @@ class LightstatService
             $lightstat->save();
         } elseif ($data['object_type'] === 'auto') {
 
-            DB::transaction(function () use (&$lightstat, $port_SDA, $port_SCL) {
+            DB::transaction(function () use (&$lightstat, $port_SDA, $port_SCL, $deviceId) {
 
                 $unique_name = HomeObject::getUniqueObjectName(0, $lightstat->name);
                 $object = $this->lightstat_object_service->createLightstatObject($unique_name);
@@ -78,6 +83,8 @@ class LightstatService
 
                 if ($port_SCL) {
                     Port::where('id', $port_SCL)->update(['object' => $object->id]);
+                    ConfigMegaService::setPortSetting($deviceId, $this->portRepository->getNumPortByID($port_SCL),
+                                                    'pty=255');
                 }
             });
         }
