@@ -20,6 +20,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     Route::get('devices/{idDevice}/editport/{idPort}', 'DeviceController@editPort')->middleware('can:devices');
+    Route::get('devices/sendconfig/{idDevice}', 'DeviceController@sendConfig')->name('devices.sendconfig')->middleware('can:devices');
+    Route::get('devices/sendallconfigs', 'DeviceController@sendAllConfigs')->name('devices.sendallconfigs')->middleware('can:devices');
+
 
     Route::resource('ports', 'PortController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('devices', 'DeviceController')->except('show','destroy')->middleware('can:devices');

@@ -22,10 +22,19 @@
                     <div class="card-body">
                         <a href="{{ route('devices.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить контроллер</a>
                         <a href="{{ route('devices.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
+                        <a href="{{ route('devices.sendallconfigs') }}" class="btn btn-success m-b-10 m-l-5"   title="Отправить изменения на все контролеры">
+                            <i class="fa fa-upload"></i> Отправить изменения</a>
                     </div>
                 </div>
             </div>
         </div>
+
+        @if($errors->any())
+            <div class="alert alert-danger" role="alert">
+                <h4>{{$errors->first()}}</h4>
+            </div>
+        @endif
+
         <div class="card">
             <div class="card-title">
                 <h4>Доступные контроллеры</h4>
@@ -41,6 +50,7 @@
                                 <th>Тип</th>
                                 <th>IP адрес</th>
                                 <th class="text-center">Статус</th>
+                                <th></th>
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>
                             </tr>
@@ -59,13 +69,19 @@
                                             <span class="badge badge-danger">Недоступно</span>
                                         @endif
                                     </td>
+                                    <td> @if($device->changed == 1)
+                                            <a href="{{ route('devices.sendconfig', [$device->id]) }}" class="btn btn-success btn-sm btn-rounded" title="Отправить конфиг на устройство">
+                                                <i class="fa fa-upload"></i></a>
+                                        @endif
+
+                                    </td>
                                     <td>
-                                        <a href="{{ route('devices.edit', [$device->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                        <a href="{{ route('devices.edit', [$device->id]) }}" class="btn btn-info btn-sm btn-rounded"  title="Редактировать">
                                             <i class="fa fa-cog fa-lg"></i>
                                         </a>
                                     </td>
                                     <td align="center" class="text-center">
-                                        <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                        <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"   title="Удалить"
                                                 data-id="{{ $device->id }}" data-name="{{ $device->description }}">
                                             <i class="fa fa-trash fa-lg"></i>
                                         </button>
@@ -76,12 +92,14 @@
                         @if(count($devices) > 10)
                             <tfoot>
                                 <tr>
+                                    <th>ID</th>
                                     <th>Название</th>
                                     <th>Тип</th>
                                     <th>IP адрес</th>
-                                    <th>Статус</th>
+                                    <th class="text-center">Статус</th>
                                     <th></th>
-                                    <th></th>
+                                    <th style="width: 60px;"></th>
+                                    <th style="width: 60px;"></th>
                                 </tr>
                             </tfoot>
                         @endif

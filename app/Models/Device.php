@@ -41,4 +41,5 @@ class Device extends Model
     {
         return $this->hasMany(Port::class, 'id_device', 'id')->orderBy('num_port');
     }
+
 }

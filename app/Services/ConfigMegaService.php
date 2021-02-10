@@ -173,6 +173,10 @@ class ConfigMegaService
             Storage::disk('devices')->append(self::LINK_PATH . $idDevice . '.cfg', $stringIntoConfig);
         }
 
+        //Ставим флаг, что есть изменения в конфиге для этого контроллера
+        if(DeviceRepository::getDevByIdDevice($idDevice) != 'Hite-pro')
+        Device::where('id', $idDevice)->update(['changed' => 1]);
+
     }
 
     /**
@@ -208,12 +212,30 @@ class ConfigMegaService
                     }
                 }
 
+                //Ставим флаг, что нет изменений в конфиге для этого контроллера
+                Device::where('id', $idDevice)->update(['changed' => 0]);
+
 
             } else $error = 'Отсутсвует конфигурационный файл для контроллера.';
         }  else $error = 'Контроллер недоступен';
 
 
         return ['error' => $error, 'count_all' => $countAll, 'count_result' => $countResult];
+
+    }
+
+    /**
+     * Отправка конфига на все доступные контроллеры
+     */
+    static public function sendAllConfig()
+    {
+
+        $controllers = DeviceRepository::getAllDevicesForConfigs();
+
+        foreach ($controllers AS $controller) {
+
+           self::sendConfigToDevice($controller->id);
+        }
 
     }
 

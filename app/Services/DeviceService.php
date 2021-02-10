@@ -172,6 +172,7 @@ class DeviceService {
         $device->description = $data['description'];
 
         //Заливаем конфиг на устройство
+        if(DeviceRepository::getDevByIdDevice($data['id']) != 'Hite-pro')
         $configResult = ConfigMegaService::sendConfigToDevice($data['id']);
 
         if (trim($data['ip_address']) !== $device->ip_address) {

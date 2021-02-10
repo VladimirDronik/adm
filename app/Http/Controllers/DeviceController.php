@@ -28,7 +28,6 @@ class DeviceController extends Controller
     {
         $devices = $this->device_rep->getByName();
 
-
         return view('devices.index', compact('devices'));
     }
 
@@ -37,6 +36,40 @@ class DeviceController extends Controller
         $devtypes = $this->device_rep->getDevTypesToArray();
 
         return view('devices.create', compact('devtypes'));
+    }
+
+    /**
+     * Отправка конфига на выбранный контроллер
+     *
+     * @param int $id
+     * @param Request $request
+     * @return $this|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function sendConfig(int $id, Request $request)
+    {
+        $error = ConfigMegaService::sendConfigToDevice($id);
+
+        if(!$error) {
+         $devices = $this->device_rep->getByName();
+
+         return view('devices.index', compact('devices'));
+        } else
+        return back()->withErrors($error);
+    }
+
+    /**
+     * Отправка конфига на все доступные контроллеры
+     */
+    public function sendAllConfigs()
+    {
+        $error = ConfigMegaService::sendAllConfig();
+
+        if(!$error) {
+            $devices = $this->device_rep->getByName();
+
+            return view('devices.index', compact('devices'));
+        } else
+            return back()->withErrors($error);
     }
 
     public function store(CreateRequest $r)

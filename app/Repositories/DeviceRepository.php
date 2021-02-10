@@ -51,4 +51,11 @@ class DeviceRepository {
 
         return ['type' => $type, 'address' => $address, 'password' => $password];
     }
+
+    public static function getAllDevicesForConfigs()
+    {
+        return Device::select('id')->where('active', 1)
+            ->where('changed', 1)->get();
+    }
+
 }
