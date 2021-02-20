@@ -89,7 +89,7 @@ class SwitchController extends Controller
 
         $port = $portService->getMethodsByObject($switch->id_object);
 
-        list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) = $this->portService->getCurrentDevPort($switch->id_object);
+        list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) = $this->portService->getCurrentDevPort($switch->id_object, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
 
         if($port) {

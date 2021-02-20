@@ -110,7 +110,7 @@ class CarbmonoxideController extends Controller
         $deviceId = $deviceAndPort['id_device'];
         $port = $deviceAndPort['id_port'];
 
-        $ports =  $portsService->getPortsIntoList($deviceId, 'IN');
+        $ports =  $portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
         $messages = $messagesService->getNotifications($carbmonoxide->id_object);
 

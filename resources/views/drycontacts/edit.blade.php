@@ -170,7 +170,7 @@
 
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': object_id, 'status': 'IN'},
+                    data: {'_token': _token, 'device_id': object_id, 'status': 'IN,I2C,1WIRE,1W-BUS,ADC'},
                     success: function (data) {
                         methods = data.ports;
                         createMethodSelect('#auto_sel_port_id', data.ports, -1);

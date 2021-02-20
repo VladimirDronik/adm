@@ -107,7 +107,7 @@ class MotionsensorsController extends Controller
         $deviceAndPort = $portsService->getIdDeviceAndPortId($motionsensor->id_object);
         $deviceId = $deviceAndPort['id_device'];
         $portId = $deviceAndPort['id_port'];
-        $ports = $portsService->getPortsIntoList($deviceId, 'IN');
+        $ports = $portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
         $messages = $messageService->getNotifications($motionsensor->id_object);
         $messagePoint['first'] = 'При любом срабатывании';

@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Models\Device;
 use App\Models\HiteproDev;
 use App\Models\Port;
+use Illuminate\Support\Facades\DB;
+
 
 class PortRepository {
 
@@ -46,6 +48,30 @@ class PortRepository {
                 ->orderBy('num_port')->get();
     }
 
+    /**
+     * Вертнуть порты устройства, которые соответсвуют указанным типам
+     *
+     * @param $deviceId
+     * @param $typesPort
+     */
+    public function getPortsByDeviceId($deviceId, $typesPort)
+    {
+
+        $typesArr = explode(',',$typesPort);
+
+        $sql = Port::where('id_device', $deviceId)->where(
+            function($sql) use ($typesArr) {
+                foreach ($typesArr AS $type) {
+                    $sql->orwhere('status', trim($type));
+                }
+            }
+        );
+
+
+        return $sql->orderBy('num_port')->get();
+
+    }
+
     public function updateEasy($port_id, $easy = '')
     {
         Port::where('id', $port_id)->update(['easy' => $easy, 'object' => null,
@@ -75,7 +101,6 @@ class PortRepository {
     public function getPortByObject($idObject)
     {
         return Port::where('object', $idObject)->first()->id;
-
     }
 
     /**

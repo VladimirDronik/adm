@@ -6,6 +6,7 @@ use App\Models\Device;
 use App\Models\HiteproDev;
 use App\Models\Port;
 use App\Repositories\DeviceRepository;
+use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
 
 
@@ -15,11 +16,14 @@ class DeviceService {
 
     private $networkService;
     private $deviceRepository;
+    private $portRepository;
 
-    public function __construct(NetworkService $networkService, DeviceRepository $deviceRepository)
+    public function __construct(NetworkService $networkService, DeviceRepository $deviceRepository,
+                                    PortRepository $portRepository)
     {
         $this->networkService = $networkService;
         $this->deviceRepository = $deviceRepository;
+        $this->portRepository = $portRepository;
     }
 
     /**
@@ -254,27 +258,7 @@ class DeviceService {
             return [];
         }
 
-        $statuses_array = explode(',',$status);
-
-        $ports = Port::with('eobject')->where('id_device', $device_id);
-
-        if ($status !== '') {
-
-            $cnt=0;
-            foreach ($statuses_array as $statusPort) {
-
-                if($cnt==0)
-                $ports->where('status', $statusPort);
-                else
-                    $ports->orWhere('status', $statusPort);
-
-                $cnt++;
-            }
-
-        }
-
-        $ports = $ports->orderBy('status')->orderBy('num_port')->get();
-
+        $ports = $this->portRepository->getPortsByDeviceId($device_id, $status);
         $arrayPorts = [];
 
         foreach ($ports as $port) {
@@ -373,6 +357,9 @@ class DeviceService {
 
         $typesArray = explode(',',$type);
 
+        if(count($typesArray) == 1)
+            $devices = HiteproDev::where('id_controller', $idDevice)->where('type', trim($typesArray[0]))->get();
+        elseif(count($typesArray) == 2)
         $devices = HiteproDev::where('id_controller', $idDevice)->where('type', trim($typesArray[0]))->orwhere('type', trim($typesArray[1]))->get();
 
 

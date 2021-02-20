@@ -275,26 +275,12 @@ class PortService {
      * @param int $deviceId - ИД устройства, для которого отбираем порты
      * @param string $typePort - тип выбираемых портов
     */
-    public function getPortsIntoList($deviceId, $typePort = 'IN')
+    public function getPortsIntoList($deviceId, $typesPort = 'IN')
     {
 
         if($deviceId) {
 
-            switch (mb_strtoupper($typePort)) {
-
-                case 'IN': $ports = $this->rep->getInPortsByDeviceId($deviceId);
-                           break;
-
-                case 'OUT': $ports = $this->rep->getOutPortsByDeviceId($deviceId);
-                    break;
-
-                case 'I2C': $ports = $this->rep->getI2CPortsByDeviceId($deviceId);
-                    break;
-
-                default: $ports = [];
-                    break;
-            }
-
+            $ports = $this->rep->getPortsByDeviceId($deviceId, $typesPort);
 
             $portsArray = [];
 
@@ -311,6 +297,10 @@ class PortService {
         } else return [];
     }
 
+
+
+
+
     private function getHPDevicesIntoList($deviceID, $hpType = 'switch')
     {
         $hpTypes = explode(',',$hpType);
@@ -321,10 +311,16 @@ class PortService {
 
                     switch (trim($type)) {
 
-                        case 'switch': $HPdevices = $this->hiteproDevRep->getSwitchByDeviceId($deviceID);
+                        case 'switch':
+                            $HPdevices = $this->hiteproDevRep->getSwitchByDeviceId($deviceID);
                             break;
 
-                        case 'socket': $HPdevices = $this->hiteproDevRep->getSocketByDeviceId($deviceID);
+                        case 'socket':
+                            $HPdevices = $this->hiteproDevRep->getSocketByDeviceId($deviceID);
+                            break;
+
+                        case 'temperature':
+                            $HPdevices = $this->hiteproDevRep->getTermometrsByDeviceId($deviceID);
                             break;
                         /*
                                         case 'dimmer': $HPdevices = $this->hiteproDevRep->getInPortsByDeviceId($deviceID);
@@ -366,6 +362,32 @@ class PortService {
     }
 
     /**
+     * Получаем текущий контроллер и порт, на котором находится объект
+     */
+    public function getIdControllerBySubdevice($subevice, $typeController)
+    {
+        if($subevice) {
+            if($typeController == 'Hite-pro')
+                $controller  = HiteproDev::where('id', $subevice)->first()->id_controller;
+
+            return $controller;
+        } else return null;
+
+
+    }
+
+    /**
+     * Получаем устройства для контроллера
+     */
+    public function getSubdevsForController($idController, $typeController, $typeDevice) {
+
+        if($typeController == 'Hite-pro')
+            return $this->getHPDevicesIntoList($idController, $typeDevice);
+
+
+    }
+
+    /**
      * Подготовка данных для изменения у порта
      *
      * @param array $data Массив с данными
@@ -378,40 +400,6 @@ class PortService {
         $port->comment = trim($data['comment']);
     }
 
-
-
-    /**
-     * Подготовка команды для отправки на устройство
-     *
-     * @param Port $port - данные порта
-     */
-    private function prepareSendInDevice(Port $port)
-    {
-
-        switch ($port->status) {
-
-            case 'IN': $paramString = "pty=0";
-                        break;
-
-            case 'OUT': $paramString = "pty=1";
-                break;
-
-            case '1WIRE': $paramString = "pty=3&d=3";
-                break;
-
-            case '1W-BUS': $paramString = "pty=3&m=0&misc=0.00&hst=0.00&ecmd=&eth=&d=5";
-                break;
-
-            case 'I2C': $paramString = "pty=4&d=5";
-                break;
-
-            default: $paramString = "pty=255&m=0&misc=0.00&hst=0.00&ecmd=&eth=&d=3";
-                break;
-        }
-
-        return $paramString;
-
-    }
 
     /**
      * Сохранение измененых данных на порту
@@ -434,7 +422,7 @@ class PortService {
 
             DB::transaction(function () use (&$port, $data, &$result) {
 
-                $answer = ConfigMegaService::setPortSetting($port->id_device, $port->num_port, $this->prepareSendInDevice($port));
+                $answer = ConfigMegaService::setPortType($port->id_device, $port->num_port, $port->status);
 
                 if ($answer === false) {
                     throw new \Exception('Некорректный ответ от удаленного сервера');
@@ -463,12 +451,16 @@ class PortService {
      * @param $idObject
      * @return array
      */
-    public function getCurrentDevPort($idObject)
+    public function getCurrentDevPort($idObject, $typesPorts = null)
     {
         $deviceAndPort = $this->getIdDeviceAndPortId($idObject);
         $idDevice =  $deviceAndPort['id_device'];
         $idPort = $deviceAndPort['id_port'];
+
+        if($typesPorts == null)
         $typePort = $deviceAndPort['type_port'];
+        else
+            $typePort = $typesPorts;
 
         $hp_device = null;
         $hp_type = null;

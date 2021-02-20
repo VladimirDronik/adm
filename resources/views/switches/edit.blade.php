@@ -233,7 +233,7 @@
                 let device_id = $(this).val();
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': device_id, 'status': 'IN', 'type': 'switch, socket'},
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'IN,I2C,1WIRE,1W-BUS,ADC', 'type': 'switch, socket'},
                     success: function (data) {
                         methods = data.ports;
                         if (data.type_device == 'Hite-pro') {

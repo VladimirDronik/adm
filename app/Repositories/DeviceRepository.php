@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Device;
 use App\Models\DevType;
+use Illuminate\Support\Facades\DB;
 
 class DeviceRepository {
 
@@ -24,6 +25,23 @@ class DeviceRepository {
             ->pluck('description','id')->toArray();
 
         return $devices;
+    }
+
+    /**
+     * Вывод всех устройств по типу
+     */
+    public function getAllByTypeToArray()
+    {
+
+        $devices = DB::table('devices')->join('devtypes', 'devices.type', '=', 'devtypes.id')
+            ->select('devices.id', 'description')
+            ->where('devtypes.name','=','Hite-pro')
+            ->orderBy('description')
+            ->pluck('description','devices.id')
+            ->toArray();
+
+        return $devices;
+
     }
 
     public function getDevTypesToArray()

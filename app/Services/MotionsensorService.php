@@ -8,16 +8,23 @@ use App\Models\HomeObject;
 use App\Services\MotionSensorObjectService;
 use Illuminate\Support\Facades\DB;
 use App\Models\Port;
+use App\Repositories\PortRepository;
+use App\Services\PortService;
 
 class MotionsensorService {
 
     private $motionsensor_object_service;
     private $objectService;
+    private $portRepository;
+    private $portService;
 
-    public function __construct(MotionSensorObjectService $motionsensor_object_service, ObjectService $objectService)
+    public function __construct(MotionSensorObjectService $motionsensor_object_service, ObjectService $objectService,
+                                PortRepository $portRepository, PortService $portService)
     {
         $this->motionsensor_object_service = $motionsensor_object_service;
         $this->objectService = $objectService;
+        $this->portRepository = $portRepository;
+        $this->portService = $portService;
     }
 
     public function prepareMotionsensor(Motionsensor $motionsensor, array $data)
@@ -44,13 +51,18 @@ class MotionsensorService {
     public function store(array $data): int
     {
 
+        $deviceID = $data['device_id'];
+        $portID =  $data['port_id'];
+
         $motionsensor = new Motionsensor();
         $this->prepareMotionsensor($motionsensor, $data);
 
         if ($data['object_type'] === 'manual') {
             $motionsensor->save();
         } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$motionsensor, $data) {
+            DB::transaction(function () use (&$motionsensor, $data, $deviceID, $portID) {
+
+
                 $unique_name = HomeObject::getUniqueObjectName(0, $motionsensor->name);
                 $object = $this->motionsensor_object_service->createMotionsensorObject($unique_name);
                 $motionsensor->id_object = $object->id;
@@ -59,8 +71,11 @@ class MotionsensorService {
 
                 $idNewMethod = $this->motionsensor_object_service->createMotionsensorObjectMethods($object->id);
 
-                if ($data['port_id']) {
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id, 'method' => $idNewMethod]);
+                if ($portID) {
+
+                    Port::where('id', $portID)->update(['object' => $object->id, 'method' => $idNewMethod,
+                        'status' => 'IN', 'comment' => $data['name']]);
+                    ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($portID), 'IN');
                 }
             });
         }
@@ -86,9 +101,12 @@ class MotionsensorService {
 
             if ($data['port_id']) {
 
-                Port::where('object', $motionsensor->id_object)->update(['object' => null, 'method' => null]);
+                ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_id']), 'IN');
+
+                Port::where('object', $motionsensor->id_object)->update(['object' => null, 'method' => null, 'comment' => '']);
                 Port::where('id', $data['port_id'])->update(['object' => $motionsensor->id_object,
-                    'method' => $this->objectService->getMethodByObject($motionsensor->id_object)]);
+                    'method' => $this->objectService->getMethodByObject($motionsensor->id_object), 'comment' => $data['name'],
+                'status' => 'IN']);
 
             }
 
@@ -112,6 +130,8 @@ class MotionsensorService {
     {
         $motionsensor = Motionsensor::findOrFail($id);
 
+        Port::where('object', $motionsensor->id_object)->update(['object' => null, 'method' => null, 'comment' => '']);
+
         if ($motionsensor->iobject && $motionsensor->iobject->is_system) {
             DB::transaction(function () use (&$motionsensor) {
                 HomeObject::deleteAutoObject($motionsensor->id_object);
@@ -120,8 +140,6 @@ class MotionsensorService {
         } else {
             $motionsensor->delete();
         }
-
-        Port::where('object', $motionsensor->id_object)->update(['object' => null, 'method' => null]);
 
         return true;
     }

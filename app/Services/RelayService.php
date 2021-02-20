@@ -9,6 +9,7 @@ use App\Models\Relay;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
 
+
 class RelayService {
 
     private $relay_object_service;
@@ -32,6 +33,8 @@ class RelayService {
     {
         $relay = Relay::findOrFail($id);
 
+        Port::where('object', $relay->id_object)->update(['object' => null, 'method' => null, 'comment' => '']);
+
         if ($relay->object && $relay->object->is_system) {
             DB::transaction(function () use (&$relay) {
                 //if (!HomeObject::isObjectUsed($relay->id_object, $relay->id, 'relays')) {
@@ -43,7 +46,6 @@ class RelayService {
             $relay->delete();
         }
 
-        Port::where('object', $relay->id_object)->update(['object' => null, 'method' => null]);
 
         return true;
     }
@@ -69,12 +71,13 @@ class RelayService {
     {
 
         $relay = new Relay();
+        $deviceID =  $data['device_id'];
         $this->prepareRelay($relay, $data);
 
         if ($data['object_type'] === 'manual') {
             $relay->save();
         } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$relay, $data) {
+            DB::transaction(function () use (&$relay, $data, $deviceID) {
                 $unique_name = HomeObject::getUniqueObjectName(0, $relay->name);
                 $object = $this->relay_object_service->createRelayObject($unique_name, $relay->type);
                 $relay->id_object = $object->id;
@@ -82,7 +85,11 @@ class RelayService {
 
                 if ($data['port_id'] && $data['place'] == 'port') {
                     $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $this->portRepository->getNumPortByID($data['port_id']));
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id]);
+                    Port::where('id', $data['port_id'])->update(['object' => $object->id, 'status' => 'OUT',
+                        'comment' => $data['name']]);
+
+                    ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($data['port_id']), 'OUT');
+
                 } elseif ($data['place'] == 'Hite-pro') {
                     $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $data['hitepro_devices']);
                     HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
@@ -122,9 +129,12 @@ class RelayService {
 
             if (!is_null($data['port_id']) && $data['place'] == 'port') {
 
-                Port::where('object', $relay->object->id)->update(['object' => null, 'method' => null]);
+                Port::where('object', $relay->object->id)->update(['object' => null, 'method' => null, 'comment' => '']);
                 Port::where('id', $data['port_id'])->update(['object' => $relay->object->id,
-                    'method' => null]);
+                    'method' => null, 'status' => 'OUT', 'comment' => $data['name']]);
+
+                ConfigMegaService::setPortType($relay->device_id, $this->portRepository->getNumPortByID($data['port_id']), 'OUT');
+
                 HiteproDev::where('id_object', $relay->object->id)->update(['id_object' => null]);
 
                 //Меняем метод easy для всех трех системных методов лампы

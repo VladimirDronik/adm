@@ -76,7 +76,8 @@ class DrycontactController extends Controller
         $object_types =  HomeObject::getFullTypeIds();
 
 
-        list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($drycontact->id_object);
+        list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($drycontact->id_object,
+            'IN,I2C,1WIRE,1W-BUS');
 
         $method_on = $drycontact->method_on;
         $object_on = $objectService->getObjectByMethod($method_on);

@@ -238,7 +238,7 @@
                 let device_id = $(this).val();
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': device_id, 'status': 'I2C'},
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'IN,I2C,1WIRE,1W-BUS,ADC'},
                     success: function (data) {
                         createMethodSelect('#auto_sel_port_SDA', data.ports, -1);
                         $('#auto_sel_port_SDA').trigger("chosen:updated");

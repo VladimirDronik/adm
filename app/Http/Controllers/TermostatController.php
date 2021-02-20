@@ -54,19 +54,21 @@ class TermostatController extends Controller
         $types = Termostat::getFullThermostatIds();
         $devices = $this->device_rep->getAllToArray();
         $usensors = $this->usensors_rep->getAllToArray();
+        $HPControllers = $this->device_rep->getAllByTypeToArray();
 
 
 
-        return [$objects, $rooms, $types, $devices, $usensors];
+        return [$objects, $rooms, $types, $devices, $usensors, $HPControllers];
     }
 
     public function create()
     {
-        list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
+        list($objects, $rooms, $types, $devices, $usensors, $HPControllers) = $this->getLists();
         $object_types =  HomeObject::getFullTypeIds();
         $can = gates('devices.show-object');
 
-        return view('termostats.create', compact('objects','rooms', 'types', 'devices', 'usensors', 'object_types', 'can'));
+        return view('termostats.create', compact('objects','rooms', 'types', 'devices',
+            'usensors', 'object_types', 'HPControllers', 'can'));
     }
 
 
@@ -90,7 +92,7 @@ class TermostatController extends Controller
     public function edit(Termostat $termostat, ObjectService $object_service, ScriptRepository $script_rep,
                          PortService $portsService, MessageService $messagesService)
     {
-        list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
+        list($objects, $rooms, $types, $devices, $usensors, $HPControllers) = $this->getLists();
 
 
         $methods = $object_service->getMethodsByObjectIdToArray($termostat->object);
@@ -103,16 +105,19 @@ class TermostatController extends Controller
         $deviceId = $deviceAndPort['id_device'];
         $portId = $deviceAndPort['id_port'];
 
-        $ports =  $portsService->getPortsIntoList($deviceId);
+        $ports =  $portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
         $messages = $messagesService->getNotifications($termostat->id_object);
+
+        $id_controller = $portsService->getIdControllerBySubdevice($termostat->subdev_id, 'Hite-pro');
+        $subdevs = $portsService->getSubdevsForController($id_controller, 'Hite-pro', 'temperature');
 
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
 
         return view('termostats.edit', compact('termostat', 'objects', 'rooms',
-            'types', 'devices', 'methods', 'object_types', 'scripts',
-            'usensors', 'deviceId', 'portId', 'ports', 'messages', 'messagePoint', 'can'));
+            'types', 'devices', 'methods', 'object_types', 'scripts', 'HPControllers', 'id_controller',
+            'subdevs', 'usensors', 'deviceId', 'portId', 'ports', 'messages', 'messagePoint', 'can'));
     }
 
 

@@ -15,17 +15,21 @@ use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
 use App\Services\LightstatObjectService;
 use App\Models\Port;
+use App\Services\PortService;
 
 
 class LightstatService
 {
     private $lightstat_object_service;
     private $portRepository;
+    private $portService;
 
-    public function __construct(LightstatObjectService $lightstat_object_service, PortRepository $port_rep)
+    public function __construct(LightstatObjectService $lightstat_object_service, PortRepository $port_rep,
+                                PortService $portService)
     {
         $this->lightstat_object_service = $lightstat_object_service;
         $this->portRepository = $port_rep;
+        $this->portService = $portService;
     }
 
 
@@ -78,13 +82,16 @@ class LightstatService
                 $lightstat->save();
 
                 if ($port_SDA) {
-                    Port::where('id', $port_SDA)->update(['object' => $object->id]);
+                    Port::where('id', $port_SDA)->update(['object' => $object->id, 'status' => 'I2C',
+                                                                        'comment' => $lightstat->name]);
+                    ConfigMegaService::setPortType($deviceId, $this->portRepository->getNumPortByID($port_SDA), 'SDA');
                 }
 
                 if ($port_SCL) {
-                    Port::where('id', $port_SCL)->update(['object' => $object->id]);
-                    ConfigMegaService::setPortSetting($deviceId, $this->portRepository->getNumPortByID($port_SCL),
-                                                    'pty=255');
+                    Port::where('id', $port_SCL)->update(['object' => $object->id, 'status' => 'I2C',
+                                                                        'comment' => $lightstat->name]);
+                    ConfigMegaService::setPortType($deviceId, $this->portRepository->getNumPortByID($port_SDA), 'SCL');
+
                 }
             });
         }
@@ -102,8 +109,21 @@ class LightstatService
      */
     public function delete(int $id): bool
     {
+
         $lightstat = Lightstat::findOrFail($id);
         //\Log::error('Ошибка !!! '.$id);
+
+        $deviceAndPort = $this->portService->getIdDeviceAndPortId($lightstat->id_object);
+
+        Port::where('object', $lightstat->id_object)->update(['object' => NULL, 'status' => 'IN',
+            'comment' => '']);
+
+        ConfigMegaService::setPortType($deviceAndPort['id_device'], $this->portRepository->getNumPortByID($deviceAndPort['id_port']), 'IN');
+
+        //В портах удаляем все упоминания о термостате, порт переводим в режим IN
+        Port::where('object', $lightstat->id_object)->update(['status' => 'IN', 'object' => NULL,
+            'comment' => '']);
+
 
         if ($lightstat->iobject && $lightstat->iobject->is_system) {
             DB::transaction(function () use (&$lightstat) {
@@ -113,6 +133,7 @@ class LightstatService
         } else {
             $lightstat->delete();
         }
+
 
         return true;
     }
@@ -135,6 +156,7 @@ class LightstatService
     public function update(Lightstat $lightstat, array $data): int
     {
 
+
         DB::transaction(function () use (&$lightstat, $data) {
             if ($this->isUpdateAutoObjectName($lightstat, $data['name'])) {
                 $lightstat->iobject->name = HomeObject::getUniqueObjectName($lightstat->iobject->id, trim($data['name']));
@@ -143,17 +165,31 @@ class LightstatService
             }
 
             //Убираем датчик портов, если он где-то был до этого
-            if($data['port_SDA']||$data['port_SCL'])
-                Port::where('object', $lightstat->id_object)->update(['object' => NULL]);
+            Port::where('object', $lightstat->id_object)->update(['object' => NULL, 'status' => 'IN',
+                'comment' => '']);
+
+            ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_SDA']), 'IN');
+            ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_SCL']), 'IN');
 
 
-            if ($data['port_SDA']) {
-                Port::where('id', $data['port_SDA'])->update(['object' => $lightstat->id_object]);
+            if($data['placetype'] == 'port') {
+                if ($data['port_SDA']) {
+                    Port::where('id', $data['port_SDA'])->update(['object' => $lightstat->id_object, 'status' => 'I2C',
+                                                                        'comment' => $lightstat->name]);
+
+                    ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_SDA']), 'SDA');
+
+                }
+
+                if ($data['port_SCL']) {
+                    Port::where('id', $data['port_SCL'])->update(['object' => $lightstat->id_object, 'status' => 'I2C',
+                                                                        'comment' => $lightstat->name]);
+
+                    ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_SCL']), 'SCL');
+
+                }
             }
 
-            if ($data['port_SCL']) {
-                Port::where('id', $data['port_SCL'])->update(['object' => $lightstat->id_object]);
-            }
 
             $this->prepare($lightstat, $data);
             $lightstat->save();

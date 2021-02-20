@@ -6,14 +6,17 @@ use App\Models\Count;
 use App\Models\HomeObject;
 use App\Models\Port;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
 
 class CountService {
 
     private $count_object_service;
+    private $portRepository;
 
-    public function __construct(CountObjectService $count_object_service)
+    public function __construct(CountObjectService $count_object_service, PortRepository $portRepository)
     {
         $this->count_object_service = $count_object_service;
+        $this->portRepository = $portRepository;
     }
 
     /**
@@ -28,6 +31,10 @@ class CountService {
     {
         $count = Count::findOrFail($id);
 
+        Port::where('object', $count->id_object)->update(['object' => null, 'method' => null, 'status' => 'IN',
+            'comment' => '']);
+
+
         if ($count->object && $count->object->is_system) {
             DB::transaction(function () use (&$count) {
                 if (!HomeObject::isObjectUsed($count->id_object, $count->id, 'counts')) {
@@ -39,7 +46,6 @@ class CountService {
             $count->delete();
         }
 
-        Port::where('object', $count->id_object)->update(['object' => null, 'method' => null]);
 
         return true;
     }
@@ -83,7 +89,11 @@ class CountService {
                 $count->save();
 
                 if ($data['port_id']) {
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id]);
+                    Port::where('id', $data['port_id'])->update(['object' => $object->id, 'status' => 'IN',
+                        'comment' => $data['name']]);
+
+                    ConfigMegaService::setPortType($count->device_id, $this->portRepository->getNumPortByID($data['port_id']), 'IN');
+
                 }
             });
         }
@@ -117,8 +127,13 @@ class CountService {
             $count->save();
 
             if ($data['port_id']) {
-                Port::where('object', $count->id_object)->update(['object' => null, 'method' => null]);
-                Port::where('id', $data['port_id'])->update(['object' => $count->id_object]);
+                Port::where('object', $count->id_object)->update(['object' => null, 'method' => null,
+                    'comment' => '', 'status' => 'IN']);
+                Port::where('id', $data['port_id'])->update(['object' => $count->id_object, 'status' => 'IN',
+                    'comment' => $data['port_id']]);
+
+                ConfigMegaService::setPortType($count->device_id, $this->portRepository->getNumPortByID($data['port_id']), 'IN');
+
             }
 
         });

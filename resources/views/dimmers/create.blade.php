@@ -125,7 +125,7 @@
                 let device_id = $(this).val();
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': device_id},
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'OUT'},
                     success: function (data) {
                         createMethodSelect('#auto_sel_port_id', data.ports, -1);
                         $('#auto_sel_port_id').trigger("chosen:updated");

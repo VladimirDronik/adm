@@ -73,7 +73,7 @@ class CountController extends Controller
         $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
-        list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($count->id_object);
+        list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($count->id_object, 'IN,I2C,1WIRE,1W-BUS');
 
 
         return view('counts.edit', compact('count', 'types',

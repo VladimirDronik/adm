@@ -6,14 +6,17 @@ use App\Models\Dimmer;
 use App\Models\HomeObject;
 use App\Models\Port;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
 
 class DimmerService {
 
     private $dimmer_object_service;
+    private $port_repository;
 
-    public function __construct(DimmerObjectService $dimmer_object_service)
+    public function __construct(DimmerObjectService $dimmer_object_service, PortRepository $portRepository)
     {
         $this->dimmer_object_service = $dimmer_object_service;
+        $this->port_repository = $portRepository;
     }
 
     /**
@@ -28,6 +31,10 @@ class DimmerService {
     {
         $dimmer = Dimmer::findOrFail($id);
 
+        Port::where('object', $dimmer->id_object)->update(['object' => null, 'method' => null,
+            'comment' => '', 'status' => 'OUT']);
+
+
         if ($dimmer->object && $dimmer->object->is_system) {
             DB::transaction(function () use (&$dimmer) {
                 if (!HomeObject::isObjectUsed($dimmer->id_object, $dimmer->id, 'dimmers')) {
@@ -39,7 +46,7 @@ class DimmerService {
             $dimmer->delete();
         }
 
-        Port::where('object', $dimmer->id_object)->update(['object' => null, 'method' => null]);
+
 
         return true;
     }
@@ -63,12 +70,13 @@ class DimmerService {
     public function store(array $data): int
     {
         $dimmer = new Dimmer();
+        $deviceID =  $data['device_id'];
         $this->prepareDimmer($dimmer, $data);
 
         if ($data['object_type'] === 'manual') {
             $dimmer->save();
         } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$dimmer, $data) {
+            DB::transaction(function () use (&$dimmer, $data, $deviceID) {
                 $unique_name = HomeObject::getUniqueObjectName(0, $dimmer->name);
                 $object = $this->dimmer_object_service->createDimmerObject($unique_name);
                 $this->dimmer_object_service->createDimmerObjectMethods($object->id);
@@ -76,7 +84,11 @@ class DimmerService {
                 $dimmer->save();
 
                 if ($data['port_id']) {
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id]);
+                    Port::where('id', $data['port_id'])->update(['object' => $object->id,
+                        'status' => 'OUT', 'comment' => $data['name']]);
+
+                    ConfigMegaService::setPortType($deviceID, $this->port_repository->getNumPortByID($data['port_id']), 'PWM');
+
                 }
             });
         }
@@ -103,7 +115,9 @@ class DimmerService {
      */
     public function update(Dimmer $dimmer, array $data): int
     {
-        DB::transaction(function () use (&$dimmer, $data) {
+        $deviceID =  $data['device_id'];
+
+        DB::transaction(function () use (&$dimmer, $data, $deviceID) {
             if ($this->isUpdateAutoObjectName($dimmer, $data['name'])) {
                 $dimmer->object->name = HomeObject::getUniqueObjectName($dimmer->object->id, trim($data['name']));
                 $dimmer->object->save();
@@ -112,8 +126,12 @@ class DimmerService {
             $dimmer->save();
 
             if ($data['port_id']) {
-                Port::where('object', $dimmer->id_object)->update(['object' => null, 'method' => null]);
-                Port::where('id', $data['port_id'])->update(['object' => $dimmer->id_object]);
+                Port::where('object', $dimmer->id_object)->update(['object' => null, 'method' => null,
+                    'status' => 'OUT', 'comment' => '']);
+                Port::where('id', $data['port_id'])->update(['object' => $dimmer->id_object, 'status' => 'OUT',
+                    'comment' =>  $data['name']]);
+
+                ConfigMegaService::setPortType($deviceID, $this->port_repository->getNumPortByID($data['port_id']), 'PWM');
             }
         });
 

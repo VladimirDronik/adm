@@ -92,8 +92,8 @@ class LightstatController extends Controller
         $port_SCL = $lightstat->port_SCL;
         $port_SDA = $lightstat->port_SDA;
 
-        $portsSCL =  $portsService->getPortsIntoList($deviceId, 'I2C');
-        $portsSDA =  $portsService->getPortsIntoList($deviceId, 'I2C');
+        $portsSCL =  $portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
+        $portsSDA =  $portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
         $messages = $messagesService->getNotifications($lightstat->id_object);
 

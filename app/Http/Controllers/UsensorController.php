@@ -89,7 +89,7 @@ class UsensorController extends Controller
         $object_types = HomeObject::getFullTypeIds();
         $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
-        $SCL = $SDA = $portService->getPortsIntoList($usensor->device_id, 'I2C');
+        $SCL = $SDA = $portService->getPortsIntoList($usensor->device_id, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
 
 

@@ -62,7 +62,7 @@
                     <li class="nav-item">
                         <a class="nav-link @if($active === '') active show @endif" href="{{ route('carbmonoxide.index') }}">
                             <span>
-                                 <img width="28" height="20" title="" src="{{ asset('ela/images/objects/CO2sens.png') }}">
+                                 <img width="28" height="20" title="" src="{{ asset('ela/images/objects/carbsens.png') }}">
                                 Датчики УГ ({{ $detectorsService->getCarbMonoxideCount() }})
                             </span>
                         </a>

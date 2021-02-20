@@ -37,6 +37,9 @@ class SwitchService {
         PortService::deleteAllMethodsForPort($switch->id_object);
         $this->setPort($this->portRepository->getPortByObject($switch->id_object), 'button');
 
+        Port::where('object', $switch->id_object)->update([
+            'object' => null, 'comment' => '']);
+
         if ($switch->object && $switch->object->is_system) {
             DB::transaction(function () use (&$switch) {
                 //if (!HomeObject::isObjectUsed($switch->id_object, $switch->id, 'switches')) {
@@ -119,7 +122,10 @@ class SwitchService {
                     Port::where('id', $data['port_id'])->update(['object' => $object->id,
                         'method' => $data['method'], 'method_params' => $data['method_params'],
                         'dc_method' => $data['method_dc'], 'dc_method_params' => $data['method_dc_params'],
-                        'lc_method' => $data['method_lc'], 'lc_method_params' => $data['method_lc_params'] ]);
+                        'lc_method' => $data['method_lc'], 'lc_method_params' => $data['method_lc_params'],
+                        'status' => 'IN', 'comment' => $data['name']]);
+
+
                 }
 
 
@@ -169,12 +175,14 @@ class SwitchService {
                 'object' => null,
                 'method' => null, 'method_params' => null,
                 'dc_method' => null, 'dc_method_params' => null,
-                'lc_method' => null, 'lc_method_params' => null ]);
+                'lc_method' => null, 'lc_method_params' => null,
+                'comment' => '']);
 
             Port::where('id', $data['port_id'])->update(['object' => $data['id_object'],
                 'method' => $data['method'], 'method_params' => $data['method_params'],
                 'dc_method' => $data['method_dc'], 'dc_method_params' => $data['method_dc_params'],
-                'lc_method' => $data['method_lc'], 'lc_method_params' => $data['method_lc_params'] ]);
+                'lc_method' => $data['method_lc'], 'lc_method_params' => $data['method_lc_params'],
+                'comment' => $data['name'], 'status' => 'IN']);
         }
 
         return $switch->id;

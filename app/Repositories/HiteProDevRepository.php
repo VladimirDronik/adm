@@ -25,6 +25,14 @@ class HiteProDevRepository {
         else return null;
     }
 
+    public function getTermometrsByDeviceId($idDevice){
+
+
+        if($idDevice)
+            return HiteproDev::where('id_controller', $idDevice)->where('type', 'temperature')
+                ->orderBy('name')->get();
+        else return null;
+    }
 
     public function getHPDevByDeviceId(int $device_id)
     {

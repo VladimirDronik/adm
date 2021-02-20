@@ -14,17 +14,22 @@ use App\Models\HomeObject;
 use App\Services\DryContactObjectService;
 use App\Models\Port;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
 
 class DrycontactService
 {
 
     private $drycontact_object_service;
     private $objectService;
+    private $portRepository;
 
-    public function __construct(DryContactObjectService $drycontact_object_service, ObjectService $objectService)
+
+    public function __construct(DryContactObjectService $drycontact_object_service, ObjectService $objectService,
+                                PortRepository $portRepository)
     {
         $this->drycontact_object_service = $drycontact_object_service;
         $this->objectService = $objectService;
+        $this->portRepository = $portRepository;
     }
 
     public function prepareDrycontact(Drycontact $drycontact, array $data)
@@ -45,6 +50,7 @@ class DrycontactService
     public function store(array $data): int
     {
 
+        $deviceID = $data['device_id'];
 
         $drycontact = new Drycontact();
         $this->prepareDrycontact($drycontact, $data);
@@ -52,7 +58,7 @@ class DrycontactService
         if ($data['object_type'] === 'manual') {
             $drycontact->save();
         } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$drycontact, $data) {
+            DB::transaction(function () use (&$drycontact, $data, $deviceID) {
                 $unique_name = HomeObject::getUniqueObjectName(0, $drycontact->name);
                 $object = $this->drycontact_object_service->createDrycontactObject($unique_name);
                 $drycontact->id_object = $object->id;
@@ -61,7 +67,10 @@ class DrycontactService
                 $drycontact->save();
 
                 if ($data['port_id']) {
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id, 'method' => null]);
+                    Port::where('id', $data['port_id'])->update(['object' => $object->id, 'method' => null,
+                        'status' => 'IN', 'comment' => $data['name']]);
+                    ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($data['port_id']), 'IN');
+
                 }
             });
         }
@@ -86,6 +95,10 @@ class DrycontactService
      */
     public function update(Drycontact $drycontact, array $data): int
     {
+
+
+        $deviceID = $data['device_id'];
+
         DB::transaction(function () use (&$drycontact, $data) {
             if ($this->isUpdateAutoObjectName($drycontact, $data['name'])) {
                 $drycontact->object->name = HomeObject::getUniqueObjectName($drycontact->object->id, trim($data['name']));
@@ -98,10 +111,11 @@ class DrycontactService
 
         if ($data['port_id']) {
 
-            Port::where('object', $drycontact->object->id)->update(['object' => null, 'method' => null]);
+            Port::where('object', $drycontact->object->id)->update(['object' => null, 'method' => null, 'comment' => '']);
             Port::where('id', $data['port_id'])->update(['object' => $drycontact->object->id,
-                'method' => null]);
+                'method' => null, 'status' => 'IN', 'comment' => $data['name']]);
 
+            ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($data['port_id']), 'IN');
 
         }
 
@@ -120,6 +134,8 @@ class DrycontactService
     {
         $drycontact = Drycontact::findOrFail($id);
 
+        Port::where('object', $drycontact->id_object)->update(['object' => null, 'method' => null, 'comment' => '']);
+
         if ($drycontact->object && $drycontact->object->is_system) {
             DB::transaction(function () use (&$drycontact) {
                 //if (!HomeObject::isObjectUsed($switch->id_object, $switch->id, 'switches')) {
@@ -131,7 +147,7 @@ class DrycontactService
             $drycontact->delete();
         }
 
-        Port::where('object', $drycontact->id_object)->update(['object' => null, 'method' => null]);
+
 
         return true;
     }

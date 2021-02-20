@@ -60,7 +60,7 @@
                                             <div class="col-sm-12 pr-0 mt-4">
                                                 <div class="btn-group-toggle" data-toggle="buttons">
                                                     <label class="btn btn-success btn-sm @if($termostat->placetype == 'port') active @endif">
-                                                        <input type="radio" name="placetype_radio" autocomplete="off"  value="port"> На отдельном порту
+                                                        <input type="radio" name="placetype_radio" autocomplete="off"  value="port"> На порту
                                                     </label>
 
                                                     <label class="btn btn-success btn-sm @if($termostat->placetype == '1wbus') active @endif">
@@ -69,6 +69,10 @@
 
                                                     <label class="btn btn-success btn-sm @if($termostat->placetype == 'usensor') active @endif">
                                                         <input type="radio" name="placetype_radio" autocomplete="off" value="usensor">  В составе унив. датчика
+                                                    </label>
+
+                                                    <label class="btn btn-success btn-sm @if($termostat->placetype == 'Hite-pro') active @endif">
+                                                        <input type="radio" name="placetype_radio" autocomplete="off" value="device">  Отдельное устройство
                                                     </label>
 
                                                     <input type="hidden" id="placetype" name="placetype" value="{{$termostat->placetype}}">
@@ -93,6 +97,15 @@
                                                 {{ Form::bs_autoselect('usensor_id', 'Универсальный датчик:', $usensors, old('usensor_id', is_null($termostat->usensor_id) ? 0 : $termostat->usensor_id),
                                                    false, false, [], null) }}
                                             </div>
+
+                                            <div class="col-sm-12 pr-0 mt-4" id="device_div" @if($termostat->placetype != 'Hite-pro') style="display: none;" @endif>
+                                                {{ Form::bs_autoselect('HPController_id', 'Контроллер:', $HPControllers, old('HPController_id', is_null($id_controller) ? 0 : $id_controller),
+                                                   false, false, [], null) }}
+
+                                                {{ Form::bs_autoselect('subdev_id', 'Термометр:', $subdevs, old('subdev_id', is_null($termostat->subdev_id) ? 0 : $termostat->subdev_id),
+                                                    false, false, [], null) }}
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -218,6 +231,8 @@
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_usensor_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_HPController_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_subdev_id").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $('#auto_sel_btn_id_object').click(function() {
                 modal_btn_index = 1;
@@ -237,7 +252,7 @@
                 let device_id = $(this).val();
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': device_id, 'status': '1WIRE,1W-BUS'},
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'IN,1WIRE,1W-BUS,I2C'},
                     success: function (data) {
                         createMethodSelect('#auto_sel_port_id', data.ports, -1);
                         $('#auto_sel_port_id').trigger("chosen:updated");
@@ -260,6 +275,18 @@
 
                 });
                  */
+            });
+
+            $("#auto_sel_HPController_id").chosen().change(function() {
+                let device_id = $(this).val();
+                $.ajax({
+                    url: url_ports,
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'temperature'},
+                    success: function (data) {
+                        createMethodSelect('#auto_sel_subdev_id', data.hiteProDevices, -1);
+                        $('#auto_sel_subdev_id').trigger("chosen:updated");
+                    }
+                });
             });
 
             $('#create_object_modal_btn').click(function() {
@@ -358,19 +385,29 @@
             if ($(this).val() === 'port') {
                 $('#1wbus_port_div').hide();
                 $('#usensor_div').hide();
+                $('#device_div').hide();
                 $('#single_port_div').show();
                 $('#placetype').val('port');
             } else if ($(this).val() === '1wbus') {
                 $('#single_port_div').show();
                 $('#usensor_div').hide();
+                $('#device_div').hide();
                 $('#1wbus_port_div').show();
                 $('#placetype').val('1wbus');
-            } else {
+            } else if ($(this).val() === 'usensor') {
                 $('#usensor_div').show();
                 $('#single_port_div').hide();
+                $('#device_div').hide();
                 $('#1wbus_port_div').hide();
                 $('#placetype').val('usensor');
+            } else {
+                $('#usensor_div').hide();
+                $('#single_port_div').hide();
+                $('#1wbus_port_div').hide();
+                $('#device_div').show();
+                $('#placetype').val('Hite-pro');
             }
+
 
             return true;
         });
