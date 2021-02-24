@@ -90,7 +90,7 @@ class LightstatService
                 if ($port_SCL) {
                     Port::where('id', $port_SCL)->update(['object' => $object->id, 'status' => 'I2C',
                                                                         'comment' => $lightstat->name]);
-                    ConfigMegaService::setPortType($deviceId, $this->portRepository->getNumPortByID($port_SDA), 'SCL');
+                    ConfigMegaService::setPortType($deviceId, $this->portRepository->getNumPortByID($port_SCL), 'SCL');
 
                 }
             });
