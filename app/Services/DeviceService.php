@@ -91,7 +91,7 @@ class DeviceService {
         $this->device = new Device();
 
         $this->device->fill($data);
-        $this->device->active = 1;
+        //$this->device->active = 1;
 
         $this->device->save();
 
@@ -109,15 +109,30 @@ class DeviceService {
     public function store(array $data, bool $is_notify = false) //true для реализации функции настройки устройства с дефолтным адресом
     {
 
-        $typeDevice = $this->deviceRepository->getDevTypeById($data['type']);
+        $typeDevice = $data['type'];
+
+        $data['type'] = $this->deviceRepository->getIdTypeByName($typeDevice);
+
+
+        if($typeDevice == 'Hite-pro')
+            $data['password'] = base64_encode($data['username'].':'.$data['password']);
 
         DB::beginTransaction();
 
         try {
 
+                exec("ping -c 1 {$data['ip_address']}",$output, $status);
+                if ($status==0)
+                    $data['active'] = 1;
+                else
+                    $data['active'] = 0;
+
             $this->storeDevice($data, $is_notify);
+
+            //Для устройств из семейства Мега сохраняем поры в БД
             if($typeDevice != 'Hite-pro')
             $this->storePorts();
+
 
             DB::commit();
 
@@ -309,43 +324,49 @@ class DeviceService {
             ];
             $context = stream_context_create($options);
 
-            $contents = file_get_contents($url, false, $context);
+            try {
+                $contents = file_get_contents($url, false, $context);
 
-            $devicesArray = json_decode($contents);
-
-
-           // HiteproDev::where('id_controller', $id)->delete();
-
-        $HPDevices = HiteproDev::select('id')->where('id_controller', $id)->pluck('id')->toArray();
+                $devicesArray = json_decode($contents);
 
 
-        //Проверяем какие есть устройства и добавляем новое, если его нет в таблице
-            foreach ($devicesArray AS $device) {
+                // HiteproDev::where('id_controller', $id)->delete();
 
-                //Если нашли такой id устройства в таблице изменяем его, значит перезаписываем его заново
-                if(HiteproDev::where('id_controller', $id)->where('id', $device->id)->first() != null)
-                HiteproDev::where('id_controller', $id)->where('id', $device->id)->update(['name' => $device->name]);
-                else {
-                    $HiteProDevice = new HiteproDev();
-                    $HiteProDevice->id = $device->id;
-                    $HiteProDevice->id_controller = $id;
-                    $HiteProDevice->name = $device->name;
-                    $HiteProDevice->type = $device->type;
-                    $HiteProDevice->status = $device->status;
-                    $HiteProDevice->save();
+                $HPDevices = HiteproDev::select('id')->where('id_controller', $id)->pluck('id')->toArray();
+
+
+                //Проверяем какие есть устройства и добавляем новое, если его нет в таблице
+                foreach ($devicesArray AS $device) {
+
+                    //Если нашли такой id устройства в таблице изменяем его, значит перезаписываем его заново
+                    if(HiteproDev::where('id_controller', $id)->where('id', $device->id)->first() != null)
+                        HiteproDev::where('id_controller', $id)->where('id', $device->id)->update(['name' => $device->name]);
+                    else {
+                        $HiteProDevice = new HiteproDev();
+                        $HiteProDevice->id = $device->id;
+                        $HiteProDevice->id_controller = $id;
+                        $HiteProDevice->name = $device->name;
+                        $HiteProDevice->type = $device->type;
+                        $HiteProDevice->status = $device->status;
+                        $HiteProDevice->save();
+                    }
+
+                    $IDsArray[] = $device->id;
                 }
 
-                $IDsArray[] = $device->id;
+                $difArray = array_diff($HPDevices, $IDsArray);
+
+                //Удаляем все записи массива, которые лишние
+                foreach ($difArray AS $idToDel) {
+                    HiteproDev::where('id', $idToDel)->delete();
+                }
+
+                return json_decode($contents);
+
+            }catch (\Exception $e) {
+                return $contents = [];
             }
 
-        $difArray = array_diff($HPDevices, $IDsArray);
-
-        //Удаляем все записи массива, которые лишние
-        foreach ($difArray AS $idToDel) {
-            HiteproDev::where('id', $idToDel)->delete();
-        }
-
-            return json_decode($contents);
 
     }
 

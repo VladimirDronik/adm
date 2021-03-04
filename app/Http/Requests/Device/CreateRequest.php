@@ -24,7 +24,7 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'type' => 'required|integer|min:0',
+            'type' => 'required',
             'description' => 'required|string|max:255|unique:devices,description',
             'ip_address' => 'required|string|ip|max:15',
             'password' => 'required|string|max:100',

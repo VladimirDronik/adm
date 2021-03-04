@@ -16,6 +16,7 @@ class AddColumnIntoDevices extends Migration
         if (Schema::hasTable('devices')) {
             Schema::table('devices', function (Blueprint $table) {
 
+                $table->string('username',100)->nullable();
                 $table->tinyInteger('changed')->nullable();
             });
         }

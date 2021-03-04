@@ -51,12 +51,18 @@ class DeviceRepository {
 
     public function getDevTypesToArray()
     {
-        return DevType::orderBy('id')->pluck('name','id')->toArray();
+        return DevType::orderBy('name')->pluck('name','name')->toArray();
     }
 
     public static function getDevTypeById($id)
     {
         return DevType::select('name')->where('id', $id)->first()->name;
+    }
+
+    public function getIdTypeByName($name)
+    {
+        return DevType::select('id')->where('name', $name)->first()->id;
+
     }
 
     public static function getDevByIdDevice($id)

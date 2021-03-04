@@ -108,8 +108,8 @@ class DeviceController extends Controller
         if ($controller['type'] == 'Hite-pro') {
 
             if(DeviceService::getStatus($id))
-            $devstorage = DeviceService::readHiteproDevices($id, $controller['address'], $controller['password']);
-            else $devstorage = null;
+                $devstorage = DeviceService::readHiteproDevices($id, $controller['address'], $controller['password']);
+            else $devstorage = [];
 
             return view('devices.edit_hitepro', compact('device', 'devstorage', 'tab'));
         }
