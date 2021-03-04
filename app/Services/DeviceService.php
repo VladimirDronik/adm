@@ -87,6 +87,7 @@ class DeviceService {
      */
     public function storeDevice(array $data, bool $is_notify = true)
     {
+
         $this->device = new Device();
 
         $this->device->fill($data);

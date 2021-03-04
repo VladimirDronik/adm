@@ -21,8 +21,13 @@ class DeviceRepository {
 
     public function getAllToArray()
     {
-        $devices = Device::select('id', 'description')->orderBy('description')
-            ->pluck('description','id')->toArray();
+
+        //Выводим все контроллеры, кроме Hite-pro
+        $devices = Device::select('devices.id', 'devices.description')
+            ->join('devtypes', 'devices.type', '=', 'devtypes.id', 'left outer')
+            ->where('devtypes.name','!=','Hite-pro')
+            ->pluck('devices.description','devices.id')->toArray();
+
 
         return $devices;
     }

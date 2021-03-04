@@ -69,7 +69,7 @@ class DrycontactService
                 if ($data['port_id']) {
                     Port::where('id', $data['port_id'])->update(['object' => $object->id, 'method' => null,
                         'status' => 'IN', 'comment' => $data['name']]);
-                    ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($data['port_id']), 'IN');
+                    ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($data['port_id']), 'IN-P&R');
 
                 }
             });
@@ -115,7 +115,7 @@ class DrycontactService
             Port::where('id', $data['port_id'])->update(['object' => $drycontact->object->id,
                 'method' => null, 'status' => 'IN', 'comment' => $data['name']]);
 
-            ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($data['port_id']), 'IN');
+            ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($data['port_id']), 'IN-P&R');
 
         }
 

@@ -121,7 +121,7 @@
                 @endcan
                 @can('settings')
                     <li> <a class="has-arrow" href="{{ route('settings.index') }}" aria-expanded="false">
-                            <i class="fa fa-cog "></i><span class="hide-menu">Настройки</span></a></li>
+                            <i class="fa fa-cog "></i><span class="hide-menu">Параметры</span></a></li>
                 @endcan
                 <li class="nav-label">Диагностика</li>
                 @can('logs')

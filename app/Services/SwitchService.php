@@ -79,9 +79,9 @@ class SwitchService {
 
 
             if ($typeObject == 'button')
-                $paramsString = 'pty=0&m=0';
+                $paramsString = 'ecmd=&af=&eth=&naf=&d=&mt=&pty=0&m=3&nr=1'; //for button
             else
-                $paramsString = 'pty=0&m=1';
+                $paramsString = 'ecmd=&af=&eth=&naf=&misc=&d=&mt=&pty=0&m=0&nr=1'; //for switch
 
             $answer = ConfigMegaService::setPortSetting($port->id_device, $port->num_port, $paramsString);
 

@@ -149,16 +149,22 @@ class ConfigMegaService
     {
         switch ($type) {
 
-            case 'IN': $paramString = "pty=0";
+            case 'IN': $paramString = "ecmd=&af=&eth=&naf=&misc=&d=&mt=&pty=0&m=0&nr=1";
                 break;
 
-            case 'OUT': $paramString = "pty=1";
+            case 'IN-P&R': $paramString = "ecmd=&af=&eth=&naf=&misc=&d=&mt=&pty=0&m=1&nr=1";
                 break;
 
-            case '1WIRE': $paramString = "pty=3&d=3";
+            case 'IN-C': $paramString = "ecmd=&af=&eth=&naf=&d=&mt=&pty=0&m=3&nr=1";
                 break;
 
-            case '1W-BUS': $paramString = "pty=3&m=0&misc=0.00&hst=0.00&ecmd=&eth=&d=5";
+            case 'OUT': $paramString = "grp=&pty=1&d=0&m=0&nr=1";
+                break;
+
+            case '1WIRE': $paramString = "misc=0.00&hst=0.00&ecmd=&af=&eth=&naf=&pty=3&m=3&d=3&nr=1";
+                break;
+
+            case '1W-BUS': $paramString = "pty=3&d=5&nr=1";
                 break;
 
             case 'SDA': $paramString = "misc=255&pty=4&m=1&nr=1";
@@ -167,10 +173,10 @@ class ConfigMegaService
             case 'SCL': $paramString = "pty=4&m=2&nr=1";
                 break;
 
-            case 'ADC': $paramString = "pn=37&misc=0&hst=0&ecmd=&af=&eth=&naf=&pty=2&m=0";
+            case 'ADC': $paramString = "misc=0&hst=0&ecmd=&af=&eth=&naf=&pty=2&m=0&nr=1";
                 break;
 
-            case 'PWM': $paramString = "PWM";
+            case 'PWM': $paramString = "pwm=0&d=0&grp=&misc=&pty=1&m=1&fr=1&nr=1";
                 break;
 
             default: $paramString = "pty=255&m=0&misc=0.00&hst=0.00&ecmd=&eth=&d=3";
