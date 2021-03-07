@@ -76,10 +76,11 @@ class View extends Model
 
     const TYPE_SWITCH = 'switch';
     const TYPE_BUTTON = 'button';
-    const TYPE_TEMP = 'temp';
+    const TYPE_TEMP = 'termostat';
     const TYPE_HUMIDITY = 'humidity';
     const TYPE_INFO = 'info';
     const TYPE_DIMMER = 'dimmer';
+    const TYPE_LINK = 'link';
 
     protected $casts = ['active' => 'boolean'];
     protected $guarded = ['id'];
@@ -93,6 +94,7 @@ class View extends Model
             self::TYPE_HUMIDITY => 'Гигрометр',
             self::TYPE_INFO => 'Инфопанель',
             self::TYPE_DIMMER => 'Диммер',
+            self::TYPE_LINK => 'Ссылка',
         ];
     }
 

@@ -127,16 +127,21 @@ class DeviceService {
                 else
                     $data['active'] = 0;
 
-            $this->storeDevice($data, $is_notify);
+                if($data['active'] == 1) {
 
-            //Для устройств из семейства Мега сохраняем поры в БД
-            if($typeDevice != 'Hite-pro')
-            $this->storePorts();
+                    $this->storeDevice($data, $is_notify);
+
+                    //Для устройств из семейства Мега сохраняем поры в БД
+                    if($typeDevice != 'Hite-pro')
+                        $this->storePorts();
 
 
-            DB::commit();
+                    DB::commit();
 
-            return $this->device->id;
+                    return $this->device->id;
+
+                } else throw new \Exception('Устройство недоступно!');
+
 
         } catch (\Throwable $e) {
             DB::rollback();

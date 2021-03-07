@@ -17,4 +17,4 @@
     </div>
 </div>
 
-<button type="button" id="load_init_btn" style="display: block;" data-toggle="modal" data-target="#load_modal">&nbsp;</button>
+<button type="button" id="load_init_btn" style="display: none;" data-toggle="modal" data-target="#load_modal">&nbsp;</button>

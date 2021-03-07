@@ -75,14 +75,18 @@ class DeviceController extends Controller
     public function store(CreateRequest $r)
     {
         try {
-            if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('devices.edit',[$id])->with('success', 'Устройство успешно добавлено');
+            if ($result = $this->service->store($r->except('_token'))) {
+
+                if(is_int($result)) {
+                    $id = $result;
+                    return redirect()->route('devices.edit',[$id])->with('success', 'Устройство успешно добавлено');
+                }
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при добавлении устройства ' .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении устройства');
+        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении устройства. '.$e->getMessage());
     }
 
     public function edit(int $id, Request $request)

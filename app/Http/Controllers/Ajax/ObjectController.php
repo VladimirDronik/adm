@@ -38,6 +38,16 @@ class ObjectController extends Controller
         return response()->json(['result' => true, 'methods' => $methods]);
     }
 
+    public function getObjects(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['type_object']), 400);
+
+        $objects = $this->service->getObjectsByType($r->type_object);
+
+        return response()->json(['result' => true, 'objects' => $objects]);
+    }
+
+
     public function store(Request $r)
     {
         abort_if(!ajaxHas($r, ['type', 'name']), 400);

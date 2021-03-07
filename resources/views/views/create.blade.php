@@ -131,7 +131,11 @@
     <script>
         let image_id;
         let url = '{{ asset('/') }}';
+
         const url_methods = '{{ route('ajax.objects.methods') }}';
+        const url_objects = '{{ route('ajax.objects.getObjects') }}';
+
+
         let methods = [];
 
         function setViewImage(image) {
@@ -277,6 +281,7 @@
 
                 $('#additionallydiv').hide();
                 $('#termostatdiv').hide();
+                let type_obj = $(this).val();
 
                 if ($(this).val() === 'switch') {
                     $('#view_form #off_method_div').show();
@@ -291,6 +296,17 @@
                     $('#view_form #off_method_div').hide();
                     $('#view_form #off_method_params_div').hide();
                 }
+
+                $.ajax({
+                    url: url_objects,
+                    data: {'_token': _token, 'type_object': type_obj},
+                    success: function (data) {
+                        objects = data.objects;
+                        createMethodSelect('#auto_sel_id_object', data.objects, -1);
+                        $('#auto_sel_id_object').trigger("chosen:updated");
+                    }
+                });
+
                 return true;
             });
 

@@ -67,6 +67,17 @@ class ObjectService {
         return [];
     }
 
+    public function getObjectsByType($typeObject): array
+    {
+        if ($typeObject) {
+            return HomeObject::where('type', $typeObject)
+                ->orderBy('name')
+                ->select('id', 'name')->get()->toArray();
+        }
+
+        return [];
+    }
+
     public function getMethodsByObjectIdToArray($object_id): array
     {
         if ($object_id) {
