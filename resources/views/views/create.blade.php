@@ -34,10 +34,16 @@
                             {{ Form::bs_text('description', 'Описание:') }}
                             {{ Form::bs_checkbox('active', 'Активность:', true) }}
 
+                            <div id="id_object_div" style="display: block;">
                             {{ Form::bs_autoselect('id_object', 'Объект:', $objects, old('id_object'), false, false) }}
+                            </div>
 
                             <div id="on_method_div" style="display: block;">
                             {{ Form::bs_autoselect('id_method', 'Метод вкл:', [], old('id_method'), false, false) }}
+                            </div>
+
+                            <div id="on_params_div" style="display: none;">
+                                {{ Form::bs_autoselect('link', 'Ссылка:', $links, old('link'), false, false) }}
                             </div>
 
                             <div class="form-group row" id="on_method_params_div"
@@ -203,6 +209,7 @@
             $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_id_method").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_off_method").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_link").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_id_object").chosen().change(function() {
                 let object_id = $(this).val();
@@ -281,6 +288,8 @@
 
                 $('#additionallydiv').hide();
                 $('#termostatdiv').hide();
+                $('#on_params_div').hide();
+                $('#view_form #id_object_div').show();
                 let type_obj = $(this).val();
 
                 if ($(this).val() === 'switch') {
@@ -288,13 +297,20 @@
                 } else if ($(this).val() === 'dimmer') {
                     $('#view_form #off_method_div').hide();
                     $('#view_form #on_method_div').hide();
-                } else if ($(this).val() === 'temp') {
+                } else if ($(this).val() === 'termostat') {
                     $('#additionallydiv').show();
                     $('#termostatdiv').show();
-                } else {
+                } else if ($(this).val() === 'link') {
+                    $('#view_form #id_object_div').hide();
+                    $('#view_form #on_method_div').hide();
+                    $('#view_form #off_method_div').hide();
+                    $('#on_params_div').show();
+                }
+                else {
                     $('#view_form #on_method_div').show();
                     $('#view_form #off_method_div').hide();
                     $('#view_form #off_method_params_div').hide();
+
                 }
 
                 $.ajax({

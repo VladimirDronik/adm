@@ -37,14 +37,23 @@
                         {{ Form::bs_text('description', 'Описание:') }}
                         {{ Form::bs_checkbox('active', 'Активность:') }}
 
+                        <div id="id_object_div"  @if($view->type != 'link') style="display: block;" @else style="display: none;" @endif>
                         {{ Form::bs_autoselect('id_object', 'Объект:', $objects, old('id_object', $view->id_object), false, false) }}
+                        </div>
 
-                        <div id="on_method_div" @if($view->is_dimmer) style="display: none;" @endif>
+                        <div id="on_method_div" @if(($view->type == 'dimmer')||($view->type == 'link')) style="display: none;" @endif>
                         {{ Form::bs_autoselect('id_method', 'Метод вкл:', $methods, old('id_method', $view->on_method), false, false) }}
                         </div>
 
+                        <div id="on_params_div"  @if($view->type == 'link') style="display: block;" @else style="display: none;"  @endif>
+                            {{ Form::bs_autoselect('link', 'Ссылка:', $links, old('link', $view->on_method_params), false, false) }}
+                        </div>
+
                         <div class="form-group row" id="on_method_params_div"
-                             @if((is_null($view->on_method_params) && !old('id_method')) || ($view->type =='temp')) style="display: none;" @endif>
+                             @if((is_null($view->on_method_params)  && !old('id_method'))
+                              || ($view->type =='termostat')
+                              || ($view->type =='link'))
+                             style="display: none;" @endif>
                             <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="on_method_params"></label>
                             <div class="col-md-9 pr-0">
                                 <div class="form-group row ">
@@ -92,10 +101,10 @@
                         {{ Form::bs_number('position_left','Левый отступ (%):', old('position_left', $view->position_left), ['min' => 0, 'max' => 100, 'required' => false] ) }}
                         {{ Form::bs_number('position_top','Верхний отступ (%):', old('position_top', $view->position_right), ['min' => 0, 'max' => 100, 'required' => false] ) }}
 
-                        <div id="additionallydiv"  @if($view->type == 'temp') style="display: block;" @else style="display: none;" @endif >
+                        <div id="additionallydiv"  @if($view->type == 'termostat') style="display: block;" @else style="display: none;" @endif >
                             <br>
                             {{ Form::bs_title('Дополнительно') }}
-                            <div id="termostatdiv" @if($view->type == 'temp') style="display: block;" @else style="display: none;" @endif >
+                            <div id="termostatdiv" @if($view->type == 'termostat') style="display: block;" @else style="display: none;" @endif >
                                 {{ Form::bs_radio('enabletermostat', 'Настройка из приложения:', ['true' => 'да', 'false' => 'нет'], old('enabletermostat', $enabletermostat)) }}
                                 {{ Form::bs_number('lowval_termostat','Нижний порог шкалы:', old('lowval_termostat', $lowval_termostat), ['min' => 0, 'max' => 30, 'required' => false] ) }}
                                 {{ Form::bs_number('highval_termostat','Верхний порог шкалы:', old('highval_termostat', $highval_termostat), ['min' => 0, 'max' => 50, 'required' => false] )  }}
@@ -219,6 +228,7 @@
             $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_id_method").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_off_method").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_link").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_id_object").chosen().change(function() {
                 let object_id = $(this).val();
@@ -297,19 +307,29 @@
 
                 $('#additionallydiv').hide();
                 $('#termostatdiv').hide();
+                $('#on_params_div').hide();
+                $('#view_form #id_object_div').show();
+                let type_obj = $(this).val();
 
                 if ($(this).val() === 'switch') {
                     $('#view_form #off_method_div').show();
-                } else if ($(this).val() === 'dimmer'){
+                } else if ($(this).val() === 'dimmer') {
                     $('#view_form #off_method_div').hide();
                     $('#view_form #on_method_div').hide();
-                } else if ($(this).val() === 'temp') {
+                } else if ($(this).val() === 'termostat') {
                     $('#additionallydiv').show();
                     $('#termostatdiv').show();
-                } else {
+                } else if ($(this).val() === 'link') {
+                    $('#view_form #id_object_div').hide();
+                    $('#view_form #on_method_div').hide();
+                    $('#view_form #off_method_div').hide();
+                    $('#on_params_div').show();
+                }
+                else {
                     $('#view_form #on_method_div').show();
                     $('#view_form #off_method_div').hide();
                     $('#view_form #off_method_params_div').hide();
+
                 }
                 return true;
             });

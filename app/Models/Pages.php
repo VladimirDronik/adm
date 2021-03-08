@@ -8,4 +8,5 @@ class Pages extends Model
 {
     protected $table = 'pages';
     public $timestamps = false;
+
 }

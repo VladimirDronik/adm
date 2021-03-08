@@ -13,6 +13,7 @@ use App\Services\ImageService;
 use App\Services\ObjectService;
 use App\Services\ViewService;
 use Illuminate\Http\Request;
+use App\Repositories\PagesRepository;
 
 class ViewController extends Controller
 {
@@ -21,15 +22,17 @@ class ViewController extends Controller
     private $scene_rep;
     private $object_rep;
     private $service;
+    private $pages_rep;
 
     public function __construct(ViewRepository $view_rep, RoomRepository $room_rep, SceneRepository $scene_rep,
-                                ViewService $service, ObjectRepository $object_rep)
+                                ViewService $service, ObjectRepository $object_rep, PagesRepository $pagesRepository)
     {
         $this->view_rep = $view_rep;
         $this->room_rep = $room_rep;
         $this->scene_rep = $scene_rep;
         $this->object_rep = $object_rep;
         $this->service = $service;
+        $this->pages_rep = $pagesRepository;
     }
 
     public function getLists()
@@ -39,8 +42,9 @@ class ViewController extends Controller
         $scenes = $this->scene_rep->getAll()->pluck('label', 'id')->toArray();
         $images = ImageService::getViewImages();
         $objects = $this->object_rep->getAllToArray();
+        $links = $this->pages_rep->getAllToArray();
 
-        return [$types, $rooms, $objects, $scenes, $images];
+        return [$types, $rooms, $objects, $scenes, $images, $links];
     }
 
     public function index(Request $r)
@@ -56,9 +60,9 @@ class ViewController extends Controller
 
     public function create()
     {
-        list($types, $rooms, $objects, $scenes, $images) = $this->getLists();
+        list($types, $rooms, $objects, $scenes, $images, $links) = $this->getLists();
 
-        return view('views.create', compact('types', 'rooms', 'objects', 'scenes', 'images'));
+        return view('views.create', compact('types', 'rooms', 'objects', 'scenes', 'images', 'links'));
     }
 
     public function store(CreateRequest $r)
@@ -76,14 +80,14 @@ class ViewController extends Controller
 
     public function edit(View $view, ObjectService $object_service)
     {
-        list($types, $rooms, $objects, $scenes, $images) = $this->getLists();
+        list($types, $rooms, $objects, $scenes, $images, $links) = $this->getLists();
         $methods = $object_service->getMethodsByObjectIdToArray($view->id_object);
 
         $enabletermostat = null;
         $lowval_termostat = null;
         $highval_termostat = null;
 
-        if($view->type == 'temp') {
+        if($view->type == 'termostat') {
 
             $onmethodparams = explode(';',$view->on_method_params);
             $enabletermostat = explode('=',$onmethodparams[0])[1];
@@ -94,7 +98,8 @@ class ViewController extends Controller
 
 
         return view('views.edit', compact('view', 'types',
-            'rooms', 'methods', 'objects', 'scenes', 'images', 'enabletermostat', 'lowval_termostat', 'highval_termostat'));
+            'rooms', 'methods', 'objects', 'scenes', 'images', 'links',
+            'enabletermostat', 'lowval_termostat', 'highval_termostat'));
     }
 
     public function update(UpdateRequest $r, View $view)

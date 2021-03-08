@@ -16,14 +16,17 @@ class ViewService {
         $view->position_top = (int)$data['position_top'];
         $view->position_left = (int)$data['position_left'];
 
-        if(trim($data['type']) == 'temp') {
+
+        if(trim($data['type']) == 'termostat') {
 
             $stringMethod = 'editable='.$data['enabletermostat'].';';
             $stringMethod.='lowval='.$data['lowval_termostat'].';';
             $stringMethod.='highval='.$data['highval_termostat'];
 
             $data['on_method_params'] = $stringMethod;
-        } else
+        } elseif(trim($data['type']) == 'link')
+            $data['on_method_params'] = $data['link'];
+            else
             $data['on_method_params'] = null;
 
 
@@ -62,7 +65,6 @@ class ViewService {
 
     public function store(array $data)
     {
-
         $view = new View();
         $this->prepareView($view, $data);
         $view->save();
