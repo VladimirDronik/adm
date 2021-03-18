@@ -69,10 +69,21 @@ class ObjectService {
 
     public function getObjectsByType($typeObject): array
     {
+
+        $query = HomeObject::query();
+
+        
         if ($typeObject) {
-            return HomeObject::where('type', $typeObject)
-                ->orderBy('name')
-                ->select('id', 'name')->get()->toArray();
+
+            $query->where('type', $typeObject);
+
+            if(($typeObject == 'switch') || ($typeObject == 'button'))
+                $query->orwhere('type', 'lamp')
+                    ->orwhere('type', 'relay')
+                    ->orwhere('type', 'virtual');
+
+
+                return $query->orderBy('name')->select('id', 'name')->get()->toArray();
         }
 
         return [];

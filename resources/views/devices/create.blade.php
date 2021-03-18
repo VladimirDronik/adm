@@ -28,7 +28,7 @@
                             {{ Form::bs_radio('type', 'Тип контроллера*:', $devtypes, old('type'), ['required' => true]) }}
                             {{ Form::bs_text('description', 'Название*:', null, ['required' => true]) }}
                             {{ Form::bs_text('ip_address', 'IP адрес*:', null, ['required' => true]) }}
-                            <div id="username" style="display: none">
+                            <div id="username">
                             {{ Form::bs_text('username', 'Пользователь*:', null, ['required' => false]) }}
                             </div>
                             {{ Form::bs_text('password', 'Пароль*:', null, ['required' => true]) }}
