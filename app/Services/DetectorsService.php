@@ -8,6 +8,7 @@ use App\Models\Usensor;
 use App\Models\Drycontact;
 use App\Models\Lightstat;
 use App\Models\Carbmonoxide;
+use App\Models\Manometr;
 
 class DetectorsService {
 
@@ -39,6 +40,12 @@ class DetectorsService {
     public function getCarbMonoxideCount(): int
     {
         return Carbmonoxide::count();
+    }
+
+    public function getManometrCount(): int
+    {
+
+        return Manometr::count();
     }
 
 }

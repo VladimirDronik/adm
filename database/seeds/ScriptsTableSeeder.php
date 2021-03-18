@@ -106,6 +106,17 @@ class ScriptsTableSeeder extends Seeder
 
     }
 
+    public static function getCheckManometrScript(): array
+    {
+        return [
+            'name' => 'Проверка манометра',
+            'link' => 'check_manometr.php',
+            'count' => 0,
+            'system' => 1
+        ];
+
+    }
+
     private static function deleteLogsScript(): array {
 
         return [
@@ -191,6 +202,7 @@ class ScriptsTableSeeder extends Seeder
         $scripts[] = self::getMotionsensorScript();
         $scripts[] = self::getCheckCarbmonoxideScript();
         $scripts[] = self::deleteLogsScript();
+        $scripts[] = self::getCheckManometrScript();
 
 
         return $scripts;

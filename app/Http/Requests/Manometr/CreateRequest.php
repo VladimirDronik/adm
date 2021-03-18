@@ -4,7 +4,7 @@ namespace App\Http\Requests\Manometr;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRequest extends FormRequest
+class CreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required|string|max:250',
+            'name' => 'required|string|max:250|unique:carbmonoxide,name',
             'calibration' => 'required|numeric|between:0,4.99',
             'low_value' => 'nullable|integer|min:0|max:5000',
             'high_value' => 'nullable|integer|min:0|max:10000',
@@ -44,6 +44,7 @@ class UpdateRequest extends FormRequest
         return [
             'name.required' => 'Не указано название',
             'name.max' => 'Название содержит более 250 символов',
+            'name.unique' => 'Датчик с таким названием уже существует. Укажите другое название',
             'calibration.required' => 'Не указана калибровка датчика',
         ];
     }

@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('motionsensors', 'MotionsensorsController')->except('show','destroy')->middleware('can:devices');
     Route::resource('lightstats', 'LightstatController')->except('show','destroy')->middleware('can:devices');
     Route::resource('carbmonoxide', 'CarbmonoxideController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('manometr', 'ManometrController')->except('show','destroy')->middleware('can:devices');
     Route::resource('usensors', 'UsensorController')->except('show','destroy')->middleware('can:devices');
     Route::resource('drycontacts', 'DrycontactController')->except('show','destroy')->middleware('can:devices');
     Route::resource('events', 'EventController')->except('show','destroy')->middleware('can:events');
@@ -81,6 +82,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('sort', 'ViewController@sort')->name('sort');
         });
 
+        Route::post('manometr/delete', 'ManometrController@delete')->name('manometr.delete');
         Route::post('termostats/delete', 'TermostatController@delete')->name('termostats.delete');
         Route::post('lightstats/delete', 'LightstatController@delete')->name('lightstats.delete');
         Route::post('usensors/delete', 'UsensorController@delete')->name('usensors.delete');

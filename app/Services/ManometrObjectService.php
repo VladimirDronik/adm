@@ -10,19 +10,19 @@ use App\Models\SchedulerTask;
 use App\Models\Script;
 use ScriptsTableSeeder;
 
-class CarbmonoxideObjectService {
+class ManometrObjectService {
 
     /**
-     * Автосоздание объекта для датчика CO
+     * Автосоздание объекта для манометра
      *
      * @param string $name
      * @return HomeObject
      */
-    public function createCarbmonoxideObject(string $name): HomeObject
+    public function createManometrObject(string $name): HomeObject
     {
         $object = new HomeObject();
 
-        $object->type = ObjType::TYPE_CARBMONOXIDE;
+        $object->type = ObjType::TYPE_MANOMETR;
         $object->name = $name;
         $object->status = '';
         $object->is_system = 1;
@@ -32,48 +32,48 @@ class CarbmonoxideObjectService {
         return $object;
     }
 
-    public function getOrCreateChecScriptId(): int
+    public function getOrCreateCheckScriptId(): int
     {
-        $script_id = Script::where('link', 'check_carbmonoxide.php')
+        $script_id = Script::where('link', 'check_manometr.php')
             ->where('system', 1)->value('id');
 
         if ($script_id) {
             return $script_id;
         }
 
-        return Script::forceCreate(ScriptsTableSeeder::getCheckCarbmonoxideScript())->id;
+        return Script::forceCreate(ScriptsTableSeeder::getCheckManometrScript())->id;
     }
 
     /**
-     * Создание метода 'Проверка термостата' и события 'Проверка термостата' (каждые 5 мин)
+     * Создание метода 'Проверка манометра' и события 'Проверка манометра' (каждую 1 мин)
      *
      * @param int $object_id
      */
     public function createCheckMethodWithEvent(int $object_id)
     {
-        $script_id = $this->getOrCreateChecScriptId();
+        $script_id = $this->getOrCreateChecKScriptId();
 
         $method_id = Method::forceCreate([
-            'name' => 'Проверка датчика УГ',
+            'name' => 'Проверка манометра',
             'id_object' => $object_id,
-            'comment' => 'Периодическая проверка текущих значений датчика УГ',
+            'comment' => 'Периодическая проверка текущих значений манометра',
             'is_system' => 1,
             'script' => $script_id
         ])->id;
 
         $scheduler_task_id = SchedulerTask::forceCreate([
-            'name' => 'Проверка датчика УГ',
+            'name' => 'Проверка манометра',
             'is_system' => 1,
             'is_hidden' => 1,
             'object' => $object_id,
             'method' => $method_id
         ])->id;
 
-        // каждые 5 мин
+        // каждые 1 мин
         SchedulerPoint::forceCreate([
             'id_task' => $scheduler_task_id,
             'type' => 'c',
-            'time' => '5',
+            'time' => '1',
             'days' => '',
             'close' => 1,
             'system' => 1
@@ -87,7 +87,7 @@ class CarbmonoxideObjectService {
      * @param int $object_id
      * @return void
      */
-    public function createCarbmonoxideObjectMethodsWithEvents(int $object_id)
+    public function createManometrObjectMethodsWithEvents(int $object_id)
     {
         $this->createCheckMethodWithEvent($object_id);
     }

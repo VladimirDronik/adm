@@ -33,6 +33,7 @@ class ObjType extends Model
     const TYPE_MOTIONSENSOR = 'motionsensor';
     const TYPE_CARBMONOXIDE = 'carbsens';
     const TYPE_VIRTUAL = 'virtual';
+    const TYPE_MANOMETR = 'manometr';
 
     protected $table = 'objtypes';
     public $timestamps = false;

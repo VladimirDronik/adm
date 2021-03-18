@@ -67,6 +67,14 @@
                             </span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if($active === '') active show @endif" href="{{ route('manometr.index') }}">
+                            <span>
+                                 <img width="20" height="20" title="" src="{{ asset('ela/images/objects/manometr.png') }}">
+                                Манометры ({{ $detectorsService->getManometrCount() }})
+                            </span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
