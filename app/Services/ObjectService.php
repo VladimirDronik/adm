@@ -72,7 +72,7 @@ class ObjectService {
 
         $query = HomeObject::query();
 
-        
+
         if ($typeObject) {
 
             $query->where('type', $typeObject);

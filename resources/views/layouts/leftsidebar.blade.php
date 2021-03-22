@@ -106,11 +106,10 @@
                     <li> <a class="has-arrow" href="{{ route('notifications.index') }}" aria-expanded="false">
                             <i class="fa fa-bell-o"></i><span class="hide-menu">Оповещения</span></a></li>
                 @endcan
-                <!--@can('menu')
+                @can('menu')
                     <li> <a class="has-arrow" href="{{ route('menu.index') }}" aria-expanded="false">
                             <i class="fa fa-th-list"></i><span class="hide-menu">Меню</span></a></li>
                 @endcan
-                -->
                 @can('scripts')
                     <li> <a class="has-arrow" href="{{ route('scripts.index') }}" aria-expanded="false">
                             <i class="fa fa-flash"></i><span class="hide-menu">Скрипты</span></a></li>

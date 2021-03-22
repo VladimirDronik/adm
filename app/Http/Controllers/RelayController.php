@@ -44,7 +44,7 @@ class RelayController extends Controller
         $types = Relay::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
-        $devices = $this->device_rep->getAllToArray();
+        $devices = $this->device_rep->getAllByTypeToArray();
 
         return view('relays.create', compact('types', 'objects', 'object_types', 'devices'));
     }
