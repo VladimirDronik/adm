@@ -32,6 +32,7 @@ class Menu extends Model
 {
     protected $table = 'menu';
     public $timestamps = false;
+    protected $guarded = ['id'];
 
     public function getImagePathAttribute()
     {

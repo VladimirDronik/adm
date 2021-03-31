@@ -6,19 +6,12 @@
 
 @section('content')
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                         <a href="{{ route('menu.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @include('menu.header')
         <div class="card">
             <div class="card-title"><h4>Меню</h4></div>
             <div class="card-body">
                 @if(count($menus))
+                    @include('menu.tab_header', ['active' => 'groups'])
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -29,16 +22,27 @@
                                     <th class="text-center">Активно</th>
                                     <th>Сортировка</th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($menus as $menu)
                                     <tr id="tr{{$menu->id}}">
                                         <td scope="row">{{ $menu->id }}</td>
-                                        <td>{{ $menu->title }}</td>
+                                        <td>
+                                            <a href="#" id="nameMenu_{{ $menu->id }}"
+                                               onclick="edit_name({{ $menu->id }});"
+                                               data-toggle="modal"
+                                               data-target="#nameMenuModal">{{ $menu->title }}</a>
+                                        </td>
                                         <td>
                                             @if(!empty($menu->image))
-                                                <img src="{{ asset($menu->image_path) }}" width="60" height="60" style="background-color: #e8e8e8;">
+                                                <!-- <img src="{{ asset($menu->image_path) }}" width="60" height="60" style="background-color: #e8e8e8;"> -->
+                                                <img src="{{ asset('ela/images/views_items/'.$menu->image) }}"
+                                                     id="imageMenu_{{ $menu->id }}" class="imageMenu"
+                                                     data-toggle="modal" data-target="#selectImage"
+                                                     onclick="updateImage({{ $menu->id }}, true);"
+                                                     width="50px" height="50px">
                                             @endif
                                         </td>
                                         <td class="text-center">
@@ -59,7 +63,20 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td></td>
+                                        <td class="text-center">
+                                            <a href="{{ route('menu.edit',[$menu->id]) }}"
+                                               class="btn btn-info btn-sm btn-rounded">
+                                                <i class="fa fa-cog fa-lg"></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button"
+                                                    class="btn btn-danger btn-sm btn-rounded m-b-10 m-l-5 del_btn"
+                                                    data-type="{{ $menu->parent ? 'пункт меню' : 'группу' }}"
+                                                    data-id="{{ $menu->id }}" data-name="{{ $menu->name }}">
+                                                <i class="fa fa-trash fa-lg"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -70,6 +87,7 @@
                                     <th>Изображение</th>
                                     <th>Активно</th>
                                     <th>Сортировка</th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                             </tfoot>
@@ -84,11 +102,20 @@
         </div>
     </div>
     @include('components.info_modal')
+    @include('components.del_modal')
+    @include('menu.index_modals')
 @endsection
 
 @section('scripts')
+    <script src="{{ asset('ela/js/pagescripts/menu.js') }}"></script>
     <script>
+
+        const sortUrl = '{{ route('ajax.menu.sort') }}';
+        const deleteUrl = '{{ route('ajax.menu.delete') }}';
+        const storeUrl = '{{ route('ajax.menu.store') }}';
         let url = '{{ route('menu.index') }}';
+        let del_id;
+
 
         function changeSort(id, direction) {
             $.ajax({
@@ -105,6 +132,23 @@
         }
 
         $(document).ready(function(){
+
+            $('.del_btn').click(function () {
+
+
+                del_id = $(this).data('id');
+
+                const parent = $(this).data('type');
+                const delRoomsMessage = parent === 'группу' ? ' и все ее помещения' : '';
+                $('#del_modal_body').text('Удалить ' + parent + ' № ' + $(this).data('id') +
+                    ' «' + $(this).data('name') + '»' + delRoomsMessage + '?');
+                $('#del_init_btn').click();
+            });
+
+
+            $('#del_modal_btn').click(del);
+
+
             $('.active_checkbox').change(function(){
                 let active = this.checked ? 1 : 0;
                 let view_id = $(this).attr('data-id');
@@ -120,6 +164,23 @@
                         }
                     },
                 });
+            });
+
+
+            $('#addMenuBtn').click(function() {
+                $('#modalMenu #modalMenuTitle').text('Добавить новый пункт меню');
+                $('#modalMenu #modalType').val('menu');
+                $('#modalMenu #modal_groups_div').show();
+                $('#modalMenu #nameMenu').val('');
+                $('#modal_menu_init_btn').click();
+            });
+
+            $('#addGroupBtn').click(function() {
+                $('#modalMenu #modalMenuTitle').text('Добавить новую группу меню');
+                $('#modalMenu #modalType').val('group');
+                $('#modalMenu #modal_groups_div').hide();
+                $('#modalMenu #nameMenu').val('');
+                $('#modal_menu_init_btn').click();
             });
         });
     </script>

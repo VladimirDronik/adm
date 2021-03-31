@@ -27,6 +27,18 @@ class ImageService {
     }
 
     /**
+     * Вывод изображений для всех помемещний
+     *
+     * @return array;
+     *
+     */
+    public static function getMainImages()
+    {
+        return self::getImages(self::VIEW_PATH);
+    }
+
+
+    /**
      * Вывод изображений для всех отображений
      *
      * @return array;

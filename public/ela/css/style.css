@@ -6929,6 +6929,11 @@ tbody tr td:last-child {
   cursor: pointer;
 }
 
+.imageMenu {
+  background: white;
+  cursor: pointer;
+}
+
 .room-filter {
   display: inline-block;
   top: -5px;

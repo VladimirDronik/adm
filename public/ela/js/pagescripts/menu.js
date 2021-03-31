@@ -1,10 +1,10 @@
 /**
- *  id помещения в локалсторедж для использования в deleteRoom
+ *  id помещения в локалсторедж для использования в deleteMenu
  *
  * @param id
  */
-function idRoom(id) {
-    sessionStorage.setItem('idRoom', id);
+function idMenu(id) {
+    sessionStorage.setItem('idMenu', id);
 }
 
 /**
@@ -13,19 +13,19 @@ function idRoom(id) {
  * @param string linkToImage
  */
 function setImage(linkToImage) {
-    let idRoom = sessionStorage.getItem('idSelectRoom');
-    sessionStorage.setItem('imageRoom', linkToImage);
+    let idMenu = sessionStorage.getItem('idSelectMenu');
+    sessionStorage.setItem('imageMenu', linkToImage);
 
-    //Добавляем картинку к новому помещению или подменяем картинку у старого
+    //Добавляем картинку к новому пункту меню или подменяем картинку у старого
     if (sessionStorage.getItem('updateImage') === 'true') {
-        $("#imageRoom_"+idRoom).prop('src', '/ela/images/rooms/' + linkToImage);
+        $("#imageMenu_"+idMenu).prop('src', '/ela/images/views_items/' + linkToImage);
         let data = {};
-        data['id'] = idRoom;
+        data['id'] = idMenu;
         data['image'] = linkToImage;
-        ajax_html(data, '/rooms/update/image', '');
-        sessionStorage.setItem('imageRoom', 'noimage.png');
+        ajax_html(data, '/menu/update/image', '');
+        sessionStorage.setItem('imageMenu', 'noimage.png');
     } else {
-        $("#image").prop('src', '/ela/images/rooms/' + linkToImage);
+        $("#image").prop('src', '/ela/images/views_items/' + linkToImage);
     }
 }
 
@@ -50,23 +50,24 @@ function setColor(color) {
 }
 
 /**
- * Изменение названия при щелчке на название помещения в таблице
+ * Изменение названия при щелчке на название меню в таблице
  *
  * @param int id
  * @param string name
  */
 function edit_name(id) {
-    $("#nameModalData").val($("#nameRoom_"+id).html());
-    sessionStorage.setItem('nameRoom', $("#nameRoom_"+id).html());
-    sessionStorage.setItem('idSelectRoom', id);
+
+    $("#nameModalData").val($("#nameMenu_"+id).html());
+    sessionStorage.setItem('nameMenu', $("#nameMenu_"+id).html());
+    sessionStorage.setItem('idSelectMenu', id);
 }
 
 /**
- * Сохранение нового значения для названия помещения
+ * Сохранение нового значения для меню
  */
 function saveNameRoom() {
     let data = {};
-    data['id'] = sessionStorage.getItem('idSelectRoom');
+    data['id'] = sessionStorage.getItem('idSelectMenu');
     data['name'] = $("#nameModalData").val().trim();
 
     if (data['name'] == '') {
@@ -74,7 +75,7 @@ function saveNameRoom() {
         data['name'] = 'Без названия';
     }
 
-    ajax_html(data, '/rooms/update/name', '#nameRoom_'+data['id']);
+    ajax_html(data, '/menu/update/name', '#nameMenu_'+data['id']);
 }
 
 /**
@@ -91,7 +92,7 @@ function no_name() {
  * @param bool mode - если выбран true, то значит заменяем существующее изображение, false - добавляем новое
  */
 function updateImage(id, mode=true) {
-    sessionStorage.setItem('idSelectRoom', id);
+    sessionStorage.setItem('idSelectMenu', id);
     sessionStorage.setItem('updateImage', mode);
 }
 
@@ -102,7 +103,7 @@ function updateImage(id, mode=true) {
  * @param bool mode - если выбран true, то значит заменяем существующий цвет, false - добавляем новый
  */
 function updateColor(id, mode=true) {
-    sessionStorage.setItem('idSelectRoom', id);
+    sessionStorage.setItem('idSelectMenu', id);
     sessionStorage.setItem('updateColor', mode);
 }
 
@@ -137,25 +138,28 @@ function del() {
     }
 }
 
-function storeRoom() {
-    const name = $("#modalRoom #nameRoom").val().trim();
-    const image = sessionStorage.getItem('imageRoom');
-    const style = sessionStorage.getItem('colorRoom');
-    const type = $("#modalRoom #modalType").val();
-    const group_id = $("#modalRoom #modalGroupId").val();
+function storeMenu() {
+    const name = $("#modalMenu #nameMenu").val().trim();
+    const image = sessionStorage.getItem('imageMenu');
+    const style = sessionStorage.getItem('colorMenu');
+    const type = $("#modalMenu #modalType").val();
+    const parent = $("#modalMenu #modalGroupId").val();
 
-    sessionStorage.setItem('imageRoom', 'noimage.png');
+    sessionStorage.setItem('imageMenu', 'noimage.png');
 
     $.ajax({
         url: storeUrl,
         data: {'_token': _token, 'name': name, 'image': image,
-            'style': style, 'group_id': group_id, 'type': type},
+            'style': style, 'parent': parent, 'type': type},
         success: function (data) {
             if (data.result) {
                 window.location.href = url;
             } else {
-                showErrorModal('Ошибка при добавлении ' + (type === 'room' ? 'помещения' : 'группы'));
+                showErrorModal('Ошибка при добавлении меню');
             }
         }
     });
+
+
+
 }

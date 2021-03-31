@@ -50,9 +50,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('rooms', 'RoomController')->except('show','create','store','destroy')->middleware('can:rooms');
     Route::get('rooms/group/{id}', 'RoomGroupController@index')->name('rooms.group.index')->middleware('can:rooms');
 
+    Route::resource('menu', 'MenuController')->except('show','create','store','destroy')->middleware('can:rooms');
+    Route::get('menu/group/{id}', 'MenuGroupController@index')->name('menu.group.index')->middleware('can:rooms');
+
     Route::get('network', 'NetworkController@edit')->name('network.edit')->middleware('can:network');
     Route::put('network', 'NetworkController@update')->name('network.update')->middleware('can:network');
-    Route::get('menu', 'MenuController@index')->name('menu.index')->middleware('can:menu');
     Route::get('graphs/termostats', 'GraphController@termostats')->name('graphs.termostats.index')->middleware('can:graphs');
     Route::get('graphs/lights', 'GraphController@lights')->name('graphs.lights.index')->middleware('can:graphs');
     Route::get('graphs/humidities', 'GraphController@humidities')->name('graphs.humidities.index')->middleware('can:graphs');
@@ -131,7 +133,11 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'menu', 'as' => 'menu.'], function () {
             Route::post('sort', 'MenuController@sort')->name('sort');
-            Route::post('active', 'MenuController@active')->name('active');
+            Route::post('active', 'MenuController@active')->name('active');Route::post('active', 'MenuController@active')->name('active');
+            Route::post('delete', 'MenuController@delete')->name('delete');
+            Route::post('store', 'MenuController@store')->name('store');
+            Route::post('update/image', 'MenuController@updateImage')->name('update.image');
+            Route::post('update/name', 'MenuController@updateName')->name('update.name');
         });
 
         Route::group(['prefix' => 'rooms', 'as' => 'rooms.'], function () {
