@@ -50,24 +50,35 @@ function setColor(color) {
 }
 
 /**
- * Изменение названия при щелчке на название меню в таблице
+ * Изменение названия при щелчке на название страницы в таблице
  *
  * @param int id
  * @param string name
  */
 function edit_name(id) {
 
-    $("#nameModalData").val($("#nameMenu_"+id).html());
-    sessionStorage.setItem('nameMenu', $("#nameMenu_"+id).html());
-    sessionStorage.setItem('idSelectMenu', id);
+    $("#nameModalData").val($("#namePage_"+id).html());
+    sessionStorage.setItem('namePage', $("#namePage_"+id).html());
+    sessionStorage.setItem('idSelectPage', id);
 }
 
 /**
- * Сохранение нового значения для меню
+ * Изменение ссылки для страницы
+ * @param id
  */
-function saveNameMenu() {
+function edit_link(id) {
+
+    $("#linkModalData").val($("#linkPage_"+id).html());
+    sessionStorage.setItem('linkPage', $("#linkPage_"+id).html());
+    sessionStorage.setItem('idSelectPage', id);
+}
+
+/**
+ * Сохранение нового значения для страницы
+ */
+function saveNamePage() {
     let data = {};
-    data['id'] = sessionStorage.getItem('idSelectMenu');
+    data['id'] = sessionStorage.getItem('idSelectPage');
     data['name'] = $("#nameModalData").val().trim();
 
     if (data['name'] == '') {
@@ -75,15 +86,39 @@ function saveNameMenu() {
         data['name'] = 'Без названия';
     }
 
-    ajax_html(data, '/menu/update/name', '#nameMenu_'+data['id']);
+    ajax_html(data, '/page/update/name', '#namePage_'+data['id']);
 }
 
 /**
- * Убрать название помещения в модальном окне (кнопка убрать)
+ * Сохранение нового значения ссылки для страницы
+ */
+function saveLinkPage() {
+    let data = {};
+    data['id'] = sessionStorage.getItem('idSelectPage');
+    data['link'] = $("#linkModalData").val().trim();
+
+    if (data['link'] == '') {
+        $("#linkModalData").val('Нет ссылки');
+        data['link'] = 'Нет ссылки';
+    }
+
+    ajax_html(data, '/page/update/link', '#linkPage_'+data['id']);
+}
+
+/**
+ * Убрать название страницы в модальном окне (кнопка убрать)
  */
 function no_name() {
     $("#nameModalData").val('Без названия');
 }
+
+/**
+ * Убрать ссылку в модальном окне (кнопка убрать)
+ */
+function no_link() {
+    $("#linkModalData").val('');
+}
+
 
 /**
  * Вывод окна выбора изображений для замены у текущего помещения

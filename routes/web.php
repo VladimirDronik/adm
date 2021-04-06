@@ -16,6 +16,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('profile','ProfileController@update')->name('profile.update');
 
     Route::resource('views', 'ViewController')->except('show','destroy')->middleware('can:views');
+    Route::resource('pages', 'PagesController')->except('show','destroy')->middleware('can:views');
     Route::resource('objects', 'ObjectController')->except('show','destroy')->middleware('can:objects');
 
 
@@ -129,6 +130,14 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
             Route::post('delete', 'UserController@delete')->name('delete');
+        });
+
+
+        Route::group(['prefix' => 'page', 'as' => 'page.'], function () {
+            Route::post('delete', 'PageController@delete')->name('delete');
+            Route::post('store', 'PageController@store')->name('store');
+            Route::post('update/name', 'PageController@updateName')->name('update.name');
+            Route::post('update/link', 'PageController@updateLink')->name('update.link');
         });
 
         Route::group(['prefix' => 'menu', 'as' => 'menu.'], function () {

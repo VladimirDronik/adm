@@ -87,6 +87,12 @@
                             <i class="fa fa-object-group"></i><span class="hide-menu">Отображения</span></a>
                     </li>
                 @endcan
+                @can('views')
+                    <li>
+                        <a class="has-arrow" href="{{ route('pages.index') }}" aria-expanded="false">
+                            <i class="fa fa-bars"></i><span class="hide-menu">Страницы</span></a>
+                    </li>
+                @endcan
                 @can('scenes')
                     <li>
                         <a class="has-arrow" href="{{ route('scenes.index') }}" aria-expanded="false">
