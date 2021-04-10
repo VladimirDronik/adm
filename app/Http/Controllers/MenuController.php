@@ -49,11 +49,11 @@ class MenuController extends Controller
                 return redirect()->route('menu.edit',[$menu->id])->with('success','Настройки успешно изменены');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении настроек помещения'.$menu->id.' '
+            \Log::error('Ошибка при изменении настроек меню'.$menu->id.' '
                 .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении настроек помещения');
+        return back()->withInput($r->all())->with('error','Ошибка при изменении настроек меню');
     }
 
 }

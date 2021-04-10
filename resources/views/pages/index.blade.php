@@ -37,17 +37,12 @@
                                     <td>
                                         {{ $page->type }}
                                     </td>
-                                    <td>
-                                        <a href="#" id="linkPage_{{ $page->id }}"
-                                           onclick="edit_link({{ $page->id }});"
-                                           data-toggle="modal"
-                                           data-target="#linkPageModal">{{ $page->link }}</a>
-                                    </td>
+                                    <td>{{ $page->link }}</td>
                                     <td>
                                         {{ $page->countElements }}
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ route('menu.edit',[$page->id]) }}"
+                                        <a href="{{ route('pages.edit',[$page->id]) }}"
                                            class="btn btn-info btn-sm btn-rounded">
                                             <i class="fa fa-cog fa-lg"></i>
                                         </a>
@@ -91,39 +86,21 @@
 @section('scripts')
     <script src="{{ asset('ela/js/pagescripts/page.js') }}"></script>
     <script>
-
-        const sortUrl = '{{ route('ajax.menu.sort') }}';
-        const deleteUrl = '{{ route('ajax.menu.delete') }}';
-        const storeUrl = '{{ route('ajax.menu.store') }}';
-        let url = '{{ route('menu.index') }}';
+        const deleteUrl = '{{ route('ajax.page.delete') }}';
+        const storeUrl = '{{ route('ajax.page.store') }}';
+        let url = '{{ route('pages.index') }}';
         let del_id;
 
 
-        function changeSort(id, direction) {
-            $.ajax({
-                url: '{{ route('ajax.menu.sort') }}',
-                data: {'_token': _token, 'id': id, 'direction': direction},
-                success: function (data) {
-                    if (data.result) {
-                        window.location.href = url;
-                    } else {
-                        showErrorModal('Ошибка при сохранении изменений');
-                    }
-                }
-            });
-        }
 
         $(document).ready(function(){
 
             $('.del_btn').click(function () {
 
-
                 del_id = $(this).data('id');
 
-                const parent = $(this).data('type');
-                const delRoomsMessage = parent === 'группу' ? ' и все ее помещения' : '';
-                $('#del_modal_body').text('Удалить ' + parent + ' № ' + $(this).data('id') +
-                    ' «' + $(this).data('name') + '»' + delRoomsMessage + '?');
+                $('#del_modal_body').text('Удалить страницу № ' + $(this).data('id') +
+                    ' «' + $(this).data('name') + '» и все находящиеся в ней помещения ?');
                 $('#del_init_btn').click();
             });
 
@@ -131,39 +108,13 @@
             $('#del_modal_btn').click(del);
 
 
-            $('.active_checkbox').change(function(){
-                let active = this.checked ? 1 : 0;
-                let view_id = $(this).attr('data-id');
-
-                $.ajax({
-                    url: '{{ route('ajax.menu.active') }}',
-                    data: { '_token': _token, 'id': view_id, 'active': active},
-                    success: function (data) {
-                        if (data.result) {
-                            showSuccessModal('Активность успешно изменена');
-                        } else {
-                            showErrorModal('Ошибка при изменении активности');
-                        }
-                    },
-                });
+            $('#addPageBtn').click(function() {
+                $('#modalPage #modalType').val('2field');
+                $('#modalPage #modal_groups_div').show();
+                $('#modalPage #namePage').val('');
+                $('#modal_page_init_btn').click();
             });
 
-
-            $('#addMenuBtn').click(function() {
-                $('#modalMenu #modalMenuTitle').text('Добавить новый пункт меню');
-                $('#modalMenu #modalType').val('menu');
-                $('#modalMenu #modal_groups_div').show();
-                $('#modalMenu #nameMenu').val('');
-                $('#modal_menu_init_btn').click();
-            });
-
-            $('#addGroupBtn').click(function() {
-                $('#modalMenu #modalMenuTitle').text('Добавить новую группу меню');
-                $('#modalMenu #modalType').val('group');
-                $('#modalMenu #modal_groups_div').hide();
-                $('#modalMenu #nameMenu').val('');
-                $('#modal_menu_init_btn').click();
-            });
         });
     </script>
 @endsection

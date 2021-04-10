@@ -1,40 +1,39 @@
-<!-- модальное окно добавления нового помещения -->
-<div class="modal" id="modalMenu">
+<!-- модальное окно добавления новой страницы -->
+<div class="modal" id="modalPage">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="modaMenuTitle"> Добавить новый пункт меню</h4>
+                <h4 class="modal-title" id="modalPageTitle"> Добавить новую страницу</h4>
             </div>
             <div class="modal-body">
                 <input type="hidden" name="type" id="modalType" value="">
+
+                Название: <input type="text" class="form-control input-default col-sm-12" id="namePage"
+                                           size="15"><br>
+
                 <div id="modal_groups_div">
-                    Группа: <select class="form-control input-default col-sm-12" id="modalGroupId">
-                        <option value="0">Без группы</option>
+                    Тип: <select class="form-control input-default col-sm-12" id="modalGroupId">
                         @foreach($types as $type)
-                            <option value="{{ $type[0] }}">{{ $type[1] }}</option>
+                            <option value="{{ $type }}">{{ $type }}</option>
                         @endforeach
                     </select>
                     <br>
                 </div>
-                Название: <input type="text" class="form-control input-default col-sm-12" id="nameMenu"
-                                           size="15"><br><br>
-                Изображение: <img src="{{ asset('ela/images/views_items/noimage.png') }}" id="image"
-                                  widtth="50px" height="50px">
-                <button data-toggle="modal" data-target="#selectImage" class="btn btn-default btn-sm m-b-5"
-                        onclick="updateImage(0, false);"> Выбрать
-                </button>
+
+                Ссылка: <input type="text" class="form-control input-default col-sm-12" id="linkPage"
+                                 size="15"><br><br>
                 <br><br>
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="storeMenu();">Добавить
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="storePage();">Добавить
                 </button>
             </div>
         </div>
     </div>
 </div>
-<button type="button" id="modal_menu_init_btn" style="display: none;" data-toggle="modal" data-target="#modalMenu">&nbsp;</button>
+<button type="button" id="modal_page_init_btn" style="display: none;" data-toggle="modal" data-target="#modalPage">&nbsp;</button>
 
 
 <!-- модальное окно изменения имени у страницы-->

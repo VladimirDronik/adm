@@ -19,9 +19,9 @@ class CreateElementsTable extends Migration
                 $table->string('name');
                 $table->string('type', 20);
                 $table->unsignedInteger('id_object')->nullable();
-                $table->string('handle', 30);
-                $table->string('image', 30);
-                $table->string('value', 255);
+                $table->string('handle', 30)->nullable();
+                $table->string('image', 30)->nullable();
+                $table->string('value', 255)->nullable();
                 $table->unsignedInteger('page');
                 $table->smallInteger('parent');
                 $table->smallInteger('position');

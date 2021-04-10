@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Pages extends Model
+class Page extends Model
 {
 
     const TYPE_2FIELD = '2field';

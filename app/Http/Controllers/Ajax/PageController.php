@@ -37,4 +37,18 @@ class PageController extends Controller
     }
 
 
+    public function store(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['name', 'type', 'link']), 400);
+
+        return response()->json(['result' => (bool)$this->service->store($r->all())]);
+    }
+
+    public function delete(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['id']), 400);
+
+        return response()->json(['result' => $this->service->delete((int)$r->id)]);
+    }
+
 }

@@ -13,7 +13,7 @@ use App\Services\ImageService;
 use App\Services\ObjectService;
 use App\Services\ViewService;
 use Illuminate\Http\Request;
-use App\Repositories\PagesRepository;
+use App\Repositories\PageRepository;
 
 class ViewController extends Controller
 {
@@ -25,14 +25,14 @@ class ViewController extends Controller
     private $pages_rep;
 
     public function __construct(ViewRepository $view_rep, RoomRepository $room_rep, SceneRepository $scene_rep,
-                                ViewService $service, ObjectRepository $object_rep, PagesRepository $pagesRepository)
+                                ViewService $service, ObjectRepository $object_rep, PageRepository $pageRepository)
     {
         $this->view_rep = $view_rep;
         $this->room_rep = $room_rep;
         $this->scene_rep = $scene_rep;
         $this->object_rep = $object_rep;
         $this->service = $service;
-        $this->pages_rep = $pagesRepository;
+        $this->pages_rep = $pageRepository;
     }
 
     public function getLists()

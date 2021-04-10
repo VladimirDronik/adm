@@ -8,48 +8,6 @@ function idMenu(id) {
 }
 
 /**
- * Добавление изображения к карточке нового помещения
- *
- * @param string linkToImage
- */
-function setImage(linkToImage) {
-    let idMenu = sessionStorage.getItem('idSelectMenu');
-    sessionStorage.setItem('imageMenu', linkToImage);
-
-    //Добавляем картинку к новому пункту меню или подменяем картинку у старого
-    if (sessionStorage.getItem('updateImage') === 'true') {
-        $("#imageMenu_"+idMenu).prop('src', '/ela/images/views_items/' + linkToImage);
-        let data = {};
-        data['id'] = idMenu;
-        data['image'] = linkToImage;
-        ajax_html(data, '/menu/update/image', '');
-        sessionStorage.setItem('imageMenu', 'noimage.png');
-    } else {
-        $("#image").prop('src', '/ela/images/views_items/' + linkToImage);
-    }
-}
-
-/**
- * Добавление цвета для нового помещения или изменение у существующего
- *
- * @param string color
- */
-function setColor(color) {
-    let idRoom = sessionStorage.getItem('idSelectRoom');
-    //Добавляем картинку к новому помещению или подменяем картинку у старого
-    if (sessionStorage.getItem('updateColor') === 'true') {
-        let data = {};
-        data['id'] = idRoom;
-        data['color'] = color;
-        $("#colorRoom_"+idRoom).prop('style', 'background: ' + color);
-        ajax_html(data, '/rooms/update/color', '');
-    } else {
-        sessionStorage.setItem('colorRoom', color);
-        $("#color").prop('style', 'background: ' + color);
-    }
-}
-
-/**
  * Изменение названия при щелчке на название страницы в таблице
  *
  * @param int id
@@ -173,24 +131,22 @@ function del() {
     }
 }
 
-function storeMenu() {
-    const name = $("#modalMenu #nameMenu").val().trim();
-    const image = sessionStorage.getItem('imageMenu');
-    const style = sessionStorage.getItem('colorMenu');
-    const type = $("#modalMenu #modalType").val();
-    const parent = $("#modalMenu #modalGroupId").val();
+function storePage() {
 
-    sessionStorage.setItem('imageMenu', 'noimage.png');
+    const name = $("#modalPage #namePage").val().trim();
+    const link = $("#modalPage #linkPage").val().trim();
+    const type = $("#modalPage #modalType").val();
+
 
     $.ajax({
         url: storeUrl,
-        data: {'_token': _token, 'name': name, 'image': image,
-            'style': style, 'parent': parent, 'type': type},
+        data: {'_token': _token, 'name': name,
+            'type': type, 'link': link},
         success: function (data) {
             if (data.result) {
                 window.location.href = url;
             } else {
-                showErrorModal('Ошибка при добавлении меню');
+                showErrorModal('Ошибка при добавлении страицы');
             }
         }
     });

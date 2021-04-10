@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Pages;
+use App\Models\Page;
 
 class PagesTableSeeder extends Seeder
 {
@@ -9,7 +9,7 @@ class PagesTableSeeder extends Seeder
 
     public function __construct()
     {
-        $this->pages = Pages::pluck('name')->toArray();
+        $this->pages = Page::pluck('name')->toArray();
     }
 
     /**
@@ -67,7 +67,7 @@ class PagesTableSeeder extends Seeder
         }
 
         if (count($result_page)) {
-            Pages::insert($result_page);
+            Page::insert($result_page);
         }
     }
 }

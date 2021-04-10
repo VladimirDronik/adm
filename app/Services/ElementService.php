@@ -1,0 +1,171 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: kinord
+ * Date: 07.04.21
+ * Time: 15:50
+ */
+
+namespace App\Services;
+use App\Models\Elements;
+use Illuminate\Support\Facades\DB;
+
+class ElementService
+{
+    public function updateName($id, $name)
+    {
+        Elements::where('id', $id)->update(['name' => $this->setNameIfEmpty($name)]);
+    }
+
+    public function store(array $data): int
+    {
+
+        $element = new Elements();
+
+        $this->prepare($data, $element);
+
+        $element->active = 1;
+        $element->save();
+
+        return $element->page;
+    }
+
+    private function prepare($data, Elements $element)
+    {
+        //unset($data['wh_color']);
+        //unset($data['bl_color']);
+
+        if(!$data['parent'] || $data['type'] == 'accordeon')
+            $data['parent']  ='0';
+
+        if(!$data['image'])
+            $data['image'] = 'noimage.png';
+
+
+        if($data['type'] == 'label') {
+            $paramsArray = array(array('status' => $data['value'], 'wh_color' => '#187306', 'bl_color' => '#00ffbb'));
+            $data['value'] = json_encode($paramsArray);
+        }
+
+
+        $data['sort'] = $this->getSortMax($data['page'], $data['parent'], $data['position'])+1;
+
+        $element->fill($data);
+
+    }
+
+    private function getSortMax($page, $parent, $position): int
+    {
+        return (int) Elements::where('page', $page)
+            ->where('parent', $parent)
+            ->where('position', $position)
+            ->max('sort');
+    }
+
+
+    private function setNameIfEmpty($name)
+    {
+        if (empty($name)) {
+            return 'Без названия';
+        }
+
+        return $name;
+    }
+
+
+
+
+    public function delete(int $id)
+    {
+
+
+        $element = Elements::find($id);
+
+        if (!$element) {
+            return false;
+        }
+
+
+        DB::transaction(function () use ($element) {
+
+            //Если выбран для удаления родительский пункт, то удаляем и дочерние
+            if($element->parent == 0)
+                Elements::where('parent', $element->id)->delete();
+
+            $element->delete();
+
+        });
+
+        return true;
+
+    }
+
+
+
+    public function changeActive(int $id, int $active)
+    {
+        Elements::where('id', $id)->update(['active' => $active]);
+
+        return true;
+    }
+
+
+
+    public function sort(array $data)
+    {
+        $element = Elements::find($data['id']);
+
+        if (!$element) {
+            return false;
+        }
+
+        $min = Elements::min('sort');
+        $max = Elements::max('sort');
+
+        if (($element->sort === $min && $data['direction'] === 'up')
+            || ($element->sort === $max && $data['direction'] === 'down')) {
+            return true;
+        }
+
+        $previous_sort = $element->sort;
+        $element->sort += $data['direction'] === 'up' ? -1 : 1;
+
+        DB::transaction(function () use ($element, $previous_sort) {
+            Elements::where('sort', $element->sort)->update(['sort' => $previous_sort]);
+            $element->save();
+        });
+
+        return true;
+    }
+
+
+    public function updateImage(int $id, string $image)
+    {
+        Elements::where('id', $id)->update(['image' => $this->setImageIfEmpty($image)]);
+    }
+
+    private function setImageIfEmpty($image)
+    {
+        if (empty($image)) {
+            return ImageService::getNoImageName();
+        }
+
+        return $image;
+    }
+
+    public function update(Elements $element, array $data)
+    {
+
+
+        DB::transaction(function () use ($element, $data) {
+
+            $this->prepare($data, $element);
+
+            $element->active = 1;
+            $element->save();
+
+        });
+
+        return $element->id;
+    }
+}

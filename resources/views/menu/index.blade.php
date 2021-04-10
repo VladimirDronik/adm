@@ -128,14 +128,17 @@
             });
         }
         $(document).ready(function(){
+
             $('.del_btn').click(function () {
                 del_id = $(this).data('id');
                 const parent = $(this).data('type');
                 const delRoomsMessage = parent === 'группу' ? ' и все ее помещения' : '';
                 $('#del_modal_body').text('Удалить ' + parent + ' № ' + $(this).data('id') +
                     ' «' + $(this).data('name') + '»' + delRoomsMessage + '?');
+
                 $('#del_init_btn').click();
             });
+
             $('#del_modal_btn').click(del);
             $('.active_checkbox').change(function(){
                 let active = this.checked ? 1 : 0;

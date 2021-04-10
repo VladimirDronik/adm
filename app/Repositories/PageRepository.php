@@ -2,13 +2,13 @@
 
 namespace App\Repositories;
 
-use App\Models\Pages;
+use App\Models\Page;
 
-class PagesRepository
+class PageRepository
 {
     public function getAll($pagination_count = 30)
     {
-        return Pages::select('pages.id', 'pages.name', 'pages.link', 'pages.type',
+        return Page::select('pages.id', 'pages.name', 'pages.link', 'pages.type',
             \DB::raw("(SELECT count(elements.id) FROM elements WHERE elements.page = pages.id) AS countElements"))
             ->paginate($pagination_count);
 
@@ -16,7 +16,7 @@ class PagesRepository
 
     public function getAllToArray()
     {
-        return Pages::select('link','name')->orderBy('name')->pluck('name', 'link')->toArray();
+        return Page::select('link','name')->orderBy('name')->pluck('name', 'link')->toArray();
     }
 
 

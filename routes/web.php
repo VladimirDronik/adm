@@ -16,8 +16,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('profile','ProfileController@update')->name('profile.update');
 
     Route::resource('views', 'ViewController')->except('show','destroy')->middleware('can:views');
-    Route::resource('pages', 'PagesController')->except('show','destroy')->middleware('can:views');
+    Route::resource('pages', 'PageController')->except('show','destroy')->middleware('can:views');
+    Route::get('pages/{idPage}/edit', 'PageController@edit')->middleware('can:devices');
     Route::resource('objects', 'ObjectController')->except('show','destroy')->middleware('can:objects');
+
+    Route::get('page/{idPage}/createElement', 'ElementController@create')->name('page.createElement')->middleware('can:views');
+    Route::resource('elements', 'ElementController')->except('show','destroy','create')->middleware('can:views');
 
 
     Route::get('devices/{idDevice}/editport/{idPort}', 'DeviceController@editPort')->middleware('can:devices');
@@ -140,9 +144,17 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('update/link', 'PageController@updateLink')->name('update.link');
         });
 
+        Route::group(['prefix' => 'element', 'as' => 'element.'], function () {
+            Route::post('sort', 'ElementController@sort')->name('sort');
+            Route::post('active', 'ElementController@active')->name('active');
+            Route::post('delete', 'ElementController@delete')->name('delete');
+            Route::post('update/image', 'ElementController@updateImage')->name('update.image');
+            Route::post('update/name', 'ElementController@updateName')->name('update.name');
+        });
+
         Route::group(['prefix' => 'menu', 'as' => 'menu.'], function () {
             Route::post('sort', 'MenuController@sort')->name('sort');
-            Route::post('active', 'MenuController@active')->name('active');Route::post('active', 'MenuController@active')->name('active');
+            Route::post('active', 'MenuController@active')->name('active');
             Route::post('delete', 'MenuController@delete')->name('delete');
             Route::post('store', 'MenuController@store')->name('store');
             Route::post('update/image', 'MenuController@updateImage')->name('update.image');
