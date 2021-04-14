@@ -473,12 +473,12 @@ class PortService {
             $hp_type = $controllerAndDevice['hp_type'];
         }
 
-        $devices = $this->device_rep->getAllToArray();
+        $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
         $ports =  $this->getPortsIntoList($idDevice, $typePort);
         $hp_devices = $this->getHPDevicesIntoList($idDevice, $hp_type);
 
         if(!$devices || !$ports) {
-            $devices = $this->device_rep->getAllToArray();
+            $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
             $ports = [];
         }
 

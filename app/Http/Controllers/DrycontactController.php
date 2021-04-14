@@ -46,7 +46,7 @@ class DrycontactController extends Controller
 
         $objects = $this->object_rep->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
-        $devices = $this->device_rep->getAllToArray();
+        $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
 
         return view('drycontacts.create', compact('objects', 'object_types', 'devices'));
     }

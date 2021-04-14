@@ -25,25 +25,63 @@ class DeviceRepository {
         //Выводим все контроллеры, кроме Hite-pro
         $devices = Device::select('devices.id', 'devices.description')
             ->join('devtypes', 'devices.type', '=', 'devtypes.id', 'left outer')
-            ->where('devtypes.name','!=','Hite-pro')
             ->pluck('devices.description','devices.id')->toArray();
 
 
         return $devices;
     }
 
+
+    /**
+     * Вывод всех устройств по типу, кроме перечисленных
+     */
+    public function getAllWithoutTypesToArray(array $devicesTypes)
+    {
+
+        $query = Device::query();
+
+        $query->join('devtypes', 'devices.type', '=', 'devtypes.id')
+            ->select('devices.id', 'description');
+
+
+        foreach ($devicesTypes As $devType) {
+
+            $query->where('devtypes.name', '!=', $devType);
+        }
+
+
+        $devices = $query->orderBy('description')
+            ->pluck('description','devices.id')
+            ->toArray();
+
+
+        return $devices;
+
+    }
+
     /**
      * Вывод всех устройств по типу
      */
-    public function getAllByTypeToArray()
+    public function getAllByTypesToArray(array $devicesTypes)
     {
 
-        $devices = DB::table('devices')->join('devtypes', 'devices.type', '=', 'devtypes.id')
-            ->select('devices.id', 'description')
-            ->where('devtypes.name','=','Hite-pro')
-            ->orderBy('description')
+        $query = Device::query();
+
+
+        $query->join('devtypes', 'devices.type', '=', 'devtypes.id')
+            ->select('devices.id', 'description');
+
+
+        foreach ($devicesTypes As $devType) {
+
+            $query->where('devtypes.name',$devType);
+        }
+
+
+        $devices = $query->orderBy('description')
             ->pluck('description','devices.id')
             ->toArray();
+
 
         return $devices;
 

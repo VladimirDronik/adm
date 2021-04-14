@@ -58,7 +58,11 @@
                                         {{$dev->name}}
                                     </td>
                                     <td>
-                                        {{$dev->status}}
+                                        @if (isset($dev->status))
+                                            {{ $dev->status}}
+                                            @else
+                                            N/A
+                                        @endif
                                     </td>
 
                                 </tr>

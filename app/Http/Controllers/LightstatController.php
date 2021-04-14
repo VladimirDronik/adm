@@ -69,7 +69,7 @@ class LightstatController extends Controller
         $objects = $this->object_rep->getAllToArray();
         $rooms = $this->room_rep->getAllToArray();
         $types = Lightstat::getFullLigtstatIds();
-        $devices = $this->device_rep->getAllToArray();
+        $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
         $usensors = $this->usensors_rep->getAllToArray();
 
         return [$objects, $rooms, $types, $devices, $usensors];

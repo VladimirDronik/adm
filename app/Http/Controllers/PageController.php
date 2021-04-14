@@ -29,7 +29,7 @@ class PageController extends Controller
         $types =  Page::getTypes(true);
 
 
-        return view('pages.index', compact('pages', 'countElements', 'types'));
+        return view('pages.index', compact('pages', 'types'));
     }
 
     public function edit(int $idPage)

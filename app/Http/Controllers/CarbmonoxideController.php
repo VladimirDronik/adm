@@ -61,7 +61,7 @@ class CarbmonoxideController extends Controller
     {
         $objects = $this->object_rep->getAllToArray();
         $rooms = $this->room_rep->getAllToArray();
-        $devices = $this->device_rep->getAllToArray();
+        $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
 
 
         return [$objects, $rooms, $devices];

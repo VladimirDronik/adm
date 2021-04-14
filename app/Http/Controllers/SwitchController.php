@@ -49,7 +49,7 @@ class SwitchController extends Controller
         $types = DeviceSwitch::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
-        $devices = $this->device_rep->getAllToArray();
+        $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
         $can = gates('devices.show-object');
 
         return view('switches.create', compact('types', 'objects', 'object_types', 'devices', 'can'));

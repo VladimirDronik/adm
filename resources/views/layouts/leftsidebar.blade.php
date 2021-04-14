@@ -30,6 +30,12 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="{{ route('engineering.index') }}">
+                                    <i class="fa fa-tachometer"></i>
+                                    Инженерные
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('switches.index') }}">
                                     <i class="fa fa-bullseye"></i>
                                     Выключатели (кнопки)

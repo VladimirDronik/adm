@@ -17,6 +17,25 @@ class ObjectRepository {
             ->pluck('name','id')->toArray();
     }
 
+    /**
+     * Отдать всё инженерное оборудование
+     */
+    public function getAllEngineering($pagination_count = 30)
+    {
+        $engEquipments = array('boiler');
+
+        $queryEquipments = HomeObject::query();
+
+        foreach ($engEquipments as $equipment) {
+            $queryEquipments->orwhere('objects.type', $equipment);
+            $queryEquipments->join($equipment,'objects.id','=',$equipment.'.id_object');
+        }
+
+        return $queryEquipments->orderBy('objects.name')->paginate($pagination_count);
+
+    }
+
+
     public function getByName($name, $pagination_count = 30)
     {
         $query = HomeObject::query();

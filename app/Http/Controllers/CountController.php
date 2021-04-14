@@ -43,7 +43,7 @@ class CountController extends Controller
         $types = Count::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
-        $devices = $this->device_rep->getAllToArray();
+        $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
 
 
         return view('counts.create', compact('types', 'objects', 'object_types', 'devices'));

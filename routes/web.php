@@ -19,6 +19,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('pages', 'PageController')->except('show','destroy')->middleware('can:views');
     Route::get('pages/{idPage}/edit', 'PageController@edit')->middleware('can:devices');
     Route::resource('objects', 'ObjectController')->except('show','destroy')->middleware('can:objects');
+    Route::resource('engineering', 'EngineeringController')->except('show','destroy')->middleware('can:views');
+    Route::resource('boiler', 'BoilerController')->except('show','destroy')->middleware('can:devices');
+
 
     Route::get('page/{idPage}/createElement', 'ElementController@create')->name('page.createElement')->middleware('can:views');
     Route::resource('elements', 'ElementController')->except('show','destroy','create')->middleware('can:views');
@@ -97,6 +100,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('motionsensors/delete', 'MotionsensorController@delete')->name('motionsensors.delete');
         Route::post('carbmonoxide/delete', 'CarbmonoxideController@delete')->name('carbmonoxide.delete');
         Route::post('virtuals/delete', 'VirtualsController@delete')->name('virtuals.delete');
+        Route::post('engineering/delete', 'EngineeringController@delete')->name('engineering.delete');
 
         Route::group(['prefix' => 'logs', 'as' => 'logs.'], function () {
             Route::post('active', 'LogsController@active')->name('active');

@@ -1,0 +1,126 @@
+@extends('layouts._layout')
+
+@section('breadcrumbs')
+    @includeIf('components.breadcrumbs', ['title' => 'Инженерные устройства'])
+@endsection
+
+@section('content')
+    <div class="container-fluid">
+        @include('engineering.header')
+        <div class="card">
+            <div class="card-title"><h4>Инженерные устройства</h4></div>
+            <div class="card-body">
+                @if(count($equipments))
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th style="width: 60px;">ID</th>
+                                <td style="width: 30px;"></td>
+                                <th>Название</th>
+                                <th>Тип</th>
+                                <th>Статус</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($equipments as $equipment)
+                                <tr id="tr{{$equipment->id_object}}">
+                                    <td scope="row">{{ $equipment->id_object }}</td>
+                                    <td> @include('engineering.type_img', compact('$equipment'))</td>
+                                    <td>
+                                        <a href="#" id="namePage_{{ $equipment->id }}"
+                                           onclick="edit_name({{ $equipment->id }});"
+                                           data-toggle="modal"
+                                           data-target="#namePageModal">{{ $equipment->name }}</a>
+                                    </td>
+                                    <td>
+                                        {{ $equipment->type }}
+                                    </td>
+
+                                    <td>
+                                        @if( $equipment->active  === 1)
+                                            <span class="badge badge-success">Активно</span>
+                                        @else
+                                            <span class="badge badge-danger">Недоступно</span>
+                                        @endif
+                                    </td>
+
+                                    <td class="text-center">
+                                        <a href="{{ route($equipment->type.'.edit',[$equipment->id_object]) }}"
+                                           class="btn btn-info btn-sm btn-rounded">
+                                            <i class="fa fa-cog fa-lg"></i>
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button"
+                                                class="btn btn-danger btn-sm btn-rounded m-b-10 m-l-5 del_btn"
+                                                data-id="{{ $equipment->id_object }}" data-name="{{ $equipment->name }}">
+                                            <i class="fa fa-trash fa-lg"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th style="width: 60px;">ID</th>
+                                <td style="width: 30px;"></td>
+                                <th>Название</th>
+                                <th>Тип</th>
+                                <th>Статус</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                   {{ $equipments->appends(request()->input())->links() }}
+                    <p class="text-right">Найдено: {{ $equipments->total() }}</p>
+                @else
+                    <p>Данные не найдены</p>
+                @endif
+            </div>
+        </div>
+    </div>
+    @include('components.info_modal')
+    @include('components.del_modal')
+    @include('engineering.create_modal')
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('ela/js/pagescripts/page.js') }}"></script>
+    <script>
+        const deleteUrl = '{{ route('ajax.engineering.delete') }}';
+        //const storeUrl = '{{ route('ajax.page.store') }}';
+        let url = '{{ route('engineering.index') }}';
+        let del_id;
+
+
+
+        $(document).ready(function(){
+
+            $('.del_btn').click(function () {
+
+                del_id = $(this).data('id');
+
+                $('#del_modal_body').text('Удалить оборудование № ' + $(this).data('id') +
+                    ' «' + $(this).data('name') + '»?');
+                $('#del_init_btn').click();
+
+            });
+
+
+            $('#del_modal_btn').click(del);
+
+
+            $('#addPageBtn').click(function() {
+                $('#modalPage #modal_groups_div').show();
+                $('#modalPage #namePage').val('');
+                $('#modal_page_init_btn').click();
+            });
+
+        });
+    </script>
+@endsection

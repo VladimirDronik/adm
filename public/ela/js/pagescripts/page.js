@@ -115,7 +115,9 @@ function changeSort(id, direction) {
 }
 
 function del() {
+
     $('#del_modal').modal('hide');
+
     if (del_id) {
         $.ajax({
             url: deleteUrl,

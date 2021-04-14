@@ -34,6 +34,7 @@ class ObjType extends Model
     const TYPE_CARBMONOXIDE = 'carbsens';
     const TYPE_VIRTUAL = 'virtual';
     const TYPE_MANOMETR = 'manometr';
+    const TYPE_BOILER = 'boiler';
 
     protected $table = 'objtypes';
     public $timestamps = false;

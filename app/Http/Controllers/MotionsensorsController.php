@@ -53,7 +53,7 @@ class MotionsensorsController extends Controller
 
         $objects = $this->object_rep->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
-        $devices = $this->device_rep->getAllToArray();
+        $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
         $lightstats = $this->lightstat_rep->getAllToArray();
         $can = gates('devices.show-object');
         $equality = ['>' => 'Больше', '<' => 'Меньше'];
@@ -86,7 +86,7 @@ class MotionsensorsController extends Controller
         $object_types =  HomeObject::getFullTypeIds();
         $lightstats = $this->lightstat_rep->getAllToArray();
         $equality = ['>' => 'Больше', '<' => 'Меньше'];
-        $devices = $this->device_rep->getAllToArray();
+        $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
 
 
         $object_normal = $this->methods_rep->getObjectByMethod($motionsensor->method_normal);
