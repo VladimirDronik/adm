@@ -32,6 +32,23 @@ class Boiler extends Model
         return $is_full ? $types : array_keys($types);
     }
 
+    public static function getHandles()
+    {
+        $handles = [
+            'csupply' => 'Температура подачи',
+            'creturn' => 'Температура обратки',
+            'state' => 'Состояние',
+            'mode' => 'Режим',
+            'burner' => 'Состояние горелки',
+            'burnerGVS' => 'Состояние горелки ГВС',
+            'modulation' => 'Модуляция',
+            'pump' => 'Состояние насоса',
+            'pressue' => 'Давление'
+        ];
+
+        return $handles;
+    }
+
 
     public function getRusTypeAttribute()
     {

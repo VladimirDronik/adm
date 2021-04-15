@@ -14,6 +14,7 @@ use App\Services\ElementService;
 use App\Http\Requests\Element\CreateRequest;
 use App\Http\Requests\Element\UpdateRequest;
 use App\Repositories\ObjectRepository;
+use App\Services\ObjectService;
 
 class ElementController extends Controller
 {
@@ -21,13 +22,15 @@ class ElementController extends Controller
     private $elementRepository;
     private $service;
     private $objectRepository;
+    private $objectService;
 
     public function __construct(ElementRepository $elementRepository, ElementService $service,
-                                ObjectRepository $objectRepository)
+                                ObjectRepository $objectRepository, ObjectService $objectService)
     {
         $this->elementRepository = $elementRepository;
         $this->service = $service;
         $this->objectRepository = $objectRepository;
+        $this->objectService = $objectService;
     }
 
     public function create($pageId){
@@ -67,9 +70,10 @@ class ElementController extends Controller
         $images = ImageService::getMainImages();
         $objects = $objects = $this->objectRepository->getAllToArray();
         $element->value = $this->elementRepository->parser($element->value);
+        $handles = $this->objectService->getHandlesByObjectId($element->id_object, true);
 
         return view('elements.edit', compact('element', 'types', 'parents', 'objects',
-            'images'));
+            'images', 'handles'));
     }
 
     public function update(UpdateRequest $r, Elements $element)

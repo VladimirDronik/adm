@@ -38,6 +38,17 @@ class ObjectController extends Controller
         return response()->json(['result' => true, 'methods' => $methods]);
     }
 
+    public function methodsAndHandles(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['object_id']), 400);
+
+        $methods = $this->service->getMethodsByObjectId((int)$r->object_id);
+        $handles = $this->service->getHandlesByObjectId((int)$r->object_id);
+
+        return response()->json(['result' => true, 'methods' => $methods, 'handles' => $handles]);
+    }
+
+
     public function getObjects(Request $r)
     {
         abort_if(!ajaxHas($r, ['type_object']), 400);

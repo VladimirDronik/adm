@@ -28,7 +28,7 @@
                             @foreach($equipments as $equipment)
                                 <tr id="tr{{$equipment->id}}">
                                     <td scope="row">{{ $equipment->id }}</td>
-                                    <td> @include('engineering.type_img', compact('$equipment'))</td>
+                                    <td> @include('engineering.type_img', compact('equipment'))</td>
                                     <td>
                                         <a href="#" id="namePage_{{ $equipment->id }}"
                                            onclick="edit_name({{ $equipment->id }});"

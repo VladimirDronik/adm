@@ -84,7 +84,8 @@
                                 </div>
 
 
-                                {{ Form::bs_text('handle', 'Идентификатор:', null) }}
+                                {{ Form::bs_autoselect('handle', 'Идентификатор:', $handles, $element->handle,
+                                      false, false, [], null, 'Идентификатор свойства объекта') }}
 
                             </div>
 
@@ -108,30 +109,49 @@
     <script src="{{ asset('ela/js/pagescripts/element.js') }}"></script>
 
     <script>
-        const url_methods = '{{ route('ajax.objects.methods') }}';
+        const url_methods_and_handle = '{{ route('ajax.objects.methodsAndHandles') }}';
 
         $(document).ready(function () {
 
             $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_method").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_handle").chosen({width:"100%", no_results_text: "Не найдено"});
 
 
             $("#auto_sel_id_object").chosen().change(function() {
                 let object_id = $(this).val();
 
                 $.ajax({
-                    url: url_methods,
+                    url: url_methods_and_handle,
                     data: {'_token': _token, 'object_id': object_id},
                     success: function (data) {
 
                         methods = data.methods;
                         createMethodSelect('#auto_sel_method', data.methods, -1);
                         $('#auto_sel_method').trigger("chosen:updated");
+
+                        createHandleSelect('#auto_sel_handle', data.handles, -1);
+                        $('#auto_sel_handle').trigger("chosen:updated");
                     }
                 });
             });
 
             function createMethodSelect(target, options, selected) {
+                let sel = $(target);
+                sel.html('');
+                let s = '<option value="">Не выбрано</option>';
+                for (let i = 0; i < options.length; i++) {
+                    if (selected == options[i].id)
+                        s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
+                    else
+                        s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
+                }
+                sel.append(s);
+            }
+
+
+
+            function createHandleSelect(target, options, selected) {
                 let sel = $(target);
                 sel.html('');
                 let s = '<option value="">Не выбрано</option>';

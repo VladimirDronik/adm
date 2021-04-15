@@ -19,7 +19,6 @@ class ElementService
 
     public function store(array $data): int
     {
-
         $element = new Elements();
 
         $this->prepare($data, $element);

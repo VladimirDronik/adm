@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Boiler;
 use App\Models\HomeObject;
 use App\Models\Method;
 use App\Repositories\ObjectRepository;
@@ -66,6 +67,42 @@ class ObjectService {
 
         return [];
     }
+
+
+
+    public function getHandlesByObjectId(int $object_id, $easyArray = false): array
+    {
+
+        if ($object_id) {
+            $object = HomeObject::find($object_id);
+
+
+            switch ($object->type) {
+
+                case 'boiler': $handles = Boiler::getHandles();
+                break;
+
+                default: return [];
+            }
+
+            if(!$easyArray) {
+
+                $handlesArray = [];
+
+                foreach ($handles as $key => $handle) {
+                    $handlesArray[] = ['id'=> $key, 'name' => $handle];
+                }
+
+                return $handlesArray;
+            }else
+                return $handles;
+
+
+        }
+
+        return [];
+    }
+
 
     public function getObjectsByType($typeObject): array
     {

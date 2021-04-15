@@ -10,7 +10,7 @@
 
                 <a href="{{ route('boiler.create') }}" >
                 <img width="40" height="40" title="" src="{{ asset('ela/images/views_items/boiler.svg') }}">
-                Бойлер</a>
+                Котёл</a>
 
                 <br><br>
 

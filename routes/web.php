@@ -178,6 +178,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::group(['prefix' => 'objects', 'as' => 'objects.'], function () {
             Route::post('getObjects', 'ObjectController@getObjects')->name('getObjects');
             Route::post('methods', 'ObjectController@methods')->name('methods');
+            Route::post('methodsAndHandles', 'ObjectController@methodsAndHandles')->name('methodsAndHandles');
             Route::post('view/all', 'ObjectController@getViewAll')->name('view.all');
             Route::post('delete', 'ObjectController@delete')->name('delete');
             Route::post('delete/all', 'ObjectController@deleteAll')->name('delete.all');
