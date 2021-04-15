@@ -56,7 +56,7 @@ class BoilerService
         $boiler->ip_address = $data['ip_address_boiler'];
         $boiler->model = $data['type_boiler'];
         $boiler->mode = 'auto';
-        $boiler->active = 1;
+       
 
         DB::transaction(function () use (&$boiler, $data) {
 
