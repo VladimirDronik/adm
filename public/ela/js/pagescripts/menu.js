@@ -138,8 +138,13 @@ function del() {
     }
 }
 
+function alert_hide() {
+    $("#alert_div").hide();
+}
+
 function storeMenu() {
     const name = $("#modalMenu #nameMenu").val().trim();
+    const link = $("#modalMenu #nameMenu").val().trim();
     const image = sessionStorage.getItem('imageMenu');
     const style = sessionStorage.getItem('colorMenu');
     const type = $("#modalMenu #modalType").val();
@@ -147,19 +152,23 @@ function storeMenu() {
 
     sessionStorage.setItem('imageMenu', 'noimage.png');
 
-    $.ajax({
-        url: storeUrl,
-        data: {'_token': _token, 'name': name, 'image': image,
-            'style': style, 'parent': parent, 'type': type},
-        success: function (data) {
-            if (data.result) {
-                window.location.href = url;
-            } else {
-                showErrorModal('Ошибка при добавлении меню');
+
+    if((name == '') || (link == ''))
+        $("#alert_div").show();
+    else {
+
+        $.ajax({
+            url: storeUrl,
+            data: {'_token': _token, 'name': name, 'image': image,
+                'style': style, 'parent': parent, 'type': type, 'link': link},
+            success: function (data) {
+                if (data.result) {
+                    window.location.href = url;
+                } else {
+                    showErrorModal('Ошибка при добавлении меню');
+                }
             }
-        }
-    });
-
-
+        });
+    }
 
 }
