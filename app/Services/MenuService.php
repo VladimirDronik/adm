@@ -149,7 +149,6 @@ class MenuService {
         $menu->sort = $this->getSortMax($menu) + 1;
 
 
-
         $menu->name = $menu->title =$this->setNameIfEmpty($data['name']);
         $menu->image = $this->setImageIfEmpty($data['image']);
         $menu->link = $this->setImageIfEmpty($data['link']);

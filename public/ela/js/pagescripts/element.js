@@ -101,12 +101,15 @@ function updateColor(id, mode=true) {
 }
 
 function changeSort(id, direction) {
+
+    const tab =  $('#tabs-sel').val();
+
     $.ajax({
         url: sortUrl,
         data: {'_token': _token, 'id': id, 'direction': direction},
         success: function (data) {
             if (data.result) {
-                window.location.href = url;
+                window.location.href = url + '/' + tab;
             } else {
                 showErrorModal('Ошибка при сохранении изменений');
             }

@@ -16,8 +16,8 @@
                 <div class="row">
                     <div class="col-md-12 col-lg-10">
                         <ul class="nav nav-tabs customtab" role="tablist">
-                            <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Блок 1</span></a> </li>
-                            <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Блок 2</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1" onclick="selecttab(1)" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Блок 1</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2" onclick="selecttab(2)" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Блок 2</span></a> </li>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
@@ -27,7 +27,7 @@
                                 @include('elements.block2')
                             </div>
                         </div>
-
+                        <input type="hidden" id="tabs-sel" value="{{ $tab }}">
                     </div>
                 </div>
             </div>
@@ -49,6 +49,12 @@
         let del_id;
         let addingString;
 
+
+        function selecttab(numtab) {
+
+            $('#tabs-sel').val(numtab);
+        }
+
         $(document).ready(function () {
 
             $('.del_btn').click(function () {
@@ -64,6 +70,10 @@
             });
 
             $('#del_modal_btn').click(del);
+
+
+
+
 
             // add
 

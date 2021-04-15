@@ -18,6 +18,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('views', 'ViewController')->except('show','destroy')->middleware('can:views');
     Route::resource('pages', 'PageController')->except('show','destroy')->middleware('can:views');
     Route::get('pages/{idPage}/edit', 'PageController@edit')->middleware('can:devices');
+    Route::get('pages/{idPage}/edit/{idTab}', 'PageController@edit')->middleware('can:devices');
     Route::resource('objects', 'ObjectController')->except('show','destroy')->middleware('can:objects');
     Route::resource('engineering', 'EngineeringController')->except('show','destroy')->middleware('can:views');
     Route::resource('boiler', 'BoilerController')->except('show','destroy')->middleware('can:devices');

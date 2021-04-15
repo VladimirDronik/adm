@@ -32,12 +32,12 @@ class PageController extends Controller
         return view('pages.index', compact('pages', 'types'));
     }
 
-    public function edit(int $idPage)
+    public function edit(int $idPage, int $idTab = 1)
     {
         $page = Page::find($idPage);
         $elements = $this->elementRepository->getAllByPage($idPage);
         $images = ImageService::getMainImages();
-        $tab = 1;
+        $tab = $idTab;
 
         return view('pages.edit', compact('page', 'elements', 'tab', 'images'));
 
