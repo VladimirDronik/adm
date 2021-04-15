@@ -352,7 +352,7 @@ class DeviceService {
                         $HiteProDevice->id_controller = $id;
                         $HiteProDevice->name = $device->name;
                         $HiteProDevice->type = $device->type;
-                        $HiteProDevice->status = $device->status;
+                        $HiteProDevice->status = (!empty($device->status)) ? $device->status : '' ;
                         $HiteProDevice->save();
                     }
 
