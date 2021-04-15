@@ -47,13 +47,12 @@ class BoilerGVSService
     public function store(array $data): int
     {
 
-
         $boiler = new BoilerGVS();
         $boiler->name = $data['name'];
         $boiler->ip_address = $data['ip_address_boiler'];
         $boiler->model = $data['type_boiler'];
         $boiler->mode = 'auto';
-       
+
 
         DB::transaction(function () use (&$boiler, $data) {
 

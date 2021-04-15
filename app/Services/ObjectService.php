@@ -70,7 +70,7 @@ class ObjectService {
 
 
 
-    public function getHandlesByObjectId(int $object_id, $easyArray = false): array
+    public function getHandlesByObjectId($object_id, $easyArray = false): array
     {
 
         if ($object_id) {
