@@ -26,8 +26,8 @@
                             </thead>
                             <tbody>
                             @foreach($equipments as $equipment)
-                                <tr id="tr{{$equipment->id_object}}">
-                                    <td scope="row">{{ $equipment->id_object }}</td>
+                                <tr id="tr{{$equipment->id}}">
+                                    <td scope="row">{{ $equipment->id }}</td>
                                     <td> @include('engineering.type_img', compact('$equipment'))</td>
                                     <td>
                                         <a href="#" id="namePage_{{ $equipment->id }}"
@@ -40,7 +40,7 @@
                                     </td>
 
                                     <td>
-                                        @if( $equipment->active  === 1)
+                                        @if( $equipment->status  === '1')
                                             <span class="badge badge-success">Активно</span>
                                         @else
                                             <span class="badge badge-danger">Недоступно</span>
@@ -48,7 +48,7 @@
                                     </td>
 
                                     <td class="text-center">
-                                        <a href="{{ route($equipment->type.'.edit',[$equipment->id_object]) }}"
+                                        <a href="{{ route($equipment->type.'.edit',[$equipment->id]) }}"
                                            class="btn btn-info btn-sm btn-rounded">
                                             <i class="fa fa-cog fa-lg"></i>
                                         </a>
@@ -56,7 +56,7 @@
                                     <td class="text-center">
                                         <button type="button"
                                                 class="btn btn-danger btn-sm btn-rounded m-b-10 m-l-5 del_btn"
-                                                data-id="{{ $equipment->id_object }}" data-name="{{ $equipment->name }}">
+                                                data-id="{{ $equipment->id }}" data-name="{{ $equipment->name }}">
                                             <i class="fa fa-trash fa-lg"></i>
                                         </button>
                                     </td>

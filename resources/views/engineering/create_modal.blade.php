@@ -14,7 +14,7 @@
 
                 <br><br>
 
-                <a href="{{ route('engineering.create') }}" >
+                <a href="{{ route('boiler_gvs.create') }}" >
                     <img width="40" height="40" title="" src="{{ asset('ela/images/views_items/boiler-gvs.svg') }}">
                     Бойлер ГВС</a>
 

@@ -25,7 +25,6 @@ class CreateBoilerTable extends Migration
         $table->tinyInteger('pump_status')->nullable();
         $table->tinyInteger('pressue')->nullable();
         $table->string('ip_address',15);
-        $table->tinyInteger('active');
 
 
         $table->foreign('id_object')->references('id')->on('objects')

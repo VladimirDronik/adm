@@ -95,7 +95,7 @@ class TermostatService {
 
 
         $this->prepare($termostat, $data);
-        $termostat->current = 0;
+        $termostat->current = null;
 
         if ($data['object_type'] === 'manual') {
             $termostat->save();

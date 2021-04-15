@@ -15,7 +15,7 @@ class BoilerObjectService
 
 
     /**
-     * Автосоздание объекта для диммера
+     * Автосоздание объекта для котла
      *
      * @param string $name
      * @return HomeObject
@@ -26,11 +26,33 @@ class BoilerObjectService
 
         $object->type = ObjType::TYPE_BOILER;
         $object->name = $name;
-        $object->status = 'off';
+        $object->status = '1';
         $object->is_system = 1;
 
         $object->save();
 
         return $object;
     }
+
+
+    /**
+     * Автосоздание объекта для бойлера ГВС
+     *
+     * @param string $name
+     * @return HomeObject
+     */
+    public function createBoilerGVSObject(string $name): HomeObject
+    {
+        $object = new HomeObject();
+
+        $object->type = ObjType::TYPE_BOILER_GVS;
+        $object->name = $name;
+        $object->status = '1';
+        $object->is_system = 1;
+
+        $object->save();
+
+        return $object;
+    }
+
 }

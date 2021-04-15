@@ -35,6 +35,7 @@ class ObjType extends Model
     const TYPE_VIRTUAL = 'virtual';
     const TYPE_MANOMETR = 'manometr';
     const TYPE_BOILER = 'boiler';
+    const TYPE_BOILER_GVS = 'boiler_gvs';
 
     protected $table = 'objtypes';
     public $timestamps = false;

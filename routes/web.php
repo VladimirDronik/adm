@@ -21,6 +21,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('objects', 'ObjectController')->except('show','destroy')->middleware('can:objects');
     Route::resource('engineering', 'EngineeringController')->except('show','destroy')->middleware('can:views');
     Route::resource('boiler', 'BoilerController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('boiler_gvs', 'BoilerGVSController')->except('show','destroy')->middleware('can:devices');
 
 
     Route::get('page/{idPage}/createElement', 'ElementController@create')->name('page.createElement')->middleware('can:views');

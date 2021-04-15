@@ -4,19 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-
-/**
- * Class Boiler
- *
- * @package App\Models
- * @mixin \Eloquent
- * @property-read mixed $rus_type
- */
-class Boiler extends Model
+class BoilerGVS extends Model
 {
 
-
-    protected $table = 'boiler';
+    protected $table = 'boiler_gvs';
     public $timestamps = false;
     protected $guarded = ['id'];
 
@@ -53,4 +44,5 @@ class Boiler extends Model
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
     }
+
 }

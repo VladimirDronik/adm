@@ -7,12 +7,11 @@
  */
 
 namespace App\Services;
-use App\Models\Boiler;
-use App\Services\BoilerObjectService;
+use App\Models\BoilerGVS;
 use Illuminate\Support\Facades\DB;
 use App\Models\HomeObject;
 
-class BoilerService
+class BoilerGVSService
 {
     private $boiler_object_service;
 
@@ -22,9 +21,8 @@ class BoilerService
         $this->boiler_object_service = $boilerObjectService;
     }
 
-    public function update(Boiler $boiler, array $data): int
+    public function update(BoilerGVS $boiler, array $data): int
     {
-
 
         DB::transaction(function () use (&$boiler, $data) {
             if ($this->isUpdateAutoObjectName($boiler, $data['name'])) {
@@ -41,8 +39,7 @@ class BoilerService
         return true;
     }
 
-
-    private function isUpdateAutoObjectName(Boiler $boiler, string $name): bool
+    private function isUpdateAutoObjectName(BoilerGVS $boiler, string $name): bool
     {
         return $boiler->name !== trim($name) && $boiler->object && $boiler->object->is_system;
     }
@@ -51,7 +48,7 @@ class BoilerService
     {
 
 
-        $boiler = new Boiler();
+        $boiler = new BoilerGVS();
         $boiler->name = $data['name'];
         $boiler->ip_address = $data['ip_address_boiler'];
         $boiler->model = $data['type_boiler'];
@@ -61,7 +58,7 @@ class BoilerService
         DB::transaction(function () use (&$boiler, $data) {
 
             $unique_name = HomeObject::getUniqueObjectName(0, $boiler->name);
-            $object = $this->boiler_object_service->createBoilerObject($unique_name);
+            $object = $this->boiler_object_service->createBoilerGVSObject($unique_name);
             $boiler->id_object = $object->id;
 
             $boiler->save();

@@ -6,9 +6,9 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование котла № '. $boiler->id_object . ' «' . $boiler->name .'»',
+       ['title' => 'Редактирование бойлера ГВС № '. $boiler->id_object . ' «' . $boiler->name .'»',
         'links' => [ route('engineering.index') => 'инженерное оборудование'],
-        'last_link' => 'Редактирование котла'])
+        'last_link' => 'Редактирование '])
 @endsection
 
 @section('content')
@@ -26,7 +26,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::model($boiler, ['route' => ['boiler.update', $boiler->id_object], 'id' => 'boiler_form',
+                    {!! Form::model($boiler, ['route' => ['boiler_gvs.update', $boiler->id_object], 'id' => 'boiler_form',
                         'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
@@ -44,13 +44,7 @@
 
                         {{ Form::bs_simple_text('Cостояние:', $boiler->state ? $boiler->state : 'N/A') }}
                         {{ Form::bs_simple_text('Режим:', $boiler->mode ? $boiler->mode : 'N/A') }}
-                        {{ Form::bs_simple_text('Подача:', $boiler->cooliant_supply ? $boiler->cooliant_supply.' °C' : 'N/A' ) }}
-                        {{ Form::bs_simple_text('Обратка:', $boiler->cooliant_return ? $boiler->cooliant_return.' °C' : 'N/A') }}
-                        {{ Form::bs_simple_text('Горелка:', $boiler->burner ? $boiler->burner : 'N/A') }}
-                        {{ Form::bs_simple_text('Горелка ГВС:', $boiler->burner_GVS ? $boiler->burner_GVS : 'N/A') }}
-                        {{ Form::bs_simple_text('Модуляция горелки:', $boiler->burner_modulation ? $boiler->burner_modulation.' %' : 'N/A') }}
-                        {{ Form::bs_simple_text('Состояние насоса:', $boiler->pump_status ? $boiler->pump_status : 'N/A') }}
-                        {{ Form::bs_simple_text('Давление теплоносителя:', $boiler->pressue ? $boiler->pressue : 'N/A' ) }}
+                        {{ Form::bs_simple_text('Давление:', $boiler->pressue ? $boiler->pressue : 'N/A' ) }}
 
 
                     </div>
