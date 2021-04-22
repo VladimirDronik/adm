@@ -2,11 +2,11 @@
 
 @section('breadcrumbs')
     @if ($filter['type'] == '')
-        @include('components.breadcrumbs', ['title' => 'Cобытия'])
+        @include('components.breadcrumbs', ['title' => 'Планировщик'])
     @else
         @includeIf('components.breadcrumbs',
-           ['title' => 'События',
-            'links' => [ route('events.index') => 'События'],
+           ['title' => 'Планировщик',
+            'links' => [ route('events.index') => 'Планировщик'],
             'last_link' => $filter['type_name']])
     @endif
 @endsection
@@ -40,7 +40,7 @@
         </div>
         <div class="card">
             <div class="card-title">
-                <h4>@if($filter['type'] == '') События @else {{ $filter['type_name'] }} события @endif </h4>
+                <h4>@if($filter['type'] == '') Задачи @else {{ $filter['type_name'] }} задачи @endif </h4>
             </div>
             <div class="card-body">
                 @if(count($events))
@@ -215,7 +215,7 @@
                     {{ $events->appends(request()->input())->links() }}
                     <p class="text-right">Найдено: {{ $events->total() }}</p>
                 @else
-                    <p>События не найдены</p>
+                    <p>Задачи планировщика не найдены</p>
                 @endif
             </div>
         </div>
@@ -244,7 +244,7 @@
                             if (data.result) {
                                 $('#tr'+del_id).hide();
                             } else {
-                                showErrorModal('Ошибка при удалении события');
+                                showErrorModal('Ошибка при удалении элемента');
                             }
                         }
                     });
@@ -279,7 +279,7 @@
                             if (data.result) {
                                 showSuccessModal('Изменения успешно сохранены');
                             } else {
-                                showErrorModal('Ошибка при изменении свойств события');
+                                showErrorModal('Ошибка при изменении свойств элемента');
                             }
                         },
                     });
@@ -298,7 +298,7 @@
                             if (data.result) {
                                 showSuccessModal('Изменения успешно сохранены');
                             } else {
-                                showErrorModal('Ошибка при изменении свойств события');
+                                showErrorModal('Ошибка при изменении свойств элемента');
                             }
                         },
                     });
@@ -317,7 +317,7 @@
                             //showSuccessModal('Изменения успешно сохранены');
                             location.reload();
                         } else {
-                            showErrorModal('Ошибка при изменении свойств события');
+                            showErrorModal('Ошибка при изменении свойств элемента');
                         }
                     },
                 });

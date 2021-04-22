@@ -61,7 +61,7 @@
                     {{ Form::bs_submit_btn() }}
 
                     @include('objects.methods', ['object' => $virtual->object])
-                    @include('objects.events', ['object' => $virtual->object])
+                    @include('objects.sheduler', ['object' => $virtual->object])
 
                     {!! Form::close() !!}
                 </div>

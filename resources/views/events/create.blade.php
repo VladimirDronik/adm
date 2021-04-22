@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-        ['title' => 'Добавление события', 'links' => [ route('events.index') => 'События']])
+        ['title' => 'Добавление задачи', 'links' => [ route('events.index') => 'Задачи']])
 @endsection
 
 @section('content')
@@ -120,7 +120,7 @@
 
         function validateEvent() {
             if (isEmptyInput('name')) {
-                return 'Не указано название события';
+                return 'Не указано название задачи';
             }
             let type = $('[name=type]:checked').val();
             if (type === 'script' && isEmptyAutoSelect('script')) {

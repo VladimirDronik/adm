@@ -132,7 +132,7 @@
             $('.del_btn').click(function () {
                 del_id = $(this).data('id');
                 const parent = $(this).data('type');
-                const delRoomsMessage = parent === 'группу' ? ' и все ее помещения' : '';
+                const delRoomsMessage = parent === 'группу' ? ' и все её подгруппы' : '';
                 $('#del_modal_body').text('Удалить ' + parent + ' № ' + $(this).data('id') +
                     ' «' + $(this).data('name') + '»' + delRoomsMessage + '?');
 

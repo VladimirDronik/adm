@@ -112,7 +112,7 @@
                             <span><i class="fa fa-calendar f-s-40 color-primary"></i></span>
                         </div>
                         <div class="media-body media-text-right">
-                            <h2 class="float-none p-l-10"><a href="{{ route('events.index') }}" class="float-left">События</a> {{ $counts['events'] }}</h2>
+                            <h2 class="float-none p-l-10"><a href="{{ route('events.index') }}" class="float-left">Планировщик</a> {{ $counts['events'] }}</h2>
                             <div class="m-b-0 float-none"><a href="{{ route('events.create') }}" class="btn btn-sm btn-outline-info btn-outline">Добавить</a></div>
                         </div>
                     </div>

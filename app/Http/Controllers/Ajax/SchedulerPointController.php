@@ -30,7 +30,7 @@ class SchedulerPointController extends Controller
             $data = $this->service->storeOrUpdatePoint($r->data);
             return response()->json(['result' => true] + $data);
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении расписания события', [$r->all(), $e->getMessage()]);
+            \Log::error('Ошибка при добавлении расписания элемента', [$r->all(), $e->getMessage()]);
             return response()->json(['result' => false]);
         }
     }

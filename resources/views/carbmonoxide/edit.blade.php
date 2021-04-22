@@ -94,7 +94,7 @@
                     {{ Form::bs_submit_btn() }}
 
                     @include('objects.methods', ['object' => $carbmonoxide->iobject])
-                    @include('objects.events', ['object' => $carbmonoxide->iobject])
+                    @include('objects.sheduler', ['object' => $carbmonoxide->iobject])
 
                     {!! Form::close() !!}
                 </div>

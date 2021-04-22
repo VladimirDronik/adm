@@ -69,7 +69,7 @@
                     {{ Form::bs_submit_btn() }}
 
                     @include('objects.methods', ['object' => $usensor->iobject])
-                    @include('objects.events', ['object' => $usensor->iobject])
+                    @include('objects.sheduler', ['object' => $usensor->iobject])
 
                     {!! Form::close() !!}
                 </div>

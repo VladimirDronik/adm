@@ -1,4 +1,4 @@
-<!-- модальное окно добавления нового помещения -->
+<!-- модальное окно добавления нового пункта меню -->
 <div class="modal" id="modalMenu">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -14,7 +14,6 @@
                 <input type="hidden" name="type" id="modalType" value="">
                 <div id="modal_groups_div">
                     Группа: <select class="form-control input-default col-sm-12" id="modalGroupId">
-                        <option value="0">Без группы</option>
                         @foreach($groups as $group)
                             <option value="{{ $group->id }}">{{ $group->name }}</option>
                         @endforeach

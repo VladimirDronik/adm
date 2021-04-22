@@ -26,163 +26,48 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
+
+
+
+
                     {!! Form::model($termostat, ['route' => ['termostats.update', $termostat->id],
                             'id' => 'termostat_form', 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
+
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID объекта:', $termostat->iobject['id']) }}
-                        {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-                        <div class="form-group row ">
-
-                            @if(($termostat->iobject && $termostat->iobject->is_system) || !$can['devices.show-object'])
-                                <div class="form-group row">
-                                                <label class="control-label text-right col-md-3 label-fix" for="">
-                                                    Объект термостата:
-                                                </label>
-                                                <div class="col-md-9">
-                                                    <div class="mt-2">
-                                                        <a class="a-color" href="{{ route('objects.edit', [$termostat->id_object]) }}">
-                                                            {{ $termostat->iobject->name }} @if($termostat->iobject && $termostat->iobject->is_system) (системный) @endif </a>
-                                                    </div>
-
-                                            <input type="hidden" name="id_object" value="{{ $termostat->id_object }}">
-                                        @else
-                                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект термостата*:', $objects, old('id_object', $termostat->id_object),
-                                                false, false, ['required' => true]) }}
-                                        @endif
-
-
-                                        <div class="row" id="auto_object_div">
-
-                                            <div class="col-sm-12 pr-0 mt-4">
-                                                <div class="btn-group-toggle" data-toggle="buttons">
-                                                    <label class="btn btn-success btn-sm @if($termostat->placetype == 'port') active @endif">
-                                                        <input type="radio" name="placetype_radio" autocomplete="off"  value="port"> На порту
-                                                    </label>
-
-                                                    <label class="btn btn-success btn-sm @if($termostat->placetype == '1wbus') active @endif">
-                                                        <input type="radio" name="placetype_radio" autocomplete="off"  value="1wbus" >  На шине
-                                                    </label>
-
-                                                    <label class="btn btn-success btn-sm @if($termostat->placetype == 'usensor') active @endif">
-                                                        <input type="radio" name="placetype_radio" autocomplete="off" value="usensor">  В составе унив. датчика
-                                                    </label>
-
-                                                    <label class="btn btn-success btn-sm @if($termostat->placetype == 'Hite-pro') active @endif">
-                                                        <input type="radio" name="placetype_radio" autocomplete="off" value="device">  Отдельное устройство
-                                                    </label>
-
-                                                    <input type="hidden" id="placetype" name="placetype" value="{{$termostat->placetype}}">
-
-                                                </div>
-                                            </div>
-
-                                            <div class="col-sm-12 pr-0 mt-4" id="single_port_div" @if(($termostat->placetype != 'port') && ($termostat->placetype != '1wbus') )  style="display: none;" @endif>
-                                                {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', is_null($deviceId) ? 0 : $deviceId),
-                                                   false, false, [], null) }}
-
-                                                {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', is_null($portId) ? 0 : $portId),
-                                                    false, false, [], null) }}
-
-                                            </div>
-
-                                            <div class="col-sm-12 pr-0 mt-4" id="1wbus_port_div"  @if($termostat->placetype != '1wbus') style="display: none;" @endif>
-                                                {{ Form::bs_text('id_termometr', 'Код:', null, [], 'Уникальный ID термодатчика. Например, ff750c311703') }}
-                                            </div>
-
-                                            <div class="col-sm-12 pr-0 mt-4" id="usensor_div"  @if($termostat->placetype != 'usensor') style="display: none;" @endif>
-                                                {{ Form::bs_autoselect('usensor_id', 'Универсальный датчик:', $usensors, old('usensor_id', is_null($termostat->usensor_id) ? 0 : $termostat->usensor_id),
-                                                   false, false, [], null) }}
-                                            </div>
-
-                                            <div class="col-sm-12 pr-0 mt-4" id="device_div" @if($termostat->placetype != 'Hite-pro') style="display: none;" @endif>
-                                                {{ Form::bs_autoselect('HPController_id', 'Контроллер:', $HPControllers, old('HPController_id', is_null($id_controller) ? 0 : $id_controller),
-                                                   false, false, [], null) }}
-
-                                                {{ Form::bs_autoselect('subdev_id', 'Термометр:', $subdevs, old('subdev_id', is_null($termostat->subdev_id) ? 0 : $termostat->subdev_id),
-                                                    false, false, [], null) }}
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                        </div>
-                        <div style="height: 10px;">&nbsp;</div>
-                        <hr>
-                        <div style="height: 40px;">&nbsp;</div>
-
-
-
-                        {{ Form::bs_number('optimal', 'Оптимальная температура*:', null, ['min' => 0, 'max' => 40, 'required' => true],
-                            'Температура, которая должна быть в помещении') }}
-                        {{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', $termostat->gisteresis), ['min' => 0, 'max' => 10, 'required' => true]) }}
-                        {{ Form::bs_radio('thermostat', 'Режим*:', $types, old('thermostat', $termostat->thermostat), ['required' => true]) }}
-
-                        {{ Form::bs_number('min_threshold', 'Минимальная температура*:', old('min_threshold', $termostat->min_threshold), ['min' => 0, 'max' => 40, 'required' => true],
-                            '') }}
-                        {{ Form::bs_number('max_threshold', 'Максимальная температура*:', old('max_threshold', $termostat->max_threshold), ['min' => 0, 'max' => 40, 'required' => true],
-                            '') }}
-                        {{ Form::bs_number('min_alarm', 'Мин. аварийная температура*:', old('min_alarm', $termostat->min_alarm), ['min' => 0, 'max' => 40, 'required' => true],
-                            '') }}
-                        {{ Form::bs_number('max_alarm', 'Макс. аварийная температура*:', old('max_alarm', $termostat->max_alarm), ['min' => 0, 'max' => 40, 'required' => true],
-                            '') }}
-
-                        <div style="height: 10px;">&nbsp;</div>
-                        <hr>
-                        <div style="height: 40px;">&nbsp;</div>
-
-                        {{ Form::bs_autoselect_and_btn('object', 'Объект влияния:', $objects, old('object', $termostat->object),
-                            false, false, [], '', '', null, 'Объект, у которого меняем состояние', 3, $can['devices.show-object']) }}
-
-                        {{ Form::bs_autoselect('method_on', 'Метод при включении:', $methods, old('method_on', $termostat->method_on),
-                            false, false, [], null, 'Метод объекта влияния при срабатывании термостата на включение') }}
-
-                        <div class="form-group row" id="method_on_params_div"
-                             @if(is_null($termostat->method_on_params) && !old('method_on')) style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_on_params"></label>
-                            <div class="col-md-9 pr-0">
-                                <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="method_on_params_label" for="method_on_params">
-                                        {{ optional($termostat->emethod_on)->params }}*:</label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="method_on_params" name="method_on_params"
-                                               type="text" value="{{ old('method_on_params', $termostat->method_on_params) }}">
-                                    </div>
-                                </div>
+                        <ul class="nav nav-tabs customtab" role="tablist">
+                            <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Свойства</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==4) active @endif"  data-toggle="tab" href="#portstab4"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">События</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==5) active @endif"  data-toggle="tab" href="#portstab5"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Планировщик</span></a> </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
+                                @include('termostats/edit_tabs/main')
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
+                                @include('termostats/edit_tabs/prop')
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
+                                @include('termostats/edit_tabs/methods')
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==4) active @endif" id="portstab4" role="tabpanel">
+                                    @include('objects.events', ['object' => $termostat->iobject])
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
+                                @include('objects.sheduler', ['object' => $termostat->iobject])
                             </div>
                         </div>
+                        <input type="hidden" id="tabs-sel" value="{{ $tab }}">
 
-                        {{ Form::bs_autoselect('method_off', 'Метод при выключении:', $methods, old('method_off', $termostat->method_off),
-                            false, false, [], null, 'Метод объекта влияния при срабатывании термостата на выключение') }}
 
-                        <div class="form-group row" id="method_off_params_div"
-                             @if(is_null($termostat->method_off_params) && !old('method_off')) style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 label-fix" for="method_off_params"></label>
-                            <div class="col-md-9 pr-0">
-                                <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="method_off_params_label" for="method_off_params">
-                                        {{ optional($termostat->emethod_off)->params }}*:
-                                    </label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="method_off_params" name="method_off_params"
-                                               type="text" value="{{ old('method_off_params', $termostat->method_off_params) }}">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', is_null($termostat->room) ? 0 : $termostat->room ), false, false) }}
-
-                    @include('messages.two')
 
                     </div>
                     {{ Form::bs_submit_btn() }}
-
-                    @include('objects.methods', ['object' => $termostat->iobject])
-                    @include('objects.events', ['object' => $termostat->iobject])
 
                     {!! Form::close() !!}
                 </div>

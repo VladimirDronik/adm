@@ -78,7 +78,7 @@
                     {{ Form::bs_submit_btn() }}
 
                     @include('objects.methods', ['object' => $count->object])
-                    @include('objects.events', ['object' => $count->object])
+                    @include('objects.sheduler', ['object' => $count->object])
 
                     {!! Form::close() !!}
                 </div>

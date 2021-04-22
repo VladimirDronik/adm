@@ -42,7 +42,7 @@
                         @endif
 
                         @include('objects.methods')
-                        @include('objects.events')
+                        @include('objects.sheduler')
 
                     </div>
                     {!! Form::close() !!}

@@ -3,8 +3,8 @@
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
        ['title' => 'Настройки пункта меню № '. $menu->id .' «'. $menu->name .'»',
-        'links' => [ route('menu.index') => 'Помещения'],
-        'last_link' => 'Настройки помещения'])
+        'links' => [ route('menu.index') => 'Группы меню'],
+        'last_link' => 'Настройки пункта меню'])
 @endsection
 
 @section('content')

@@ -144,7 +144,7 @@ function alert_hide() {
 
 function storeMenu() {
     const name = $("#modalMenu #nameMenu").val().trim();
-    const link = $("#modalMenu #nameMenu").val().trim();
+    const link = $("#modalMenu #linkMenu").val().trim();
     const image = sessionStorage.getItem('imageMenu');
     const style = sessionStorage.getItem('colorMenu');
     const type = $("#modalMenu #modalType").val();

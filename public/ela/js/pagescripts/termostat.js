@@ -24,25 +24,25 @@ function validateTermostat() {
         return 'Не указано название';
     }
     if (isEmptyInput('optimal')) {
-        return 'Не указана оптимальная температура';
+        return 'Не указана оптимальная температура на вкладке свойсвт';
     }
     if (isEmptyInput('gisteresis')) {
-        return 'Не указан гистерезис';
+        return 'Не указан гистерезис на вкладке свойсвт';
     }
     if (!$("input[name=thermostat]:checked").val()) {
         return 'Не указан режим';
     }
     if (isEmptyInput('min_threshold')) {
-        return 'Не указана минимальная температура';
+        return 'Не указана минимальная температура на вкладке свойсвт';
     }
     if (isEmptyInput('max_threshold')) {
-        return 'Не указана максимальная температура';
+        return 'Не указана максимальная температура на вкладке свойсвт';
     }
     if (isEmptyInput('min_alarm')) {
-        return 'Не указана мин. аварийная температура';
+        return 'Не указана мин. аварийная температура на вкладке свойсвт';
     }
     if (isEmptyInput('max_alarm')) {
-        return 'Не указана макс. аварийная температура';
+        return 'Не указана макс. аварийная температура на вкладке свойсвт';
     }
 
     if ($('#termostat_form input[name=object_type]').length
@@ -63,21 +63,21 @@ function validateTermostat() {
 
     let on_params = $("#termostat_form #method_on_params");
     if (on_params.is(":visible") && on_params.val().trim() === '') {
-        return 'Не указан параметр метода при включении';
+        return 'Не указан параметр метода при включении на вкладке методов';
     }
     on_params_int = parseInt(on_params.val().trim());
     if (on_params.is(":visible") &&
             (on_params.val().trim() != on_params_int || on_params_int < 0 || on_params_int > 100)) {
-        return 'Недопустимое значение параметра метода при включении';
+        return 'Недопустимое значение параметра метода при включении на вкладке методов';
     }
     let off_params = $("#termostat_form #method_off_params");
     if (off_params.is(":visible") && off_params.val().trim() === '') {
-        return 'Не указан параметр метода при выключении';
+        return 'Не указан параметр метода при выключении на вкладке методов';
     }
     off_params_int = parseInt(off_params.val().trim());
     if (off_params.is(":visible") &&
             (off_params.val().trim() != off_params_int || off_params_int < 0 || off_params_int > 100)) {
-        return 'Недопустимое значение параметра метода при выключении';
+        return 'Недопустимое значение параметра метода при выключении на вкладке методов';
     }
     return '';
 }

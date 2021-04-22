@@ -94,7 +94,7 @@
                     {{ Form::bs_submit_btn() }}
 
                     @include('objects.methods', ['object' => $manometr->iobject])
-                    @include('objects.events', ['object' => $manometr->iobject])
+                    @include('objects.sheduler', ['object' => $manometr->iobject])
 
                     {!! Form::close() !!}
                 </div>

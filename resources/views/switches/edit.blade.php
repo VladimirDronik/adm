@@ -157,7 +157,7 @@
                     {{ Form::bs_submit_btn() }}
 
                     @include('objects.methods', ['object' => $switch->object])
-                    @include('objects.events', ['object' => $switch->object])
+                    @include('objects.sheduler', ['object' => $switch->object])
 
                     {!! Form::close() !!}
                 </div>

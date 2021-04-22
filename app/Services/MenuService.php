@@ -131,6 +131,7 @@ class MenuService {
 
         $menu->name = $menu->title =$this->setNameIfEmpty($data['name']);
         $menu->image = $this->setImageIfEmpty($data['image']);
+        $menu->link = $data['link'];
         $menu->active = 1;
         $menu->parent = 0;
 
@@ -151,7 +152,7 @@ class MenuService {
 
         $menu->name = $menu->title =$this->setNameIfEmpty($data['name']);
         $menu->image = $this->setImageIfEmpty($data['image']);
-        $menu->link = $this->setImageIfEmpty($data['link']);
+        $menu->link = $data['link'];
         $menu->active = 1;
 
         $menu->save();

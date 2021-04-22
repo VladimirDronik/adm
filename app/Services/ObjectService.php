@@ -70,7 +70,7 @@ class ObjectService {
 
 
 
-    public function getHandlesByObjectId($object_id, $easyArray = false): array
+    public function getPropertiesByObjectId($object_id, $easyArray = false): array
     {
 
         if ($object_id) {
@@ -79,7 +79,7 @@ class ObjectService {
 
             switch ($object->type) {
 
-                case 'boiler': $handles = Boiler::getHandles();
+                case 'boiler': $properties = Boiler::getProperties();
                 break;
 
                 default: return [];
@@ -87,15 +87,15 @@ class ObjectService {
 
             if(!$easyArray) {
 
-                $handlesArray = [];
+                $propertiesArray = [];
 
-                foreach ($handles as $key => $handle) {
-                    $handlesArray[] = ['id'=> $key, 'name' => $handle];
+                foreach ($properties as $key => $property) {
+                    $handlesArray[] = ['id'=> $key, 'name' => $property];
                 }
 
-                return $handlesArray;
+                return $propertiesArray;
             }else
-                return $handles;
+                return $properties;
 
 
         }

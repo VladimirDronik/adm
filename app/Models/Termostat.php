@@ -85,6 +85,16 @@ class Termostat extends Model
         ];
     }
 
+    /*
+    public static function getEvents()
+    {
+        return [
+            'onCheck' => 'Проверка значения термостата',
+            self::THERMOSTAT_HOT => 'Нагревание',
+        ];
+    }
+    */
+
     public static function getThermostatIds()
     {
         return array_keys(self::getFullThermostatIds());

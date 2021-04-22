@@ -103,7 +103,7 @@
                             {{ $menus->appends(request()->input())->links() }}
                             <p class="text-right">Найдено: {{ $menus->total() }}</p>
                         @else
-                            <p class="mt-3">Помещения не найдены</p>
+                            <p class="mt-3">Подпункты не найдены</p>
                         @endif
                     </div>
                 </div>

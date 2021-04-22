@@ -43,7 +43,7 @@ class ObjectController extends Controller
         abort_if(!ajaxHas($r, ['object_id']), 400);
 
         $methods = $this->service->getMethodsByObjectId((int)$r->object_id);
-        $handles = $this->service->getHandlesByObjectId((int)$r->object_id);
+        $handles = $this->service->getPropertiesByObjectId((int)$r->object_id);
 
         return response()->json(['result' => true, 'methods' => $methods, 'handles' => $handles]);
     }

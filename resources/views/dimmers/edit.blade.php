@@ -69,7 +69,7 @@
                     {{ Form::bs_submit_btn() }}
 
                     @include('objects.methods', ['object' => $dimmer->object])
-                    @include('objects.events', ['object' => $dimmer->object])
+                    @include('objects.sheduler', ['object' => $dimmer->object])
 
                     {!! Form::close() !!}
                 </div>

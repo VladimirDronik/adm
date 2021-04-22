@@ -24,7 +24,7 @@ class TermostatService {
     }
 
     /**
-     * Удаление термостата. Если связанный объект системный, то удаление объекта, метода, события,
+     * Удаление термостата. Если связанный объект системный, то удаление объекта, метода, задачи расписания,
      * созданных автоматически при создании термостата
      *
      * @param int $id
@@ -62,6 +62,7 @@ class TermostatService {
 
     public function prepare(Termostat $termostat, array $data)
     {
+
         unset($data['object_type']);
         unset($data['device_id']);
         unset($data['port_id']);
@@ -71,6 +72,7 @@ class TermostatService {
         if (($data['room'] ?? 0) == 0) {
             $data['room'] = null;
         }
+
         $termostat->fill($data);
     }
 
@@ -194,7 +196,6 @@ class TermostatService {
 
                 Port::where('object', $termostat->id_object)->update(['object' => NULL, 'comment' => '', 'status' => 'IN']);
             }
-
 
             if(($data['room'] != null) && ($data['room'] != 0))
                RoomService::addTermostat($data['room'], $data['optimal']);

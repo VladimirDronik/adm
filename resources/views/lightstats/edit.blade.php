@@ -165,7 +165,7 @@
                     {{ Form::bs_submit_btn() }}
 
                     @include('objects.methods', ['object' => $lightstat->iobject])
-                    @include('objects.events', ['object' => $lightstat->iobject])
+                    @include('objects.sheduler', ['object' => $lightstat->iobject])
 
                     {!! Form::close() !!}
                 </div>

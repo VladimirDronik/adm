@@ -32,9 +32,9 @@ class Boiler extends Model
         return $is_full ? $types : array_keys($types);
     }
 
-    public static function getHandles()
+    public static function getProperties()
     {
-        $handles = [
+        $properties = [
             'csupply' => 'Температура подачи',
             'creturn' => 'Температура обратки',
             'state' => 'Состояние',
@@ -46,7 +46,7 @@ class Boiler extends Model
             'pressue' => 'Давление'
         ];
 
-        return $handles;
+        return $properties;
     }
 
 

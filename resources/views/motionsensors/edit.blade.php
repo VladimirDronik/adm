@@ -226,7 +226,7 @@
                     {{ Form::bs_submit_btn() }}
 
                     @include('objects.methods', ['object' => $motionsensor->object])
-                    @include('objects.events', ['object' => $motionsensor->object])
+                    @include('objects.sheduler', ['object' => $motionsensor->object])
 
                     {!! Form::close() !!}
                 </div>

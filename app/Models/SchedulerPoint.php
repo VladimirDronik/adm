@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $days дни выполнения скрипта
  * @property int $id_task id задачи расписания
  * @property int $close Если 1, то событие нельзя удалить
- * @property int $system Если 1, тоне показываем в событиях у клиента
+ * @property int $system Если 1, тоне показываем в планировщике у клиента
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerPoint newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerPoint newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerPoint query()

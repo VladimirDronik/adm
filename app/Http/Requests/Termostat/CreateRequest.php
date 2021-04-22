@@ -51,11 +51,11 @@ class CreateRequest extends FormRequest
             'name.required' => 'Не указано название',
             'name.max' => 'Название содержит более 250 символов',
             'name.unique' => 'Термостат с таким названием уже существует. Укажите другое название',
-            'optimal.required' => 'Не указана оптимальная температура',
-            'gisteresis.required' => 'Не указан гистерезис',
-            'thermostat.required' => 'Не указан режим',
+            'optimal.required' => 'Не указана оптимальная температура на вкладке свойств',
+            'gisteresis.required' => 'Не указан гистерезис на вкладке свойств',
+            'thermostat.required' => 'Не указан режим на вкладке свойств',
             'id_object.required' => 'Не указан объект термостата',
-            'object.required' => 'Не указан объект влияния',
+            'object.required' => 'Не указан объект влияния на вкладке методов',
         ];
     }
 }

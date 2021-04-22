@@ -8,9 +8,9 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование события «'. $event->name .'»',
-        'links' => [ route('events.index') => 'События'],
-        'last_link' => 'Редактирование события'])
+       ['title' => 'Редактирование задачи «'. $event->name .'»',
+        'links' => [ route('events.index') => 'Планировщик'],
+        'last_link' => 'Редактирование задачи планировщика'])
 @endsection
 
 @section('content')
@@ -167,7 +167,7 @@
                             </div>
                         @endif
 
-                        {{ Form::bs_title('Расписание события') }}
+                        {{ Form::bs_title('Расписание задачи') }}
                         <div class="form-group row">
                             <label class="col-md-3"><i>Тип периода</i></label>
                             <div class="col-md-7"><i>Описание</i></div>
@@ -279,7 +279,7 @@
 
         function validateEvent() {
             if (isEmptyInput('name')) {
-                return 'Не указано название события';
+                return 'Не указано название задачи';
             }
             const type = $('[name=type]:checked').val();
             if (type === 'script' && isEmptyAutoSelect('script')) {

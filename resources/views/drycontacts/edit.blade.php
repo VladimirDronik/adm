@@ -113,7 +113,7 @@
                     {{ Form::bs_submit_btn() }}
 
                     @include('objects.methods', ['object' => $drycontact->object])
-                    @include('objects.events', ['object' => $drycontact->object])
+                    @include('objects.sheduler', ['object' => $drycontact->object])
 
                     {!! Form::close() !!}
                 </div>

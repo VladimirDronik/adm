@@ -70,7 +70,7 @@ class ElementController extends Controller
         $images = ImageService::getMainImages();
         $objects = $objects = $this->objectRepository->getAllToArray();
         $element->value = $this->elementRepository->parser($element->value);
-        $handles = $this->objectService->getHandlesByObjectId($element->id_object, true);
+        $handles = $this->objectService->getPropertiesByObjectId($element->id_object, true);
 
         return view('elements.edit', compact('element', 'types', 'parents', 'objects',
             'images', 'handles'));

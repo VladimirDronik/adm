@@ -128,7 +128,7 @@
                 @endcan
                 @can('events')
                     <li> <a class="has-arrow" href="{{ route('events.index') }}" aria-expanded="false">
-                            <i class="fa fa-calendar"></i><span class="hide-menu">События</span></a></li>
+                            <i class="fa fa-calendar"></i><span class="hide-menu">Планировщик</span></a></li>
                 @endcan
                 @can('settings')
                     <li> <a class="has-arrow" href="{{ route('settings.index') }}" aria-expanded="false">

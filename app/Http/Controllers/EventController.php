@@ -6,7 +6,7 @@ use App\Http\Requests\Event\CreateRequest;
 use App\Http\Requests\Event\UpdateRequest;
 use App\Models\SchedulerPoint;
 use App\Models\SchedulerTask;
-use App\Repositories\EventRepository;
+use App\Repositories\SchedulerRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
 use App\Services\EventService;
@@ -20,7 +20,7 @@ class EventController extends Controller
     private $script_rep;
     private $service;
 
-    public function __construct(EventRepository $event_rep, ObjectRepository $object_rep,
+    public function __construct(SchedulerRepository $event_rep, ObjectRepository $object_rep,
                                 ScriptRepository $script_rep, EventService $service)
     {
         $this->event_rep = $event_rep;
@@ -67,10 +67,10 @@ class EventController extends Controller
                     ->with('success', 'Событие успешно сохранено. Осталось указать расписание');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении события ' .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при добавлении задачи планировщика ' .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении события');
+        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении задачи планировщика');
     }
 
     public function edit(int $id, ObjectService $object_service)
@@ -108,9 +108,9 @@ class EventController extends Controller
                 return redirect()->route('events.edit', [$event->id])->with('success','Событие успешно изменено');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении события '.$event->id.' ' .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при изменении задачи планировщика '.$event->id.' ' .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении события');
+        return back()->withInput($r->all())->with('error','Ошибка при изменении задачи');
     }
 }

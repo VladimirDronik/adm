@@ -17,6 +17,7 @@ use App\Services\MessageService;
 use App\Services\ObjectService;
 use App\Services\PortService;
 use App\Services\TermostatService;
+use App\Repositories\EventRepository;
 
 
 class TermostatController extends Controller
@@ -27,9 +28,11 @@ class TermostatController extends Controller
     private $usensors_rep;
     private $room_rep;
     private $service;
+    private $event_rep;
 
     public function __construct(TermostatRepository $termostat_rep, ObjectRepository $object_rep, UsensorRepository $usensor_rep,
-                                DeviceRepository $device_rep, RoomRepository $room_rep, TermostatService $service)
+                                DeviceRepository $device_rep, RoomRepository $room_rep, TermostatService $service,
+                                EventRepository $eventRepository)
     {
         $this->termostat_rep = $termostat_rep;
         $this->object_rep = $object_rep;
@@ -37,6 +40,7 @@ class TermostatController extends Controller
         $this->usensors_rep = $usensor_rep;
         $this->room_rep = $room_rep;
         $this->service = $service;
+        $this->event_rep = $eventRepository;
     }
 
     public function index()
@@ -66,9 +70,10 @@ class TermostatController extends Controller
         list($objects, $rooms, $types, $devices, $usensors, $HPControllers) = $this->getLists();
         $object_types =  HomeObject::getFullTypeIds();
         $can = gates('devices.show-object');
+        $tab =1;
 
         return view('termostats.create', compact('objects','rooms', 'types', 'devices',
-            'usensors', 'object_types', 'HPControllers', 'can'));
+            'usensors', 'object_types', 'HPControllers', 'can', 'tab'));
     }
 
 
@@ -115,9 +120,13 @@ class TermostatController extends Controller
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
 
+        $events = $this->event_rep->getAllById($termostat->id_object);
+
+        $tab = 1;
+
         return view('termostats.edit', compact('termostat', 'objects', 'rooms',
             'types', 'devices', 'methods', 'object_types', 'scripts', 'HPControllers', 'id_controller',
-            'subdevs', 'usensors', 'deviceId', 'portId', 'ports', 'messages', 'messagePoint', 'can'));
+            'subdevs', 'usensors', 'deviceId', 'portId', 'ports', 'messages', 'messagePoint', 'can', 'tab', 'events'));
     }
 
 
