@@ -18,4 +18,6 @@ class NotificationRepository
     {
         return Notification::where('id_object', $idObject)->first();
     }
+
+
 }

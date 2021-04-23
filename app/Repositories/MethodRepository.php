@@ -27,4 +27,9 @@ class MethodRepository
         }
         else return null;
     }
+
+    public static function getMethodByID($idMethod)
+    {
+       return Method::select('name', 'id_object')->where('id', $idMethod)->orderBy('id')->first();
+    }
 }

@@ -48,4 +48,10 @@ class ObjectRepository {
         return $query->orderBy('id')->paginate($pagination_count);
     }
 
+    public static function getNameById($idObject)
+    {
+        $object = HomeObject::select('name')->where('id', $idObject)->first();
+        return $object->name;
+    }
+
 }

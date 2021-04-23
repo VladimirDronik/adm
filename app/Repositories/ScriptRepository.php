@@ -27,6 +27,10 @@ class ScriptRepository {
         return $query->orderBy('id')->paginate($pagination_count);
     }
 
+    public static function  getNameById($idScript)
+    {
+        return Script::select('name')->where('id','=',$idScript)->first();
+    }
 
     public static function getIdByLink($link) {
 

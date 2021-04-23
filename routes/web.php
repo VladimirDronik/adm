@@ -142,6 +142,10 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('delete', 'UserController@delete')->name('delete');
         });
 
+        Route::group(['prefix' => 'actions', 'as' => 'actions.'], function () {
+            Route::post('getForEvent', 'ActionController@getForEvent')->name('getForEvent');
+        });
+
 
         Route::group(['prefix' => 'page', 'as' => 'page.'], function () {
             Route::post('delete', 'PageController@delete')->name('delete');

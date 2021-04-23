@@ -18,4 +18,9 @@ class SoundRepository
     {
         return Sound::orderBy('name')->get()->pluck('name', 'id')->toArray();
     }
+
+    public static function getNameById($idSound)
+    {
+        return Sound::where('id', $idSound)->first()->name;
+    }
 }

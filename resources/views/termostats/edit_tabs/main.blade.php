@@ -77,4 +77,6 @@
                 </div>
             </div>
         </div>
+
+        @include('messages.two')
 </div>

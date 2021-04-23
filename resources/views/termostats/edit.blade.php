@@ -91,6 +91,7 @@
     <script src="{{ asset('ela/js/pagescripts/termostat.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/events.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
     <script>
         const url_methods = '{{ route('ajax.objects.methods') }}';
@@ -248,6 +249,9 @@
 
             // edit method
             $('body').on('click', '.edit_btn', clickEditBtn);
+
+            // edit event
+            $('body').on('click', '.editEvent_btn', clickEditEventBtn);
 
 
             // change easy/script/none in modal

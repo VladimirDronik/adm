@@ -18,18 +18,11 @@ class CreateEventsTable extends Migration
             $table->string('property',50);
             $table->string('comparison',2);
             $table->string('value',5);
-            $table->unsignedInteger('script')->nullable()->comment('id скрипта из таблицы скриптов');
-            $table->unsignedInteger('method')->nullable()->comment('id метода из таблицы методов');
-            $table->unsignedInteger('notification')->nullable()->comment('id уведомления');
+
 
             $table->foreign('id_object')->references('id')->on('objects')
                 ->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('script')->references('id')->on('scripts')
-                ->onUpdate('cascade')->onDelete('set null');
-            $table->foreign('method')->references('id')->on('methods')
-                ->onUpdate('cascade')->onDelete('set null');
-            $table->foreign('notification')->references('id')->on('notifsettings')
-                ->onUpdate('cascade')->onDelete('set null');
+
 
         });
     }

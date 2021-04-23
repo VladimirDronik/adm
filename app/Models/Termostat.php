@@ -85,15 +85,40 @@ class Termostat extends Model
         ];
     }
 
-    /*
+
     public static function getEvents()
     {
         return [
             'onCheck' => 'Проверка значения термостата',
-            self::THERMOSTAT_HOT => 'Нагревание',
+            'onError' => 'Недоступность термостата',
+            'onThreshold' => 'Выход за пороговое значение',
+            'onStatus' => 'Смена статуса',
+            'onBattery' => 'Получение статуса батареи',
         ];
     }
-    */
+
+
+    /**
+     * Получение доступных свойств объекта.
+     * Формат: 'название_свойтсва' => ['Описание на руссом', 'доступно для чтения', 'доступно для записи']
+     * @return array
+     */
+    public static function getProperties()
+    {
+        return [
+            'current' => ['Текущая температура, °C', true, true],
+            'optimal' => ['Установленная температура, °C', true, true],
+            'gisteresis' => ['Гистерезис [0-10]', true, true],
+            'type' => ['Тип термостата [нагрев|охлажение]', true, true],
+            'min_threshold' => ['Мин. порог, °C', true, true],
+            'max_threshold' => ['Макс. порог, °C', true, true],
+            'min_alarm' => ['Мин. аварийное знач., °C', true, true],
+            'max_alarm' => ['Макс. аварийное знач., °C', true, true],
+            'room' => ['Помещение', true, true],
+            'battery' => ['Заряд батареи, %', true, false],
+        ];
+    }
+
 
     public static function getThermostatIds()
     {

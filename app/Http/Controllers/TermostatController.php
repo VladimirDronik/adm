@@ -121,12 +121,16 @@ class TermostatController extends Controller
         $messagePoint['second'] = 'При выключении';
 
         $events = $this->event_rep->getAllById($termostat->id_object);
+        $availableEvents = Termostat::getEvents();
+        $properties = Termostat::getProperties();
+
 
         $tab = 1;
 
         return view('termostats.edit', compact('termostat', 'objects', 'rooms',
             'types', 'devices', 'methods', 'object_types', 'scripts', 'HPControllers', 'id_controller',
-            'subdevs', 'usensors', 'deviceId', 'portId', 'ports', 'messages', 'messagePoint', 'can', 'tab', 'events'));
+            'subdevs', 'usensors', 'deviceId', 'portId', 'ports', 'messages', 'messagePoint', 'can', 'tab', 'events',
+            'availableEvents', 'properties'));
     }
 
 

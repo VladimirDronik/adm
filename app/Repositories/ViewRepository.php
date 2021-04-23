@@ -77,4 +77,10 @@ class ViewRepository {
             }
         }
     }
+
+
+    public static function getNameById($idView)
+    {
+        View::where('id', $idView)->first()->name;
+    }
 }
