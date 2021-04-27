@@ -41,8 +41,8 @@
                         <ul class="nav nav-tabs customtab" role="tablist">
                             <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
                             <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Свойства</span></a> </li>
-                            <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
                             <li class="nav-item"> <a class="nav-link @if($tab==4) active @endif"  data-toggle="tab" href="#portstab4"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">События</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
                             <li class="nav-item"> <a class="nav-link @if($tab==5) active @endif"  data-toggle="tab" href="#portstab5"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Планировщик</span></a> </li>
                         </ul>
                         <div class="tab-content">
@@ -52,11 +52,12 @@
                             <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
                                 @include('termostats/edit_tabs/prop')
                             </div>
-                            <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
-                                @include('termostats/edit_tabs/methods')
-                            </div>
                             <div class="tab-pane p-20 @if($tab==4) active @endif" id="portstab4" role="tabpanel">
-                                    @include('objects.events', ['object' => $termostat->iobject])
+                                @include('termostats/edit_tabs/events')
+                                @include('objects.events', ['object' => $termostat->iobject])
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
+                                @include('objects.methods', ['object' => $termostat->iobject])
                             </div>
                             <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
                                 @include('objects.sheduler', ['object' => $termostat->iobject])
@@ -75,6 +76,7 @@
                 <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
                 <button type="button" id="init_method_btn" style="display: none;" data-toggle="modal" data-target="#method_modal">&nbsp;</button>
                 <button type="button" id="init_message_btn" style="display: none;" data-toggle="modal" data-target="#message_modal">
+
             </div>
         </div>
     </div>
@@ -105,14 +107,23 @@
         const object_id = '{{ optional($termostat->iobject)->id }}';
         const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
         const url_device = '{{ route('ajax.devices.type_controller') }}';
+        const url_properties = '{{ route('ajax.objects.properties') }}';
+        const url_createAction = '{{ route('ajax.actions.add') }}';
+        const url_deleteAction = '{{ route('ajax.actions.delete') }}';
+        const url_eventUpdate = '{{ route('ajax.event.update') }}';
+        const url_deleteEvent = '{{ route('ajax.event.delete') }}';
+
         let del_id;
+        let del_type;
         let modal_btn_index = -1;
         let methods = [];
         let del_message;
 
         $(document).ready(function () {
             initTermostatForm();
+            initActionModal();
             initMethodsVar({{ optional($termostat->eobject)->id }});
+
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
@@ -185,6 +196,9 @@
                 storeObject();
             });
 
+
+
+
             function storeObject() {
                 const name = $("#create_object_modal input[name=object_name]").val().trim();
                 const type = $("#create_object_modal input[name=object_type]:checked").val().trim();
@@ -206,6 +220,8 @@
                     }
                 });
             }
+
+
 
             function updateObjectSelects(objects, selected) {
                 let id = false;
@@ -250,8 +266,6 @@
             // edit method
             $('body').on('click', '.edit_btn', clickEditBtn);
 
-            // edit event
-            $('body').on('click', '.editEvent_btn', clickEditEventBtn);
 
 
             // change easy/script/none in modal

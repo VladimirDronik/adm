@@ -1,5 +1,6 @@
 
 <br>
+{{ Form::bs_title('Настраиваемые события') }}
 
 <div class="form-group row">
 
@@ -40,7 +41,7 @@
                                 class="btn btn-info btn-sm btn-rounded editEvent_btn">
                             <i class="fa fa-cog fa-lg"></i>
                         </button>
-                        <button type="button" data-id="{{ $event->id }}" data-name="{{ $event->name }}" class="btn btn-danger btn-rounded btn-sm del_btn">
+                        <button type="button" data-id="{{ $event->id }}" data-name="{{ $event->name }}" class="btn btn-danger btn-rounded btn-sm delEvent_btn">
                             <i class="fa fa-trash fa-lg"></i>
                         </button>
                     @endif
@@ -61,11 +62,13 @@
 </div>
 
 @include('objects.event_modal')
+@include('objects.action_modal')
 <button type="button" id="init_event_btn" style="display: none;" data-toggle="modal" data-target="#event_modal">&nbsp;</button>
+<button type="button" id="init_action_btn" style="display: none;" data-toggle="modal" data-target="#action_modal">
+
 
 <script>
     const url_actions = '{{ route('ajax.actions.getForEvent') }}';
-
 
     document.addEventListener('DOMContentLoaded', function() {
 
@@ -76,7 +79,6 @@
                 if($('#data-holder').val())
                 loadActions(Number($('#data-holder').val()));
             }
-
 
         });
 

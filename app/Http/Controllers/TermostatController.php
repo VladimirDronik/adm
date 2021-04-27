@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Termostat\CreateRequest;
 use App\Http\Requests\Termostat\UpdateRequest;
 use App\Models\HomeObject;
+use App\Models\Sound;
 use App\Models\Termostat;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
@@ -13,11 +14,14 @@ use App\Repositories\RoomRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\TermostatRepository;
 use App\Repositories\UsensorRepository;
+use App\Repositories\ViewRepository;
 use App\Services\MessageService;
 use App\Services\ObjectService;
 use App\Services\PortService;
 use App\Services\TermostatService;
 use App\Repositories\EventRepository;
+use App\Repositories\SoundRepository;
+
 
 
 class TermostatController extends Controller
@@ -29,10 +33,12 @@ class TermostatController extends Controller
     private $room_rep;
     private $service;
     private $event_rep;
+    private $view_rep;
+
 
     public function __construct(TermostatRepository $termostat_rep, ObjectRepository $object_rep, UsensorRepository $usensor_rep,
                                 DeviceRepository $device_rep, RoomRepository $room_rep, TermostatService $service,
-                                EventRepository $eventRepository)
+                                EventRepository $eventRepository, ViewRepository $viewRepository)
     {
         $this->termostat_rep = $termostat_rep;
         $this->object_rep = $object_rep;
@@ -41,6 +47,8 @@ class TermostatController extends Controller
         $this->room_rep = $room_rep;
         $this->service = $service;
         $this->event_rep = $eventRepository;
+        $this->view_rep = $viewRepository;
+
     }
 
     public function index()
@@ -94,9 +102,10 @@ class TermostatController extends Controller
 
 
 
-    public function edit(Termostat $termostat, ObjectService $object_service, ScriptRepository $script_rep,
+    public function edit(Termostat $termostat, $tab=1, ObjectService $object_service, ScriptRepository $script_rep,
                          PortService $portsService, MessageService $messagesService)
     {
+
         list($objects, $rooms, $types, $devices, $usensors, $HPControllers) = $this->getLists();
 
 
@@ -123,14 +132,14 @@ class TermostatController extends Controller
         $events = $this->event_rep->getAllById($termostat->id_object);
         $availableEvents = Termostat::getEvents();
         $properties = Termostat::getProperties();
+        $sounds = SoundRepository::getAllToArray();
+        $views = $this->view_rep->getAllToArray();
 
-
-        $tab = 1;
 
         return view('termostats.edit', compact('termostat', 'objects', 'rooms',
             'types', 'devices', 'methods', 'object_types', 'scripts', 'HPControllers', 'id_controller',
             'subdevs', 'usensors', 'deviceId', 'portId', 'ports', 'messages', 'messagePoint', 'can', 'tab', 'events',
-            'availableEvents', 'properties'));
+            'availableEvents', 'properties', 'sounds', 'views'));
     }
 
 

@@ -9,7 +9,7 @@ use App\Models\SchedulerTask;
 use App\Repositories\SchedulerRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
-use App\Services\EventService;
+use App\Services\SchedulerService;
 use App\Services\ObjectService;
 use Illuminate\Http\Request;
 
@@ -21,7 +21,7 @@ class EventController extends Controller
     private $service;
 
     public function __construct(SchedulerRepository $event_rep, ObjectRepository $object_rep,
-                                ScriptRepository $script_rep, EventService $service)
+                                ScriptRepository $script_rep, SchedulerService $service)
     {
         $this->event_rep = $event_rep;
         $this->object_rep = $object_rep;

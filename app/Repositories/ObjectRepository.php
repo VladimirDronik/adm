@@ -50,8 +50,7 @@ class ObjectRepository {
 
     public static function getNameById($idObject)
     {
-        $object = HomeObject::select('name')->where('id', $idObject)->first();
-        return $object->name;
+        return HomeObject::select('name')->where('id', $idObject)->first();
     }
 
 }

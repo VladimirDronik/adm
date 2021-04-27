@@ -38,6 +38,18 @@ class ObjectController extends Controller
         return response()->json(['result' => true, 'methods' => $methods]);
     }
 
+    public function properties(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['object_id']), 400);
+
+        $properties = $this->service->getPropertiesByObjectId((int)$r->object_id, true);
+
+        return response()->json(['result' => true, 'properties' => $properties]);
+    }
+
+
+
+
     public function methodsAndHandles(Request $r)
     {
         abort_if(!ajaxHas($r, ['object_id']), 400);

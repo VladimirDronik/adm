@@ -32,4 +32,24 @@ class ActionController extends Controller
 
         return response()->json(['actions' => $this->service->getForEvent((int)$r->id_event)]);
     }
+
+
+    public function addAction(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['id_event']), 400);
+
+        $result = $this->service->addAction($r->id_event, $r);
+
+        return response()->json(['result' =>  $result]);
+    }
+
+
+    public function delete(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['id_action']), 400);
+
+        $result = $this->service->delete($r->id_action, $r);
+
+        return response()->json(['result' =>  $result]);
+    }
 }

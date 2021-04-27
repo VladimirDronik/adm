@@ -36,7 +36,7 @@ class NotificationController extends Controller
         $text_flag = [1 => 'Включено', 0 => 'Выключено'];
         $sound_flag = [1 => 'Включено', 0 => 'Выключено'];
 
-        $sounds = $soundRepository->getAllToArray();
+        $sounds = SoundRepository::getAllToArray();
 
         return view('notifications.edit', compact('notification', 'priority',
             'text_flag', 'sound_flag', 'sounds'));

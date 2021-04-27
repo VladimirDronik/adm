@@ -248,7 +248,7 @@
         const store_url = '{{ route('ajax.points.store') }}';
         const del_url = '{{ route('ajax.points.delete') }}';
         const url_methods = '{{ route('ajax.objects.methods') }}';
-        let url_name = '{{ route('ajax.events.validation.name') }}';
+        let url_name = '{{ route('ajax.scheduler.validation.name') }}';
         let event_id = '{{ $event->id }}';
         let is_valid = false;
         let year_dates = [];

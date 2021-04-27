@@ -14,13 +14,13 @@ use App\Models\Sound;
 class SoundRepository
 {
 
-    public function getAllToArray(): array
+    public static function getAllToArray(): array
     {
         return Sound::orderBy('name')->get()->pluck('name', 'id')->toArray();
     }
 
     public static function getNameById($idSound)
     {
-        return Sound::where('id', $idSound)->first()->name;
+        return Sound::where('id', $idSound)->first();
     }
 }

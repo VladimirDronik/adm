@@ -238,7 +238,7 @@
             $('#del_modal_btn').click(function(){
                 if (del_id) {
                     $.ajax({
-                        url: '{{ route('ajax.events.delete') }}',
+                        url: '{{ route('ajax.scheduler.delete') }}',
                         data: { '_token': _token, 'id': del_id },
                         success: function (data) {
                             if (data.result) {
@@ -273,7 +273,7 @@
                     let id = $(this).data('id');
 
                     $.ajax({
-                        url: '{{ route('ajax.events.system') }}',
+                        url: '{{ route('ajax.scheduler.system') }}',
                         data: { '_token': _token, 'id': id, 'is_system': is_system},
                         success: function (data) {
                             if (data.result) {
@@ -292,7 +292,7 @@
                     let id = $(this).data('id');
 
                     $.ajax({
-                        url: '{{ route('ajax.events.hidden') }}',
+                        url: '{{ route('ajax.scheduler.hidden') }}',
                         data: { '_token': _token, 'id': id, 'is_hidden': is_hidden },
                         success: function (data) {
                             if (data.result) {
@@ -310,7 +310,7 @@
                 let id = $(this).data('id');
 
                 $.ajax({
-                    url: '{{ route('ajax.events.active') }}',
+                    url: '{{ route('ajax.scheduler.active') }}',
                     data: { '_token': _token, 'id': id, 'active': active },
                     success: function (data) {
                         if (data.result) {

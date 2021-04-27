@@ -51,11 +51,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('manometr', 'ManometrController')->except('show','destroy')->middleware('can:devices');
     Route::resource('usensors', 'UsensorController')->except('show','destroy')->middleware('can:devices');
     Route::resource('drycontacts', 'DrycontactController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('events', 'EventController')->except('show','destroy')->middleware('can:events');
+    Route::resource('events', 'SchedulerController')->except('show','destroy')->middleware('can:events');
     Route::resource('logs', 'LogController')->only('index')->middleware('can:logs');
     Route::resource('users', 'UserController')->except('show','destroy')->middleware('can:rooms');
     Route::resource('notifications', 'NotificationController')->except('show','destroy')->middleware('can:settings');
     Route::resource('virtuals', 'VirtualsController')->except('show','destroy')->middleware('can:devices');
+
+    Route::get('termostats/{termostat}/edit/{tab?}', 'TermostatController@edit')->name('termostats.edit')->middleware('can:devices');
+
 
     Route::resource('rooms', 'RoomController')->except('show','create','store','destroy')->middleware('can:rooms');
     Route::get('rooms/group/{id}', 'RoomGroupController@index')->name('rooms.group.index')->middleware('can:rooms');
@@ -144,6 +147,14 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'actions', 'as' => 'actions.'], function () {
             Route::post('getForEvent', 'ActionController@getForEvent')->name('getForEvent');
+            Route::post('add', 'ActionController@addAction')->name('add');
+            Route::post('delete', 'ActionController@delete')->name('delete');
+        });
+
+        Route::group(['prefix' => 'event', 'as' => 'event.'], function () {
+            Route::post('create', 'EventController@create')->name('create');
+            Route::post('update', 'EventController@update')->name('update');
+            Route::post('delete', 'EventController@delete')->name('delete');
         });
 
 
@@ -183,6 +194,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::group(['prefix' => 'objects', 'as' => 'objects.'], function () {
             Route::post('getObjects', 'ObjectController@getObjects')->name('getObjects');
             Route::post('methods', 'ObjectController@methods')->name('methods');
+            Route::post('properties', 'ObjectController@properties')->name('properties');
             Route::post('methodsAndHandles', 'ObjectController@methodsAndHandles')->name('methodsAndHandles');
             Route::post('view/all', 'ObjectController@getViewAll')->name('view.all');
             Route::post('delete', 'ObjectController@delete')->name('delete');
@@ -224,11 +236,11 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('loaddata', 'PortController@getViewData')->name('load.data');
         Route::post('savemethod', 'PortController@storeMethod');
 
-        Route::post('events/delete', 'EventController@delete')->name('events.delete');
-        Route::post('events/validation/name', 'EventController@validateName')->name('events.validation.name');
-        Route::post('events/system', 'EventController@system')->name('events.system');
-        Route::post('events/hidden', 'EventController@hidden')->name('events.hidden');
-        Route::post('events/active', 'EventController@active')->name('events.active');
+        Route::post('scheduler/delete', 'SchedulerController@delete')->name('scheduler.delete');
+        Route::post('scheduler/validation/name', 'SchedulerController@validateName')->name('scheduler.validation.name');
+        Route::post('scheduler/system', 'SchedulerController@system')->name('scheduler.system');
+        Route::post('scheduler/hidden', 'SchedulerController@hidden')->name('scheduler.hidden');
+        Route::post('scheduler/active', 'SchedulerController@active')->name('scheduler.active');
 
         Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
             Route::post('delete', 'SchedulerPointController@delete')->name('delete');

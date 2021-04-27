@@ -13,10 +13,10 @@ class ViewRepository {
 
     public function getAllToArray()
     {
-        $views = View::select('id', 'name')->orderBy('name')
-            ->pluck('name', 'id')->toArray();
+        $views = View::select('id', 'description')->orderBy('description')
+            ->pluck('description', 'id')->toArray();
 
-        array_walk($views, function (&$view, $key) { $view = $key.' - '.$view; });
+        //array_walk($views, function (&$view, $key) { $view = $key.' - '.$view; });
 
         return $views;
     }
@@ -81,6 +81,6 @@ class ViewRepository {
 
     public static function getNameById($idView)
     {
-        View::where('id', $idView)->first()->name;
+       return View::where('id', $idView)->first();
     }
 }

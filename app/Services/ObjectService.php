@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Boiler;
 use App\Models\HomeObject;
 use App\Models\Method;
+use App\Models\Termostat;
 use App\Repositories\ObjectRepository;
 use Illuminate\Support\Facades\DB;
 
@@ -70,7 +71,7 @@ class ObjectService {
 
 
 
-    public function getPropertiesByObjectId($object_id, $easyArray = false): array
+    public function getPropertiesByObjectId($object_id, $easyArray = true): array
     {
 
         if ($object_id) {
@@ -80,23 +81,25 @@ class ObjectService {
             switch ($object->type) {
 
                 case 'boiler': $properties = Boiler::getProperties();
-                break;
+                    break;
+
+                case 'termostat': $properties = Termostat::getProperties();
+                    break;
 
                 default: return [];
             }
 
-            if(!$easyArray) {
+            if($easyArray) {
 
                 $propertiesArray = [];
 
                 foreach ($properties as $key => $property) {
-                    $handlesArray[] = ['id'=> $key, 'name' => $property];
+                    $propertiesArray[] = ['id'=> $key, 'name' => $property];
                 }
 
                 return $propertiesArray;
             }else
                 return $properties;
-
 
         }
 

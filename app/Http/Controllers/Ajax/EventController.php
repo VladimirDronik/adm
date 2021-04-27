@@ -1,13 +1,19 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: kinord
+ * Date: 27.04.21
+ * Time: 15:32
+ */
 
 namespace App\Http\Controllers\Ajax;
-
 use App\Services\EventService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class EventController extends Controller
 {
+
     private $service;
 
     public function __construct(EventService $service)
@@ -15,40 +21,27 @@ class EventController extends Controller
         $this->service = $service;
     }
 
+    public function update(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['id_event']), 400);
+
+        $result = $this->service->update($r->id_event, $r);
+
+        return response()->json(['result' =>  $result]);
+    }
+
+
+    public function create(Request $r)
+    {
+
+    }
+
     public function delete(Request $r)
     {
-        abort_if(!ajaxHas($r, ['id']), 400);
+        abort_if(!ajaxHas($r, ['id_event']), 400);
 
-        return response()->json(['result' => (bool)$this->service->delete((int)$r->id)]);
-    }
+        $result = $this->service->delete($r->id_event);
 
-    public function validateName(Request $r)
-    {
-        abort_if(!ajaxHas($r, ['id','name']), 400);
-
-        return response()->json($this->service->validateName((int)$r->id, $r->name));
-    }
-
-    public function system(Request $r)
-    {
-        abort_if(!ajaxHas($r, ['id', 'is_system']), 400);
-
-        return response()->json(['result' => $this->service->changeSystem((int)$r->id, (int)$r->is_system)]);
-    }
-
-    public function hidden(Request $r)
-    {
-        abort_if(!ajaxHas($r, ['id', 'is_hidden']), 400);
-
-        return response()->json(['result' => $this->service->changeHidden((int)$r->id, (int)$r->is_hidden)]);
-    }
-
-    public function active(Request $r)
-    {
-        abort_if(!ajaxHas($r, ['id', 'active']), 400);
-
-        return response()->json(['result' => $this->service->changeActive((int)$r->id, (int)$r->active)]);
+        return response()->json(['result' =>  $result]);
     }
 }
-
-
