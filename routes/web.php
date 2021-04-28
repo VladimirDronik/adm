@@ -57,7 +57,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('notifications', 'NotificationController')->except('show','destroy')->middleware('can:settings');
     Route::resource('virtuals', 'VirtualsController')->except('show','destroy')->middleware('can:devices');
 
-    Route::get('termostats/{termostat}/edit/{tab?}', 'TermostatController@edit')->name('termostats.edit')->middleware('can:devices');
+    //Route::get('termostats/{termostat}/edit/{tab?}', 'TermostatController@edit')->name('termostats.edit')->middleware('can:devices');
 
 
     Route::resource('rooms', 'RoomController')->except('show','create','store','destroy')->middleware('can:rooms');

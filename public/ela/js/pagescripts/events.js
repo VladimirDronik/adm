@@ -18,6 +18,7 @@ function addActionBtn() {
     darkingBackWindow();
     hideAllElements();
 
+    $('#type_action option:first').prop('selected', true);
     $('#init_action_btn').click();
 }
 
@@ -26,8 +27,6 @@ function addActionBtn() {
 
 function showEditEventModal(data) {
     clearEventModal();
-
-
 
     $('#m_id').val(data.id);
     $('#method_modal_title').text('Редактирование события');
@@ -55,25 +54,29 @@ function showEditEventModal(data) {
 /**
 * Загрука всех действий для события для отображения в модальном окне создания или редактирования
  */
-function loadActions(id) {
+function loadActions(idEvent, outputElement) {
 
 
     $('#actions_div').html('');
+    $(outputElement).html('');
 
     //Запрос всех доступных действий для выбранного события
     $.ajax({
         url: url_actions,
-        data: {'_token': _token, 'id_event': id},
+        data: {'_token': _token, 'id_event': idEvent},
         success: function (datares) {
 
             datares.actions.forEach(function(item, i, arr) {
 
                 var output_string;
+                var output_image;
                 var link;
 
                 if (item.type == 'script') {
                     output_string = $('#actions_div').html() +
                         '<br><b>&#xf085; Cкрипт: </b><i>"' + item.nameValue + '"</i>';
+
+                    output_image = $(outputElement).html() + '<label title="Cкрипт: '+ item.nameValue + '">&#xf085</label>&nbsp;';
                     //link = '/scripts';
                 }
 
@@ -83,40 +86,75 @@ function loadActions(id) {
                         '<br><b>&#xf0c1; Метод: </b><i>"' + item.nameValue +
                         '"</i><b> объекта </b><i>"' + item.objectName + '"</i>';
 
-                   // link = '/objects/';
+                    output_image = $(outputElement).html() + '<label title="Метод: '+ item.nameValue + ' объекта ' +
+                        item.objectName + '">&#xf0c1</label>&nbsp;';
+
+
+                    // link = '/objects/';
                 }
 
 
-                if (item.type == 'notification')
+                if (item.type == 'notification') {
                     output_string = $('#actions_div').html() +
                         '<br><b>&#xf1d8; Уведомление:</b> <i>"' + item.nameValue + '...' + '"</i>';
 
+                    output_image = $(outputElement).html() + '<label title="Уведомление: '+ item.nameValue + '">&#xf1d8</label>&nbsp;';
+                }
 
-                if (item.type == 'sound')
+                if (item.type == 'sound') {
+
                     output_string = $('#actions_div').html() +
                         '<br><b>&#xf0f3; Звук: </b><i>"' + item.nameValue.substr(0, 40) + '...' + '"</i>';
 
-                if (item.type == 'property')
+                    output_image = $(outputElement).html() + '<label title="Звук: '+ item.nameValue + '">&#xf0f3</label>&nbsp;';
+                }
+
+
+                if (item.type == 'property') {
+
                     output_string = $('#actions_div').html() +
                         '<br><b>&#xf1e8; Свойство: </b><i>"' + item.nameValue + '"</i><b> объекта </b><i>"' + item.objectName + '"</i>';
 
-                if (item.type == 'view')
+                    output_image = $(outputElement).html() + '<label title="Свойство: '+ item.nameValue +
+                        ' объекта ' + item.objectName + '">&#xf1e8</label>&nbsp;';
+
+                }
+
+
+                if (item.type == 'view') {
+
                     output_string = $('#actions_div').html() +
                         '<br><b>&#xf247; Отображение: </b><i>"' + item.objectName + '"</i><b> установить статус </b><i>"' + item.nameValue + '"</i>';
 
-                if (item.type == 'log')
+                    output_image = $(outputElement).html() + '<label title="Отображение: '+ item.objectName +
+                        ' установить статус ' + item.nameValue + '">&#xf247</label>&nbsp;';
+                }
+
+                if (item.type == 'log') {
+
                     output_string = $('#actions_div').html() +
                         '<br><b>&#xf044; Запись в лог: </b><i>"' + item.nameValue.substr(0, 40) + '...' + '"</i>';
 
+                    output_image = $(outputElement).html() + '<label title="Запись в лог: '+ item.nameValue + '">&#xf044</label>&nbsp;';
+
+                }
 
 
-                $('#actions_div').html(function() {
 
-                    return output_string +
-                        //' <a href="' + link + '" target="_blank"><i class="fa fa-pencil fa-lg" style="color:#00aff0; cursor: pointer" ></i>' +
-                        ' <i class="fa fa-trash-o fa-lg del_action" data-id="' + item.id + '" data-type="' + item.type + '" style="color:#a94442; cursor: pointer" ></i>';
+                if(outputElement != undefined)
 
-                });
+                    $(outputElement).html(function() {
+                        return output_image;
+                    });
+
+                else
+                    $('#actions_div').html(function() {
+
+                        return output_string +
+                            //' <a href="' + link + '" target="_blank"><i class="fa fa-pencil fa-lg" style="color:#00aff0; cursor: pointer" ></i>' +
+                            ' <i class="fa fa-trash-o fa-lg del_action" data-id="' + item.id + '" data-type="' + item.type + '" style="color:#a94442; cursor: pointer" ></i>';
+
+                    });
             });
         }
     });
@@ -162,6 +200,15 @@ function initActionModal() {
 
     //Delete Event
     $('body').on('click', '.delEvent_btn', deleteEventModal);
+
+
+    //Загрузка всех actions для всех events при загрузке страницы
+    events = $('#allevents').val();
+    eventsArray = events.split(',');
+    eventsArray.forEach(function(item, i, arr) {
+        if(item)
+          loadActions(item, '#action' + item);
+     });
 
 
     //del action AJAX functions on press confirm
@@ -288,10 +335,11 @@ function deleteAction() {
         url: url_deleteAction,
         data: {'_token': _token, 'id_action': del_id},
         success: function (data) {
+            loadActions(Number($('#data-holder').val()));
         }
     });
 
-    loadActions(Number($('#data-holder').val()));
+
 }
 
 
@@ -324,6 +372,8 @@ function deleteActionOrEvent() {
 }
 
 
+
+
 //Сохранение изменений события
 function clickApplyEventBtn() {
 
@@ -334,28 +384,35 @@ function clickApplyEventBtn() {
   comparison = $('#m_comparison').val();
   value = $('#m_value').val();
 
+  if(name) {
 
-if ($('#event_mode').val() == 'new')
-    url ='Ajax.event.create';
-    else url = url_eventUpdate;
 
-    $.ajax({
-        url: url,
-        data: {'_token': _token, 'id_event': id_event, 'name': name, 'event': event,
-        'property': property, 'comparison': comparison, 'value': value},
-        success: function (resp) {
+      //Если создание события или редакктирование события
+      if ($('#event_mode').val() == 'new')
+          url ='Ajax.event.create';
+      else url = url_eventUpdate;
 
-            currentUrl = window.location.href;
-            if(currentUrl.split("/").pop() == 4)
-            $newUrl = currentUrl;
-            else $newUrl = currentUrl + '/4';
+      $.ajax({
+          url: url,
+          data: {'_token': _token, 'id_event': id_event, 'name': name, 'event': event,
+              'property': property, 'comparison': comparison, 'value': value},
+          success: function (resp) {
 
-            if(resp.result == true) {
-                document.location.href = $newUrl; //select tab 4
-                cancelEvent_btn.click();
-            }
-        }
-    });
+
+              if(resp.result == true) {
+
+                  $('#name'+id_event).text(name);
+                  $('#condition'+id_event).text(property+comparison+value);
+
+                  loadActions(id_event, '#action'+id_event);
+
+                  cancelEvent_btn.click();
+              }
+          }
+      });
+
+  } else
+      $('#alert_div').show();
 
 }
 

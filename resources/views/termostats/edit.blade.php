@@ -124,7 +124,6 @@
             initActionModal();
             initMethodsVar({{ optional($termostat->eobject)->id }});
 
-
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_usensor_id").chosen({width:"100%", no_results_text: "Не найдено"});

@@ -12,10 +12,17 @@
 
 </div>
 
+
 <div id="methods_div">
     @foreach($events as $event)
 
             <div class="form-group row" id="div{{$event->id}}">
+
+
+                @php
+                    $allEvents .= $event->id.',';
+                @endphp
+                <input type="hidden" id="allevents" value="{{ $allEvents }}">
 
                 <label class="col-md-1" id="methodid{{$event->id}}">
                     {{$event->id}}
@@ -26,8 +33,10 @@
                 <label class="col-md-3" id="condition{{$event->id}}">
                     {{$event->property.' '.$event->comparison.' '.$event->value}}
                 </label>
-                <div class="col-md-2" id="action{{$event->id}}">
-                    {{ $event->comment }}
+
+                <div class="col-md-2" style="font-family: 'FontAwesome', Helvetica;" id="action{{$event->id}}">
+
+
                 </div>
                 <div class="col-md-1 text-right">
                     @if(!$event->is_system)
@@ -70,6 +79,9 @@
 <script>
     const url_actions = '{{ route('ajax.actions.getForEvent') }}';
 
+
+
+/*
     document.addEventListener('DOMContentLoaded', function() {
 
         // отслеживаем активность вкладки браузера
@@ -83,4 +95,5 @@
         });
 
     });
+    */
 </script>

@@ -20,7 +20,8 @@ class EventRepository
      */
     public function getAllById($idObject)
     {
-       return Events::where('id_object', $idObject)->orderBy('name')->get();
+
+        return Events::where('id_object', $idObject)->orderBy('name')->get();
     }
 
     /**

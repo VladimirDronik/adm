@@ -7,6 +7,11 @@
                 <h4 class="modal-title" id="method_modal_title">Добавление метода</h4>
             </div>
             <div class="modal-body">
+
+                <div class="alert alert-danger" id="alert_div" role="alert" style="display: none">
+                    Не заполнены обязательные поля!
+                </div>
+
                 <div class="alert alert-danger alert-dismissible fade show" id="methods_error_div" style="display: none;">
                     <span id="methods_error_text"></span>
                 </div>
@@ -18,7 +23,7 @@
                         <strong>Название*:</strong>
                     </label>
                     <div class="col-md-9">
-                        <input class="form-control" required name="m_name" id="event_name" type="text" value="">
+                        <input class="form-control"  name="m_name" id="event_name" type="text" value="">
                     </div>
                 </div>
 
@@ -49,7 +54,7 @@
                                 <select name="m_property" id="m_property" autocomplete="off" class="form-control" style="width:auto;">
                                     <option value="">Не указано</option>
                                     @foreach($properties as $key => $property)
-                                        @if($property[1]) {{-- Если свойство доступно для чтения --}}
+                                        @if($property[1])  Если свойство доступно для чтения
                                         <option value="{{ $key }}">{{ $property[0] }}</option>
                                         @endif
                                     @endforeach
@@ -61,7 +66,7 @@
                                     <option value="="> = </option>
                                     <option value="!="> != </option>
                                 </select>
-                                <input class="form-control" required name="m_value" id="m_value" type="text" value="" size="6"
+                                <input class="form-control"  name="m_value" id="m_value" type="text" value="" size="6"
                                        style="height: 33px;">
                             </div>
                         </div>

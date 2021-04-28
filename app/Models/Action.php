@@ -10,4 +10,5 @@ class Action extends Model
     protected $table = 'actions';
     public $timestamps = false;
     protected $guarded = ['id'];
+
 }
