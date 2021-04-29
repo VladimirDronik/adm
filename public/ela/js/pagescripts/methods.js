@@ -100,6 +100,7 @@ function showEditModal(data) {
 
 
 function addMethod(data) {
+
     const id_html = !is_super_admin ? '' :
         `<label class="col-md-1" id="methodid${data.id}}">${data.id}</label>`;
     const col_id_html = is_super_admin ? 1 : 2;

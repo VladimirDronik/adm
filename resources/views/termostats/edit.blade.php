@@ -112,12 +112,15 @@
         const url_deleteAction = '{{ route('ajax.actions.delete') }}';
         const url_eventUpdate = '{{ route('ajax.event.update') }}';
         const url_deleteEvent = '{{ route('ajax.event.delete') }}';
+        const url_eventAdd = '{{ route('ajax.event.create') }}';
+
 
         let del_id;
         let del_type;
         let modal_btn_index = -1;
         let methods = [];
         let del_message;
+        let tempActions = [];
 
         $(document).ready(function () {
             initTermostatForm();

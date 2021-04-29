@@ -155,6 +155,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('create', 'EventController@create')->name('create');
             Route::post('update', 'EventController@update')->name('update');
             Route::post('delete', 'EventController@delete')->name('delete');
+            Route::post('create', 'EventController@create')->name('create');
         });
 
 

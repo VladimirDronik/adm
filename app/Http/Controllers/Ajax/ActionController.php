@@ -38,7 +38,7 @@ class ActionController extends Controller
     {
         abort_if(!ajaxHas($r, ['id_event']), 400);
 
-        $result = $this->service->addAction($r->id_event, $r);
+        $result = $this->service->addAction($r->id_event, $r->data);
 
         return response()->json(['result' =>  $result]);
     }

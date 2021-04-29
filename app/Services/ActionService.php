@@ -128,39 +128,39 @@ class ActionService
 
         $action = new Action();
         $action->id_event = $idEvent;
-        $action->type = $actionParams->typeAction;
+        $action->type = $actionParams['typeAction'];
         $action->active = 1;
 
-        switch ($actionParams->typeAction) {
+        switch ($actionParams['typeAction']) {
 
             case 'script':
-                $action->relate = $actionParams->action_script;
+                $action->relate = $actionParams['action_script'];
                 break;
 
             case 'method':
-                $action->relate = $actionParams->action_method;
+                $action->relate = $actionParams['action_method'];
                 break;
 
             case 'notification':
-                $action->value = $actionParams->action_notif;
+                $action->value = $actionParams['action_notif'];
                 break;
 
             case 'sound':
-                $action->relate = $actionParams->action_sound;
+                $action->relate = $actionParams['action_sound'];
                 break;
 
             case 'property':
-                $action->relate = $actionParams->action_object;
-                $action->value =  $actionParams->action_property.'='.$actionParams->action_value;
+                $action->relate = $actionParams['action_object'];
+                $action->value =  $actionParams['action_property'].'='.$actionParams['action_value'];
                 break;
 
             case 'view':
-                $action->relate = $actionParams->action_view;
-                $action->value =  $actionParams->action_view_status;
+                $action->relate = $actionParams['action_view'];
+                $action->value =  $actionParams['action_view_status'];
                 break;
 
             case 'log':
-                $action->value =  $actionParams->action_log;
+                $action->value =  $actionParams['action_log'];
                 break;
 
             default: break;

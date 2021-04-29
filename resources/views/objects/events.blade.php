@@ -13,7 +13,7 @@
 </div>
 
 
-<div id="methods_div">
+<div id="events_div">
     @foreach($events as $event)
 
             <div class="form-group row" id="div{{$event->id}}">
@@ -64,7 +64,7 @@
 </div>
 <div class="form-group row">
     <div class="col-md-12 text-left">
-        <button id="add_btn" type="button" class="btn btn-primary">
+        <button id="addEvent_btn" type="button" class="btn btn-primary">
             <i class="fa fa-plus fa-lg"></i> Добавить событие
         </button>
     </div>

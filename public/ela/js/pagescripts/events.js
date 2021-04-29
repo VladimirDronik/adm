@@ -23,16 +23,18 @@ function addActionBtn() {
 }
 
 
-
+/**
+ * Показ окна редактирования метода
+ */
 
 function showEditEventModal(data) {
     clearEventModal();
 
-    $('#m_id').val(data.id);
+    $('#event_id').val(data.id);
     $('#method_modal_title').text('Редактирование события');
-    $('#apply_btn').text('Сохранить изменения');
+    $('#applyEvent_btn').text('Сохранить изменения');
 
-    $('input[name=m_name]').val($('#name'+data.id).text().trim());
+    $('input[name=event_name]').val($('#name'+data.id).text().trim());
 
     if (data.event)
         $('#m_event option[value=' + data.event + ']').prop('selected', true);
@@ -41,7 +43,7 @@ function showEditEventModal(data) {
         $('#m_property option[value=' + data.property +']').prop('selected', true);
 
     $('#m_comparison option[value="' + data.comparison + '"]').prop('selected', true);
-    $('#m_value').val(data.value).text().trim();
+    $('#event_value').val(data.value).text().trim();
 
 
     loadActions(data.id);
@@ -59,6 +61,8 @@ function loadActions(idEvent, outputElement) {
 
     $('#actions_div').html('');
     $(outputElement).html('');
+
+    if(idEvent != undefined)
 
     //Запрос всех доступных действий для выбранного события
     $.ajax({
@@ -211,6 +215,9 @@ function initActionModal() {
      });
 
 
+    //Добавление нового события
+    $('#addEvent_btn').click(showEventAddModal);
+
     //del action AJAX functions on press confirm
     $('#del_modal_btn').click(deleteActionOrEvent);
 
@@ -302,6 +309,26 @@ function initActionModal() {
 
 }
 
+/**
+ * Показать окно добавления события
+ */
+function showEventAddModal() {
+    $('#event_id').val('');
+    $('#event_name').val('');
+    $('#event_mode').val('new');
+    $('#m_event option:first').prop('selected', true);
+    $('#m_property option:first').prop('selected', true);
+    $('#m_comparison option:first').prop('selected', true);
+    $('#event_value').val('');
+    $('#event_modal_title').html('Добавление события');
+    $('#actions_div').html('');
+    $('#data-holder').val('');
+
+
+    $('#init_event_btn').click();
+}
+
+
 
 
 function deleteActionModal() {
@@ -372,9 +399,10 @@ function deleteActionOrEvent() {
 }
 
 
+/**
+ * Сохранение изменений события
+ */
 
-
-//Сохранение изменений события
 function clickApplyEventBtn() {
 
   id_event = Number($('#data-holder').val());
@@ -382,14 +410,13 @@ function clickApplyEventBtn() {
   event = $('#m_event').val();
   property = $('#m_property').val();
   comparison = $('#m_comparison').val();
-  value = $('#m_value').val();
+  value = $('#event_value').val();
 
   if(name) {
 
-
-      //Если создание события или редакктирование события
+      //Если создание события или редактирование события
       if ($('#event_mode').val() == 'new')
-          url ='Ajax.event.create';
+          url = url_eventAdd;
       else url = url_eventUpdate;
 
       $.ajax({
@@ -436,7 +463,9 @@ function closeActionModal(modal) {
     })
 }
 
-//сохранение нового действия для события
+/**
+*сохранение нового действия для события
+ */
 function createAction() {
 
 
@@ -453,16 +482,32 @@ function createAction() {
     let action_view_status = $('input[name="view_status"]:checked').val();
     let action_log = $("#action_log").val();
 
+    let dataAction = {'typeAction': typeAction, 'action_object': action_object,
+        'action_script': action_script, 'action_method': action_method, 'action_notif': action_notif,
+        'action_sound': action_sound, 'action_property': action_property, 'action_value': action_value,
+        'action_view': action_view, 'action_view_status': action_view_status, 'action_log': action_log};
 
+    //Если нет id_event, значит это содание нового события
+    if(id_event == '') {
+        //Заносим данные об action во временный массив и храним до тех пор, пока не появится id_event
+        tempAcions.push(dataAction);
+        //Добавляем новый action в модальное окно события
+
+    }else //Создание action при редактировании event с известным id_event
+        createActionAjax(id_event, dataAction);
+}
+
+/**
+ * AJAX запрос на создание нового action
+ * @param id_event
+ * @param dataAction
+ */
+function createActionAjax(id_event, dataAction) {
 
     $.ajax({
         url: url_createAction,
-        data: {'_token': _token, 'id_event': id_event, 'typeAction': typeAction, 'action_object': action_object,
-        'action_script': action_script, 'action_method': action_method, 'action_notif': action_notif,
-        'action_sound': action_sound, 'action_property': action_property, 'action_value': action_value,
-        'action_view': action_view, 'action_view_status': action_view_status, 'action_log': action_log},
+        data: {'_token': _token, 'id_event': id_event, 'data': dataAction},
         success: function (data) {
-
             if(data.result == true){
                 loadActions(Number($('#data-holder').val()));
                 closeActionModal('#action_modal');
