@@ -86,7 +86,7 @@
                         </div>
 
                         <br>
-                        <button type="button" class="btn btn-success addAction_btn"  style="height: 33px;">
+                        <button type="button" class="btn btn-success addAction_btn"   style="height: 33px;">
                             Добавить действие</button>
 
 

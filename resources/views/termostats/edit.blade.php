@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         <input type="hidden" id="tabs-sel" value="{{ $tab }}">
-
+                        <input type="hidden" id="event_idobject" name="event_idobject" value="{{ $termostat->iobject['id'] }}">
 
 
                     </div>
@@ -112,7 +112,7 @@
         const url_deleteAction = '{{ route('ajax.actions.delete') }}';
         const url_eventUpdate = '{{ route('ajax.event.update') }}';
         const url_deleteEvent = '{{ route('ajax.event.delete') }}';
-        const url_eventAdd = '{{ route('ajax.event.create') }}';
+        const url_eventCreate = '{{ route('ajax.event.create') }}';
 
 
         let del_id;

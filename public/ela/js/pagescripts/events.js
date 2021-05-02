@@ -10,6 +10,7 @@ function clickEditEventBtn() {
     data.value = $(this).attr('data-value');
 
     $('#data-holder').val(data.id);
+    $('#event_mode').val('edit');
     showEditEventModal(data);
 }
 
@@ -56,112 +57,125 @@ function showEditEventModal(data) {
 /**
 * Загрука всех действий для события для отображения в модальном окне создания или редактирования
  */
-function loadActions(idEvent, outputElement) {
+function loadActions(idEvent, outputElement, actions) {
 
 
     $('#actions_div').html('');
     $(outputElement).html('');
 
-    if(idEvent != undefined)
 
-    //Запрос всех доступных действий для выбранного события
-    $.ajax({
-        url: url_actions,
-        data: {'_token': _token, 'id_event': idEvent},
-        success: function (datares) {
+            //Запрос всех доступных действий для выбранного события
+            $.ajax({
+                url: url_actions,
+                data: {'_token': _token, 'id_event': idEvent, 'actions': actions},
+                success: function (datares) {
 
-            datares.actions.forEach(function(item, i, arr) {
-
-                var output_string;
-                var output_image;
-                var link;
-
-                if (item.type == 'script') {
-                    output_string = $('#actions_div').html() +
-                        '<br><b>&#xf085; Cкрипт: </b><i>"' + item.nameValue + '"</i>';
-
-                    output_image = $(outputElement).html() + '<label title="Cкрипт: '+ item.nameValue + '">&#xf085</label>&nbsp;';
-                    //link = '/scripts';
-                }
-
-                if (item.type == 'method') {
-
-                    output_string = $('#actions_div').html() +
-                        '<br><b>&#xf0c1; Метод: </b><i>"' + item.nameValue +
-                        '"</i><b> объекта </b><i>"' + item.objectName + '"</i>';
-
-                    output_image = $(outputElement).html() + '<label title="Метод: '+ item.nameValue + ' объекта ' +
-                        item.objectName + '">&#xf0c1</label>&nbsp;';
-
-
-                    // link = '/objects/';
-                }
-
-
-                if (item.type == 'notification') {
-                    output_string = $('#actions_div').html() +
-                        '<br><b>&#xf1d8; Уведомление:</b> <i>"' + item.nameValue + '...' + '"</i>';
-
-                    output_image = $(outputElement).html() + '<label title="Уведомление: '+ item.nameValue + '">&#xf1d8</label>&nbsp;';
-                }
-
-                if (item.type == 'sound') {
-
-                    output_string = $('#actions_div').html() +
-                        '<br><b>&#xf0f3; Звук: </b><i>"' + item.nameValue.substr(0, 40) + '...' + '"</i>';
-
-                    output_image = $(outputElement).html() + '<label title="Звук: '+ item.nameValue + '">&#xf0f3</label>&nbsp;';
-                }
-
-
-                if (item.type == 'property') {
-
-                    output_string = $('#actions_div').html() +
-                        '<br><b>&#xf1e8; Свойство: </b><i>"' + item.nameValue + '"</i><b> объекта </b><i>"' + item.objectName + '"</i>';
-
-                    output_image = $(outputElement).html() + '<label title="Свойство: '+ item.nameValue +
-                        ' объекта ' + item.objectName + '">&#xf1e8</label>&nbsp;';
-
-                }
-
-
-                if (item.type == 'view') {
-
-                    output_string = $('#actions_div').html() +
-                        '<br><b>&#xf247; Отображение: </b><i>"' + item.objectName + '"</i><b> установить статус </b><i>"' + item.nameValue + '"</i>';
-
-                    output_image = $(outputElement).html() + '<label title="Отображение: '+ item.objectName +
-                        ' установить статус ' + item.nameValue + '">&#xf247</label>&nbsp;';
-                }
-
-                if (item.type == 'log') {
-
-                    output_string = $('#actions_div').html() +
-                        '<br><b>&#xf044; Запись в лог: </b><i>"' + item.nameValue.substr(0, 40) + '...' + '"</i>';
-
-                    output_image = $(outputElement).html() + '<label title="Запись в лог: '+ item.nameValue + '">&#xf044</label>&nbsp;';
-
-                }
-
-
-
-                if(outputElement != undefined)
-
-                    $(outputElement).html(function() {
-                        return output_image;
-                    });
-
-                else
-                    $('#actions_div').html(function() {
-
-                        return output_string +
-                            //' <a href="' + link + '" target="_blank"><i class="fa fa-pencil fa-lg" style="color:#00aff0; cursor: pointer" ></i>' +
-                            ' <i class="fa fa-trash-o fa-lg del_action" data-id="' + item.id + '" data-type="' + item.type + '" style="color:#a94442; cursor: pointer" ></i>';
-
-                    });
+                     datares.actions.forEach(function(action, i, arr) {
+                             fillActionsOnEventModal(action, outputElement);
+                         });
+                     }
             });
+
+
+}
+
+
+
+/**
+* Заполнение блока actions у модального окна событий
+ */
+function fillActionsOnEventModal(item, outputElement) {
+
+        var output_string;
+        var output_image;
+        var link;
+
+
+        if (item.type == 'script') {
+            output_string = $('#actions_div').html() +
+                '<br><b>&#xf085; Cкрипт: </b><i>"' + item.nameValue + '"</i>';
+
+            output_image = $(outputElement).html() + '<label title="Cкрипт: '+ item.nameValue + '">&#xf085</label>&nbsp;';
+            //link = '/scripts';
         }
-    });
+
+        if (item.type == 'method') {
+
+            output_string = $('#actions_div').html() +
+                '<br><b>&#xf0c1; Метод: </b><i>"' + item.nameValue +
+                '"</i><b> объекта </b><i>"' + item.objectName + '"</i>';
+
+            output_image = $(outputElement).html() + '<label title="Метод: '+ item.nameValue + ' объекта ' +
+                item.objectName + '">&#xf0c1</label>&nbsp;';
+
+
+            // link = '/objects/';
+        }
+
+
+        if (item.type == 'notification') {
+            output_string = $('#actions_div').html() +
+                '<br><b>&#xf1d8; Уведомление:</b> <i>"' + item.nameValue + '...' + '"</i>';
+
+            output_image = $(outputElement).html() + '<label title="Уведомление: '+ item.nameValue + '">&#xf1d8</label>&nbsp;';
+        }
+
+        if (item.type == 'sound') {
+
+            output_string = $('#actions_div').html() +
+                '<br><b>&#xf0f3; Звук: </b><i>"' + item.nameValue.substr(0, 40) + '...' + '"</i>';
+
+            output_image = $(outputElement).html() + '<label title="Звук: '+ item.nameValue + '">&#xf0f3</label>&nbsp;';
+        }
+
+
+        if (item.type == 'property') {
+
+            output_string = $('#actions_div').html() +
+                '<br><b>&#xf1e8; Свойство: </b><i>"' + item.nameValue + '"</i><b> объекта </b><i>"' + item.objectName + '"</i>';
+
+            output_image = $(outputElement).html() + '<label title="Свойство: '+ item.nameValue +
+                ' объекта ' + item.objectName + '">&#xf1e8</label>&nbsp;';
+
+        }
+
+
+        if (item.type == 'view') {
+
+            output_string = $('#actions_div').html() +
+                '<br><b>&#xf247; Отображение: </b><i>"' + item.objectName + '"</i><b> установить статус </b><i>"' + item.nameValue + '"</i>';
+
+            output_image = $(outputElement).html() + '<label title="Отображение: '+ item.objectName +
+                ' установить статус ' + item.nameValue + '">&#xf247</label>&nbsp;';
+        }
+
+        if (item.type == 'log') {
+
+            output_string = $('#actions_div').html() +
+                '<br><b>&#xf044; Запись в лог: </b><i>"' + item.nameValue.substr(0, 40) + '...' + '"</i>';
+
+            output_image = $(outputElement).html() + '<label title="Запись в лог: '+ item.nameValue + '">&#xf044</label>&nbsp;';
+
+        }
+
+
+        //Если указано, то заполняем actions в указанный элемент, иначе заполняем в модальное окошко события
+        if(outputElement != undefined)
+
+            $(outputElement).html(function() {
+                return output_image;
+            });
+
+        else
+            $('#actions_div').html(function() {
+
+                return output_string +
+                    //' <a href="' + link + '" target="_blank"><i class="fa fa-pencil fa-lg" style="color:#00aff0; cursor: pointer" ></i>' +
+                    ' <i class="fa fa-trash-o fa-lg del_action" data-id="' + item.id + '" data-type="' + item.type + '" style="color:#a94442; cursor: pointer" ></i>';
+
+            });
+
+
 }
 
 function clearEventModal() {
@@ -188,7 +202,6 @@ function initActionModal() {
     $("#auto_sel_action_method").chosen({width:"100%", no_results_text: "Не найдено"});
     $("#auto_sel_action_view").chosen({width:"100%", no_results_text: "Не найдено"});
 
-    let del_id;
 
     // edit event
     $('body').on('click', '.editEvent_btn', clickEditEventBtn);
@@ -208,11 +221,14 @@ function initActionModal() {
 
     //Загрузка всех actions для всех events при загрузке страницы
     events = $('#allevents').val();
-    eventsArray = events.split(',');
-    eventsArray.forEach(function(item, i, arr) {
-        if(item)
-          loadActions(item, '#action' + item);
-     });
+    if(events) {
+        eventsArray = events.split(',');
+        eventsArray.forEach(function(item, i, arr) {
+            if(item)
+                loadActions(item, '#action' + item);
+        });
+    }
+
 
 
     //Добавление нового события
@@ -324,7 +340,6 @@ function showEventAddModal() {
     $('#actions_div').html('');
     $('#data-holder').val('');
 
-
     $('#init_event_btn').click();
 }
 
@@ -380,8 +395,7 @@ function deleteEvent() {
         url: url_deleteEvent,
         data: {'_token': _token, 'id_event': del_id},
         success: function (data) {
-
-            //if()
+            $('#events_div #div'+del_id).remove();
         }
     });
 
@@ -400,7 +414,7 @@ function deleteActionOrEvent() {
 
 
 /**
- * Сохранение изменений события
+ * Сохранение изменений события или добавление нового события
  */
 
 function clickApplyEventBtn() {
@@ -411,25 +425,34 @@ function clickApplyEventBtn() {
   property = $('#m_property').val();
   comparison = $('#m_comparison').val();
   value = $('#event_value').val();
+  id_object =  $('#event_idobject').val();
+
 
   if(name) {
 
       //Если создание события или редактирование события
       if ($('#event_mode').val() == 'new')
-          url = url_eventAdd;
+          url = url_eventCreate;
       else url = url_eventUpdate;
 
       $.ajax({
           url: url,
           data: {'_token': _token, 'id_event': id_event, 'name': name, 'event': event,
-              'property': property, 'comparison': comparison, 'value': value},
+              'property': property, 'comparison': comparison, 'value': value, 'id_object': id_object, 'tempActions': tempActions},
           success: function (resp) {
-
 
               if(resp.result == true) {
 
                   $('#name'+id_event).text(name);
                   $('#condition'+id_event).text(property+comparison+value);
+
+
+                  if ($('#event_mode').val() == 'new')
+                  {
+                      addEvent(resp.data);
+                      id_event = resp.data.id;
+                  }
+
 
                   loadActions(id_event, '#action'+id_event);
 
@@ -441,6 +464,35 @@ function clickApplyEventBtn() {
   } else
       $('#alert_div').show();
 
+}
+
+/**
+ * Динамическое добавление события на страницу событий
+ */
+function addEvent(data) {
+
+    const html = `<div class="form-group row" id="div${data.id}">
+                     <label class="col-md-1" id="eventid${data.id}">${data.id}</label>
+                     <label class="col-md-3" id="name${data.id}">${data.name}</label>
+                     <label class="col-md-3" id="condition${data.id}">${data.property} ${data.comparison} ${data.value}</label>
+                     <div class="col-md-2"  style="font-family: 'FontAwesome', Helvetica;" id="action${data.id}"></div>
+                     <div class="col-md-1 text-right">
+                         <button type="button" data-id="${data.id}"
+                         data-id_object="${data.id_object}"
+                         data-event="${data.event}"
+                         data-property="${data.property}"
+                         data-comparison="${data.comparison}"
+                         data-value="${data.value}"
+                         class="btn btn-info btn-sm btn-rounded editEvent_btn">
+                         <i class="fa fa-cog fa-lg"></i>
+                         </button>
+                         <button type="button" data-id="${data.id}" data-name="${data.name}" class="btn btn-danger btn-rounded btn-sm delEvent_btn">
+                         <i class="fa fa-trash fa-lg"></i>
+                         </button>
+                     </div>
+                </div>`;
+
+    $('#events_div').append(html);
 }
 
 
@@ -468,7 +520,6 @@ function closeActionModal(modal) {
  */
 function createAction() {
 
-
     let typeAction = $('#type_action_selected').val();
     let id_event = $('#data-holder').val();
     let action_object = $("#auto_sel_action_object").val();
@@ -487,15 +538,19 @@ function createAction() {
         'action_sound': action_sound, 'action_property': action_property, 'action_value': action_value,
         'action_view': action_view, 'action_view_status': action_view_status, 'action_log': action_log};
 
+
     //Если нет id_event, значит это содание нового события
     if(id_event == '') {
         //Заносим данные об action во временный массив и храним до тех пор, пока не появится id_event
-        tempAcions.push(dataAction);
+        tempActions.push(dataAction);
         //Добавляем новый action в модальное окно события
-
+        loadActions(null,null,tempActions);
     }else //Создание action при редактировании event с известным id_event
         createActionAjax(id_event, dataAction);
 }
+
+
+
 
 /**
  * AJAX запрос на создание нового action

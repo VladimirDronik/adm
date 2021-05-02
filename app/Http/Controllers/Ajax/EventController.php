@@ -33,7 +33,12 @@ class EventController extends Controller
 
     public function create(Request $r)
     {
+        $data = $this->service->create($r);
 
+        if($data)
+            $result = true;
+
+        return response()->json(['result' =>  $result, 'data' => $data]);
     }
 
     public function delete(Request $r)
@@ -44,4 +49,6 @@ class EventController extends Controller
 
         return response()->json(['result' =>  $result]);
     }
+
+
 }

@@ -92,7 +92,7 @@
                         <input id="type_action_selected" name="id_event" style="display: none">
 
 
-                        <button type="button" class="btn btn-success createAction_btn"  data-dismiss="modal" id="addAction_btn" style="height: 33px;">
+                        <button type="button" class="btn btn-success createAction_btn"   data-dismiss="modal" id="createAction_btn" style="height: 33px;">
                             Сохранить</button>
 
                     </div>

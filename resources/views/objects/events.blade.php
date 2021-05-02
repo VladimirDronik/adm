@@ -14,17 +14,17 @@
 
 
 <div id="events_div">
+
     @foreach($events as $event)
 
             <div class="form-group row" id="div{{$event->id}}">
 
-
                 @php
                     $allEvents .= $event->id.',';
                 @endphp
-                <input type="hidden" id="allevents" value="{{ $allEvents }}">
 
-                <label class="col-md-1" id="methodid{{$event->id}}">
+
+                <label class="col-md-1" id="eventid{{$event->id}}">
                     {{$event->id}}
                 </label>
                 <label class="col-md-3" id="name{{$event->id}}">
@@ -59,7 +59,7 @@
 
 
     @endforeach
-
+        <input type="hidden" id="allevents" value="{{ $allEvents }}">
         <input type="hidden" id="data-holder">
 </div>
 <div class="form-group row">

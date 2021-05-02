@@ -32,14 +32,35 @@ class ActionService
 
     /**
      * Отдает массив действий для события
-     *
+     * Если событие указано, то достаем actions для него из БД, если не указано, то берем actions из $tempActions
      * @param $idEvent
      * @return array
      */
-    public function getForEvent($idEvent)
+    public function getForEvent($idEvent, $tempActions)
     {
-        $actions = $this->actionRepository->getAllActionsByEvent($idEvent);
+        if($idEvent)
+            $actions = $this->actionRepository->getAllActionsByEvent($idEvent);
+        else {
+            //Берем все значения из $tempActions и с помощью
+            foreach ($tempActions AS $tempAction)
+            $actions[] = $this->prepareAction($tempAction);
+        }
 
+
+
+        $resultActions = $this->fillActionValues($actions);
+
+
+        return $resultActions;
+    }
+
+
+
+    /**
+     * Заполнение $nameValue, $objectName для action
+     */
+    public function fillActionValues($actions)
+    {
         $resultActions = [];
 
         foreach ($actions as $action) {
@@ -58,7 +79,7 @@ class ActionService
                         $nameValue = $script->name;
                     } else $delete = true;
 
-                   break;
+                    break;
 
                 case 'method':
                     $method =  MethodRepository::getMethodByID($action->relate);
@@ -114,8 +135,8 @@ class ActionService
             // Возможно он был удален, но т.к. таблицы у нас не связаны, то в этом случае удаляем action вручную.
             if($delete) $action->delete();
             else
-            $resultActions[] = ['id' => $action->id, 'type' => $action->type, 'nameValue' => $nameValue,
-                'objectName' => $objectName];
+                $resultActions[] = ['id' => $action->id, 'type' => $action->type, 'nameValue' => $nameValue,
+                    'objectName' => $objectName];
 
         }
 
@@ -125,7 +146,20 @@ class ActionService
 
     public function addAction($idEvent, $actionParams)
     {
+        $action = $this->prepareAction($actionParams, $idEvent);
+        return $action->save();
+    }
 
+
+    /**
+     * Подготовка параметров action для записи в БД. Если idEvent не указан, то поготовливаем данные для отображения
+     * временного action при создании события (в том случае, если idEvent еще неизвестен)
+     * @param $actionParams
+     * @param null $idEvent
+     * @return Action
+     */
+    private function prepareAction($actionParams, $idEvent = null)
+    {
         $action = new Action();
         $action->id_event = $idEvent;
         $action->type = $actionParams['typeAction'];
@@ -167,7 +201,7 @@ class ActionService
 
         }
 
-        return $action->save();
+        return $action;
 
     }
 
@@ -184,6 +218,19 @@ class ActionService
         return false;
     }
 
+    /**
+     * Создание
+     * @param $tempActions
+     * @param $idEvent
+     */
+    public function createActionsByTempActions($tempActions, $idEvent)
+    {
+        //Добавляем actions из массива tempActions
+        foreach ($tempActions as $tempAction) {
+            $this->addAction($idEvent, $tempAction);
+        }
+
+    }
 
 
 

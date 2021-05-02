@@ -27,10 +27,11 @@ class ActionController extends Controller
      */
     public function getForEvent(Request $r)
     {
-        abort_if(!ajaxHas($r, ['id_event']), 400);
+       // abort_if(!ajaxHas($r, ['id_event']), 400);
+
+       return response()->json(['actions' => $this->service->getForEvent($r->id_event, $r->actions)]);
 
 
-        return response()->json(['actions' => $this->service->getForEvent((int)$r->id_event)]);
     }
 
 
