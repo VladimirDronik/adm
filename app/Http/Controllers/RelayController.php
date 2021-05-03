@@ -9,10 +9,9 @@ use App\Models\Relay;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\RelayRepository;
-use App\Repositories\ScriptRepository;
-use App\Services\MessageService;
 use App\Services\PortService;
 use App\Services\RelayService;
+use App\Services\Service;
 
 class RelayController extends Controller
 {
@@ -64,24 +63,26 @@ class RelayController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении реле');
     }
 
-    public function edit(Relay $relay, ScriptRepository $script_rep, MessageService $messageService)
+    public function edit(Relay $relay, $tab =1)
     {
         $types = Relay::getTypes(true);
-        $objects = $this->object_rep->getAllToArray();
-        $object_types =  HomeObject::getFullTypeIds();
 
-        $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
         list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) = $this->portService->getCurrentDevPort($relay->id_object);
 
-        $messages = $messageService->getNotifications($relay->id_object);
+        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice) =
+            Service::getListElements($relay->id_object);
+
 
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
 
-        return view('relays.edit', compact('relay', 'types',
-            'idDevice','idPort','devices','ports', 'messagePoint', 'messages',
+        $availableEvents = Relay::getEvents();
+        $properties = Relay::getProperties();
+
+        return view('relays.edit', compact('relay', 'types', 'events', 'sounds', 'views', 'rooms',
+            'idDevice','idPort','devices','ports', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents', 'properties',
             'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'can'));
     }
 

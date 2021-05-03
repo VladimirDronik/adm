@@ -32,68 +32,43 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID объекта:', $relay->object['id']) }}
-                        <div class="form-group row">
-                            <label class="control-label text-right col-md-3 label-fix" for="">
-                                Тип реле:     </label>
-                            <div class="col-md-9">
-                                <div class="mt-2">
-                                    {{ $relay->rus_type }}
-                                </div>
+                        <ul class="nav nav-tabs customtab" role="tablist">
+                            <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Свойства</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==4) active @endif"  data-toggle="tab" href="#portstab4"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">События</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==5) active @endif"  data-toggle="tab" href="#portstab5"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Планировщик</span></a> </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
+                                @include('relays/edit_tabs/main')
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
+                                @include('relays/edit_tabs/prop')
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==4) active @endif" id="portstab4" role="tabpanel">
+                                @include('relays/edit_tabs/events')
+                                @include('objects.events', ['object' => $relay->object])
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
+                                @include('objects.methods', ['object' => $relay->object])
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
+                                @include('objects.sheduler', ['object' => $relay->object])
                             </div>
                         </div>
-
-                        {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-
-                        @if(($relay->object && $relay->object->is_system) || !$can['devices.show-object'])
-                            <div class="form-group row">
-                                <label class="control-label text-right col-md-3 label-fix" for="">
-                                    Объект:     </label>
-                                <div class="col-md-9">
-                                    <div class="mt-2">
-                                        <a class="a-color" href="{{ route('objects.edit', [$relay->id_object]) }}">
-                                            {{ $relay->object->name }}
-                                            @if($relay->object && $relay->object->is_system) (системный) @endif</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <input type="hidden" name="id_object" value="{{ $relay->id_object }}">
-                        @else
-                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект*:', $objects, old('id_object', $relay->id_object), false, false, ['required' => true]) }}
-                        @endif
-
-                    </div>
-
-                    <div class="col-sm-12 pr-0 mt-4">
-                        {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', $idDevice),
-                           false, false, [], null) }}
-
-                        <div id='port_id_div' @if ($ports==null) style="display: none" @endif>
-                            {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
-                                false, false, [], null) }}
-                        </div>
-
-                        <div id='hitepro_devices_div' @if ($hp_devices==null) style="display: none" @endif>
-                            {{ Form::bs_autoselect('hitepro_devices', 'Устройство:', $hp_devices, old('hiteProDevices', $hp_device),
-                                false, false, [], null) }}
-                        </div>
-
-                        <input type="hidden" name="place" id="place" value="@if ($ports==null) Hite-pro @else port @endif">
-                    </div>
-
-                    @include('messages.two')
+                        <input type="hidden" id="tabs-sel" value="{{ $tab }}">
+                        <input type="hidden" id="event_idobject" name="event_idobject" value="{{ $relay->iobject['id'] }}">
 
                     {{ Form::bs_submit_btn() }}
 
-                    @include('objects.methods', ['object' => $relay->object])
-                    @include('objects.sheduler', ['object' => $relay->object])
 
                     {!! Form::close() !!}
                 </div>
                 <div style="height: 200px;">&nbsp;</div>
                 <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
                 <button type="button" id="init_method_btn" style="display: none;" data-toggle="modal" data-target="#method_modal">&nbsp;</button>
-                <button type="button" id="init_message_btn" style="display: none;" data-toggle="modal" data-target="#message_modal">
+                <button type="button" id="init_message_btn" style="display: none;" data-toggle="modal" data-target="#message_modal"> </button>
 
             </div>
         </div>
@@ -113,6 +88,7 @@
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/service.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
@@ -126,6 +102,8 @@
         let del_id;
         $(document).ready(function () {
             initRelayForm();
+            serviceInit();
+
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_hitepro_devices").chosen({width:"100%", no_results_text: "Не найдено"});

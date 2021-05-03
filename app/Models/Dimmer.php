@@ -36,4 +36,29 @@ class Dimmer extends Model
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
     }
+
+    /**
+     * Получение всех методов для объекта
+     * @return array
+     */
+    public static function getEvents()
+    {
+        return [
+            'onStatus' => 'Смена статуса',
+            'onBrightness' => 'Смена яркости',
+        ];
+    }
+
+    /**
+     * Получение доступных свойств объекта.
+     * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     * @return array
+     */
+    public static function getProperties()
+    {
+        return [
+            'status' => ['Статус, on/off', true, true],
+            'brightness' => ['Яркость, %', true, true],
+        ];
+    }
 }

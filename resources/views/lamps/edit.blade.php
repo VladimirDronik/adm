@@ -91,6 +91,7 @@
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/service.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
@@ -106,6 +107,7 @@
 
         $(document).ready(function () {
             initLampForm();
+            serviceInit();
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
@@ -152,22 +154,6 @@
 
                 storeObject();
             });
-
-
-            /**
-             * Показать или скрыть чекбокс
-             */
-            $('#alice_checkbox').click(function(){
-                if ($(this).is(':checked')){
-                    $('#div_command').show(100);
-                } else {
-                    $('#div_command').hide(100);
-                }
-            });
-
-
-
-
 
 
             function storeObject() {

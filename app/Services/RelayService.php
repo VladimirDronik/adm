@@ -127,6 +127,12 @@ class RelayService {
             $this->prepareRelay($relay, $data);
             $relay->save();
 
+            //Сохраняем данные в таблицу Алисы или включаем запись если она есть уже
+            if(isset($data['alice_checkbox']))
+                AliceDevicesService::addOrReplaceDevice($relay->object->id, $data['alice_command'], $data['room']);
+            else
+                AliceDevicesService::setActive($relay->object->id, 0);
+
             if (!is_null($data['port_id']) && $data['place'] == 'port') {
 
                 Port::where('object', $relay->object->id)->update(['object' => null, 'method' => null, 'comment' => '']);

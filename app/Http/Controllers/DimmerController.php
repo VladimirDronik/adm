@@ -9,11 +9,9 @@ use App\Models\HomeObject;
 use App\Repositories\DeviceRepository;
 use App\Repositories\DimmerRepository;
 use App\Repositories\ObjectRepository;
-use App\Repositories\ScriptRepository;
-use App\Services\DeviceService;
 use App\Services\DimmerService;
-use App\Services\NetworkService;
 use App\Services\PortService;
+use App\Services\Service;
 
 class DimmerController extends Controller
 {
@@ -64,19 +62,21 @@ class DimmerController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении диммера');
     }
 
-    public function edit(Dimmer $dimmer, ScriptRepository $script_rep)
+    public function edit(Dimmer $dimmer, $tab=1)
     {
-        $objects = $this->object_rep->getAllToArray();
-        $object_types = HomeObject::getFullTypeIds();
-        $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
         list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($dimmer->id_object);
+        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice) =
+            Service::getListElements($dimmer->id_object);
 
+        $availableEvents = Dimmer::getEvents();
+        $properties = Dimmer::getProperties();
+        $allEvents = '';
 
-        return view('dimmers.edit', compact('dimmer',
-            'idDevice','idPort','devices','ports',
-            'objects', 'object_types', 'scripts', 'can'));
+        return view('dimmers.edit', compact('dimmer', 'messages', 'events', 'sounds',
+            'idDevice','idPort','devices','ports', 'views', 'rooms', 'alice', 'tab', 'properties',
+            'objects', 'object_types', 'scripts', 'can', 'availableEvents', 'allEvents'));
     }
 
     public function update(UpdateRequest $r, Dimmer $dimmer)

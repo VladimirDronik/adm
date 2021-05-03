@@ -32,44 +32,39 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID объект:', $dimmer->object['id']) }}
-                        {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-                        @if(($dimmer->object && $dimmer->object->is_system) || !$can['devices.show-object'])
-                            <div class="form-group row">
-                                <label class="control-label text-right col-md-3 label-fix" for="">
-                                    Объект:     </label>
-                                <div class="col-md-9">
-                                    <div class="mt-2">
-                                        <a class="a-color" href="{{ route('objects.edit', [$dimmer->id_object]) }}">
-                                            {{ $dimmer->object->name }}
-                                            @if($dimmer->object && $dimmer->object->is_system) (системный) @endif</a>
-                                    </div>
-                                </div>
+                        <ul class="nav nav-tabs customtab" role="tablist">
+                            <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Свойства</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==4) active @endif"  data-toggle="tab" href="#portstab4"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">События</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==5) active @endif"  data-toggle="tab" href="#portstab5"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Планировщик</span></a> </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
+                                @include('dimmers/edit_tabs/main')
                             </div>
-                            <input type="hidden" name="id_object" value="{{ $dimmer->id_object }}">
-                        @else
-                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект*:', $objects, old('id_object', $dimmer->id_object), false, false, ['required' => true]) }}
-                        @endif
-
-                        {{ Form::bs_number('value', 'Значение*:', old('value', $dimmer->value), ['required' => true]) }}
-                        {{ Form::bs_number('speed', 'Скорость*:', old('speed', $dimmer->speed), ['required' => true]) }}
-
-
-                        <div class="col-sm-12 pr-0 mt-4">
-                            {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', $idDevice),
-                               false, false, [], null) }}
-
-                            {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
-                                false, false, [], null) }}
+                            <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
+                                @include('dimmers/edit_tabs/prop')
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==4) active @endif" id="portstab4" role="tabpanel">
+                                @include('dimmers/edit_tabs/events')
+                                @include('objects.events', ['object' => $dimmer->object])
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
+                                @include('objects.methods', ['object' => $dimmer->object])
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
+                                @include('objects.sheduler', ['object' => $dimmer->object])
+                            </div>
                         </div>
+                        <input type="hidden" id="tabs-sel" value="{{ $tab }}">
+                        <input type="hidden" id="event_idobject" name="event_idobject" value="{{ $dimmer->iobject['id'] }}">
+
 
 
                     </div>
                     {{ Form::bs_submit_btn() }}
-
-                    @include('objects.methods', ['object' => $dimmer->object])
-                    @include('objects.sheduler', ['object' => $dimmer->object])
 
                     {!! Form::close() !!}
                 </div>
@@ -93,6 +88,7 @@
     <script src="{{ asset('ela/js/pagescripts/dimmer.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/service.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
@@ -106,6 +102,7 @@
 
         $(document).ready(function () {
             initDimmerForm();
+            serviceInit();
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});

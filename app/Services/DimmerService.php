@@ -125,6 +125,12 @@ class DimmerService {
             $this->prepareDimmer($dimmer, $data);
             $dimmer->save();
 
+            //Сохраняем данные в таблицу Алисы или включаем запись если она есть уже
+            if(isset($data['alice_checkbox']))
+                AliceDevicesService::addOrReplaceDevice($dimmer->object->id, $data['alice_command'], $data['room']);
+            else
+                AliceDevicesService::setActive($dimmer->object->id, 0);
+
             if ($data['port_id']) {
                 Port::where('object', $dimmer->id_object)->update(['object' => null, 'method' => null,
                     'status' => 'OUT', 'comment' => '']);
