@@ -6,6 +6,7 @@ namespace App\Services;
 use App\Models\HomeObject;
 use App\Models\Method;
 use App\Models\Port;
+use App\Repositories\AliceDevicesRepository;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
 use App\Models\Lamp;
@@ -137,6 +138,14 @@ class LampService {
             $lamp->save();
         });
 
+
+        //Сохраняем данные в таблицу Алисы или включаем запись если она есть уже
+        if(isset($data['alice_checkbox']))
+            AliceDevicesService::addOrReplaceDevice($lamp->object->id, $data['alice_command'], $data['room']);
+        else
+            AliceDevicesService::setActive($lamp->object->id, 0);
+
+        //Делаем манипуляции с портами контроллера, если необходимо
         if (!is_null($data['port_id']) && $data['place'] == 'port') {
 
             Port::where('object', $lamp->object->id)->update(['object' => null, 'method' => null, 'status' => 'OUT',

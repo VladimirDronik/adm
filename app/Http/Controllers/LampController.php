@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lamp;
+use App\Models\Room;
 use App\Services\PortService;
+use App\Services\Service;
 use Illuminate\Http\Request;
 use App\Repositories\LampRepository;
 use App\Repositories\ObjectRepository;
@@ -11,9 +13,8 @@ use App\Repositories\DeviceRepository;
 use App\Services\LampService;
 use App\Models\HomeObject;
 use App\Http\Requests\Lamp\CreateRequest;
-use App\Repositories\ScriptRepository;
-use App\Services\MessageService;
 use App\Http\Requests\Lamp\UpdateRequest;
+
 
 class LampController extends Controller
 {
@@ -23,6 +24,7 @@ class LampController extends Controller
     private $device_rep;
     private $service;
     private $portService;
+
 
     public function __construct(LampRepository $lamp_rep, ObjectRepository $object_rep, DeviceRepository $device_rep,
                                 LampService $service, PortService $portService)
@@ -83,24 +85,27 @@ class LampController extends Controller
         return back()->withInput($r->all())->with('error','Ошибка при изменении лампы');
     }
 
-    public function edit(Lamp $lamp, ScriptRepository $script_rep, MessageService $messageService)
+    public function edit(Lamp $lamp, $tab=1)
     {
-        $objects = $this->object_rep->getAllToArray();
-        $object_types =  HomeObject::getFullTypeIds();
 
-        $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
-        list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) = $this->portService->getCurrentDevPort($lamp->id_object);
+        list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) =
+            $this->portService->getCurrentDevPort($lamp->id_object);
 
-
-        $messages = $messageService->getNotifications($lamp->id_object);
+        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice) =
+            Service::getListElements($lamp->id_object);
 
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
 
+        $availableEvents = Lamp::getEvents();
+        $properties = Lamp::getProperties();
+
+
         return view('lamps.edit', compact('lamp',
-            'idDevice','idPort','devices','ports', 'messagePoint', 'messages',
-            'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'can'));
+            'idDevice','idPort','devices','ports', 'messagePoint', 'messages', 'properties', 'sounds', 'views', 'rooms',
+            'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'can', 'tab', 'events',
+            'alice', 'availableEvents'));
     }
 }

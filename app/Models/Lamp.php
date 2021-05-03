@@ -22,6 +22,25 @@ class Lamp extends Model
         return $is_full ? $types : array_keys($types);
     }
 
+    public static function getEvents()
+    {
+        return [
+            'onStatus' => 'Смена статуса',
+        ];
+    }
+
+    /**
+     * Получение доступных свойств объекта.
+     * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     * @return array
+     */
+    public static function getProperties()
+    {
+        return [
+            'status' => ['Статус, on/off', true, true],
+        ];
+    }
+
     public function getRusTypeAttribute()
     {
         return self::getTypes(true)[$this->type] ?? '';

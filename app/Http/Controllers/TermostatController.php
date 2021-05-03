@@ -136,6 +136,8 @@ class TermostatController extends Controller
         $views = $this->view_rep->getAllToArray();
         $allEvents = '';
 
+
+
         return view('termostats.edit', compact('termostat', 'objects', 'rooms',
             'types', 'devices', 'methods', 'object_types', 'scripts', 'HPControllers', 'id_controller',
             'subdevs', 'usensors', 'deviceId', 'portId', 'ports', 'messages', 'messagePoint', 'can', 'tab', 'events',

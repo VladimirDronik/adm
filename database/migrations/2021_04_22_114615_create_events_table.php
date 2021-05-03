@@ -34,6 +34,6 @@ class CreateEventsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('boiler');
+        Schema::dropIfExists('events');
     }
 }

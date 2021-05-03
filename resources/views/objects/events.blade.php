@@ -59,7 +59,7 @@
 
 
     @endforeach
-        <input type="hidden" id="allevents" value="{{ $allEvents }}">
+        <input type="hidden" id="allevents" value="">
         <input type="hidden" id="data-holder">
 </div>
 <div class="form-group row">

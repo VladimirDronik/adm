@@ -24,7 +24,7 @@ function validateTermostat() {
         return 'Не указано название';
     }
     if (isEmptyInput('optimal')) {
-        return 'Не указана оптимальная температура на вкладке свойсвт';
+        return 'Не указана оптимальная температура на вкладке свойств';
     }
     if (isEmptyInput('gisteresis')) {
         return 'Не указан гистерезис на вкладке свойсвт';

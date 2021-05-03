@@ -1,16 +1,27 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: kinord
- * Date: 07.04.21
- * Time: 9:57
+ * Вспомогательные общие функции, которые могут быть необходимы влюбом классе
  */
 
 namespace App\Services;
 
+use App\Models\Alice;
+use App\Models\HomeObject;
+use App\Repositories\ActionRepository;
+use App\Repositories\AliceDevicesRepository;
+use App\Repositories\EventRepository;
+use App\Repositories\NotificationRepository;
+use App\Repositories\NotificationServiceRepository;
+use App\Repositories\ObjectRepository;
+use App\Repositories\ScriptRepository;
+use App\Repositories\SoundRepository;
+use App\Repositories\ViewRepository;
+use App\Repositories\RoomRepository;
+
 
 class Service
 {
+
     /**
      * Транслитерация текста
      * @param $s string - входная строка
@@ -27,5 +38,35 @@ class Service
         $s = preg_replace("/[^0-9a-z-_ ]/i", "", $s); // очищаем строку от недопустимых символов
         $s = str_replace(" ", "-", $s); // заменяем пробелы знаком минус
         return $s; // возвращаем результат
+    }
+
+
+    /**
+     * Получение списка элементов для отображения в полях страниц, которые вызываются контроллерами
+     */
+    public static function getListElements($idObject)
+    {
+
+        $eventRepository = new EventRepository();
+        $viewRepository = new ViewRepository();
+        $scriptRepository = new ScriptRepository();
+        $roomRepository = new RoomRepository();
+        $notificationRepository = new NotificationRepository();
+        $messageService = new MessageService($notificationRepository);
+        $objectRepository = new ObjectRepository();
+        $aliceRepository = new AliceDevicesRepository();
+
+
+        $messages = $messageService->getNotifications($idObject);
+        $events = $eventRepository->getAllById($idObject);
+        $sounds = SoundRepository::getAllToArray();
+        $views = $viewRepository->getAllToArray();
+        $rooms = $roomRepository->getAllToArray();
+        $scripts = $scriptRepository->getAllToArray();
+        $objects = $objectRepository->getAllToArray();
+        $object_types =  HomeObject::getFullTypeIds();
+        $alice = $aliceRepository->getNameAndRoomByObject($idObject);
+
+        return [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice];
     }
 }

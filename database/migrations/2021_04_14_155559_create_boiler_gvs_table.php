@@ -34,6 +34,6 @@ class CreateBoilerGvsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('boiler');
+        Schema::dropIfExists('boiler_gvs');
     }
 }
