@@ -340,6 +340,9 @@ function showEventAddModal() {
     $('#actions_div').html('');
     $('#data-holder').val('');
 
+    //очищаем массив с временными actions
+    tempActions = [];
+
     $('#init_event_btn').click();
 }
 
@@ -538,15 +541,15 @@ function createAction() {
         'action_sound': action_sound, 'action_property': action_property, 'action_value': action_value,
         'action_view': action_view, 'action_view_status': action_view_status, 'action_log': action_log};
 
-
-    //Если нет id_event, значит это содание нового события
-    if(id_event == '') {
-        //Заносим данные об action во временный массив и храним до тех пор, пока не появится id_event
-        tempActions.push(dataAction);
-        //Добавляем новый action в модальное окно события
-        loadActions(null,null,tempActions);
-    }else //Создание action при редактировании event с известным id_event
-        createActionAjax(id_event, dataAction);
+    if(typeAction)
+        //Если нет id_event, значит это содание нового события
+        if(id_event == '') {
+            //Заносим данные об action во временный массив и храним до тех пор, пока не появится id_event
+            tempActions.push(dataAction);
+            //Добавляем новый action в модальное окно события
+            loadActions(null,null,tempActions);
+        }else //Создание action при редактировании event с известным id_event
+            createActionAjax(id_event, dataAction);
 }
 
 
