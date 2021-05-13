@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Device;
 use App\Models\DevType;
+use App\Models\Port;
 use Illuminate\Support\Facades\DB;
 
 class DeviceRepository {
@@ -123,6 +124,15 @@ class DeviceRepository {
     {
         return Device::select('id')->where('active', 1)
             ->where('changed', 1)->get();
+    }
+
+    /**
+     * Получение id устройства по id порта
+     * @param $idPort
+     */
+    public static function getDevByPort($idPort) {
+
+        return Port::select('id_device')->where('id', $idPort)->first()->id_device;
     }
 
 }

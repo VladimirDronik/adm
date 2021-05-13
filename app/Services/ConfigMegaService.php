@@ -48,7 +48,7 @@ class ConfigMegaService
      * @param int $numPort - номер искомого порта в рамках устройства
      *
      * @return mixed - если нашли искомый порт в конфиг файле, значит выводим его настройки в виде массива, если не
-     *                 наши, значит такой строки нет в файле и выводим false
+     *                 нашлии, значит такой строки нет в файле и выводим false
      */
     static private function findPort($stringsFromConfig, $numPort)
     {

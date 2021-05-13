@@ -30,10 +30,13 @@ class AliceDevicesService
     public static function setActive($idObject, $statusActive)
     {
         $aliceDevice = Alice::where('id_object', $idObject)->first();
-        $aliceDevice->active = $statusActive;
-        $aliceDevice->save();
 
-//        Alice::where('id_object', $idObject)->update('active', $statusActive);
+        if($aliceDevice) {
+            $aliceDevice->active = $statusActive;
+            $aliceDevice->save();
+        }
+
+
     }
 
 }

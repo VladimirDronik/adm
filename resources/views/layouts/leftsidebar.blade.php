@@ -60,6 +60,12 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="{{ route('curtains.index') }}">
+                                    <img src="{{ asset('ela/images/views_items/karniz.svg') }}" width="15" height="20">
+                                    Шторы, жалюзи
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('counts.index') }}">
                                     <i class="fa fa-bullseye"></i>
                                     Счетчики

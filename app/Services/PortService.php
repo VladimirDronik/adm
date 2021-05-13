@@ -507,5 +507,59 @@ class PortService {
 
     }
 
+    /**
+     * Установка для порта дефолтных значений в БД (например, если объект ранее был на одном порту, а переносим на другой)
+     * @param $idObject
+     */
+    public static function removeObjectOnPorts($idObject)
+    {
+        Port::where('object', $idObject)->update([
+            'object' => null,
+            'method' => null, 'method_params' => null,
+            'dc_method' => null, 'dc_method_params' => null,
+            'lc_method' => null, 'lc_method_params' => null,
+            'comment' => '']);
+
+        HiteproDev::where('id_object', $idObject)->update([
+        'id_object' => null]);
+    }
+
+
+    /**
+     * Настроить порт в БД в соответсвии с параметрами
+     *
+     * @param $idObject
+     * @param $idPort
+     * @param $status
+     * @param null $comment
+     * @param null $method
+     * @param null $method_params
+     * @param null $dc_method
+     * @param null $dc_method_params
+     * @param null $lc_method
+     * @param null $lc_method_params
+     */
+    public static function setObjectOnSelectedPort($idObject, $idPort, $status, $comment,
+                                                   $method = null, $method_params = null,
+                                                   $dc_method = null, $dc_method_params = null,
+                                                   $lc_method = null, $lc_method_params = null )
+    {
+        Port::where('id', $idPort)->update(['object' => $idObject,
+            'method' => $method, 'method_params' => $method_params,
+            'dc_method' => $dc_method, 'dc_method_params' => $dc_method_params,
+            'lc_method' => $lc_method, 'lc_method_params' => $lc_method_params,
+            'comment' => $comment, 'status' => $status]);
+    }
+
+    /**
+     * Добавить объект на устройство хитпро
+     * @param $idObject
+     * @param $idDevice
+     */
+    public static function setObjectOnHitePro($idObject, $idHPDevice)
+    {
+        HiteproDev::where('id', $idHPDevice)->update(['id_object' => $idObject]);
+    }
+
 
 }

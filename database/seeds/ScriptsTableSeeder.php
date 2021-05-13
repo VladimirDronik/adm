@@ -184,10 +184,42 @@ class ScriptsTableSeeder extends Seeder
                 'system' => 1
             ],
 
+        ];
+    }
 
+
+
+    /**
+     * Изменение скриптов в этой функции влияет на методы, которые
+     * автоматически создаются для объекта шторы
+     *
+     * @return array
+     */
+    public static function getCurtainScripts(): array
+    {
+        return [
+            [
+                'name' => 'Открыть',
+                'link' => 'open_curtain.php',
+                'count' => 0,
+                'system' => 1
+            ],
+            [
+                'name' => 'Закрыть',
+                'link' => 'close_curtain.php',
+                'count' => 0,
+                'system' => 1
+            ],
+            [
+                'name' => 'Открыть на %',
+                'link' => 'open_half_curtain.php',
+                'count' => 0,
+                'system' => 1
+            ],
 
         ];
     }
+
 
     private function getScripts(): array
     {
@@ -203,6 +235,7 @@ class ScriptsTableSeeder extends Seeder
         $scripts[] = self::getCheckCarbmonoxideScript();
         $scripts[] = self::deleteLogsScript();
         $scripts[] = self::getCheckManometrScript();
+        $scripts[] = self::getCurtainScripts();
 
 
         return $scripts;

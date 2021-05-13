@@ -118,4 +118,15 @@ class PortRepository {
         else return null;
 
     }
+
+    /**
+     * Выводит номер реального физического порта по id (статическая функция)
+     */
+    public static function getNumberPortByID($idPort)
+    {
+        if(!is_null($idPort) && $idPort != 'null'){
+            return Port::where('id', $idPort)->first()->num_port;
+        }
+        else return null;
+    }
 }

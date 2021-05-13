@@ -41,4 +41,10 @@ class HiteProDevRepository {
               ->orderBy('name')->get();
     }
 
+    public static function getIDByDeviceID($deviceID)
+    {
+        return HiteproDev::where('id_controller', $deviceID)->where('type', 'switch')->orwhere('type', 'socket')
+            ->orderBy('name')->get();
+    }
+
 }
