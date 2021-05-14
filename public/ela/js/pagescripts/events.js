@@ -20,6 +20,7 @@ function addActionBtn() {
     hideAllElements();
 
     $('#type_action option:first').prop('selected', true);
+    $('#type_action_selected').val('');
     $('#init_action_btn').click();
 }
 
