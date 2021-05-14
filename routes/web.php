@@ -42,6 +42,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('lamps', 'LampController')->except('show','destroy')->middleware('can:devices');
     Route::resource('dimmers', 'DimmerController')->except('show','destroy')->middleware('can:devices');
     Route::resource('curtains', 'CurtainController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('locks', 'LockController')->except('show','destroy')->middleware('can:devices');
 
 
     Route::resource('settings', 'SettingController')->except('show','destroy')->middleware('can:settings');
@@ -109,6 +110,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('virtuals/delete', 'VirtualsController@delete')->name('virtuals.delete');
         Route::post('engineering/delete', 'EngineeringController@delete')->name('engineering.delete');
         Route::post('curtains/delete', 'CurtainsController@delete')->name('curtains.delete');
+        Route::post('locks/delete', 'LockController@delete')->name('locks.delete');
 
         Route::group(['prefix' => 'logs', 'as' => 'logs.'], function () {
             Route::post('active', 'LogsController@active')->name('active');

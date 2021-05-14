@@ -179,9 +179,7 @@ class CurtainService
 
         if ($curtain->object && $curtain->object->is_system) {
             DB::transaction(function () use (&$curtain) {
-//                if (!HomeObject::isObjectUsed($curtain->id_object, $curtain->id, 'curtains')) {
-                    HomeObject::deleteAutoObject($curtain->id_object);
-  //              }
+                HomeObject::deleteAutoObject($curtain->id_object);
                 $curtain->delete();
             });
         } else {

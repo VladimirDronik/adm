@@ -17,7 +17,7 @@ class CreateCurtainsTable extends Migration
             $table->integer('port_open')->nullable()->comment('порт на открытие шторы');
             $table->integer('port_close')->nullable()->comment('порт на закрытие шторы');
             $table->tinyInteger('time')->comment('время полного открытия или закрытия шторы');
-            $table->string('palce', 10)->comment('Размещение на обычном контроллере или на хитпро');
+            $table->string('place', 10)->comment('Размещение на обычном контроллере или на хитпро');
 
             $table->foreign('id_object')->references('id')->on('objects')
                 ->onUpdate('cascade')->onDelete('cascade');

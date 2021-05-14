@@ -225,6 +225,7 @@ class ScriptsTableSeeder extends Seeder
     {
         $scripts = self::getDimmerScripts();
 
+        $scripts = array_merge($scripts, self::getCurtainScripts());
         $scripts[] = self::getResetGraphsScript();
         $scripts[] = self::getCheckCountScript();
         $scripts[] = self::getResetCountScript();
@@ -235,7 +236,6 @@ class ScriptsTableSeeder extends Seeder
         $scripts[] = self::getCheckCarbmonoxideScript();
         $scripts[] = self::deleteLogsScript();
         $scripts[] = self::getCheckManometrScript();
-        $scripts[] = self::getCurtainScripts();
 
 
         return $scripts;

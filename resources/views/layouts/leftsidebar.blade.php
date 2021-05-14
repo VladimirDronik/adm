@@ -66,6 +66,12 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="{{ route('locks.index') }}">
+                                    <i class="fa fa-lock"></i>
+                                    Замки
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('counts.index') }}">
                                     <i class="fa fa-bullseye"></i>
                                     Счетчики
