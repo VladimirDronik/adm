@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление штору', 'links' => [ route('curtains.index') => 'Шторы']])
+       ['title' => 'Добавление дверного замка', 'links' => [ route('locks.index') => 'Дверные замки']])
 @endsection
 
 @section('content')
@@ -15,7 +15,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('curtains.index') }}" class="btn btn-success m-b-10 m-l-5">Список штор</a>
+                        <a href="{{ route('locks.index') }}" class="btn btn-success m-b-10 m-l-5">Список дверных замков</a>
                     </div>
                 </div>
             </div>
@@ -23,7 +23,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::open(['route' => 'curtains.store', 'method' => 'post', 'id' => 'curtain_form',
+                    {!! Form::open(['route' => 'locks.store', 'method' => 'post', 'id' => 'lock_form',
                             'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
@@ -39,7 +39,7 @@
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
-                                @include('curtains/create_tabs/main')
+                                @include('locks/create_tabs/main')
                             </div>
                             <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
                                 <br>Свойства будут доступны после сохранения объекта
@@ -72,7 +72,7 @@
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
-    <script src="{{ asset('ela/js/pagescripts/curtain.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/lock.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
@@ -80,12 +80,17 @@
 
 
         $(document).ready(function () {
-            initCurtainForm();
+
+
+            initLockForm();
+
+
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id_open").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id_close").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_hitepro_device_open").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_hitepro_device_close").chosen({width:"100%", no_results_text: "Не найдено"});
+
 
             $("#auto_sel_device_id").chosen().change(function() {
                 let device_id = $(this).val();

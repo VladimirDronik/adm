@@ -1,7 +1,7 @@
 <br>
 
 
-{{ Form::bs_radio('type', 'Тип реле*:', $types, old('type', -1), ['required' => true]) }}
+{{ Form::bs_radio('type', 'Тип*:', $types, old('type', -1), ['required' => true]) }}
 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
 

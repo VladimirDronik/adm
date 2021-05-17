@@ -6,9 +6,9 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование: '.$curtain->rus_type.' № '. $curtain->object['id'] . ' «' . $curtain->name .'»',
-        'links' => [ route('curtains.index') => 'Шторы, жалюзи, рольставни'],
-        'last_link' => 'Редактирование: '.$curtain->rus_type])
+       ['title' => 'Редактирование: '.$lock->rus_type.' № '. $lock->object['id'] . ' «' . $lock->name .'»',
+        'links' => [ route('locks.index') => 'Дверные замки'],
+        'last_link' => 'Редактирование: '.$lock->rus_type])
 @endsection
 
 @section('content')
@@ -17,8 +17,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('curtains.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок штор</a>
-                        <a href="{{ route('curtains.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить штору</a>
+                        <a href="{{ route('locks.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок замков</a>
+                        <a href="{{ route('locks.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить замок</a>
                     </div>
                 </div>
             </div>
@@ -26,7 +26,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::model($curtain, ['route' => ['curtains.update', $curtain->id], 'id' => 'curtain_form',
+                    {!! Form::model($lock, ['route' => ['locks.update', $lock->id], 'id' => 'lock_form',
                         'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
@@ -41,24 +41,24 @@
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
-                                @include('curtains/edit_tabs/main')
+                                @include('locks/edit_tabs/main')
                             </div>
                             <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
-                                @include('curtains/edit_tabs/prop')
+                                @include('locks/edit_tabs/prop')
                             </div>
                             <div class="tab-pane p-20 @if($tab==4) active @endif" id="portstab4" role="tabpanel">
-                                @include('curtains/edit_tabs/events')
-                                @include('objects.events', ['object' => $curtain->object])
+                                @include('locks/edit_tabs/events')
+                                @include('objects.events', ['object' => $lock->object])
                             </div>
                             <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
-                                @include('objects.methods', ['object' => $curtain->object])
+                                @include('objects.methods', ['object' => $lock->object])
                             </div>
                             <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
-                                @include('objects.sheduler', ['object' => $curtain->object])
+                                @include('objects.sheduler', ['object' => $lock->object])
                             </div>
                         </div>
                         <input type="hidden" id="tabs-sel" value="{{ $tab }}">
-                        <input type="hidden" id="event_idobject" name="event_idobject" value="{{ $curtain->iobject['id'] }}">
+                        <input type="hidden" id="event_idobject" name="event_idobject" value="{{ $lock->iobject['id'] }}">
 
                     {{ Form::bs_submit_btn() }}
 
@@ -84,7 +84,7 @@
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
-    <script src="{{ asset('ela/js/pagescripts/relay.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/lock.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
@@ -97,11 +97,11 @@
         const del_url = '{{ route('ajax.methods.delete') }}';
         const del_message_url = '{{ route('ajax.messages.delete') }}';
         const sub_data_url = '{{ route('ajax.load.data') }}';
-        const object_id = '{{ optional($curtain->object)->id }}';
+        const object_id = '{{ optional($lock->object)->id }}';
         const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
         let del_id;
         $(document).ready(function () {
-            initRelayForm();
+            initLockForm();
             serviceInit();
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});

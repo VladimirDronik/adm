@@ -3,12 +3,12 @@
 @section('breadcrumbs')
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Устройства: шторы</h3></div>
+            <h3 class="text-primary">Устройства: дверные замки</h3></div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
                 <li class="breadcrumb-item breadcrumb-item-no-link">Устройства</li>
-                <li class="breadcrumb-item active">Шторы, жалюзи, рольставни</li>
+                <li class="breadcrumb-item active">Дверные замки</li>
             </ol>
         </div>
     </div>
@@ -20,16 +20,16 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('curtains.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить</a>
-                        <a href="{{ route('curtains.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
+                        <a href="{{ route('locks.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить</a>
+                        <a href="{{ route('locks.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card">
-            <div class="card-title"><h4>Шторы, жалюзи, рольставни</h4></div>
+            <div class="card-title"><h4>Дверные замки</h4></div>
             <div class="card-body">
-                @if(count($curtains))
+                @if(count($locks))
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -45,29 +45,29 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($curtains as $curtain)
-                                <tr id="tr{{$curtain->id}}">
-                                    <td scope="row">{{ $curtain->object['id'] }}</td>
+                            @foreach($locks as $lock)
+                                <tr id="tr{{$lock->id}}">
+                                    <td scope="row">{{ $lock->object['id'] }}</td>
                                     <td>
-                                        {{ $curtain->rus_type }}
+                                        {{ $lock->rus_type }}
                                     </td>
-                                    <td><a href="{{ route('curtains.edit', [$curtain->id]) }}">{{ $curtain->name }}</a></td>
+                                    <td><a href="{{ route('locks.edit', [$lock->id]) }}">{{ $lock->name }}</a></td>
                                     @can('devices.show-object')
-                                        <td>@if($curtain->object)
-                                                <a href="{{ route('objects.edit', [$curtain->id_object]) }}">{{ optional($curtain->object)->name }}</a>
+                                        <td>@if($lock->object)
+                                                <a href="{{ route('objects.edit', [$lock->id_object]) }}">{{ optional($lock->object)->name }}</a>
                                             @else
                                                 Не указан
                                             @endif
                                         </td>
                                     @endcan
                                     <td align="center" class="text-center">
-                                        <a href="{{ route('curtains.edit', [$curtain->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                        <a href="{{ route('locks.edit', [$lock->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                             <i class="fa fa-cog fa-lg"></i>
                                         </a>
                                     </td>
                                     <td align="center" class="text-center">
                                         <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                data-id="{{ $curtain->id }}" data-name="{{ $curtain->name }}">
+                                                data-id="{{ $lock->id }}" data-name="{{ $lock->name }}">
                                             <i class="fa fa-trash fa-lg"></i>
                                         </button>
                                     </td>
@@ -88,8 +88,8 @@
                             </tfoot>
                         </table>
                     </div>
-                    {{ $curtains->appends(request()->input())->links() }}
-                    <p class="text-right">Найдено: {{ $curtains->total() }}</p>
+                    {{ $locks->appends(request()->input())->links() }}
+                    <p class="text-right">Найдено: {{ $locks->total() }}</p>
                 @else
                     <p>Объекты не найдены</p>
                 @endif
@@ -102,24 +102,24 @@
 
 @section('scripts')
     <script>
-        let url = '{{ route('curtains.index') }}';
+        let url = '{{ route('locks.index') }}';
         $(document).ready(function(){
             let del_id;
             $('.del_btn').click(function() {
                 del_id = $(this).data('id');
-                $('#del_modal_body').text('Удалить объект № '+del_id+' «'+$(this).data('name')+'»?');
+                $('#del_modal_body').text('Удалить замок № '+del_id+' «'+$(this).data('name')+'»?');
                 $('#del_init_btn').click();
             });
             $('#del_modal_btn').click(function(){
                 if (del_id) {
                     $.ajax({
-                        url: '{{ route('ajax.curtains.delete') }}',
+                        url: '{{ route('ajax.locks.delete') }}',
                         data: { '_token': _token, 'id': del_id },
                         success: function (data) {
                             if (data.result) {
                                 $('#tr'+del_id).hide();
                             } else {
-                                showErrorModal('Ошибка при удалении объекта');
+                                showErrorModal('Ошибка при удалении замка');
                             }
                         }
                     });

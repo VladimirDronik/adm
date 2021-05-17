@@ -221,11 +221,37 @@ class ScriptsTableSeeder extends Seeder
     }
 
 
+    /**
+     * Изменение скриптов в этой функции влияет на методы, которые
+     * автоматически создаются для объекта замки
+     *
+     * @return array
+     */
+    public static function getLockScripts(): array
+    {
+        return [
+            [
+                'name' => 'Открыть',
+                'link' => 'open_lock.php',
+                'count' => 0,
+                'system' => 1
+            ],
+            [
+                'name' => 'Закрыть',
+                'link' => 'close_lock.php',
+                'count' => 0,
+                'system' => 1
+            ],
+        ];
+    }
+
+
     private function getScripts(): array
     {
         $scripts = self::getDimmerScripts();
 
         $scripts = array_merge($scripts, self::getCurtainScripts());
+        $scripts = array_merge($scripts, self::getLockScripts());
         $scripts[] = self::getResetGraphsScript();
         $scripts[] = self::getCheckCountScript();
         $scripts[] = self::getResetCountScript();

@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление штору', 'links' => [ route('curtains.index') => 'Шторы']])
+       ['title' => 'Добавление шторы', 'links' => [ route('curtains.index') => 'Шторы']])
 @endsection
 
 @section('content')

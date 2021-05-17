@@ -6,21 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lock extends Model
 {
-    const TYPE_CURTAIN = '';
-    const TYPE_JALOUSIE = 'jalousie';
-    const TYPE_SHUTTERS = 'shutters';
+    const TYPE_ELECTROMECHANICAL = 'Electromechanical';
+    const TYPE_MAGNETIC = 'Magnetic';
+    const TYPE_LATCH = 'Latch';
 
 
-    protected $table = 'curtains';
+    protected $table = 'locks';
     public $timestamps = false;
     protected $guarded = ['id'];
 
     public static function getTypes(bool $is_full = false)
     {
         $types = [
-            self::TYPE_CURTAIN => 'Шторы',
-            self::TYPE_JALOUSIE => 'Жалюзи',
-            self::TYPE_SHUTTERS => 'Ставни'
+            self::TYPE_ELECTROMECHANICAL => 'Электромеханический',
+            self::TYPE_MAGNETIC => 'Магнитный',
+            self::TYPE_LATCH => 'Защелка'
         ];
 
         return $is_full ? $types : array_keys($types);

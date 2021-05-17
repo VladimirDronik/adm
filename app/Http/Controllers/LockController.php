@@ -3,75 +3,78 @@
 namespace App\Http\Controllers;
 
 use App\Models\Device;
-use App\Repositories\CurtainRepository;
-use App\Models\Curtain;
+use App\Models\Lock;
+use App\Repositories\LockRepository;
 use App\Repositories\DeviceRepository;
 use App\Repositories\HiteProDevRepository;
 use App\Repositories\ObjectRepository;
 use App\Services\PortService;
 use App\Services\Service;
-use App\Http\Requests\Curtain\UpdateRequest;
-use App\Services\CurtainService;
+use App\Http\Requests\Lock\CreateRequest;
+use App\Http\Requests\Lock\UpdateRequest;
+use App\Services\LockService;
 use App\Models\HomeObject;
-use App\Http\Requests\Curtain\CreateRequest;
+
+
 
 class LockController extends Controller
 {
-    private $curtain_rep;
+
     private $portService;
-    private $curtainService;
     private $object_rep;
     private $device_rep;
+    private $lock_rep;
+    private $lockService;
 
 
-    public function __construct(CurtainRepository $curtainRepository, PortService $portService,
-                                CurtainService $curtainService, ObjectRepository $objectRepository,
+    public function __construct(LockRepository $lockRepository, PortService $portService,
+                                LockService $lockService, ObjectRepository $objectRepository,
                                 DeviceRepository $deviceRepository)
     {
-        $this->curtain_rep = $curtainRepository;
+        $this->lock_rep = $lockRepository;
         $this->portService = $portService;
-        $this->curtainService = $curtainService;
+        $this->lockService = $lockService;
         $this->object_rep = $objectRepository;
         $this->device_rep = $deviceRepository;
     }
 
     public function index()
     {
-        $curtains = $this->curtain_rep->getAll();
+        $locks = $this->lock_rep->getAll();
 
-        return view('curtains.index', compact('curtains'));
+        return view('locks.index', compact('locks'));
     }
 
-    public function edit(Curtain $curtain, $tab =1)
+    public function edit(Lock $lock, $tab =1)
     {
-        $types = Curtain::getTypes(true);
+        $types = Lock::getTypes(true);
 
         $can = gates('devices.show-object');
 
         list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) =
-            $this->portService->getCurrentDevPort($curtain->id_object, 'OUT');
+            $this->portService->getCurrentDevPort($lock->id_object, 'OUT');
 
         list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice) =
-            Service::getListElements($curtain->id_object);
+            Service::getListElements($lock->id_object);
 
 
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
 
-        $availableEvents = Curtain::getEvents();
-        $properties = Curtain::getProperties();
+        $availableEvents = Lock::getEvents();
+        $properties = Lock::getProperties();
 
 
         $devices = $this->device_rep->getAllToArray();
-        $idPort_open = $curtain->port_open;
-        $idPort_close = $curtain->port_close;
-        $hp_device_open = $curtain->port_open;
-        $hp_device_close = $curtain->port_close;
-        $place = $curtain->place;
+        $idPort_open = $lock->port_open;
+        $idPort_close = $lock->port_close;
+        $hp_device_open = $lock->port_open;
+        $hp_device_close = $lock->port_close;
+        $place = $lock->place;
 
         $allEvents = '';
 
-        return view('curtains.edit', compact('curtain', 'types', 'events', 'sounds', 'views', 'rooms',
+        return view('locks.edit', compact('lock', 'types', 'events', 'sounds', 'views', 'rooms',
             'idDevice','idPort','devices','ports', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents', 'properties',
             'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'idPort_open', 'idPort_close',
             'hp_device_open', 'hp_device_close', 'allEvents', 'place', 'can'));
@@ -81,47 +84,47 @@ class LockController extends Controller
 
     public function update(UpdateRequest $r, int $id)
     {
-        $curtain = Curtain::findOrFail($id);
+        $lock = Lock::findOrFail($id);
 
         try {
-            if ($this->curtainService->update($curtain, $r->except('_token'))) {
-                return redirect()->route('curtains.edit', [$curtain->id])
-                    ->with('success', 'Штора успешно изменена');
+            if ($this->lockService->update($lock, $r->except('_token'))) {
+                return redirect()->route('locks.edit', [$lock->id])
+                    ->with('success', 'Змаок успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении шторы '.$curtain->id
+            \Log::error('Ошибка при изменении замка '.$lock->id
                 .' ' .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении шторы');
+        return back()->withInput($r->all())->with('error','Ошибка при изменении замка');
     }
 
 
     public function create()
     {
-        $types = Curtain::getTypes(true);
+        $types = Lock::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
         $devices = $this->device_rep->getAllToArray();
         $tab = 1;
 
-        return view('curtains.create', compact('types', 'tab', 'objects', 'object_types', 'devices'));
+        return view('locks.create', compact('types', 'tab', 'objects', 'object_types', 'devices'));
     }
 
 
     public function store(CreateRequest $r)
     {
         try {
-            if ($id = $this->curtainService->store($r->except('_token'))) {
-                return redirect()->route('curtains.edit', [$id])
-                    ->with('success', 'Штора успешно добавлена');
+            if ($id = $this->lockService->store($r->except('_token'))) {
+                return redirect()->route('locks.edit', [$id])
+                    ->with('success', 'Замок успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении шторы ' .
+            \Log::error('Ошибка при добавлении замка ' .
                 json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении шторы');
+        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении замка');
     }
 
 
