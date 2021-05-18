@@ -81,9 +81,11 @@ class RelayController extends Controller
         $availableEvents = Relay::getEvents();
         $properties = Relay::getProperties();
 
+        $allEvents = '';
+
         return view('relays.edit', compact('relay', 'types', 'events', 'sounds', 'views', 'rooms',
             'idDevice','idPort','devices','ports', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents', 'properties',
-            'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'can'));
+            'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'allEvents', 'can'));
     }
 
     public function update(UpdateRequest $r, Relay $relay)

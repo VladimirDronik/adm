@@ -102,10 +102,11 @@ class LampController extends Controller
         $availableEvents = Lamp::getEvents();
         $properties = Lamp::getProperties();
 
+        $allEvents = '';
 
         return view('lamps.edit', compact('lamp',
             'idDevice','idPort','devices','ports', 'messagePoint', 'messages', 'properties', 'sounds', 'views', 'rooms',
             'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'can', 'tab', 'events',
-            'alice', 'availableEvents'));
+            'alice', 'availableEvents', 'allEvents'));
     }
 }
