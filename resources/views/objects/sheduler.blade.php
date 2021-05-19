@@ -8,7 +8,7 @@
         @foreach($object->scheduler_tasks as $scheduler_task)
             <div class="form-group row" id="ediv{{$scheduler_task->method}}">
                 <label class="col-md-5">
-                    <a href="{{ route('events.edit', [$scheduler_task->id]) }}" target="_blank">{{ $scheduler_task->name }}</a>
+                    <a href="{{ route('scheduler.edit', [$scheduler_task->id]) }}" target="_blank">{{ $scheduler_task->name }}</a>
                 </label>
                 <div class="col-md-5">
                     {{ optional($scheduler_task->emethod)->name }}

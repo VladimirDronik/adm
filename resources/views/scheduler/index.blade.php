@@ -6,7 +6,7 @@
     @else
         @includeIf('components.breadcrumbs',
            ['title' => 'Планировщик',
-            'links' => [ route('events.index') => 'Планировщик'],
+            'links' => [ route('scheduler.index') => 'Планировщик'],
             'last_link' => $filter['type_name']])
     @endif
 @endsection
@@ -17,8 +17,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('events.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить событие</a>
-                        <a href="{{ route('events.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
+                        <a href="{{ route('scheduler.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить событие</a>
+                        <a href="{{ route('scheduler.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <div class="pull-right">
                             <form class="form-inline my-2 my-lg-0" method="get">
@@ -72,12 +72,12 @@
                                     </td>
                                     <td>
                                         @if(!$event->is_system && !$event->is_hidden)
-                                            <a href="{{ route('events.edit',[$event->id]) }}" title="{{ $event->name }}">
+                                            <a href="{{ route('scheduler.edit',[$event->id]) }}" title="{{ $event->name }}">
                                                 <span @if($event->active) class="event-not-active" @endif>{{ $event->name }}</span>
                                             </a>
                                         @elseif(($event->is_system && $can['events.edit-system'])
                                             || ($event->is_hidden && $can['events.edit-hidden'] && !$event->is_system))
-                                            <a href="{{ route('events.edit',[$event->id]) }}" title="{{ $event->name }}">
+                                            <a href="{{ route('scheduler.edit',[$event->id]) }}" title="{{ $event->name }}">
                                                 <span @if($event->active) class="event-not-active" @endif>{{ $event->name }}</span>
                                             </a>
                                         @else
@@ -155,15 +155,15 @@
                                     @endif
                                     <td align="center">
                                         @if($event->is_system && $can['events.edit-system'])
-                                            <a href="{{ route('events.edit', [$event->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                            <a href="{{ route('scheduler.edit', [$event->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>
                                             </a>
                                         @elseif($event->is_hidden && $can['events.edit-hidden'] && !$event->is_system)
-                                            <a href="{{ route('events.edit', [$event->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                            <a href="{{ route('scheduler.edit', [$event->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>
                                             </a>
                                         @elseif(!$event->is_system && !$event->is_hidden)
-                                            <a href="{{ route('events.edit', [$event->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                            <a href="{{ route('scheduler.edit', [$event->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>
                                             </a>
                                         @endif
@@ -252,7 +252,7 @@
             });
 
             $('#reset_btn').click(function() {
-                window.location = '{{ route('events.index') }}';
+                window.location = '{{ route('scheduler.index') }}';
             });
 
             $('[data-toggle="collapse"]').click(function() {

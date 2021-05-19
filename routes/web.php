@@ -54,7 +54,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('manometr', 'ManometrController')->except('show','destroy')->middleware('can:devices');
     Route::resource('usensors', 'UsensorController')->except('show','destroy')->middleware('can:devices');
     Route::resource('drycontacts', 'DrycontactController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('events', 'SchedulerController')->except('show','destroy')->middleware('can:events');
+    Route::resource('scheduler', 'SchedulerController')->except('show','destroy')->middleware('can:events');
     Route::resource('logs', 'LogController')->only('index')->middleware('can:logs');
     Route::resource('users', 'UserController')->except('show','destroy')->middleware('can:rooms');
     Route::resource('notifications', 'NotificationController')->except('show','destroy')->middleware('can:settings');

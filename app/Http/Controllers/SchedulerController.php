@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Event\CreateRequest;
-use App\Http\Requests\Event\UpdateRequest;
+use App\Http\Requests\Scheduler\CreateRequest;
+use App\Http\Requests\Scheduler\UpdateRequest;
 use App\Models\SchedulerPoint;
 use App\Models\SchedulerTask;
 use App\Repositories\SchedulerRepository;
@@ -13,7 +13,7 @@ use App\Services\SchedulerService;
 use App\Services\ObjectService;
 use Illuminate\Http\Request;
 
-class EventController extends Controller
+class SchedulerController extends Controller
 {
     private $event_rep;
     private $object_rep;
@@ -46,7 +46,7 @@ class EventController extends Controller
         $events = $this->event_rep->getByNameAndType($filter, $can['events.show-system'], $can['events.show-hidden']);
         $types = SchedulerPoint::getFullTypeIds();
 
-        return view('events.index', compact('events', 'types', 'filter', 'can'));
+        return view('scheduler.index', compact('events', 'types', 'filter', 'can'));
     }
 
     public function create()
@@ -56,14 +56,14 @@ class EventController extends Controller
 
         $can = gates(['events.*-system', 'events.*-hidden']);
 
-        return view('events.create', compact('objects', 'scripts', 'can'));
+        return view('scheduler.create', compact('objects', 'scripts', 'can'));
     }
 
     public function store(CreateRequest $r)
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('events.edit', [$id])
+                return redirect()->route('scheduler.edit', [$id])
                     ->with('success', 'Событие успешно сохранено. Осталось указать расписание');
             }
         } catch (\Throwable $e) {
@@ -79,7 +79,7 @@ class EventController extends Controller
             ->with('points', 'eobject', 'emethod', 'escript', 'eobject')->first();
 
         if (!$event) {
-            return redirect()->route('events.index')->with('error', 'Событие не найдено');
+            return redirect()->route('scheduler.index')->with('error', 'Событие не найдено');
         }
 
         $objects = $this->object_rep->getAllToArray();
@@ -91,7 +91,7 @@ class EventController extends Controller
 
         $can = gates(['events.*-system', 'events.*-hidden']);
 
-        return view('events.edit', compact('event', 'objects', 'methods', 'scripts',
+        return view('scheduler.edit', compact('event', 'objects', 'methods', 'scripts',
             'types', 'cron_periods', 'can'));
     }
 
@@ -105,7 +105,7 @@ class EventController extends Controller
             }
 
             if ($this->service->update($event, $r->except('_token'))) {
-                return redirect()->route('events.edit', [$event->id])->with('success','Событие успешно изменено');
+                return redirect()->route('scheduler.edit', [$event->id])->with('success','Событие успешно изменено');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении задачи планировщика '.$event->id.' ' .json_encode($r->all()).' '.$e->getMessage());

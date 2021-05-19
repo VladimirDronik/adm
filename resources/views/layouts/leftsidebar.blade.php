@@ -139,7 +139,7 @@
                             <i class="fa fa-flash"></i><span class="hide-menu">Скрипты</span></a></li>
                 @endcan
                 @can('events')
-                    <li> <a class="has-arrow" href="{{ route('events.index') }}" aria-expanded="false">
+                    <li> <a class="has-arrow" href="{{ route('scheduler.index') }}" aria-expanded="false">
                             <i class="fa fa-calendar"></i><span class="hide-menu">Планировщик</span></a></li>
                 @endcan
                 @can('settings')

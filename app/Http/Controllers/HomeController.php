@@ -24,7 +24,7 @@ class HomeController extends Controller
             'views' => View::count(),
             'scenes' => Scene::count(),
             'termostats' => Termostat::count(),
-            'events' => SchedulerTask::count(),
+            'scheduler' => SchedulerTask::count(),
             'scripts' => Script::count()
         ];
 

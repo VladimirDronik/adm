@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-        ['title' => 'Добавление задачи', 'links' => [ route('events.index') => 'Задачи']])
+        ['title' => 'Добавление задачи', 'links' => [ route('scheduler.index') => 'Задачи']])
 @endsection
 
 @section('content')
@@ -15,7 +15,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('events.index') }}" class="btn btn-success m-b-10 m-l-5">Список событий</a>
+                        <a href="{{ route('scheduler.index') }}" class="btn btn-success m-b-10 m-l-5">Список событий</a>
                     </div>
                 </div>
             </div>
@@ -23,7 +23,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::open(['route' => 'events.store', 'method' => 'post', 'id' => 'event_form',
+                    {!! Form::open(['route' => 'scheduler.store', 'method' => 'post', 'id' => 'event_form',
                         'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">

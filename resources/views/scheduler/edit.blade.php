@@ -9,7 +9,7 @@
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
        ['title' => 'Редактирование задачи «'. $event->name .'»',
-        'links' => [ route('events.index') => 'Планировщик'],
+        'links' => [ route('scheduler.index') => 'Планировщик'],
         'last_link' => 'Редактирование задачи планировщика'])
 @endsection
 
@@ -19,8 +19,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('events.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок событий</a>
-                        <a href="{{ route('events.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить событие</a>
+                        <a href="{{ route('scheduler.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок событий</a>
+                        <a href="{{ route('scheduler.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить событие</a>
                     </div>
                 </div>
             </div>
@@ -28,7 +28,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::model($event, ['route' => ['events.update', $event->id], 'method' => 'put',
+                    {!! Form::model($event, ['route' => ['scheduler.update', $event->id], 'method' => 'put',
                             'id' => 'event_form', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
@@ -231,7 +231,7 @@
         </div>
     </div>
 
-    @include('events.point_modal')
+    @include('scheduler.point_modal')
     @include('components.info_modal')
     @include('components.del_modal')
 @endsection
