@@ -16,7 +16,7 @@ class CrateLocksTable extends Migration
             $table->unsignedInteger('id_object')->nullable();
             $table->integer('port_open')->nullable()->comment('порт на открытие замка');
             $table->integer('port_close')->nullable()->comment('порт на закрытие замка');
-            $table->tinyInteger('time')->comment('время полного открытия или закрытия замка');
+            $table->tinyInteger('time')->nullable()->comment('время полного открытия или закрытия замка');
             $table->string('place', 10)->comment('Размещение на обычном контроллере или на хитпро');
 
             $table->foreign('id_object')->references('id')->on('objects')

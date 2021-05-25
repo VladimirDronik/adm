@@ -14,11 +14,6 @@ function validateLock() {
         return 'Не указано название';
     }
 
-    if (isEmptyInput('time')) {
-        return 'Не указано время открытия или закрытия';
-    }
-
-
 
     return '';
 }

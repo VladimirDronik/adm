@@ -176,6 +176,25 @@
 
 
 
+            $('#lock_form [name=type]').change(function(){
+
+                if ($(this).val() === 'Electromechanical') {
+                    $('#portclosediv').show();
+                    $('#deviceclosediv').show();
+                    $('#timediv').hide();
+                } else if ($(this).val() === 'Magnetic') {
+                    $('#portclosediv').hide();
+                    $('#deviceclosediv').hide();
+                    $('#timediv').show();
+                } else if ($(this).val() === 'Latch') {
+                    $('#portclosediv').hide();
+                    $('#deviceclosediv').hide();
+                    $('#timediv').hide();
+                }
+
+            });
+
+
 
         });
     </script>
