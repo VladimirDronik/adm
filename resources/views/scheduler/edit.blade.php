@@ -185,6 +185,7 @@
                                             {!! $point->description !!}
                                         </div>
                                         <div class="col-md-2 text-right">
+
                                             @if(($event->is_system && $can['events.edit-system'])
                                                || ($event->is_hidden && $can['events.edit-hidden'] && !$event->is_system)
                                                || (!$event->is_system && !$event->is_hidden))
@@ -195,11 +196,11 @@
                                                     </button>
                                                 @endif
 
-                                                @if(!optional($event->emethod)->is_system)
+                                                {{--@if(!optional($event->emethod)->is_system)--}}{{-- проверка на системный метод --}}
                                                     <button type="button" data-id="{{ $point->id }}" data-type="{{ $point->type }}" class="btn btn-danger btn-rounded btn-sm del_btn">
                                                         <i class="fa fa-trash fa-lg"></i>
                                                     </button>
-                                                @endif
+                                                {{--@endif--}}
                                             @endif
                                         </div>
                                     </div>

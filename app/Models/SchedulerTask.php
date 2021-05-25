@@ -77,13 +77,14 @@ class SchedulerTask extends Model
      */
     public function getIsPointEditableAttribute()
     {
-        if (!optional($this->emethod)->is_system) {
-            return true;
-        }
-
-        return Termostat::whereHas('iobject', function ($query) {
-            $query->where('is_system', 1)->where('id', $this->object);
-        })->exists();
+//        if (!optional($this->emethod)->is_system) {
+//            return true;
+//        }
+//
+//        return Termostat::whereHas('iobject', function ($query) {
+//            $query->where('is_system', 1)->where('id', $this->object);
+//        })->exists();
+        return true; //закоротили временно
     }
 
     /* scopes */
