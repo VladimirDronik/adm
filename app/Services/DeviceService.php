@@ -106,7 +106,7 @@ class DeviceService {
      * @return mixed
      * @throws \Throwable
      */
-    public function store(array $data, bool $is_notify = false) //true для реализации функции настройки устройства с дефолтным адресом
+    public function store(array $data,  bool $forcedCreate = true, bool  $is_notify = false) //true для реализации функции настройки устройства с дефолтным адресом
     {
 
         $typeDevice = $data['type'];
@@ -127,7 +127,7 @@ class DeviceService {
                 else
                     $data['active'] = 0;
 
-                if($data['active'] == 1) {
+                if(($data['active'] == 1) || ($forcedCreate)) {
 
                     $this->storeDevice($data, $is_notify);
 

@@ -55,7 +55,7 @@ class FakeDevicesTableSeeder extends Seeder
             'ip_address' => $this->faker->ipv4
         ];
 
-        $this->device_service->store($data, false);
+        $this->device_service->store($data, true, false);
     }
 
     public function getRandTypeId()

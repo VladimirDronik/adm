@@ -199,19 +199,19 @@ class ScriptsTableSeeder extends Seeder
     {
         return [
             [
-                'name' => 'Открыть',
+                'name' => 'Открыть штору',
                 'link' => 'open_curtain.php',
                 'count' => 0,
                 'system' => 1
             ],
             [
-                'name' => 'Закрыть',
+                'name' => 'Закрыть штору',
                 'link' => 'close_curtain.php',
                 'count' => 0,
                 'system' => 1
             ],
             [
-                'name' => 'Открыть на %',
+                'name' => 'Открыть штору на %',
                 'link' => 'open_half_curtain.php',
                 'count' => 0,
                 'system' => 1
@@ -231,13 +231,13 @@ class ScriptsTableSeeder extends Seeder
     {
         return [
             [
-                'name' => 'Открыть',
+                'name' => 'Открыть замок',
                 'link' => 'open_lock.php',
                 'count' => 0,
                 'system' => 1
             ],
             [
-                'name' => 'Закрыть',
+                'name' => 'Закрыть замок',
                 'link' => 'close_lock.php',
                 'count' => 0,
                 'system' => 1
@@ -275,7 +275,6 @@ class ScriptsTableSeeder extends Seeder
     public function run()
     {
         $scripts = $this->getScripts();
-
         $result_scripts = [];
 
         foreach ($scripts as $script) {

@@ -26,8 +26,8 @@ class ViewService {
             $data['on_method_params'] = $stringMethod;
         } elseif(trim($data['type']) == 'link')
             $data['on_method_params'] = $data['link'];
-            else
-            $data['on_method_params'] = null;
+            //else
+            //$data['on_method_params'] = null;
 
 
 
