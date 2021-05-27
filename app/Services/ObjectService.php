@@ -132,6 +132,9 @@ class ObjectService {
             if(($typeObject == 'switch') || ($typeObject == 'button'))
                 $query->orwhere('type', 'lamp')
                     ->orwhere('type', 'relay')
+                    ->orwhere('type', 'socket')
+                    ->orwhere('type', 'curtain')
+                    ->orwhere('type', 'lock')
                     ->orwhere('type', 'virtual');
 
 
