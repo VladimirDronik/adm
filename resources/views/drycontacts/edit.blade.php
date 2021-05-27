@@ -26,7 +26,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::model($drycontact, ['route' => ['drycontacts.update', $drycontact->id], 'id' => 'switch_form',
+                    {!! Form::model($drycontact, ['route' => ['drycontacts.update', $drycontact->id], 'id' => 'drycontact_form',
                         'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
@@ -71,15 +71,16 @@
                         {{ Form::bs_autoselect('method_on', 'Метод:', $methods_on, old('method_on', $method_on),
                             false, false, [], null, 'Метод объекта при замыкании контакта') }}
 
-                        <div class="form-group row" id="method_on_params_div"
-                             @if(!old('method_on')) style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_on_params"></label>
+                        <div class="form-group row" id="param_method_on_div"
+                             @if(is_null($drycontact->param_method_on) && !old('method_on')) style="display: none;" @endif>
+                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="param_method_on"></label>
                             <div class="col-md-9 pr-0">
                                 <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="method_on_params_label" for="method_on_params">...</label>
+                                    <label class="control-label text-right col-md-6 label-fix" id="param_method_on_label" for="param_method_on">
+                                        {{ optional($drycontact->emethod_on)->params }}*:</label>
                                     <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="method_on_params" name="method_on_params"
-                                               type="text" value="{{ old('method_on_params') }}">
+                                        <input class="form-control" autocomplete="off" id="param_method_on" name="param_method_on"
+                                               type="text" value="{{ old('param_method_on', $drycontact->param_method_on) }}">
                                     </div>
                                 </div>
                             </div>
@@ -94,15 +95,16 @@
                         {{ Form::bs_autoselect('method_off', 'Метод:', $methods_off, old('method_off', $method_off),
                             false, false, [], null, 'Метод объекта при размыкании контакта') }}
 
-                        <div class="form-group row" id="method_off_params_div"
-                             @if(!old('method')) style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_off_params"></label>
+                        <div class="form-group row" id="param_method_off_div"
+                             @if(is_null($drycontact->param_method_off) && !old('method_off')) style="display: none;" @endif>
+                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="param_method_off"></label>
                             <div class="col-md-9 pr-0">
                                 <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="method_off_params_label" for="method_off_params">...</label>
+                                    <label class="control-label text-right col-md-6 label-fix" id="param_method_off_label" for="param_method_off">
+                                        {{ optional($drycontact->emethod_off)->params }}*:</label>
                                     <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="method_off_params" name="method_off_params"
-                                               type="text" value="{{ old('method_off_params') }}">
+                                        <input class="form-control" autocomplete="off" id="param_method_off" name="param_method_off"
+                                               type="text" value="{{ old('param_method_off', $drycontact->param_method_off) }}">
                                     </div>
                                 </div>
                             </div>
@@ -135,7 +137,7 @@
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
-    <script src="{{ asset('ela/js/pagescripts/switch.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/drycontact.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
@@ -155,7 +157,8 @@
         let del_message;
 
         $(document).ready(function () {
-            initSwitchForm();
+
+
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
@@ -165,8 +168,12 @@
             $("#auto_sel_object_off").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_method_off").chosen({width:"100%", no_results_text: "Не найдено"});
 
+
+            initDrycontactForm();
+
             $("#auto_sel_device_id").chosen().change(function() {
                 let object_id = $(this).val();
+
 
                 $.ajax({
                     url: url_ports,
@@ -181,37 +188,40 @@
 
             $("#auto_sel_object_on").chosen().change(function() {
                 let object_id = $(this).val();
-                hideParamsFields('method_params_on');
+                hideParamsFields('param_method_on');
 
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method_on', data.methods, -1);
-                        $('#auto_sel_method_on').trigger("chosen:updated");
-
-                    }
-                });
+                getMethods(object_id, '#auto_sel_method_on');
             });
 
             $("#auto_sel_object_off").chosen().change(function() {
                 let object_id = $(this).val();
-                hideParamsFields('method_params_off');
+                hideParamsFields('param_method_off');
 
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
+                getMethods(object_id, '#auto_sel_method_off');
 
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method_off', data.methods, -1);
-                        $('#auto_sel_method_off').trigger("chosen:updated");
-
-                    }
-                });
             });
+
+
+            //при загрузке страницы подгружаем методы для выбранного объекта
+            getMethods($("#auto_sel_object_on").val(), '#auto_sel_method_on',  '{{ $method_on }}');
+            getMethods($("#auto_sel_object_off").val(), '#auto_sel_method_off', '{{ $method_off }}');
+
+
+
+            $("#auto_sel_method_on").chosen().change(function() {
+                loadMethods($(this).val(), 'param_method_on', '#drycontact_form');
+            });
+
+
+
+            $("#auto_sel_method_off").chosen().change(function() {
+                loadMethods($(this).val(), 'param_method_off', '#drycontact_form');
+            });
+
+
+
+
+
 
             $('#auto_sel_btn_id_object').click(function() {
                 clearCreateObjectModal();

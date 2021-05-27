@@ -100,7 +100,10 @@ class PortRepository {
 
     public function getPortByObject($idObject)
     {
-        return Port::where('object', $idObject)->first()->id;
+        $port = Port::where('object', $idObject)->first();
+
+        if($port)
+        return $port->id;
     }
 
     /**

@@ -40,8 +40,8 @@ class DrycontactService
         $drycontact->id_object = (int)$data['id_object'];
         $drycontact->method_on = $data['method_on'];
         $drycontact->method_off = $data['method_off'];
-        $drycontact->param_method_on = $data['method_on_params'];
-        $drycontact->param_method_off = $data['method_off_params'];
+        $drycontact->param_method_on = $data['param_method_on'];
+        $drycontact->param_method_off = $data['param_method_off'];
 
 
     }

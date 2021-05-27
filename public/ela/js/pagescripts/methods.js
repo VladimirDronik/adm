@@ -1,3 +1,76 @@
+
+
+
+/**
+ * Получение параметров при выборе метода
+ */
+function loadMethods(selectField, paramsField, form)
+{
+    const methodId = parseInt(selectField);
+    const params = getMethodParams(methodId);
+
+    if (params === '') {
+        hideParamsFields(paramsField, form);
+    } else {
+        showParamsFields(paramsField, form, params);
+    }
+}
+
+function hideParamsFields(id, form) {
+    $(form+' #'+id+'_div').hide();
+    $(form+' #'+id).val('');
+}
+
+function showParamsFields(id, form, params) {
+    $(form+' #'+id+'_label').text(params+'*:');
+    $(form+' #'+id).val('');
+    $(form+' #'+id+'_div').show();
+}
+
+function getMethodParams(methodId) {
+
+    for (let i = 0; i < methods.length; i++) {
+        if (methods[i].id === methodId) {
+            return methods[i].params ? methods[i].params : '';
+        }
+    }
+
+    return '';
+}
+
+/**
+ * Получение методов для выбранного объекта и загрузка в указанный селект метода
+ * @param object_id
+ * @param methodsSelect
+ */
+function getMethods(object_id, methodsSelect, selected) {
+
+
+    $.ajax({
+        url: url_methods,
+        data: {'_token': _token, 'object_id': object_id},
+        success: function (data) {
+            methods = data.methods;
+            createMethodSelect(methodsSelect, data.methods, selected);
+            $(methodsSelect).trigger("chosen:updated");
+        }
+    });
+}
+
+function createMethodSelect(target, options, selected) {
+    let sel = $(target);
+    sel.html('');
+    let s = '<option value="">Не выбрано</option>';
+    for (let i = 0; i < options.length; i++) {
+        if (selected == options[i].id)
+            s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
+        else
+            s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
+    }
+    sel.append(s);
+}
+
+
 function loadSubData(mode, object_id) {
     let device = {};
 
@@ -282,7 +355,6 @@ function clickDelBtn() {
         });
     }
 
-
-
-
 }
+
+

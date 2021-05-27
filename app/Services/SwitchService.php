@@ -75,6 +75,8 @@ class SwitchService {
     private function setPort($idPort, $typeObject)
     {
 
+        if($idPort) {
+
         $port = Port::where('id', $idPort)->first();
 
 
@@ -87,6 +89,7 @@ class SwitchService {
 
 
         return $answer;
+        }
 
     }
 

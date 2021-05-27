@@ -113,7 +113,6 @@ class ManometrController extends Controller
                 $messages = $messagesService->getNotifications($manometr->id_object);
 
 
-
                 $messagePoint['first'] = 'При нижнем пороге';
                 $messagePoint['second'] = 'При верхнем пороге';
 

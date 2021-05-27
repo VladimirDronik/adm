@@ -23,7 +23,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::open(['route' => 'motionsensors.store', 'method' => 'post', 'id' => 'switch_form', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::open(['route' => 'motionsensors.store', 'method' => 'post', 'id' => 'motionsensor_form', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
@@ -105,6 +105,20 @@
                                 </div>
                             </div>
 
+                            <div class="form-group row" id="method_normal_params_div"
+                                 @if(!old('method_normal')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_normal_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row ">
+                                        <label class="control-label text-right col-md-6 label-fix" id="method_normal_params_label" for="method_normal_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="method_normal_params" name="method_normal_params"
+                                                   type="text" value="{{ old('method_normal_params') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
 
 
 
@@ -129,6 +143,21 @@
                             </div>
 
 
+                            <div class="form-group row" id="method_eco_params_div"
+                                 @if(!old('method_eco')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_eco_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row ">
+                                        <label class="control-label text-right col-md-6 label-fix" id="method_eco_params_label" for="method_eco_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="method_eco_params" name="method_eco_params"
+                                                   type="text" value="{{ old('method_eco_params') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
                             <div class="row" id="select_methods_div">
 
                                 <div class="col-sm-11 pr-0">
@@ -146,6 +175,20 @@
                                     {{ Form::bs_autoselect('method_night', 'Метод:', [], old('method_night'),
                                 false, false, [], null, 'Метод, который вызывается при срабатывании датчика в ночном режиме') }}
 
+                                </div>
+                            </div>
+
+                            <div class="form-group row" id="method_night_params_div"
+                                 @if(!old('method_night')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_night_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row ">
+                                        <label class="control-label text-right col-md-6 label-fix" id="method_night_params_label" for="method_night_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="method_night_params" name="method_night_params"
+                                                   type="text" value="{{ old('method_night_params') }}">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -173,6 +216,20 @@
                             </div>
 
 
+                            <div class="form-group row" id="method_morning_params_div"
+                                 @if(!old('method_morning')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_morning_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row ">
+                                        <label class="control-label text-right col-md-6 label-fix" id="method_morning_params_label" for="method_morning_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="method_morning_params" name="method_morning_params"
+                                                   type="text" value="{{ old('method_morning_params') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
 
 
                             <div class="row" id="select_methods_div">
@@ -193,6 +250,21 @@
                                     {{ Form::bs_autoselect('method_evening', 'Метод:', [], old('method_evening'),
                                false, false, [], null, 'Метод, который вызывается при срабатывании датчика в вечернем режиме (сумерки)') }}
 
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row" id="method_evening_params_div"
+                                 @if(!old('method_evening')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_evening_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row ">
+                                        <label class="control-label text-right col-md-6 label-fix" id="method_evening_params_label" for="method_evening_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="method_evening_params" name="method_evening_params"
+                                                   type="text" value="{{ old('method_evening_params') }}">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -219,6 +291,19 @@
                             </div>
 
 
+                            <div class="form-group row" id="method_guard_params_div"
+                                 @if(!old('method_guard')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_guard_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row ">
+                                        <label class="control-label text-right col-md-6 label-fix" id="method_guard_params_label" for="method_guard_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="method_guard_params" name="method_guard_params"
+                                                   type="text" value="{{ old('method_guard_params') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
 
                             <div class="row" id="select_methods_div">
@@ -248,6 +333,20 @@
                                 </div>
                             </div>
 
+                            <div class="form-group row" id="method_light_params_div"
+                                 @if(!old('method_light')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_light_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row ">
+                                        <label class="control-label text-right col-md-6 label-fix" id="method_light_params_label" for="method_light_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="method_light_params" name="method_light_params"
+                                                   type="text" value="{{ old('method_light_params') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
 
                         </div>
                     </div>
@@ -265,7 +364,7 @@
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
-    <script src="{{ asset('ela/js/pagescripts/switch.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/motionsensor.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
@@ -274,7 +373,7 @@
         let methods = [];
 
         $(document).ready(function () {
-            initSwitchForm();
+
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
@@ -302,6 +401,9 @@
 
             $("#auto_sel_lightstat").chosen({width:"100%", no_results_text: "Не найдено"});
 
+            initMotionsensorForm();
+
+
             $("#auto_sel_device_id").chosen().change(function() {
                 let device_id = $(this).val();
                 $.ajax({
@@ -318,106 +420,6 @@
                 clearCreateObjectModal();
                 $('#create_object_modal_init_btn').click();
                 return false;
-            });
-
-            $("#auto_sel_object_normal").chosen().change(function() {
-                let object_id = $(this).val();
-
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method_normal', data.methods, -1);
-                        $('#auto_sel_method_normal').trigger("chosen:updated");
-                    }
-                });
-            });
-
-            $("#auto_sel_object_eco").chosen().change(function() {
-                let object_id = $(this).val();
-
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method_eco', data.methods, -1);
-                        $('#auto_sel_method_eco').trigger("chosen:updated");
-                    }
-                });
-            });
-
-            $("#auto_sel_object_night").chosen().change(function() {
-                let object_id = $(this).val();
-
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method_night', data.methods, -1);
-                        $('#auto_sel_method_night').trigger("chosen:updated");
-                    }
-                });
-            });
-
-            $("#auto_sel_object_morning").chosen().change(function() {
-                let object_id = $(this).val();
-
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method_morning', data.methods, -1);
-                        $('#auto_sel_method_morning').trigger("chosen:updated");
-                    }
-                });
-            });
-
-            $("#auto_sel_object_evening").chosen().change(function() {
-                let object_id = $(this).val();
-
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method_evening', data.methods, -1);
-                        $('#auto_sel_method_evening').trigger("chosen:updated");
-                    }
-                });
-            });
-
-
-            $("#auto_sel_object_guard").chosen().change(function() {
-                let object_id = $(this).val();
-
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method_guard', data.methods, -1);
-                        $('#auto_sel_method_guard').trigger("chosen:updated");
-                    }
-                });
-            });
-
-
-            $("#auto_sel_object_light").chosen().change(function() {
-                let object_id = $(this).val();
-
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method_light', data.methods, -1);
-                        $('#auto_sel_method_light').trigger("chosen:updated");
-                    }
-                });
             });
 
 
@@ -486,5 +488,9 @@
                 return true;
             });
         });
+
+
+
+
     </script>
 @endsection

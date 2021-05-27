@@ -92,18 +92,42 @@ class SwitchController extends Controller
         list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) = $this->portService->getCurrentDevPort($switch->id_object, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
 
+        $params['value'] = '';
+        $params['name'] = '';
+        $params_dc['value'] = '';
+        $params_dc['name'] = '';
+        $params_lc['value'] = '';
+        $params_lc['name'] = '';
+
         if($port) {
             $method = $port->method;
             $object = $objectService->getObjectByMethod($method);
             $methods = $objectService->getMethodsByObjectIdToArray($object);
+            if($port->method) {
+                $params['value'] = $port->method_params;
+                $params['name'] = $objectService->getParamsByMethodId($port->method);
+            }
+
 
             $method_dc = $port->dc_method;
             $object_dc = $objectService->getObjectByMethod($method_dc);
             $methods_dc = $objectService->getMethodsByObjectIdToArray($object_dc);
 
+            if($port->dc_method) {
+                $params_dc['value'] = $port->dc_method_params;
+                $params_dc['name'] = $objectService->getParamsByMethodId($port->dc_method);
+            }
+
+
             $method_lc = $port->lc_method;
             $object_lc = $objectService->getObjectByMethod($method_lc);
             $methods_lc = $objectService->getMethodsByObjectIdToArray($object_lc);
+
+            if($port->lc_method) {
+                $params_lc['value'] = $port->lc_method_params;
+                $params_lc['name'] = $objectService->getParamsByMethodId($port->lc_method);
+            }
+
         } else {
 
             $method = null;
@@ -129,7 +153,7 @@ class SwitchController extends Controller
         return view('switches.edit', compact('switch', 'types',
             'object', 'method', 'methods', 'object_dc', 'method_dc', 'methods_dc',
             'object_lc', 'method_lc', 'methods_lc', 'idDevice', 'idPort', 'devices', 'ports',
-            'messages', 'messagePoint',  'hp_device', 'hp_devices',
+            'messages', 'messagePoint',  'hp_device', 'hp_devices', 'params', 'params_dc', 'params_lc',
             'objects', 'object_types', 'scripts', 'can'));
     }
 

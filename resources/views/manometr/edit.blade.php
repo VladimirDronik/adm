@@ -69,6 +69,21 @@
                         {{ Form::bs_autoselect('low_method', 'Метод объекта:', $low_methods, old('low_method',  $manometr->low_method),
                             false, false, [], null, 'Метод объекта влияния при достижении нижнего порога') }}
 
+                        <div class="form-group row" id="low_method_params_div"
+                             @if(is_null($manometr->low_method_params) && !old('low_method')) style="display: none;" @endif>
+                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="low_method_params"></label>
+                            <div class="col-md-9 pr-0">
+                                <div class="form-group row ">
+                                    <label class="control-label text-right col-md-6 label-fix" id="low_method_params_label" for="low_method_params">
+                                        {{ optional($manometr->emethod_low)->params }}*:</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" autocomplete="off" id="low_method_params" name="low_method_params"
+                                               type="text" value="{{ old('low_method_params', $manometr->low_method_params) }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div style="height: 60px;">&nbsp;</div>
 
                         {{ Form::bs_number('high_value', 'Верхний аварийный порог*:', old('high_value', $manometr->high_value), ['min' => 0, 'max' => 5000, 'required' => true],
@@ -81,6 +96,21 @@
                         {{ Form::bs_autoselect('high_method', 'Метод объекта:', $high_methods, old('high_method', $manometr->high_method),
                             false, false, [], null, 'Метод объекта влияния при достижении верхнего порога') }}
 
+
+                        <div class="form-group row" id="high_method_params_div"
+                             @if(is_null($manometr->high_method_params) && !old('high_method')) style="display: none;" @endif>
+                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="high_method_params"></label>
+                            <div class="col-md-9 pr-0">
+                                <div class="form-group row ">
+                                    <label class="control-label text-right col-md-6 label-fix" id="high_method_params_label" for="high_method_params">
+                                        {{ optional($manometr->emethod_high)->params }}*:</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" autocomplete="off" id="high_method_params" name="high_method_params"
+                                               type="text" value="{{ old('high_method_params', $manometr->high_method_params) }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <div style="height: 60px;">&nbsp;</div>
 
@@ -115,7 +145,7 @@
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
-    <script src="{{ asset('ela/js/pagescripts/lightstat.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/manometr.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
@@ -138,7 +168,7 @@
 
         $(document).ready(function () {
 
-            initLightstatForm();
+            initManometrForm();
             initMethodsVar({{ optional($manometr->eobject)->id }});
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
@@ -178,6 +208,37 @@
                 });
             });
 
+
+            $("#auto_sel_low_object").chosen().change(function() {
+                let object_id = $(this).val();
+                hideParamsFields('low_method_params');
+
+                getMethods(object_id, '#auto_sel_low_method');
+            });
+
+
+            $("#auto_sel_high_object").chosen().change(function() {
+                let object_id = $(this).val();
+                hideParamsFields('high_method_params');
+
+                getMethods(object_id, '#auto_sel_high_method');
+            });
+
+
+            //при загрузке страницы подгружаем методы для выбранного объекта
+
+            getMethods($("#auto_sel_low_object").val(), '#auto_sel_low_method', '{{ $manometr->low_method }}');
+            getMethods($("#auto_sel_high_object").val(), '#auto_sel_high_method', '{{ $manometr->high_method }}');
+
+
+
+            $("#auto_sel_low_method").chosen().change(function() {
+                loadMethods($(this).val(), 'low_method_params', '#manometr_form');
+            });
+
+            $("#auto_sel_high_method").chosen().change(function() {
+                loadMethods($(this).val(), 'high_method_params', '#manometr_form');
+            });
 
 
             $('#create_object_modal_btn').click(function() {

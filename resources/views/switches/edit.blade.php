@@ -88,14 +88,15 @@
                             false, false, [], null, 'Метод объекта при одиночном нажатии кнопки') }}
 
                         <div class="form-group row" id="method_params_div"
-                             @if(!old('method')) style="display: none;" @endif>
+                             {{--@if(!old('method'))  style="display: none;" @endif>--}}
+                             @if($params['value'] == '')  style="display: none;" @endif>
                             <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_params"></label>
                             <div class="col-md-9 pr-0">
                                 <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="method_params_label" for="method_params">...</label>
+                                    <label class="control-label text-right col-md-6 label-fix" id="method_params_label" for="method_params">{{ $params['name'] }}</label>
                                     <div class="col-md-6">
                                         <input class="form-control" autocomplete="off" id="method_params" name="method_params"
-                                               type="text" value="{{ old('method_params') }}">
+                                               type="text" value="{{ $params['value'] }}">
                                     </div>
                                 </div>
                             </div>
@@ -113,14 +114,14 @@
                             false, false, [], null, 'Метод объекта при двойном нажатии кнопки') }}
 
                         <div class="form-group row" id="method_dc_params_div"
-                             @if(!old('method')) style="display: none;" @endif>
+                             @if($params_dc['value'] == '')  style="display: none;" @endif>
                             <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_dc_params"></label>
                             <div class="col-md-9 pr-0">
                                 <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="method_dc_params_label" for="method_dc_params">...</label>
+                                    <label class="control-label text-right col-md-6 label-fix" id="method_dc_params_label" for="method_dc_params">{{ $params_dc['name'] }}</label>
                                     <div class="col-md-6">
                                         <input class="form-control" autocomplete="off" id="method_dc_params" name="method_dc_params"
-                                               type="text" value="{{ old('method_params') }}">
+                                               type="text" value="{{ $params_dc['value'] }}">
                                     </div>
                                 </div>
                             </div>
@@ -136,14 +137,14 @@
                             false, false, [], null, 'Метод объекта при длительном нажатии кнопки') }}
 
                         <div class="form-group row" id="method_lc_params_div"
-                             @if(!old('method_lc')) style="display: none;" @endif>
+                             @if($params_lc['value'] == '')  style="display: none;" @endif>
                             <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_lc_params"></label>
                             <div class="col-md-9 pr-0">
                                 <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="method_lc_params_label" for="method_lc_params">...</label>
+                                    <label class="control-label text-right col-md-6 label-fix" id="method_lc_params_label" for="method_lc_params">{{ $params_lc['name'] }}</label>
                                     <div class="col-md-6">
                                         <input class="form-control" autocomplete="off" id="method_lc_params" name="method_lc_params"
-                                               type="text" value="{{ old('method_lc_params') }}">
+                                               type="text" value="{{ $params_lc['value'] }}">
                                     </div>
                                 </div>
                             </div>
@@ -198,7 +199,7 @@
         let del_message;
 
         $(document).ready(function () {
-            initSwitchForm();
+
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
@@ -212,22 +213,7 @@
             $("#auto_sel_method_dc").chosen({width:"100%", no_results_text: "Не найдено"});
 
 
-            $("#auto_sel_object").chosen().change(function() {
-                let object_id = $(this).val();
-                hideParamsFields('method_params');
-
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method', data.methods, -1);
-                        $('#auto_sel_method').trigger("chosen:updated");
-
-                    }
-                });
-            });
+            initSwitchForm();
 
             $("#auto_sel_device_id").chosen().change(function() {
                 let device_id = $(this).val();
@@ -254,37 +240,53 @@
                 });
             });
 
+
+
+            $("#auto_sel_object").chosen().change(function() {
+                let object_id = $(this).val();
+                hideParamsFields('method_params');
+
+                getMethods(object_id, '#auto_sel_method');
+            });
+
+
             $("#auto_sel_object_lc").chosen().change(function() {
                 let object_id = $(this).val();
                 hideParamsFields('method_lc_params');
 
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method_lc', data.methods, -1);
-                        $('#auto_sel_method_lc').trigger("chosen:updated");
-                    }
-                });
+                getMethods(object_id, '#auto_sel_method_lc');
             });
 
             $("#auto_sel_object_dc").chosen().change(function() {
                 let object_id = $(this).val();
-                hideParamsFields('method_params_dc');
+                hideParamsFields('method_dc_params');
 
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method_dc', data.methods, -1);
-                        $('#auto_sel_method_dc').trigger("chosen:updated");
-                    }
-                });
+                getMethods(object_id, '#auto_sel_method_dc');
             });
+
+
+            //при загрузке страницы подгружаем методы для выбранного объекта
+
+            getMethods($("#auto_sel_object").val(), '#auto_sel_method', '{{ $method }}');
+            getMethods($("#auto_sel_object_lc").val(), '#auto_sel_method_lc', '{{ $method_lc }}');
+            getMethods($("#auto_sel_object_dc").val(), '#auto_sel_method_dc', '{{ $method_dc }}');
+
+
+
+            $("#auto_sel_method").chosen().change(function() {
+                loadMethods($(this).val(), 'method_params', '#switch_form');
+            });
+
+            $("#auto_sel_method_lc").chosen().change(function() {
+                loadMethods($(this).val(), 'method_lc_params', '#switch_form');
+            });
+
+            $("#auto_sel_method_dc").chosen().change(function() {
+                loadMethods($(this).val(), 'method_dc_params', '#switch_form');
+            });
+
+
+
 
 
             $('#auto_sel_btn_id_object').click(function() {

@@ -70,6 +70,20 @@
                             {{ Form::bs_autoselect('low_method', 'Метод объекта:', [], old('low_method'),
                                 false, false, [], null, 'Метод объекта влияния при достижении нижнего порога') }}
 
+                            <div class="form-group row" id="low_method_params_div"
+                                 @if(!old('low_method')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="low_method_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row ">
+                                        <label class="control-label text-right col-md-6 label-fix" id="low_method_params_label" for="low_method_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="low_method_params" name="low_method_params"
+                                                   type="text" value="{{ old('low_method_params') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div style="height: 60px;">&nbsp;</div>
 
                             {{ Form::bs_number('high_value', 'Верхний аварийный порог*:', old('high_value', 100), ['min' => 0, 'max' => 54612, 'required' => true],
@@ -82,6 +96,19 @@
                             {{ Form::bs_autoselect('high_method', 'Метод объекта:', [], old('high_method'),
                                 false, false, [], null, 'Метод объекта влияния при достижении верхнего порога') }}
 
+                            <div class="form-group row" id="high_method_params_div"
+                                 @if(!old('high_method')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="high_method_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row ">
+                                        <label class="control-label text-right col-md-6 label-fix" id="high_method_params_label" for="high_method_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="high_method_params" name="high_method_params"
+                                                   type="text" value="{{ old('high_method_params') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div style="height: 60px;">&nbsp;</div>
 
@@ -103,7 +130,8 @@
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
-    <script src="{{ asset('ela/js/pagescripts/lightstat.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/carbmonoxide.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script>
         const url_methods = '{{ route('ajax.objects.methods') }}';
@@ -113,7 +141,7 @@
         let methods = [];
 
         $(document).ready(function () {
-            initLightstatForm();
+
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port").chosen({width:"100%", no_results_text: "Не найдено"});
@@ -122,31 +150,29 @@
             $("#auto_sel_low_method").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_high_method").chosen({width:"100%", no_results_text: "Не найдено"});
 
+            initCarbmonoxideForm();
+
 
             $("#auto_sel_low_object").chosen().change(function() {
                 let object_id = $(this).val();
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_low_method', data.methods, -1);
-                        $('#auto_sel_low_method').trigger("chosen:updated");
-                    }
-                });
+                hideParamsFields('low_method_params');
+
+                getMethods(object_id, '#auto_sel_low_method');
+            });
+
+            $("#auto_sel_low_method").chosen().change(function() {
+                loadMethods($(this).val(), 'low_method_params', '#carbmonoxide_form');
             });
 
             $("#auto_sel_high_object").chosen().change(function() {
                 let object_id = $(this).val();
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_high_method', data.methods, -1);
-                        $('#auto_sel_high_method').trigger("chosen:updated");
-                    }
-                });
+                hideParamsFields('high_method_params');
+
+                getMethods(object_id, '#auto_sel_high_method');
+            });
+
+            $("#auto_sel_high_method").chosen().change(function() {
+                loadMethods($(this).val(), 'high_method_params', '#carbmonoxide_form');
             });
 
             $("#auto_sel_device_id").chosen().change(function() {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Manometr;
+namespace App\Http\Requests\Carbmonoxide;
 
 use Illuminate\Foundation\Http\FormRequest;
 

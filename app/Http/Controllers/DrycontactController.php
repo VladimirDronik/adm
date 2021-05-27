@@ -83,6 +83,7 @@ class DrycontactController extends Controller
         $object_on = $objectService->getObjectByMethod($method_on);
         $methods_on = $objectService->getMethodsByObjectIdToArray($object_on);
 
+
         $method_off = $drycontact->method_off;
         $object_off = $objectService->getObjectByMethod($method_off);
         $methods_off = $objectService->getMethodsByObjectIdToArray($object_off);

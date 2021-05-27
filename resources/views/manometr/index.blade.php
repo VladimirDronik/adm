@@ -54,13 +54,13 @@
                                         <td>{{ $manometr->cur_value }}</td>
                                         <td>{{ $manometr->low_value }}</td>
                                         <td>{{ $manometr->high_value }}</td>
-                                        @can('devices.show-object')
-                                            <td>
-                                                @if($manometr->object)
-                                                    <a href="{{ route('objects.edit',[$manometr->object]) }}" target="_blank">{{ optional($manometr->eobject)->name }}</a>
-                                                @endif
-                                            </td>
-                                        @endcan
+                                        {{--@can('devices.show-object')--}}
+                                            {{--<td>--}}
+                                                {{--@if($manometr->object)--}}
+                                                    {{--<a href="{{ route('objects.edit',[$manometr->object]) }}" target="_blank">{{ optional($manometr->eobject)->name }}</a>--}}
+                                                {{--@endif--}}
+                                            {{--</td>--}}
+                                        {{--@endcan--}}
                                         <td align="center" class="text-center">
                                             <a href="{{ route('manometr.edit',[$manometr->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>

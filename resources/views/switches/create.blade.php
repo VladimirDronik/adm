@@ -112,6 +112,7 @@
 
 
 
+
                         {{ Form::bs_title('Двойное нажатие') }}
 
 
@@ -129,7 +130,7 @@
                                     <label class="control-label text-right col-md-6 label-fix" id="method_dc_params_label" for="method_dc_params">...</label>
                                     <div class="col-md-6">
                                         <input class="form-control" autocomplete="off" id="method_dc_params" name="method_dc_params"
-                                               type="text" value="{{ old('method_params') }}">
+                                               type="text" value="{{ old('method_dc_params') }}">
                                     </div>
                                 </div>
                             </div>
@@ -176,6 +177,7 @@
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/switch.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
@@ -194,53 +196,45 @@
             $("#auto_sel_object_dc").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_method_dc").chosen({width:"100%", no_results_text: "Не найдено"});
 
+
             $("#auto_sel_object").chosen().change(function() {
                 let object_id = $(this).val();
                 hideParamsFields('method_params');
 
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method', data.methods, -1);
-                        $('#auto_sel_method').trigger("chosen:updated");
-                    }
-                });
+                getMethods(object_id, '#auto_sel_method');
             });
+
 
             $("#auto_sel_object_lc").chosen().change(function() {
                 let object_id = $(this).val();
                 hideParamsFields('method_lc_params');
 
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method_lc', data.methods, -1);
-                        $('#auto_sel_method_lc').trigger("chosen:updated");
-                    }
-                });
+                getMethods(object_id, '#auto_sel_method_lc');
             });
 
             $("#auto_sel_object_dc").chosen().change(function() {
                 let object_id = $(this).val();
-                hideParamsFields('method_params_dc');
+                hideParamsFields('method_dc_params');
 
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method_dc', data.methods, -1);
-                        $('#auto_sel_method_dc').trigger("chosen:updated");
-                    }
-                });
+                getMethods(object_id, '#auto_sel_method_dc');
             });
+
+
+
+
+            $("#auto_sel_method").chosen().change(function() {
+                loadMethods($(this).val(), 'method_params', '#switch_form');
+            });
+
+            $("#auto_sel_method_lc").chosen().change(function() {
+                loadMethods($(this).val(), 'method_lc_params', '#switch_form');
+            });
+
+            $("#auto_sel_method_dc").chosen().change(function() {
+                loadMethods($(this).val(), 'method_dc_params', '#switch_form');
+            });
+
+
 
 
             $("#auto_sel_device_id").chosen().change(function() {

@@ -70,6 +70,18 @@ class ObjectService {
     }
 
 
+    /**
+     * Получение описание параметров метода по его ид
+     * @param int $methodId
+     */
+    public function getParamsByMethodId(int $methodId)
+    {
+        return Method::where('id', $methodId)
+            ->first()->params;
+
+    }
+
+
 
     public function getPropertiesByObjectId($object_id, $easyArray = true): array
     {
@@ -133,8 +145,9 @@ class ObjectService {
     {
         if ($object_id) {
             return Method::where('id_object', $object_id)
-                ->orderBy('name')->select('id', 'name')
+               ->orderBy('name')->select('id', 'name')
                 ->pluck('name', 'id')->toArray();
+
         }
 
         return [];

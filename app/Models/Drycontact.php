@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Drycontact whereIdObject($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Drycontact whereName($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Method|null $emethod_off
+ * @property-read \App\Models\Method|null $emethod_on
  */
 class Drycontact extends Model
 {
@@ -38,5 +40,15 @@ class Drycontact extends Model
     public function iobject()
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+    }
+
+    public function emethod_on()
+    {
+        return $this->belongsTo(Method::class, 'method_on', 'id');
+    }
+
+    public function emethod_off()
+    {
+        return $this->belongsTo(Method::class, 'method_off', 'id');
     }
 }

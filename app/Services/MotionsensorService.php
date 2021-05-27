@@ -90,7 +90,7 @@ class MotionsensorService {
 
     public function update(Motionsensor $motionsensor, array $data): int
     {
-;
+
         DB::transaction(function () use (&$motionsensor, $data) {
             if ($this->isUpdateAutoObjectName($motionsensor, $data['name'])) {
                 $motionsensor->iobject->name = HomeObject::getUniqueObjectName($motionsensor->iobject->id, trim($data['name']));

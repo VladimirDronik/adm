@@ -53,6 +53,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Lightstat whereRoom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Lightstat whereUsensorId($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Method|null $emethod_off
+ * @property-read \App\Models\Method|null $emethod_on
  */
 
 class Lightstat extends Model
@@ -87,5 +89,15 @@ class Lightstat extends Model
     public function getRusLightstatAttribute()
     {
         return self::getLightstatById($this->mode);
+    }
+
+    public function emethod_on()
+    {
+        return $this->belongsTo(Method::class, 'method_on', 'id');
+    }
+
+    public function emethod_off()
+    {
+        return $this->belongsTo(Method::class, 'method_off', 'id');
     }
 }
