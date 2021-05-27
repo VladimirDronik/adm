@@ -24,7 +24,7 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'type' => 'required|string|max:8',
+            'type' => 'required|string|max:20',
             'description' => 'nullable|string|max:255',
             'room' => 'required|integer|min:0',
             'scene' => 'nullable|integer|min:0',
