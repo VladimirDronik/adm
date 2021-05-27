@@ -40,14 +40,15 @@
 
                             {{ Form::bs_checkbox('active', 'Активность:', $event->active, [], '&nbsp;&nbsp;Включить или выключить событие') }}
 
-                            @if($can['events.edit-system'] && !($event->emethod && $event->emethod->is_system))
+                            {{--@if($can['events.edit-system'] && !($event->emethod && $event->emethod->is_system)) --}}
+                            @if($can['events.edit-system'])
                                 {{ Form::bs_checkbox('is_system', 'Системное:', $event->is_system, [], '&nbsp;&nbsp;Доступно для редактирования только администратору') }}
                             @else
                                 {{ Form::bs_simple_text('Системное:', $event->is_system ? 'Да' : 'Нет') }}
                                 <input type="hidden" name="is_system" value="{{ $event->is_system ? 1 : 0 }}">
                             @endif
 
-                            @if($can['events.edit-hidden'] && !($event->emethod && $event->emethod->is_system))
+                            @if($can['events.edit-hidden'])
                                 {{ Form::bs_checkbox('is_hidden', 'Скрытое:', $event->is_hidden, [], '&nbsp;&nbsp;Доступно для просмотра только администратору') }}
                             @else
                                 {{ Form::bs_simple_text('Скрытое:', $event->is_hidden ? 'Да' : 'Нет') }}
