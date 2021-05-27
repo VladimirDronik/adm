@@ -182,14 +182,22 @@
                     $('#portclosediv').show();
                     $('#deviceclosediv').show();
                     $('#timediv').hide();
+                    $('#port_id_div label').html('Порт на открытие:');
+                    $('#portclosediv label').html('Порт на закрытие:');
+                    $('#hitepro_devices_div label').html('Устройство на открытие:');
+                    $('#deviceclosediv label').html('Устройство на закрытие:');
                 } else if ($(this).val() === 'Magnetic') {
                     $('#portclosediv').hide();
                     $('#deviceclosediv').hide();
                     $('#timediv').show();
+                    $('#port_id_div label').html('Порт:');
+                    $('#hitepro_devices_div label').html('Устройство:');
                 } else if ($(this).val() === 'Latch') {
                     $('#portclosediv').hide();
                     $('#deviceclosediv').hide();
                     $('#timediv').hide();
+                    $('#port_id_div label').html('Порт:');
+                    $('#hitepro_devices_div label').html('Устройство:');
                 }
 
             });

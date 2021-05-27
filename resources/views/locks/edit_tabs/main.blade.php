@@ -35,7 +35,7 @@
            false, false, [], null) }}
 
         <div id='port_id_div' @if ($place=='Hite-pro') style="display: none" @endif>
-            {{ Form::bs_autoselect('port_id_open', 'Порт на открытие:', $ports, old('port_id_open', $idPort_open),
+            {{ Form::bs_autoselect('port_id_open', $label_port , $ports, old('port_id_open', $idPort_open),
                 false, false, [], null) }}
             <div id="portclosediv" @if ($lock->type != 'Electromechanical') style="display: none" @endif>
             {{ Form::bs_autoselect('port_id_close', 'Порт на закрытие:', $ports, old('port_id_close', $idPort_close),
@@ -44,7 +44,7 @@
         </div>
 
         <div id='hitepro_devices_div' @if ($place=='port') style="display: none" @endif>
-            {{ Form::bs_autoselect('hitepro_device_open', 'Устройство на открытие:', $hp_devices, old('hiteProDevice_open', $hp_device_open),
+            {{ Form::bs_autoselect('hitepro_device_open', $label_hitepro, $hp_devices, old('hiteProDevice_open', $hp_device_open),
                 false, false, [], null) }}
 
             <div id="deviceclosediv"  @if ($lock->type != 'Electromechanical') style="display: none" @endif>
@@ -54,7 +54,7 @@
         </div>
 
         <div id="timediv"  @if ($lock->type != 'Magnetic') style="display: none" @endif>
-            {{ Form::bs_text('time', 'Время открытия и закытия в секундах:', null) }}
+            {{ Form::bs_text('time', 'Время открытия в секундах:', null) }}
         </div>
 
         <input type="hidden" name="place" id="place" value="@if ($ports==null) Hite-pro @else port @endif">

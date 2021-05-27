@@ -14,7 +14,7 @@
                    false, false, [], null) }}
 
                 <div id='port_id_div' style="display: block">
-                    {{ Form::bs_autoselect('port_id_open', 'Порт на отркытие:', [], old('port_id_open'),
+                    {{ Form::bs_autoselect('port_id_open', 'Порт на открытие:', [], old('port_id_open'),
                         false, false, [], null) }}
 
                     <div id="portclosediv">
@@ -41,7 +41,7 @@
 </div>
 
 <div id="timediv" style="display: none">
-    {{ Form::bs_text('time', 'Время открытия или закытия в секундах:', null) }}
+    {{ Form::bs_text('time', 'Время открытия в секундах:', null) }}
 </div>
 
 

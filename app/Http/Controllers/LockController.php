@@ -72,12 +72,21 @@ class LockController extends Controller
         $hp_device_close = $lock->port_close;
         $place = $lock->place;
 
+        if ($lock->type == 'Electromechanical') {
+            $label_port = 'Порт на открытие: ';
+            $label_hitepro = 'Устройство на открытие: ';
+        } else {
+            $label_port = 'Порт: ';
+            $label_hitepro = 'Устройство: ';
+        }
+
+
         $allEvents = '';
 
         return view('locks.edit', compact('lock', 'types', 'events', 'sounds', 'views', 'rooms',
             'idDevice','idPort','devices','ports', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents', 'properties',
             'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'idPort_open', 'idPort_close',
-            'hp_device_open', 'hp_device_close', 'allEvents', 'place', 'can'));
+            'label_port', 'label_hitepro', 'hp_device_open', 'hp_device_close', 'allEvents', 'place', 'can'));
     }
 
 
