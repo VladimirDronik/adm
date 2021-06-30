@@ -16,6 +16,10 @@ class ViewService {
         $view->position_top = (int)$data['position_top'];
         $view->position_left = (int)$data['position_left'];
 
+        if($data['color'] != '') $view->color = $data['color'];
+        else
+            $view->color = NULL;
+
 
         if(trim($data['type']) == 'termostat') {
 
@@ -23,11 +27,13 @@ class ViewService {
             $stringMethod.='lowval='.$data['lowval_termostat'].';';
             $stringMethod.='highval='.$data['highval_termostat'];
 
-            $data['on_method_params'] = $stringMethod;
+            $data['params'] = $stringMethod;
         } elseif(trim($data['type']) == 'link')
-            $data['on_method_params'] = $data['link'];
-            //else
-            //$data['on_method_params'] = null;
+            $data['params'] = $data['link'];
+                elseif(trim($data['type']) == 'label')
+                    $data['params'] = "push={$data['pushlabel']}&modal={$data['modallabel']}&message={$data['label_longclick_text']}";
+                else
+                $data['params'] = null;
 
 
 
@@ -53,6 +59,7 @@ class ViewService {
         }
         $view->icon = pathinfo($data['icon_image'], PATHINFO_FILENAME);
         $view->on_method_params = $data['on_method_params'];
+        $view->params = $data['params'];
 
         if ($view->type === View::TYPE_SWITCH) {
             $view->off_method = $data['off_method'] ?? null;

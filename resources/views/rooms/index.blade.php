@@ -162,6 +162,7 @@
                 $('#modalRoom #nameRoom').val('');
                 $('#modal_room_init_btn').click();
             });
+
         });
     </script>
 @endsection

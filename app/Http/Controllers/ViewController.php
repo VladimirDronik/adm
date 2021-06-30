@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\View\CreateRequest;
 use App\Http\Requests\View\UpdateRequest;
 use App\Models\View;
+use App\Repositories\ColorRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
 use App\Repositories\SceneRepository;
 use App\Repositories\ViewRepository;
+use App\Services\ColorService;
 use App\Services\ImageService;
 use App\Services\ObjectService;
 use App\Services\ViewService;
@@ -62,7 +64,9 @@ class ViewController extends Controller
     {
         list($types, $rooms, $objects, $scenes, $images, $links) = $this->getLists();
 
-        return view('views.create', compact('types', 'rooms', 'objects', 'scenes', 'images', 'links'));
+        $colors = ColorRepository::getColors();
+
+        return view('views.create', compact('types', 'rooms', 'objects', 'scenes', 'images', 'links', 'colors'));
     }
 
     public function store(CreateRequest $r)
@@ -83,23 +87,32 @@ class ViewController extends Controller
         list($types, $rooms, $objects, $scenes, $images, $links) = $this->getLists();
         $methods = $object_service->getMethodsByObjectIdToArray($view->id_object);
 
+        $colors = ColorRepository::getColors();
+
         $enabletermostat = null;
         $lowval_termostat = null;
         $highval_termostat = null;
+        $pushlabel = null;
+        $modallabel = null;
+        $label_longclick_text = null;
 
         if($view->type == 'termostat') {
-
-            $onmethodparams = explode(';',$view->on_method_params);
+            $onmethodparams = explode(';',$view->params);
             $enabletermostat = explode('=',$onmethodparams[0])[1];
             $lowval_termostat = explode('=',$onmethodparams[1])[1];
             $highval_termostat = explode('=',$onmethodparams[2])[1];
+        } elseif ($view->type == 'label') {
+            $onmethodparams = explode('&',$view->params);
+            $pushlabel = explode('=',$onmethodparams[0])[1];
+            $modallabel = explode('=',$onmethodparams[1])[1];
+            $label_longclick_text = explode('=',$onmethodparams[2])[1];
         }
 
 
 
         return view('views.edit', compact('view', 'types',
-            'rooms', 'methods', 'objects', 'scenes', 'images', 'links',
-            'enabletermostat', 'lowval_termostat', 'highval_termostat'));
+            'rooms', 'methods', 'objects', 'scenes', 'images', 'links', 'colors',
+            'enabletermostat', 'lowval_termostat', 'highval_termostat', 'pushlabel', 'modallabel', 'label_longclick_text'));
     }
 
     public function update(UpdateRequest $r, View $view)

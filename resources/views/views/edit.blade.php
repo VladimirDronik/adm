@@ -46,7 +46,7 @@
                         </div>
 
                         <div id="on_params_div"  @if($view->type == 'link') style="display: block;" @else style="display: none;"  @endif>
-                            {{ Form::bs_autoselect('link', 'Ссылка:', $links, old('link', $view->on_method_params), false, false) }}
+                            {{ Form::bs_autoselect('link', 'Ссылка:', $links, old('link', $view->params), false, false) }}
                         </div>
 
                         <div class="form-group row" id="on_method_params_div"
@@ -91,6 +91,22 @@
 
                         {{ Form::bs_text('title','Надпись:') }}
 
+                        <div class="row">
+                            <div class="col-md-2">
+                            </div>
+                            <div class="col-1">
+                                Цвет:
+                            </div>
+                            <div class="col-md-2" >
+                                <select name="color" style="background-color: @if($view->color) {{$view->color}} @else #FFFFFF  @endif" onchange="this.style.backgroundColor = this.options[this.selectedIndex].style.backgroundColor;">
+                                    <option style="background-color: #FFFFFF" value="">Цвет соответствует цвету помещения</option>
+                                    @foreach($colors AS $color)
+                                        <option style="background-color: {{$color}}" value="{{$color}}" @if ($view->color == $color) selected @endif>{{$color}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                         {{ Form::bs_image('icon','Изображение:', old('icon_image', $view->icon_path)) }}
 
                         {{ Form::bs_title('Расположение') }}
@@ -101,13 +117,21 @@
                         {{ Form::bs_number('position_left','Левый отступ (%):', old('position_left', $view->position_left), ['min' => 0, 'max' => 100, 'required' => false] ) }}
                         {{ Form::bs_number('position_top','Верхний отступ (%):', old('position_top', $view->position_right), ['min' => 0, 'max' => 100, 'required' => false] ) }}
 
-                        <div id="additionallydiv"  @if($view->type == 'termostat') style="display: block;" @else style="display: none;" @endif >
+                        <div id="additionallydiv"  @if(($view->type == 'termostat')||($view->type == 'label')) style="display: block;" @else style="display: none;" @endif >
                             <br>
                             {{ Form::bs_title('Дополнительно') }}
                             <div id="termostatdiv" @if($view->type == 'termostat') style="display: block;" @else style="display: none;" @endif >
                                 {{ Form::bs_radio('enabletermostat', 'Настройка из приложения:', ['true' => 'да', 'false' => 'нет'], old('enabletermostat', $enabletermostat)) }}
                                 {{ Form::bs_number('lowval_termostat','Нижний порог шкалы:', old('lowval_termostat', $lowval_termostat), ['min' => 0, 'max' => 30, 'required' => false] ) }}
                                 {{ Form::bs_number('highval_termostat','Верхний порог шкалы:', old('highval_termostat', $highval_termostat), ['min' => 0, 'max' => 50, 'required' => false] )  }}
+                            </div>
+
+                            <div id="labeldiv" @if($view->type == 'label') style="display: block;" @else style="display: none;" @endif >
+                                {{ Form::bs_radio('pushlabel', 'Фиксировать нажатие:', ['true' => 'дa', 'false' => 'нет'], old('type', $pushlabel)) }}
+                                {{ Form::bs_radio('modallabel', 'Показывать модальное окно:', ['true' => 'дa', 'false' => 'нет'], old('type', $modallabel)) }}
+                                <div id="label_longclick_text_div" @if($pushlabel) style="display: block;" @else style="display: none;" @endif >
+                                    {{ Form::bs_text('label_longclick_text','Надпись при длительном нажатии:',old('label_longclick_text', $label_longclick_text)) }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -185,6 +209,13 @@
             }
             if (!$("select[name=room]").val()) {
                 return 'Не указано помещение';
+            }
+
+
+            if ($("select[name=room]").val() == 0) {
+                if (!$("select[name=color]").val()) {
+                    return 'Должен быть указан цвет элемента';
+                }
             }
 
             let params = $("#view_form #on_method_params");
@@ -301,6 +332,15 @@
                 }
             });
 
+
+            //Показываем или скрываем поле с текстом для label
+            $('#view_form [name=modallabel]').change(function(){
+
+                if ($(this).val() === 'true')
+                    $('#label_longclick_text_div').show();
+                else
+                    $('#label_longclick_text_div').hide();
+            });
             //
 
             $('#view_form [name=type]').change(function(){
@@ -324,6 +364,9 @@
                     $('#view_form #on_method_div').hide();
                     $('#view_form #off_method_div').hide();
                     $('#on_params_div').show();
+                } else if ($(this).val() === 'label') {
+                    $('#additionallydiv').show();
+                    $('#labeldiv').show();
                 }
                 else {
                     $('#view_form #on_method_div').show();

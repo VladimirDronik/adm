@@ -82,6 +82,27 @@
 
                             {{ Form::bs_text('title','Надпись:') }}
 
+
+
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                        </div>
+                                        <div class="col-1">
+                                            Цвет:
+                                        </div>
+                                        <div class="col-md-2" >
+                                        <select name="color" style="background-color: #FFFFFF" onchange="this.style.backgroundColor = this.options[this.selectedIndex].style.backgroundColor;">
+                                            <option style="background-color: #FFFFFF" value="null">Цвет соответствует цвету помещения</option>
+                                            @foreach($colors AS $color)
+                                                <option style="background-color: {{$color}}" value="{{$color}}">{{$color}}</option>
+                                                @endforeach
+                                        </select>
+                                        </div>
+                                    </div>
+
+
+
+
                             {{ Form::bs_image('icon','Изображение:', old('icon_image',\App\Services\ImageService::NO_IMAGE_PATH)) }}
 
                             {{ Form::bs_title('Расположение') }}
@@ -98,6 +119,14 @@
                                     {{ Form::bs_radio('enabletermostat', 'Настройка из приложения:', ['true' => 'дa', 'false' => 'нет'], 'true') }}
                                     {{ Form::bs_number('lowval_termostat','Нижний порог шкалы:', old('lowval_termostat', 10), ['min' => 0, 'max' => 30, 'required' => false] ) }}
                                     {{ Form::bs_number('highval_termostat','Верхний порог шкалы:', old('highval_termostat', 26), ['min' => 0, 'max' => 50, 'required' => false] )  }}
+                                </div>
+
+                                <div id="labeldiv" style="display: none;" >
+                                    {{ Form::bs_radio('pushlabel', 'Фиксировать нажатие:', ['true' => 'дa', 'false' => 'нет'], 'false') }}
+                                    {{ Form::bs_radio('modallabel', 'Показывать модальное окно:', ['true' => 'дa', 'false' => 'нет'], 'false') }}
+                                    <div id="label_longclick_text_div" style="display: none">
+                                        {{ Form::bs_text('label_longclick_text','Надпись при длительном нажатии:') }}
+                                    </div>
                                 </div>
                             </div>
 
@@ -181,6 +210,13 @@
             if (!$("select[name=room]").val()) {
                 return 'Не указано помещение';
             }
+
+            if ($("select[name=room]").val() == 0) {
+                if (!$("select[name=color]").val() || $("select[name=color]").val() == 'null') {
+                    return 'Должен быть указан цвет элемента';
+                }
+            }
+
             let params = $("#view_form #on_method_params");
             if (params.is(":visible") && params.val().trim() === '') {
                 return 'Не указан параметр метода';
@@ -282,6 +318,16 @@
                 }
             });
 
+
+            //Показываем или скрываем поле с текстом для label
+            $('#view_form [name=modallabel]').change(function(){
+
+                if ($(this).val() === 'true')
+                  $('#label_longclick_text_div').show();
+                else
+                    $('#label_longclick_text_div').hide();
+            });
+
             //
 
             $('#view_form [name=type]').change(function(){
@@ -305,6 +351,9 @@
                     $('#view_form #on_method_div').hide();
                     $('#view_form #off_method_div').hide();
                     $('#on_params_div').show();
+                } else if ($(this).val() === 'label') {
+                    $('#additionallydiv').show();
+                    $('#labeldiv').show();
                 }
                 else {
                     $('#view_form #on_method_div').show();

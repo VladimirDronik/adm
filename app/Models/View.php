@@ -78,7 +78,7 @@ class View extends Model
     const TYPE_BUTTON = 'button';
     const TYPE_TEMP = 'termostat';
     const TYPE_HUMIDITY = 'humidity';
-    const TYPE_INFO = 'info';
+    const TYPE_LABEL = 'label';
     const TYPE_DIMMER = 'dimmer';
     const TYPE_LINK = 'link';
 
@@ -92,7 +92,7 @@ class View extends Model
             self::TYPE_BUTTON => 'Кнопка',
             self::TYPE_TEMP => 'Термометр',
             self::TYPE_HUMIDITY => 'Гигрометр',
-            self::TYPE_INFO => 'Инфопанель',
+            self::TYPE_LABEL => 'Индикатор',
             self::TYPE_DIMMER => 'Диммер',
             self::TYPE_LINK => 'Ссылка',
         ];
