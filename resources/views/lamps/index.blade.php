@@ -47,7 +47,7 @@
                             <tbody>
                                 @foreach($lamps as $lamp)
                                     <tr id="tr{{$lamp->id}}">
-                                        <td scope="row">{{ $lamp->object['id'] }}</td>
+                                        <td scope="row"> @if (isset($lamp->object['id'])) {{$lamp->object['id'] }} @endif</td>
                                         <td>
                                             {{ $lamp->rus_type }}
                                         </td>

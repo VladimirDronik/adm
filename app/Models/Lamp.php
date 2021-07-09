@@ -52,4 +52,9 @@ class Lamp extends Model
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
     }
+
+    public function iobject()
+    {
+        return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+    }
 }

@@ -57,6 +57,7 @@ class Service
         $aliceRepository = new AliceDevicesRepository();
 
 
+
         $messages = $messageService->getNotifications($idObject);
         $events = $eventRepository->getAllById($idObject);
         $sounds = SoundRepository::getAllToArray();
@@ -66,6 +67,7 @@ class Service
         $objects = $objectRepository->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
         $alice = $aliceRepository->getNameAndRoomByObject($idObject);
+
 
         return [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice];
     }

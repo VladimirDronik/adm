@@ -6,7 +6,7 @@
             {{ $messagePoint['first'] }}
             </div>
             <div class="col-8">
-                <i id="message-txt-on">@if( $messages['message_1'] ) {{ $messages['message_1'] }} @else Нет оповещения @endif </i>
+                <i id="message-txt-on">@if(isset($messages['message_1'])) {{ $messages['message_1'] }} @else Нет оповещения @endif </i>
             </div>
             <div class="col-1">
                 <button type="button"
@@ -17,7 +17,7 @@
                 <button type="button" data-method="on" class="btn btn-danger btn-rounded btn-sm del_message_btn">
                     <i class="fa fa-trash fa-lg"></i>
                 </button>
-                <input type="hidden" id="data-priority-on" value="{{ $messages['priority_1'] }}">
+                <input type="hidden" id="data-priority-on" value="{{ isset($messages['priority_1']) }}">
             </div>
         </div>
 
@@ -26,7 +26,7 @@
                 {{ $messagePoint['second'] }}
             </div>
             <div class="col-8">
-                <i id="message-txt-off">@if( $messages['message_2'] ) {{ $messages['message_2'] }} @else Нет оповещения @endif </i>
+                <i id="message-txt-off">@if( isset($messages['message_2']) ) {{ $messages['message_2'] }} @else Нет оповещения @endif </i>
             </div>
             <div class="col-1">
                 <button type="button"
@@ -37,7 +37,7 @@
                 <button type="button" data-method="off" class="btn btn-danger btn-rounded btn-sm del_message_btn">
                     <i class="fa fa-trash fa-lg"></i>
                 </button>
-                <input type="hidden" id="data-priority-off" value="{{ $messages['priority_2'] }}">
+                <input type="hidden" id="data-priority-off" value="{{ isset($messages['priority_2']) }}">
             </div>
         </div>
     </div>

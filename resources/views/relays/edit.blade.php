@@ -58,7 +58,7 @@
                             </div>
                         </div>
                         <input type="hidden" id="tabs-sel" value="{{ $tab }}">
-                        <input type="hidden" id="event_idobject" name="event_idobject" value="{{ $relay->iobject['id'] }}">
+                        <input type="hidden" id="event_idobject" name="event_idobject" value="{{ isset($relay->iobject['id']) }}">
 
                     {{ Form::bs_submit_btn() }}
 

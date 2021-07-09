@@ -1,7 +1,7 @@
 <br>
 
 
-<input type="checkbox" id="alice_checkbox" name="alice_checkbox" @if  ($alice['active'] == 1) checked @endif > Управлять шторами через Алису
+<input type="checkbox" id="alice_checkbox" name="alice_checkbox" @if ($alice['active'] == 1) checked @endif > Управлять шторами через Алису
 <br><br>
 <div id="div_command"  @if  ($alice['active'] == 0) style="display: none" @endif >
     {{ Form::bs_text('alice_command', 'Название*:', $alice['name']) }}
