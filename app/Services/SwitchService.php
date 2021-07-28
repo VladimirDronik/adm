@@ -108,8 +108,6 @@ class SwitchService {
         $this->prepareSwitch($switch, $data);
 
 
-
-
         if ($data['object_type'] === 'manual') {
             $switch->save();
         } else if ($data['object_type'] === 'auto') {

@@ -83,6 +83,12 @@
                                     Виртуальное устр-во
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('yandexstations.index') }}">
+                                    <i class="fa fa-podcast"></i>
+                                    ЯндексСтанции
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 @endcan

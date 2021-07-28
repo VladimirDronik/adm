@@ -15,7 +15,6 @@ class CreateYandexstationsTable extends Migration
             $table->string('speaker_id', 255)->nullable()->comment('ID колонки');
             $table->string('name', 255)->nullable()->comment('название колонки');
             $table->tinyInteger('volume')->nullable()->comment('громкость по умолчанию');
-            $table->string('cookie', 255)->nullable()->comment('ссылка на файл куки');
             $table->unsignedInteger('room')->nullable();
             $table->tinyInteger('active');
 

@@ -1,0 +1,1 @@
+/home/kinord/www/touchon/server/alice_init.php
