@@ -46,10 +46,7 @@ class ActionService
             $actions[] = $this->prepareAction($tempAction);
         }
 
-
-
         $resultActions = $this->fillActionValues($actions);
-
 
         return $resultActions;
     }
@@ -128,6 +125,10 @@ class ActionService
                     $nameValue = $action->value;
                     break;
 
+                case 'alice':
+                    $nameValue = $action->value;
+                    break;
+
 
             }
 
@@ -196,6 +197,14 @@ class ActionService
             case 'log':
                 $action->value =  $actionParams['action_log'];
                 break;
+
+            case 'alice':
+                $action->value = $actionParams['action_alice'];
+                $action->params = $actionParams['action_selected_stations'];
+                if($actionParams['action_type_alice_action'] == 'say')
+                    $action->relate = 1;
+                else
+                    $action->relate = 2;
 
             default: break;
 

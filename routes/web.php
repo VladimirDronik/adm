@@ -116,6 +116,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('locks/delete', 'LockController@delete')->name('locks.delete');
         Route::post('yandexstations/delete', 'YandexStationController@delete')->name('yandexstations.delete');
 
+
         Route::group(['prefix' => 'logs', 'as' => 'logs.'], function () {
             Route::post('active', 'LogsController@active')->name('active');
         });
@@ -238,6 +239,8 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('edit/method/delete', 'PortController@deletePortMethod')->name('edit.method.delete');
             Route::post('update/method', 'PortController@updatePortMethod')->name('update.method');
         });
+
+        Route::post('load_yandexstations', 'YandexStationController@load')->name('yandexstations.load');
 
         Route::post('add_object_to_port', 'ObjectController@addObjectToPort');
         Route::post('add_method_to_port', 'PortController@addMethodToPort');

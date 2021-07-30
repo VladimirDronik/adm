@@ -11,4 +11,9 @@ class YandexStationRepository
     {
         return YandexStation::with('iroom')->orderBy('id', 'desc')->paginate($pagination_count);
     }
+
+    public function getStationsToArray()
+    {
+        return YandexStation::orderBy('name')->get();
+    }
 }

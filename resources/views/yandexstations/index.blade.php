@@ -51,7 +51,7 @@
                                         <td><a href="{{ route('yandexstations.edit', [$station->id]) }}">{{ $station->name }}</a></td>
                                         <td>{{ optional($station->iroom)->name }}</td>
                                         <th>{{ $station->speaker_id }}</th>
-                                        <th>{{ $station->volume }}</th>
+                                        <th>{{ $station->volume }} %</th>
                                         <td align="center" class="text-center">
                                             <a href="{{ route('yandexstations.edit', [$station->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>

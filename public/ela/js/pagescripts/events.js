@@ -159,6 +159,15 @@ function fillActionsOnEventModal(item, outputElement) {
 
         }
 
+        if (item.type == 'alice') {
+
+            output_string = $('#actions_div').html() +
+                '<br><b>&#xf2ce; Команда Алисе: </b><i>"' + item.nameValue.substr(0, 40) + '...' + '"</i>';
+
+            output_image = $(outputElement).html() + '<label title="Команда Алисе: '+ item.nameValue + '">&#xf2ce</label>&nbsp;';
+
+        }
+
 
         //Если указано, то заполняем actions в указанный элемент, иначе заполняем в модальное окошко события
         if(outputElement != undefined)
@@ -292,6 +301,13 @@ function initActionModal() {
                 $('#type_action_selected').val('log');
                 $('#log_action_div').show();
                 break;
+
+            case 'alice':
+                hideAllElements();
+                //Загрузка перечня яндексстанций в div
+                loadYandexStations();
+                $('#type_action_selected').val('alice');
+                $('#alice_action_div').show();
         }
 
 
@@ -347,6 +363,41 @@ function showEventAddModal() {
     $('#init_event_btn').click();
 }
 
+//Загрузка перечня яндексстанций в div
+function loadYandexStations() {
+
+    $.ajax({
+        url:  'http://' + window.location.host + '/' + 'load_yandexstations',
+        data: {'_token': _token, 'object_id': object_id},
+        success: function (data) {
+
+            let s = '<table class="table table-sm table-hover">\n' +
+                '  <thead>\n' +
+                '    <tr>\n' +
+                '      <th scope="col">Акт</th>\n' +
+                '      <th scope="col">ID</th>\n' +
+                '      <th scope="col">Название</th>\n' +
+                '      <th scope="col">Громкость</th>\n' +
+                '    </tr>\n' +
+                '  </thead>' +
+                '  <tbody>';
+
+            for (let i = 0; i < (data.stations).length; i++) {
+                s += '    <tr>\n' +
+                '      <td><input type="checkbox" id="' + data.stations[i].id + '" checked></td>\n' +
+                '      <td>' + data.stations[i].id + '</td>\n' +
+                '      <td>' + data.stations[i].name + '</td>\n' +
+                '      <td> <input type="text" id="alice_volume_' + data.stations[i].id + '" size="4" value="' + data.stations[i].volume + '"></td>\n' +
+                '    </tr>\n';
+            }
+
+            s += '  </tbody>\n' +
+                '</table>';
+
+            $('#yandexstations_div').html(s);
+        }
+    });
+}
 
 
 
@@ -536,11 +587,24 @@ function createAction() {
     let action_view = $("#auto_sel_action_view").val();
     let action_view_status = $('input[name="view_status"]:checked').val();
     let action_log = $("#action_log").val();
+    let action_alice = $("#alice_command").val();
+    let action_type_alice_action = $('#alice_action_div input[name="type_alice_action"]:checked').val();
+
+    let action_selected_stations = '';
+
+    //Если выбрано действие для Алисы
+    if(typeAction == 'alice')
+        $('#yandexstations_div input:checkbox:checked').each(function(){
+            if ($(this).val() == 'on')
+                action_selected_stations += $(this).attr('id') + ',' + $('#alice_volume_'+$(this).attr('id')).val() + ';';
+        });
 
     let dataAction = {'typeAction': typeAction, 'action_object': action_object,
         'action_script': action_script, 'action_method': action_method, 'action_notif': action_notif,
         'action_sound': action_sound, 'action_property': action_property, 'action_value': action_value,
-        'action_view': action_view, 'action_view_status': action_view_status, 'action_log': action_log};
+        'action_view': action_view, 'action_view_status': action_view_status, 'action_log': action_log,
+        'action_alice': action_alice, 'action_selected_stations': action_selected_stations,
+        'action_type_alice_action': action_type_alice_action};
 
     if(typeAction)
         //Если нет id_event, значит это содание нового события
@@ -589,6 +653,7 @@ function hideAllElements() {
     $('#property_action_div').hide();
     $('#view_action_div').hide();
     $('#log_action_div').hide();
+    $('#alice_action_div').hide();
 
 }
 

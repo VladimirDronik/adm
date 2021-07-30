@@ -31,12 +31,8 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-
-                        <div class="col-md-9">
-                            <div class="mt-2">
                                 {{ Form::bs_textarea('file', 'Текст файла cookies*:', $file, ['required'=>false, 'rows' => 20]) }}
-                            </div>
-                        </div>
+
 
                     </div>
 

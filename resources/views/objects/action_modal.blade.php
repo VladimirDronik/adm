@@ -20,6 +20,7 @@
                                 <option value="script">&#xf085;&nbsp;Вызов скрипта</option>
                                 <option value="method">&#xf0c1;&nbsp;Вызов метода</option>
                                 <option value="notification">&#xf1d8;&nbsp;Отправка уведомления</option>
+                                <option value="alice">&#xf2ce;&nbsp;Команда Алисе</option>
                                 <option value="sound">&#xf0f3;&nbsp;Проигрывание звука</option>
                                 <option value="property">&#xf1e8;&nbsp;Изменение свойства</option>
                                 <option value="view">&#xf247;&nbsp;Управление отображением</option>
@@ -86,6 +87,19 @@
                         <div id="log_action_div" style="display: none">
                             Текст лог сообщения:
                             <textarea id="action_log" name="action_log" cols="60" rows="5"></textarea>
+                        </div>
+
+                        <div id="alice_action_div"  style="display: none">
+                            {{ Form::bs_radio('type_alice_action', 'Что сделать:', ['say' => 'Сказать фразу', 'cmd' => 'Выполнить команду'], old('type_alice_action', 'say')) }}
+                            <label id="type_alice_action_label">Сказать фразу:</label>
+                            <textarea id="alice_command" name="alice_command" cols="60" rows="2"></textarea>
+                          <br><br>
+                            Вывод через станцию:
+
+                            <div id="yandexstations_div">
+
+                            </div>
+
                         </div>
 
                         <input id="type_action_selected" name="type_action_selected" style="display: none">
