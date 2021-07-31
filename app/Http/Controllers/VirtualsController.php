@@ -6,6 +6,7 @@ use App\Models\Virtual;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\VirtualRepository;
+use App\Services\Service;
 use App\Services\VirtualService;
 use Illuminate\Http\Request;
 use App\Models\HomeObject;
@@ -65,21 +66,25 @@ class VirtualsController extends Controller
     }
 
 
-    public function edit(Virtual $virtual, ScriptRepository $script_rep, MessageService $messageService)
+    public function edit(Virtual $virtual, ScriptRepository $script_rep, MessageService $messageService, $tab =1)
     {
 
-        $objects = $this->object_rep->getAllToArray();
-        $object_types =  HomeObject::getFullTypeIds();
-
-        $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
-        $messages = $messageService->getNotifications($virtual->id_object);
+        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice) =
+            Service::getListElements($virtual->id_object);
 
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
 
-        return view('virtuals.edit', compact('virtual',
+        $availableEvents = Virtual::getEvents();
+        $properties = Virtual::getProperties();
+
+        $allEvents = '';
+
+
+        return view('virtuals.edit', compact('virtual', 'tab', 'allEvents', 'alice', 'rooms', 'events',
+             'availableEvents', 'properties', 'sounds', 'views',
              'messagePoint', 'messages', 'objects', 'object_types', 'scripts', 'can'));
     }
 

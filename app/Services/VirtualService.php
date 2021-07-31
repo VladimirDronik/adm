@@ -94,13 +94,22 @@ class VirtualService {
      */
     public function update(Virtual $virtual, array $data): int
     {
+
+
         DB::transaction(function () use (&$virtual, $data) {
             if ($this->isUpdateAutoObjectName($virtual, $data['name'])) {
                 $virtual->object->name = HomeObject::getUniqueObjectName($virtual->object->id, trim($data['name']));
                 $virtual->object->save();
+
             }
             $this->prepareVirtual($virtual, $data);
             $virtual->save();
+
+            //Сохраняем данные в таблицу Алисы или включаем запись если она есть уже
+            if(isset($data['alice_checkbox']))
+                AliceDevicesService::addOrReplaceDevice($virtual->object->id, $data['alice_command'], $data['room']);
+            else
+                AliceDevicesService::setActive($virtual->object->id, 0);
 
         });
 

@@ -119,6 +119,7 @@ class RelayService {
      */
     public function update(Relay $relay, array $data): int
     {
+
         DB::transaction(function () use (&$relay, $data) {
             if ($this->isUpdateAutoObjectName($relay, $data['name'])) {
                 $relay->object->name = HomeObject::getUniqueObjectName($relay->object->id, trim($data['name']));

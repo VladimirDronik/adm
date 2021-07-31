@@ -92,7 +92,7 @@
                         <div id="alice_action_div"  style="display: none">
                             {{ Form::bs_radio('type_alice_action', 'Что сделать:', ['say' => 'Сказать фразу', 'cmd' => 'Выполнить команду'], old('type_alice_action', 'say')) }}
                             <label id="type_alice_action_label">Сказать фразу:</label>
-                            <textarea id="alice_command" name="alice_command" cols="60" rows="2"></textarea>
+                            <textarea id="alice_command_string" name="alice_command_string" cols="60" rows="2"></textarea>
                           <br><br>
                             Вывод через станцию:
 

@@ -587,7 +587,7 @@ function createAction() {
     let action_view = $("#auto_sel_action_view").val();
     let action_view_status = $('input[name="view_status"]:checked').val();
     let action_log = $("#action_log").val();
-    let action_alice = $("#alice_command").val();
+    let action_alice = $("#alice_command_string").val();
     let action_type_alice_action = $('#alice_action_div input[name="type_alice_action"]:checked').val();
 
     let action_selected_stations = '';
