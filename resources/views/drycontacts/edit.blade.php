@@ -32,90 +32,41 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID:', $drycontact->object['id'] ) }}
-
-                        {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-
-                        @if(($drycontact->object && $drycontact->object->is_system) || !$can['devices.show-object'])
-                            <div class="form-group row">
-                                <label class="control-label text-right col-md-3 label-fix" for="">
-                                    Объект:     </label>
-                                <div class="col-md-9">
-                                    <div class="mt-2">
-                                        <a class="a-color" href="{{ route('objects.edit', [$drycontact->id_object]) }}">
-                                            {{ $drycontact->object->name }}
-                                            @if($drycontact->object && $drycontact->object->is_system) (системный) @endif</a>
-                                    </div>
-                                </div>
+                        <ul class="nav nav-tabs customtab" role="tablist">
+                            <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Свойства</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==4) active @endif"  data-toggle="tab" href="#portstab4"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">События</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==5) active @endif"  data-toggle="tab" href="#portstab5"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Планировщик</span></a> </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
+                                @include('drycontacts/edit_tabs/main')
                             </div>
-                            <input type="hidden" name="id_object" value="{{ $drycontact->id_object }}">
-                        @else
-                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект*:', $objects, old('id_object', $drycontact->id_object), false, false, ['required' => true]) }}
-                        @endif
-
-
-                        <div class="col-sm-12 pr-0 mt-4">
-                            {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', $idDevice),
-                               false, false, [], null) }}
-
-                            {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
-                                false, false, [], null) }}
-                        </div>
-
-
-                        {{ Form::bs_title('Действие при замыкании') }}
-
-                        {{ Form::bs_autoselect('object_on', 'Объект:', $objects, old('object_on', $object_on),
-                            false, false, [], null, 'Объект, на который воздействуем') }}
-
-                        {{ Form::bs_autoselect('method_on', 'Метод:', $methods_on, old('method_on', $method_on),
-                            false, false, [], null, 'Метод объекта при замыкании контакта') }}
-
-                        <div class="form-group row" id="param_method_on_div"
-                             @if(is_null($drycontact->param_method_on) && !old('method_on')) style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="param_method_on"></label>
-                            <div class="col-md-9 pr-0">
-                                <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="param_method_on_label" for="param_method_on">
-                                        {{ optional($drycontact->emethod_on)->params }}*:</label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="param_method_on" name="param_method_on"
-                                               type="text" value="{{ old('param_method_on', $drycontact->param_method_on) }}">
-                                    </div>
-                                </div>
+                            <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
+                                @include('drycontacts/edit_tabs/prop')
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==4) active @endif" id="portstab4" role="tabpanel">
+                                @include('drycontacts/edit_tabs/events')
+                                @include('objects.events', ['object' => $drycontact->iobject])
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
+                                @include('objects.methods', ['object' => $drycontact->iobject])
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
+                                @include('objects.sheduler', ['object' => $drycontact->iobject])
                             </div>
                         </div>
+                        <input type="hidden" id="tabs-sel" value="{{ $tab }}">
+                        <input type="hidden" id="event_idobject" name="event_idobject" value="{{ $drycontact->iobject['id'] }}">
 
 
-                        {{ Form::bs_title('Действие при размыкании') }}
 
-                        {{ Form::bs_autoselect('object_off', 'Объект:', $objects, old('object_off', $object_off),
-                            false, false, [], null, 'Объект, на который воздействуем') }}
 
-                        {{ Form::bs_autoselect('method_off', 'Метод:', $methods_off, old('method_off', $method_off),
-                            false, false, [], null, 'Метод объекта при размыкании контакта') }}
-
-                        <div class="form-group row" id="param_method_off_div"
-                             @if(is_null($drycontact->param_method_off) && !old('method_off')) style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="param_method_off"></label>
-                            <div class="col-md-9 pr-0">
-                                <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="param_method_off_label" for="param_method_off">
-                                        {{ optional($drycontact->emethod_off)->params }}*:</label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="param_method_off" name="param_method_off"
-                                               type="text" value="{{ old('param_method_off', $drycontact->param_method_off) }}">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        @include('messages.two')
                     </div>
                     {{ Form::bs_submit_btn() }}
 
-                    @include('objects.methods', ['object' => $drycontact->object])
-                    @include('objects.sheduler', ['object' => $drycontact->object])
+
 
                     {!! Form::close() !!}
                 </div>
@@ -141,6 +92,8 @@
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/events.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/service.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
@@ -170,6 +123,7 @@
 
 
             initDrycontactForm();
+            initActionModal();
 
             $("#auto_sel_device_id").chosen().change(function() {
                 let object_id = $(this).val();

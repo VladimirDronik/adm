@@ -17,7 +17,8 @@ class Virtual extends Model
     public static function getEvents()
     {
         return [
-            'onStatus' => 'Смена статуса',
+            'onStatusOn' => 'Включение',
+            'onStatusOff' => 'Выключение',
         ];
     }
 

@@ -61,6 +61,31 @@ class Count extends Model
         return $this->type.'.png';
     }
 
+    /**
+     * Получение всех методов для объекта
+     * @return array
+     */
+    public static function getEvents()
+    {
+        return [
+            'onStatusOn' => 'Проверка счетчика',
+        ];
+    }
+
+
+    /**
+     * Получение доступных свойств объекта.
+     * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     * @return array
+     */
+    public static function getProperties()
+    {
+        return [
+            'todayValue' => ['Значение за сегодня', true, true],
+            'totalValue' => ['Общее значение', true, true],
+        ];
+    }
+
     /* relations */
 
     public function object()

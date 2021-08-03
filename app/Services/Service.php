@@ -67,8 +67,9 @@ class Service
         $objects = $objectRepository->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
         $alice = $aliceRepository->getNameAndRoomByObject($idObject);
+        $allEvents = '';
 
 
-        return [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice];
+        return [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents];
     }
 }

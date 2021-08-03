@@ -93,7 +93,7 @@ class LampController extends Controller
         list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) =
             $this->portService->getCurrentDevPort($lamp->id_object);
 
-        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice) =
+        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
             Service::getListElements($lamp->id_object);
 
         $messagePoint['first'] = 'При включении';
@@ -102,7 +102,7 @@ class LampController extends Controller
         $availableEvents = Lamp::getEvents();
         $properties = Lamp::getProperties();
 
-        $allEvents = '';
+
 
         return view('lamps.edit', compact('lamp',
             'idDevice','idPort','devices','ports', 'messagePoint', 'messages', 'properties', 'sounds', 'views', 'rooms',

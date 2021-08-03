@@ -107,12 +107,6 @@
         const object_id = '{{ optional($termostat->iobject)->id }}';
         const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
         const url_device = '{{ route('ajax.devices.type_controller') }}';
-        const url_properties = '{{ route('ajax.objects.properties') }}';
-        const url_createAction = '{{ route('ajax.actions.add') }}';
-        const url_deleteAction = '{{ route('ajax.actions.delete') }}';
-        const url_eventUpdate = '{{ route('ajax.event.update') }}';
-        const url_deleteEvent = '{{ route('ajax.event.delete') }}';
-        const url_eventCreate = '{{ route('ajax.event.create') }}';
 
 
         let del_id;

@@ -89,6 +89,7 @@
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/events.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/service.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
@@ -106,6 +107,7 @@
         $(document).ready(function () {
             initVirtualForm();
             serviceInit();
+            initActionModal();
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});

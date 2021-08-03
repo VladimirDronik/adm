@@ -32,133 +32,42 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID объекта:', $switch->object['id']) }}
-                        <div class="form-group row">
-                            <label class="control-label text-right col-md-3 label-fix" for="">
-                                Тип выключателя:     </label>
-                            <div class="col-md-9">
-                                <div class="mt-2">
-                                    {{ $switch->rus_type }}
-                                </div>
+                        <ul class="nav nav-tabs customtab" role="tablist">
+                            <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Свойства</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==4) active @endif"  data-toggle="tab" href="#portstab4"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">События</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==5) active @endif"  data-toggle="tab" href="#portstab5"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Планировщик</span></a> </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
+                                @include('switches/edit_tabs/main')
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
+                                @include('switches/edit_tabs/prop')
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==4) active @endif" id="portstab4" role="tabpanel">
+                                @include('switches/edit_tabs/events')
+                                @include('objects.events', ['object' => $switch->object])
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
+                                @include('objects.methods', ['object' => $switch->object])
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
+                                @include('objects.sheduler', ['object' => $switch->object])
                             </div>
                         </div>
-
-                        {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-
-                        @if(($switch->object && $switch->object->is_system) || !$can['devices.show-object'])
-                            <div class="form-group row">
-                                <label class="control-label text-right col-md-3 label-fix" for="">
-                                    Объект:     </label>
-                                <div class="col-md-9">
-                                    <div class="mt-2">
-                                        <a class="a-color" href="{{ route('objects.edit', [$switch->id_object]) }}">
-                                            {{ $switch->object->name }}
-                                            @if($switch->object && $switch->object->is_system) (системный) @endif</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <input type="hidden" name="id_object" value="{{ $switch->id_object }}">
-                        @else
-                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект*:', $objects, old('id_object', $switch->id_object), false, false, ['required' => true]) }}
-                        @endif
-
-                        <div class="col-sm-12 pr-0 mt-4">
-                            {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', $idDevice),
-                               false, false, [], null) }}
+                        <input type="hidden" id="tabs-sel" value="{{ $tab }}">
+                        <input type="hidden" id="event_idobject" name="event_idobject" value="{{ isset($switch->iobject['id']) }}">
 
 
-                            <div id='port_id_div' @if ($ports==null) style="display: none" @endif>
-                                {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
-                                  false, false, [], null) }}
-                            </div>
-
-                            <div id='hitepro_devices_div' @if ($hp_devices==null) style="display: none" @endif>
-                                {{ Form::bs_autoselect('hitepro_devices', 'Устройство:', $hp_devices, old('hiteProDevices', $hp_device),
-                                    false, false, [], null) }}
-                            </div>
-                        </div>
-
-
-                        {{ Form::bs_title('Одиночное нажатие') }}
-
-                        {{ Form::bs_autoselect('object', 'Объект:', $objects, old('object', $object),
-                            false, false, [], null, 'Объект, на который воздействуем') }}
-
-                        {{ Form::bs_autoselect('method', 'Метод:', $methods, old('method', $method),
-                            false, false, [], null, 'Метод объекта при одиночном нажатии кнопки') }}
-
-                        <div class="form-group row" id="method_params_div"
-                             {{--@if(!old('method'))  style="display: none;" @endif>--}}
-                             @if($params['value'] == '')  style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_params"></label>
-                            <div class="col-md-9 pr-0">
-                                <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="method_params_label" for="method_params">{{ $params['name'] }}</label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="method_params" name="method_params"
-                                               type="text" value="{{ $params['value'] }}">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                        {{ Form::bs_title('Двойное нажатие') }}
-
-
-                        {{ Form::bs_autoselect('object_dc', 'Объект:', $objects, old('object_dc', $object_dc),
-                            false, false, [], null, 'Объект, на который воздействуем') }}
-
-                        {{ Form::bs_autoselect('method_dc', 'Метод:', $methods_dc, old('method_dc', $method_dc),
-                            false, false, [], null, 'Метод объекта при двойном нажатии кнопки') }}
-
-                        <div class="form-group row" id="method_dc_params_div"
-                             @if($params_dc['value'] == '')  style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_dc_params"></label>
-                            <div class="col-md-9 pr-0">
-                                <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="method_dc_params_label" for="method_dc_params">{{ $params_dc['name'] }}</label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="method_dc_params" name="method_dc_params"
-                                               type="text" value="{{ $params_dc['value'] }}">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        {{ Form::bs_title('Длительное нажатие') }}
-
-                        {{ Form::bs_autoselect('object_lc', 'Объект:', $objects, old('object_lc', $object_lc),
-                            false, false, [], null, 'Объект, на который воздействуем') }}
-
-                        {{ Form::bs_autoselect('method_lc', 'Метод:', $methods_lc, old('method_lc', $method_lc),
-                            false, false, [], null, 'Метод объекта при длительном нажатии кнопки') }}
-
-                        <div class="form-group row" id="method_lc_params_div"
-                             @if($params_lc['value'] == '')  style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_lc_params"></label>
-                            <div class="col-md-9 pr-0">
-                                <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="method_lc_params_label" for="method_lc_params">{{ $params_lc['name'] }}</label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="method_lc_params" name="method_lc_params"
-                                               type="text" value="{{ $params_lc['value'] }}">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                     </div>
 
-                    @include('messages.two')
 
                 </div>
                     {{ Form::bs_submit_btn() }}
 
-                    @include('objects.methods', ['object' => $switch->object])
-                    @include('objects.sheduler', ['object' => $switch->object])
 
                     {!! Form::close() !!}
                 </div>
@@ -183,6 +92,8 @@
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/events.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/service.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const store_url = '{{ route('ajax.methods.store') }}';
@@ -214,6 +125,8 @@
 
 
             initSwitchForm();
+            initActionModal();
+            serviceInit();
 
             $("#auto_sel_device_id").chosen().change(function() {
                 let device_id = $(this).val();

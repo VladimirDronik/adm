@@ -35,8 +35,8 @@ class Lock extends Model
     public static function getEvents()
     {
         return [
-            'onOpen' => 'При отрытии',
-            'onClose' => 'При закрытии',
+            'onOpen' => 'Открытие',
+            'onClose' => 'Закрытие',
         ];
     }
 

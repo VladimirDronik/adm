@@ -16,6 +16,7 @@ use App\Services\MessageService;
 use App\Services\MethodService;
 use App\Services\ObjectService;
 use App\Services\PortService;
+use App\Services\Service;
 use App\Services\SwitchService;
 
 
@@ -72,7 +73,7 @@ class SwitchController extends Controller
 
     public function edit(int $id, ScriptRepository $script_rep,
                          ObjectService $objectService, PortService $portService,
-                         MessageService $messagesService,DeviceRepository $device_rep)
+                         MessageService $messagesService,DeviceRepository $device_rep, $tab = 1)
     {
         $switch = DeviceSwitch::findOrFail($id);
 
@@ -81,15 +82,12 @@ class SwitchController extends Controller
         $object_types =  HomeObject::getFullTypeIds();
 
         $deviceAndPort = $portService->getIdDeviceAndPortId($switch->id_object);
-        //$idDevice =  $deviceAndPort['id_device'];
-        //$idPort = $deviceAndPort['id_port'];
-
-        //$devices = $this->device_rep->getAllToArray();
-        //$ports =  $portService->getPortsIntoList($idDevice);
 
         $port = $portService->getMethodsByObject($switch->id_object);
 
         list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) = $this->portService->getCurrentDevPort($switch->id_object, 'IN,I2C,1WIRE,1W-BUS,ADC');
+        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
+            Service::getListElements($switch->id_object);
 
 
         $params['value'] = '';
@@ -150,9 +148,12 @@ class SwitchController extends Controller
         $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
-        return view('switches.edit', compact('switch', 'types',
-            'object', 'method', 'methods', 'object_dc', 'method_dc', 'methods_dc',
-            'object_lc', 'method_lc', 'methods_lc', 'idDevice', 'idPort', 'devices', 'ports',
+        $availableEvents = DeviceSwitch::getEvents();
+        $properties = DeviceSwitch::getProperties();
+
+        return view('switches.edit', compact('switch', 'types', 'tab', 'events', 'allEvents',
+            'object', 'method', 'methods', 'object_dc', 'method_dc', 'methods_dc', 'availableEvents', 'properties',
+            'object_lc', 'method_lc', 'methods_lc', 'idDevice', 'idPort', 'devices', 'ports', 'sounds', 'views',
             'messages', 'messagePoint',  'hp_device', 'hp_devices', 'params', 'params_dc', 'params_lc',
             'objects', 'object_types', 'scripts', 'can'));
     }

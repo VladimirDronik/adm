@@ -32,102 +32,40 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID объекта:', $carbmonoxide->iobject['id']) }}
-                        {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-
-
-
-                            <div class="form-group row ">
-                                <label class="control-label text-right col-md-3 label-fix" for="id_object">
-                                    <strong>Размещение датчика УГ:</strong>
-                                </label>
-
-                                            <div class="col-md-6 pr-0 mt-4" id="single_port_div">
-                                                {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', is_null($deviceId) ? 0 : $deviceId),
-                                                   false, false, [], null) }}
-
-                                                {{ Form::bs_autoselect('port', 'Порт:', $ports, old('port', is_null($port) ? 0 : $port),
-                                                    false, false, [], null) }}
-
-                                             </div>
-                        </div>
-                        <div style="height: 10px;">&nbsp;</div>
-                        <hr>
-                        <div style="height: 40px;">&nbsp;</div>
-
-
-
-                        {{ Form::bs_text('calibration', 'Калибровка*:', old('max_threshold', $carbmonoxide->calibration), ['required' => true],
-                               '') }} <div style="height: 60px;">&nbsp;</div>
-
-                        {{ Form::bs_number('low_value', 'Нижний аварийный порог*:', old('low_value', $carbmonoxide->low_value), ['min' => 0, 'max' => 1000, 'required' => true]) }}
-
-                        {{ Form::bs_autoselect('low_object', 'Объект влияния:', $objects, old('low_object', $carbmonoxide->low_object),
-                          false, false, [],  null, 'Объект, у которого меняем состояние при достищении нижнего порога') }}
-
-                        {{ Form::bs_autoselect('low_method', 'Метод объекта:', $low_methods, old('low_method',  $carbmonoxide->low_method),
-                            false, false, [], null, 'Метод объекта влияния при достижении нижнего порога') }}
-
-
-                        <div class="form-group row" id="low_method_params_div"
-                             @if(is_null($carbmonoxide->low_method_params) && !old('low_method')) style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="low_method_params"></label>
-                            <div class="col-md-9 pr-0">
-                                <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="low_method_params_label" for="low_method_params">
-                                        {{ optional($carbmonoxide->emethod_low)->params }}*:</label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="low_method_params" name="low_method_params"
-                                               type="text" value="{{ old('low_method_params', $carbmonoxide->low_method_params) }}">
-                                    </div>
-                                </div>
+                        <ul class="nav nav-tabs customtab" role="tablist">
+                            <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Свойства</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==4) active @endif"  data-toggle="tab" href="#portstab4"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">События</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==5) active @endif"  data-toggle="tab" href="#portstab5"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Планировщик</span></a> </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
+                                @include('carbmonoxide/edit_tabs/main')
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
+                                @include('carbmonoxide/edit_tabs/prop')
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==4) active @endif" id="portstab4" role="tabpanel">
+                                @include('carbmonoxide/edit_tabs/events')
+                                @include('objects.events', ['object' =>  $carbmonoxide->iobject])
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
+                                @include('objects.methods', ['object' =>  $carbmonoxide->iobject])
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
+                                @include('objects.sheduler', ['object' =>  $carbmonoxide->iobject])
                             </div>
                         </div>
+                        <input type="hidden" id="tabs-sel" value="{{ $tab }}">
+                        <input type="hidden" id="event_idobject" name="event_idobject" value="{{  $carbmonoxide->iobject['id'] }}">
 
-
-                        <div style="height: 60px;">&nbsp;</div>
-
-                        {{ Form::bs_number('high_value', 'Верхний аварийный порог*:', old('high_value', $carbmonoxide->high_value), ['min' => 0, 'max' => 5000, 'required' => true],
-                            '') }}
-
-                        {{ Form::bs_autoselect('high_object', 'Объект влияния:', $objects, old('high_object', $carbmonoxide->high_object),
-                         false, false, [],  null, 'Объект, у которого меняем состояние при достищении верхнего порога') }}
-
-
-                        {{ Form::bs_autoselect('high_method', 'Метод объекта:', $high_methods, old('high_method', $carbmonoxide->high_method),
-                            false, false, [], null, 'Метод объекта влияния при достижении верхнего порога') }}
-
-
-                        <div class="form-group row" id="high_method_params_div"
-                             @if(is_null($carbmonoxide->high_method_params) && !old('high_method')) style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="high_method_params"></label>
-                            <div class="col-md-9 pr-0">
-                                <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="high_method_params_label" for="high_method_params">
-                                        {{ optional($carbmonoxide->emethod_high)->params }}*:</label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="high_method_params" name="high_method_params"
-                                               type="text" value="{{ old('high_method_params', $carbmonoxide->high_method_params) }}">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div style="height: 60px;">&nbsp;</div>
-
-
-                        {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', $carbmonoxide->room), false, false) }}
-
-
-                        @include('messages.two')
 
                     </div>
                     {{ Form::bs_submit_btn() }}
 
-                    @include('objects.methods', ['object' => $carbmonoxide->iobject])
-                    @include('objects.sheduler', ['object' => $carbmonoxide->iobject])
+
 
                     {!! Form::close() !!}
                 </div>
@@ -152,6 +90,8 @@
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/events.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/service.js') }}"></script>
     <script>
         const url_methods = '{{ route('ajax.objects.methods') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
@@ -172,6 +112,8 @@
         $(document).ready(function () {
 
             initCarbmonoxideForm();
+            initActionModal();
+            serviceInit();
             initMethodsVar({{ optional($carbmonoxide->eobject)->id }});
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});

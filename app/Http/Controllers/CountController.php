@@ -12,6 +12,7 @@ use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
 use App\Services\CountService;
 use App\Services\PortService;
+use App\Services\Service;
 
 class CountController extends Controller
 {
@@ -64,7 +65,7 @@ class CountController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении счетчика');
     }
 
-    public function edit(Count $count, ScriptRepository $script_rep)
+    public function edit(Count $count, ScriptRepository $script_rep, $tab=1)
     {
         $types = Count::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
@@ -74,10 +75,15 @@ class CountController extends Controller
         $can = gates('devices.show-object');
 
         list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($count->id_object, 'IN,I2C,1WIRE,1W-BUS');
+        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
+            Service::getListElements($count->id_object);
 
+        $availableEvents = Count::getEvents();
+        $properties = Count::getProperties();
 
-        return view('counts.edit', compact('count', 'types',
-            'idDevice','idPort','devices','ports',
+        return view('counts.edit', compact('count', 'types', 'tab',
+            'idDevice','idPort','devices','ports', 'events', 'allEvents', 'availableEvents', 'properties', 'sounds',
+            'views',
             'objects', 'object_types', 'scripts', 'can'));
     }
 

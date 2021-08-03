@@ -50,6 +50,27 @@ class Carbmonoxide extends Model
     public $timestamps = false;
     protected $guarded = ['id'];
 
+    public static function getEvents()
+    {
+        return [
+            'onCheck' => 'Проверка датчика',
+            'onLowThreshold' => 'Нижнее пороговое значение',
+            'onHighThreshold' => 'Верхнее пороговое значение',
+        ];
+    }
+
+    /**
+     * Получение доступных свойств объекта.
+     * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     * @return array
+     */
+    public static function getProperties()
+    {
+        return [
+            'value' => ['Значение датчика', true, true],
+        ];
+    }
+
     public function eobject()
     {
         return $this->belongsTo(HomeObject::class, 'object', 'id');

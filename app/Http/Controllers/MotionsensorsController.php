@@ -7,6 +7,7 @@ use App\Repositories\LightstatRepository;
 use App\Repositories\MethodRepository;
 use App\Services\MessageService;
 use App\Services\MotionsensorService;
+use App\Services\Service;
 use Illuminate\Http\Request;
 use App\Repositories\MotionsensorRepository;
 use App\Repositories\ObjectRepository;
@@ -78,7 +79,7 @@ class MotionsensorsController extends Controller
 
 
     public function edit(int $id, ScriptRepository $script_rep, PortService $portsService,
-        MessageService $messageService)
+        MessageService $messageService, $tab=1)
     {
         $motionsensor = Motionsensor::findOrFail($id);
 
@@ -109,19 +110,23 @@ class MotionsensorsController extends Controller
         $portId = $deviceAndPort['id_port'];
         $ports = $portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
-        $messages = $messageService->getNotifications($motionsensor->id_object);
         $messagePoint['first'] = 'При любом срабатывании';
         $messagePoint['second'] = 'Срабатывание в реж. охраны';
 
-        $scripts = $script_rep->getAllToArray();
         $can = gates('motionsensors.show-object');
 
-        return view('motionsensors.edit', compact('motionsensor',
-            'objects', 'object_types', 'scripts', 'lightstats', 'can', 'equality',
-            'object_normal', 'methods_normal', 'object_eco', 'methods_eco', 'messages',
-            'object_night', 'methods_night', 'object_evening', 'methods_evening',
+        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
+            Service::getListElements($motionsensor->id_object);
+
+        $availableEvents = Motionsensor::getEvents();
+        $properties = Motionsensor::getProperties();
+
+        return view('motionsensors.edit', compact('motionsensor', 'events', 'allEvents', 'sounds',
+            'objects', 'object_types', 'scripts', 'lightstats', 'can', 'equality', 'views', 'rooms',
+            'object_normal', 'methods_normal', 'object_eco', 'methods_eco', 'messages', 'availableEvents',
+            'object_night', 'methods_night', 'object_evening', 'methods_evening', 'properties',
             'object_morning', 'methods_morning', 'object_guard', 'methods_guard',
-            'object_light', 'methods_light', 'deviceId', 'portId', 'devices', 'messagePoint', 'ports'));
+            'object_light', 'methods_light', 'deviceId', 'portId', 'devices', 'messagePoint', 'ports', 'tab'));
     }
 
 

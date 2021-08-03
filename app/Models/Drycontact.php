@@ -27,6 +27,26 @@ class Drycontact extends Model
     public $timestamps = false;
     protected $guarded = ['id'];
 
+    public static function getEvents()
+    {
+        return [
+            'onConnect' => 'Замыкание',
+            'onUnconnect' => 'Размыкание',
+        ];
+    }
+
+    /**
+     * Получение доступных свойств объекта.
+     * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     * @return array
+     */
+    public static function getProperties()
+    {
+        return [
+            'status' => ['Текущее состояние контакта', true, true],
+        ];
+    }
+
     public function object()
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');

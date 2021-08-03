@@ -7,6 +7,7 @@ use App\Services\DrycontactService;
 use App\Services\MessageService;
 use App\Services\ObjectService;
 use App\Services\PortService;
+use App\Services\Service;
 use Illuminate\Http\Request;
 use App\Http\Requests\DryContact\CreateRequest;
 use App\Http\Requests\DryContact\UpdateRequest;
@@ -68,12 +69,9 @@ class DrycontactController extends Controller
 
 
     public function edit(int $id, ScriptRepository $script_rep, ObjectService $objectService,
-                         MessageService $messagesService)
+                         MessageService $messagesService, $tab=1)
     {
         $drycontact = Drycontact::findOrFail($id);
-
-        $objects = $this->object_rep->getAllToArray();
-        $object_types =  HomeObject::getFullTypeIds();
 
 
         list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($drycontact->id_object,
@@ -88,18 +86,23 @@ class DrycontactController extends Controller
         $object_off = $objectService->getObjectByMethod($method_off);
         $methods_off = $objectService->getMethodsByObjectIdToArray($object_off);
 
-        $messages = $messagesService->getNotifications($drycontact->id_object);
+
 
         $messagePoint['first'] = 'При замыкании';
         $messagePoint['second'] = 'При размыкании';
 
-        $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
-        return view('drycontacts.edit', compact('drycontact', 'messagePoint',
+        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
+            Service::getListElements($drycontact->id_object);
+
+        $availableEvents = Drycontact::getEvents();
+        $properties = Drycontact::getProperties();
+
+        return view('drycontacts.edit', compact('drycontact', 'messagePoint', 'tab',
             'method_on', 'object_on', 'method_off', 'object_off', 'methods_on', 'methods_off',
-            'idDevice', 'idPort', 'devices', 'ports',
-            'objects', 'object_types', 'scripts', 'messages', 'can'));
+            'idDevice', 'idPort', 'devices', 'ports', 'events', 'sounds', 'views', 'rooms', 'allEvents',
+            'objects', 'object_types', 'scripts', 'messages', 'availableEvents', 'properties', 'can'));
     }
 
 

@@ -49,8 +49,9 @@ class Dimmer extends Model
     public static function getEvents()
     {
         return [
-            'onStatus' => 'Смена статуса',
-            'onBrightness' => 'Смена яркости',
+            'onStatusOn' => 'Включение',
+            'onStatusOff' => 'Выключение',
+            'onBrightness' => 'Изменение яркости',
         ];
     }
 

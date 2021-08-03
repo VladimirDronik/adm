@@ -53,6 +53,32 @@ class Motionsensor extends Model
     public $timestamps = false;
     protected $guarded = ['id'];
 
+    public static function getEvents()
+    {
+        return [
+            'onGuadActivation' => 'Срабатывание в режиме охраны',
+            'onNormalActivation' => 'Срабатывание в нормальном режиме',
+            'onEcoActivation' => 'Срабатывание в эко режиме',
+            'onNightActivation' => 'Срабатывание в ночном режиме',
+            'onMorningActivation' => 'Срабатывание в утреннем режиме',
+            'onEveningActivation' => 'Срабатывание в вечернем режиме',
+            'onAnyActivation' => 'Срабатывание в любом режиме',
+        ];
+    }
+
+    /**
+     * Получение доступных свойств объекта.
+     * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     * @return array
+     */
+    public static function getProperties()
+    {
+        return [
+            'relateLight' => ['Значение связанного светостата', true, true],
+            'mode' => ['Текущий режим', true, true],
+        ];
+    }
+
     public function object()
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');

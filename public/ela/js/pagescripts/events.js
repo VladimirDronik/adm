@@ -318,7 +318,7 @@ function initActionModal() {
     $("#auto_sel_action_object").chosen().change(function() {
         let object_id = $(this).val();
         $.ajax({
-            url: url_methods,
+            url: 'http://' + window.location.host + '/' + 'objects/methods',
             data: {'_token': _token, 'object_id': object_id},
             success: function (data) {
                 methods = data.methods;
@@ -330,7 +330,7 @@ function initActionModal() {
 
 
         $.ajax({
-            url: url_properties,
+            url: 'http://' + window.location.host + '/' + 'objects/properties',
             data: {'_token': _token, 'object_id': object_id},
             success: function (data) {
                 createActionProperties('#auto_sel_action_property', data.properties, -1);
@@ -346,6 +346,7 @@ function initActionModal() {
  * Показать окно добавления события
  */
 function showEventAddModal() {
+
     $('#event_id').val('');
     $('#event_name').val('');
     $('#event_mode').val('new');
@@ -429,7 +430,7 @@ function deleteEventModal() {
 function deleteAction() {
 
     $.ajax({
-        url: url_deleteAction,
+        url: 'http://' + window.location.host + '/' + 'actions/delete',
         data: {'_token': _token, 'id_action': del_id},
         success: function (data) {
             loadActions(Number($('#data-holder').val()));
@@ -447,7 +448,7 @@ function deleteEvent() {
 
 
     $.ajax({
-        url: url_deleteEvent,
+        url: 'http://' + window.location.host + '/' + 'event/delete',
         data: {'_token': _token, 'id_event': del_id},
         success: function (data) {
             $('#events_div #div'+del_id).remove();
@@ -487,8 +488,8 @@ function clickApplyEventBtn() {
 
       //Если создание события или редактирование события
       if ($('#event_mode').val() == 'new')
-          url = url_eventCreate;
-      else url = url_eventUpdate;
+          url = 'http://' + window.location.host + '/' + 'event/create';
+      else url = 'http://' + window.location.host + '/' + 'event/update';
 
       $.ajax({
           url: url,
@@ -628,7 +629,7 @@ function createAction() {
 function createActionAjax(id_event, dataAction) {
 
     $.ajax({
-        url: url_createAction,
+        url: 'http://' + window.location.host + '/' + 'actions/add',
         data: {'_token': _token, 'id_event': id_event, 'data': dataAction},
         success: function (data) {
             if(data.result == true){

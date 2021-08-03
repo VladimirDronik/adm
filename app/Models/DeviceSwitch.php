@@ -40,6 +40,30 @@ class DeviceSwitch extends Model
         return $is_full ? $types : array_keys($types);
     }
 
+    /**
+     * Получение всех методов для объекта
+     * @return array
+     */
+    public static function getEvents()
+    {
+        return [
+            'onStatusOn' => 'Включение',
+            'onStatusOff' => 'Выключение',
+        ];
+    }
+
+    /**
+     * Получение доступных свойств объекта.
+     * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     * @return array
+     */
+    public static function getProperties()
+    {
+        return [
+            'status' => ['Статус, on/off', true, true],
+        ];
+    }
+
     public function getRusTypeAttribute()
     {
         return self::getTypes(true)[$this->type] ?? '';

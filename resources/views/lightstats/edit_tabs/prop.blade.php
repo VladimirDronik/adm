@@ -1,0 +1,23 @@
+
+<br>
+
+
+{{ Form::bs_number('optimal', 'Оптимальная освещенность*:', null, ['min' => 0, 'max' => 54612, 'required' => true],
+    'Освещенность, которая должна быть в помещении') }}
+{{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', $lightstat->gisteresis), ['min' => 0, 'max' => 1000, 'required' => true]) }}
+{{ Form::bs_radio('mode', 'Режим*:', $types, old('mode', $lightstat->mode), ['required' => true]) }}
+
+{{ Form::bs_number('min_threshold', 'Минимальная освещенность*:', old('min_threshold', $lightstat->min_threshold), ['min' => 0, 'max' => 0, 'required' => true],
+    '') }}
+{{ Form::bs_number('max_threshold', 'Максимальная освещенность*:', old('max_threshold', $lightstat->max_threshold), ['min' => 0, 'max' => 54612, 'required' => true],
+    '') }}
+{{ Form::bs_number('min_alarm', 'Мин. аварийная освещенность*:', old('min_alarm', $lightstat->min_alarm), ['min' => 0, 'max' => 54612, 'required' => true],
+    '') }}
+{{ Form::bs_number('max_alarm', 'Макс. аварийная освещенность*:', old('max_alarm', $lightstat->max_alarm), ['min' => 0, 'max' => 54612, 'required' => true],
+    '') }}
+
+{{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', is_null($lightstat->room) ? 0 : $lightstat->room ), false, false) }}
+
+
+
+

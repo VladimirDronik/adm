@@ -16,6 +16,7 @@ use App\Services\ObjectService;
 use App\Repositories\ScriptRepository;
 use App\Services\PortService;
 use App\Http\Requests\Lightstat\UpdateRequest;
+use App\Services\Service;
 
 
 class LightstatController extends Controller
@@ -76,14 +77,12 @@ class LightstatController extends Controller
     }
 
     public function edit(Lightstat $lightstat, ObjectService $object_service, ScriptRepository $script_rep,
-                         PortService $portsService, MessageService $messagesService)
+                         PortService $portsService, MessageService $messagesService, $tab = 1)
     {
         list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
 
 
         $methods = $object_service->getMethodsByObjectIdToArray($lightstat->object);
-        $object_types = HomeObject::getFullTypeIds();
-        $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
         $deviceAndPort = $portsService->getIdDeviceAndPortId($lightstat->id_object);
@@ -95,13 +94,19 @@ class LightstatController extends Controller
         $portsSCL =  $portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
         $portsSDA =  $portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
-        $messages = $messagesService->getNotifications($lightstat->id_object);
+
+        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
+            Service::getListElements($lightstat->id_object);
 
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
 
-        return view('lightstats.edit', compact('lightstat', 'objects', 'rooms',
-            'types', 'devices', 'methods', 'object_types', 'messages',
+        $availableEvents = Lightstat::getEvents();
+        $properties = Lightstat::getProperties();
+
+        return view('lightstats.edit', compact('lightstat', 'objects', 'rooms', 'tab',
+            'types', 'devices', 'methods', 'object_types', 'messages', 'events', 'allEvents', 'sounds', 'views',
+            'availableEvents', 'properties',
             'scripts', 'usensors', 'deviceId', 'portsSCL', 'portsSDA', 'port_SCL', 'messagePoint', 'port_SDA', 'can'));
     }
 
@@ -111,8 +116,10 @@ class LightstatController extends Controller
         list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
         $object_types =  HomeObject::getFullTypeIds();
         $can = gates('devices.show-object');
+        $tab = 1;
 
-        return view('lightstats.create', compact('objects','rooms', 'types', 'devices', 'usensors', 'object_types', 'can'));
+        return view('lightstats.create', compact('objects','rooms', 'types', 'devices', 'usensors',
+            'object_types', 'tab', 'can'));
     }
 
     public function update(UpdateRequest $r, Lightstat $lightstat)

@@ -46,19 +46,17 @@ class Curtain extends Model
     }
 
 
-
     /**
-     * Получение доступных событий для объекта
+     * Получение всех методов для объекта
      * @return array
      */
     public static function getEvents()
     {
         return [
-            'onOpen' => 'При отрытии',
-            'onClose' => 'При закрытии',
+            'onStatusOn' => 'Открытие',
+            'onStatusOff' => 'Закрытие',
         ];
     }
-
 
 
     /**

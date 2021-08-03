@@ -108,6 +108,7 @@
         $(document).ready(function () {
             initTermostatForm();
 
+
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_SCL").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_SDA").chosen({width:"100%", no_results_text: "Не найдено"});

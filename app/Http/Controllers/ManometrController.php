@@ -17,6 +17,7 @@ use App\Repositories\ScriptRepository;
 use App\Services\PortService;
 use App\Services\MessageService;
 use App\Models\Manometr;
+use App\Services\Service;
 
 class ManometrController extends Controller
 {
@@ -91,7 +92,7 @@ class ManometrController extends Controller
         }
 
             public function edit(Manometr $manometr, ObjectService $object_service, ScriptRepository $script_rep,
-                                 PortService $portsService, MessageService $messagesService)
+                                 PortService $portsService, MessageService $messagesService, $tab=1)
             {
                 list($objects, $rooms, $devices) = $this->getLists();
 
@@ -99,8 +100,7 @@ class ManometrController extends Controller
                 $low_methods = $object_service->getMethodsByObjectIdToArray($manometr->low_object);
                 $high_methods = $object_service->getMethodsByObjectIdToArray($manometr->low_object);
 
-                $object_types = HomeObject::getFullTypeIds();
-                $scripts = $script_rep->getAllToArray();
+
                 $can = gates('devices.show-object');
 
                 $deviceAndPort = $portsService->getIdDeviceAndPortId($manometr->id_object);
@@ -110,15 +110,19 @@ class ManometrController extends Controller
 
                 $ports =  $portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
-                $messages = $messagesService->getNotifications($manometr->id_object);
+                list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
+                    Service::getListElements($manometr->id_object);
 
+                $availableEvents = Manometr::getEvents();
+                $properties = Manometr::getProperties();
 
                 $messagePoint['first'] = 'При нижнем пороге';
                 $messagePoint['second'] = 'При верхнем пороге';
 
                 return view('manometr.edit', compact('manometr', 'objects', 'rooms',
                     'devices', 'low_methods', 'high_methods', 'object_types', 'messages',
-                    'scripts', 'deviceId', 'ports', 'messagePoint', 'port', 'can'));
+                    'events', 'sounds', 'views', 'scripts', 'allEvents', 'availableEvents', 'properties',
+                    'scripts', 'deviceId', 'ports', 'messagePoint', 'port', 'tab', 'can'));
             }
 
 
