@@ -41,9 +41,9 @@ function showEditEventModal(data) {
 
     if($('#m_event'+data.id).val())
     data.event = $('#m_event'+data.id).val();
-    
+
     data.property = $('#property'+data.id).val();
-    data.value = $('#value'+data.id).val();
+    data.value = $('#ev_value'+data.id).val();
 
     if (data.event)
         $('#m_event option[value=' + data.event + ']').prop('selected', true);
@@ -510,7 +510,7 @@ function clickApplyEventBtn() {
                   $('#condition'+id_event).text(property+comparison+value);
                   $('#property'+id_event).val(property);
                   $('#comparison'+id_event).val(comparison);
-                  $('#value'+id_event).val(value);
+                  $('#ev_value'+id_event).val(value);
                   $('#m_event'+id_event).val(event);
 
 
