@@ -33,6 +33,10 @@
                 <label class="col-md-3" id="condition{{$event->id}}">
                     {{$event->property.' '.$event->comparison.' '.$event->value}}
                 </label>
+                <input type="hidden" id="property{{$event->id}}" value="{{$event->property}}">
+                <input type="hidden" id="comparison{{$event->id}}" value="{{$event->comparison}}">
+                <input type="hidden" id="value{{$event->id}}" value="{{$event->value}}">
+                <input type="hidden" id="m_event{{$event->id}}" value="{{$event->event}}">
 
                 <div class="col-md-2" style="font-family: 'FontAwesome', Helvetica;" id="action{{$event->id}}">
 

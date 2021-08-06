@@ -8,7 +8,6 @@ function clickEditEventBtn() {
     data.property = $(this).attr('data-property');
     data.comparison = $(this).attr('data-comparison');
     data.value = $(this).attr('data-value');
-
     $('#data-holder').val(data.id);
     $('#event_mode').val('edit');
     showEditEventModal(data);
@@ -37,6 +36,14 @@ function showEditEventModal(data) {
     $('#applyEvent_btn').text('Сохранить изменения');
 
     $('input[name=event_name]').val($('#name'+data.id).text().trim());
+
+    data.comparison = $('#property'+data.id).val();
+
+    if($('#m_event'+data.id).val())
+    data.event = $('#m_event'+data.id).val();
+    
+    data.property = $('#property'+data.id).val();
+    data.value = $('#value'+data.id).val();
 
     if (data.event)
         $('#m_event option[value=' + data.event + ']').prop('selected', true);
@@ -501,6 +508,10 @@ function clickApplyEventBtn() {
 
                   $('#name'+id_event).text(name);
                   $('#condition'+id_event).text(property+comparison+value);
+                  $('#property'+id_event).val(property);
+                  $('#comparison'+id_event).val(comparison);
+                  $('#value'+id_event).val(value);
+                  $('#m_event'+id_event).val(event);
 
 
                   if ($('#event_mode').val() == 'new')
