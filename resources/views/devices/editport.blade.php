@@ -27,7 +27,7 @@
 
                 {{ csrf_field() }}
                 {{ Form::bs_alert() }}
-                {{ Form::bs_text('comment', 'Название*:', old('comment', $port->comment), ['required' => true]) }}
+                {{ Form::bs_text('comment', 'Название:', old('comment', $port->comment), ['required' => false]) }}
 
                 <div class="form-body">
 

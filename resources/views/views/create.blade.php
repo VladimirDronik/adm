@@ -211,11 +211,12 @@
                 return 'Не указано помещение';
             }
 
-            if ($("select[name=room]").val() == 0) {
-                if (!$("select[name=color]").val() || $("select[name=color]").val() == 'null') {
-                    return 'Должен быть указан цвет элемента';
-                }
-            }
+            // Принудительное назначение цвета кнопки для общего помещения
+            // if ($("select[name=room]").val() == 0) {
+            //     if (!$("select[name=color]").val() || $("select[name=color]").val() == 'null') {
+            //         return 'Должен быть указан цвет элемента';
+            //     }
+            // }
 
             let params = $("#view_form #on_method_params");
             if (params.is(":visible") && params.val().trim() === '') {

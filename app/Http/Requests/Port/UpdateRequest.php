@@ -25,14 +25,14 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'comment' => 'required|string|max:255',
+            'comment' => 'max:255',
         ];
     }
 
     public function messages()
     {
         return [
-            'comment.required' => 'Не указано название',
+            //'comment.required' => 'Не указано название',
             'comment.max' => 'Название содержит более 255 символов'
         ];
     }
