@@ -13,11 +13,14 @@ class DeviceController extends Controller
 {
     private $service;
     private $megaService;
+    private $deviceRepository;
 
-    public function __construct(DeviceService $service, ConfigMegaService $megaService)
+    public function __construct(DeviceService $service, ConfigMegaService $megaService,
+                                DeviceRepository $deviceRepository)
     {
         $this->service = $service;
         $this->megaService = $megaService;
+        $this->deviceRepository = $deviceRepository;
     }
 
     public function delete(Request $r)
@@ -94,6 +97,17 @@ class DeviceController extends Controller
             $typeDevice = DeviceRepository::getDevByIdDevice((int)$r->id_device)['type'];
 
         return response()->json(['result' => true, 'type' =>  $typeDevice]);
+    }
+
+
+    //Получаем контроллеры для вывода в список контроллеров
+    public function get(Request $r) {
+
+        if($r->types) {
+            $devices = $this->deviceRepository->getAllByTypesToArray($r->types, false);
+        }
+
+        return response()->json(['result' => true, 'devices' =>  $devices]);
     }
 
 

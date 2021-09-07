@@ -375,6 +375,12 @@ class DeviceService {
 
     }
 
+    /**
+     * Получение устройств, которые находятся на контроллере hite-pro
+     * @param $idDevice
+     * @param $type
+     * @return array
+     */
     public static function getHPDevices($idDevice, $type) {
 
 

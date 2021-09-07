@@ -106,7 +106,7 @@ class Termostat extends Model
     public static function getProperties()
     {
         return [
-            'current' => ['Текущая температура, °C', true, true],
+            'current' => ['Текущая температура, °C', true, false],
             'optimal' => ['Установленная температура, °C', true, true],
             'gisteresis' => ['Гистерезис [0-10]', true, true],
             'type' => ['Тип термостата [нагрев|охлажение]', true, true],

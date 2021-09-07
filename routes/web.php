@@ -95,6 +95,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('check/server', 'DeviceController@checkServer')->name('check.server');
             Route::post('objects_ports', 'DeviceController@objectsPorts')->name('objects_ports');
             Route::post('type_controller', 'DeviceController@typeController')->name('type_controller');
+            Route::post('get', 'DeviceController@get')->name('get');
         });
 
         Route::group(['prefix' => 'views', 'as' => 'views.'], function () {

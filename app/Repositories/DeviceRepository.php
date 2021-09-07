@@ -63,7 +63,7 @@ class DeviceRepository {
     /**
      * Вывод всех устройств по типу
      */
-    public function getAllByTypesToArray(array $devicesTypes)
+    public function getAllByTypesToArray(array $devicesTypes, $pluck = true)
     {
 
         $query = Device::query();
@@ -74,14 +74,23 @@ class DeviceRepository {
 
 
         foreach ($devicesTypes As $devType) {
-
-            $query->where('devtypes.name',$devType);
+            $query->orwhere('devtypes.name',$devType);
         }
 
 
-        $devices = $query->orderBy('description')
-            ->pluck('description','devices.id')
-            ->toArray();
+        //Управляем форматом вывода - для загрузки через страницу используем pluck, для загрузки через AJAX не используем
+        if ($pluck){
+            $devices = $query->orderBy('description')
+                ->pluck('description','devices.id')
+                ->toArray();
+        }else {
+            $devices = $query->orderBy('description')
+                ->get()->toArray();
+        }
+
+
+
+
 
 
         return $devices;
