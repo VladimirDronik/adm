@@ -126,6 +126,8 @@ class SwitchController extends Controller
                 $params_lc['name'] = $objectService->getParamsByMethodId($port->lc_method);
             }
 
+            $place = 'port';
+
         } else {
 
             $method = null;
