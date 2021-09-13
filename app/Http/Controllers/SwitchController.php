@@ -96,6 +96,7 @@ class SwitchController extends Controller
         $params_dc['name'] = '';
         $params_lc['value'] = '';
         $params_lc['name'] = '';
+        $place = '';
 
         if($port) {
             $method = $port->method;
