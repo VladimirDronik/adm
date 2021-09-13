@@ -45,7 +45,6 @@ function getMethodParams(methodId) {
  */
 function getMethods(object_id, methodsSelect, selected) {
 
-
     $.ajax({
         url: url_methods,
         data: {'_token': _token, 'object_id': object_id},

@@ -121,6 +121,7 @@ class SwitchService {
                 // Если выбрано устройство хитпро, то добавляем метод в таблицу swithes, если выбрано
                 // другое устройство с портом, то добавляем на методы на порт
                 if($data['place'] == 'Hite-pro') {
+
                     $switch->id_method = $data['method'];
                     $switch->method_params = $data['method_params'];
 
@@ -179,11 +180,14 @@ class SwitchService {
             $switch->save();
         });
 
+
         // Если выбрано устройство хитпро, то добавляем метод в таблицу swithes, если выбрано
         // другое устройство с портом, то добавляем на методы на порт
         if($data['place'] == 'Hite-pro') {
+
             $switch->id_method = $data['method'];
             $switch->method_params = $data['method_params'];
+            $switch->save();
             HiteproDev::where('id_object', $switch->object->id)->update(['id_object' => null]);
             Port::where('object', $switch->object->id)->update(['object' => null, 'method' => null]);
             HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])

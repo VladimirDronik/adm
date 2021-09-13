@@ -365,6 +365,7 @@
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/motionsensor.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
@@ -401,7 +402,7 @@
 
             $("#auto_sel_lightstat").chosen({width:"100%", no_results_text: "Не найдено"});
 
-            initMotionsensorForm();
+            initMotionsensorForm('');
 
 
             $("#auto_sel_device_id").chosen().change(function() {

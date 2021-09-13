@@ -96,21 +96,15 @@ function initMethodsVar(object_id) {
 
 function initMotionsensorForm() {
 
-
-
-
-
     $("#auto_sel_object_normal").chosen().change(function() {
         let object_id = $(this).val();
         hideParamsFields('method_normal_params');
-
         getMethods(object_id, '#auto_sel_method_normal');
     });
 
     $("#auto_sel_object_eco").chosen().change(function() {
         let object_id = $(this).val();
         hideParamsFields('method_eco_params');
-
         getMethods(object_id, '#auto_sel_method_eco');
     });
 
@@ -151,18 +145,14 @@ function initMotionsensorForm() {
 
 
 
-
-
     //при загрузке страницы подгружаем методы для выбранного объекта
-
-    getMethods($("#auto_sel_object_normal").val(), '#auto_sel_method_normal', '{{ $motionsensor->method_normal }}');
-    getMethods($("#auto_sel_object_eco").val(), '#auto_sel_method_eco', '{{ $motionsensor->method_eco }}');
-    getMethods($("#auto_sel_object_night").val(), '#auto_sel_method_night', '{{ $motionsensor->method_night }}');
-    getMethods($("#auto_sel_object_evening").val(), '#auto_sel_method_evening', '{{ $motionsensor->method_evening }}');
-    getMethods($("#auto_sel_object_morning").val(), '#auto_sel_method_morning', '{{ $motionsensor->method_morning }}');
-    getMethods($("#auto_sel_object_guard").val(), '#auto_sel_method_guard', '{{ $motionsensor->method_guard }}');
-    getMethods($("#auto_sel_object_light").val(), '#auto_sel_method_light', '{{ $motionsensor->method_light }}');
-
+    // getMethods($("#auto_sel_object_normal").val(), '#auto_sel_method_normal', '{{ $motionsensor->method_normal }}');
+    // getMethods($("#auto_sel_object_eco").val(), '#auto_sel_method_eco', '{{ $motionsensor->method_eco }}');
+    // getMethods($("#auto_sel_object_night").val(), '#auto_sel_method_night', '{{ $motionsensor->method_night }}');
+    // getMethods($("#auto_sel_object_evening").val(), '#auto_sel_method_evening', '{{ $motionsensor->method_evening }}');
+    // getMethods($("#auto_sel_object_morning").val(), '#auto_sel_method_morning', '{{ $motionsensor->method_morning }}');
+    // getMethods($("#auto_sel_object_guard").val(), '#auto_sel_method_guard', '{{ $motionsensor->method_guard }}');
+    // getMethods($("#auto_sel_object_light").val(), '#auto_sel_method_light', '{{ $motionsensor->method_light }}');
 
 
     $("#auto_sel_method_normal").chosen().change(function() {
@@ -195,3 +185,7 @@ function initMotionsensorForm() {
 
 }
 
+function hideParamsFields(id) {
+    $('#motionsensor_form #'+id+'_div').hide();
+    $('#motionsensor_form #'+id).val('');
+}

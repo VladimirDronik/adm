@@ -59,7 +59,7 @@
                         </div>
                         <input type="hidden" id="tabs-sel" value="{{ $tab }}">
                         <input type="hidden" id="event_idobject" name="event_idobject" value="{{ isset($switch->iobject['id']) }}">
-                        <input type="hidden" name="place" id="place">
+                        <input type="hidden" name="place" id="place" value="{{ $place }}">
 
 
                     </div>

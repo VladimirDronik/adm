@@ -137,6 +137,18 @@ class SwitchController extends Controller
             $method_lc =  null;
             $object_lc =  null;
             $methods_lc =  [];
+
+            //Если выбрано устройство hite-pro, значит контроллер тоже хитпро
+            if($hp_device != null) {
+                $method = $switch->id_method;
+                $object = $objectService->getObjectByMethod($method);
+                $methods = $objectService->getMethodsByObjectIdToArray($object);
+                $place = 'Hite-pro';
+                if($switch->id_method) {
+                    $params['value'] = $switch->method_params;
+                    $params['name'] = $objectService->getParamsByMethodId($switch->id_method);
+                }
+            }
         }
 
 
@@ -156,11 +168,13 @@ class SwitchController extends Controller
             $devices = $device_rep->getAllWithoutTypesToArray();
         }
 
+
+
         return view('switches.edit', compact('switch', 'types', 'tab', 'events', 'allEvents',
             'object', 'method', 'methods', 'object_dc', 'method_dc', 'methods_dc', 'availableEvents', 'properties',
             'object_lc', 'method_lc', 'methods_lc', 'idDevice', 'idPort', 'devices', 'ports', 'sounds', 'views',
             'messages', 'messagePoint',  'hp_device', 'hp_devices', 'params', 'params_dc', 'params_lc',
-            'objects', 'object_types', 'scripts', 'can'));
+            'objects', 'object_types', 'scripts', 'place', 'can'));
     }
 
     public function update(UpdateRequest $r, int $id)

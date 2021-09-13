@@ -17,7 +17,7 @@ class CreateEventsTable extends Migration
             $table->string('event',50)->nullable();
             $table->string('property',50)->nullable();
             $table->string('comparison',2)->nullable();
-            $table->string('value',5)->nullable();
+            $table->string('value',50)->nullable();
 
 
             $table->foreign('id_object')->references('id')->on('objects')
