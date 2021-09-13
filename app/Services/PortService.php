@@ -322,6 +322,10 @@ class PortService {
                         case 'temperature':
                             $HPdevices = $this->hiteproDevRep->getTermometrsByDeviceId($deviceID);
                             break;
+
+                        case 'transmitter':
+                            $HPdevices = $this->hiteproDevRep->getTransmittersByDeviceId($deviceID);
+                            break;
                         /*
                                         case 'dimmer': $HPdevices = $this->hiteproDevRep->getInPortsByDeviceId($deviceID);
                                             break;

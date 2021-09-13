@@ -151,6 +151,11 @@ class SwitchController extends Controller
         $availableEvents = DeviceSwitch::getEvents();
         $properties = DeviceSwitch::getProperties();
 
+        //Если тип = кнопка, то выводим в устройствах хит-про
+        if($switch->type == 'button') {
+            $devices = $device_rep->getAllWithoutTypesToArray();
+        }
+
         return view('switches.edit', compact('switch', 'types', 'tab', 'events', 'allEvents',
             'object', 'method', 'methods', 'object_dc', 'method_dc', 'methods_dc', 'availableEvents', 'properties',
             'object_lc', 'method_lc', 'methods_lc', 'idDevice', 'idPort', 'devices', 'ports', 'sounds', 'views',

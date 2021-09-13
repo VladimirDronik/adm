@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\DeviceSwitch;
+use App\Models\HiteproDev;
 use App\Models\HomeObject;
 use App\Models\Port;
 use App\Models\Device;
@@ -64,6 +65,7 @@ class SwitchService {
             $switch->type = $data['type'];
         }
         $switch->id_object = (int)$data['id_object'];
+
     }
 
     /**
@@ -116,6 +118,16 @@ class SwitchService {
                 $object = $this->switch_object_service->createSwitchObject($unique_name, $switch->type);
                 $switch->id_object = $object->id;
 
+                // Если выбрано устройство хитпро, то добавляем метод в таблицу swithes, если выбрано
+                // другое устройство с портом, то добавляем на методы на порт
+                if($data['place'] == 'Hite-pro') {
+                    $switch->id_method = $data['method'];
+                    $switch->method_params = $data['method_params'];
+
+                    HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
+                        ->update(['id_object' => $object->id]);
+
+                } else
                 if ($data['port_id']) {
 
                     $this->setPort($data['port_id'], $data['type']);
@@ -125,7 +137,6 @@ class SwitchService {
                         'dc_method' => $data['method_dc'], 'dc_method_params' => $data['method_dc_params'],
                         'lc_method' => $data['method_lc'], 'lc_method_params' => $data['method_lc_params'],
                         'status' => 'IN', 'comment' => $data['name']]);
-
 
                 }
 
@@ -158,6 +169,7 @@ class SwitchService {
      */
     public function update(DeviceSwitch $switch, array $data): int
     {
+
         DB::transaction(function () use (&$switch, $data) {
             if ($this->isUpdateAutoObjectName($switch, $data['name'])) {
                 $switch->object->name = HomeObject::getUniqueObjectName($switch->object->id, trim($data['name']));
@@ -167,9 +179,20 @@ class SwitchService {
             $switch->save();
         });
 
+        // Если выбрано устройство хитпро, то добавляем метод в таблицу swithes, если выбрано
+        // другое устройство с портом, то добавляем на методы на порт
+        if($data['place'] == 'Hite-pro') {
+            $switch->id_method = $data['method'];
+            $switch->method_params = $data['method_params'];
+            HiteproDev::where('id_object', $switch->object->id)->update(['id_object' => null]);
+            Port::where('object', $switch->object->id)->update(['object' => null, 'method' => null]);
+            HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
+                ->update(['id_object' => $switch->object->id]);
+        } else
         if ($data['port_id']) {
 
             //$this->setPort($this->portRepository->getPortByObject($switch->object->id), 'button');
+            HiteproDev::where('id_object', $switch->object->id)->update(['id_object' => null]);
             $this->setPort($data['port_id'], $switch->type);
 
             Port::where('object', $switch->object->id)->update([

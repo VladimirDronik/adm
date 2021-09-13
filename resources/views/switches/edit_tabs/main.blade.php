@@ -24,13 +24,13 @@
        false, false, [], null) }}
 
 
-    <div id='port_id_div' @if ($ports==null) style="display: none" @endif>
+    <div id='port_id_div' @if ($idPort==null) style="display: none" @endif>
         {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
           false, false, [], null) }}
     </div>
 
-    <div id='hitepro_devices_div' @if ($hp_devices==null) style="display: none" @endif>
-        {{ Form::bs_autoselect('hitepro_devices', 'Устройство:', $hp_devices, old('hiteProDevices', $hp_device),
+    <div id='hitepro_devices_div' @if ($hp_device==null) style="display: none" @endif>
+        {{ Form::bs_autoselect('hitepro_devices', 'Устройство:', $hp_devices, old('hitepro_devices', $hp_device),
             false, false, [], null) }}
     </div>
 </div>

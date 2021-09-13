@@ -36,7 +36,7 @@ class DeviceRepository {
     /**
      * Вывод всех устройств по типу, кроме перечисленных
      */
-    public function getAllWithoutTypesToArray(array $devicesTypes)
+    public function getAllWithoutTypesToArray(array $devicesTypes = [])
     {
 
         $query = Device::query();

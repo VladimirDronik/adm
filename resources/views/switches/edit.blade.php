@@ -59,7 +59,7 @@
                         </div>
                         <input type="hidden" id="tabs-sel" value="{{ $tab }}">
                         <input type="hidden" id="event_idobject" name="event_idobject" value="{{ isset($switch->iobject['id']) }}">
-
+                        <input type="hidden" name="place" id="place">
 
 
                     </div>
@@ -128,30 +128,30 @@
             initActionModal();
             serviceInit();
 
-            $("#auto_sel_device_id").chosen().change(function() {
-                let device_id = $(this).val();
-                $.ajax({
-                    url: url_ports,
-                    data: {'_token': _token, 'device_id': device_id, 'status': 'IN,I2C,1WIRE,1W-BUS,ADC', 'type': 'switch, socket'},
-                    success: function (data) {
-                        methods = data.ports;
-                        if (data.type_device == 'Hite-pro') {
-                            $('#port_id_div').hide();
-                            $('#hitepro_devices_div').show();
-                            createPortSelect('#auto_sel_hitepro_devices', data.hiteProDevices, -1);
-                            $('#auto_sel_hitepro_devices').trigger("chosen:updated");
-                            $('#place').val('Hite-pro');
-                        }
-                        else {
-                            $('#port_id_div').show();
-                            $('#hitepro_devices_div').hide();
-                            createPortSelect('#auto_sel_port_id', data.ports, -1);
-                            $('#auto_sel_port_id').trigger("chosen:updated");
-                            $('#place').val('port');
-                        }
-                    }
-                });
-            });
+            // $("#auto_sel_device_id").chosen().change(function() {
+            //     let device_id = $(this).val();
+            //     $.ajax({
+            //         url: url_ports,
+            //         data: {'_token': _token, 'device_id': device_id, 'status': 'IN,I2C,1WIRE,1W-BUS,ADC', 'type': 'switch, socket'},
+            //         success: function (data) {
+            //             methods = data.ports;
+            //             if (data.type_device == 'Hite-pro') {
+            //                 $('#port_id_div').hide();
+            //                 $('#hitepro_devices_div').show();
+            //                 createPortSelect('#auto_sel_hitepro_devices', data.hiteProDevices, -1);
+            //                 $('#auto_sel_hitepro_devices').trigger("chosen:updated");
+            //                 $('#place').val('Hite-pro');
+            //             }
+            //             else {
+            //                 $('#port_id_div').show();
+            //                 $('#hitepro_devices_div').hide();
+            //                 createPortSelect('#auto_sel_port_id', data.ports, -1);
+            //                 $('#auto_sel_port_id').trigger("chosen:updated");
+            //                 $('#place').val('port');
+            //             }
+            //         }
+            //     });
+            // });
 
 
 
@@ -199,7 +199,38 @@
             });
 
 
+            $("#auto_sel_device_id").chosen().change(function() {
+                let device_id = $(this).val();
+                $.ajax({
+                    url: url_ports,
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'IN,I2C,1WIRE,1W-BUS,ADC', 'type': 'transmitter'},
+                    success: function (data) {
 
+                        if (data.type_device == 'Hite-pro') {
+                            $('#port_id_div').hide();
+                            $('#double_clk_div').hide();
+                            $('#long_clk_div').hide();
+                            $('#hitepro_devices_div').show();
+                            createPortSelect('#auto_sel_hitepro_devices', data.hiteProDevices, -1);
+                            $('#auto_sel_hitepro_devices').trigger("chosen:updated");
+                            $('#place').val('Hite-pro');
+                        }
+                        else {
+                            $('#port_id_div').show();
+                            $('#double_clk_div').show();
+                            $('#long_clk_div').show();
+                            $('#hitepro_devices_div').hide();
+                            createPortSelect('#auto_sel_port_id', data.ports, -1);
+                            $('#auto_sel_port_id').trigger("chosen:updated");
+                            $('#place').val('port');
+                        }
+
+
+                        createPortsSelect('#auto_sel_port_id', data.ports, -1);
+                        $('#auto_sel_port_id').trigger("chosen:updated");
+                    }
+                });
+            });
 
 
             $('#auto_sel_btn_id_object').click(function() {

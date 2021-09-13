@@ -120,48 +120,50 @@
 
 
 
+                        <div id="double_clk_div">
+                            {{ Form::bs_title('Двойное нажатие') }}
 
-                        {{ Form::bs_title('Двойное нажатие') }}
 
+                            {{ Form::bs_autoselect('object_dc', 'Объект:', $objects, old('object_dc'),
+                                false, false, [], null, 'Объект, на который воздействуем') }}
 
-                        {{ Form::bs_autoselect('object_dc', 'Объект:', $objects, old('object_dc'),
-                            false, false, [], null, 'Объект, на который воздействуем') }}
+                            {{ Form::bs_autoselect('method_dc', 'Метод:', [], old('method_dc'),
+                                false, false, [], null, 'Метод объекта при двойном нажатии кнопки') }}
 
-                        {{ Form::bs_autoselect('method_dc', 'Метод:', [], old('method_dc'),
-                            false, false, [], null, 'Метод объекта при двойном нажатии кнопки') }}
-
-                        <div class="form-group row" id="method_dc_params_div"
-                             @if(!old('method')) style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_dc_params"></label>
-                            <div class="col-md-9 pr-0">
-                                <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="method_dc_params_label" for="method_dc_params">...</label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="method_dc_params" name="method_dc_params"
-                                               type="text" value="{{ old('method_dc_params') }}">
+                            <div class="form-group row" id="method_dc_params_div"
+                                 @if(!old('method')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_dc_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row ">
+                                        <label class="control-label text-right col-md-6 label-fix" id="method_dc_params_label" for="method_dc_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="method_dc_params" name="method_dc_params"
+                                                   type="text" value="{{ old('method_dc_params') }}">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
+                        <div id="long_clk_div">
+                            {{ Form::bs_title('Длительное нажатие') }}
 
-                        {{ Form::bs_title('Длительное нажатие') }}
+                            {{ Form::bs_autoselect('object_lc', 'Объект:', $objects, old('object_lc'),
+                                false, false, [], null, 'Объект, на который воздействуем') }}
 
-                        {{ Form::bs_autoselect('object_lc', 'Объект:', $objects, old('object_lc'),
-                            false, false, [], null, 'Объект, на который воздействуем') }}
+                            {{ Form::bs_autoselect('method_lc', 'Метод:', [], old('method_lc'),
+                                false, false, [], null, 'Метод объекта при длительном нажатии кнопки') }}
 
-                        {{ Form::bs_autoselect('method_lc', 'Метод:', [], old('method_lc'),
-                            false, false, [], null, 'Метод объекта при длительном нажатии кнопки') }}
-
-                        <div class="form-group row" id="method_lc_params_div"
-                             @if(!old('method_lc')) style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_lc_params"></label>
-                            <div class="col-md-9 pr-0">
-                                <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="method_lc_params_label" for="method_lc_params">...</label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="method_lc_params" name="method_lc_params"
-                                               type="text" value="{{ old('method_lc_params') }}">
+                            <div class="form-group row" id="method_lc_params_div"
+                                 @if(!old('method_lc')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_lc_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row ">
+                                        <label class="control-label text-right col-md-6 label-fix" id="method_lc_params_label" for="method_lc_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="method_lc_params" name="method_lc_params"
+                                                   type="text" value="{{ old('method_lc_params') }}">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -253,11 +255,13 @@
                 let device_id = $(this).val();
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': device_id, 'status': 'IN,I2C,1WIRE,1W-BUS,ADC', 'type': 'switch'},
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'IN,I2C,1WIRE,1W-BUS,ADC', 'type': 'transmitter'},
                     success: function (data) {
 
                         if (data.type_device == 'Hite-pro') {
                             $('#port_id_div').hide();
+                            $('#double_clk_div').hide();
+                            $('#long_clk_div').hide();
                             $('#hitepro_devices_div').show();
                             createPortSelect('#auto_sel_hitepro_devices', data.hiteProDevices, -1);
                             $('#auto_sel_hitepro_devices').trigger("chosen:updated");
@@ -265,6 +269,8 @@
                         }
                         else {
                             $('#port_id_div').show();
+                            $('#double_clk_div').show();
+                            $('#long_clk_div').show();
                             $('#hitepro_devices_div').hide();
                             createPortSelect('#auto_sel_port_id', data.ports, -1);
                             $('#auto_sel_port_id').trigger("chosen:updated");
