@@ -136,6 +136,7 @@
 
         $(document).ready(function () {
 
+            $('#del_modal_btn').click(clickDelBtn);
 
             $('#auto_sel_btn_id_object').click(function() {
                 clearCreateObjectModal();
@@ -255,7 +256,7 @@
                 $('#del_init_btn').click();
             });
 
-            $('#del_modal_btn').click(clickDelBtn);
+
         });
     </script>
 @endsection

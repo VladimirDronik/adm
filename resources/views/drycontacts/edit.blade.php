@@ -111,7 +111,7 @@
 
         $(document).ready(function () {
 
-
+            $('#del_modal_btn').click(clickDelBtn);
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
@@ -257,7 +257,7 @@
                 $('#del_init_btn').click();
             });
 
-            $('#del_modal_btn').click(clickDelBtn);
+
         });
 
 

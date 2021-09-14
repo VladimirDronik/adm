@@ -102,6 +102,8 @@
         const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
         let del_id;
         $(document).ready(function () {
+
+
             initLockForm();
             serviceInit();
             initActionModal();
@@ -202,7 +204,7 @@
                 $('#del_modal_body').text('Удалить метод «'+$(this).attr('data-name')+'»?');
                 $('#del_init_btn').click();
             });
-            $('#del_modal_btn').click(clickDelBtn);
+
         });
         function createPortSelect(target, options, selected) {
             let sel = $(target);

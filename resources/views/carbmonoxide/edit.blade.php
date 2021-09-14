@@ -111,6 +111,8 @@
 
         $(document).ready(function () {
 
+            $('#del_modal_btn').click(clickDelBtn);
+
             initCarbmonoxideForm();
             initActionModal();
             serviceInit();
@@ -271,7 +273,7 @@
                 $('#del_init_btn').click();
             });
 
-            $('#del_modal_btn').click(clickDelBtn);
+
         });
 
 

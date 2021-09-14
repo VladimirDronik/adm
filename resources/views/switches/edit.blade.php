@@ -123,6 +123,7 @@
             $("#auto_sel_object_dc").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_method_dc").chosen({width:"100%", no_results_text: "Не найдено"});
 
+            $('#del_modal_btn').click(clickDelBtn);
 
             initSwitchForm();
             initActionModal();
@@ -313,7 +314,7 @@
                 $('#del_init_btn').click();
             });
 
-            $('#del_modal_btn').click(clickDelBtn);
+
         });
 
 

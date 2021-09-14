@@ -107,6 +107,9 @@
         let del_id;
 
         $(document).ready(function () {
+
+            $('#del_modal_btn').click(clickDelBtn);
+
             initLampForm();
             initActionModal();
             serviceInit();
@@ -223,7 +226,7 @@
                 $('#del_init_btn').click();
             });
 
-            $('#del_modal_btn').click(clickDelBtn);
+
         });
 
         function createPortSelect(target, options, selected) {

@@ -111,6 +111,8 @@
 
         $(document).ready(function () {
 
+            $('#del_modal_btn').click(clickDelBtn);
+
             initLightstatForm();
             initActionModal();
             initMethodsVar({{ optional($lightstat->eobject)->id }});
@@ -253,7 +255,7 @@
                 $('#del_init_btn').click();
             });
 
-            $('#del_modal_btn').click(clickDelBtn);
+
         });
 
 

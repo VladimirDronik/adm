@@ -2,6 +2,8 @@
  * Общие сервисные функции
  */
 
+//Подтверждение модельного окна удаления
+$('#del_modal_btn').click(clickDelBtn);
 
 function serviceInit() {
 

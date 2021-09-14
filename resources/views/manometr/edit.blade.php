@@ -108,6 +108,8 @@
 
         $(document).ready(function () {
 
+            $('#del_modal_btn').click(clickDelBtn);
+
             initManometrForm();
             initActionModal();
             initMethodsVar({{ optional($manometr->eobject)->id }});
@@ -267,7 +269,7 @@
                 $('#del_init_btn').click();
             });
 
-            $('#del_modal_btn').click(clickDelBtn);
+
         });
 
 
