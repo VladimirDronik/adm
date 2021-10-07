@@ -22,7 +22,7 @@ class HygrostatObjectService {
     {
         $object = new HomeObject();
 
-        $object->type = ObjType::TYPE_TERMOSTAT;
+        $object->type = ObjType::TYPE_HYGROSTAT;
         $object->name = $name;
         $object->status = 'off';
         $object->is_system = 1;

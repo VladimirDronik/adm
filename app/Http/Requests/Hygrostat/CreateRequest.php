@@ -24,7 +24,7 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required|string|max:250|unique:termostats,name',
+            'name' => 'required|string|max:250|unique:hygrostats,name',
             'id_termometr' => 'nullable|string|max:12',
             'optimal' => 'required|integer|min:0|max:40',
             'gisteresis' => 'required|integer|min:0|max:10',
@@ -50,7 +50,7 @@ class CreateRequest extends FormRequest
         return [
             'name.required' => 'Не указано название',
             'name.max' => 'Название содержит более 250 символов',
-            'name.unique' => 'Термостат с таким названием уже существует. Укажите другое название',
+            'name.unique' => 'Гигростат с таким названием уже существует. Укажите другое название',
             'optimal.required' => 'Не указана оптимальная температура на вкладке свойств',
             'gisteresis.required' => 'Не указан гистерезис на вкладке свойств',
             'type.required' => 'Не указан режим на вкладке свойств',

@@ -25,7 +25,7 @@ class HygrostatService {
     }
 
     /**
-     * Удаление термостата. Если связанный объект системный, то удаление объекта, метода, задачи расписания,
+     * Удаление гигростата. Если связанный объект системный, то удаление объекта, метода, задачи расписания,
      * созданных автоматически при создании термостата
      *
      * @param int $id
@@ -34,28 +34,22 @@ class HygrostatService {
      */
     public function delete(int $id): bool
     {
-        $termostat = Termostat::findOrFail($id);
+        $hygrostat = Hygrostat::findOrFail($id);
 
 
-        $deviceAndPort = $this->port_service->getIdDeviceAndPortId($termostat->id_object);
+        $deviceAndPort = $this->port_service->getIdDeviceAndPortId($hygrostat->id_object);
 
-        ConfigMegaService::setPortType($deviceAndPort['id_device'], $this->port_repository->getNumPortByID($deviceAndPort['id_port']), 'IN');
 
-        //В портах удаляем все упоминания о термостате, порт переводим в режим IN
-        Port::where('object', $termostat->id_object)->update(['status' => 'IN', 'object' => NULL,
-            'comment' => '']);
-
-        if ($termostat->iobject && $termostat->iobject->is_system) {
-            DB::transaction(function () use (&$termostat) {
+        if ($hygrostat->iobject && $hygrostat->iobject->is_system) {
+            DB::transaction(function () use (&$hygrostat) {
                 //if (!HomeObject::isObjectUsed($termostat->id_object, $termostat->id, 'termostats')) {
-                    HomeObject::deleteAutoObject($termostat->id_object);
+                    HomeObject::deleteAutoObject($hygrostat->id_object);
                 //}
-                $termostat->delete();
+                $hygrostat->delete();
             });
         } else {
-            $termostat->delete();
+            $hygrostat->delete();
         }
-
 
 
         return true;
@@ -125,67 +119,37 @@ class HygrostatService {
     }
 
     /**
-     * Обновление термостата. Если изменилось название и у термостата системный объект, то
+     * Обновление гигростата. Если изменилось название и у термостата системный объект, то
      * изменяем название объекта.
      * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
      *
-     * @param Termostat $termostat
+     * @param Hygrostat $hygrostat
      * @param array $data
      * @return int
      * @throws \Throwable
      */
-    public function update(Termostat $termostat, array $data): int
+    public function update(Hygrostat $hygrostat, array $data): int
     {
 
-        $port_id = $data['port_id'] ?? null;
-        $deviceId = $data['device_id'];
+
         $placeType = $data['placetype'];
 
-        DB::transaction(function () use (&$termostat, $data, $port_id, $deviceId, $placeType) {
-            if ($this->isUpdateAutoObjectName($termostat, $data['name'])) {
-                $termostat->iobject->name = HomeObject::getUniqueObjectName($termostat->iobject->id, trim($data['name']));
-                $termostat->iobject->save();
+        DB::transaction(function () use (&$hygrostat, $data, $placeType) {
+            if ($this->isUpdateAutoObjectName($hygrostat, $data['name'])) {
+                $hygrostat->iobject->name = HomeObject::getUniqueObjectName($hygrostat->iobject->id, trim($data['name']));
+                $hygrostat->iobject->save();
 
             }
 
-
-            //Если порт указан, меняем его в портах для этого объекта, если нет, то убираем старый в портах
-            if ($data['port_id'] && (($placeType == 'port') || ($placeType == '1wbus'))) {
-
-                //Обнуляем порт, приводим в исходное состояние
-                Port::where('object', $termostat->id_object)->update(['object' => NULL, 'comment' => '', 'status' => 'IN']);
-               // ConfigMegaService::setPortType($deviceId, $this->port_repository->getNumPortByID($port_id), 'IN');
-
-                //Привязываем объект к порту в БД
-                Port::where('id',  $port_id)->update(['object' => $termostat->id_object,
-                                                                        'comment' => $termostat->name]);
-
-                //Переназначаем порт на контроллере
-                if($placeType == 'port'){
-                    Port::where('id',  $port_id)->update(['status' => '1WIRE']);
-                    ConfigMegaService::setPortType($deviceId, $this->port_repository->getNumPortByID($port_id), '1WIRE');
-
-                }
-                elseif ($placeType == '1wbus') {
-                    Port::where('id',  $port_id)->update(['status' => '1W-BUS']);
-                    ConfigMegaService::setPortType($deviceId, $this->port_repository->getNumPortByID($port_id), '1W-BUS');
-
-                }
-
-            }else {
-                ConfigMegaService::setPortType($deviceId, $this->port_repository->getNumPortByID($port_id), 'IN');
-
-                Port::where('object', $termostat->id_object)->update(['object' => NULL, 'comment' => '', 'status' => 'IN']);
-            }
 
             if(($data['room'] != null) && ($data['room'] != 0))
-               RoomService::addTermostat($data['room'], $data['optimal']);
+               RoomService::addHygrostat($data['room'], $data['optimal']);
 
-            $this->prepare($termostat, $data);
-            $termostat->save();
+            $this->prepare($hygrostat, $data);
+            $hygrostat->save();
         });
 
-        return $termostat->id;
+        return $hygrostat->id;
     }
 
 }

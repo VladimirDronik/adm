@@ -24,13 +24,13 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required|string|max:250|unique:termostats,name,'.$this->termostat->id,
+            'name' => 'required|string|max:250|unique:hygrostats,name,'.$this->hygrostat->id,
             'id_termometr' => 'nullable|string|max:12',
             'optimal' => 'required|integer|min:0|max:40',
             'gisteresis' => 'required|integer|min:0|max:10',
             'type' => 'required|integer|min:0|max:1',
-            'min_threshold' => 'required|integer',
-            'max_threshold' => 'required|integer|max:100',
+            //'min_threshold' => 'required|integer',   // Отключено в отображении
+            //'max_threshold' => 'required|integer|max:100', // Отключено в отображении
             'min_alarm' => 'required|integer',
             'max_alarm' => 'required|integer|max:100',
             'room' => 'nullable|integer|min:0',

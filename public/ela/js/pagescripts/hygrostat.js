@@ -48,7 +48,7 @@ function validateHygrostat() {
     if ($('#hygrostat_form input[name=object_type]').length
         && $('#hygrostat_form input[name=object_type]:checked').val() === 'manual'
         && isEmptyAutoSelect('id_object')) {
-        return 'Не указан объект термостата';
+        return 'Не указан объект гигростата';
     }
 
     // if (isEmptyAutoSelect('object')) {

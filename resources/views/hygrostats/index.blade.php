@@ -115,7 +115,7 @@
 
             $('.del_btn').click(function() {
                 del_id = $(this).data('id');
-                $('#del_modal_body').text('Удалить термостат № '+del_id+' «'+$(this).data('name')+'»?');
+                $('#del_modal_body').text('Удалить гигростат № '+del_id+' «'+$(this).data('name')+'»?');
                 $('#del_init_btn').click();
             });
 
@@ -128,7 +128,7 @@
                             if (data.result) {
                                 $('#tr'+del_id).hide();
                             } else {
-                                showErrorModal('Ошибка при удалении термостата');
+                                showErrorModal('Ошибка при удалении гигростата');
                             }
                         }
                     });

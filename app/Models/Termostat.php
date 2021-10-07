@@ -110,8 +110,8 @@ class Termostat extends Model
             'optimal' => ['Установленная температура, °C', true, true],
             'gisteresis' => ['Гистерезис [0-10]', true, true],
             'type' => ['Тип термостата [нагрев|охлажение]', true, true],
-            'min_threshold' => ['Мин. порог, °C', true, true],
-            'max_threshold' => ['Макс. порог, °C', true, true],
+            //'min_threshold' => ['Мин. порог, °C', true, true], //Отключено в отображении
+            //'max_threshold' => ['Макс. порог, °C', true, true], //Отключено в отображении
             'min_alarm' => ['Мин. аварийное знач., °C', true, true],
             'max_alarm' => ['Макс. аварийное знач., °C', true, true],
             'room' => ['Помещение', true, true],

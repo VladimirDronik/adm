@@ -59,5 +59,6 @@
             </div>
         </div>
 
-        @include('messages.two')
+
 </div>
+@include('messages.two')

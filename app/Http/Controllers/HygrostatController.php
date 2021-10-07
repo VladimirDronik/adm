@@ -130,8 +130,8 @@ class HygrostatController extends Controller
         $messagePoint['second'] = 'При выключении';
 
         $events = $this->event_rep->getAllById($hygrostat->id_object);
-        $availableEvents = Termostat::getEvents();
-        $properties = Termostat::getProperties();
+        $availableEvents = Hygrostat::getEvents();
+        $properties = Hygrostat::getProperties();
         $sounds = SoundRepository::getAllToArray();
         $views = $this->view_rep->getAllToArray();
         $allEvents = '';
@@ -147,16 +147,16 @@ class HygrostatController extends Controller
 
 
 
-    public function update(UpdateRequest $r, Termostat $termostat)
+    public function update(UpdateRequest $r, Hygrostat $hygrostat)
     {
         try {
-            if ($this->service->update($termostat, $r->except('_token'))) {
-                return redirect()->route('termostats.edit', [$termostat->id])->with('success','Термостат успешно изменен');
+            if ($this->service->update($hygrostat, $r->except('_token'))) {
+                return redirect()->route('hygrostats.edit', [$hygrostat->id])->with('success','Гигростат успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении термостата '.$termostat->id.' ' .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при изменении гигростата '.$hygrostat->id.' ' .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении термостата');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении гигростата');
     }
 }
