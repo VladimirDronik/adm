@@ -52,6 +52,16 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
+    public static function getCheckHygrostatScript(): array
+    {
+        return [
+            'name' => 'Проверка гигростата',
+            'link' => 'check_hygrostat.php', // используется в HygrostatObjectService
+            'count' => 0,
+            'system' => 1
+        ];
+    }
+
     public static function getCheckLightstatScript(): array
     {
         return [

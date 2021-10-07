@@ -294,4 +294,28 @@ class RoomService
         }
 
     }
+
+    /**
+     * Добавление гигростата к комнате.
+     */
+    static public function addHygrostat($idRoom, $hygrostatValue)
+    {
+
+//        $temperature = Temperature::where('id_room', $idRoom)->first();
+//
+//        if ($temperature->id) {
+//
+//            if($temperature->normal == null)
+//                $temperature->normal = $termostatValue;
+//
+//            if($temperature->night == null)
+//                $temperature->night = $termostatValue;
+//
+//            if($temperature->eco == null)
+//                $temperature->eco = $termostatValue;
+//
+//            $temperature->save();
+//        }
+
+    }
 }

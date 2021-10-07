@@ -13,10 +13,10 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @if($active === '') active show @endif" href="#">
+                        <a class="nav-link @if($active === 'hygrostats') active show @endif" href="{{ route('hygrostats.index') }}">
                             <span>
                                 <img width="18" height="20" title="" src="{{ asset('ela/images/objects/hygrometer.png') }}">
-                                Гигростаты (0)
+                                Гигростаты ({{ $detectorsService->getHygrostatCount() }})
                             </span>
                         </a>
                     </li>

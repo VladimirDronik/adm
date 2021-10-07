@@ -22,6 +22,7 @@ class ObjType extends Model
 {
     const TYPE_COUNT = 'count';
     const TYPE_TERMOSTAT = 'termostat';
+    const TYPE_HYGROSTAT = 'hygrostat';
     const TYPE_LIGHTSTAT = 'lightstat';
     const TYPE_USENSOR = 'usensor';
     const TYPE_DIMMER = 'dimmer';

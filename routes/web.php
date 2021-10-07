@@ -48,6 +48,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('settings', 'SettingController')->except('show','destroy')->middleware('can:settings');
     Route::resource('scenes', 'SceneController')->except('show','destroy')->middleware('can:scenes');
     Route::resource('termostats', 'TermostatController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('hygrostats', 'HygrostatController')->except('show','destroy')->middleware('can:devices');
     Route::resource('motionsensors', 'MotionsensorsController')->except('show','destroy')->middleware('can:devices');
     Route::resource('lightstats', 'LightstatController')->except('show','destroy')->middleware('can:devices');
     Route::resource('carbmonoxide', 'CarbmonoxideController')->except('show','destroy')->middleware('can:devices');
@@ -73,6 +74,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('network', 'NetworkController@edit')->name('network.edit')->middleware('can:network');
     Route::put('network', 'NetworkController@update')->name('network.update')->middleware('can:network');
     Route::get('graphs/termostats', 'GraphController@termostats')->name('graphs.termostats.index')->middleware('can:graphs');
+    Route::get('graphs/hygrostats', 'GraphController@hygrostats')->name('graphs.hygrostats.index')->middleware('can:graphs');
     Route::get('graphs/lights', 'GraphController@lights')->name('graphs.lights.index')->middleware('can:graphs');
     Route::get('graphs/humidities', 'GraphController@humidities')->name('graphs.humidities.index')->middleware('can:graphs');
     Route::get('graphs/counts', 'GraphController@counts')->name('graphs.counts.index')->middleware('can:graphs');
@@ -106,6 +108,7 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::post('manometr/delete', 'ManometrController@delete')->name('manometr.delete');
         Route::post('termostats/delete', 'TermostatController@delete')->name('termostats.delete');
+        Route::post('hygrostats/delete', 'HygrostatController@delete')->name('hygrostats.delete');
         Route::post('lightstats/delete', 'LightstatController@delete')->name('lightstats.delete');
         Route::post('usensors/delete', 'UsensorController@delete')->name('usensors.delete');
         Route::post('drycontacts/delete', 'DrycontactController@delete')->name('drycontacts.delete');

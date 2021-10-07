@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Hygrostat;
 use App\Models\Motionsensor;
 use App\Models\Termostat;
 use App\Models\Usensor;
@@ -15,6 +16,11 @@ class DetectorsService {
     public function getTermostatsCount(): int
     {
         return Termostat::count();
+    }
+
+    public function getHygrostatCount(): int
+    {
+        return Hygrostat::count();
     }
 
     public function getUsensorsCount(): int
