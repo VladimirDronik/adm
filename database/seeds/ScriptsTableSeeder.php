@@ -138,6 +138,15 @@ class ScriptsTableSeeder extends Seeder
 
     }
 
+    public static function getCheckBoilerScript(): array
+    {
+        return [
+            'name' => 'Проверка котла',
+            'link' => 'check_boiler.php', // используется в BoilerObjectService
+            'count' => 0,
+            'system' => 1
+        ];
+    }
 
 
 
@@ -272,6 +281,7 @@ class ScriptsTableSeeder extends Seeder
         $scripts[] = self::getCheckCarbmonoxideScript();
         $scripts[] = self::deleteLogsScript();
         $scripts[] = self::getCheckManometrScript();
+        $scripts[] = self::getCheckBoilerScript();
 
 
         return $scripts;

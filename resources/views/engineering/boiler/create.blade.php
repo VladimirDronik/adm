@@ -34,7 +34,7 @@
 
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-                            {{ Form::bs_autoselect('type_boiler', 'Тип котла*:', $typesBoiler, old('type'),
+                            {{ Form::bs_autoselect('type_boiler', 'Протокол обмена*:', $typesBoiler, old('type'),
                         false, false, ['required' => true], null) }}
                             {{ Form::bs_text('ip_address_boiler', 'ip адрес*:', null, ['required' => true]) }}
 

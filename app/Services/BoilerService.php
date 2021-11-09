@@ -34,6 +34,10 @@ class BoilerService
 
             $boiler->name = $data['name'];
             $boiler->ip_address = $data['ip_address'];
+            $boiler->thermostat = $data['thermostat'];
+            $boiler->boiler = $data['boiler'];
+            $boiler->target_heat_temp = $data['target_heat_temp'];
+            $boiler->target_water_temp = $data['target_water_temp'];
 
             $boiler->save();
         });
@@ -54,14 +58,18 @@ class BoilerService
         $boiler = new Boiler();
         $boiler->name = $data['name'];
         $boiler->ip_address = $data['ip_address_boiler'];
-        $boiler->model = $data['type_boiler'];
-        $boiler->mode = 'auto';
+        $boiler->protocol = $data['type_boiler'];
+
+        $boiler->thermostat = 0;
+        $boiler->boiler = 1;
+        $boiler->automode = 1;
 
 
         DB::transaction(function () use (&$boiler, $data) {
 
             $unique_name = HomeObject::getUniqueObjectName(0, $boiler->name);
             $object = $this->boiler_object_service->createBoilerObject($unique_name);
+            $this->boiler_object_service->createBoilerObjectMethodsWithEvents($object->id);
             $boiler->id_object = $object->id;
 
             $boiler->save();

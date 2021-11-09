@@ -43,7 +43,9 @@ class ElementRepository
     public function parser($valueToParsing)
     {
         $inputArray = json_decode($valueToParsing, true);
+        if (isset($inputArray[0]['status']))
         $formattedStatus = $inputArray[0]['status'];
+        else $formattedStatus = '';
 
         return $formattedStatus;
     }

@@ -25,8 +25,8 @@ class Boiler extends Model
     public static function getTypes(bool $is_full = true)
     {
         $types = [
-            'proterm' => 'Протерм',
-            'evan' => 'Эван'
+            'ebus' => 'ebus',
+            'openterm' => 'openterm'
         ];
 
         return $is_full ? $types : array_keys($types);
@@ -37,12 +37,14 @@ class Boiler extends Model
         $properties = [
             'csupply' => 'Температура подачи',
             'creturn' => 'Температура обратки',
-            'state' => 'Состояние',
-            'mode' => 'Режим',
-            'burner' => 'Состояние горелки',
-            'burnerGVS' => 'Состояние горелки ГВС',
-            'modulation' => 'Модуляция',
-            'pump' => 'Состояние насоса',
+            'state' => 'Состояние котла',
+            'automode' => 'Автоматический режим',
+            'heat_temp' => 'Установленная температура котла',
+            'water_temp' => 'Установленная температура воды',
+//            'burner' => 'Состояние горелки',
+//            'burnerGVS' => 'Состояние горелки ГВС',
+//            'modulation' => 'Модуляция',
+//            'pump' => 'Состояние насоса',
             'pressue' => 'Давление'
         ];
 
