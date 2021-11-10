@@ -62,7 +62,7 @@ class BoilerService
 
         $boiler->thermostat = 0;
         $boiler->boiler = 1;
-        $boiler->automode = 1;
+        $boiler->lock = 0;
 
 
         DB::transaction(function () use (&$boiler, $data) {

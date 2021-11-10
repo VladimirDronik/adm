@@ -19,7 +19,7 @@ class AddColumnsIntoBoiler extends Migration
                 $table->renameColumn('model', 'protocol');
                 $table->boolean('thermostat');
                 $table->boolean('boiler');
-                $table->boolean('automode');
+                $table->boolean('lock');
                 $table->tinyInteger('water_temp')->nullable();
                 $table->tinyInteger('feed_water_temp')->nullable();
                 $table->tinyInteger('feed_heat_temp')->nullable();
