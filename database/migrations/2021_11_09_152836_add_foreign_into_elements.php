@@ -16,13 +16,6 @@ class AddForeignIntoElements extends Migration
 
         if (Schema::hasTable('elements')) {
             Schema::table('elements', function (Blueprint $table) {
-                $table->dropColumn('id_object');
-            });
-
-            Schema::table('elements', function (Blueprint $table) {
-
-                $table->unsignedInteger('id_object')->nullable();
-
                 $table->foreign('id_object')->references('id')->on('objects')
                     ->onUpdate('cascade')->onDelete('set null');
             });
