@@ -71,7 +71,7 @@ class ElementController extends Controller
         $objects = $this->objectRepository->getAllToArray();
         $element->value = $this->elementRepository->parser($element->value);
         $handles = $this->objectService->getPropertiesByObjectId($element->id_object, false);
-        
+
         return view('elements.edit', compact('element', 'types', 'parents', 'objects',
             'images', 'handles'));
     }

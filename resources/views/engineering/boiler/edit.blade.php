@@ -50,16 +50,16 @@
 
 
 
-                        {{ Form::bs_simple_text('Подача:', $boiler->feed_heat_temp ? $boiler->feed_heat_temp.' °C' : 'N/A' ) }}
-                        {{ Form::bs_simple_text('Обратка:', $boiler->back_heat_temp ? $boiler->back_heat_temp.' °C' : 'N/A') }}
-                        {{ Form::bs_simple_text('Температура ГВС:', $boiler->water_temp ? $boiler->water_temp.' °C' : 'N/A') }}
-                        {{ Form::bs_simple_text('Горелка:', $boiler->burner ? $boiler->burner : 'N/A') }}
-                        {{ Form::bs_simple_text('Горелка ГВС:', $boiler->burner_GVS ? $boiler->burner_GVS : 'N/A') }}
-                        {{ Form::bs_simple_text('Модуляция горелки:', $boiler->burner_modulation ? $boiler->burner_modulation.' %' : 'N/A') }}
-                        {{ Form::bs_simple_text('Состояние насоса:', $boiler->pump_status ? $boiler->pump_status : 'N/A') }}
-                        {{ Form::bs_simple_text('Давление теплоносителя:', $boiler->pressue ? $boiler->pressue : 'N/A' ) }}
-                        {{ Form::bs_simple_text('Установленная температура отопления:', $boiler->target_heat_temp ? $boiler->target_heat_temp.' °C' : 'N/A' ) }}
-                        {{ Form::bs_simple_text('Установленная температура ГВС:', $boiler->target_water_temp ? $boiler->target_water_temp.' °C' : 'N/A' ) }}
+                        {{ Form::bs_simple_text('Подача:', $boiler->feed_heat_temp ? $boiler->feed_heat_temp.' °C' : '0°C' ) }}
+                        {{ Form::bs_simple_text('Обратка:', $boiler->back_heat_temp ? $boiler->back_heat_temp.' °C' : '0°C') }}
+                        {{ Form::bs_simple_text('Температура ГВС:', $boiler->water_temp ? $boiler->water_temp.' °C' : '0°C') }}
+                        {{ Form::bs_simple_text('Горелка:', $boiler->burner ? $boiler->burner : '0') }}
+                        {{ Form::bs_simple_text('Горелка ГВС:', $boiler->burner_GVS ? $boiler->burner_GVS : '0') }}
+                        {{ Form::bs_simple_text('Модуляция горелки:', $boiler->burner_modulation ? $boiler->burner_modulation.' %' : '0%') }}
+                        {{ Form::bs_simple_text('Состояние насоса:', $boiler->pump_status ? $boiler->pump_status : '0') }}
+                        {{ Form::bs_simple_text('Давление теплоносителя:', $boiler->pressue ? $boiler->pressue : '0' ) }}
+                        {{ Form::bs_simple_text('Установленная температура отопления:', $boiler->target_heat_temp ? $boiler->target_heat_temp.' °C' : '0°C' ) }}
+                        {{ Form::bs_simple_text('Установленная температура ГВС:', $boiler->target_water_temp ? $boiler->target_water_temp.' °C' : '0°C' ) }}
 
 
                     </div>
