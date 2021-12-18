@@ -17,7 +17,7 @@ class AddColumnIntoTermostats extends Migration
             Schema::table('termostats', function (Blueprint $table) {
 
                 $table->integer('subdev_id')->nullable();
-                $table->double('current')->nullable()->change();
+                $table->float('current')->nullable()->change();
             });
         }
     }

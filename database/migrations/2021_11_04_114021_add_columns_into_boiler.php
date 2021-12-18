@@ -28,7 +28,6 @@ class AddColumnsIntoBoiler extends Migration
                 $table->tinyInteger('target_water_temp')->nullable();
 
 
-                $table->dropColumn('mode');
                 $table->dropColumn('state');
                 $table->dropColumn('cooliant_supply');
                 $table->dropColumn('cooliant_return');
