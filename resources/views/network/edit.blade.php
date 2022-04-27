@@ -118,7 +118,7 @@
 
             function showConfirmModal() {
                 let html = getChanges();
-                html += '<b>Устройство будет перезагружено и доступно по адресу '
+                html += '<br><b>Устройство будет доступно по адресу: '
                     +$('input[name=main_ip]').val()+'</b>';
                 $('#confirm_modal_body').html(html);
                 $('#confirm_modal_btn').text('Перезагрузить');

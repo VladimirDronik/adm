@@ -96,11 +96,11 @@ EOT2;
 EOT;
 
         if ($VPNStatus == 'true') {
-            exec('sudo /lib/systemd/systemd-sysv-install enable xl2tpd');
+            exec('sudo service xl2tpd start');
             SettingService::set('VPN', 'true');
         }
         else {
-            exec('sudo /lib/systemd/systemd-sysv-install disable xl2tpd');
+            exec('sudo service xl2tpd stop');
             SettingService::set('VPN', 'false');
         }
 
@@ -189,7 +189,7 @@ EOT;
      * Перезагрузка сервера
      */
     public function reload() {
-        exec('sudo /sbin/reboot');
+        exec('sudo service networking restart');
         //exec('sudo sh '.$this->cmdPath.' "/sbin/reboot"');
         //exec('sudo sh '.$this->cmdPath.' "/etc/init.d/networking restart"');
         //exec('sh '.$this->cmdPath.' "killall pppd"');
