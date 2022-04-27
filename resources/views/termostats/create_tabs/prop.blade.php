@@ -4,7 +4,7 @@
 
 {{ Form::bs_number('optimal', 'Оптимальная температура*:', old('optimal', 22), ['min' => -60, 'max' => 60, 'required' => true],
     'Температура, которая должна быть в помещении') }}
-{{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', 1), ['min' => 0, 'max' => 10, 'required' => true]) }}
+{{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', 1), ['min' => 0, 'max' => 10, 'step' => '0.1', 'required' => true]) }}
 
 
 {{ Form::bs_number('min_threshold', 'Минимальная температура*:', old('min_threshold', 0), ['min' => -60, 'max' => 60, 'required' => true],

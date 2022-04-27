@@ -27,7 +27,7 @@ class UpdateRequest extends FormRequest
             'name' => 'required|string|max:250|unique:termostats,name,'.$this->termostat->id,
             'id_termometr' => 'nullable|string|max:12',
             'optimal' => 'required|integer|min:-60|max:60',
-            'gisteresis' => 'required|integer|min:0|max:10',
+            'gisteresis' => 'required|numeric|min:0|max:10',
             'thermostat' => 'required|integer|min:0|max:1',
             'min_threshold' => 'required|integer|min:-60|max:60',
             'max_threshold' => 'required|integer|min:-60|max:60',

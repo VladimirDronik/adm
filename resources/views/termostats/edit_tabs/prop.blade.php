@@ -3,7 +3,7 @@
 
 {{ Form::bs_number('optimal', 'Оптимальная температура*:', null, ['min' => -60, 'max' => 60, 'required' => true],
     'Температура, которая должна быть в помещении') }}
-{{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', $termostat->gisteresis), ['min' => 0, 'max' => 10, 'required' => true]) }}
+{{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', $termostat->gisteresis), ['min' => 0, 'max' => 10, 'step' => '0.1', 'required' => true]) }}
 {{ Form::bs_radio('thermostat', 'Режим*:', $types, old('thermostat', $termostat->thermostat), ['required' => true]) }}
 
 {{ Form::bs_number('min_threshold', 'Минимальная температура*:', old('min_threshold', $termostat->min_threshold), ['min' => -60, 'max' => 60, 'required' => true],
