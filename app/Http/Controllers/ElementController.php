@@ -69,11 +69,13 @@ class ElementController extends Controller
         $parents = $this->elementRepository->getParentsToArray($element->page);
         $images = ImageService::getMainImages();
         $objects = $this->objectRepository->getAllToArray();
-        $element->value = $this->elementRepository->parser($element->value);
+        $element->value = $this->elementRepository->parser($element->value, 'status');
+        $settings = $this->elementRepository->parser($element->value, 'settings');
+        $settings = filter_var($settings, FILTER_VALIDATE_BOOLEAN);
         $handles = $this->objectService->getPropertiesByObjectId($element->id_object, false);
 
-        return view('elements.edit', compact('element', 'types', 'parents', 'objects',
-            'images', 'handles'));
+        return view('elements.edit', compact('element', 'types', 'parents',
+                    'objects', 'images', 'handles', 'settings'));
     }
 
     public function update(UpdateRequest $r, Elements $element)

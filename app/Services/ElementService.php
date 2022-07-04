@@ -42,7 +42,11 @@ class ElementService
 
 
         if($data['type'] == 'label') {
-            $paramsArray = array(array('status' => $data['value'], 'wh_color' => '#187306', 'bl_color' => '#00ffbb'));
+            $paramsArray = array(array('status'   => $data['value'],
+                                       'settings' => $data['settings'],
+                                       'wh_color' => '#187306',
+                                       'bl_color' => '#00ffbb'));
+
             $data['value'] = json_encode($paramsArray);
         }
 
