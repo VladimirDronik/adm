@@ -13,14 +13,16 @@ class CreateInternalPagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('internal_pages', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('idElement')->nullable()->default(NULL);
-            $table->string('type', 50)
-                  ->charset('utf8mb4_unicode_ci')
-                  ->nullable()
-                  ->default(NULL);
-        });
+        if (!Schema::hasTable('internal_pages')) {
+            Schema::create('internal_pages', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('idElement')->nullable()->default(NULL);
+                $table->string('type', 50)
+                      ->charset('utf8mb4_unicode_ci')
+                      ->nullable()
+                      ->default(NULL);
+            });
+        }
     }
 
     /**
