@@ -42,27 +42,28 @@ class ElementService
 
 
         if($data['type'] == 'label') {
-            $paramsArray = array(array('status'   => $data['value'],
-                                       'settings' => '',
-                                       'wh_color' => '#187306',
-                                       'bl_color' => '#00ffbb'));
+            $paramsArray = array(array('status'  => $data['value']));
 
-            if ($data['settings']) {
+            if (array_key_exists('settings', $data)) {
                 $paramsArray[0]['settings'] = 'true';
             }
 
-            $data['value'] = json_encode($paramsArray);
+            $paramsArray[0]['wh_color'] = '#187306';
+            $paramsArray[0]['bl_color'] = '#00ffbb';
+
+            $data['value'] = json_encode($paramsArray, JSON_UNESCAPED_UNICODE);
         }
         else if($data['type'] == 'switch') {
-            $paramsArray = array(array('settings' => '',
-                                       'wh_color' => '#187306',
-                                       'bl_color' => '#00ffbb'));
+            $paramsArray = array(array());
 
-            if ($data['settings']) {
+            if (array_key_exists('settings', $data)) {
                 $paramsArray[0]['settings'] = 'true';
             }
 
-            $data['value'] = json_encode($paramsArray);
+            $paramsArray[0]['wh_color'] = '#187306';
+            $paramsArray[0]['bl_color'] = '#00ffbb';
+
+            $data['value'] = json_encode($paramsArray, JSON_UNESCAPED_UNICODE);
         }
 
 
