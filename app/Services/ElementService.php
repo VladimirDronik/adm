@@ -49,6 +49,11 @@ class ElementService
 
             $data['value'] = json_encode($paramsArray);
         }
+        else if($data['type'] == 'switch') {
+            $paramsArray = array(array('settings' => $data['settings'],
+                                       'wh_color' => '#187306',
+                                       'bl_color' => '#00ffbb'));
+        }
 
 
         $data['sort'] = $this->getSortMax($data['page'], $data['parent'], $data['position'])+1;
