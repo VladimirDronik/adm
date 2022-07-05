@@ -94,7 +94,7 @@
                                 <hr>
                                 <div style="height: 40px;">&nbsp;</div>
 
-                                {{ Form::bs_checkbox('settings', 'Настраиваемый элемент:', old('settings')) }}
+                                {{ Form::bs_checkbox('settings', 'Настраиваемый элемент:', old('settings', $settings)) }}
                             </div>
                        </div>
 
