@@ -18,7 +18,6 @@ use App\Services\ObjectService;
 
 class ElementController extends Controller
 {
-
     private $elementRepository;
     private $service;
     private $objectRepository;
@@ -39,9 +38,11 @@ class ElementController extends Controller
         $parents = $this->elementRepository->getParentsToArray($pageId);
         $images = ImageService::getMainImages();
         $objects = $objects = $this->objectRepository->getAllToArray();
+        $settings = false;
 
 
-        return view('elements.create', compact('types', 'parents', 'pageId', 'images', 'objects'));
+        return view('elements.create', compact('types', 'parents', 'pageId',
+                                               'images', 'objects', 'settings'));
 
     }
 
@@ -64,7 +65,6 @@ class ElementController extends Controller
 
     public function edit(Elements $element)
     {
-
         $types = Elements::getTypes(true);
         $parents = $this->elementRepository->getParentsToArray($element->page);
         $images = ImageService::getMainImages();
