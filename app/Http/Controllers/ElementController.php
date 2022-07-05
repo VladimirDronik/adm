@@ -49,7 +49,6 @@ class ElementController extends Controller
 
     public function store(CreateRequest $r)
     {
-
         try {
             if ($idPage = $this->service->store($r->except('_token'))) {
                 return redirect()->route('pages.edit', [$idPage])
@@ -60,7 +59,6 @@ class ElementController extends Controller
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении элемента');
-
     }
 
     public function edit(Elements $element)
