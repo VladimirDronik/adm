@@ -22,7 +22,7 @@ class ElementRepository
 
         foreach ($elements as $key => $element) {
 
-            $element->value = $this->parser($element->value);
+            $element->value = $this->parser($element->value, 'status');
             $element->childs = null;
 
             if ($element->type == 'accordion') {
