@@ -43,20 +43,22 @@ class ElementService
 
         if($data['type'] == 'label') {
             $paramsArray = array(array('status'   => $data['value'],
+                                       'settings' => '',
                                        'wh_color' => '#187306',
                                        'bl_color' => '#00ffbb'));
 
-            if ($data['value']) {
+            if ($data['settings']) {
                 $paramsArray[0]['settings'] = 'true';
             }
 
             $data['value'] = json_encode($paramsArray);
         }
         else if($data['type'] == 'switch') {
-            $paramsArray = array(array('wh_color' => '#187306',
+            $paramsArray = array(array('settings' => '',
+                                       'wh_color' => '#187306',
                                        'bl_color' => '#00ffbb'));
 
-            if ($data['value']) {
+            if ($data['settings']) {
                 $paramsArray[0]['settings'] = 'true';
             }
 
