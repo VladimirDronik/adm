@@ -89,7 +89,7 @@
 
                             </div>
 
-                            <div id="value_div">
+                            <div id="settings_div">
                                 <div style="height: 10px;">&nbsp;</div>
                                 <hr>
                                 <div style="height: 40px;">&nbsp;</div>

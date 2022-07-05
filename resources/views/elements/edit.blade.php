@@ -89,6 +89,13 @@
 
                             </div>
 
+                            <div id="settings_div">
+                                <div style="height: 10px;">&nbsp;</div>
+                                <hr>
+                                <div style="height: 40px;">&nbsp;</div>
+
+                                {{ Form::bs_checkbox('settings', 'Настраиваемый элемент:', $settings) }}
+                            </div>
                        </div>
 
 
@@ -172,16 +179,19 @@
                     $('#handle_div').show();
                     $('#methods_div').hide();
                     $('#parent_div').show();
+                    $('#settings_div').show();
                 } else if ($(this).val() === 'switch') {
                     $('#value_div').hide();
                     $('#handle_div').show();
                     $('#methods_div').show();
                     $('#parent_div').show();
+                    $('#settings_div').show();
                 } else {
                     $('#value_div').hide();
                     $('#handle_div').hide();
                     $('#methods_div').hide();
                     $('#parent_div').hide();
+                    $('#settings_div').hide();
                 }
             });
 
