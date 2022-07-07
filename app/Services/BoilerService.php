@@ -8,6 +8,8 @@
 
 namespace App\Services;
 use App\Models\Boiler;
+use App\Models\BoilerWater;
+use App\Models\BoilerManual;
 use App\Services\BoilerObjectService;
 use Illuminate\Support\Facades\DB;
 use App\Models\HomeObject;
@@ -24,8 +26,6 @@ class BoilerService
 
     public function update(Boiler $boiler, array $data): int
     {
-
-
         DB::transaction(function () use (&$boiler, $data) {
             if ($this->isUpdateAutoObjectName($boiler, $data['name'])) {
                 $boiler->object->name = HomeObject::getUniqueObjectName($boiler->id_object, trim($data['name']));
@@ -53,8 +53,6 @@ class BoilerService
 
     public function store(array $data): int
     {
-
-
         $boiler = new Boiler();
         $boiler->name = $data['name'];
         $boiler->ip_address = $data['ip_address_boiler'];
@@ -72,8 +70,19 @@ class BoilerService
             $this->boiler_object_service->createBoilerObjectMethodsWithEvents($object->id);
             $boiler->id_object = $object->id;
 
-            $boiler->save();
+            BoilerWater::create([
+                'id_object' => $boiler->id_object,
+                'min_value' => BoilerWater::MIN_VALUE,
+                'max_value' => BoilerWater::MAX_VALUE,
+            ]);
 
+            BoilerManual::create([
+                'id_object' => $boiler->id_object,
+                'min_value' => BoilerManual::MIN_VALUE,
+                'max_value' => BoilerManual::MAX_VALUE,
+            ]);
+
+            $boiler->save();
         });
 
         return $boiler->id_object;

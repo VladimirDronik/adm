@@ -27,6 +27,9 @@ use \Illuminate\Database\Eloquent\Model;
  */
 class BoilerManual extends Model
 {
+    const MIN_VALUE = 20;
+    const MAX_VALUE = 80;
+
     public $timestamps = false;
 
     protected $table   = 'boiler_manual';
