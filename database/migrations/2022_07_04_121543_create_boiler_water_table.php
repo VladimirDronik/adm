@@ -17,7 +17,6 @@ class CreateBoilerWaterTable extends Migration
             Schema::create('boiler_water', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('id_object')->unsigned();
-                $table->float('set_value')->nullable()->default(NULL);
                 $table->float('min_value')->nullable()->default(NULL);
                 $table->float('max_value')->nullable()->default(NULL);
 

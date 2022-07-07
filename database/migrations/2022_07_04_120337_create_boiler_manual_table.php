@@ -17,7 +17,6 @@ class CreateBoilerManualTable extends Migration
             Schema::create('boiler_manual', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('id_object')->unsigned();
-                $table->float('set_value')->nullable()->default(NULL);
                 $table->float('min_value')->nullable()->default(NULL);
                 $table->float('max_value')->nullable()->default(NULL);
 
