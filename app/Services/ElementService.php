@@ -7,8 +7,13 @@
  */
 
 namespace App\Services;
+
+
 use App\Models\Elements;
+use App\Models\Boiler;
+use App\Models\InternalPage;
 use Illuminate\Support\Facades\DB;
+
 
 class ElementService
 {
@@ -25,6 +30,16 @@ class ElementService
 
         $element->active = 1;
         $element->save();
+
+        if (array_key_exists($data, 'handle')          &&
+            ($data['handle'] == Boiler::PROP_WATER_TEMP ||
+             $data['handle'] == Boiler::PROP_MANUALMODE ||
+             $data['handle'] == Boiler::PROP_AUTOMODE))
+        {
+            InternalPage::create([
+                'idElement' => $element->id,
+            ]);
+        }
 
         return $element->page;
     }
@@ -96,8 +111,6 @@ class ElementService
 
     public function delete(int $id)
     {
-
-
         $element = Elements::find($id);
 
         if (!$element) {
@@ -110,6 +123,13 @@ class ElementService
             //Если выбран для удаления родительский пункт, то удаляем и дочерние
             if($element->parent == 0)
                 Elements::where('parent', $element->id)->delete();
+
+            if ($element->handle == Boiler::PROP_WATER_TEMP ||
+                $element->handle == Boiler::PROP_AUTOMODE   ||
+                $element->handle == Boiler::PROP_MANUALMODE)
+            {
+                InternalPage::where('idElement', $element->id)->delete();
+            }
 
             $element->delete();
 
@@ -175,14 +195,34 @@ class ElementService
     public function update(Elements $element, array $data)
     {
 
-
         DB::transaction(function () use ($element, $data) {
+            if (array_key_exists($data, 'handle') &&
+                $data['handle'] != Boiler::PROP_WATER_TEMP &&
+                $data['handle'] != Boiler::PROP_AUTOMODE   &&
+                $data['handle'] != Boiler::PROP_MANUALMODE)
+            {
+                if ($element->handle == Boiler::PROP_WATER_TEMP ||
+                    $element->handle == Boiler::PROP_AUTOMODE   ||
+                    $element->handle == Boiler::PROP_MANUALMODE)
+                {
+                    InternalPage::where('idElement', $element->id)->delete();
+                }
+            }
+            else {
+                if ($element->handle != Boiler::PROP_WATER_TEMP &&
+                    $element->handle != Boiler::PROP_AUTOMODE   &&
+                    $element->handle != Boiler::PROP_MANUALMODE)
+                {
+                    InternalPage::create([
+                        'idElement' => $element->id,
+                    ]);
+                }
+            }
 
             $this->prepare($data, $element);
 
             $element->active = 1;
             $element->save();
-
         });
 
         return $element->id;
