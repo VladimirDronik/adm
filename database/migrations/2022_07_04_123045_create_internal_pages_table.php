@@ -18,9 +18,12 @@ class CreateInternalPagesTable extends Migration
                 $table->increments('id');
                 $table->integer('idElement')->nullable()->default(NULL);
                 $table->string('type', 50)
-                      ->charset('utf8mb4_unicode_ci')
+                      ->charset('utf8mb4')
                       ->nullable()
                       ->default(NULL);
+
+                $table->foreign('idElement')->references('id')->on('elements')
+                      ->onUpdate('cascade')->onDelete('set null');
             });
         }
     }
