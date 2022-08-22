@@ -19,7 +19,7 @@ class CreateInternalPagesTable extends Migration
                 $table->integer('idElement')->nullable()->default(NULL);
 
                 $table->foreign('idElement')->references('id')->on('elements')
-                      ->onUpdate('cascade')->onDelete('set null');
+                      ->onUpdate('cascade')->onDelete('cascade');
             });
         }
     }

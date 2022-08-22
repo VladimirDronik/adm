@@ -124,13 +124,6 @@ class ElementService
             if($element->parent == 0)
                 Elements::where('parent', $element->id)->delete();
 
-            if ($element->handle == Boiler::PROP_WATER_TEMP ||
-                $element->handle == Boiler::PROP_AUTOMODE   ||
-                $element->handle == Boiler::PROP_MANUALMODE)
-            {
-                InternalPage::where('idElement', $element->id)->delete();
-            }
-
             $element->delete();
 
         });
