@@ -98,7 +98,13 @@
         let url = '{{ route('engineering.index') }}';
         let del_id;
 
+ @if(!empty(Session::get('success')) && Session::get('success') == 'Котёл успешно добавлен')
+  
 
+              $('#modalNewMenu').show();
+             
+
+	@endif
 
         $(document).ready(function(){
 
@@ -124,13 +130,7 @@
 
         });
         
-        @if(!empty(Session::get('success')) && Session::get('success') == 'Котёл успешно добавлен')
-  
-
-              $('#modalNewMenu').show();
-             
-
-	@endif
+       
 
         
     </script>

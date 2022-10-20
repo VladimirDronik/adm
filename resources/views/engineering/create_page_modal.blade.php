@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="modalPageTitle"> Добавление новой страницы в меню для инженерного устройства</h4>
+                <h4 class="modal-title" id="modalNewMenuTitle"> Добавление новой страницы в меню для инженерного устройства</h4>
             </div>
             <div class="modal-body">
               
