@@ -7,8 +7,13 @@
  */
 
 namespace App\Services;
+
+
 use App\Models\Elements;
+use App\Models\Boiler;
+use App\Models\InternalPage;
 use Illuminate\Support\Facades\DB;
+
 
 class ElementService
 {
@@ -26,6 +31,16 @@ class ElementService
         $element->active = 1;
         $element->save();
 
+        if (array_key_exists($data, 'handle')          &&
+            ($data['handle'] == Boiler::PROP_WATER_TEMP ||
+             $data['handle'] == Boiler::PROP_MANUALMODE ||
+             $data['handle'] == Boiler::PROP_AUTOMODE))
+        {
+            InternalPage::create([
+                'idElement' => $element->id,
+            ]);
+        }
+
         return $element->page;
     }
 
@@ -42,8 +57,28 @@ class ElementService
 
 
         if($data['type'] == 'label') {
-            $paramsArray = array(array('status' => $data['value'], 'wh_color' => '#187306', 'bl_color' => '#00ffbb'));
-            $data['value'] = json_encode($paramsArray);
+            $paramsArray = array(array('status'  => $data['value']));
+
+            if (array_key_exists('settings', $data)) {
+                $paramsArray[0]['settings'] = 'true';
+            }
+
+            $paramsArray[0]['wh_color'] = '#187306';
+            $paramsArray[0]['bl_color'] = '#00ffbb';
+
+            $data['value'] = json_encode($paramsArray, JSON_UNESCAPED_UNICODE);
+        }
+        else if($data['type'] == 'switch') {
+            $paramsArray = array(array());
+
+            if (array_key_exists('settings', $data)) {
+                $paramsArray[0]['settings'] = 'true';
+            }
+
+            $paramsArray[0]['wh_color'] = '#187306';
+            $paramsArray[0]['bl_color'] = '#00ffbb';
+
+            $data['value'] = json_encode($paramsArray, JSON_UNESCAPED_UNICODE);
         }
 
 
@@ -76,8 +111,6 @@ class ElementService
 
     public function delete(int $id)
     {
-
-
         $element = Elements::find($id);
 
         if (!$element) {
@@ -155,14 +188,34 @@ class ElementService
     public function update(Elements $element, array $data)
     {
 
-
         DB::transaction(function () use ($element, $data) {
+            if (array_key_exists($data, 'handle') &&
+                $data['handle'] != Boiler::PROP_WATER_TEMP &&
+                $data['handle'] != Boiler::PROP_AUTOMODE   &&
+                $data['handle'] != Boiler::PROP_MANUALMODE)
+            {
+                if ($element->handle == Boiler::PROP_WATER_TEMP ||
+                    $element->handle == Boiler::PROP_AUTOMODE   ||
+                    $element->handle == Boiler::PROP_MANUALMODE)
+                {
+                    InternalPage::where('idElement', $element->id)->delete();
+                }
+            }
+            else {
+                if ($element->handle != Boiler::PROP_WATER_TEMP &&
+                    $element->handle != Boiler::PROP_AUTOMODE   &&
+                    $element->handle != Boiler::PROP_MANUALMODE)
+                {
+                    InternalPage::create([
+                        'idElement' => $element->id,
+                    ]);
+                }
+            }
 
             $this->prepare($data, $element);
 
             $element->active = 1;
             $element->save();
-
         });
 
         return $element->id;

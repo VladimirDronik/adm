@@ -22,7 +22,7 @@ class ElementRepository
 
         foreach ($elements as $key => $element) {
 
-            $element->value = $this->parser($element->value);
+            $element->value = $this->parser($element->value, 'status');
             $element->childs = null;
 
             if ($element->type == 'accordion') {
@@ -40,11 +40,11 @@ class ElementRepository
         return $elements;
     }
 
-    public function parser($valueToParsing)
+    public function parser($valueToParsing, $key)
     {
         $inputArray = json_decode($valueToParsing, true);
-        if (isset($inputArray[0]['status']))
-        $formattedStatus = $inputArray[0]['status'];
+        if (isset($inputArray[0][$key]))
+        $formattedStatus = $inputArray[0][$key];
         else $formattedStatus = '';
 
         return $formattedStatus;

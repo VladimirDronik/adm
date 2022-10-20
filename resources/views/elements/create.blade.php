@@ -43,7 +43,7 @@
                                 <a data-toggle="modal" data-target="#selectImage" class="btn btn-default btn-sm m-b-5"
                                    onclick="updateImage(0, false);">
                                      <img src="{{ asset('ela/images/views_items/noimage.png') }}"  id="imageElement"
-                                                  widtth="50px" height="50px">
+                                                  width="50px" height="50px">
                                 </a>
 
                             </div>
@@ -88,6 +88,15 @@
                                      false, false, [], null, 'Идентификатор свойства объекта') }}
 
                             </div>
+
+                            <div id="settings_div">
+                                <div style="height: 10px;">&nbsp;</div>
+                                <hr>
+                                <div style="height: 40px;">&nbsp;</div>
+
+                                {{ Form::bs_checkbox('settings', 'Настраиваемый элемент:', old('settings', $settings)) }}
+                            </div>
+
 
                        </div>
 

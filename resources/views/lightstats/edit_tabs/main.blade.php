@@ -44,10 +44,10 @@
                         {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', is_null($deviceId) ? 0 : $deviceId),
                            false, false, [], null) }}
 
-                        {{ Form::bs_autoselect('port_SDA', 'Порт SDA:', $portsSDA, old('port_SDA', is_null($port_SCL) ? 0 : $port_SCL),
+                        {{ Form::bs_autoselect('port_SDA', 'Порт SDA:', $portsSDA, old('port_SDA', is_null($port_SDA) ? 0 : $port_SDA),
                             false, false, [], null) }}
 
-                        {{ Form::bs_autoselect('port_SCL', 'Порт SCL:', $portsSCL, old('port_SCL', is_null($port_SDA) ? 0 : $port_SDA),
+                        {{ Form::bs_autoselect('port_SCL', 'Порт SCL:', $portsSCL, old('port_SCL', is_null($port_SCL) ? 0 : $port_SCL),
                            false, false, [], null) }}
 
                     </div>

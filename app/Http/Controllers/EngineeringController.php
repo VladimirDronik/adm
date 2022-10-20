@@ -27,7 +27,4 @@ class EngineeringController extends Controller
         $equipments = $this->objectRepository->getAllEngineering();
         return view('engineering.index', compact('equipments'));
     }
-
-
-
 }

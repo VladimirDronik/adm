@@ -18,7 +18,6 @@ use App\Services\ObjectService;
 
 class ElementController extends Controller
 {
-
     private $elementRepository;
     private $service;
     private $objectRepository;
@@ -39,16 +38,17 @@ class ElementController extends Controller
         $parents = $this->elementRepository->getParentsToArray($pageId);
         $images = ImageService::getMainImages();
         $objects = $objects = $this->objectRepository->getAllToArray();
+        $settings = false;
 
 
-        return view('elements.create', compact('types', 'parents', 'pageId', 'images', 'objects'));
+        return view('elements.create', compact('types', 'parents', 'pageId',
+                                               'images', 'objects', 'settings'));
 
     }
 
 
     public function store(CreateRequest $r)
     {
-
         try {
             if ($idPage = $this->service->store($r->except('_token'))) {
                 return redirect()->route('pages.edit', [$idPage])
@@ -59,21 +59,21 @@ class ElementController extends Controller
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении элемента');
-
     }
 
     public function edit(Elements $element)
     {
-
         $types = Elements::getTypes(true);
         $parents = $this->elementRepository->getParentsToArray($element->page);
         $images = ImageService::getMainImages();
         $objects = $this->objectRepository->getAllToArray();
-        $element->value = $this->elementRepository->parser($element->value);
+        $settings = $this->elementRepository->parser($element->value, 'settings');
+        $settings = filter_var($settings, FILTER_VALIDATE_BOOLEAN);
+        $element->value = $this->elementRepository->parser($element->value, 'status');
         $handles = $this->objectService->getPropertiesByObjectId($element->id_object, false);
 
-        return view('elements.edit', compact('element', 'types', 'parents', 'objects',
-            'images', 'handles'));
+        return view('elements.edit', compact('element', 'types', 'parents',
+                    'objects', 'images', 'handles', 'settings'));
     }
 
     public function update(UpdateRequest $r, Elements $element)
