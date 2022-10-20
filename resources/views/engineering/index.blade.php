@@ -127,7 +127,7 @@
         @if(!empty(Session::get('success')) && Session::get('success') == 'Котёл успешно добавлен')
   
 
-              $('#modalNewPage').show();
+              $('#modalNewMenu').show();
              
 
 	@endif
