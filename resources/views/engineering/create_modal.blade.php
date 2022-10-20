@@ -1,4 +1,4 @@
-<!-- модальное окно добавления новой страницы -->
+<!-- модальное окно добавления нового инженерного устройтсва -->
 <div class="modal" id="modalPage">
     <div class="modal-dialog">
         <div class="modal-content">

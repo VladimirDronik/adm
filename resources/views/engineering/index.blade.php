@@ -87,6 +87,7 @@
     @include('components.info_modal')
     @include('components.del_modal')
     @include('engineering.create_modal')
+    @include('engineering.create_page_modal')
 @endsection
 
 @section('scripts')
@@ -122,5 +123,15 @@
             });
 
         });
+        
+        @if(!empty(Session::get('success')) && Session::get('success') == 'Котёл успешно добавлен')
+  
+
+              $('#modalNewPage').show();
+             
+
+	@endif
+
+        
     </script>
 @endsection
