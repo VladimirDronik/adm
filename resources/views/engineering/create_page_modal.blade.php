@@ -7,12 +7,14 @@
             </div>
             <div class="modal-body">
               
-
+		Котёл успешно добавлен. 
+		<br>Теперь можно автоматически создать для него пункт в инженерном меню, либо сделать это позже вручную из раздела "меню".
+		
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-success"  id="newmenu_success_btn" data-dismiss="modal">Добавить меню</button>
-                <button type="button" class="btn btn-default" id="newmenu_cancel_btn" data-dismiss="modal">Не добавлять</button>
+                <button type="button" class="btn btn-default" id="newmenu_cancel_btn" data-dismiss="modal">Не добавлять меню</button>
             </div>
         </div>
     </div>

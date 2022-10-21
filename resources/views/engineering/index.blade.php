@@ -99,10 +99,9 @@
         let del_id;
 
  @if(!empty(Session::get('success')) && Session::get('success') == 'Котёл успешно добавлен')
-              //$('#modalNewMenu').show();
+            
               $('#modalNewMenu').show();
-              //  $('#modalPage #namePage').val('');
-                $('#modal_newmenu_init_btn').click();
+              $('#modal_newmenu_init_btn').click();
 	@endif
 
         $(document).ready(function(){
@@ -126,6 +125,11 @@
                 $('#modalPage #namePage').val('');
                 $('#modal_page_init_btn').click();
             });
+            
+            
+            $('#newmenu_success_btn').click(function() {
+            alert(1111111111);
+            }
 
         });
         
