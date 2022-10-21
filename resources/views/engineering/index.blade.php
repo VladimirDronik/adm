@@ -100,9 +100,9 @@
 
  @if(!empty(Session::get('success')) && Session::get('success') == 'Котёл успешно добавлен')
               //$('#modalNewMenu').show();
-              $('#modalPage #modal_groups_div').show();
-                $('#modalPage #namePage').val('');
-                $('#modal_page_init_btn').click();
+              $('#modalNewMenu').show();
+              //  $('#modalPage #namePage').val('');
+                $('#modal_newmenu_init_btn').click();
 	@endif
 
         $(document).ready(function(){
