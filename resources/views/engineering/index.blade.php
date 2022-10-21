@@ -126,10 +126,12 @@
                 $('#modal_page_init_btn').click();
             });
             
+           
             
             $('#newmenu_success_btn').click(function() {
             alert(1111111111);
-            }
+            });
+            
 
         });
         
