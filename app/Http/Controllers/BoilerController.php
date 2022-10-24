@@ -40,7 +40,7 @@ class BoilerController extends Controller
 
         try {
             if ($this->service->update($boiler, $r->except('_token'))) {
-                return redirect()->route('boiler.edit',[$boiler->id_object])->with('success','Настройки успешно изменены');
+                return redirect()->route('boiler.edit',[$boiler->id_object])->with('success','Настройки успешно изменены')->with('idObject',555);
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении настроек котла '.$boiler->id_object.' '

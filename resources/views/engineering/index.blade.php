@@ -95,11 +95,12 @@
     <script>
         const deleteUrl = '{{ route('ajax.engineering.delete') }}';
         //const storeUrl = '{{ route('ajax.page.store') }}';
+        const addMenuUrl = '{{ route('ajax.menu.add') }}';
         let url = '{{ route('engineering.index') }}';
         let del_id;
 
  @if(!empty(Session::get('success')) && Session::get('success') == 'Котёл успешно добавлен')
-            
+            {{ Session::get('idObject') }}
               $('#modalNewMenu').show();
               $('#modal_newmenu_init_btn').click();
 	@endif
