@@ -100,8 +100,8 @@
         let del_id;
 
  @if(!empty(Session::get('success')) && Session::get('success') == 'Котёл успешно добавлен')
-            {{ Session::get('idObject') }}
-{{ $idObject }}
+            {{ Session::get('success') }}
+
               $('#modalNewMenu').show();
               $('#modal_newmenu_init_btn').click();
 	@endif
