@@ -100,7 +100,7 @@
         let del_id;
 
  @if(!empty(Session::get('success')) && Session::get('success') == 'Котёл успешно добавлен')
-            {{ $boiler->id_object }}
+            {{ Session::get('idObject') }}
               $('#modalNewMenu').show();
               $('#modal_newmenu_init_btn').click();
 	@endif
