@@ -101,6 +101,7 @@
 
  @if(!empty(Session::get('success')) && Session::get('success') == 'Котёл успешно добавлен')
             {{ Session::get('idObject') }}
+{{ Session::get('object') }}
               $('#modalNewMenu').show();
               $('#modal_newmenu_init_btn').click();
 	@endif
