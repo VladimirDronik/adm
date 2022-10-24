@@ -95,7 +95,7 @@
     <script>
         const deleteUrl = '{{ route('ajax.engineering.delete') }}';
         //const storeUrl = '{{ route('ajax.page.store') }}';
-        //const addMenuUrl = '{{ route('ajax.menu.add') }}';
+        const addMenuUrl = '{{ route('ajax.menu.add') }}';
         let url = '{{ route('engineering.index') }}';
         let del_id;
 
