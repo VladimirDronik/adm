@@ -133,23 +133,23 @@ function del() {
     }
 }
 
-function addMenu() {
-
+function addMenu(idObject) {
+alert('------'+idObject);
     //$('#del_modal').modal('hide');
 
-    if (del_id) {
-        $.ajax({
-            url: addMenuUrl,
-            data: {'_token': _token, 'id': idObject},
-            success: function (data) {
-                if (data.result) {
-                    window.location.href = url;
-                } else {
-                    showErrorModal('Ошибка при создании нового пункта меню');
-                }
-            }
-        });
-    }
+  //  if (del_id) {
+   //     $.ajax({
+  //          url: addMenuUrl,
+   //         data: {'_token': _token, 'id': idObject},
+   //         success: function (data) {
+   //             if (data.result) {
+    //                window.location.href = url;
+   //             } else {
+    //                showErrorModal('Ошибка при создании нового пункта меню');
+    //            }
+    //        }
+    //    });
+   // }
 }
 
 function storePage() {

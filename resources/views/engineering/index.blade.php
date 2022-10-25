@@ -101,7 +101,7 @@
 
  @if(!empty(Session::get('success')) && Session::get('success') == 'Котёл успешно добавлен')
 	let idObject = '{{ Session::get('idObject') }}';
-alert(idObject);
+
 
               $('#modalNewMenu').show();
               $('#modal_newmenu_init_btn').click();
@@ -132,7 +132,7 @@ alert(idObject);
            
             
             $('#newmenu_success_btn').click(function() {
-            alert(1111111111);
+            addMenu(idObject);
             });
             
 
