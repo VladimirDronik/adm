@@ -134,23 +134,22 @@ function del() {
 }
 
 function addMenu(idObject) {
-alert(777777777);
-alert(idObject);
-    //$('#del_modal').modal('hide');
 
-  //  if (del_id) {
-   //     $.ajax({
-  //          url: addMenuUrl,
-   //         data: {'_token': _token, 'id': idObject},
-   //         success: function (data) {
-   //             if (data.result) {
-    //                window.location.href = url;
-   //             } else {
-    //                showErrorModal('Ошибка при создании нового пункта меню');
-    //            }
-    //        }
-    //    });
-   // }
+    if (idObject) {
+        $.ajax({
+            url: addMenuUrl,
+            data: {'_token': _token, 'id': idObject},
+            success: function (data) {
+                if (data.result) {
+                    window.location.href = url;
+                    alert(idObject);
+                    alert(data.result); 
+                } else {
+                    showErrorModal('Ошибка при создании нового пункта меню');
+               }
+            }
+        });
+    }
 }
 
 function storePage() {

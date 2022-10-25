@@ -60,6 +60,11 @@ class MenuController extends Controller
 
         return response()->json(['result' => (bool)$this->service->store($r->all())]);
     }
+    
+    public function add(Request $r)
+    {
+    	return response()->json(['result' => true]);
+    }
 
 
 }

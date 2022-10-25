@@ -195,6 +195,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('store', 'MenuController@store')->name('store');
             Route::post('update/image', 'MenuController@updateImage')->name('update.image');
             Route::post('update/name', 'MenuController@updateName')->name('update.name');
+            Route::post('add', 'MenuController@add')->name('add');
         });
 
         Route::group(['prefix' => 'rooms', 'as' => 'rooms.'], function () {

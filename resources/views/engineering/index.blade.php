@@ -94,6 +94,7 @@
     <script src="{{ asset('ela/js/pagescripts/page.js') }}"></script>
     <script>
         const deleteUrl = '{{ route('ajax.engineering.delete') }}';
+        const addMenuUrl = '{{ route('ajax.menu.add') }}';
         //const storeUrl = '{{ route('ajax.page.store') }}';
   
         let url = '{{ route('engineering.index') }}';
