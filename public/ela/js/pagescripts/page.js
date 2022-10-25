@@ -134,7 +134,8 @@ function del() {
 }
 
 function addMenu(idObject) {
-alert('------'+idObject);
+alert(777777777);
+alert(idObject);
     //$('#del_modal').modal('hide');
 
   //  if (del_id) {
