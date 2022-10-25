@@ -57,7 +57,8 @@ class BoilerController extends Controller
         try {
             if ($id = $this->service->store($r->except('_token'))) {
                 return redirect()->route('engineering.index')
-                    ->with('success', 'Котёл успешно добавлен');
+                    ->with('success', 'Котёл успешно добавлен')
+                    ->with('idObject', $id);
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при добавлении котла ' .
