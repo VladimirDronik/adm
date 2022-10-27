@@ -60,6 +60,7 @@ class PageService
 
         return $page->id;
     }
+    
 
 
     public function delete($idPage)

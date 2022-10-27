@@ -34,4 +34,9 @@ class MenuRepository {
     {
         return Menu::where('id', $id)->first();
     }
+    
+    public function getByName(string $name)
+    {
+    	return Menu::where('name', $name)->first();
+    }
 }

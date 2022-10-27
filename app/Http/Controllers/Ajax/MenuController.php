@@ -63,6 +63,7 @@ class MenuController extends Controller
     
     public function add(Request $r)
     {
+    	$this->service->addMenu((int)$r->idObject);
     	return response()->json(['result' => true]);
     }
 

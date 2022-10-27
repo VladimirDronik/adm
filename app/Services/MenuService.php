@@ -4,6 +4,9 @@ namespace App\Services;
 
 use App\Models\Menu;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\ObjectRepository;
+use App\Repositories\MenuRepository;
+use App\Services\PageService;
 
 class MenuService {
 
@@ -184,4 +187,56 @@ class MenuService {
 
         return true;
     }
+    
+    private function createEngeneeringMenuItem()
+    {
+    	$menu = new Menu();
+    	$menu->name = 'Инженерное';
+    	$menu->title = 'Инженерное';
+    	$menu->link = 'ing';
+    	$menu->link = 'el-schetchik.svg';
+    	$menu->parent = 0; 
+    	$menu->sort = 1;
+    	$menu->active = 1;
+    	$menu->save();
+
+	return $menu->id;
+    }
+    
+    private function createMenuItem($name, $link, $image, $parent)
+    {
+    	$menu = new Menu();
+    	$menu->name = $name;
+    	$menu->title = $name;
+    	$menu->link = $link;
+    	$menu->image = $image;
+    	$menu->parent = $parent; 
+    	$menu->sort = 1;
+    	$menu->active = 1;
+    	$menu->save();
+
+	return $menu->id;
+    }
+    
+    
+    //Добавление нового пункта меню, который соответсвует добавленному объекту
+    public function addMenu(ObjectRepository $objectRep, MenuRepository $menuRep, PageService $pageServ, int $idObject)
+    {
+    	$selectedObject = $objectRep->getById($idObject);
+    	
+    	if($selectedObject->type == 'boiler') {
+            $idEngeneeringParent = $menuRep->getByName('Инженерное')->id;
+    		if ($idEngeneeringParent != null)
+    			$idEngeneeringParent = $this->createEngeneeringMenuItem();
+
+            $idBoiler = $menuRep->getByName('Котёл')->id;
+    		if ($idBoiler != null)
+    			createMenuItem('Котёл', 'boiler', 'boiler.svg', $idEngeneeringParent);
+    			
+    		$pageServ->story(['name' => $selectedObject->name, 'link' => 'boiler', 'type' => '2field']);	
+    					
+    	}
+    			
+    }
+    
 }
