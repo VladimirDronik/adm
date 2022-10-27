@@ -64,8 +64,10 @@ class MenuController extends Controller
     
     public function add(Request $r)
     {
+        abort_if(!ajaxHas($r, ['idObject']), 400);
+
     	$this->service->addMenu((int)$r->idObject);
-    	return response()->json(['result' => true]);
+    	return response()->json(['result' => $r->idObject]);
     }
 
 
