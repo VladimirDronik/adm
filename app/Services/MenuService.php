@@ -220,9 +220,9 @@ class MenuService {
     
     
     //Добавление нового пункта меню, который соответсвует добавленному объекту
-    public function addMenu( int $idObject)
+    public function addMenu(int $idObject)
     {
-        
+
         $objectRep = new ObjectRepository();
         $menuRep = new MenuRepository();
         $pageServ = new PageService();
