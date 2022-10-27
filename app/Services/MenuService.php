@@ -194,7 +194,7 @@ class MenuService {
     	$menu->name = 'Инженерное';
     	$menu->title = 'Инженерное';
     	$menu->link = 'ing';
-    	$menu->link = 'el-schetchik.svg';
+    	$menu->image = 'el-schetchik.svg';
     	$menu->parent = 0; 
     	$menu->sort = 1;
     	$menu->active = 1;
@@ -236,7 +236,7 @@ class MenuService {
 
             $idBoiler = $menuRep->getByName('Котёл')->id;
     		if ($idBoiler != null)
-    			createMenuItem('Котёл', 'boiler', 'boiler.svg', $idEngeneeringParent);
+                $this->createMenuItem('Котёл', 'boiler', 'boiler.svg', $idEngeneeringParent);
     			
     		$pageServ->story(['name' => $selectedObject->name, 'link' => 'boiler', 'type' => '2field']);	
     					
