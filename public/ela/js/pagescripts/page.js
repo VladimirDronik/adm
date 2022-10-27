@@ -141,9 +141,8 @@ function addMenu(idObject) {
             data: {'_token': _token, 'id': idObject},
             success: function (data) {
                 if (data.result) {
-                    window.location.href = url;
                     alert(idObject);
-                    alert(data.result); 
+                    window.location.href = url;
                 } else {
                     showErrorModal('Ошибка при создании нового пункта меню');
                }
