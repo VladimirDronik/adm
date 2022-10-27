@@ -134,7 +134,7 @@
             
             $('#newmenu_success_btn').click(function() {
             addMenu(idObject);
-            alert(555555555555555);
+            alert(idObject);
             });
             
 
