@@ -134,7 +134,7 @@ function del() {
 }
 
 function addMenu(idObject) {
-
+    alert(idObject);
     if (idObject) {
         $.ajax({
             url: addMenuUrl,
