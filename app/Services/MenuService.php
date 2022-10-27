@@ -220,8 +220,12 @@ class MenuService {
     
     
     //Добавление нового пункта меню, который соответсвует добавленному объекту
-    public function addMenu(ObjectRepository $objectRep, MenuRepository $menuRep, PageService $pageServ, int $idObject)
+    public function addMenu( int $idObject)
     {
+        $objectRep = new ObjectRepository();
+        $menuRep = new MenuRepository();
+        $pageServ = new PageService();
+
     	$selectedObject = $objectRep->getById($idObject);
     	
     	if($selectedObject->type == 'boiler') {

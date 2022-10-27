@@ -6,6 +6,7 @@ use App\Services\MenuService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+
 class MenuController extends Controller
 {
     private $service;
