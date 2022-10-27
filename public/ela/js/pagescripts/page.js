@@ -134,11 +134,11 @@ function del() {
 }
 
 function addMenu(idObject) {
-    alert(idObject);
+
     if (idObject) {
         $.ajax({
             url: addMenuUrl,
-            data: {'_token': _token, 'id': idObject},
+            data: {'_token': _token, 'idObject': idObject},
             success: function (data) {
                 if (data.result) {
                     alert(idObject);
