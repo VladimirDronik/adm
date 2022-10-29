@@ -83,7 +83,7 @@ class Boiler extends Model
             ['name' => 'Состояние насоса', 'type' => 'label', 'image' => 'nasos', 'value' => '[{"status": "Включено", "wh-color": "#00ffbb", "bl_color": "#00ffbb"}]',
                 'page' =>$idPage,  'parent' => 0, 'position' => 2, 'sort' => 4, 'active' => 1, 'handle' => 'pump'],
             ['name' => 'Давление теплоносителя, бар', 'type' => 'label', 'image' => 'davlenie', 'value' => '[{"status": "5", "wh-color": "#00ffbb", "bl_color": "#00ffbb"}]',
-                'page' =>$idPage,  'parent' => 0, 'position' => 2, 'sort' => 5, 'active' => 1, 'handle' => 'pressue']
+                'page' =>$idPage,  'parent' => 0, 'position' => 2, 'sort' => 5, 'active' => 1, 'handle' => 'pressue'],
         ];
     }
 
