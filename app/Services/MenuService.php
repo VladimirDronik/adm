@@ -243,6 +243,7 @@ class MenuService {
     			
     		$idPage = $pageServ->store(['name' => $selectedObject->name, 'link' => 'boiler', 'type' => '2field']);
             $elementsArray = $boiler::getElementsForPage($idPage);
+            dd($elementsArray);
     	}
 
         //Сохранение элементов для страницы
