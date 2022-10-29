@@ -65,6 +65,29 @@ class Boiler extends Model
     }
 
 
+    public static function getElementsForPage($idPage)
+    {
+        return [
+            ['name' => 'Подача', 'type' => 'label', 'image' => '', 'value' => '[{"status": "24&#176;С"}]',
+                'page' =>$idPage,  'parent' => 0, 'position' => 1, 'sort' => 1, 'active' => 1, 'handle' => 'csupply'],
+            ['name' => 'Обратка', 'type' => 'label', 'image' => '', 'value' => '[{"status": "18&#176;С"}]',
+                'page' =>$idPage,  'parent' => 0, 'position' => 1, 'sort' => 2, 'active' => 1, 'handle' => 'creturn'],
+            ['name' => 'Улица', 'type' => 'label', 'image' => '', 'value' => '[{"status": "18&#176;С"}]',
+                'page' =>$idPage,  'parent' => 0, 'position' => 1, 'sort' => 3, 'active' => 1, 'handle' => ''],
+            ['name' => 'Состояние', 'type' => 'switch', 'image' => 'boiler', 'value' => '[{"status": "on"}]',
+                'page' =>$idPage,  'parent' => 0, 'position' => 2, 'sort' => 1, 'active' => 1, 'handle' => 'state'],
+            ['name' => 'Автоматический режим', 'type' => 'switch', 'image' => 'settings', 'value' => '[{"status": "on", "settings": "true"}]',
+                'page' =>$idPage,  'parent' => 0, 'position' => 2, 'sort' => 2, 'active' => 1, 'handle' => 'automode'],
+            ['name' => 'Ручной режим', 'type' => 'switch', 'image' => 'settings', 'value' => '[{"status": "off", "settings": "true"}]',
+                'page' =>$idPage,  'parent' => 0, 'position' => 2, 'sort' => 3, 'active' => 1, 'handle' => 'manualmode'],
+            ['name' => 'Состояние насоса', 'type' => 'label', 'image' => 'nasos', 'value' => '[{"status": "Включено", "wh-color": "#00ffbb", "bl_color": "#00ffbb"}]',
+                'page' =>$idPage,  'parent' => 0, 'position' => 2, 'sort' => 4, 'active' => 1, 'handle' => 'pump'],
+            ['name' => 'Давление теплоносителя, бар', 'type' => 'label', 'image' => 'davlenie', 'value' => '[{"status": "5", "wh-color": "#00ffbb", "bl_color": "#00ffbb"}]',
+                'page' =>$idPage,  'parent' => 0, 'position' => 2, 'sort' => 5, 'active' => 1, 'handle' => 'pressue']
+        ];
+    }
+
+
     public function getRusTypeAttribute()
     {
         return self::getTypes(true)[$this->type] ?? '';

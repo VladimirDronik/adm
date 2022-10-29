@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Boiler;
 use App\Models\Menu;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\ObjectRepository;
@@ -226,6 +227,8 @@ class MenuService {
         $objectRep = new ObjectRepository();
         $menuRep = new MenuRepository();
         $pageServ = new PageService();
+        $elementServ = new ElementService();
+        $boiler = new Boiler();
 
     	$selectedObject = $objectRep->getById($idObject);
     	
@@ -238,9 +241,14 @@ class MenuService {
     		if (!isset($boilerMenuPoint->id))
                 $this->createMenuItem('Котёл', 'boiler', 'boiler.svg', $idEngeneeringParent);
     			
-    		$pageServ->store(['name' => $selectedObject->name, 'link' => 'boiler', 'type' => '2field']);
-    					
+    		$idPage = $pageServ->store(['name' => $selectedObject->name, 'link' => 'boiler', 'type' => '2field']);
+            $elementsArray = $boiler::getElementsForPage($idPage);
     	}
+
+        //Сохранение элементов для страницы
+        foreach ($elementsArray AS $element) {
+            $elementServ->store($element);
+        }
     			
     }
     
