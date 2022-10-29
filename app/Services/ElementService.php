@@ -31,7 +31,7 @@ class ElementService
         $element->active = 1;
         $element->save();
 
-        if (array_key_exists($data, 'handle')     &&
+        if (array_key_exists('handle', $data )     &&
             ($data['handle'] == Boiler::PROP_WATER_TEMP ||
              $data['handle'] == Boiler::PROP_MANUALMODE ||
              $data['handle'] == Boiler::PROP_AUTOMODE))
