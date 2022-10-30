@@ -31,7 +31,7 @@ class ShedullerTableSeeder extends Seeder
 
             [
                 'name' => 'Удаление старых данных из таблицы графиков',
-                'script' => ScriptRepository::getIdByLink('delete_old_data.php')['id'],
+                'script' => ScriptRepository::getIdByLink('reset_graphs.php')['id'],
                 'is_hidden' => 1,
                 'is_system' => 1,
                 'active' => 1

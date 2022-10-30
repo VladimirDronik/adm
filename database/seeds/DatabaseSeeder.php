@@ -21,6 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call(NotifsettingsTableSeeder::class);
         $this->call(ShedullerTableSeeder::class);
         //$this->call(PagesTableSeeder::class); //убрано создание дефолтных страниц
-        $this->call(ElementsTableSeeder::class);
+        //$this->call(ElementsTableSeeder::class);
     }
 }
