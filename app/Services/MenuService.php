@@ -236,11 +236,11 @@ class MenuService {
     	if($selectedObject->type == 'boiler') {
             $engeneeringParent = $menuRep->getByName('Инженерное');
     		if (!isset($engeneeringParent->id))
-    			$idEngeneeringParent = $this->createEngeneeringMenuItem();
+    			$engeneeringParent = $this->createEngeneeringMenuItem();
 
             $boilerMenuPoint = $menuRep->getByName('Котёл');
     		if (!isset($boilerMenuPoint->id))
-                $this->createMenuItem('Котёл', 'boiler', 'boiler.svg', $idEngeneeringParent);
+                $this->createMenuItem('Котёл', 'boiler', 'boiler.svg', $engeneeringParent->id);
     			
     		$idPage = $pageServ->store(['name' => $selectedObject->name, 'link' => 'boiler', 'type' => '2field']);
             $elementsArray = $boiler::getElementsForPage($idPage);
