@@ -23,7 +23,7 @@ class CreateBoilerTable extends Migration
         $table->tinyInteger('burner_GVS')->nullable();
         $table->tinyInteger('burner_modulation')->nullable();
         $table->tinyInteger('pump_status')->nullable();
-        $table->tinyInteger('pressue')->nullable();
+        $table->tinyInteger('pressure')->nullable();
         $table->string('ip_address',15);
 
 

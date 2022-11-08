@@ -16,7 +16,7 @@ class CreateInternalPagesTable extends Migration
         if (!Schema::hasTable('internal_pages')) {
             Schema::create('internal_pages', function (Blueprint $table) {
                 $table->increments('id');
-                $table->integer('idElement')->nullable()->default(NULL);
+                $table->unsignedInteger('idElement')->nullable()->default(NULL);
 
                 $table->foreign('idElement')->references('id')->on('elements')
                       ->onUpdate('cascade')->onDelete('cascade');
