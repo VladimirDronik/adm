@@ -201,7 +201,7 @@ class MenuService {
     	$menu->active = 1;
     	$menu->save();
 
-	return $menu->id;
+	return $menu;
     }
     
     private function createMenuItem($name, $link, $image, $parent)
