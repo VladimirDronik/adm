@@ -76,7 +76,7 @@ class Boiler extends Model
                 'page' =>$idPage,  'parent' => 0, 'position' => 1, 'sort' => 3, 'active' => 1, 'handle' => ''],
             ['name' => 'Состояние', 'type' => 'switch', 'image' => 'boiler.svg', 'value' => 'on',
                 'page' =>$idPage,  'parent' => 0, 'position' => 2, 'sort' => 1, 'active' => 1, 'handle' => 'state'],
-            ['name' => 'Автоматический режим', 'type' => 'switch', 'image' => 'settings.svg', 'value' => 'on', 'settings' => 'true',
+            ['name' => 'Автоматический режим', 'type' => 'switch', 'image' => 'settings.svg', 'value' => 'on', 'settings' => 'false',
                 'page' =>$idPage,  'parent' => 0, 'position' => 2, 'sort' => 2, 'active' => 1, 'handle' => 'automode'],
             ['name' => 'Ручной режим', 'type' => 'switch', 'image' => 'settings.svg', 'value' => 'off', 'settings' => 'true',
                 'page' =>$idPage,  'parent' => 0, 'position' => 2, 'sort' => 3, 'active' => 1, 'handle' => 'manualmode'],

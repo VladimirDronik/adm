@@ -69,7 +69,7 @@ class ElementService
             $data['value'] = json_encode($paramsArray, JSON_UNESCAPED_UNICODE);
         }
         else if($data['type'] == 'switch') {
-            $paramsArray = array(array());
+            $paramsArray = array(array('status'  => $data['value']));
 
             if (array_key_exists('settings', $data)) {
                 $paramsArray[0]['settings'] = 'true';
