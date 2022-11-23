@@ -13,8 +13,8 @@ class CreateInternalPagesTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('internal_pages')) {
-            Schema::create('internal_pages', function (Blueprint $table) {
+        if (!Schema::hasTable('internalPages')) {
+            Schema::create('internalPages', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('idElement')->nullable()->default(NULL);
 
@@ -31,6 +31,6 @@ class CreateInternalPagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('internal_pages');
+        Schema::dropIfExists('internalPages');
     }
 }
