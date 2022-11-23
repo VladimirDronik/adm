@@ -36,6 +36,12 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="{{ route('conditioners.index') }}">
+                                    <i class="fa fa-snowflake-o"></i>
+                                    Кондиционеры
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('switches.index') }}">
                                     <i class="fa fa-bullseye"></i>
                                     Выключатели (кнопки)

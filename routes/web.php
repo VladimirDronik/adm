@@ -43,6 +43,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('dimmers', 'DimmerController')->except('show','destroy')->middleware('can:devices');
     Route::resource('curtains', 'CurtainController')->except('show','destroy')->middleware('can:devices');
     Route::resource('locks', 'LockController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('conditioners', 'ConditionerController')->except('show','destroy')->middleware('can:devices');
+
 
 
     Route::resource('settings', 'SettingController')->except('show','destroy')->middleware('can:settings');

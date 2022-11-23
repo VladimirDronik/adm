@@ -1,8 +1,43 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers;
 
-class ConditionerController
+
+
+use App\Repositories\ConditionerRepository;
+use App\Repositories\RoomRepository;
+
+class ConditionerController extends Controller
 {
+    private $conditionersRep;
+
+
+    public function __construct(ConditionerRepository $conditionersRep)
+    {
+        $this->conditionersRep = $conditionersRep;
+    }
+
+
+    public function index()
+    {
+        $conditioners = $this->conditionersRep->getAll();
+
+        return view('conditioners.index', compact('conditioners'));
+    }
+
+    public function edit()
+    {
+
+    }
+
+    public function create()
+    {
+        $vendor = [1,2,3];
+        $model = [1,2,3];
+        $room = [1,2,3];
+
+        return view('conditioners.create', compact('vendor', 'model', 'room'));
+    }
+
 
 }

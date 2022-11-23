@@ -1,46 +1,43 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs', ['title' => 'Инженерные устройства'])
+    @includeIf('conditioners.breadcrumbs', ['title' => 'Кондиционеры'])
 @endsection
 
 @section('content')
     <div class="container-fluid">
-        @include('engineering.header')
+        @include('conditioners.header')
         <div class="card">
-            <div class="card-title"><h4>Инженерные устройства</h4></div>
+            <div class="card-title"><h4>Кондиционеры</h4></div>
             <div class="card-body">
-                @if(count($equipments))
+                @if(count($conditioners))
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
                             <tr>
                                 <th style="width: 60px;">ID</th>
-                                <td style="width: 30px;"></td>
-                                <th>Название</th>
-                                <th>Тип</th>
-                                <th>Статус</th>
+                                <th>Размещение</th>
+                                <th>Производитель</th>
+                                <th>Модель</th>
+                                <th>Доступность</th>
                                 <th></th>
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($equipments as $equipment)
-                                <tr id="tr{{$equipment->id}}">
-                                    <td scope="row">{{ $equipment->id }}</td>
-                                    <td> @include('engineering.type_img', compact('equipment'))</td>
+                            @foreach($conditioners as $conditioner)
+                                <tr id="tr{{$conditioner->id}}">
+                                    <td scope="row">{{ $conditioner->id }}</td>
+                                    <td> {{ $conditioner->room }} </td>
                                     <td>
-                                        <a href="#" id="namePage_{{ $equipment->id }}"
-                                           onclick="edit_name({{ $equipment->id }});"
-                                           data-toggle="modal"
-                                           data-target="#namePageModal">{{ $equipment->name }}</a>
+                                       {{ $conditioner->vendor }}</a>
                                     </td>
                                     <td>
-                                        {{ $equipment->type }}
+                                        {{ $conditioner->model }}
                                     </td>
 
                                     <td>
-                                        @if( $equipment->status  === '1')
+                                        @if( $conditioner->status  === '1')
                                             <span class="badge badge-success">Активно</span>
                                         @else
                                             <span class="badge badge-danger">Недоступно</span>
@@ -48,7 +45,7 @@
                                     </td>
 
                                     <td class="text-center">
-                                        <a href="{{ route($equipment->type.'.edit',[$equipment->id]) }}"
+                                        <a href="{{ route('conditioners.edit',[$conditioner->id]) }}"
                                            class="btn btn-info btn-sm btn-rounded">
                                             <i class="fa fa-cog fa-lg"></i>
                                         </a>
@@ -56,7 +53,7 @@
                                     <td class="text-center">
                                         <button type="button"
                                                 class="btn btn-danger btn-sm btn-rounded m-b-10 m-l-5 del_btn"
-                                                data-id="{{ $equipment->id }}" data-name="{{ $equipment->name }}">
+                                                data-id="{{ $conditioner->id }}" data-name="{{ $conditioner->name }}">
                                             <i class="fa fa-trash fa-lg"></i>
                                         </button>
                                     </td>
@@ -66,18 +63,18 @@
                             <tfoot>
                             <tr>
                                 <th style="width: 60px;">ID</th>
-                                <td style="width: 30px;"></td>
-                                <th>Название</th>
-                                <th>Тип</th>
-                                <th>Статус</th>
+                                <th>Размещение</th>
+                                <th>Производитель</th>
+                                <th>Модель</th>
+                                <th>Доступность</th>
                                 <th></th>
                                 <th></th>
                             </tr>
                             </tfoot>
                         </table>
                     </div>
-                   {{ $equipments->appends(request()->input())->links() }}
-                    <p class="text-right">Найдено: {{ $equipments->total() }}</p>
+                   {{ $conditioners->appends(request()->input())->links() }}
+                    <p class="text-right">Найдено: {{ $conditioners->total() }}</p>
                 @else
                     <p>Данные не найдены</p>
                 @endif
@@ -86,8 +83,6 @@
     </div>
     @include('components.info_modal')
     @include('components.del_modal')
-    @include('engineering.create_modal')
-    @include('engineering.create_page_modal')
 @endsection
 
 @section('scripts')
