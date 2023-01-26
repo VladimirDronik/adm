@@ -1,0 +1,53 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateConditionersTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('conditioners', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedBigInteger('id_object');
+            $table->unsignedBigInteger('model');
+            $table->unsignedBigInteger('id_room');
+            $table->string('ip');
+            $table->timestamps();
+
+            $table->foreign('id_object')
+                ->references('id')
+                ->on('objects')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('model')
+                ->references('id')
+                ->on('conditioners_models')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('id_room')
+                ->references('id')
+                ->on('rooms')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('conditioners');
+    }
+}

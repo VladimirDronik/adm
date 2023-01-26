@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 
 /**
- * Class Boiler
+ * Class Conditioner
  *
  * @package App\Models
  * @mixin \Eloquent
