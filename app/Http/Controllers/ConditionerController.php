@@ -32,11 +32,11 @@ class ConditionerController extends Controller
 
     public function create()
     {
-        $vendor = [1,2,3];
-        $model = [1,2,3];
+        $vendors = $this->conditionersRep->getAllVendorsToArray();
+        $models = $this->conditionersRep->getModelsByVendorToArray(1);
         $room = [1,2,3];
 
-        return view('conditioners.create', compact('vendor', 'model', 'room'));
+        return view('conditioners.create', compact('vendors', 'models', 'room'));
     }
 
 

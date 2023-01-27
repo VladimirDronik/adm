@@ -28,12 +28,12 @@
                             @foreach($conditioners as $conditioner)
                                 <tr id="tr{{$conditioner->id}}">
                                     <td scope="row">{{ $conditioner->id }}</td>
-                                    <td> {{ $conditioner->room }} </td>
+                                    <td> {{ $conditioner->room->name }} </td>
                                     <td>
-                                       {{ $conditioner->vendor }}</a>
+                                        {{ $conditioner->conditionerModel->conditionerVendor->name }}</a>
                                     </td>
                                     <td>
-                                        {{ $conditioner->model }}
+                                        {{ $conditioner->conditionerModel->name }}
                                     </td>
 
                                     <td>

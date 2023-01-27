@@ -15,9 +15,9 @@ class CreateConditionersTable extends Migration
     {
         Schema::create('conditioners', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('id_object');
-            $table->unsignedBigInteger('model');
-            $table->unsignedBigInteger('id_room');
+            $table->unsignedInteger('id_object');
+            $table->unsignedInteger('model');
+            $table->unsignedInteger('id_room');
             $table->string('ip');
             $table->timestamps();
 
@@ -29,7 +29,7 @@ class CreateConditionersTable extends Migration
 
             $table->foreign('model')
                 ->references('id')
-                ->on('conditioners_models')
+                ->on('conditioner_models')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 

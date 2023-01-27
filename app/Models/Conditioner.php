@@ -15,18 +15,20 @@ use Illuminate\Database\Eloquent\Model;
 class Conditioner extends Model
 {
 
+    protected $guarded = ['id'];
+
     public function object()
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
     }
 
-    public function eobject()
+    public function conditionerModel()
     {
-        return $this->belongsTo(HomeObject::class, 'object', 'id');
+        return $this->belongsTo(ConditionerModel::class, 'model', 'id');
     }
 
-    public function iobject()
+    public function room()
     {
-        return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+        return $this->belongsTo(Room::class, 'id_room', 'id');
     }
 }

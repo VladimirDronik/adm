@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateConditionersVendorsTable extends Migration
+class CreateConditionerVendorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateConditionersVendorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('conditioners_vendors', function (Blueprint $table) {
+        Schema::create('conditioner_vendors', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->timestamps();
@@ -27,6 +27,6 @@ class CreateConditionersVendorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('conditioners_vendors');
+        Schema::dropIfExists('conditioner_vendors');
     }
 }

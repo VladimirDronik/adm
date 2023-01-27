@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateConditionersModelsTable extends Migration
+class CreateConditionerModelsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,22 +13,22 @@ class CreateConditionersModelsTable extends Migration
      */
     public function up()
     {
-        Schema::create('conditioners_models', function (Blueprint $table) {
+        Schema::create('conditioner_models', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('vendor');
+            $table->unsignedInteger('vendor');
             $table->string('name');
-            $table->unsignedBigInteger('kind');
+            $table->unsignedInteger('kind');
             $table->timestamps();
 
             $table->foreign('vendor')
                 ->references('id')
-                ->on('conditioners_vendors')
+                ->on('conditioner_vendors')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
             $table->foreign('kind')
                 ->references('id')
-                ->on('conditioners_kinds')
+                ->on('conditioner_kinds')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });
@@ -41,6 +41,6 @@ class CreateConditionersModelsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('conditioners_models');
+        Schema::dropIfExists('conditioner_models');
     }
 }

@@ -28,8 +28,8 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_radio('type', 'Производитель*:', $vendor, old('vendor', -1), ['required' => true]) }}
-                        {{ Form::bs_radio('type', 'Модель*:', $model, old('model', -1), ['required' => true]) }}
+                        {{ Form::bs_autoselect('vendor_id', 'Производитель*:', $vendors, old('vendor_id'), false, false, ['required' => true], null) }}
+                        {{ Form::bs_autoselect('model_id', 'Модель*:', $models, old('model_id'), false, false, ['required' => true], null) }}
                         {{ Form::bs_radio('type', 'Помещение*:', $room, old('room', -1), ['required' => true]) }}
 
                     </div>

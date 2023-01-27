@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateConditionersKindsTable extends Migration
+class CreateConditionerKindsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateConditionersKindsTable extends Migration
      */
     public function up()
     {
-        Schema::create('conditioners_kinds', function (Blueprint $table) {
+        Schema::create('conditioner_kinds', function (Blueprint $table) {
             $table->increments('id');
             $table->tinyInteger('min');
             $table->tinyInteger('max');
-            $table->decimal('precision'); // Сколько знаков после запятой делать
-            $table->string('operationModes');
-            $table->string('fanModes');
+            $table->decimal('precision', 5, 1);
+            $table->json('operationModes');
+            $table->json('fanModes');
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ class CreateConditionersKindsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('conditioners_kinds');
+        Schema::dropIfExists('conditioner_kinds');
     }
 }
