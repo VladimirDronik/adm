@@ -91,6 +91,10 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::group(['namespace' => 'Ajax', 'as' => 'ajax.'], function () {
 
+        Route::group(['prefix' => 'conditioners', 'as' => 'conditioners.'], function () {
+            Route::post('models', 'ConditionerController@modelsByVendor')->name('models');
+        });
+
         Route::group(['prefix' => 'devices', 'as' => 'devices.'], function () {
             Route::post('delete', 'DeviceController@delete')->name('delete');
             Route::post('update', 'DeviceController@update')->name('update');

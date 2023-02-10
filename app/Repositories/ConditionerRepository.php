@@ -18,8 +18,8 @@ class ConditionerRepository
         return ConditionerVendor::all()->pluck('name', 'id')->toArray();
     }
 
-    public function getModelsByVendorToArray(int $vendorId)
+    public function getModelsByVendor(int $vendorId)
     {
-        return ConditionerModel::where('vendor', $vendorId)->pluck('name', 'id')->toArray();
+        return ConditionerModel::where('vendor', $vendorId)->get();
     }
 }
