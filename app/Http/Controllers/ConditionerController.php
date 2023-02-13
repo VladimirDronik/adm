@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Conditioner;
 use App\Models\HomeObject;
 use App\Models\Relay;
 use App\Repositories\ConditionerRepository;
@@ -41,27 +42,26 @@ class ConditionerController extends Controller
         return view('conditioners.index', compact('conditioners'));
     }
 
-    public function edit()
+    public function edit($id)
     {
+        $conditioner = Conditioner::findOrFail($id);
 
+        return view('conditioners.edit', compact('conditioner'));
     }
 
     public function create()
     {
         $vendors = $this->conditionersRep->getAllVendorsToArray();
-        $objects = $this->objectRep->getAllToArray();
-        $devices = $this->deviceRep->getAllWithoutTypesToArray(['Hite-pro']);
-        $object_types =  HomeObject::getFullTypeIds();
         $room = $this->roomRep->getAllToArray();
 
-        return view('conditioners.create', compact('vendors', 'objects', 'devices', 'object_types', 'room'));
+        return view('conditioners.create', compact('vendors', 'room'));
     }
 
     public function store(Request $r)
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('switches.edit', [$id])
+                return redirect()->route('conditioners.edit', [$id])
                     ->with('success', 'Кондиционер успешно добавлен');
             }
         } catch (\Throwable $e) {
