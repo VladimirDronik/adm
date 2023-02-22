@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Conditioner;
-use App\Models\HomeObject;
-use App\Models\Relay;
 use App\Repositories\ConditionerRepository;
-use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
 use App\Services\ConditionerService;
@@ -16,21 +13,18 @@ class ConditionerController extends Controller
 {
     private $conditionersRep;
     private $objectRep;
-    private $deviceRep;
     private $roomRep;
     private $service;
 
     public function __construct(
         ConditionerRepository $conditionersRep,
         ObjectRepository $objectRep,
-        DeviceRepository $deviceRep,
         RoomRepository $roomRep,
         ConditionerService $service
     )
     {
         $this->conditionersRep = $conditionersRep;
         $this->objectRep = $objectRep;
-        $this->deviceRep = $deviceRep;
         $this->roomRep = $roomRep;
         $this->service = $service;
     }
@@ -45,16 +39,19 @@ class ConditionerController extends Controller
     public function edit($id)
     {
         $conditioner = Conditioner::findOrFail($id);
+        $objects = $this->objectRep->getAllToArray();
+        $rooms = $this->roomRep->getAllToArray();
+        $conditionerCodes = $conditioner->conditionerModel->conditionerKind->conditionerCodes;
 
-        return view('conditioners.edit', compact('conditioner'));
+        return view('conditioners.edit', compact('conditioner', 'objects', 'rooms', 'conditionerCodes'));
     }
 
     public function create()
     {
         $vendors = $this->conditionersRep->getAllVendorsToArray();
-        $room = $this->roomRep->getAllToArray();
+        $rooms = $this->roomRep->getAllToArray();
 
-        return view('conditioners.create', compact('vendors', 'room'));
+        return view('conditioners.create', compact('vendors', 'rooms'));
     }
 
     public function store(Request $r)

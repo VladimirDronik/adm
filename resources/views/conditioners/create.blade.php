@@ -38,7 +38,7 @@
 
                         {{ Form::bs_text('ip', 'IP Адрес*:', null, ['required' => true]) }}
 
-                        {{ Form::bs_autoselect('room_id', 'Помещение*:', $room, old('room_id'), false, false, ['required' => true], null) }}
+                        {{ Form::bs_autoselect('room_id', 'Помещение*:', $rooms, old('room_id'), false, false, ['required' => true], null) }}
 
                     </div>
 
