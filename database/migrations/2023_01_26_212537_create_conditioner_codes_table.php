@@ -18,8 +18,8 @@ class CreateConditionerCodesTable extends Migration
             $table->unsignedInteger('kind');
             $table->string('status');
             $table->tinyInteger('temperature')->nullable();
-            $table->json('operationMode')->nullable();
-            $table->json('fanMode')->nullable();
+            $table->string('operationMode')->nullable();
+            $table->string('fanMode')->nullable();
             $table->string('code');
             $table->timestamps();
 

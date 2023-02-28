@@ -33,7 +33,7 @@ class ConditionerService {
             $object->type = ObjType::TYPE_CONDITIONER;
             $object->name = $unique_name;
             $object->status = 'off';
-            $object->is_system = 1; // Для чего используется это поле?
+            $object->is_system = 0;
             $object->save();
 
             $conditioner->id_object = $object->id;

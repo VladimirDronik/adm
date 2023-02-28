@@ -41,9 +41,12 @@ class ConditionerController extends Controller
         $conditioner = Conditioner::findOrFail($id);
         $objects = $this->objectRep->getAllToArray();
         $rooms = $this->roomRep->getAllToArray();
-        $conditionerCodes = $conditioner->conditionerModel->conditionerKind->conditionerCodes;
+        $conditionerKind = $conditioner->conditionerModel->conditionerKind;
+        $operationModes = json_decode($conditionerKind->operationModes, true)['modes'];
+        $fanModes = json_decode($conditionerKind->fanModes, true)['modes'];
+        $temp = range($conditionerKind->min, $conditionerKind->max, $conditionerKind->precision);
 
-        return view('conditioners.edit', compact('conditioner', 'objects', 'rooms', 'conditionerCodes'));
+        return view('conditioners.edit', compact('conditioner', 'objects', 'rooms', 'operationModes', 'fanModes', 'temp', 'conditionerKind'));
     }
 
     public function create()

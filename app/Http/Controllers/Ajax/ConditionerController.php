@@ -31,4 +31,14 @@ class ConditionerController extends Controller
 
         return response()->json(['result' => true, 'models' => $arrayModels]);
     }
+
+    public function getCode(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['kind', 'operationMode', 'fanMode', 'temp']), 400);
+
+        $conditionerCode = $this->conditionersRep
+            ->getCode((int)$r->kind, (string)$r->operationMode, (string)$r->fanMode, (float)$r->temp);
+
+        return response()->json(['result' => true, 'code' => $conditionerCode ? $conditionerCode->code : '']);
+    }
 }

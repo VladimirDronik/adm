@@ -1,35 +1,19 @@
-<div class="card">
-    <div class="card-body">
-        @if(count($conditionerCodes))
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr class="no-border-top">
-                            <th>Название</th>
-                            <th>Код</th>
-                            <th>Изменить</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($conditionerCodes as $conditionerCode)
-                        <tr>
-                            <td>
-                                {{ $conditionerCode->status }}
-                            </td>
-                            <td>
-                                {{ $conditionerCode->code }}
-                            </td>
+<div class="col-sm-12 pr-0 mt-4">
+    {{ Form::bs_autoselect('operationMode', 'Режим работы:', $operationModes, null, false, false, ['required' => false], null, null, 3, true) }}
+    {{ Form::bs_autoselect('fanMode', 'Вентилятор:', $fanModes, null, false, false, ['required' => false], null, null, 3, true) }}
+    {{ Form::bs_autoselect('temp', 'Температура:', $temp, null, false, false, ['required' => false], null, null, 3, true) }}
 
-                            <td>
-                                <a href="/" class="btn btn-info btn-sm btn-rounded">
-                                    <i class="fa fa-cog fa-lg"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+    <div id='code_div' style="display: none">
+        <div class="form-group row ">
+            <label class="control-label text-right col-md-3 label-fix" for="code">
+                <strong>Код:</strong>
+            </label>
+            <div class="col-md-9">
+                <div id="code"></div>
+                <br>
+                <button type="button" class="btn btn-success m-b-10 m-l-5" id="readCodeBtn">Считать</button>
             </div>
-        @endif
+        </div>
     </div>
+
 </div>

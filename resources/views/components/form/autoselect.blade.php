@@ -5,11 +5,11 @@
             @if(!$multiple)<option value="">Не выбрано</option>@endif
             @foreach ($values as $key => $value)
                 @if($multiple && !is_null($selected))
-                    <option value="{{ $key }}" @if(in_array($key,$selected)) selected @endif>
+                    <option value="@if($value_as_key){{ $value }}@else{{ $key }}@endif" @if(in_array($key,$selected)) selected @endif>
                         @if($show_id) {{ $key }} - @endif {{ $value }}
                     </option>
                 @else
-                    <option value="{{ $key }}" @if($key == $selected) selected @endif>
+                    <option value="@if($value_as_key){{ $value }}@else{{ $key }}@endif" @if($key == $selected) selected @endif>
                         @if($show_id) {{ $key }} - @endif {{ $value }}
                     </option>
                 @endif
