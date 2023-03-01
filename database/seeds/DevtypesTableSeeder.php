@@ -45,6 +45,10 @@ class DevtypesTableSeeder extends Seeder
                 'name' => 'Hite-pro',
                 'port_numbers' => ''
             ],
+            [
+                'name' => 'ModbusTCP',
+                'port_numbers' => ''
+            ],
         ];
 
         $result_devtypes = [];
