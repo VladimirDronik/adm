@@ -94,6 +94,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::group(['prefix' => 'conditioners', 'as' => 'conditioners.'], function () {
             Route::post('models', 'ConditionerController@modelsByVendor')->name('models');
             Route::post('code', 'ConditionerController@getCode')->name('code');
+            Route::post('read_code', 'ConditionerController@readCode')->name('read_code');
         });
 
         Route::group(['prefix' => 'devices', 'as' => 'devices.'], function () {

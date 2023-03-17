@@ -22,6 +22,11 @@ class Conditioner extends Model
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
     }
 
+    public function device()
+    {
+        return $this->belongsTo(Device::class, 'device_id', 'id');
+    }
+
     public function conditionerModel()
     {
         return $this->belongsTo(ConditionerModel::class, 'model', 'id');

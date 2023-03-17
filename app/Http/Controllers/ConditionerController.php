@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Conditioner;
 use App\Repositories\ConditionerRepository;
+use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
 use App\Services\ConditionerService;
@@ -14,18 +15,21 @@ class ConditionerController extends Controller
     private $conditionersRep;
     private $objectRep;
     private $roomRep;
+    private $deviceRep;
     private $service;
 
     public function __construct(
         ConditionerRepository $conditionersRep,
         ObjectRepository $objectRep,
         RoomRepository $roomRep,
+        DeviceRepository $deviceRep,
         ConditionerService $service
     )
     {
         $this->conditionersRep = $conditionersRep;
         $this->objectRep = $objectRep;
         $this->roomRep = $roomRep;
+        $this->deviceRep = $deviceRep;
         $this->service = $service;
     }
 
@@ -40,21 +44,23 @@ class ConditionerController extends Controller
     {
         $conditioner = Conditioner::findOrFail($id);
         $objects = $this->objectRep->getAllToArray();
+        $devices = $this->deviceRep->getAllWithoutTypesToArray();
         $rooms = $this->roomRep->getAllToArray();
         $conditionerKind = $conditioner->conditionerModel->conditionerKind;
         $operationModes = json_decode($conditionerKind->operationModes, true)['modes'];
         $fanModes = json_decode($conditionerKind->fanModes, true)['modes'];
         $temp = range($conditionerKind->min, $conditionerKind->max, $conditionerKind->precision);
 
-        return view('conditioners.edit', compact('conditioner', 'objects', 'rooms', 'operationModes', 'fanModes', 'temp', 'conditionerKind'));
+        return view('conditioners.edit', compact('conditioner', 'objects', 'rooms', 'operationModes', 'fanModes', 'temp', 'conditionerKind', 'devices'));
     }
 
     public function create()
     {
         $vendors = $this->conditionersRep->getAllVendorsToArray();
         $rooms = $this->roomRep->getAllToArray();
+        $devices = $this->deviceRep->getAllWithoutTypesToArray();
 
-        return view('conditioners.create', compact('vendors', 'rooms'));
+        return view('conditioners.create', compact('vendors', 'rooms', 'devices'));
     }
 
     public function store(Request $r)

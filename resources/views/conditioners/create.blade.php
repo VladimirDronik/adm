@@ -36,7 +36,25 @@
                             </div>
                         </div>
 
-                        {{ Form::bs_text('ip', 'IP Адрес*:', null, ['required' => true]) }}
+                        <div class="form-group row ">
+                            <label class="control-label text-right col-md-3 label-fix">
+                                <strong>Объект*:</strong>
+                            </label>
+                            <div class="col-sm-9">
+                                <div class="row">
+                                    <div class="col-sm-11 pr-0">
+                                        <p>
+                                            При создании кондиционера будет создан объект с таким же названием.
+                                        </p>
+                                    </div>
+                                    <div class="col-sm-12 pr-0 mt-4">
+                                        {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'), false, false, ['required' => true], null) }}
+
+                                        {{ Form::bs_text('wb_mir', 'Адрес WB-MIR:', null, ['required' => true]) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         {{ Form::bs_autoselect('room_id', 'Помещение*:', $rooms, old('room_id'), false, false, ['required' => true], null) }}
 
@@ -67,6 +85,7 @@
             $("#auto_sel_vendor_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_model_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_room_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_vendor_id").chosen().change(function() {
                 let vendor_id = $(this).val();

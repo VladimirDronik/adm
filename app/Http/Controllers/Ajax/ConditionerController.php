@@ -41,4 +41,38 @@ class ConditionerController extends Controller
 
         return response()->json(['result' => true, 'code' => $conditionerCode ? $conditionerCode->code : '']);
     }
+
+    public function readCode(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['wbMir', 'ip']), 400);
+
+        $readCodecommand = 'rs_control ir_scan -r -d wb-mir --ip ' . $r->ip . ' -u ' . $r->wbMir;
+        $reciveCodecommand = 'rs_control ir_scan -g -d wb-mir --ip ' . $r->ip . ' -u ' . $r->wbMir;
+
+        $readOutput = null;
+
+        // chdir('D:/domains/touch-on');
+
+        exec($readCodecommand, $readOutput);
+
+        $readResponse = $readOutput ? json_decode($readOutput[0], true) : null;
+
+        if ($readResponse && !$readResponse['error_code']) {
+            $errorCode = 1;
+            $reciveOutput = null;
+            while ($errorCode == 1) {
+                $reciveOutput = null;
+                exec($reciveCodecommand, $reciveOutput);
+                $reciveResponse = $reciveOutput ? json_decode($reciveOutput[0], true) : null;
+                $errorCode = $reciveResponse['error_code'];
+            }
+            if ($reciveOutput && array_key_exists('signal', $reciveOutput) && $reciveOutput['signal']) {
+                return response()->json(['result' => true, 'code' => $reciveOutput['signal']]);
+            } else {
+                return response()->json(['result' => false, 'code' => null]);
+            }
+        } else {
+            return response()->json(['result' => false, 'code' => null]);
+        }
+    }
 }

@@ -22,7 +22,8 @@ class ConditionerService {
         $conditioner = new Conditioner();
         $conditioner->model = $data['model_id'];
         $conditioner->id_room = $data['room_id'];
-        $conditioner->ip = $data['ip'];
+        $conditioner->device_id = $data['device_id'];
+        $conditioner->wb_mir = $data['wb_mir'];
 
         DB::transaction(function () use (&$conditioner, $data) {
             $unique_name = HomeObject::getUniqueObjectName(

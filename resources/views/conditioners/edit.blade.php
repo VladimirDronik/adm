@@ -65,11 +65,16 @@
     <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script>
         const url_code = '{{ route('ajax.conditioners.code') }}';
+        const url_read_code = '{{ route('ajax.conditioners.read_code') }}';
         const kind = '{{ $conditionerKind->id }}';
+        const ip = '{{ $conditioner->device->ip_address }}';
 
         $("#auto_sel_temp").chosen({width:"100%", no_results_text: "Не найдено"});
         $("#auto_sel_operationMode").chosen({width:"100%", no_results_text: "Не найдено"});
         $("#auto_sel_fanMode").chosen({width:"100%", no_results_text: "Не найдено"});
+        $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
+        $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});
+        $("#auto_sel_id_room").chosen({width:"100%", no_results_text: "Не найдено"});
 
         $(document).ready(function () {
 
@@ -97,20 +102,42 @@
             }
 
             $('#readCodeBtn').click(function() {
+                let wbMir = $("#wbMir").val();
                 let temp = $("#auto_sel_temp").val();
                 let operationMode = $("#auto_sel_operationMode").val();
                 let fanMode = $("#auto_sel_fanMode").val();
                 $('#modalReadCode #modalReadCodeTitle').text('Настройка температуры ' + temp + '°С в режиме ' + operationMode + ' со скоростью ' + fanMode);
                 $('#modal_read_code_init_btn').click();
+                $.ajax({
+                    url: url_read_code,
+                    data: {'_token': _token, 'wbMir': wbMir, 'ip': ip},
+                    success: function (data) {
+                        $('#modal_read_code_close').click();
+                        $('#modalReceivedCode #modalReceivedCodeTitle').text('Настройка температуры ' + temp + '°С в режиме ' + operationMode + ' со скоростью ' + fanMode);
+                        $('#modalReceivedCode #receivedCode').val(data.code);
+                        $('#modal_received_code_init_btn').click();
+                    }
+                });
             });
 
-            $('#receivedСodeBtn').click(function() {
+            $('#modal_read_code_repeat').click(function() {
                 let temp = $("#auto_sel_temp").val();
                 let operationMode = $("#auto_sel_operationMode").val();
                 let fanMode = $("#auto_sel_fanMode").val();
-                $('#modalReceivedСode #modalReceivedСodeTitle').text('Настройка температуры ' + temp + '°С в режиме ' + operationMode + ' со скоростью ' + fanMode);
-                $('#modalReceivedСode #receivedСode').val('KJAKJKJKHSKDJAKSDHJKAJHDKJAKD');
-                $('#modal_received_сode_init_btn').click();
+                let wbMir = $("#wbMir").val();
+                $('#modal_received_code_close').click();
+                $('#modalReadCode #modalReadCodeTitle').text('Настройка температуры ' + temp + '°С в режиме ' + operationMode + ' со скоростью ' + fanMode);
+                $('#modal_read_code_init_btn').click();
+                $.ajax({
+                    url: url_read_code,
+                    data: {'_token': _token, 'wbMir': wbMir, 'ip': ip},
+                    success: function (data) {
+                        $('#modal_read_code_close').click();
+                        $('#modalReceivedCode #modalReceivedCodeTitle').text('Настройка температуры ' + temp + '°С в режиме ' + operationMode + ' со скоростью ' + fanMode);
+                        $('#modalReceivedCode #receivedCode').val(data.code);
+                        $('#modal_received_code_init_btn').click();
+                    }
+                });
             });
         });
     </script>

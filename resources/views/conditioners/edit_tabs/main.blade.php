@@ -12,11 +12,13 @@
     </div>
     <input type="hidden" name="id_object" value="{{ $conditioner->id_object }}">
 @else
-    {{ Form::bs_autoselect_and_btn('id_object', 'Объект*:', $objects, old('id_object', $conditioner->id_object), false, false, ['required' => true]) }}
+    {{ Form::bs_autoselect('id_object', 'Объект:', $objects, old('id_object', $conditioner->id_object), false, false, ['required' => true]) }}
 @endif
 
 {{ Form::bs_simple_text('ID объекта:', $conditioner->object['id']) }}
 
-{{ Form::bs_autoselect('id_room', 'Помещение*:', $rooms, old('id_room', $conditioner->id_room), false, false, ['required' => true]) }}
+{{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', $conditioner->device_id), false, false, ['required' => true], null) }}
 
-{{ Form::bs_text('ip', 'IP Адрес*:', old('ip', $conditioner->ip), ['required' => true]) }}
+{{ Form::bs_autoselect('id_room', 'Помещение:', $rooms, old('id_room', $conditioner->id_room), false, false, ['required' => true]) }}
+
+{{ Form::bs_text('wb_mir', 'Адрес WB-MIR:', old('wb_mir', $conditioner->wb_mir), ['required' => true], null, 3, 'wbMir') }}

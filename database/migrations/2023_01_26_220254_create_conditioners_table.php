@@ -16,9 +16,10 @@ class CreateConditionersTable extends Migration
         Schema::create('conditioners', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('id_object');
+            $table->unsignedInteger('device_id');
+            $table->string('wb_mir');
             $table->unsignedInteger('model');
             $table->unsignedInteger('id_room');
-            $table->string('ip');
             $table->timestamps();
 
             $table->foreign('id_object')
@@ -36,6 +37,12 @@ class CreateConditionersTable extends Migration
             $table->foreign('id_room')
                 ->references('id')
                 ->on('rooms')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('device_id')
+                ->references('id')
+                ->on('devices')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });
