@@ -36,8 +36,13 @@ class ConditionerController extends Controller
     {
         abort_if(!ajaxHas($r, ['kind', 'operationMode', 'fanMode', 'temp']), 400);
 
-        $conditionerCode = $this->conditionersRep
-            ->getCode((int)$r->kind, (string)$r->operationMode, (string)$r->fanMode, (float)$r->temp);
+        if ($r->temp == 'off') {
+            $conditionerCode = $this->conditionersRep
+                ->getOffCode((int)$r->kind, (string)$r->temp);
+        } else {
+            $conditionerCode = $this->conditionersRep
+                ->getCode((int)$r->kind, (string)$r->operationMode, (string)$r->fanMode, (float)$r->temp);
+        }
 
         return response()->json(['result' => true, 'code' => $conditionerCode ? $conditionerCode->code : '']);
     }
@@ -46,33 +51,63 @@ class ConditionerController extends Controller
     {
         abort_if(!ajaxHas($r, ['wbMir', 'ip']), 400);
 
-        $readCodecommand = 'rs_control ir_scan -r -d wb-mir --ip ' . $r->ip . ' -u ' . $r->wbMir;
-        $reciveCodecommand = 'rs_control ir_scan -g -d wb-mir --ip ' . $r->ip . ' -u ' . $r->wbMir;
+        $command = 'rs_control ir_scan -r -d wb-mir --ip ' . $r->ip . ' -u ' . $r->wbMir;
 
-        $readOutput = null;
+        $output = null;
 
         // chdir('D:/domains/touch-on');
 
-        exec($readCodecommand, $readOutput);
+        exec($command, $output);
 
-        $readResponse = $readOutput ? json_decode($readOutput[0], true) : null;
+        $response = $output ? json_decode($output[0], true) : null;
 
-        if ($readResponse && !$readResponse['error_code']) {
-            $errorCode = 1;
-            $reciveOutput = null;
-            while ($errorCode == 1) {
-                $reciveOutput = null;
-                exec($reciveCodecommand, $reciveOutput);
-                $reciveResponse = $reciveOutput ? json_decode($reciveOutput[0], true) : null;
-                $errorCode = $reciveResponse['error_code'];
-            }
-            if ($reciveOutput && array_key_exists('signal', $reciveOutput) && $reciveOutput['signal']) {
-                return response()->json(['result' => true, 'code' => $reciveOutput['signal']]);
-            } else {
-                return response()->json(['result' => false, 'code' => null]);
-            }
+        if ($response && !$response['error_code']) {
+            return response()->json(['result' => true]);
         } else {
-            return response()->json(['result' => false, 'code' => null]);
+            return response()->json(['result' => false, 'error' => $response['error_text']]);
+        }
+    }
+
+    public function reciveCode(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['wbMir', 'ip']), 400);
+
+        $command = 'rs_control ir_scan -g -d wb-mir --ip ' . $r->ip . ' -u ' . $r->wbMir;
+
+        // chdir('D:/domains/touch-on');
+
+        $output = null;
+
+        exec($command, $output);
+
+        $response = $output ? json_decode($output[0], true) : null;
+
+        if ($response && !$response['error_code']) {
+            return response()->json(['result' => true, 'code' => $response['signal']]);
+        } else {
+            return response()->json(['result' => false, 'code' => null, 'error' => $response['error_text']]);
+        }
+    }
+
+    public function saveCode(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['kind', 'operationMode', 'fanMode', 'temp', 'code']), 400);
+
+        try {
+            if ($r->temp == 'off') {
+                $conditionerCode = $this->conditionersRep->getOffCode((int)$r->kind, (string)$r->temp);
+                $this->conditionersRep
+                    ->updateOrCreate($conditionerCode ?: null, (string)$r->code, (int)$r->kind, null, null, null, true);
+            } else {
+                $conditionerCode = $this->conditionersRep
+                    ->getCode((int)$r->kind, (string)$r->operationMode, (string)$r->fanMode, (float)$r->temp);
+                $this->conditionersRep
+                    ->updateOrCreate($conditionerCode ?: null, (string)$r->code, (int)$r->kind, (string)$r->operationMode, (string)$r->fanMode, (float)$r->temp);
+            }
+
+            return response()->json(['result' => true]);
+        } catch (\Throwable $th) {
+            return response()->json(['result' => false]);
         }
     }
 }

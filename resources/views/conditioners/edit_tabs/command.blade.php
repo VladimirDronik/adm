@@ -1,7 +1,7 @@
 <div class="col-sm-12 pr-0 mt-4">
     {{ Form::bs_autoselect('operationMode', 'Режим работы:', $operationModes, null, false, false, ['required' => false], null, null, 3, true) }}
     {{ Form::bs_autoselect('fanMode', 'Вентилятор:', $fanModes, null, false, false, ['required' => false], null, null, 3, true) }}
-    {{ Form::bs_autoselect('temp', 'Температура:', $temp, null, false, false, ['required' => false], null, null, 3, true) }}
+    {{ Form::bs_autoselect('temp', 'Температура:', $temp, null, false, false, ['required' => false], null, 'Для кода выключения кондиционера выберите "off"', 3, true) }}
 
     <div id='code_div' style="display: none">
         <div class="form-group row ">
@@ -15,5 +15,4 @@
             </div>
         </div>
     </div>
-
 </div>

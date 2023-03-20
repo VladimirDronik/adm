@@ -32,4 +32,46 @@ class ConditionerRepository
             ->where('temperature', $temp)
             ->first();
     }
+
+    public function getOffCode(int $kind, string $status)
+    {
+        return ConditionerCode::where('kind', $kind)
+            ->where('status', $status)
+            ->first();
+    }
+
+    public function updateOrCreate(?ConditionerCode $conditionerCode, string $code, int $kind, ?string $operationMode, ?string $fanMode, ?float $temp, bool $offCode = false)
+    {
+        if ($conditionerCode) {
+            if ($offCode) {
+                $conditionerCode->update([
+                    'status' => 'off',
+                    'code' => $code
+                ]);
+            } else {
+                $conditionerCode->update([
+                    'code' => $code
+                ]);
+            }
+        } else {
+            if ($offCode) {
+                $conditionerCode = ConditionerCode::create([
+                    'kind' => $kind,
+                    'status' => 'off',
+                    'code' => $code
+                ]);
+            } else {
+                $conditionerCode = ConditionerCode::create([
+                    'status' => 'on',
+                    'kind' => $kind,
+                    'temperature' => $temp,
+                    'operationMode' => $operationMode,
+                    'fanMode' => $fanMode,
+                    'code' => $code
+                ]);
+            }
+        }
+
+        return $conditionerCode;
+    }
 }

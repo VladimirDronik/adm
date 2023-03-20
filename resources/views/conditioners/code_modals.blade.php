@@ -9,6 +9,8 @@
                 Направьте пульт на считыватель и нажмите кнопку
             </div>
             <div class="modal-footer">
+                <button type="button" id="modal_get_result_code" class="btn btn-default" data-dismiss="modal">Получить результать сканирования</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <button type="button" id="modal_read_code_close" class="btn btn-default" data-dismiss="modal">Отменить</button>
             </div>
         </div>
@@ -27,7 +29,7 @@
                 <br>
                 <button type="button" id="modal_read_code_repeat" class="btn btn-default" data-dismiss="modal">Считать заново</button>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <button type="button" class="btn btn-default" data-dismiss="modal">Сохранить</button>
+                <button type="button" id="modal_save_code" class="btn btn-default" data-dismiss="modal">Сохранить</button>
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal_received_code_close" class="btn btn-default" data-dismiss="modal">Отменить</button>
@@ -36,3 +38,34 @@
     </div>
 </div>
 <button type="button" id="modal_received_code_init_btn" style="display: none;" data-toggle="modal" data-target="#modalReceivedCode">&nbsp;</button>
+<!-- модальное окно ошибки -->
+<div class="modal" id="modalErrorCode">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Произошла ошибка</h5>
+            </div>
+            <div class="modal-body" id="modalErrorCodeBody">
+                Произошла ошибка. Попробуйте запустить сканирование через несколько минут.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ок</button>
+            </div>
+        </div>
+    </div>
+</div>
+<button type="button" id="modal_code_error_btn" style="display: none;" data-toggle="modal" data-target="#modalErrorCode">&nbsp;</button>
+<!-- модальное окно успешного сохранения -->
+<div class="modal" id="modalCodeSaved">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Код успешно сохранен</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ок</button>
+            </div>
+        </div>
+    </div>
+</div>
+<button type="button" id="modal_code_saved_btn" style="display: none;" data-toggle="modal" data-target="#modalCodeSaved">&nbsp;</button>

@@ -43,4 +43,24 @@ class ConditionerService {
 
         return $conditioner->id;
     }
+
+    /**
+     * Изменение кондиционера
+     *
+     * @param Conditioner $conditioner
+     * @param array $data
+     * @return int
+     * @throws \Throwable
+     */
+    public function update(Conditioner $conditioner, array $data): int
+    {
+        $conditioner->id_object = $data['id_object'];
+        $conditioner->id_room = $data['id_room'];
+        $conditioner->device_id = $data['device_id'];
+        $conditioner->wb_mir = $data['wb_mir'];
+
+        $conditioner->save();
+
+        return $conditioner->id;
+    }
 }

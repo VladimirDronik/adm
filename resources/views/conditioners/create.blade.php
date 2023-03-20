@@ -60,7 +60,6 @@
 
                     </div>
 
-                    <input type="hidden" name="place" id="place">
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
                 </div>

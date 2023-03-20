@@ -50,6 +50,7 @@ class ConditionerController extends Controller
         $operationModes = json_decode($conditionerKind->operationModes, true)['modes'];
         $fanModes = json_decode($conditionerKind->fanModes, true)['modes'];
         $temp = range($conditionerKind->min, $conditionerKind->max, $conditionerKind->precision);
+        array_push($temp, 'off');
 
         return view('conditioners.edit', compact('conditioner', 'objects', 'rooms', 'operationModes', 'fanModes', 'temp', 'conditionerKind', 'devices'));
     }
@@ -76,5 +77,20 @@ class ConditionerController extends Controller
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении кондиционера');
+    }
+
+    public function update(Request $r, Conditioner $conditioner)
+    {
+        try {
+            if ($this->service->update($conditioner, $r->except('_token'))) {
+                return redirect()->route('conditioners.edit',[$conditioner->id])
+                    ->with('success', 'Кондиционер успешно изменен');
+            }
+        } catch (\Throwable $e) {
+            \Log::error('Ошибка при изменении кондиционера ' .
+                json_encode($r->all()).' '.$e->getMessage());
+        }
+
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении кондиционера');
     }
 }
