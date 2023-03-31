@@ -5,9 +5,17 @@ namespace App\Services;
 use App\Models\Conditioner;
 use App\Models\HomeObject;
 use App\Models\ObjType;
+use App\Repositories\ConditionerRepository;
 use Illuminate\Support\Facades\DB;
 
 class ConditionerService {
+
+    private $conditionersRep;
+
+    public function __construct(ConditionerRepository $conditionersRep)
+    {
+        $this->conditionersRep = $conditionersRep;
+    }
 
     /**
      * Создание кондиционера и объекта кондиционера
@@ -54,6 +62,22 @@ class ConditionerService {
      */
     public function update(Conditioner $conditioner, array $data): int
     {
+        $kind = $conditioner->conditionerModel->conditionerKind->id;
+
+        if (array_key_exists('code', $data)) {
+            if ($data['temp'] == 'off') {
+                $conditionerCode = $this->conditionersRep
+                    ->getOffCode((int)$kind, (string)$data['temp']);
+                $this->conditionersRep
+                    ->updateOrCreate($conditionerCode ?: null, (string)$data['code'], (int)$kind, null, null, null, true);
+            } else {
+                $conditionerCode = $this->conditionersRep
+                    ->getCode((int)$kind, (string)$data['operationMode'], (string)$data['fanMode'], (float)$data['temp']);
+                $this->conditionersRep
+                    ->updateOrCreate($conditionerCode ?: null, (string)$data['code'], (int)$kind, (string)$data['operationMode'], (string)$data['fanMode'], (float)$data['temp']);
+            }
+        }
+
         $conditioner->id_object = $data['id_object'];
         $conditioner->id_room = $data['id_room'];
         $conditioner->device_id = $data['device_id'];

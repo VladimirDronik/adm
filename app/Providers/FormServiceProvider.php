@@ -49,7 +49,7 @@ class FormServiceProvider extends ServiceProvider
             self::PATH.'image', ['prefix', 'label', 'value', 'col' => 3]);
         \Form::component('bs_autoselect',
             self::PATH.'autoselect', ['name', 'label', 'values' => null, 'selected' => null, 'show_id' => false,
-                'multiple' => false, 'attributes' => [], 'multiple_id' => null, 'help' => null, 'col' => 3, 'value_as_key' => false]);
+                'multiple' => false, 'attributes' => [], 'multiple_id' => null, 'help' => null, 'col' => 3, 'value_as_key' => false, 'required' => false]);
         \Form::component('bs_autoselect_and_btn',
             self::PATH.'autoselect_and_btn', ['name', 'label', 'values' => null, 'selected' => null, 'show_id' => false,
                 'multiple' => false, 'attributes' => [], 'btn_label' => '', 'btn_title' => '',

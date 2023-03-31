@@ -70,6 +70,7 @@
         const url_read_code = '{{ route('ajax.conditioners.read_code') }}';
         const url_recive_code = '{{ route('ajax.conditioners.recive_code') }}';
         const url_save_code = '{{ route('ajax.conditioners.save_code') }}';
+        const url_cancel_reading_code = '{{ route('ajax.conditioners.cancel_reading_code') }}';
         const kind = '{{ $conditionerKind->id }}';
         const ip = '{{ $conditioner->device->ip_address }}';
 
@@ -83,6 +84,15 @@
             $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_id_room").chosen({width:"100%", no_results_text: "Не найдено"});
 
+            $.ajax({
+                url: url_code,
+                data: {'_token': _token, 'temp': $("#auto_sel_temp").val(), 'operationMode': $("#auto_sel_operationMode").val(), 'fanMode': $("#auto_sel_fanMode").val(), 'kind': kind,},
+                success: function (data) {
+                    $('#place').val('code');
+                    $('#dataCode').val(data.code);
+                }
+            });
+
             $("#auto_sel_temp").chosen().change(function() {
                 let temp = $(this).val();
                 let operationMode = $("#auto_sel_operationMode").val();
@@ -91,9 +101,8 @@
                     url: url_code,
                     data: {'_token': _token, 'temp': temp, 'operationMode': operationMode, 'fanMode': fanMode, 'kind': kind,},
                     success: function (data) {
-                        $('#code_div').show();
                         $('#place').val('code');
-                        createCodeField('#code', data.code);
+                        $('#dataCode').val(data.code);
                         $('#auto_sel_temp').trigger("chosen:updated");
                     }
                 });
@@ -107,10 +116,9 @@
                     url: url_code,
                     data: {'_token': _token, 'temp': temp, 'operationMode': operationMode, 'fanMode': fanMode, 'kind': kind,},
                     success: function (data) {
-                        $('#code_div').show();
                         $('#place').val('code');
-                        createCodeField('#code', data.code);
-                        $('#auto_sel_temp').trigger("chosen:updated");
+                        $('#dataCode').val(data.code);
+                        $('#auto_sel_operationMode').trigger("chosen:updated");
                     }
                 });
             });
@@ -123,20 +131,21 @@
                     url: url_code,
                     data: {'_token': _token, 'temp': temp, 'operationMode': operationMode, 'fanMode': fanMode, 'kind': kind,},
                     success: function (data) {
-                        $('#code_div').show();
                         $('#place').val('code');
-                        createCodeField('#code', data.code);
-                        $('#auto_sel_temp').trigger("chosen:updated");
+                        $('#dataCode').val(data.code);
+                        $('#auto_sel_fanMode').trigger("chosen:updated");
                     }
                 });
             });
 
-            function createCodeField(target, code) {
-                let sel = $(target);
-                sel.html('');
-                let s = '<input class="form-control" autocomplete="off" name="code" type="text" value="' + code + '">';
-                sel.append(s);
-            }
+            $('#codeCheckbox').change(function() {
+                let active = this.checked ? 1 : 0;
+                if (active) {
+                    $('#dataCode').prop('disabled', false);
+                } else {
+                    $('#dataCode').prop('disabled', true);
+                }
+            });
 
             $('#readCodeBtn').click(function() {
                 let wbMir = $("#wbMir").val();
@@ -188,7 +197,6 @@
                     url: url_recive_code,
                     data: {'_token': _token, 'wbMir': wbMir, 'ip': ip},
                     success: function (data) {
-                        $('#modal_read_code_close').click();
                         if (data.result) {
                             $('#modalReceivedCode #modalReceivedCodeTitle').text('Настройка температуры ' + temp + '°С в режиме ' + operationMode + ' со скоростью ' + fanMode);
                             $('#modalReceivedCode #receivedCode').val(data.code);
@@ -215,6 +223,20 @@
                             $('#modal_code_saved_btn').click();
                         } else {
                             $('#modalErrorCode #modalErrorCodeBody').text('Ошибка сохранения кода. Попробуйте еще раз через некоторое время');
+                            $('#modal_code_error_btn').click();
+                        }
+                    }
+                });
+            });
+
+            $('#modal_read_code_close').click(function() {
+                let wbMir = $("#wbMir").val();
+                $.ajax({
+                    url: url_cancel_reading_code,
+                    data: {'_token': _token, 'wbMir': wbMir, 'ip': ip},
+                    success: function (data) {
+                        if (!data.result) {
+                            $('#modalErrorCode #modalErrorCodeBody').text(data.error);
                             $('#modal_code_error_btn').click();
                         }
                     }

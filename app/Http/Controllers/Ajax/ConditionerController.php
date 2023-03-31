@@ -55,9 +55,9 @@ class ConditionerController extends Controller
 
         $output = null;
 
-        // chdir('D:/domains/touch-on');
+        chdir('D:/domains/touch-on');
 
-        exec($command, $output);
+        exec('php artisan test:command', $output);
 
         $response = $output ? json_decode($output[0], true) : null;
 
@@ -74,11 +74,11 @@ class ConditionerController extends Controller
 
         $command = 'rs_control ir_scan -g -d wb-mir --ip ' . $r->ip . ' -u ' . $r->wbMir;
 
-        // chdir('D:/domains/touch-on');
+        chdir('D:/domains/touch-on');
 
         $output = null;
 
-        exec($command, $output);
+        exec('php artisan test:command', $output);
 
         $response = $output ? json_decode($output[0], true) : null;
 
@@ -108,6 +108,27 @@ class ConditionerController extends Controller
             return response()->json(['result' => true]);
         } catch (\Throwable $th) {
             return response()->json(['result' => false]);
+        }
+    }
+
+    public function cancelReadingCode(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['wbMir', 'ip']), 400);
+
+        $command = 'rs_control ir_scan -cancel_scan -d wb-mir --ip ' . $r->ip . ' -u ' . $r->wbMir;
+
+        $output = null;
+
+        chdir('D:/domains/touch-on');
+
+        exec('php artisan test:command', $output);
+
+        $response = $output ? json_decode($output[0], true) : null;
+
+        if ($response && !$response['error_code']) {
+            return response()->json(['result' => true]);
+        } else {
+            return response()->json(['result' => false, 'error' => $response['error_text']]);
         }
     }
 }
