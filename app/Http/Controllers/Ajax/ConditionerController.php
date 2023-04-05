@@ -111,7 +111,7 @@ class ConditionerController extends Controller
     {
         abort_if(!ajaxHas($r, ['wbMir', 'ip']), 400);
 
-        $command = 'rs_control ir_scan -cancel_scan -d wb-mir --ip ' . $r->ip . ' -u ' . $r->wbMir;
+        $command = 'rs_control ir_scan --cancel_scan -d wb-mir --ip ' . $r->ip . ' -u ' . $r->wbMir;
 
         $output = null;
 
