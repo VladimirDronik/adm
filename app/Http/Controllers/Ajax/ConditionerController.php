@@ -55,9 +55,7 @@ class ConditionerController extends Controller
 
         $output = null;
 
-        chdir('D:/domains/touch-on');
-
-        exec('php artisan test:command', $output);
+        exec($command, $output);
 
         $response = $output ? json_decode($output[0], true) : null;
 
@@ -74,11 +72,9 @@ class ConditionerController extends Controller
 
         $command = 'rs_control ir_scan -g -d wb-mir --ip ' . $r->ip . ' -u ' . $r->wbMir;
 
-        chdir('D:/domains/touch-on');
-
         $output = null;
 
-        exec('php artisan test:command', $output);
+        exec($command, $output);
 
         $response = $output ? json_decode($output[0], true) : null;
 
@@ -119,9 +115,7 @@ class ConditionerController extends Controller
 
         $output = null;
 
-        chdir('D:/domains/touch-on');
-
-        exec('php artisan test:command', $output);
+        exec($command, $output);
 
         $response = $output ? json_decode($output[0], true) : null;
 
