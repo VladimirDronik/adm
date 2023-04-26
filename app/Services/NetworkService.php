@@ -5,7 +5,6 @@ namespace App\Services;
 class NetworkService {
 
     private $pathNet = "/etc/network/interfaces";
-    private $pathVpn = "/etc/ppp/peers/l2tp.client";
 
     /**
      * Установка параметров для сетевого интерфейса
@@ -75,59 +74,6 @@ EOT2;
     }
 
     /**
-     *  Установка параметров для VPN соединения
-     *
-     * @param $server
-     * @param $username
-     * @param $password
-     * @throws \Exception
-     */
-    public function setVpn($server = '188.120.233.76', $username, $password, $VPNStatus) {
-
-        if (!$server || !$username || !$password) {
-            throw new \Exception('Не хватает данных');
-        }
-
-        $tpl = <<<EOT
-        noauth
-        nodefaultroute
-        name "{$username}"
-        password "{$password}"
-EOT;
-
-        if ($VPNStatus == 'true') {
-            exec('sudo service xl2tpd start');
-            SettingService::set('VPN', 'true');
-        }
-        else {
-            exec('sudo service xl2tpd stop');
-            SettingService::set('VPN', 'false');
-        }
-
-/*
-        $tpl = <<<EOT
-				pty "pptp {$server} --nolaunchpppd"
-				#require-mschap-v2
-				#require-mppe-128
-				user "{$username}" #имя
-				password "{$password}"
-				nodeflate
-				nobsdcomp
-				noauth
-				nodefaultroute  #отключаем маршрут по умолчанию,
-                #если он вам нужен - замените на defaultroute
-				persist #переподключаться при обрыве
-				maxfail 10 #количество попыток пере подключения
-				holdoff 15 #интервал между подключениями
-EOT;
-*/
-        //$tmpfname = tempnam("/tmp", "vpn");
-        file_put_contents($this->pathVpn, $tpl);
-
-        //exec('sh '.$this->cmdPath.' "mv -f '.$tmpfname.' '.$this->pathVpn.'"');
-    }
-
-    /**
      * Чтение параметров сетевого интерфейса
      */
     public function getIface($main = false) {
@@ -170,19 +116,6 @@ EOT;
         }
 
         return [null, null, null];
-    }
-
-    /**
-     * Чтение параметров VPN соединения
-     */
-    public function getVpn() {
-        $bn = file($this->pathVpn);
-        //$server = explode(" ", $bn[0]); //2
-        $server = '';
-        $user = explode(" ", trim($bn[2])); //1
-        $pass = explode(" ", trim($bn[3])); //1
-
-        return ['188.120.233.76', trim(trim($user[1]),'\"'), trim(trim($pass[1]),'\"')];
     }
 
     /**
