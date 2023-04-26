@@ -69,9 +69,9 @@
                                             <span class="badge badge-danger">Недоступно</span>
                                         @endif
                                     </td>
-                                    <td> @if($device->changed == 1)
-                                            <a href="{{ route('devices.sendconfig', [$device->id]) }}" class="btn btn-success btn-sm btn-rounded" title="Отправить конфиг на устройство">
-                                                <i class="fa fa-upload"></i></a>
+                                    <td> @if($device->changed == 1 && auth()->user()->getIsSuperAdminAttribute())
+                                            <!-- <a href="{{ route('devices.sendconfig', [$device->id]) }}" class="btn btn-success btn-sm btn-rounded" title="Отправить конфиг на устройство">
+                                                <i class="fa fa-upload"></i></a> -->
                                         @endif
 
                                     </td>
