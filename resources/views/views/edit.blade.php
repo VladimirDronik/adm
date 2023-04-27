@@ -46,7 +46,7 @@
                         </div>
 
                         <div id="on_params_div"  @if($view->type == 'link') style="display: block;" @else style="display: none;"  @endif>
-                            {{ Form::bs_autoselect('link', 'Ссылка:', $links, old('link', $view->params), false, false) }}
+                            {{ Form::bs_autoselect('link', 'Ссылка:', $links, old('link', str_replace('link=', '', $view->params)), false, false) }}
                         </div>
 
                         <div class="form-group row" id="on_method_params_div"

@@ -29,7 +29,7 @@ class ViewService {
 
             $data['params'] = $stringMethod;
         } elseif(trim($data['type']) == 'link')
-            $data['params'] = $data['link'];
+            $data['params'] = 'link='.$data['link'];
                 elseif(trim($data['type']) == 'label')
                     $data['params'] = "push={$data['pushlabel']}&modal={$data['modallabel']}&message={$data['label_longclick_text']}";
                 else
