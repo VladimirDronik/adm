@@ -69,8 +69,8 @@
                                     <th></th>
                                     <th>Надпись</th>
                                     <th>Объект</th>
-                                    <th>Метод вкл</th>
-                                    <th>Метод выкл</th>
+                                    <!-- <th>Метод вкл</th>
+                                    <th>Метод выкл</th> -->
                                     <th>Помещение</th>
                                     <th>Сцена</th>
                                     <th>Активно</th>
@@ -117,7 +117,7 @@
                                             </button>
                                         @endif
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         @if(!$view->is_dimmer)
                                             @if($view->eobject && $view->emethod)
                                                 <button type="button" id="viewmethod_{{ $view->id }}"
@@ -168,7 +168,7 @@
                                                         Отсутствует @endif</button>
                                             @endif
                                         @endif
-                                    </td>
+                                    </td> -->
                                     <td scope="row">{{ $view->room_name }}</td>
                                     <td scope="row">
                                         @if($view->scene)
@@ -223,8 +223,8 @@
                                         <th></th>
                                         <th>Надпись</th>
                                         <th>Объект</th>
-                                        <th>Метод вкл</th>
-                                        <th>Метод выкл</th>
+                                        <!-- <th>Метод вкл</th>
+                                        <th>Метод выкл</th> -->
                                         <th>Помещение</th>
                                         <th>Сцена</th>
                                         <th>Активно</th>
