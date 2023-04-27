@@ -22,8 +22,10 @@
                     <div class="card-body">
                         <a href="{{ route('devices.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить контроллер</a>
                         <a href="{{ route('devices.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
-                        <a href="{{ route('devices.sendallconfigs') }}" class="btn btn-success m-b-10 m-l-5"   title="Отправить изменения на все контролеры">
-                            <i class="fa fa-upload"></i> Отправить изменения</a>
+                        @if(auth()->user()->getIsSuperAdminAttribute())
+                            <!-- <a href="{{ route('devices.sendallconfigs') }}" class="btn btn-success m-b-10 m-l-5"   title="Отправить изменения на все контролеры">
+                                <i class="fa fa-upload"></i> Отправить изменения</a> -->
+                        @endif
                     </div>
                 </div>
             </div>
