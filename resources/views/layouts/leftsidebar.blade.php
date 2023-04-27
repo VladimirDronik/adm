@@ -93,11 +93,11 @@
                     </li>
                 @endcan
                 @can('objects')
-                    <li>
+                    <!-- <li>
                         <a class="has-arrow" href="{{ route('objects.index') }}" aria-expanded="false">
                             <i class="fa fa-cube"></i>
                             <span class="hide-menu">Объекты</span></a>
-                    </li>
+                    </li> -->
                 @endcan
                 @can('rooms')
                     <li>

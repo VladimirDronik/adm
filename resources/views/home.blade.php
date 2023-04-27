@@ -30,7 +30,7 @@
             </div>
         @endcan
         @can('objects')
-            <div class="col-md-3">
+            <!-- <div class="col-md-3">
                 <div class="card p-30">
                     <div class="media">
                         <div class="media-left meida media-middle">
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         @endcan
         @can('rooms')
             <div class="col-md-3">
