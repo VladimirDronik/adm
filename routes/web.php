@@ -43,6 +43,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('dimmers', 'DimmerController')->except('show','destroy')->middleware('can:devices');
     Route::resource('curtains', 'CurtainController')->except('show','destroy')->middleware('can:devices');
     Route::resource('locks', 'LockController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('conditioners', 'ConditionerController')->except('show','destroy')->middleware('can:devices');
+
 
 
     Route::resource('settings', 'SettingController')->except('show','destroy')->middleware('can:settings');
@@ -88,6 +90,15 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     Route::group(['namespace' => 'Ajax', 'as' => 'ajax.'], function () {
+
+        Route::group(['prefix' => 'conditioners', 'as' => 'conditioners.'], function () {
+            Route::post('models', 'ConditionerController@modelsByVendor')->name('models');
+            Route::post('code', 'ConditionerController@getCode')->name('code');
+            Route::post('read_code', 'ConditionerController@readCode')->name('read_code');
+            Route::post('recive_code', 'ConditionerController@reciveCode')->name('recive_code');
+            Route::post('save_code', 'ConditionerController@saveCode')->name('save_code');
+            Route::post('read_code/cancel', 'ConditionerController@cancelReadingCode')->name('cancel_reading_code');
+        });
 
         Route::group(['prefix' => 'devices', 'as' => 'devices.'], function () {
             Route::post('delete', 'DeviceController@delete')->name('delete');

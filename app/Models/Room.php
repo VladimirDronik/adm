@@ -94,4 +94,9 @@ class Room extends Model
     {
         return $this->belongsTo(Room::class, 'group_room');
     }
+
+    public function conditioners()
+    {
+        return $this->hasMany(Conditioner::class, 'id_room', 'id');
+    }
 }
