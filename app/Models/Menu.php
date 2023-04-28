@@ -38,4 +38,14 @@ class Menu extends Model
     {
         return ImageService::MENU_PATH.'/'.$this->image;
     }
+
+    public function parent()
+    {
+        return $this->belongsTo(self::class, 'parent', 'id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(self::class, 'parent', 'id');
+    }
 }
