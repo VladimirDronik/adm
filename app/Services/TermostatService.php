@@ -14,6 +14,7 @@ class TermostatService {
     private $termostat_object_service;
     private $port_service;
     private $port_repository;
+    private $id_object;
 
     public function __construct(TermostatObjectService $termostat_object_service,
                                 PortService $portService, PortRepository $portRepository)
@@ -101,6 +102,7 @@ class TermostatService {
 
         if ($data['object_type'] === 'manual') {
             $termostat->save();
+            $this->id_object = $data['id_object'];
         } elseif ($data['object_type'] === 'auto') {
             DB::transaction(function () use (&$termostat, $port_id, $deviceId, $placeType) {
                 $unique_name = HomeObject::getUniqueObjectName(0, $termostat->name);
@@ -132,7 +134,13 @@ class TermostatService {
                     }
 
                 }
+                $this->id_object = $object->id;
             });
+        }
+
+        if ($this->id_object) {
+            chdir('server/scripts');
+            exec('php check_termostat.php ' . $this->id_object);
         }
 
         return $termostat->id;
