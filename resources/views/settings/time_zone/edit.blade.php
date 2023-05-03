@@ -1,10 +1,14 @@
 @extends('layouts._layout')
 
+@section('css')
+    <link href="{{ asset('ela/css/lib/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+@endsection
+
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование параметра «'. $setting->name.'»',
+       ['title' => 'Редактирование часового пояса',
         'links' => [ route('settings.index') => 'Настройки'],
-        'last_link' => 'Редактирование параметра'])
+        'last_link' => 'Редактирование часового пояса'])
 @endsection
 
 @section('content')
@@ -23,20 +27,29 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::model($setting, ['route' => ['settings.update', $setting->id], 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::model($setting, ['route' => ['time_zone.update', $setting->id], 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_text('value', 'Значение*:', null, ['required' => true]) }}
+                        <div class="form-group row ">
+                            <label class="control-label text-right col-md-3 label-fix" for="code">
+                                <strong>Название*:</strong>
+                            </label>
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-sm-12  pr-0 ">
+                                        <input class="form-control" readonly autocomplete="off" name="name" type="text" value="time_zone">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{ Form::bs_autoselect('value', 'Часовой пояс*:', $timeZones, old('value', $setting->value), false, false, ['required' => true], null) }}
                         {{ Form::bs_textarea('comment', 'Описание*:', null, ['required' => true]) }}
                     </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
                 </div>
-                <div style="height: 200px;">&nbsp;</div>
-                <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
             </div>
         </div>
     </div>
@@ -45,8 +58,13 @@
 @endsection
 
 @section('scripts')
+    <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/time_zone.js') }}"></script>
     <script>
         $(document).ready(function(){
+            initTimeZoneForm();
+            $("#auto_sel_value").chosen({width:"100%", no_results_text: "Не найдено"});
+
             $('#addPageBtn').click(function() {
                 $('#modalPage #modal_groups_div').show();
                 $('#modalPage #namePage').val('');

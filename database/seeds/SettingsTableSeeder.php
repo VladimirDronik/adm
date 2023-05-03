@@ -21,6 +21,11 @@ class SettingsTableSeeder extends Seeder
     {
         $settings = [
             [
+                'name' => 'time_zone',
+                'value' => 'Europe/Moscow',
+                'comment' => 'Часовой пояс приложения'
+            ],
+            [
                 'name' => 'heating_mode',
                 'value' => 'eco',
                 'comment' => 'План отопления дома: eco, night, normal'
