@@ -10,10 +10,11 @@
 
                 <a href="{{ route('settings.create') }}" ><i class="fa fa-cog fa-lg"></i>&nbsp;&nbsp;Стандартный параметр</a>
 
+                @if (!App\Repositories\SettingRepository::getByName('time_zone'))
                 <br><br>
 
                 <a href="{{ route('time_zone.create') }}" ><i class="fa fa-clock-o fa-lg"></i>&nbsp;&nbsp;Параметр часового пояса</a>
-
+                @endif
 
             </div>
             <div class="modal-footer">

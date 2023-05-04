@@ -21,6 +21,11 @@ class SettingRepository {
         return  Setting::where('id', $id)->first();
     }
 
+    static public function getByName($name)
+    {
+        return  Setting::where('name', $name)->first();
+    }
+
     static public function set($name, $value)
     {
         Setting::where('name', $name)->update(['value' => $value]);
