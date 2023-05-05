@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Network\UpdateRequest;
-use App\Models\Setting;
 use App\Services\NetworkService;
-use App\Services\SettingService;
-use Illuminate\Http\Request;
 
 class NetworkController extends Controller
 {
@@ -25,10 +22,11 @@ class NetworkController extends Controller
     public function update(UpdateRequest $r, NetworkService $service)
     {
         try {
-            $service->setIface($r->ip, $r->mask);
             $service->setIface($r->main_ip, $r->main_mask, $r->main_gateway);
+            $service->setIface($r->ip, $r->mask);
 
             $service->reload();
+
             return redirect()->route('network.edit')->with('success', 'Данные успешно обновлены');
         } catch (\Throwable $e) {
             \Log::error('Ошибка при обновлении данных Настроек сети', [$e->getMessage()]);
