@@ -64,6 +64,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th>ID</th>
                                     <th>Тип</th>
                                     <th>Статус</th>
                                     <th></th>
@@ -84,6 +85,9 @@
                             <tbody>
                             @foreach($views as $view)
                                 <tr id="tr{{$view->id}}">
+                                    <td>
+                                        <a href="{{ route('views.edit',[$view->id]) }}">{{ $view->id }}</a>
+                                    </td>
                                     <td><a href="{{ route('views.edit',[$view->id]) }}"
                                            title="{{ $view->description }}">{{ $view->rus_type }}</a></td>
                                     <td>
@@ -218,6 +222,7 @@
                             @if(count($views) > 10)
                                 <tfoot>
                                     <tr>
+                                        <th>ID</th>
                                         <th>Тип</th>
                                         <th>Статус</th>
                                         <th></th>
