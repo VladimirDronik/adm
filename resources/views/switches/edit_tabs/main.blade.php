@@ -1,5 +1,7 @@
 
 <br>
+{{ Form::bs_radio('type', 'Тип выключателя*:', $types, old('type', $switch->type), ['required' => true]) }}
+
 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
 @if(($switch->object && $switch->object->is_system) || !$can['devices.show-object'])

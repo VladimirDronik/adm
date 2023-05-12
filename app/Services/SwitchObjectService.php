@@ -27,4 +27,20 @@ class SwitchObjectService {
 
         return $object;
     }
+
+    /**
+     * Изменение типа объекта
+     *
+     * @param HomeObject $object
+     * @param string $type
+     * @return HomeObject
+     */
+    public function updateSwitchObjectType(HomeObject $object, string $type): HomeObject
+    {
+        $object->type = $type === DeviceSwitch::TYPE_BUTTON ? ObjType::TYPE_BUTTON : ObjType::TYPE_SWITCH;
+
+        $object->save();
+
+        return $object;
+    }
 }

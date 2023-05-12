@@ -61,9 +61,7 @@ class SwitchService {
     {
 
         $switch->name = trim($data['name']);
-        if (isset($data['type'])) {
-            $switch->type = $data['type'];
-        }
+        $switch->type = $data['type'];
         $switch->id_object = (int)$data['id_object'];
 
     }
@@ -177,6 +175,7 @@ class SwitchService {
                 $switch->object->save();
             }
             $this->prepareSwitch($switch, $data);
+            $this->switch_object_service->updateSwitchObjectType($switch->object, $data['type']);
             $switch->save();
         });
 
