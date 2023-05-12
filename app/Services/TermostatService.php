@@ -139,7 +139,7 @@ class TermostatService {
         }
 
         if ($this->id_object) {
-            chdir('server/scripts');
+            chdir(env('SERVER_FOLDER').'/scripts');
             exec('php check_termostat.php ' . $this->id_object);
         }
 
