@@ -133,6 +133,25 @@ function del() {
     }
 }
 
+function delWithCheckbox() {
+
+    $('#del_modal').modal('hide');
+
+    if (del_id) {
+        $.ajax({
+            url: deleteUrl,
+            data: {'_token': _token, 'id': del_id, 'del_checkbox': del_checkbox},
+            success: function (data) {
+                if (data.result) {
+                    window.location.href = url;
+                } else {
+                    showErrorModal('Ошибка при удалении');
+                }
+            }
+        });
+    }
+}
+
 function addMenu(idObject) {
 
     if (idObject) {

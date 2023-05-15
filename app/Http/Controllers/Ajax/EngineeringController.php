@@ -26,7 +26,7 @@ class EngineeringController extends Controller
     {
         abort_if(!ajaxHas($r, ['id']), 400);
 
-        return response()->json(['result' => $this->service->delete((int)$r->id)]);
+        return response()->json(['result' => $this->service->delete((int)$r->id, (bool)$r->del_checkbox)]);
     }
 
 }
