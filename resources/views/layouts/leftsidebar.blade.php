@@ -132,7 +132,7 @@
                 <li class="nav-label">Настройки</li>
                 @can('network')
                     <li> <a class="has-arrow" href="{{ route('network.edit') }}" aria-expanded="false">
-                            <i class="fa fa-plug"></i><span class="hide-menu">Сеть и VPN</span></a></li>
+                            <i class="fa fa-plug"></i><span class="hide-menu">Настройка сети</span></a></li>
                 @endcan
                 @can('scenes')
                     <li> <a class="has-arrow" href="{{ route('users.index') }}" aria-expanded="false">

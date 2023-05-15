@@ -29,9 +29,6 @@ class UpdateRequest extends FormRequest
             'main_gateway' => 'required|string|ip|max:15',
             'ip' => 'required|string|ip|max:15',
             'mask' => 'required|string|ip|max:15',
-            'vpn_address' => 'required|string|ip|max:15',
-            'vpn_login' => 'required|string|min:2',
-            'vpn_password' => 'required|string|min:6|max:150',
         ];
     }
 
@@ -51,12 +48,6 @@ class UpdateRequest extends FormRequest
             'mask.required' => 'Не указана маска для подсети',
             'mask.max' => 'Маска для подсети содержит более 15 символов',
             'mask.ip' => 'Недопустимая маска для подсети',
-            'vpn_address.required' => 'Не указан адрес сервера vpn',
-            'vpn_address.max' => 'Адрес сервера vpn содержит более 15 символов',
-            'vpn_address.ip' => 'Недопустимый адрес сервера vpn',
-            'vpn_login.required' => 'Не указан логин vpn',
-            'vpn_password.required' => 'Не указан пароль vpn',
-            'vpn_password.min' => 'Пароль должен содержать не менее 6 символов',
             'ip.max' => 'IP для подсети содержит более 15 символов',
             'ip.ip' => 'Недопустимый ip для подсети',
         ];

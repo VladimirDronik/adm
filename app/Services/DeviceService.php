@@ -67,7 +67,7 @@ class DeviceService {
         $oldIP = DeviceService::getDeviceIP($data['id']);
 
         if (empty($sip)) {
-            throw new \Exception('Не указан ip-адрес для подсети устройств в разделе «Сеть и VPN»');
+            throw new \Exception('Не указан ip-адрес для подсети устройств в разделе «Настройка сети»');
         }
 
         if(self::getStatus($data['id']))
