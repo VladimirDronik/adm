@@ -11,7 +11,8 @@
                 <div class="card">
                     <div class="card-body">
                         @can('settings.create')
-                            <a href="{{ route('settings.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить параметр</a>
+                            <button type="button" class="btn btn-success m-b-10 m-l-5" id="addPageBtn">Добавить параметр
+                            </button>
                         @endcan
                         <a href="{{ route('settings.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
@@ -38,11 +39,11 @@
                             <tbody>
                                 @foreach($settings as $setting)
                                     <tr id="tr{{$setting->id}}">
-                                        <td><a href="{{ route('settings.edit', [$setting->id]) }}">{{ $setting->name }}</a></td>
+                                        <td><a href="{{ route($setting->name == 'time_zone' ? 'time_zone.edit' : 'settings.edit', [$setting->id]) }}">{{ $setting->name }}</a></td>
                                         <td>{{ $setting->value }}</td>
                                         <td>{{ $setting->comment }}</td>
                                         <td align="center" class="text-center">
-                                            <a href="{{ route('settings.edit', [$setting->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                            <a href="{{ route($setting->name == 'time_zone' ? 'time_zone.edit' : 'settings.edit', [$setting->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>
                                             </a>
                                         </td>
@@ -80,6 +81,7 @@
     </div>
     @include('components.del_modal')
     @include('components.info_modal')
+    @include('settings.create_modal')
 @endsection
 
 @section('scripts')
@@ -110,6 +112,12 @@
                             }
                         });
                     }
+                });
+
+                $('#addPageBtn').click(function() {
+                    $('#modalPage #modal_groups_div').show();
+                    $('#modalPage #namePage').val('');
+                    $('#modal_page_init_btn').click();
                 });
             });
         </script>

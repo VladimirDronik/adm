@@ -25,6 +25,10 @@ class SettingService {
         $this->prepareSetting($setting, $data);
         $setting->save();
 
+        if ($setting->name == 'time_zone') {
+            $this->changeTimeZone($setting->value);
+        }
+
         return $setting->id;
     }
 
@@ -34,6 +38,10 @@ class SettingService {
 
         $this->prepareSetting($setting, $data);
         $setting->save();
+
+        if ($setting->name == 'time_zone') {
+            $this->changeTimeZone($setting->value);
+        }
 
         return $setting->id;
     }
@@ -45,7 +53,7 @@ class SettingService {
      */
     static public function get(string $name)
     {
-       return SettingRepository::get($name);
+        return SettingRepository::get($name);
     }
 
     /**
@@ -57,5 +65,30 @@ class SettingService {
     static public function set(string $name, string $value)
     {
         SettingRepository::set($name, $value);
+    }
+
+    /**
+     * Производит замену часового пояса в системе, php и laravel
+     *
+     * @param string $timeZone
+     */
+    private function changeTimeZone(string $timeZone) {
+
+        // Замена часового пояса в laravel
+        $path = base_path('.env');
+
+        if (file_exists($path)) {
+            file_put_contents($path, str_replace(
+                'APP_TIMEZONE='.config('app.timezone'), 'APP_TIMEZONE='.$timeZone, file_get_contents($path)
+            ));
+        }
+
+        // Замена часового пояса в системе
+        exec("rm -rf /etc/localtime");
+        exec("ln -snf /usr/share/zoneinfo/$timeZone /etc/localtime && echo $timeZone > /etc/timezone");
+
+        // Замена часового пояса в php
+        exec("sed -i 's,.*date.timezone =.*,date.timezone = '\"$timeZone\"',g' /etc/php/7.4/fpm/php.ini");
+        exec("sed -i 's,.*date.timezone =.*,date.timezone = '\"$timeZone\"',g' /etc/php/7.4/cli/php.ini");
     }
 }

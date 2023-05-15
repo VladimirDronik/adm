@@ -13,7 +13,17 @@ class SettingRepository {
 
     static public function get($name)
     {
-       return  Setting::where('name', $name)->first()->value;
+        return  Setting::where('name', $name)->first()->value;
+    }
+
+    static public function getById($id)
+    {
+        return  Setting::where('id', $id)->first();
+    }
+
+    static public function getByName($name)
+    {
+        return  Setting::where('name', $name)->first();
     }
 
     static public function set($name, $value)
