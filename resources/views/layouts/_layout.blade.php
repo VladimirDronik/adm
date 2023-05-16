@@ -13,10 +13,9 @@
             <div class="page-wrapper">
                 @yield('breadcrumbs')
                 @yield('content')
-
-                @include('layouts.footer')
             </div>
         <!-- End Page wrapper  -->
+        @include('layouts.footer')
     </div>
     <!-- End Wrapper -->
     @include('layouts.scripts')
