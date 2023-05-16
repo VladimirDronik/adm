@@ -51,14 +51,14 @@
                             </span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link @if($active === '') active show @endif" href="#">
                             <span>
                                 <img width="18" height="20" title="" src="{{ asset('ela/images/objects/pass_sensor.png') }}">
                                 Датчики прохода (0)
                             </span>
                         </a>
-                    </li>
+                    </li> -->
                     <li class="nav-item">
                         <a class="nav-link @if($active === '') active show @endif" href="{{ route('carbmonoxide.index') }}">
                             <span>
@@ -67,14 +67,14 @@
                             </span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link @if($active === '') active show @endif" href="{{ route('manometr.index') }}">
                             <span>
                                  <img width="20" height="20" title="" src="{{ asset('ela/images/objects/manometr.png') }}">
                                 Манометры ({{ $detectorsService->getManometrCount() }})
                             </span>
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </div>
