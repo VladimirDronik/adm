@@ -95,24 +95,25 @@
                             </div>
                         </div>
 
+                        <div id="one_clk_div" style="display: none">
+                            {{ Form::bs_title('Одиночное нажатие') }}
 
-                        {{ Form::bs_title('Одиночное нажатие') }}
+                            {{ Form::bs_autoselect('object', 'Объект:', $objects, old('object'),
+                                false, false, [], null, 'Объект, на который воздействуем') }}
 
-                        {{ Form::bs_autoselect('object', 'Объект:', $objects, old('object'),
-                            false, false, [], null, 'Объект, на который воздействуем') }}
+                            {{ Form::bs_autoselect('method', 'Метод:', [], old('method'),
+                                false, false, [], null, 'Метод объекта при одиночном нажатии кнопки') }}
 
-                        {{ Form::bs_autoselect('method', 'Метод:', [], old('method'),
-                            false, false, [], null, 'Метод объекта при одиночном нажатии кнопки') }}
-
-                        <div class="form-group row" id="method_params_div"
-                             @if(!old('method')) style="display: none;" @endif>
-                            <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_params"></label>
-                            <div class="col-md-9 pr-0">
-                                <div class="form-group row ">
-                                    <label class="control-label text-right col-md-6 label-fix" id="method_params_label" for="method_params">...</label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" autocomplete="off" id="method_params" name="method_params"
-                                               type="text" value="{{ old('method_params') }}">
+                            <div class="form-group row" id="method_params_div"
+                                @if(!old('method')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row ">
+                                        <label class="control-label text-right col-md-6 label-fix" id="method_params_label" for="method_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="method_params" name="method_params"
+                                                type="text" value="{{ old('method_params') }}">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -120,7 +121,7 @@
 
 
 
-                        <div id="double_clk_div">
+                        <div id="double_clk_div" style="display: none">
                             {{ Form::bs_title('Двойное нажатие') }}
 
 
@@ -145,7 +146,7 @@
                             </div>
                         </div>
 
-                        <div id="long_clk_div">
+                        <div id="long_clk_div" style="display: none">
                             {{ Form::bs_title('Длительное нажатие') }}
 
                             {{ Form::bs_autoselect('object_lc', 'Объект:', $objects, old('object_lc'),
@@ -288,6 +289,25 @@
                 clearCreateObjectModal();
                 $('#create_object_modal_init_btn').click();
                 return false;
+            });
+
+            $('#switch_form input[name=type]').change(function() {
+                var options = $('#switch_form input[name=type]');
+                for (var i = 0; i < options.length; i++) {
+                    if (options[i].checked) {
+                        var selectedOption = options[i].value;
+                    }
+                }
+
+                if (selectedOption == 'button') {
+                    $('#one_clk_div').show();
+                    $('#double_clk_div').show();
+                    $('#long_clk_div').show();
+                } else {
+                    $('#one_clk_div').show();
+                    $('#double_clk_div').hide();
+                    $('#long_clk_div').hide();
+                }
             });
 
             $('#create_object_modal_btn').click(function() {

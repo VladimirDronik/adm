@@ -23,6 +23,7 @@
     </div>
 </div>
 
+@if($switch->type == 'button')
 <div id="double_clk_div" @if ($hp_device!=null) style="display: none" @endif>
 
     {{ Form::bs_title('Двойное нажатие') }}
@@ -73,3 +74,4 @@
         </div>
     </div>
 </div>
+@endif
