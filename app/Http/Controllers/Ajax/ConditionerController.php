@@ -5,14 +5,17 @@ namespace App\Http\Controllers\Ajax;
 use App\Repositories\ConditionerRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\ConditionerService;
 
 class ConditionerController extends Controller
 {
     private $conditionersRep;
+    private $service;
 
-    public function __construct(ConditionerRepository $conditionersRep)
+    public function __construct(ConditionerRepository $conditionersRep, ConditionerService $service)
     {
         $this->conditionersRep = $conditionersRep;
+        $this->service = $service;
     }
 
     public function modelsByVendor(Request $r)
@@ -51,18 +54,24 @@ class ConditionerController extends Controller
     {
         abort_if(!ajaxHas($r, ['wbMir', 'ip']), 400);
 
-        $command = 'rs_control ir_scan -r -d wb-mir --ip ' . $r->ip . ' -u ' . $r->wbMir;
+        $cancelResponse = $this->service->cancelReadCommand($r->ip, $r->wbMir);
 
-        $output = null;
+        if (!$cancelResponse || $cancelResponse['error_code']) {
+            return response()->json([
+                'result' => false,
+                'error' => $cancelResponse ? $cancelResponse['error_text'] : 'Неизвестная ошибка отмены считывания'
+            ]);
+        }
 
-        exec($command, $output);
-
-        $response = $output ? json_decode($output[0], true) : null;
+        $response = $this->service->startReadCommand($r->ip, $r->wbMir);
 
         if ($response && !$response['error_code']) {
             return response()->json(['result' => true]);
         } else {
-            return response()->json(['result' => false, 'error' => $response['error_text']]);
+            return response()->json([
+                'result' => false,
+                'error' => $response ? $response['error_text'] : 'Неизвестная ошибка запуска считывания'
+            ]);
         }
     }
 
@@ -70,18 +79,15 @@ class ConditionerController extends Controller
     {
         abort_if(!ajaxHas($r, ['wbMir', 'ip']), 400);
 
-        $command = 'rs_control ir_scan -g -d wb-mir --ip ' . $r->ip . ' -u ' . $r->wbMir;
-
-        $output = null;
-
-        exec($command, $output);
-
-        $response = $output ? json_decode($output[0], true) : null;
+        $response = $this->service->reciveCodeCommand($r->ip, $r->wbMir);
 
         if ($response && !$response['error_code']) {
             return response()->json(['result' => true, 'code' => $response['signal']]);
         } else {
-            return response()->json(['result' => false, 'code' => null, 'error' => $response['error_text']]);
+            return response()->json([
+                'result' => false,
+                'code' => null,
+                'error' => $response ? $response['error_text'] : 'Неизвестная ошибка получения кода']);
         }
     }
 
@@ -111,18 +117,15 @@ class ConditionerController extends Controller
     {
         abort_if(!ajaxHas($r, ['wbMir', 'ip']), 400);
 
-        $command = 'rs_control ir_scan --cancel_scan -d wb-mir --ip ' . $r->ip . ' -u ' . $r->wbMir;
-
-        $output = null;
-
-        exec($command, $output);
-
-        $response = $output ? json_decode($output[0], true) : null;
+        $response = $this->service->cancelReadCommand($r->ip, $r->wbMir);
 
         if ($response && !$response['error_code']) {
             return response()->json(['result' => true]);
         } else {
-            return response()->json(['result' => false, 'error' => $response['error_text']]);
+            return response()->json([
+                'result' => false,
+                'error' => $response ? $response['error_text'] : 'Неизвестная ошибка отмены считывания'
+            ]);
         }
     }
 }

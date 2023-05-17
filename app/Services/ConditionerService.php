@@ -87,4 +87,58 @@ class ConditionerService {
 
         return $conditioner->id;
     }
+
+    /**
+     * Команда перевода устройства в режим считывания кода с пульта
+     *
+     * @param string $ip
+     * @param string $wbMir
+     * @return null|array
+     */
+    public function startReadCommand(string $ip, string $wbMir): ?array
+    {
+        $command = 'rs_control ir_scan -r -d wb-mir --ip ' . $ip . ' -u ' . $wbMir;
+
+        $output = null;
+
+        exec($command, $output);
+
+        return $output ? json_decode($output[0], true) : null;
+    }
+
+    /**
+     * Команда получения считанного кода с пульта
+     *
+     * @param string $ip
+     * @param string $wbMir
+     * @return null|array
+     */
+    public function reciveCodeCommand(string $ip, string $wbMir): ?array
+    {
+        $command = 'rs_control ir_scan -g -d wb-mir --ip ' . $ip . ' -u ' . $wbMir;
+
+        $output = null;
+
+        exec($command, $output);
+
+        return $output ? json_decode($output[0], true) : null;
+    }
+
+    /**
+     * Команда отмены считывания кода с пульта
+     *
+     * @param string $ip
+     * @param string $wbMir
+     * @return null|array
+     */
+    public function cancelReadCommand(string $ip, string $wbMir): ?array
+    {
+        $command = 'rs_control ir_scan --cancel_scan -d wb-mir --ip ' . $ip . ' -u ' . $wbMir;
+
+        $output = null;
+
+        exec($command, $output);
+
+        return $output ? json_decode($output[0], true) : null;
+    }
 }
