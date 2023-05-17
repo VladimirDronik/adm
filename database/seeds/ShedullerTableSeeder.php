@@ -53,7 +53,15 @@ class ShedullerTableSeeder extends Seeder
                 'days' => '0,1,2,3,4,5,6',
                 'close' => 1,
                 'system' => 1
-            ]
+            ],
+            [
+                'name' => 'Удаление старых данных из таблицы графиков',
+                'type' => 'w',
+                'time' => '00:00',
+                'days' => '0,1,2,3,4,5,6',
+                'close' => 1,
+                'system' => 1
+            ],
         ];
 
     }
