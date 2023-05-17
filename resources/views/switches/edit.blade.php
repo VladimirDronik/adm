@@ -70,12 +70,11 @@
 
 
                     {!! Form::close() !!}
-                </div>
+            </div>
                 <div style="height: 200px;">&nbsp;</div>
                 <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
                 <button type="button" id="init_method_btn" style="display: none;" data-toggle="modal" data-target="#method_modal">&nbsp;</button>
                 <button type="button" id="init_message_btn" style="display: none;" data-toggle="modal" data-target="#message_modal"></button>
-            </div>
         </div>
     </div>
     @include('objects.message_modal')

@@ -14,8 +14,8 @@
                 @yield('breadcrumbs')
                 @yield('content')
             </div>
+            @include('layouts.footer')
         <!-- End Page wrapper  -->
-        @include('layouts.footer')
     </div>
     <!-- End Wrapper -->
     @include('layouts.scripts')

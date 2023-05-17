@@ -54,7 +54,6 @@
                 </div>
                 <div style="height: 200px;">&nbsp;</div>
                 <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
-            </div>
         </div>
     </div>
     @include('conditioners.code_modals')
