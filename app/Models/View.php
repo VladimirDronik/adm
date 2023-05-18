@@ -81,6 +81,7 @@ class View extends Model
     const TYPE_LABEL = 'label';
     const TYPE_DIMMER = 'dimmer';
     const TYPE_LINK = 'link';
+    const TYPE_CONDITIONER = 'conditioner';
 
     protected $casts = ['active' => 'boolean'];
     protected $guarded = ['id'];
@@ -95,6 +96,7 @@ class View extends Model
             self::TYPE_LABEL => 'Индикатор',
             self::TYPE_DIMMER => 'Диммер',
             self::TYPE_LINK => 'Ссылка',
+            self::TYPE_CONDITIONER => 'Кондиционер',
         ];
     }
 

@@ -41,7 +41,7 @@
                         {{ Form::bs_autoselect('id_object', 'Объект:', $objects, old('id_object', $view->id_object), false, false) }}
                         </div>
 
-                        <div id="on_method_div" @if(($view->type == 'dimmer')||($view->type == 'link')) style="display: none;" @endif>
+                        <div id="on_method_div" @if(($view->type == 'dimmer')||($view->type == 'link')||($view->type == 'conditioner')) style="display: none;" @endif>
                         {{ Form::bs_autoselect('id_method', 'Метод вкл:', $methods, old('id_method', $view->on_method), false, false) }}
                         </div>
 
@@ -354,6 +354,9 @@
                 if ($(this).val() === 'switch') {
                     $('#view_form #off_method_div').show();
                 } else if ($(this).val() === 'dimmer') {
+                    $('#view_form #off_method_div').hide();
+                    $('#view_form #on_method_div').hide();
+                } else if ($(this).val() === 'conditioner') {
                     $('#view_form #off_method_div').hide();
                     $('#view_form #on_method_div').hide();
                 } else if ($(this).val() === 'termostat') {

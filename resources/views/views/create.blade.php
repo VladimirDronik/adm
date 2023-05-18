@@ -344,6 +344,9 @@
                 } else if ($(this).val() === 'dimmer') {
                     $('#view_form #off_method_div').hide();
                     $('#view_form #on_method_div').hide();
+                } else if ($(this).val() === 'conditioner') {
+                    $('#view_form #off_method_div').hide();
+                    $('#view_form #on_method_div').hide();
                 } else if ($(this).val() === 'termostat') {
                     $('#additionallydiv').show();
                     $('#termostatdiv').show();
