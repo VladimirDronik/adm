@@ -45,8 +45,9 @@ class ViewController extends Controller
         $images = ImageService::getViewImages();
         $objects = $this->object_rep->getAllToArray();
         $links = $this->pages_rep->getAllToArray();
+        $safeTypes = View::getFullSafeTypes();
 
-        return [$types, $rooms, $objects, $scenes, $images, $links];
+        return [$types, $rooms, $objects, $scenes, $images, $links, $safeTypes];
     }
 
     public function index(Request $r)
@@ -62,11 +63,11 @@ class ViewController extends Controller
 
     public function create()
     {
-        list($types, $rooms, $objects, $scenes, $images, $links) = $this->getLists();
+        list($types, $rooms, $objects, $scenes, $images, $links, $safeTypes) = $this->getLists();
 
         $colors = ColorRepository::getColors();
 
-        return view('views.create', compact('types', 'rooms', 'objects', 'scenes', 'images', 'links', 'colors'));
+        return view('views.create', compact('types', 'rooms', 'objects', 'scenes', 'images', 'links', 'colors', 'safeTypes'));
     }
 
     public function store(CreateRequest $r)
@@ -84,7 +85,7 @@ class ViewController extends Controller
 
     public function edit(View $view, ObjectService $object_service)
     {
-        list($types, $rooms, $objects, $scenes, $images, $links) = $this->getLists();
+        list($types, $rooms, $objects, $scenes, $images, $links, $safeTypes) = $this->getLists();
         $methods = $object_service->getMethodsByObjectIdToArray($view->id_object);
 
         $colors = ColorRepository::getColors();
@@ -95,23 +96,39 @@ class ViewController extends Controller
         $pushlabel = null;
         $modallabel = null;
         $label_longclick_text = null;
+        $link = null;
+        $safe_type = null;
 
         if($view->type == 'termostat') {
             $onmethodparams = explode(';',$view->params);
             $enabletermostat = explode('=',$onmethodparams[0])[1];
             $lowval_termostat = explode('=',$onmethodparams[1])[1];
             $highval_termostat = explode('=',$onmethodparams[2])[1];
+            if (array_key_exists(3, $onmethodparams)) {
+                $safe_type = explode('=',$onmethodparams[3])[1];
+            }
         } elseif ($view->type == 'label') {
             $onmethodparams = explode('&',$view->params);
             $pushlabel = explode('=',$onmethodparams[0])[1];
             $modallabel = explode('=',$onmethodparams[1])[1];
             $label_longclick_text = explode('=',$onmethodparams[2])[1];
+            if (array_key_exists(3, $onmethodparams)) {
+                $safe_type = explode('=',$onmethodparams[3])[1];
+            }
+        } elseif ($view->type == 'link') {
+            $params = explode(';',$view->params);
+            $link = explode('=',$params[0])[1];
+            if (array_key_exists(1, $params)) {
+                $safe_type = explode('=',$params[1])[1];
+            }
+        } elseif ($view->params) {
+            $safe_type = explode('=',$view->params)[1];
         }
 
 
 
-        return view('views.edit', compact('view', 'types',
-            'rooms', 'methods', 'objects', 'scenes', 'images', 'links', 'colors',
+        return view('views.edit', compact('view', 'types', 'safeTypes', 'link',
+            'rooms', 'methods', 'objects', 'scenes', 'images', 'links', 'colors', 'safe_type',
             'enabletermostat', 'lowval_termostat', 'highval_termostat', 'pushlabel', 'modallabel', 'label_longclick_text'));
     }
 

@@ -36,6 +36,7 @@
                         {{ Form::bs_radio('type', 'Тип элемента*:', $types, old('type', $view->type), ['required' => true]) }}
                         {{ Form::bs_text('description', 'Описание:') }}
                         {{ Form::bs_checkbox('active', 'Активность:') }}
+                        {{ Form::bs_radio('safe_type', 'Защита от случайного нажатия:', $safeTypes, old('safe_type', $safe_type)) }}
 
                         <div id="id_object_div"  @if($view->type != 'link') style="display: block;" @else style="display: none;" @endif>
                         {{ Form::bs_autoselect('id_object', 'Объект:', $objects, old('id_object', $view->id_object), false, false) }}
@@ -46,7 +47,7 @@
                         </div>
 
                         <div id="on_params_div"  @if($view->type == 'link') style="display: block;" @else style="display: none;"  @endif>
-                            {{ Form::bs_autoselect('link', 'Ссылка:', $links, old('link', str_replace('link=', '', $view->params)), false, false) }}
+                            {{ Form::bs_autoselect('link', 'Ссылка:', $links, old('link', $link), false, false) }}
                         </div>
 
                         <div class="form-group row" id="on_method_params_div"

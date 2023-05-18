@@ -20,22 +20,42 @@ class ViewService {
         else
             $view->color = NULL;
 
+        $safeType = null;
+
+        if (array_key_exists('safe_type', $data) && $data['safe_type']) {
+            $safeType = 'auth='.$data['safe_type'];
+        }
 
         if(trim($data['type']) == 'termostat') {
 
             $stringMethod = 'editable='.$data['enabletermostat'].';';
             $stringMethod.='lowval='.$data['lowval_termostat'].';';
-            $stringMethod.='highval='.$data['highval_termostat'];
+            if ($safeType) {
+                $stringMethod.='highval='.$data['highval_termostat'].';'.$safeType;
+            } else {
+                $stringMethod.='highval='.$data['highval_termostat'];
+            }
 
             $data['params'] = $stringMethod;
-        } elseif(trim($data['type']) == 'link')
-            $data['params'] = 'link='.$data['link'];
-                elseif(trim($data['type']) == 'label')
-                    $data['params'] = "push={$data['pushlabel']}&modal={$data['modallabel']}&message={$data['label_longclick_text']}";
-                else
+        } elseif(trim($data['type']) == 'link') {
+            if ($safeType) {
+                $data['params'] = 'link='.$data['link'].';'.$safeType;
+            } else {
+                $data['params'] = 'link='.$data['link'];
+            }
+        } elseif(trim($data['type']) == 'label') {
+            if ($safeType) {
+                $data['params'] = "push={$data['pushlabel']}&modal={$data['modallabel']}&message={$data['label_longclick_text']}&$safeType";
+            } else {
+                $data['params'] = "push={$data['pushlabel']}&modal={$data['modallabel']}&message={$data['label_longclick_text']}";
+            }
+        } else {
+            if ($safeType) {
+                $data['params'] = $safeType;
+            } else {
                 $data['params'] = null;
-
-
+            }
+        }
 
         $view->room = ((int)$data['room'] === 0) ? null : (int)$data['room'];
         if (is_null($view->room)) {

@@ -83,6 +83,9 @@ class View extends Model
     const TYPE_LINK = 'link';
     const TYPE_CONDITIONER = 'conditioner';
 
+    const PIN_SAFE_TYPE = 'pin';
+    const CONFIRM_SAFE_TYPE = 'confirm';
+
     protected $casts = ['active' => 'boolean'];
     protected $guarded = ['id'];
 
@@ -97,6 +100,15 @@ class View extends Model
             self::TYPE_DIMMER => 'Диммер',
             self::TYPE_LINK => 'Ссылка',
             self::TYPE_CONDITIONER => 'Кондиционер',
+        ];
+    }
+
+    public static function getFullSafeTypes()
+    {
+        return [
+            self::PIN_SAFE_TYPE => 'ПИН-код',
+            self::CONFIRM_SAFE_TYPE => 'Подтверждение',
+            '' => 'Выкл',
         ];
     }
 

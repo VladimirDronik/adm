@@ -33,6 +33,7 @@
                             {{ Form::bs_radio('type', 'Тип элемента*:', $types, null, ['required' => true]) }}
                             {{ Form::bs_text('description', 'Описание:') }}
                             {{ Form::bs_checkbox('active', 'Активность:', true) }}
+                            {{ Form::bs_radio('safe_type', 'Защита от случайного нажатия:', $safeTypes, null) }}
 
                             <div id="id_object_div" style="display: block;">
                             {{ Form::bs_autoselect('id_object', 'Объект:', $objects, old('id_object'), false, false) }}
