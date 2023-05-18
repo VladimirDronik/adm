@@ -5,12 +5,14 @@
 
 <div class="form-group row ">
 
-    @if(($termostat->iobject && $termostat->iobject->is_system) || !$can['devices.show-object'])
         <div class="form-group row">
+            @if(($termostat->iobject && $termostat->iobject->is_system) || !$can['devices.show-object'])
             <label class="control-label text-right col-md-3 label-fix" for="">
                 Объект термостата:
             </label>
+            @endif
             <div class="col-md-9">
+                @if(($termostat->iobject && $termostat->iobject->is_system) || !$can['devices.show-object'])
                 <div class="mt-2">
                     <a class="a-color" href="{{ route('objects.edit', [$termostat->id_object]) }}">
                         {{ $termostat->iobject->name }} @if($termostat->iobject && $termostat->iobject->is_system) (системный) @endif </a>
