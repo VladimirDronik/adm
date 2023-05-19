@@ -63,6 +63,13 @@ class NetworkService {
      */
     public function reload()
     {
-        exec('/opt/touchon/scripts/network.sh');
+        $output = null;
+        $resultCode = null;
+
+        exec('/opt/touchon/scripts/network.sh', $output, $resultCode);
+
+        if ($resultCode) {
+            throw new \Exception(implode(', ', $output), 62);
+        }
     }
 }

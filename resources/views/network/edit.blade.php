@@ -37,7 +37,7 @@
             </div>
         </div>
     </div>
-    @include('components.confirm_modal')
+    @include('network.edit_modal')
 @endsection
 
 @section('scripts')
@@ -78,22 +78,8 @@
                 return html;
             }
 
-            function showConfirmModal() {
-                let html = getChanges();
-                html += '<br><b>Устройство будет доступно по адресу: '
-                    +$('input[name=main_ip]').val()+'</b>';
-                $('#confirm_modal_body').html(html);
-                $('#confirm_modal_btn').text('Перезагрузить');
-                $('#confirm_init_btn').click();
-            }
-
             $('button[type=submit]').click(function(){
-                showConfirmModal();
-                return false;
-            });
-
-            $('#confirm_modal_btn').click(function(){
-                $('#form').submit();
+                $('#edit_init_btn').click();
             });
 
         });

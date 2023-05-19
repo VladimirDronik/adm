@@ -30,6 +30,11 @@ class NetworkController extends Controller
             return redirect()->route('network.edit')->with('success', 'Данные успешно обновлены');
         } catch (\Throwable $e) {
             \Log::error('Ошибка при обновлении данных Настроек сети', [$e->getMessage()]);
+            if ($e->getCode() == 62) {
+                return redirect()
+                    ->route('network.edit')
+                    ->with('error','Что-то пошло не так. Попробуйте снова. Если ошибка повторится, обратитесь в службу поддержки');
+            }
         }
         return redirect()->route('network.edit')->with('error','Ошибка при сохранении изменений');
     }
