@@ -25,7 +25,7 @@ class NetworkController extends Controller
             $service->setIface($r->main_ip, $r->main_mask, $r->main_gateway);
             $service->setIface($r->ip, $r->mask);
 
-            $service->reload();
+            $service->reload($r->main_ip, $r->ip);
 
             return redirect()->route('network.edit')->with('success', 'Данные успешно обновлены');
         } catch (\Throwable $e) {
@@ -33,7 +33,12 @@ class NetworkController extends Controller
             if ($e->getCode() == 62) {
                 return redirect()
                     ->route('network.edit')
-                    ->with('error','Что-то пошло не так. Попробуйте снова. Если ошибка повторится, обратитесь в службу поддержки');
+                    ->with('error','Что-то пошло не так. Попробуйте снова. Если ошибка повторится, обратитесь в службу поддержки.');
+            }
+            if ($e->getCode() == 255) {
+                return redirect()
+                    ->route('network.edit')
+                    ->with('error','Настройки сети не были применены. Попробуйте снова. Если ошибка повторится, обратитесь в службу поддержки.');
             }
         }
         return redirect()->route('network.edit')->with('error','Ошибка при сохранении изменений');

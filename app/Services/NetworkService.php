@@ -60,16 +60,19 @@ class NetworkService {
 
     /**
      * Перезагрузка сервера
+     *
+     * @param string $mainIp
+     * @param string $ip
      */
-    public function reload()
+    public function reload(string $mainIp, string $ip)
     {
         $output = null;
         $resultCode = null;
 
-        exec('/opt/touchon/scripts/network.sh', $output, $resultCode);
+        exec('/opt/touchon/scripts/network.sh ' . $mainIp . ' ' . $ip, $output, $resultCode);
 
         if ($resultCode) {
-            throw new \Exception(implode(', ', $output), 62);
+            throw new \Exception(implode(', ', $output), $resultCode);
         }
     }
 }
