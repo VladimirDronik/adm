@@ -1,5 +1,5 @@
 
-<br>
+<!-- <br>
 {{ Form::bs_title('Настраиваемые события') }}
 
 <div class="form-group row">
@@ -77,7 +77,7 @@
 @include('objects.event_modal')
 @include('objects.action_modal')
 <button type="button" id="init_event_btn" style="display: none;" data-toggle="modal" data-target="#event_modal">&nbsp;</button>
-<button type="button" id="init_action_btn" style="display: none;" data-toggle="modal" data-target="#action_modal">
+<button type="button" id="init_action_btn" style="display: none;" data-toggle="modal" data-target="#action_modal"> -->
 
 
 <script>
