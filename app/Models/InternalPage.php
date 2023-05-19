@@ -28,6 +28,7 @@ class InternalPage extends Model
 {
     public    $timestamps = false;
     protected $guarded    = ['id'];
+    protected $table = 'internalPages';
 
     /* relations */
     public function element()
