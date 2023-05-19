@@ -205,11 +205,17 @@ class SwitchService {
                 'lc_method' => null, 'lc_method_params' => null,
                 'comment' => '']);
 
-            Port::where('id', $data['port_id'])->update(['object' => $data['id_object'],
+            if ($data['type'] == DeviceSwitch::TYPE_BUTTON) {
+                Port::where('id', $data['port_id'])->update(['object' => $data['id_object'],
                 'method' => $data['method'], 'method_params' => $data['method_params'],
                 'dc_method' => $data['method_dc'], 'dc_method_params' => $data['method_dc_params'],
                 'lc_method' => $data['method_lc'], 'lc_method_params' => $data['method_lc_params'],
                 'comment' => $data['name'], 'status' => 'IN']);
+            } else {
+                Port::where('id', $data['port_id'])->update(['object' => $data['id_object'],
+                'method' => $data['method'], 'method_params' => $data['method_params'],
+                'comment' => $data['name'], 'status' => 'IN']);
+            }
         }
 
         return $switch->id;

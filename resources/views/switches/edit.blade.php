@@ -177,6 +177,22 @@
                 getMethods(object_id, '#auto_sel_method_dc');
             });
 
+            $('#switch_form input[name=type]').change(function() {
+                var options = $('#switch_form input[name=type]');
+                for (var i = 0; i < options.length; i++) {
+                    if (options[i].checked) {
+                        var selectedOption = options[i].value;
+                    }
+                }
+
+                if (selectedOption == 'button') {
+                    $('#double_clk_div').show();
+                    $('#long_clk_div').show();
+                } else {
+                    $('#double_clk_div').hide();
+                    $('#long_clk_div').hide();
+                }
+            });
 
             //при загрузке страницы подгружаем методы для выбранного объекта
 
@@ -206,25 +222,11 @@
                     data: {'_token': _token, 'device_id': device_id, 'status': 'IN,I2C,1WIRE,1W-BUS,ADC', 'type': 'transmitter'},
                     success: function (data) {
 
-                        if (data.type_device == 'Hite-pro') {
-                            $('#port_id_div').hide();
-                            $('#double_clk_div').hide();
-                            $('#long_clk_div').hide();
-                            $('#hitepro_devices_div').show();
-                            createPortSelect('#auto_sel_hitepro_devices', data.hiteProDevices, -1);
-                            $('#auto_sel_hitepro_devices').trigger("chosen:updated");
-                            $('#place').val('Hite-pro');
-                        }
-                        else {
-                            $('#port_id_div').show();
-                            $('#double_clk_div').show();
-                            $('#long_clk_div').show();
-                            $('#hitepro_devices_div').hide();
-                            createPortSelect('#auto_sel_port_id', data.ports, -1);
-                            $('#auto_sel_port_id').trigger("chosen:updated");
-                            $('#place').val('port');
-                        }
-
+                        $('#port_id_div').show();
+                        $('#hitepro_devices_div').hide();
+                        createPortSelect('#auto_sel_port_id', data.ports, -1);
+                        $('#auto_sel_port_id').trigger("chosen:updated");
+                        $('#place').val('port');
 
                         createPortsSelect('#auto_sel_port_id', data.ports, -1);
                         $('#auto_sel_port_id').trigger("chosen:updated");

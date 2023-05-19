@@ -23,8 +23,7 @@
     </div>
 </div>
 
-@if($switch->type == 'button')
-<div id="double_clk_div" @if ($hp_device!=null) style="display: none" @endif>
+<div id="double_clk_div" @if ($hp_device!=null || $switch->type!='button') style="display: none" @endif>
 
     {{ Form::bs_title('Двойное нажатие') }}
 
@@ -51,7 +50,7 @@
 </div>
 
 
-<div id="long_clk_div" @if ($hp_device!=null) style="display: none" @endif>
+<div id="long_clk_div" @if ($hp_device!=null || $switch->type!='button') style="display: none" @endif>
     {{ Form::bs_title('Длительное нажатие') }}
 
     {{ Form::bs_autoselect('object_lc', 'Объект:', $objects, old('object_lc', $object_lc),
@@ -74,4 +73,3 @@
         </div>
     </div>
 </div>
-@endif
