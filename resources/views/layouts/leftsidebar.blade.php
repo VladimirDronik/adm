@@ -129,15 +129,44 @@
                             <i class="fa fa-image"></i><span class="hide-menu">Сцены</span></a>
                     </li>
                 @endcan
-                <li class="nav-label">Настройки</li>
-                @can('app-client-info')
-                    <li> <a class="has-arrow" href="{{ route('app-client.info.edit') }}" aria-expanded="false">
-                            <i class="fa fa-address-card-o"></i><span class="hide-menu">Общие</span></a></li>
-                @endcan
-                @can('network')
-                    <li> <a class="has-arrow" href="{{ route('network.edit') }}" aria-expanded="false">
-                            <i class="fa fa-plug"></i><span class="hide-menu">Настройка сети</span></a></li>
-                @endcan
+                    <li>
+                        <a class="has-arrow" href="#" aria-expanded="false">
+                            <i class="fa fa-cog"></i>
+                            <span class="hide-menu">Настройки</span>
+                        </a>
+                        <ul aria-expanded="false" class="collapse">
+                            @can('app-client-info')
+                            <li>
+                                <a href="{{ route('app-client.info.edit') }}">
+                                    <i class="fa fa-address-card-o"></i>
+                                    Общие
+                                </a>
+                            </li>
+                            @endcan
+                            @can('network')
+                            <li>
+                                <a href="{{ route('network.edit') }}">
+                                    <i class="fa fa-plug"></i>
+                                    Настройка сети
+                                </a>
+                            </li>
+                            @endcan
+                            @can('settings')
+                            <li>
+                                <a href="{{ route('settings.index') }}">
+                                    <i class="fa fa-wrench"></i>
+                                    Системные параметры
+                                </a>
+                            </li>
+                            @endcan
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-server"></i>
+                                    Сервисный раздел
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 @can('scenes')
                     <li> <a class="has-arrow" href="{{ route('users.index') }}" aria-expanded="false">
                             <i class="fa fa-user-o"></i><span class="hide-menu">Пользователи</span></a></li>
@@ -157,10 +186,6 @@
                 @can('events')
                     <li> <a class="has-arrow" href="{{ route('scheduler.index') }}" aria-expanded="false">
                             <i class="fa fa-calendar"></i><span class="hide-menu">Планировщик</span></a></li>
-                @endcan
-                @can('settings')
-                    <li> <a class="has-arrow" href="{{ route('settings.index') }}" aria-expanded="false">
-                            <i class="fa fa-cog "></i><span class="hide-menu">Параметры</span></a></li>
                 @endcan
                 <li class="nav-label">Диагностика</li>
                 @can('logs')
