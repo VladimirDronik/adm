@@ -69,8 +69,10 @@ class VirtualService {
             DB::transaction(function () use (&$virtual, $data) {
                 $unique_name = HomeObject::getUniqueObjectName(0, $virtual->name);
                 $object = $this->virtual_object_service->createVirtualObject($unique_name);
-                $this->virtual_object_service->createVirtualObjectMethods($object->id);
+                $methods = $this->virtual_object_service->createVirtualObjectMethods($object->id);
                 $virtual->id_object = $object->id;
+                $virtual->method_on = $methods['method_on'];
+                $virtual->method_off = $methods['method_off'];
                 $virtual->save();
 
             });

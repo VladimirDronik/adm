@@ -33,10 +33,11 @@ class VirtualObjectService {
      * Создание метода 'Выключить виртуальное устройство'
      *
      * @param int $object_id
+     * @return Method
      */
-    public function createMethodOff(int $object_id)
+    public function createMethodOff(int $object_id): Method
     {
-        Method::forceCreate([
+        return Method::forceCreate([
             'name' => 'Выключить виртуальное устройство',
             'id_object' => $object_id,
             'script' => null,
@@ -50,14 +51,15 @@ class VirtualObjectService {
      * Создание метода 'Включить виртуальное устройство'
      *
      * @param int $object_id
+     * @return Method
      */
-    public function createMethodOn(int $object_id)
+    public function createMethodOn(int $object_id): Method
     {
-         Method::forceCreate([
+        return Method::forceCreate([
             'name' => 'Включить виртуальное устройство',
             'id_object' => $object_id,
             'script' => null,
-             'easy' => null,
+            'easy' => null,
             'comment' => 'Включить виртуальное устройство',
             'is_system' => 0
         ]);
@@ -126,13 +128,20 @@ class VirtualObjectService {
      * создан автоматически для реле
      *
      * @param int $object_id
-     * @return void
+     * @return array
      */
-    public function createVirtualObjectMethods(int $object_id)
+    public function createVirtualObjectMethods(int $object_id): array
     {
-        $this->createMethodOn($object_id);
-        $this->createMethodOff($object_id);
+        $methodOn = $this->createMethodOn($object_id);
+        $methodOff = $this->createMethodOff($object_id);
         $this->createMethodOnOff($object_id);
+
+        $methods = [
+            'method_on' => $methodOn->id,
+            'method_off' => $methodOff->id,
+        ];
+
+        return $methods;
     }
 
     public function updateRelayObjectMethods(int $object_id,  $device_id,  $port_id)
