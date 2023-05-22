@@ -28,6 +28,7 @@ class UserPermission
                 'rooms' => true,
                 'views' => true,
                 'scenes' => true,
+                'app-client-info' => true,
                 'network' => true,
                 'menu' => false,
                 'scripts' => [
@@ -61,6 +62,7 @@ class UserPermission
                 'rooms' => false,
                 'views' => false,
                 'scenes' => false,
+                'app-client-info' => false,
                 'network' => false,
                 'menu' => false,
                 'scripts' => false,

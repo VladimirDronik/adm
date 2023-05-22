@@ -14,6 +14,21 @@
 @section('content')
 <div class="container-fluid">
     <div class="row">
+        <div class="col-md-5">
+            <div class="card">
+                <div class="media media-text-right">
+                    <div class="media-body">
+                        <a class="float-left">Клиент:</a> {{ $name }}
+                        <br>
+                        <a class="float-left">Адрес:</a> {{ $address }}
+                        <br>
+                        <a class="float-left">Версия админ-панели:</a> {{ $adminAppV }}
+                        <br>
+                        <a class="float-left">Версия ядра:</a> {{ $coreV }}
+                    </div>
+                </div>
+            </div>
+        </div>
         @can('devices')
             <div class="col-md-3">
                 <div class="card p-30">

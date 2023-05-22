@@ -130,6 +130,10 @@
                     </li>
                 @endcan
                 <li class="nav-label">Настройки</li>
+                @can('app-client-info')
+                    <li> <a class="has-arrow" href="{{ route('app-client.info.edit') }}" aria-expanded="false">
+                            <i class="fa fa-address-card-o"></i><span class="hide-menu">Общие</span></a></li>
+                @endcan
                 @can('network')
                     <li> <a class="has-arrow" href="{{ route('network.edit') }}" aria-expanded="false">
                             <i class="fa fa-plug"></i><span class="hide-menu">Настройка сети</span></a></li>

@@ -74,6 +74,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('menu', 'MenuController')->except('show','create','store','destroy')->middleware('can:rooms');
     Route::get('menu/group/{id}', 'MenuGroupController@index')->name('menu.group.index')->middleware('can:rooms');
 
+    Route::get('app-client/info', 'ClientInfoController@edit')->name('app-client.info.edit')->middleware('can:app-client-info');
+    Route::put('app-client/info', 'ClientInfoController@update')->name('app-client.info.update')->middleware('can:app-client-info');
     Route::get('network', 'NetworkController@edit')->name('network.edit')->middleware('can:network');
     Route::put('network', 'NetworkController@update')->name('network.update')->middleware('can:network');
     Route::get('graphs/termostats', 'GraphController@termostats')->name('graphs.termostats.index')->middleware('can:graphs');
