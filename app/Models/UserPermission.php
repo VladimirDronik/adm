@@ -17,48 +17,22 @@ class UserPermission
     public static function permissions(): array
     {
         return [
-            User::TYPE_SUPERADMIN => true,
-
-            User::TYPE_ADMIN => [
-                'devices' => [
-                    'show-object' => false,
-                    'create-manual-object' => false
-                ],
-                'objects' => false,
-                'rooms' => true,
-                'views' => true,
-                'scenes' => true,
-                'network' => true,
-                'menu' => false,
-                'scripts' => [
-                    'edit' => false,
-                    'show-system' => true,
-                    'create-system' => false,
-                    'edit-system' => false,
-                    'delete-system' => false,
-                ],
-                'events' => [
-                    'show-system' => true,
-                    'create-system' => false,
-                    'edit-system' => false,
-                    'delete-system' => false,
-                    'show-hidden' => true,
-                    'create-hidden' => true,
-                    'edit-hidden' => true,
-                    'delete-hidden' => true
-                ],
-                'settings' => [
-                    'create' => false,
-                    'delete' => false
-                ],
-                'logs' => true,
-                'graphs' => true
-            ],
+            User::TYPE_ADMIN => true,
 
             User::TYPE_USER => [
-                'devices' => false,
+                'devices' => [
+                    'sensors' => false,
+                    'controllers' => false,
+                    'engineering' => false,
+                    'conditioners' => false,
+                    'buttons' => false,
+                    'locks' => false,
+                    'counts' => false,
+                    'yandex_stations' => false,
+                ],
                 'objects' => false,
                 'rooms' => false,
+                'users' => true,
                 'views' => false,
                 'scenes' => false,
                 'network' => false,

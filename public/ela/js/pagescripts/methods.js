@@ -173,9 +173,9 @@ function showEditModal(data) {
 
 function addMethod(data) {
 
-    const id_html = !is_super_admin ? '' :
+    const id_html = !is_admin ? '' :
         `<label class="col-md-1" id="methodid${data.id}}">${data.id}</label>`;
-    const col_id_html = is_super_admin ? 1 : 2;
+    const col_id_html = is_admin ? 1 : 2;
     const html = `<div class="form-group row" id="div${data.id}">
                      ${id_html}
                      <label class="col-md-3" id="name${data.id}">${data.name}</label>

@@ -103,7 +103,7 @@
         const del_message_url = '{{ route('ajax.messages.delete') }}';
         const sub_data_url = '{{ route('ajax.load.data') }}';
         const object_id = '{{ optional($drycontact->object)->id }}';
-        const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
+        const is_admin = {{ user()->is_admin ? 1 : 0 }};
         const url_methods = '{{ route('ajax.objects.methods') }}';
         const url_device = '{{ route('ajax.devices.type_controller') }}';
         let del_id;

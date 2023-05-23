@@ -20,7 +20,9 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
+                        @if(user()->is_admin)
                         <a href="{{ route('dimmers.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить диммер</a>
+                        @endif
                         <a href="{{ route('dimmers.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
@@ -65,12 +67,14 @@
                                                 <i class="fa fa-cog fa-lg"></i>
                                             </a>
                                         </td>
+                                        @if(user()->is_admin)
                                         <td align="center" class="text-center">
                                             <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
                                                     data-id="{{ $dimmer->id }}" data-name="{{ $dimmer->name }}">
                                                 <i class="fa fa-trash fa-lg"></i>
                                             </button>
                                         </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>

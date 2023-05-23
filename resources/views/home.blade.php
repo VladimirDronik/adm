@@ -14,7 +14,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row">
-        @can('devices')
+        @can('devices.controllers')
             <div class="col-md-3">
                 <div class="card p-30">
                     <div class="media">
@@ -89,7 +89,7 @@
                 </div>
             </div>
         @endcan
-        @can('devices')
+        @can('devices.sensors')
             <div class="col-md-3">
                 <div class="card p-30">
                     <div class="media">

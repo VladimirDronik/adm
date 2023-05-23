@@ -5,7 +5,7 @@ Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::get('generate/fake', 'HomeController@generateFake')->name('generate.fake');
-Route::get('access/error', 'HomeController@accessError')->name('accescarbmonoxides.error');
+Route::get('access/error', 'HomeController@accessError')->name('access.error');
 
 Route::group(['middleware' => ['auth']], function () {
 
@@ -20,7 +20,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('pages/{idPage}/edit', 'PageController@edit')->middleware('can:devices');
     Route::get('pages/{idPage}/edit/{idTab}', 'PageController@edit')->middleware('can:devices');
     Route::resource('objects', 'ObjectController')->except('show','destroy')->middleware('can:objects');
-    Route::resource('engineering', 'EngineeringController')->except('show','destroy')->middleware('can:views');
+    Route::resource('engineering', 'EngineeringController')->except('show','destroy')->middleware('can:devices.engineering');
     Route::resource('boiler', 'BoilerController')->except('show','destroy')->middleware('can:devices');
     Route::resource('boiler_gvs', 'BoilerGVSController')->except('show','destroy')->middleware('can:devices');
 
@@ -35,35 +35,35 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     Route::resource('ports', 'PortController')->except('show', 'destroy')->middleware('can:devices');
-    Route::resource('devices', 'DeviceController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('counts', 'CountController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('switches', 'SwitchController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('devices', 'DeviceController')->except('show','destroy')->middleware('can:devices.controllers');
+    Route::resource('counts', 'CountController')->except('show','destroy')->middleware('can:devices.counts');
+    Route::resource('switches', 'SwitchController')->except('show','destroy')->middleware('can:devices.buttons');
     Route::resource('relays', 'RelayController')->except('show','destroy')->middleware('can:devices');
     Route::resource('lamps', 'LampController')->except('show','destroy')->middleware('can:devices');
     Route::resource('dimmers', 'DimmerController')->except('show','destroy')->middleware('can:devices');
     Route::resource('curtains', 'CurtainController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('locks', 'LockController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('conditioners', 'ConditionerController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('locks', 'LockController')->except('show','destroy')->middleware('can:devices.locks');
+    Route::resource('conditioners', 'ConditionerController')->except('show','destroy')->middleware('can:devices.conditioners');
 
 
 
     Route::resource('settings', 'SettingController')->except('show','destroy')->middleware('can:settings');
     Route::resource('time_zone', 'TimeZoneSettingController')->except('show','destroy','index')->middleware('can:settings');
     Route::resource('scenes', 'SceneController')->except('show','destroy')->middleware('can:scenes');
-    Route::resource('termostats', 'TermostatController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('hygrostats', 'HygrostatController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('motionsensors', 'MotionsensorsController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('lightstats', 'LightstatController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('carbmonoxide', 'CarbmonoxideController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('manometr', 'ManometrController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('termostats', 'TermostatController')->except('show','destroy')->middleware('can:devices.sensors');
+    Route::resource('hygrostats', 'HygrostatController')->except('show','destroy')->middleware('can:devices.sensors');
+    Route::resource('motionsensors', 'MotionsensorsController')->except('show','destroy')->middleware('can:devices.sensors');
+    Route::resource('lightstats', 'LightstatController')->except('show','destroy')->middleware('can:devices.sensors');
+    Route::resource('carbmonoxide', 'CarbmonoxideController')->except('show','destroy')->middleware('can:devices.sensors');
+    Route::resource('manometr', 'ManometrController')->except('show','destroy')->middleware('can:devices.sensors');
     Route::resource('usensors', 'UsensorController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('drycontacts', 'DrycontactController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('drycontacts', 'DrycontactController')->except('show','destroy')->middleware('can:devices.sensors');
     Route::resource('scheduler', 'SchedulerController')->except('show','destroy')->middleware('can:events');
     Route::resource('logs', 'LogController')->only('index')->middleware('can:logs');
-    Route::resource('users', 'UserController')->except('show','destroy')->middleware('can:rooms');
+    Route::resource('users', 'UserController')->except('show','destroy')->middleware('can:users');
     Route::resource('notifications', 'NotificationController')->except('show','destroy')->middleware('can:settings');
     Route::resource('virtuals', 'VirtualsController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('yandexstations', 'YandexStationController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('yandexstations', 'YandexStationController')->except('show','destroy')->middleware('can:devices.yandex_stations');
 
     //Route::get('termostats/{termostat}/edit/{tab?}', 'TermostatController@edit')->name('termostats.edit')->middleware('can:devices');
 
@@ -102,7 +102,7 @@ Route::group(['middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'devices', 'as' => 'devices.'], function () {
-            Route::post('delete', 'DeviceController@delete')->name('delete');
+            Route::post('delete', 'DeviceController@delete')->name('delete')->middleware('can:devices.controllers');
             Route::post('update', 'DeviceController@update')->name('update');
             Route::post('ports', 'DeviceController@ports')->name('ports');
             Route::post('ports/update', 'DeviceController@updatePort')->name('ports.update');
@@ -118,19 +118,19 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('sort', 'ViewController@sort')->name('sort');
         });
 
-        Route::post('manometr/delete', 'ManometrController@delete')->name('manometr.delete');
-        Route::post('termostats/delete', 'TermostatController@delete')->name('termostats.delete');
-        Route::post('hygrostats/delete', 'HygrostatController@delete')->name('hygrostats.delete');
-        Route::post('lightstats/delete', 'LightstatController@delete')->name('lightstats.delete');
+        Route::post('manometr/delete', 'ManometrController@delete')->name('manometr.delete')->middleware('can:devices.sensors');
+        Route::post('termostats/delete', 'TermostatController@delete')->name('termostats.delete')->middleware('can:devices.sensors');
+        Route::post('hygrostats/delete', 'HygrostatController@delete')->name('hygrostats.delete')->middleware('can:devices.sensors');
+        Route::post('lightstats/delete', 'LightstatController@delete')->name('lightstats.delete')->middleware('can:devices.sensors');
         Route::post('usensors/delete', 'UsensorController@delete')->name('usensors.delete');
-        Route::post('drycontacts/delete', 'DrycontactController@delete')->name('drycontacts.delete');
-        Route::post('motionsensors/delete', 'MotionsensorController@delete')->name('motionsensors.delete');
-        Route::post('carbmonoxide/delete', 'CarbmonoxideController@delete')->name('carbmonoxide.delete');
+        Route::post('drycontacts/delete', 'DrycontactController@delete')->name('drycontacts.delete')->middleware('can:devices.sensors');
+        Route::post('motionsensors/delete', 'MotionsensorController@delete')->name('motionsensors.delete')->middleware('can:devices.sensors');
+        Route::post('carbmonoxide/delete', 'CarbmonoxideController@delete')->name('carbmonoxide.delete')->middleware('can:devices.sensors');
         Route::post('virtuals/delete', 'VirtualsController@delete')->name('virtuals.delete');
-        Route::post('engineering/delete', 'EngineeringController@delete')->name('engineering.delete');
+        Route::post('engineering/delete', 'EngineeringController@delete')->name('engineering.delete')->middleware('can:devices.engineering');
         Route::post('curtains/delete', 'CurtainsController@delete')->name('curtains.delete');
-        Route::post('locks/delete', 'LockController@delete')->name('locks.delete');
-        Route::post('yandexstations/delete', 'YandexStationController@delete')->name('yandexstations.delete');
+        Route::post('locks/delete', 'LockController@delete')->name('locks.delete')->middleware('can:devices.locks');
+        Route::post('yandexstations/delete', 'YandexStationController@delete')->name('yandexstations.delete')->middleware('can:devices.yandex_stations');
 
 
         Route::group(['prefix' => 'logs', 'as' => 'logs.'], function () {
@@ -144,11 +144,11 @@ Route::group(['middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'counts', 'as' => 'counts.'], function () {
-            Route::post('delete', 'CountController@delete')->name('delete');
+            Route::post('delete', 'CountController@delete')->name('delete')->middleware('can:devices.counts');
         });
 
         Route::group(['prefix' => 'switches', 'as' => 'switches.'], function () {
-            Route::post('delete', 'SwitchController@delete')->name('delete');
+            Route::post('delete', 'SwitchController@delete')->name('delete')->middleware('can:devices.buttons');
         });
 
         Route::group(['prefix' => 'relays', 'as' => 'relays.'], function () {

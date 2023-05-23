@@ -16,8 +16,8 @@ class AddUserTypeColumn extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             if (!Schema::hasColumn('users', 'type')) {
-                $table->string('type', 15)->default(User::TYPE_SUPERADMIN)
-                    ->comment('superadmin, admin, user');
+                $table->string('type', 15)->default(User::TYPE_ADMIN)
+                    ->comment('admin, user');
             }
         });
 

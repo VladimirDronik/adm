@@ -169,7 +169,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if(!$event->emethod || !$event->emethod->is_system || user()->is_super_admin)
+                                        @if(!$event->emethod || !$event->emethod->is_system || user()->is_admin)
                                             @if($event->is_system && $can['events.delete-system'])
                                                 <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
                                                         data-id="{{ $event->id }}" data-name="{{ $event->name }}">

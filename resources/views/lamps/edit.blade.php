@@ -18,7 +18,9 @@
                 <div class="card">
                     <div class="card-body">
                         <a href="{{ route('lamps.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок ламп</a>
+                        @if(user()->is_admin)
                         <a href="{{ route('lamps.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить лампу</a>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -33,13 +35,18 @@
                         {{ Form::bs_alert() }}
 
                         <ul class="nav nav-tabs customtab" role="tablist">
+                            @if(user()->is_admin)
                             <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
                             <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Свойства</span></a> </li>
                             <li class="nav-item"> <a class="nav-link @if($tab==4) active @endif"  data-toggle="tab" href="#portstab4"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">События</span></a> </li>
                             <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
                             <li class="nav-item"> <a class="nav-link @if($tab==5) active @endif"  data-toggle="tab" href="#portstab5"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Планировщик</span></a> </li>
+                            @else
+                            <li class="nav-item"> <a class="nav-link active"  data-toggle="tab" href="#portstab2"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Свойства</span></a> </li>
+                            @endif
                         </ul>
                         <div class="tab-content">
+                            @if(user()->is_admin)
                             <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
                                 @include('lamps/edit_tabs/main')
                             </div>
@@ -56,6 +63,14 @@
                             <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
                                 @include('objects.sheduler', ['object' => $lamp->object])
                             </div>
+                            @else
+                            <div class="tab-pane p-20" id="portstab1" role="tabpanel">
+                                @include('lamps/edit_tabs/main')
+                            </div>
+                            <div class="tab-pane p-20 active" id="portstab2" role="tabpanel">
+                                @include('lamps/edit_tabs/prop')
+                            </div>
+                            @endif
                         </div>
                         <input type="hidden" id="tabs-sel" value="{{ $tab }}">
                         <input type="hidden" id="event_idobject" name="event_idobject" value="{{ $lamp->iobject['id'] }}">
@@ -102,7 +117,7 @@
         const del_message_url = '{{ route('ajax.messages.delete') }}';
         const sub_data_url = '{{ route('ajax.load.data') }}';
         const object_id = '{{ optional($lamp->object)->id }}';
-        const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
+        const is_admin = {{ user()->is_admin ? 1 : 0 }};
         const url_device = '{{ route('ajax.devices.type_controller') }}';
         let del_id;
 

@@ -17,36 +17,46 @@
                             <span class="hide-menu">Устройства</span>
                         </a>
                         <ul aria-expanded="false" class="collapse">
+                            @can('devices.sensors')
                             <li>
                                 <a href="{{ route('termostats.index') }}">
                                     <i class="fa fa-tasks"></i>
                                     Датчики
                                 </a>
                             </li>
+                            @endcan
+                            @can('devices.controllers')
                             <li>
                                 <a href="{{ route('devices.index') }}">
                                     <i class="fa fa-building"></i>
                                     Контроллеры
                                 </a>
                             </li>
+                            @endcan
+                            @can('devices.engineering')
                             <li>
                                 <a href="{{ route('engineering.index') }}">
                                     <i class="fa fa-tachometer"></i>
                                     Инженерные
                                 </a>
                             </li>
+                            @endcan
+                            @can('devices.conditioners')
                             <li>
                                 <a href="{{ route('conditioners.index') }}">
                                     <i class="fa fa-snowflake-o"></i>
                                     Кондиционеры
                                 </a>
                             </li>
+                            @endcan
+                            @can('devices.buttons')
                             <li>
                                 <a href="{{ route('switches.index') }}">
                                     <i class="fa fa-bullseye"></i>
                                     Выключатели (кнопки)
                                 </a>
                             </li>
+                            @endcan
                             <li>
                                 <a href="{{ route('lamps.index') }}">
                                     <i class="fa fa-lightbulb-o"></i>
@@ -71,30 +81,36 @@
                                     Шторы, жалюзи
                                 </a>
                             </li>
+                            @can('devices.locks')
                             <li>
                                 <a href="{{ route('locks.index') }}">
                                     <i class="fa fa-lock"></i>
                                     Замки
                                 </a>
                             </li>
+                            @endcan
+                            @can('devices.counts')
                             <li>
                                 <a href="{{ route('counts.index') }}">
                                     <i class="fa fa-bullseye"></i>
                                     Счетчики
                                 </a>
                             </li>
+                            @endcan
                             <li>
                                 <a href="{{ route('virtuals.index') }}">
                                     <i class="fa fa-connectdevelop"></i>
                                     Виртуальное устр-во
                                 </a>
                             </li>
+                            @can('devices.yandex_stations')
                             <li>
                                 <a href="{{ route('yandexstations.index') }}">
                                     <i class="fa fa-podcast"></i>
                                     ЯндексСтанции
                                 </a>
                             </li>
+                            @endcan
                         </ul>
                     </li>
                 @endcan
@@ -134,7 +150,7 @@
                     <li> <a class="has-arrow" href="{{ route('network.edit') }}" aria-expanded="false">
                             <i class="fa fa-plug"></i><span class="hide-menu">Настройка сети</span></a></li>
                 @endcan
-                @can('scenes')
+                @can('users')
                     <li> <a class="has-arrow" href="{{ route('users.index') }}" aria-expanded="false">
                             <i class="fa fa-user-o"></i><span class="hide-menu">Пользователи</span></a></li>
                 @endcan

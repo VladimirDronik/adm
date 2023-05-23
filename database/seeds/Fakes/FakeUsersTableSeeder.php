@@ -26,17 +26,6 @@ class FakeUsersTableSeeder extends Seeder
         ];
     }
 
-    public function getSuperAdmin()
-    {
-        return [
-            'login' => 'superadmin',
-            'type' => User::TYPE_SUPERADMIN,
-            'password' => bcrypt(self::PASSWORD),
-            'created_at' => $this->now,
-            'updated_at' => $this->now
-        ];
-    }
-
     public function getUser()
     {
         return [
@@ -52,15 +41,6 @@ class FakeUsersTableSeeder extends Seeder
     {
         try {
             DB::table('users')->insert($this->getAdmin());
-        } catch (\Throwable $e) {
-
-        }
-    }
-
-    public function insertSuperAdmin()
-    {
-        try {
-            DB::table('users')->insert($this->getSuperAdmin());
         } catch (\Throwable $e) {
 
         }
@@ -82,8 +62,7 @@ class FakeUsersTableSeeder extends Seeder
      */
     public function run()
     {
-       $this->insertSuperAdmin();
-       $this->insertAdmin();
-       $this->insertUser();
+        $this->insertAdmin();
+        $this->insertUser();
     }
 }

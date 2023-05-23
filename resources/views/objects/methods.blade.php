@@ -2,7 +2,7 @@
     {{ Form::bs_title('Системные методы') }}
 
     <div class="form-group row">
-        @can('superadmin')
+        @can('admin')
             <div class="col-md-2"><i>ID</i></div>
         @endcan
         <label class="col-md-4"><i>Название метода</i></label>
@@ -12,7 +12,7 @@
         @foreach($object->methods as $method)
             @if($method->is_system)
                 <div class="form-group row" id="div{{$method->id}}">
-                    @can('superadmin')
+                    @can('admin')
                         <div class="col-md-2" id="methodid{{$method->id}}">
                             {{ $method->id }}
                         </div>
@@ -36,7 +36,7 @@
     {{ Form::bs_title('Методы') }}
 @endif
 <div class="form-group row">
-    @can('superadmin')
+    @can('admin')
         <div class="col-md-1"><i>ID</i></div>
     @endcan
     <label class="col-md-3"><i>Название метода</i></label>
@@ -49,7 +49,7 @@
     @foreach($object->methods as $method)
         @if(!$method->is_system || !$object->is_system)
             <div class="form-group row" id="div{{$method->id}}">
-                @can('superadmin')
+                @can('admin')
                     <label class="col-md-1" id="methodid{{$method->id}}">
                         {{$method->id}}
                     </label>

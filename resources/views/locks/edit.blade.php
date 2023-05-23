@@ -99,7 +99,7 @@
         const del_message_url = '{{ route('ajax.messages.delete') }}';
         const sub_data_url = '{{ route('ajax.load.data') }}';
         const object_id = '{{ optional($lock->object)->id }}';
-        const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
+        const is_admin = {{ user()->is_admin ? 1 : 0 }};
         let del_id;
         $(document).ready(function () {
 

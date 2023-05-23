@@ -15,9 +15,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string $type Тип: superadmin, admin, user
+ * @property string $type Тип: admin, user
  * @property-read mixed $is_admin
- * @property-read mixed $is_super_admin
  * @property-read mixed $is_user
  * @property-read mixed $rus_type
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
@@ -40,7 +39,6 @@ class User extends Authenticatable
 
     const TYPE_USER = 'user';
     const TYPE_ADMIN = 'admin';
-    const TYPE_SUPERADMIN = 'superadmin';
 
     /**
      * The attributes that are mass assignable.
@@ -65,7 +63,6 @@ class User extends Authenticatable
         $types = [
             self::TYPE_USER => 'Пользователь',
             self::TYPE_ADMIN => 'Администратор',
-            self::TYPE_SUPERADMIN => 'Суперадминистратор'
         ];
 
         return $is_full ? $types : array_keys($types);
@@ -84,11 +81,6 @@ class User extends Authenticatable
     public function getIsUserAttribute()
     {
         return $this->type === self::TYPE_USER;
-    }
-
-    public function getIsSuperAdminAttribute()
-    {
-        return $this->type === self::TYPE_SUPERADMIN;
     }
 
     public function hasAccess(string $slug): bool

@@ -22,7 +22,7 @@
                     <div class="card-body">
                         <a href="{{ route('devices.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить контроллер</a>
                         <a href="{{ route('devices.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
-                        @if(auth()->user()->getIsSuperAdminAttribute())
+                        @if(auth()->user()->getIsAdminAttribute())
                             <!-- <a href="{{ route('devices.sendallconfigs') }}" class="btn btn-success m-b-10 m-l-5"   title="Отправить изменения на все контролеры">
                                 <i class="fa fa-upload"></i> Отправить изменения</a> -->
                         @endif
@@ -71,7 +71,7 @@
                                             <span class="badge badge-danger">Недоступно</span>
                                         @endif
                                     </td>
-                                    <td> @if($device->changed == 1 && auth()->user()->getIsSuperAdminAttribute())
+                                    <td> @if($device->changed == 1 && auth()->user()->getIsAdminAttribute())
                                             <!-- <a href="{{ route('devices.sendconfig', [$device->id]) }}" class="btn btn-success btn-sm btn-rounded" title="Отправить конфиг на устройство">
                                                 <i class="fa fa-upload"></i></a> -->
                                         @endif

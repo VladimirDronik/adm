@@ -177,7 +177,7 @@
                         <div id="points_div">
                             @php $is_point_editable = $event->is_point_editable; @endphp
                             @foreach($event->points as $point)
-                                @if(!$point->system || user()->is_super_admin)
+                                @if(!$point->system || user()->is_admin)
                                     <div class="form-group row" id="div{{$point->id}}">
                                         <label class="col-md-3" id="type{{$point->id}}">
                                             {{$point->single_rus_type}}
@@ -208,7 +208,7 @@
                                 @endif
                             @endforeach
                         </div>
-                        @if($is_point_editable || user()->is_super_admin)
+                        @if($is_point_editable || user()->is_admin)
                             <div class="form-group row">
                                 <div class="col-md-12 text-left">
                                     @if(($event->is_system && $can['events.edit-system'])

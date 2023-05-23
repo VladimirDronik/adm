@@ -10,7 +10,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        @can('settings.create')
+                        @can('users')
                             <a href="{{ route('users.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить пользователя</a>
                         @endcan
                         <a href="{{ route('users.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
