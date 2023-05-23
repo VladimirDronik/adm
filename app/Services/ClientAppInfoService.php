@@ -52,7 +52,7 @@ class ClientAppInfoService {
      */
     public function getCoreVersion(): string
     {
-        $data = collect(file(env('SERVER_FOLDER').'README.MD'));
+        $data = collect(file(env('SERVER_FOLDER').'/README.MD'));
 
         $version = $data->filter(function ($item) {
             return strpos($item, 'ver') !== false;
