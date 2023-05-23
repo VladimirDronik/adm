@@ -169,23 +169,16 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if(!$event->emethod || !$event->emethod->is_system || user()->is_admin)
-                                            @if($event->is_system && $can['events.delete-system'])
-                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                        data-id="{{ $event->id }}" data-name="{{ $event->name }}">
-                                                    <i class="fa fa-trash fa-lg"></i>
-                                                </button>
-                                            @elseif($event->is_hidden && $can['events.delete-hidden'] && !$event->is_system)
-                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                        data-id="{{ $event->id }}" data-name="{{ $event->name }}">
-                                                    <i class="fa fa-trash fa-lg"></i>
-                                                </button>
-                                            @elseif(!$event->is_system && !$event->is_hidden)
-                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                        data-id="{{ $event->id }}" data-name="{{ $event->name }}">
-                                                    <i class="fa fa-trash fa-lg"></i>
-                                                </button>
-                                            @endif
+                                        @if(user()->is_admin)
+                                            <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                                    data-id="{{ $event->id }}" data-name="{{ $event->name }}">
+                                                <i class="fa fa-trash fa-lg"></i>
+                                            </button>
+                                        @elseif(!$event->is_system && !$event->is_hidden)
+                                            <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                                    data-id="{{ $event->id }}" data-name="{{ $event->name }}">
+                                                <i class="fa fa-trash fa-lg"></i>
+                                            </button>
                                         @endif
                                     </td>
                                 </tr>
