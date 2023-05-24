@@ -111,8 +111,6 @@
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id_open").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id_close").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_hitepro_devices_open").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_hitepro_devices_close").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_device_id").chosen().change(function() {
                 let object_id = $(this).val();
@@ -121,22 +119,10 @@
                     data: {'_token': _token, 'device_id': object_id, 'status': 'OUT', 'type': 'switch, socket'},
                     success: function (data) {
                         methods = data.ports;
-                        if (data.type_device == 'Hite-pro') {
-                            $('#port_id_div').hide();
-                            $('#hitepro_devices_div').show();
-                            createPortSelect('#auto_sel_hitepro_devices', data.hiteProDevices, -1);
-                            $('#auto_sel_hitepro_devices').trigger("chosen:updated");
-                            $('#place').val('Hite-pro');
-                        }
-                        else {
-                            $('#port_id_div').show();
-                            $('#hitepro_devices_div').hide();
-                            createPortSelect('#auto_sel_port_id_open', data.ports, -1);
-                            $('#auto_sel_port_id_open').trigger("chosen:updated");
-                            createPortSelect('#auto_sel_port_id_close', data.ports, -1);
-                            $('#auto_sel_port_id_close').trigger("chosen:updated");
-                            $('#place').val('port');
-                        }
+                        createPortSelect('#auto_sel_port_id_open', data.ports, -1);
+                        $('#auto_sel_port_id_open').trigger("chosen:updated");
+                        createPortSelect('#auto_sel_port_id_close', data.ports, -1);
+                        $('#auto_sel_port_id_close').trigger("chosen:updated");
                     }
                 });
             });

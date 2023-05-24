@@ -78,14 +78,55 @@
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
 
+        var place = $('#curtain_form input[name=place]:checked').val();
+        if (place == 'rs485') {
+            $('#rs_485_div').removeAttr("hidden");
+            $('#curtain_form input[name=address]').removeAttr("disabled");
+            $('#curtain_form input[name=group]').removeAttr("disabled");
+
+            $('#auto_sel_port_id_open').attr("disabled", true);
+            $('#auto_sel_port_id_close').attr("disabled", true);
+        } else if (place == 'port' || place == 'phase') {
+            $('#port_id_div').removeAttr("hidden");
+            $('#auto_sel_port_id_open').removeAttr("disabled");
+            $('#auto_sel_port_id_close').removeAttr("disabled");
+
+            $('#curtain_form input[name=address]').attr("disabled", true);
+            $('#curtain_form input[name=group]').attr("disabled", true);
+        }
+
+        function createPortSelect(target, options, selected) {
+            let sel = $(target);
+            sel.html('');
+            let s = '<option value="">Не выбрано</option>';
+            for (let i = 0; i < options.length; i++) {
+                if (selected == options[i].id)
+                    s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
+                else
+                    s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
+            }
+            sel.append(s);
+        }
+
+        if ($("#auto_sel_device_id").chosen().val()) {
+            let device_id = $("#auto_sel_device_id").chosen().val();
+            $.ajax({
+                url: url_ports,
+                data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'switch, socket'},
+                success: function (data) {
+                    createPortSelect('#auto_sel_port_id_open', data.ports, -1);
+                    createPortSelect('#auto_sel_port_id_close', data.ports, -1);
+                    $('#auto_sel_port_id_open').trigger("chosen:updated");
+                    $('#auto_sel_port_id_close').trigger("chosen:updated");
+                }
+            });
+        }
 
         $(document).ready(function () {
             initCurtainForm();
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id_open").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id_close").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_hitepro_device_open").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_hitepro_device_close").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_device_id").chosen().change(function() {
                 let device_id = $(this).val();
@@ -93,28 +134,10 @@
                     url: url_ports,
                     data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'switch, socket'},
                     success: function (data) {
-                        if (data.type_device == 'Hite-pro') {
-                            $('#port_id_div').hide();
-                            $('#hitepro_devices_div').show();
-                            createPortSelect('#auto_sel_hitepro_device_open', data.hiteProDevices, -1);
-                            createPortSelect('#auto_sel_hitepro_device_close', data.hiteProDevices, -1);
-                            $('#auto_sel_hitepro_device_open').trigger("chosen:updated");
-                            $('#auto_sel_hitepro_device_close').trigger("chosen:updated");
-                            $('#auto_sel_port_id_open option:first').prop('selected', true); //Выбираем, что бы валидация не ругалась
-                            $('#auto_sel_port_id_close option:first').prop('selected', true); //Выбираем, что бы валидация не ругалась
-                            $('#place').val('Hite-pro');
-                        }
-                        else {
-                            $('#port_id_div').show();
-                            $('#hitepro_devices_div').hide();
-                            createPortSelect('#auto_sel_port_id_open', data.ports, -1);
-                            createPortSelect('#auto_sel_port_id_close', data.ports, -1);
-                            $('#auto_sel_port_id_open').trigger("chosen:updated");
-                            $('#auto_sel_port_id_close').trigger("chosen:updated");
-                            $('#auto_sel_hitepro_device_open option:first').prop('selected', true); //Выбираем, что бы валидация не ругалась
-                            $('#auto_sel_hitepro_device_close option:first').prop('selected', true); //Выбираем, что бы валидация не ругалась
-                            $('#place').val('port');
-                        }
+                        createPortSelect('#auto_sel_port_id_open', data.ports, -1);
+                        createPortSelect('#auto_sel_port_id_close', data.ports, -1);
+                        $('#auto_sel_port_id_open').trigger("chosen:updated");
+                        $('#auto_sel_port_id_close').trigger("chosen:updated");
                     }
                 });
             });
@@ -133,19 +156,6 @@
                 }
                 storeObject();
             });
-            function createPortSelect(target, options, selected) {
-                let sel = $(target);
-                sel.html('');
-                let s = '<option value="">Не выбрано</option>';
-                for (let i = 0; i < options.length; i++) {
-                    if (selected == options[i].id)
-                        s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
-                    else
-                        s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
-                }
-                sel.append(s);
-            }
-
 
             function storeObject() {
                 const name = $("#create_object_modal input[name=object_name]").val().trim();
@@ -168,10 +178,32 @@
                 });
             }
 
+            $('#curtain_form input[name=place]').change(function() {
+                var options = $('#curtain_form input[name=place]');
+                for (var i = 0; i < options.length; i++) {
+                    if (options[i].checked) {
+                        var selectedOption = options[i].value;
+                    }
+                }
 
+                if (selectedOption == 'rs485') {
+                    $('#rs_485_div').removeAttr("hidden");
+                    $('#curtain_form input[name=address]').removeAttr("disabled");
+                    $('#curtain_form input[name=group]').removeAttr("disabled");
 
+                    $('#port_id_div').attr("hidden", true);
+                    $('#auto_sel_port_id_open').attr("disabled", true);
+                    $('#auto_sel_port_id_close').attr("disabled", true);
+                } else {
+                    $('#port_id_div').removeAttr("hidden");
+                    $('#auto_sel_port_id_open').removeAttr("disabled");
+                    $('#auto_sel_port_id_close').removeAttr("disabled");
 
-
+                    $('#rs_485_div').attr("hidden", true);
+                    $('#curtain_form input[name=address]').attr("disabled", true);
+                    $('#curtain_form input[name=group]').attr("disabled", true);
+                }
+            });
         });
     </script>
 @endsection

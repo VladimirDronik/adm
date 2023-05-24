@@ -29,6 +29,9 @@ class Curtain extends Model
     const TYPE_JALOUSIE = 'jalousie';
     const TYPE_SHUTTERS = 'shutters';
 
+    const PLACE_PORT = 'port';
+    const PLACE_PHASE = 'phase';
+    const PLACE_RS485 = 'rs485';
 
     protected $table = 'curtains';
     public $timestamps = false;
@@ -45,6 +48,16 @@ class Curtain extends Model
         return $is_full ? $types : array_keys($types);
     }
 
+    public static function getPlaces(bool $is_full = false)
+    {
+        $places = [
+            self::PLACE_PORT => 'Сухой контакт',
+            self::PLACE_PHASE => 'Фазное управление',
+            self::PLACE_RS485 => 'RS-485'
+        ];
+
+        return $is_full ? $places : array_keys($places);
+    }
 
     /**
      * Получение всех методов для объекта
@@ -76,10 +89,20 @@ class Curtain extends Model
         return self::getTypes(true)[$this->type] ?? '';
     }
 
+    public function getRusPlaceAttribute()
+    {
+        return self::getPlaces(true)[$this->place] ?? '';
+    }
+
     /* relations */
 
     public function object()
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+    }
+
+    public function device()
+    {
+        return $this->belongsTo(Device::class);
     }
 }

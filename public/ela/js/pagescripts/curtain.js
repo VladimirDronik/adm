@@ -1,27 +1,21 @@
 function isEmptyInput(name) {
-    return $('#relay_form input[name='+name+']').val().trim() == '';
+    return $('#curtain_form input[name='+name+']').val().trim() == '';
 }
 
 function isEmptyAutoSelect(name) {
-    return $('#lamp_form #auto_sel_'+name).val().trim() == '';
+    return $('#curtain_form #auto_sel_'+name).val().trim() == '';
 }
 
 function validateCurtain() {
 
-    if ($("#curtain_form input[name=type]").length && !$("#curtain_form input[name=type]:checked").val()) {
+    if ($("#curtain_form input[name=place]").length && !$("#curtain_form input[name=place]:checked").val()) {
 
-        return 'Не указан тип';
+        return 'Не указан тип управления';
     }
 
     if (isEmptyInput('name')) {
         return 'Не указано название';
     }
-
-    if (isEmptyInput('time')) {
-        return 'Не указано время открытия или закрытия';
-    }
-
-
 
     return '';
 }

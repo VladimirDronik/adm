@@ -144,8 +144,13 @@ class HomeObject extends Model
         return $this->hasMany(SchedulerTask::class, 'object', 'id')->orderBy('id');
     }
 
-    public function conditioners()
+    public function conditioner()
     {
-        return $this->hasMany(Conditioner::class, 'id_object', 'id');
+        return $this->hasOne(Conditioner::class, 'id_object', 'id');
+    }
+
+    public function curtein()
+    {
+        return $this->hasOne(Curtain::class, 'id_object', 'id');
     }
 }

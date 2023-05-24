@@ -1,7 +1,8 @@
 <br>
 
 
-{{ Form::bs_radio('type', 'Тип*:', $types, old('type', -1), ['required' => true]) }}
+{{ Form::bs_radio('type', 'Тип:', $types, old('type', -1), []) }}
+{{ Form::bs_radio('place', 'Тип управления*:', $places, old('place'), ['required' => true]) }}
 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
 
@@ -13,7 +14,7 @@
                 {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'),
                    false, false, [], null) }}
 
-                <div id='port_id_div' style="display: block">
+                <div id='port_id_div' hidden>
                     {{ Form::bs_autoselect('port_id_open', 'Порт на отркытие:', [], old('port_id_open'),
                         false, false, [], null) }}
 
@@ -21,21 +22,13 @@
                        false, false, [], null) }}
                 </div>
 
-                <div id='hitepro_devices_div' style="display: none">
-                    {{ Form::bs_autoselect('hitepro_device_open', 'Устройство на открытие:', [], old('hitepro_device_open'),
-                        false, false, [], null) }}
+                <div id='rs_485_div' hidden>
+                    {{ Form::bs_text('address', 'Адрес:', old('address'), [], 'От 0 до 255') }}
 
-                    {{ Form::bs_autoselect('hitepro_device_close', 'Устройство на закрытие:', [], old('hitepro_device_close'),
-                        false, false, [], null) }}
+                    {{ Form::bs_text('group', 'Группа:', old('group'), [], 'От 0 до 255') }}
                 </div>
-
-                <input type="hidden" name="place" id="place">
             </div>
-
-
-
 </div>
-{{ Form::bs_text('time', 'Время открытия или закытия в секундах*:', null, ['required' => true]) }}
 
 
 

@@ -36,6 +36,7 @@
                             <tr>
                                 <th style="width: 60px;">ID</th>
                                 <th>Тип</th>
+                                <th>Тип управления</th>
                                 <th>Название</th>
                                 @can('devices.show-object')
                                     <th>Объект</th>
@@ -50,6 +51,9 @@
                                     <td scope="row">{{ $curtain->object['id'] }}</td>
                                     <td>
                                         {{ $curtain->rus_type }}
+                                    </td>
+                                    <td>
+                                        {{ $curtain->rus_place }}
                                     </td>
                                     <td><a href="{{ route('curtains.edit', [$curtain->id]) }}">{{ $curtain->name }}</a></td>
                                     @can('devices.show-object')
@@ -78,6 +82,7 @@
                             <tr>
                                 <th style="width: 60px;">ID</th>
                                 <th>Тип</th>
+                                <th>Тип управления</th>
                                 <th>Название</th>
                                 @can('devices.show-object')
                                     <th>Объект</th>

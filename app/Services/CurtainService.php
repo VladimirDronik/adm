@@ -37,17 +37,16 @@ class CurtainService
         }
 
 
-        if($data['place'] == 'port') {
+        if($data['place'] == Curtain::PLACE_PORT || $data['place'] == Curtain::PLACE_PHASE) {
             $curtain->port_open = $data['port_id_open'];
             $curtain->port_close = $data['port_id_close'];
-        } elseif($data['place'] == 'Hite-pro') {
-            $curtain->port_open = $data['hitepro_device_open'];
-            $curtain->port_close = $data['hitepro_device_close'];
+        } else {
+            $curtain->address = $data['address'];
+            $curtain->group = $data['group'];
         }
 
-
-        $curtain->time = $data['time'];
         $curtain->place = $data['place'];
+        $curtain->device_id = $data['device_id'];
     }
 
 
@@ -72,31 +71,23 @@ class CurtainService
                 AliceDevicesService::setActive($curtain->id_object, 0);
 
 
-            //Удаляем объект из портов контроллера и из устройст хитпро, что бы затем внести заново
-            PortService::removeObjectOnPorts($data['id_object']);
-
-            //Если штора находится на портах контроллера, то настраиваем эти порты, иначе штора находится на хитпро
-            if($curtain->place == 'port') {
-
-                $idDevice = DeviceRepository::getDevByPort($data['port_id_open']);
+            if ($data['place'] == Curtain::PLACE_PORT || $data['place'] == Curtain::PLACE_PHASE) {
+                //Удаляем объект из портов контроллера, что бы затем внести заново
+                PortService::removeObjectOnPorts($data['id_object']);
 
                 //Настройка контроллера для порта открытия
-                if ($data['port_id_open']) {
-                    ConfigMegaService::setPortType($idDevice, PortRepository::getNumberPortByID($data['port_id_open']), 'OUT');
-                    PortService::setObjectOnSelectedPort($data['id_object'],$data['port_id_open'],'OUT', $data['name']);
-                }
+                ConfigMegaService::setPortType($data['device_id'], PortRepository::getNumberPortByID($data['port_id_open']), 'OUT');
+                PortService::setObjectOnSelectedPort($data['id_object'],$data['port_id_open'],'OUT', $data['name']);
 
                 //Настройка контроллера для порта закрытия
-                if ($data['port_id_close']) {
-                    ConfigMegaService::setPortType($idDevice, PortRepository::getNumberPortByID($data['port_id_close']), 'OUT');
-                    PortService::setObjectOnSelectedPort($data['id_object'],$data['port_id_close'],'OUT', $data['name']);
-                }
+                ConfigMegaService::setPortType($data['device_id'], PortRepository::getNumberPortByID($data['port_id_close']), 'OUT');
+                PortService::setObjectOnSelectedPort($data['id_object'],$data['port_id_close'],'OUT', $data['name']);
             } else {
-                PortService::setObjectOnHitePro($data['id_object'],$data['hitepro_device_open']);
-                PortService::setObjectOnHitePro($data['id_object'],$data['hitepro_device_close']);
+                $curtain->update([
+                    'address' => $data['address'],
+                    'group' => $data['group'],
+                ]);
             }
-
-
         });
 
         return $curtain->id;
@@ -128,29 +119,19 @@ class CurtainService
 
                 $this->curtainObjectService->createCurtainObjectMethods($object->id, $data['device_id']);
 
-                if ($data['place'] == 'port') {
+                if ($data['place'] == Curtain::PLACE_PORT || $data['place'] == Curtain::PLACE_PHASE) {
 
-                    if ($data['port_id_open']) {
-                        PortService::setObjectOnSelectedPort($object->id, $data['port_id_open'],'OUT',$curtain->name);
-                        ConfigMegaService::setPortType($deviceID, PortRepository::getNumberPortByID($data['port_id_open']), 'OUT');
-                    }
+                    PortService::setObjectOnSelectedPort($object->id, $data['port_id_open'],'OUT',$curtain->name);
+                    ConfigMegaService::setPortType($deviceID, PortRepository::getNumberPortByID($data['port_id_open']), 'OUT');
 
-                    if($data['port_id_close']) {
-                        PortService::setObjectOnSelectedPort($object->id, $data['port_id_close'],'OUT',$curtain->name);
-                        ConfigMegaService::setPortType($deviceID, PortRepository::getNumberPortByID($data['port_id_close']), 'OUT');
-                    }
+                    PortService::setObjectOnSelectedPort($object->id, $data['port_id_close'],'OUT',$curtain->name);
+                    ConfigMegaService::setPortType($deviceID, PortRepository::getNumberPortByID($data['port_id_close']), 'OUT');
 
-                } elseif ($data['place'] == 'Hite-pro') {
-
-                    if ($data['hitepro_device_open']) {
-                        HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_device_open'])
-                            ->update(['id_object' => $object->id]);
-                    }
-
-                    if ($data['hitepro_device_close']) {
-                        HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_device_close'])
-                            ->update(['id_object' => $object->id]);
-                    }
+                } else {
+                    $curtain->update([
+                        'address' => $data['address'],
+                        'group' => $data['group'],
+                    ]);
                 }
             });
 
