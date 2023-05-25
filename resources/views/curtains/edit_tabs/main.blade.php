@@ -50,6 +50,10 @@
 
             @endif
             <input type="hidden" name="place" value="{{ $curtain->place }}">
+
+            @if ($curtain->place == \App\Models\Curtain::PLACE_PHASE)
+                {{ Form::bs_text('time', 'Время открытия или закрытия*:', old('time', $curtain->time), ['required' => true], 'В секундах') }}
+            @endif
     </div>
 
     @include('messages.two')

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
 class ChangeFieldsInCurtainsTable extends Migration
 {
@@ -19,9 +20,10 @@ class ChangeFieldsInCurtainsTable extends Migration
                 ->nullable()
                 ->default(null)
                 ->change();
+
             $table->unsignedInteger('device_id')->nullable();
 
-            $table->dropColumn('time');
+            $table->dropColumn('gw_id');
 
             $table->foreign('device_id')
                 ->references('id')
@@ -29,6 +31,8 @@ class ChangeFieldsInCurtainsTable extends Migration
                 ->onUpdate('set null')
                 ->onDelete('set null');
         });
+
+        DB::statement("ALTER TABLE curtains MODIFY time TINYINT NULL DEFAULT NULL COMMENT 'время полного открытия или закрытия шторы'");
     }
 
     /**
@@ -40,9 +44,11 @@ class ChangeFieldsInCurtainsTable extends Migration
     {
         Schema::table('curtains', function (Blueprint $table) {
             $table->string('type', 20)->comment('Тип: штора, жалюзи, рольставня')->change();
-            $table->tinyInteger('time')->comment('время полного открытия или закрытия шторы');
+            $table->unsignedInteger('gw_id')->nullable()->comment('id шлюза ModbusTCP');
             $table->dropForeign('curtains_device_id_foreign');
             $table->dropColumn('device_id');
         });
+
+        DB::statement("ALTER TABLE curtains MODIFY time TINYINT NOT NULL COMMENT 'время полного открытия или закрытия шторы'");
     }
 }

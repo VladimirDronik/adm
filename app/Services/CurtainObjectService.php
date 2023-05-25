@@ -35,9 +35,10 @@ class CurtainObjectService {
      * Автосоздание методов для шторы
      *
      * @param int $object_id
+     * @param bool $percentOpenScript = false
      * @return void
      */
-    public function createCurtainObjectMethods(int $object_id)
+    public function createCurtainObjectMethods(int $object_id, bool $percentOpenScript = false)
     {
         $scripts = ScriptsTableSeeder::getCurtainScripts();
 
@@ -45,14 +46,29 @@ class CurtainObjectService {
 
         foreach ($scripts as $script) {
             $script_id = $this->getScriptId($script);
-            $methods[] = [
-                'name' => $script['name'],
-                'id_object' => $object_id,
-                'script' => $script_id,
-                'comment' => $script['name'],
-                'params' => mb_strpos($script['name'], '%', 2, 'UTF-8') !== false ? '% открытия (целое, 0-100)' : null,
-                'is_system' => 1
-            ];
+            if ($script['name'] == 'Открыть штору на %') {
+                if ($percentOpenScript) {
+                    $methods[] = [
+                        'name' => $script['name'],
+                        'id_object' => $object_id,
+                        'script' => $script_id,
+                        'comment' => $script['name'],
+                        'params' => mb_strpos($script['name'], '%', 2, 'UTF-8') !== false ? '% открытия (целое, 0-100)' : null,
+                        'is_system' => 1
+                    ];
+                } else {
+                    continue;
+                }
+            } else {
+                $methods[] = [
+                    'name' => $script['name'],
+                    'id_object' => $object_id,
+                    'script' => $script_id,
+                    'comment' => $script['name'],
+                    'params' => mb_strpos($script['name'], '%', 2, 'UTF-8') !== false ? '% открытия (целое, 0-100)' : null,
+                    'is_system' => 1
+                ];
+            }
         }
 
         Method::insert($methods);

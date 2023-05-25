@@ -27,6 +27,10 @@
 
                     {{ Form::bs_text('group', 'Группа:', old('group'), [], 'От 0 до 255') }}
                 </div>
+
+                <div id='phase_time_div' hidden>
+                    {{ Form::bs_text('time', 'Время открытия или закрытия*:', old('time'), ['required' => true], 'В секундах') }}
+                </div>
             </div>
 </div>
 

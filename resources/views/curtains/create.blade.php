@@ -80,19 +80,11 @@
 
         var place = $('#curtain_form input[name=place]:checked').val();
         if (place == 'rs485') {
-            $('#rs_485_div').removeAttr("hidden");
-            $('#curtain_form input[name=address]').removeAttr("disabled");
-            $('#curtain_form input[name=group]').removeAttr("disabled");
-
-            $('#auto_sel_port_id_open').attr("disabled", true);
-            $('#auto_sel_port_id_close').attr("disabled", true);
-        } else if (place == 'port' || place == 'phase') {
-            $('#port_id_div').removeAttr("hidden");
-            $('#auto_sel_port_id_open').removeAttr("disabled");
-            $('#auto_sel_port_id_close').removeAttr("disabled");
-
-            $('#curtain_form input[name=address]').attr("disabled", true);
-            $('#curtain_form input[name=group]').attr("disabled", true);
+            rs485Fields();
+        } else if (place == 'phase') {
+            phaseFields();
+        } else if (place == 'port') {
+            portFields();
         }
 
         function createPortSelect(target, options, selected) {
@@ -187,21 +179,11 @@
                 }
 
                 if (selectedOption == 'rs485') {
-                    $('#rs_485_div').removeAttr("hidden");
-                    $('#curtain_form input[name=address]').removeAttr("disabled");
-                    $('#curtain_form input[name=group]').removeAttr("disabled");
-
-                    $('#port_id_div').attr("hidden", true);
-                    $('#auto_sel_port_id_open').attr("disabled", true);
-                    $('#auto_sel_port_id_close').attr("disabled", true);
+                    rs485Fields();
+                } else if (selectedOption == 'phase') {
+                    phaseFields();
                 } else {
-                    $('#port_id_div').removeAttr("hidden");
-                    $('#auto_sel_port_id_open').removeAttr("disabled");
-                    $('#auto_sel_port_id_close').removeAttr("disabled");
-
-                    $('#rs_485_div').attr("hidden", true);
-                    $('#curtain_form input[name=address]').attr("disabled", true);
-                    $('#curtain_form input[name=group]').attr("disabled", true);
+                    portFields();
                 }
             });
         });

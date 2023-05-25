@@ -47,6 +47,10 @@ class CurtainService
 
         $curtain->place = $data['place'];
         $curtain->device_id = $data['device_id'];
+
+        if ($data['place'] == Curtain::PLACE_PHASE) {
+            $curtain->time = $data['time'];
+        }
     }
 
 
@@ -117,9 +121,8 @@ class CurtainService
                 $curtain->id_object = $object->id;
                 $curtain->save();
 
-                $this->curtainObjectService->createCurtainObjectMethods($object->id, $data['device_id']);
-
                 if ($data['place'] == Curtain::PLACE_PORT || $data['place'] == Curtain::PLACE_PHASE) {
+                    $this->curtainObjectService->createCurtainObjectMethods($object->id);
 
                     PortService::setObjectOnSelectedPort($object->id, $data['port_id_open'],'OUT',$curtain->name);
                     ConfigMegaService::setPortType($deviceID, PortRepository::getNumberPortByID($data['port_id_open']), 'OUT');
@@ -128,6 +131,8 @@ class CurtainService
                     ConfigMegaService::setPortType($deviceID, PortRepository::getNumberPortByID($data['port_id_close']), 'OUT');
 
                 } else {
+                    $this->curtainObjectService->createCurtainObjectMethods($object->id, true);
+
                     $curtain->update([
                         'address' => $data['address'],
                         'group' => $data['group'],

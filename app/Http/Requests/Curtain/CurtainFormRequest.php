@@ -32,6 +32,9 @@ class CurtainFormRequest extends FormRequest
         if ($this->request->get('place') == Curtain::PLACE_PORT || $this->request->get('place') == Curtain::PLACE_PHASE) {
             $rules['port_id_open'] = 'required|integer';
             $rules['port_id_close'] = 'required|integer';
+            if ($this->request->get('place') == Curtain::PLACE_PHASE) {
+                $rules['time'] = 'required|integer';
+            }
         } else {
             $rules['address'] = 'required|integer|between:0,255';
             $rules['group'] = 'required|integer|between:0,255';
@@ -50,6 +53,9 @@ class CurtainFormRequest extends FormRequest
         if ($this->request->get('place') == Curtain::PLACE_PORT || $this->request->get('place') == Curtain::PLACE_PHASE) {
             $messages['port_id_open.required'] = 'Не указан порт для отрытия шторы';
             $messages['port_id_close.required'] = 'Не указан порт для закрытия шторы';
+            if ($this->request->get('place') == Curtain::PLACE_PHASE) {
+                $messages['time.required'] = 'Не указано время открытия или закрытия';
+            }
         } else {
             $messages['address.required'] = 'Не указан адрес';
             $messages['group.required'] = 'Не указана группа';

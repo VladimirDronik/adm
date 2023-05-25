@@ -26,8 +26,10 @@ use Illuminate\Database\Eloquent\Model;
 class Curtain extends Model
 {
     const TYPE_CURTAIN = 'curtain';
-    const TYPE_JALOUSIE = 'jalousie';
-    const TYPE_SHUTTERS = 'shutters';
+    const TYPE_ROMAN = 'roman';
+    const TYPE_ROLLER = 'roller';
+    const TYPE_VERTICAL = 'vertical';
+    const TYPE_HORIZONTAL = 'horizontal';
 
     const PLACE_PORT = 'port';
     const PLACE_PHASE = 'phase';
@@ -40,9 +42,11 @@ class Curtain extends Model
     public static function getTypes(bool $is_full = false)
     {
         $types = [
-            self::TYPE_CURTAIN => 'Шторы',
-            self::TYPE_JALOUSIE => 'Жалюзи',
-            self::TYPE_SHUTTERS => 'Ставни'
+            self::TYPE_CURTAIN => 'Раздвижные шторы',
+            self::TYPE_ROMAN => 'Римская штора',
+            self::TYPE_ROLLER => 'Рулонная штора',
+            self::TYPE_VERTICAL => 'Вертикальные жалюзи',
+            self::TYPE_HORIZONTAL => 'Горизонтальные жалюзи',
         ];
 
         return $is_full ? $types : array_keys($types);
