@@ -15,7 +15,7 @@
                    false, false, [], null) }}
 
                 <div id='port_id_div' hidden>
-                    {{ Form::bs_autoselect('port_id_open', 'Порт на отркытие:', [], old('port_id_open'),
+                    {{ Form::bs_autoselect('port_id_open', 'Порт на открытие:', [], old('port_id_open'),
                         false, false, [], null) }}
 
                     {{ Form::bs_autoselect('port_id_close', 'Порт на закрытие:', [], old('port_id_close'),
