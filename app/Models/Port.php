@@ -93,4 +93,9 @@ class Port extends Model
     {
         return $this->belongsTo(Method::class, 'lc_method', 'id');
     }
+
+    public function extensionModule()
+    {
+        return $this->belongsTo(ExtensionModule::class);
+    }
 }

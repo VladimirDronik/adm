@@ -110,6 +110,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('objects_ports', 'DeviceController@objectsPorts')->name('objects_ports');
             Route::post('type_controller', 'DeviceController@typeController')->name('type_controller');
             Route::post('get', 'DeviceController@get')->name('get');
+            Route::post('extension_module/delete', 'DeviceController@extensionModuleDelete')->name('extension_module.delete');
         });
 
         Route::group(['prefix' => 'views', 'as' => 'views.'], function () {

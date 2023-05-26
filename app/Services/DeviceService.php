@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Device;
+use App\Models\ExtensionModule;
 use App\Models\HiteproDev;
 use App\Models\Port;
 use App\Repositories\DeviceRepository;
@@ -37,6 +38,18 @@ class DeviceService {
             Port::where('id_device', $id)->delete();
             Device::destroy($id);
         });
+
+        return true;
+    }
+
+    /**
+     * @param int $extensionModuleId
+     * @return bool
+     * @throws \Throwable
+     */
+    public function extensionModuleDelete(int $extensionModuleId)
+    {
+        ExtensionModule::destroy($extensionModuleId);
 
         return true;
     }
@@ -169,6 +182,25 @@ class DeviceService {
     }
 
     /**
+     * Добавление модулей расширения
+     *
+     * @param array $modules
+     * @param Device $device
+     * @throws \Exception
+     */
+    private function storeExtensionModules(array $modules, Device $device)
+    {
+        foreach ($modules as $module) {
+            ExtensionModule::create([
+                'extension_module_type_id' => $module['extension_module_type_id'],
+                'device_id' => $device->id,
+                'sda_port' => $module['sda_port'],
+                'scl_port' => $module['scl_port'],
+            ]);
+        }
+    }
+
+    /**
      * Изменение устройства с оповещением ip удаленного сервера
      *
      * @param array $data
@@ -177,6 +209,13 @@ class DeviceService {
      */
     public function update(array $data)
     {
+        $extensionModules = null;
+
+        if (array_key_exists('extension_modules', $data)) {
+            $extensionModules = $data['extension_modules'];
+            unset($data['extension_modules']);
+        }
+
         trimArray($data);
 
         if ($this->isDoubleDescription($data)) {
@@ -190,11 +229,16 @@ class DeviceService {
 
         $device = Device::find($data['id']);
 
+        if ($extensionModules) {
+            $this->storeExtensionModules($extensionModules, $device);
+        }
+
         if (!$device) {
             return [false, 'Устройство не найдено', '', ''];
         }
 
         $device->description = $data['description'];
+        $device->password = $data['password'];
 
         //Заливаем конфиг на устройство
         if(DeviceRepository::getDevByIdDevice($data['id']) != 'Hite-pro')
