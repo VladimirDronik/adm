@@ -30,6 +30,11 @@
                         <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Порты IN</span></a> </li>
                         <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты OUT</span></a> </li>
                         <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты DIG</span></a> </li>
+                        @if($device->extensionModules)
+                            @foreach($device->extensionModules as $extensionModule)
+                                <li class="nav-item"> <a class="nav-link @if($tab==$extensionModule->id) active @endif"  data-toggle="tab" href="#portstab{{ $extensionModule->id }}" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">{{ $extensionModule->extensionModuleType->name }}({{ $extensionModule->sda_port }})</span></a> </li>
+                            @endforeach
+                        @endif
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
@@ -41,6 +46,13 @@
                         <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
                             @include('devices.dig_ports')
                         </div>
+                        @if($device->extensionModules)
+                            @foreach($device->extensionModules as $extensionModule)
+                            <div class="tab-pane p-20 @if($tab==$extensionModule->id) active @endif" id="portstab{{ $extensionModule->id }}" role="tabpanel">
+                                @include('devices.extension_module_ports', ['extensionModule' => $extensionModule])
+                            </div>
+                            @endforeach
+                        @endif
                     </div>
                 @else
                     <p>Порты не найдены</p>

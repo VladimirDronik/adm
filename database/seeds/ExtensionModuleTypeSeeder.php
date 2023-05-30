@@ -23,7 +23,7 @@ class ExtensionModuleTypeSeeder extends Seeder
         $extensionModuleTypes = [
             [
                 'name' => '0-10V',
-                'ports' => 'in 0 6;out 7 13;dig 14 14;in 15 21;out 22 28;dig 29 37'
+                'ports' => 'EXT 0 7;'
             ],
         ];
 

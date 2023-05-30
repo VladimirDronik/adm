@@ -49,7 +49,10 @@ class DeviceService {
      */
     public function extensionModuleDelete(int $extensionModuleId)
     {
-        ExtensionModule::destroy($extensionModuleId);
+        DB::transaction(function () use ($extensionModuleId) {
+            Port::where('extension_module_id', $extensionModuleId)->delete();
+            ExtensionModule::destroy($extensionModuleId);
+        });
 
         return true;
     }
@@ -57,6 +60,17 @@ class DeviceService {
     public function storePorts()
     {
         Port::insert($this->device->devtype->getPortsForInserting($this->device->id));
+    }
+
+    /**
+     * Создание портов для модуля расширения
+     * @param ExtensionModule $extensionModule
+     * @param int $deviceId
+     * @return void
+     */
+    public function storeExtensionModulePorts(ExtensionModule $extensionModule, int $deviceId)
+    {
+        Port::insert($extensionModule->extensionModuleType->getPortsForInserting($deviceId, $extensionModule->id));
     }
 
     private function getDeviceIpNotificationParams(string $oldIP, string $eip, string $sip): string
@@ -190,13 +204,25 @@ class DeviceService {
      */
     private function storeExtensionModules(array $modules, Device $device)
     {
-        foreach ($modules as $module) {
-            ExtensionModule::create([
-                'extension_module_type_id' => $module['extension_module_type_id'],
-                'device_id' => $device->id,
-                'sda_port' => $module['sda_port'],
-                'scl_port' => $module['scl_port'],
-            ]);
+        DB::beginTransaction();
+
+        try {
+            foreach ($modules as $module) {
+                $extensionModule = ExtensionModule::create([
+                    'extension_module_type_id' => $module['extension_module_type_id'],
+                    'device_id' => $device->id,
+                    'sda_port' => $module['sda_port'],
+                    'scl_port' => $module['scl_port'],
+                ]);
+
+                $this->storeExtensionModulePorts($extensionModule, $device->id);
+            }
+
+            DB::commit();
+
+        } catch (\Throwable $e) {
+            DB::rollback();
+            throw $e;
         }
     }
 
@@ -229,10 +255,6 @@ class DeviceService {
 
         $device = Device::find($data['id']);
 
-        if ($extensionModules) {
-            $this->storeExtensionModules($extensionModules, $device);
-        }
-
         if (!$device) {
             return [false, 'Устройство не найдено', '', ''];
         }
@@ -257,6 +279,10 @@ class DeviceService {
                 //Меняем адрес устойства
                 $this->notifyDeviceIp($data);
 
+                if ($extensionModules) {
+                    $this->storeExtensionModules($extensionModules, $device);
+                }
+
                 DB::commit();
 
                 if($configResult['error'] == '')
@@ -275,6 +301,10 @@ class DeviceService {
         } else {
 
             $device->save();
+
+            if ($extensionModules) {
+                $this->storeExtensionModules($extensionModules, $device);
+            }
 
             if($configResult['error'] == '')
                 return [true, '', $configResult['count_all'], $configResult['count_result']];
