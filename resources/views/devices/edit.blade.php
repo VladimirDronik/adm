@@ -32,7 +32,7 @@
                         <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты DIG</span></a> </li>
                         @if($device->extensionModules)
                             @foreach($device->extensionModules as $extensionModule)
-                                <li class="nav-item"> <a class="nav-link @if($tab==$extensionModule->id) active @endif"  data-toggle="tab" href="#portstab{{ $extensionModule->id }}" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">{{ $extensionModule->extensionModuleType->name }}({{ $extensionModule->sda_port }})</span></a> </li>
+                                <li class="nav-item"> <a class="nav-link @if($tab=='ext'.$extensionModule->id) active @endif"  data-toggle="tab" href="#extportstab{{ $extensionModule->id }}" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">{{ $extensionModule->extensionModuleType->name }}({{ $extensionModule->sda_port }})</span></a> </li>
                             @endforeach
                         @endif
                     </ul>
@@ -48,7 +48,7 @@
                         </div>
                         @if($device->extensionModules)
                             @foreach($device->extensionModules as $extensionModule)
-                            <div class="tab-pane p-20 @if($tab==$extensionModule->id) active @endif" id="portstab{{ $extensionModule->id }}" role="tabpanel">
+                            <div class="tab-pane p-20 @if($tab=='ext'.$extensionModule->id) active @endif" id="extportstab{{ $extensionModule->id }}" role="tabpanel">
                                 @include('devices.extension_module_ports', ['extensionModule' => $extensionModule])
                             </div>
                             @endforeach

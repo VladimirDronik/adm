@@ -42,7 +42,7 @@
                 <tr>
                     <th scope="row"> {{ $port->num_port }}</th>
                     <td>
-                        <a href="{{ route('ports.edit', [$port->id,'tab='.$extensionModule->id]) }}"><span class="badge {{ $badge }}">{{ $port->status }}</span></a>
+                        <a href="{{ route('ports.edit', [$port->id,'tab=ext'.$extensionModule->id]) }}"><span class="badge {{ $badge }}">{{ $port->status }}</span></a>
                     </td>
                     <td>
                         <a href="#" data-toggle="modal" data-target="#name_modal"
@@ -74,7 +74,7 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('ports.edit', [$port->id,'tab='.$extensionModule->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                        <a href="{{ route('ports.edit', [$port->id,'tab=ext'.$extensionModule->id]) }}" class="btn btn-info btn-sm btn-rounded">
                             <i class="fa fa-cog fa-lg"></i>
                         </a>
                     </td>
