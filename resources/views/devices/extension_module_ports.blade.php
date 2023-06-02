@@ -17,7 +17,7 @@
                         case 'NC': $badge = 'badge-secondary';
                         break;
 
-                        case 'EXT': $badge = 'badge-secondary';
+                        case '0..10V': $badge = 'badge-secondary';
                         break;
 
                         case 'IN': $badge = 'badge-success';
@@ -42,7 +42,7 @@
                 <tr>
                     <th scope="row"> {{ $port->num_port }}</th>
                     <td>
-                        <a href="{{ route('ports.edit', [$port->id,'tab=ext'.$extensionModule->id]) }}"><span class="badge {{ $badge }}">{{ $port->status }}</span></a>
+                        <span class="badge {{ $badge }}">{{ $port->status }}</span>
                     </td>
                     <td>
                         <a href="#" data-toggle="modal" data-target="#name_modal"
@@ -72,11 +72,6 @@
                                 Отсутствует
                             </button>
                         @endif
-                    </td>
-                    <td>
-                        <a href="{{ route('ports.edit', [$port->id,'tab=ext'.$extensionModule->id]) }}" class="btn btn-info btn-sm btn-rounded">
-                            <i class="fa fa-cog fa-lg"></i>
-                        </a>
                     </td>
                 </tr>
         @endforeach
