@@ -30,6 +30,13 @@ class DeviceController extends Controller
         return response()->json(['result' => (bool)$this->service->delete((int)$r->id)]);
     }
 
+    public function extensionModuleDelete(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['extension_module_id']), 400);
+
+        return response()->json(['result' => (bool)$this->service->extensionModuleDelete((int)$r->extension_module_id)]);
+    }
+
     /**
      * @param Request $r
      * @return \Illuminate\Http\JsonResponse

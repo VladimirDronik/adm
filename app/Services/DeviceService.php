@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Device;
+use App\Models\ExtensionModule;
 use App\Models\HiteproDev;
 use App\Models\Port;
 use App\Repositories\DeviceRepository;
@@ -41,9 +42,35 @@ class DeviceService {
         return true;
     }
 
+    /**
+     * @param int $extensionModuleId
+     * @return bool
+     * @throws \Throwable
+     */
+    public function extensionModuleDelete(int $extensionModuleId)
+    {
+        DB::transaction(function () use ($extensionModuleId) {
+            Port::where('extension_module_id', $extensionModuleId)->delete();
+            ExtensionModule::destroy($extensionModuleId);
+        });
+
+        return true;
+    }
+
     public function storePorts()
     {
         Port::insert($this->device->devtype->getPortsForInserting($this->device->id));
+    }
+
+    /**
+     * Создание портов для модуля расширения
+     * @param ExtensionModule $extensionModule
+     * @param int $deviceId
+     * @return void
+     */
+    public function storeExtensionModulePorts(ExtensionModule $extensionModule, int $deviceId)
+    {
+        Port::insert($extensionModule->extensionModuleType->getPortsForInserting($deviceId, $extensionModule->id));
     }
 
     private function getDeviceIpNotificationParams(string $oldIP, string $eip, string $sip): string
@@ -169,6 +196,37 @@ class DeviceService {
     }
 
     /**
+     * Добавление модулей расширения
+     *
+     * @param array $modules
+     * @param Device $device
+     * @throws \Exception
+     */
+    private function storeExtensionModules(array $modules, Device $device)
+    {
+        DB::beginTransaction();
+
+        try {
+            foreach ($modules as $module) {
+                $extensionModule = ExtensionModule::create([
+                    'extension_module_type_id' => $module['extension_module_type_id'],
+                    'device_id' => $device->id,
+                    'sda_port' => $module['sda_port'],
+                    'scl_port' => $module['scl_port'],
+                ]);
+
+                $this->storeExtensionModulePorts($extensionModule, $device->id);
+            }
+
+            DB::commit();
+
+        } catch (\Throwable $e) {
+            DB::rollback();
+            throw $e;
+        }
+    }
+
+    /**
      * Изменение устройства с оповещением ip удаленного сервера
      *
      * @param array $data
@@ -177,6 +235,13 @@ class DeviceService {
      */
     public function update(array $data)
     {
+        $extensionModules = null;
+
+        if (array_key_exists('extension_modules', $data)) {
+            $extensionModules = $data['extension_modules'];
+            unset($data['extension_modules']);
+        }
+
         trimArray($data);
 
         if ($this->isDoubleDescription($data)) {
@@ -195,6 +260,7 @@ class DeviceService {
         }
 
         $device->description = $data['description'];
+        $device->password = $data['password'];
 
         //Заливаем конфиг на устройство
         if(DeviceRepository::getDevByIdDevice($data['id']) != 'Hite-pro')
@@ -212,6 +278,10 @@ class DeviceService {
 
                 //Меняем адрес устойства
                 $this->notifyDeviceIp($data);
+
+                if ($extensionModules) {
+                    $this->storeExtensionModules($extensionModules, $device);
+                }
 
                 DB::commit();
 
@@ -231,6 +301,10 @@ class DeviceService {
         } else {
 
             $device->save();
+
+            if ($extensionModules) {
+                $this->storeExtensionModules($extensionModules, $device);
+            }
 
             if($configResult['error'] == '')
                 return [true, '', $configResult['count_all'], $configResult['count_result']];

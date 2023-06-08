@@ -16,18 +16,9 @@
                         <a href="{{ route('devices.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок контроллеров</a>
                         <a href="{{ route('devices.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить контроллер</a>
                         <a href="{{ route('devices.edit',[$device->id]) }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
+                        <button type="button" id="settings_modal_btn" class="btn btn-success m-b-10 m-l-5" data-toggle="modal" data-target="#settings_modal">Настройки</button>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                Название: <input name="description" autocomplete="off" value="{{ $device->description}}" size="15">
-                ip адрес: <input name="ip_address" autocomplete="off" value="{{ $device->ip_address }}" size="15">
-                <input type="hidden" id="id_device" value="{{ $device->id }}">
-                Тип: <span class="text-capitalize">{{ optional($device->devtype)->name }}</span>
-                <button type="button" id="updateDeviceBtn" class="btn btn-success m-b-10 m-l-5" data-toggle="modal" data-target="#device_modal">Сохранить</button>
-                <button type="button" class="btn btn-outline-danger m-b-10 m-l-5 pull-right"  data-toggle="modal" data-target="#delete_modal">Удалить контроллер</button>
             </div>
         </div>
         <div class="card">
@@ -39,6 +30,11 @@
                         <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Порты IN</span></a> </li>
                         <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты OUT</span></a> </li>
                         <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты DIG</span></a> </li>
+                        @if($device->extensionModules)
+                            @foreach($device->extensionModules as $extensionModule)
+                                <li class="nav-item"> <a class="nav-link @if($tab=='ext'.$extensionModule->id) active @endif"  data-toggle="tab" href="#extportstab{{ $extensionModule->id }}" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">{{ $extensionModule->extensionModuleType->name }}({{ $extensionModule->sda_port }})</span></a> </li>
+                            @endforeach
+                        @endif
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
@@ -50,6 +46,13 @@
                         <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
                             @include('devices.dig_ports')
                         </div>
+                        @if($device->extensionModules)
+                            @foreach($device->extensionModules as $extensionModule)
+                            <div class="tab-pane p-20 @if($tab=='ext'.$extensionModule->id) active @endif" id="extportstab{{ $extensionModule->id }}" role="tabpanel">
+                                @include('devices.extension_module_ports', ['extensionModule' => $extensionModule])
+                            </div>
+                            @endforeach
+                        @endif
                     </div>
                 @else
                     <p>Порты не найдены</p>
@@ -103,7 +106,7 @@
         </div>
     </div>
 
-    <div id="device_modal" class="modal">
+    <!-- <div id="device_modal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -116,6 +119,7 @@
             </div>
         </div>
     </div>
+    <button type="button" id="device_modal_init_btn" style="display: none;" data-toggle="modal" data-target="#device_modal">&nbsp;</button> -->
 
     <div id="delete_modal" class="modal">
         <div class="modal-dialog">
@@ -130,6 +134,7 @@
             </div>
         </div>
     </div>
+    <button type="button" id="delete_modal_init_btn" style="display: none;" data-toggle="modal" data-target="#delete_modal">&nbsp;</button>
 
     <div id="reloadModal" class="modal">
         <div class="modal-dialog">
@@ -262,6 +267,7 @@
             data-toggle="modal" data-target="#methodsModal">&nbsp;</button>
 
     @include('components.params_modal')
+    @include('devices.modals.settings_modal')
 @endsection
 
 @section('scripts')
@@ -275,6 +281,7 @@
         const edit_port_method_delete_url = '{{ route('ajax.ports.edit.method.delete') }}';
         const object_methods_url = '{{ route('ajax.ports.object.methods') }}';
         const update_method_url = '{{ route('ajax.ports.update.method') }}';
+        const delete_extension_module = '{{ route('ajax.devices.extension_module.delete') }}';
         const autoreload_period = 3000;
         const createObjectUrl = '{{ route('objects.create') }}';
         const createMethodInitUrl = '{{ route('objects.index') }}';
@@ -282,6 +289,8 @@
         let object_id = 0;
         let method_id = 0;
         let type = '';
+        let sdaSclOptions = $.parseJSON('<?php echo $sdaSclOptionsJson; ?>');
+        let moduleTypeOptions = $.parseJSON('<?php echo $moduleTypeOptionsJson; ?>');
 
 
         // in-port methods
@@ -298,7 +307,52 @@
             }
         }
 
+        function deleteExtensionModule(extensionModuleId) {
+            $.ajax({
+                url: delete_extension_module,
+                data: {
+                    '_token': _token, 'extension_module_id': extensionModuleId,
+                },
+                success: function (data) {
+                    if (data.result) {
+                        $("#deleteExtensionModule"+extensionModuleId).parent().parent().remove();
+                    }
+                }
+            });
+        }
+
         $(document).ready(function () {
+
+            function createNewFields() {
+                var newFields = $('<div class="moduleFields form-group row">' +
+                                    '<label class="control-label text-right col-md-1 label-fix">Тип:</label>' +
+                                    '<select class="chosen-select form-control col-sm-2" name="extension_module_type_id"></select>' +
+                                    '<label class="control-label text-right col-md-1 label-fix">SDA:</label>' +
+                                    '<select class="chosen-select form-control col-sm-1" name="sda_port"></select>' +
+                                    '<label class="control-label text-right col-md-1 label-fix">SCL:</label>' +
+                                    '<select class="chosen-select form-control col-sm-1" name="scl_port"></select>' +
+                                    '<div class="col-sm-3"><button class="deleteModuleBtn btn btn-outline-danger">Удалить модуль</button></div>' +
+                                '</div>');
+                var selectModuleType = newFields.find('select[name="extension_module_type_id"]');
+                var selectSdaPort = newFields.find('select[name="sda_port"]');
+                var selectSclPort = newFields.find('select[name="scl_port"]');
+                $.each(sdaSclOptions, function(index, option) {
+                    selectSdaPort.append('<option value="' + option.value + '">' + option.label + '</option>');
+                    selectSclPort.append('<option value="' + option.value + '">' + option.label + '</option>');
+                });
+                $.each(moduleTypeOptions, function(index, option) {
+                    selectModuleType.append('<option value="' + option.value + '">' + option.label + '</option>');
+                });
+                return newFields;
+            }
+
+            $("#addExtensionModuleBtn").click(function() {
+                var newFields = createNewFields();
+                $("#extensionModulesContainer").append(newFields);
+                $(".col-sm-3 .deleteModuleBtn").click(function() {
+                    $(this).parent().parent().remove();
+                });
+            });
 
             //Вызов модального окна с методами
             $('.js-method-btn').click(function () {
@@ -327,6 +381,14 @@
                         }
                     }
                 });
+            });
+
+            // $('#updateDeviceBtn').click(function() {
+            //     $('#device_modal_init_btn').click();
+            // });
+
+            $('#deleteDeviceBtn').click(function() {
+                $('#delete_modal_init_btn').click();
             });
 
             // кнопка Убрать
@@ -617,12 +679,15 @@
             return false;
         }
 
-        function validateDevice(description, ip_address) {
+        function validateDevice(description, ip_address, password) {
             if (description === '') {
                 return 'Не указано название контроллера';
             }
             if (ip_address === '') {
                 return 'Не указан ip адрес контроллера';
+            }
+            if (password === '') {
+                return 'Не указан пароль контроллера';
             }
             if (ip_address.length > 15) {
                 return 'Длина ip адреса не может быть больше 15';
@@ -634,31 +699,46 @@
         }
 
         function updateDevice() {
-            $('#reloadDeviceBtn').click();
 
             let description = $("input[name=description]").val().trim();
             let ip_address = $("input[name=ip_address]").val().trim();
+            let password = $("input[name=password]").val().trim();
 
-            $message = validateDevice(description, ip_address);
+            $message = validateDevice(description, ip_address, password);
             if ($message !== '') {
                 showErrorModal($message);
                 return false;
-            }
-
-            $.ajax({
-                url: '{{ route('ajax.devices.update') }}',
-                data: {'_token': _token, 'id': device_id, 'description': description,
-                    'ip_address': ip_address},
-                success: function (data) {
-                    if (!data.result) {
-                        showErrorModal(data.message);
-                    } else {
-                        location.reload();
-                       // $('#reloadDeviceBtn').click();
-                        //setTimeout(checkServer, autoreload_period);
-                    }
+            } else {
+                if ($("#extensionModulesContainer").children(".moduleFields").length > 0) {
+                    var data = [];
+                    $(".moduleFields").each(function() {
+                        var extension_module_type_id = $(this).find('select[name="extension_module_type_id"]').val();
+                        var sda_port = $(this).find('select[name="sda_port"]').val();
+                        var scl_port = $(this).find('select[name="scl_port"]').val();
+                        var item = {
+                            extension_module_type_id: extension_module_type_id,
+                            sda_port: sda_port,
+                            scl_port: scl_port
+                        };
+                        data.push(item);
+                    });
                 }
-            });
+                // $('#reloadDeviceBtn').click();
+                $.ajax({
+                    url: '{{ route('ajax.devices.update') }}',
+                    data: {'_token': _token, 'id': device_id, 'description': description,
+                        'ip_address': ip_address, 'password': password, extension_modules: data},
+                    success: function (data) {
+                        if (!data.result) {
+                            showErrorModal(data.message);
+                        } else {
+                            location.reload();
+                        // $('#reloadDeviceBtn').click();
+                            //setTimeout(checkServer, autoreload_period);
+                        }
+                    }
+                });
+            }
         }
 
         function checkServer() {

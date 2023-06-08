@@ -10,12 +10,14 @@
         </thead>
         <tbody>
         @php $port_count = 0; @endphp
-        @foreach($device->ports as $port)
-            @if($port->type === 'out')
+        @foreach($extensionModule->ports as $port)
                 @php $port_count++; @endphp
                 @php  switch ($port->status) {
 
                         case 'NC': $badge = 'badge-secondary';
+                        break;
+
+                        case '0..10V': $badge = 'badge-secondary';
                         break;
 
                         case 'IN': $badge = 'badge-success';
@@ -35,12 +37,12 @@
 
                         default: $badge = 'badge-secondary';
 
-                     }
+                    }
                 @endphp
                 <tr>
                     <th scope="row"> {{ $port->num_port }}</th>
                     <td>
-                        <a href="{{ route('ports.edit', [$port->id,'tab=2']) }}"><span class="badge {{ $badge }}">{{ $port->status }}</span></a>
+                        <span class="badge {{ $badge }}">{{ $port->status }}</span>
                     </td>
                     <td>
                         <a href="#" data-toggle="modal" data-target="#name_modal"
@@ -61,14 +63,6 @@
                                     value="{{ $port->object}},{{$port->eobject->name}},portobj_{{ $port->id }}">
                                 <b>{{ optional($port->eobject)->name }}</b>
                             </button>
-                        @elseif($port->status == 'I2C' && $port->device->extensionModules->isNotEmpty() && $port->device->extensionModules->where('sda_port', $port->num_port)->first())
-                            <div class="blockwrn block-warning btn-sm">
-                                <b>{{ $port->device->extensionModules->where('sda_port', $port->num_port)->first()->extensionModuleType->name }}({{ $port->num_port }}) SDA</b>
-                            </div>
-                        @elseif($port->status == 'I2C' && $port->device->extensionModules->isNotEmpty() && $port->device->extensionModules->where('scl_port', $port->num_port)->first())
-                            <div class="blockwrn block-warning btn-sm">
-                                <b>{{ $port->device->extensionModules->where('scl_port', $port->num_port)->first()->extensionModuleType->name }}({{ $port->device->extensionModules->where('scl_port', $port->num_port)->first()->sda_port }}) SCL</b>
-                            </div>
                         @else
                             <button type="button" class="btn btn-default m-b-10 btn-sm"
                                     name="object" id="portobjempty_{{ $port->id }}"
@@ -79,13 +73,7 @@
                             </button>
                         @endif
                     </td>
-                    <td>
-                        <a href="{{ route('ports.edit', [$port->id,'tab=2']) }}" class="btn btn-info btn-sm btn-rounded">
-                            <i class="fa fa-cog fa-lg"></i>
-                        </a>
-                    </td>
                 </tr>
-            @endif
         @endforeach
         </tbody>
         @if($port_count > 10)
@@ -100,4 +88,4 @@
         @endif
     </table>
 </div>
-<p class="text-right">Всего портов OUT: {{ $port_count }}</p>
+<p class="text-right">Всего портов: {{ $port_count }}</p>

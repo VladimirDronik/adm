@@ -63,6 +63,14 @@
                                 value="{{ $port->object}},{{$port->eobject->name}},portobj_{{ $port->id }}">
                             <b>{{ optional($port->eobject)->name }}</b>
                         </button>
+                    @elseif($port->status == 'I2C' && $port->device->extensionModules->isNotEmpty() && $port->device->extensionModules->where('sda_port', $port->num_port)->first())
+                        <div class="blockwrn block-warning btn-sm">
+                            <b>{{ $port->device->extensionModules->where('sda_port', $port->num_port)->first()->extensionModuleType->name }}({{ $port->num_port }}) SDA</b>
+                        </div>
+                    @elseif($port->status == 'I2C' && $port->device->extensionModules->isNotEmpty() && $port->device->extensionModules->where('scl_port', $port->num_port)->first())
+                        <div class="blockwrn block-warning btn-sm">
+                            <b>{{ $port->device->extensionModules->where('scl_port', $port->num_port)->first()->extensionModuleType->name }}({{ $port->device->extensionModules->where('scl_port', $port->num_port)->first()->sda_port }}) SCL</b>
+                        </div>
                     @else
                         <button type="button" class="btn btn-default m-b-10 btn-sm"
                                 name="object" id="portobjempty_{{ $port->id }}"

@@ -42,7 +42,12 @@ class Device extends Model
         return $this->hasMany(Port::class, 'id_device', 'id')->orderBy('num_port');
     }
 
-    public function conditioners()
+    public function extensionModules()
+    {
+        return $this->hasMany(ExtensionModule::class);
+    }
+
+    public function conditioner()
     {
         return $this->hasMany(Conditioner::class, 'device_id', 'id');
     }

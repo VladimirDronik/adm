@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Device\CreateRequest;
 use App\Models\Device;
+use App\Models\ExtensionModuleType;
 use App\Models\Port;
 use App\Repositories\DeviceRepository;
+use App\Repositories\ExtensionModuleRepository;
 use App\Services\DeviceService;
 use Illuminate\Http\Request;
 use App\Services\ConfigMegaService;
@@ -16,12 +18,18 @@ class DeviceController extends Controller
     private $device_rep;
     private $service;
     private $megaService;
+    private $ext_module_rep;
 
-    public function __construct(DeviceRepository $device_rep, DeviceService $service, ConfigMegaService $megaService)
+    public function __construct(
+        DeviceRepository $device_rep,
+        DeviceService $service,
+        ConfigMegaService $megaService,
+        ExtensionModuleRepository $ext_module_rep)
     {
         $this->device_rep = $device_rep;
         $this->service = $service;
         $this->megaService = $megaService;
+        $this->ext_module_rep = $ext_module_rep;
     }
 
     public function index()
@@ -97,7 +105,8 @@ class DeviceController extends Controller
 
         $device = Device::where('id', $id)
             ->with('ports', 'ports.eobject', 'ports.emethod', 'ports.dcmethod', 'ports.lcmethod',
-                'ports.emethod.eobject', 'ports.dcmethod.eobject', 'ports.lcmethod.eobject'
+                'ports.emethod.eobject', 'ports.dcmethod.eobject', 'ports.lcmethod.eobject',
+                'extensionModules', 'extensionModules.extensionModuleType'
             )->first();
 
         if (!$device) {
@@ -107,6 +116,24 @@ class DeviceController extends Controller
 
         if($id)
         $controller = DeviceRepository::getDevByIdDevice($id);
+
+        $sdaSclPorts = $this->ext_module_rep->getPortsForModule($device);
+        $sdaSclOptionsArray = [];
+        if ($sdaSclPorts->isNotEmpty()) {
+            foreach ($sdaSclPorts as $key => $value) {
+                array_push($sdaSclOptionsArray, ['value' => $value, 'label' => $value]);
+            }
+        }
+        $sdaSclOptionsJson = json_encode($sdaSclOptionsArray);
+
+        $moduleTypeOptionsArray = [];
+        $extensionModuleTypes = $this->ext_module_rep->getModuleTypes();
+        if ($extensionModuleTypes->isNotEmpty()) {
+            foreach ($extensionModuleTypes as $key => $value) {
+                array_push($moduleTypeOptionsArray, ['value' => $key, 'label' => $value]);
+            }
+        }
+        $moduleTypeOptionsJson = json_encode($moduleTypeOptionsArray);
 
 
         if ($controller['type'] == 'Hite-pro') {
@@ -118,7 +145,7 @@ class DeviceController extends Controller
             return view('devices.edit_hitepro', compact('device', 'devstorage', 'tab'));
         }
         else
-            return view('devices.edit', compact('device', 'tab'));
+            return view('devices.edit', compact('device', 'tab', 'sdaSclOptionsJson', 'moduleTypeOptionsJson'));
     }
 
 
