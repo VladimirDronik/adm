@@ -212,6 +212,9 @@ class TermostatService {
             $termostat->save();
         });
 
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php check_termostat.php ' . $termostat->id_object);
+
         return $termostat->id;
     }
 
