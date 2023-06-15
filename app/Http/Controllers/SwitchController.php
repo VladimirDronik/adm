@@ -78,7 +78,12 @@ class SwitchController extends Controller
         $switch = DeviceSwitch::findOrFail($id);
 
         $types = DeviceSwitch::getTypes(true);
-        $objects = $this->object_rep->getAllToArray();
+
+        $objects = $this->object_rep
+            ->getAllExcludeGivenType('conditioner')
+            ->pluck('name', 'id')
+            ->toArray();
+
         $object_types =  HomeObject::getFullTypeIds();
 
         $deviceAndPort = $portService->getIdDeviceAndPortId($switch->id_object);
@@ -86,7 +91,7 @@ class SwitchController extends Controller
         $port = $portService->getMethodsByObject($switch->id_object);
 
         list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) = $this->portService->getCurrentDevPort($switch->id_object, 'IN,I2C,1WIRE,1W-BUS,ADC');
-        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
+        list($messages, $events, $sounds, $views, $rooms, $scripts, , $object_types, $alice, $allEvents) =
             Service::getListElements($switch->id_object);
 
 

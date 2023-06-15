@@ -18,6 +18,11 @@ class ObjectRepository {
             ->pluck('name','id')->toArray();
     }
 
+    public function getAllExcludeGivenType(string $type)
+    {
+        return HomeObject::where('type', '!=', $type)->orderBy('name')->get();
+    }
+
     /**
      * Отдать всё инженерное оборудование
      */
