@@ -45,7 +45,7 @@ class ConditionerController extends Controller
         $conditioner = Conditioner::findOrFail($id);
         $objects = $this->objectRep->getAllToArray();
         $devices = $this->deviceRep->getAllWithoutTypesToArray();
-        $rooms = $this->roomRep->getAllToArray();
+        $rooms = $this->roomRep->getAllWithoutCommonToArray();
         $conditionerKind = $conditioner->conditionerModel->conditionerKind;
         $operationModes = json_decode($conditionerKind->operationModes, true)['modes'];
         $fanModes = json_decode($conditionerKind->fanModes, true)['modes'];
@@ -58,7 +58,7 @@ class ConditionerController extends Controller
     public function create()
     {
         $vendors = $this->conditionersRep->getAllVendorsToArray();
-        $rooms = $this->roomRep->getAllToArray();
+        $rooms = $this->roomRep->getAllWithoutCommonToArray();
         $devices = $this->deviceRep->getAllWithoutTypesToArray();
 
         return view('conditioners.create', compact('vendors', 'rooms', 'devices'));

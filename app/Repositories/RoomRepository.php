@@ -41,6 +41,11 @@ class RoomRepository
             $this->getSpecialRooms()->pluck('name', 'id')->toArray();
     }
 
+    public function getAllWithoutCommonToArray(): array
+    {
+        return $this->getSpecialRooms()->pluck('name', 'id')->toArray();
+    }
+
     public function getRoomName($room_id, $rooms = null): string
     {
         if ($room_id === '') {
