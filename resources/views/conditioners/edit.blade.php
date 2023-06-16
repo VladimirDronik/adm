@@ -220,6 +220,14 @@
                         $('#modal_received_code_close').click();
                         if (data.result) {
                             $('#modal_code_saved_btn').click();
+                            $.ajax({
+                                url: url_code,
+                                data: {'_token': _token, 'temp': $("#auto_sel_temp").val(), 'operationMode': $("#auto_sel_operationMode").val(), 'fanMode': $("#auto_sel_fanMode").val(), 'kind': kind,},
+                                success: function (data) {
+                                    $('#place').val('code');
+                                    $('#dataCode').val(data.code);
+                                }
+                            });
                         } else {
                             $('#modalErrorCode #modalErrorCodeBody').text('Ошибка сохранения кода. Попробуйте еще раз через некоторое время');
                             $('#modal_code_error_btn').click();
