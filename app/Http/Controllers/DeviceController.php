@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Device\CreateRequest;
 use App\Models\Device;
-use App\Models\ExtensionModuleType;
-use App\Models\Port;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ExtensionModuleRepository;
 use App\Services\DeviceService;

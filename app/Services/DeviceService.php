@@ -260,7 +260,8 @@ class DeviceService {
         }
 
         $device->description = $data['description'];
-        $device->password = $data['password'];
+        $device->password = $data['password'] ?: null;
+        $device->port = $data['port'] ?: null;
 
         //Заливаем конфиг на устройство
         if(DeviceRepository::getDevByIdDevice($data['id']) != 'Hite-pro')

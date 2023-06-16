@@ -28,11 +28,15 @@
                             {{ Form::bs_radio('type', 'Тип контроллера*:', $devtypes, old('type'), ['required' => true]) }}
                             {{ Form::bs_text('description', 'Название*:', null, ['required' => true]) }}
                             {{ Form::bs_text('ip_address', 'IP адрес*:', null, ['required' => true]) }}
-                            <div id="username">
-                            {{ Form::bs_text('username', 'Пользователь*:', null, ['required' => false]) }}
+                            <div id="username" hidden>
+                                {{ Form::bs_text('username', 'Пользователь*:', null, ['required' => false, 'disabled' => true]) }}
                             </div>
-                            {{ Form::bs_text('password', 'Пароль*:', null, ['required' => true]) }}
-
+                            <div id="password">
+                                {{ Form::bs_text('password', 'Пароль*:', null, ['required' => false]) }}
+                            </div>
+                            <div id="port" hidden>
+                                {{ Form::bs_text('port', 'Порт*:', null, ['required' => false, 'disabled' => true]) }}
+                            </div>
                         </div>
                         {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
@@ -48,13 +52,45 @@
 
     <script src="{{ asset('ela/js/jquery.bubble.text.js') }}"></script>
     <script>
-        $('#types_form [name=type]').change(function(){
-
-            if ($(this).val() === 'Hite-pro') {
-                $('#username').show();
+        function getFormFieldsByType(type) {
+            if (type === 'ModbusTCP') {
+                $('#port').removeAttr('hidden');
+                $('#types_form input[name=port]').removeAttr('disabled');
+                $('#types_form input[name=port]').attr('required', true);
+                $('#types_form input[name=password]').attr('disabled', true);
+                $('#password').attr('hidden', true);
+                $('#types_form input[name=password]').removeAttr('required');
+                $('#types_form input[name=username]').attr('disabled', true);
+                $('#username').attr('hidden', true);
+                $('#types_form input[name=username]').removeAttr('required');
+            } else if (type === 'Hite-pro') {
+                $('#types_form input[name=port]').attr('disabled', true);
+                $('#port').attr('hidden', true);
+                $('#types_form input[name=port]').removeAttr('required');
+                $('#password').removeAttr('hidden');
+                $('#types_form input[name=password]').removeAttr('disabled');
+                $('#types_form input[name=password]').attr('required', true);
+                $('#username').removeAttr('hidden');
+                $('#types_form input[name=username]').removeAttr('disabled');
+                $('#types_form input[name=username]').attr('required', true);
             } else {
-                $('#username').hide();
+                $('#types_form input[name=port]').attr('disabled', true);
+                $('#port').attr('hidden', true);
+                $('#types_form input[name=port]').removeAttr('required');
+                $('#types_form input[name=username]').attr('disabled', true);
+                $('#username').attr('hidden', true);
+                $('#types_form input[name=username]').removeAttr('required');
+                $('#password').removeAttr('hidden');
+                $('#types_form input[name=password]').removeAttr('disabled');
+                $('#types_form input[name=password]').attr('required', true);
             }
+        }
+
+        getFormFieldsByType($('#types_form input[name=type]:checked').val())
+
+        $('#types_form input[name=type]').change(function(){
+
+            getFormFieldsByType($(this).val())
 
             return true;
         });

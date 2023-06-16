@@ -27,7 +27,8 @@ class CreateRequest extends FormRequest
             'type' => 'required',
             'description' => 'required|string|max:255|unique:devices,description',
             'ip_address' => 'required|string|ip|max:15',
-            'password' => 'required|string|max:100',
+            'password' => 'nullable|string|max:100',
+            'port' => 'nullable|integer|min:0|max:65535',
         ];
     }
 
@@ -41,7 +42,6 @@ class CreateRequest extends FormRequest
             'ip_address.max' => 'IP адрес содержит более 15 символов',
             'ip_address.ip' => 'Недопустимый ip адрес',
             'description.unique' => 'Контроллер с таким названием уже существует. Необходимо изменить название',
-            'password.required' => 'Не указан пароль'
         ];
     }
 }

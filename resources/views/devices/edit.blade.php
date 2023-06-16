@@ -679,16 +679,23 @@
             return false;
         }
 
-        function validateDevice(description, ip_address, password) {
+        function validateDevice(description, ip_address, password, port) {
             if (description === '') {
                 return 'Не указано название контроллера';
             }
             if (ip_address === '') {
                 return 'Не указан ip адрес контроллера';
             }
-            if (password === '') {
-                return 'Не указан пароль контроллера';
+            if ('{{ $device->devtype->name }}' == 'ModbusTCP') {
+                if (port === '') {
+                    return 'Не указан порт контроллера';
+                }
+            } else {
+                if (password === '') {
+                    return 'Не указан пароль контроллера';
+                }
             }
+
             if (ip_address.length > 15) {
                 return 'Длина ip адреса не может быть больше 15';
             }
@@ -702,9 +709,16 @@
 
             let description = $("input[name=description]").val().trim();
             let ip_address = $("input[name=ip_address]").val().trim();
-            let password = $("input[name=password]").val().trim();
 
-            $message = validateDevice(description, ip_address, password);
+            if ('{{ $device->devtype->name }}' == 'ModbusTCP') {
+                var port = $("input[name=port]").val().trim();
+                var password = '';
+            } else {
+                var password = $("input[name=password]").val().trim();
+                var port = '';
+            }
+
+            $message = validateDevice(description, ip_address, password, port);
             if ($message !== '') {
                 showErrorModal($message);
                 return false;
@@ -727,7 +741,7 @@
                 $.ajax({
                     url: '{{ route('ajax.devices.update') }}',
                     data: {'_token': _token, 'id': device_id, 'description': description,
-                        'ip_address': ip_address, 'password': password, extension_modules: data},
+                        'ip_address': ip_address, 'password': password, 'port': port, extension_modules: data},
                     success: function (data) {
                         if (!data.result) {
                             showErrorModal(data.message);
