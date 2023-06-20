@@ -13,7 +13,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(ColorsTableSeeder::class);
         $this->call(DevtypesTableSeeder::class);
-        $this->call(MenuTableSeeder::class);
         $this->call(SettingsTableSeeder::class);
         $this->call(ScriptsTableSeeder::class);
         $this->call(ObjtypesTableSeeder::class);
