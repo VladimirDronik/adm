@@ -66,7 +66,7 @@ class DimmerController extends Controller
     {
         $can = gates('devices.show-object');
 
-        list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($dimmer->id_object);
+        list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($dimmer->id_object, 'OUT,0..10V');
         list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice) =
             Service::getListElements($dimmer->id_object);
 

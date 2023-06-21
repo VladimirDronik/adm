@@ -361,6 +361,7 @@ class DeviceService {
             $arrayPorts[] = [
                 'id' => $port->id,
                 'name' => $port->status.' ['.$port->num_port.']'
+                    .($port->extensionModule ? ' EXT_SDA ('.$port->extensionModule->sda_port.')' : '')
                     .($port->eobject ? ' ('.optional($port->eobject)->name.')' : '')
             ];
         }

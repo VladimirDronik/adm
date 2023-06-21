@@ -290,7 +290,8 @@ class PortService {
                         $commentString = ' (' . $port->comment . ')';
                     else $commentString = '';
 
-                    $portsArray[$port->id] = $port->status . ' ' . $port->num_port . $commentString;
+                    $portsArray[$port->id] = $port->status . ' [' . $port->num_port .'] ' .
+                        ($port->extensionModule ? ' EXT_SDA ('.$port->extensionModule->sda_port.')' : '') . $commentString;
                 }
 
                 return $portsArray;

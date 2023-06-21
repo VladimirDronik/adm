@@ -84,8 +84,7 @@ class DimmerService {
                 $dimmer->save();
 
                 if ($data['port_id']) {
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id,
-                        'status' => 'OUT', 'comment' => $data['name']]);
+                    Port::where('id', $data['port_id'])->update(['object' => $object->id, 'comment' => $data['name']]);
 
                     ConfigMegaService::setPortType($deviceID, $this->port_repository->getNumPortByID($data['port_id']), 'PWM');
 
@@ -132,10 +131,8 @@ class DimmerService {
                 AliceDevicesService::setActive($dimmer->object->id, 0);
 
             if ($data['port_id']) {
-                Port::where('object', $dimmer->id_object)->update(['object' => null, 'method' => null,
-                    'status' => 'OUT', 'comment' => '']);
-                Port::where('id', $data['port_id'])->update(['object' => $dimmer->id_object, 'status' => 'OUT',
-                    'comment' =>  $data['name']]);
+                Port::where('object', $dimmer->id_object)->update(['object' => null, 'method' => null, 'comment' => '']);
+                Port::where('id', $data['port_id'])->update(['object' => $dimmer->id_object, 'comment' =>  $data['name']]);
 
                 ConfigMegaService::setPortType($deviceID, $this->port_repository->getNumPortByID($data['port_id']), 'PWM');
             }
