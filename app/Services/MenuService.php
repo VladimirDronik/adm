@@ -248,6 +248,7 @@ class MenuService {
 
         //Сохранение элементов для страницы
         foreach ($elementsArray AS $element) {
+            $element['id_object'] = $selectedObject->id;
             $elementServ->store($element);
         }
     			
