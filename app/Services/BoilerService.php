@@ -38,6 +38,7 @@ class BoilerService
             $boiler->boiler = $data['boiler'];
             $boiler->target_heat_temp = $data['target_heat_temp'];
             $boiler->target_water_temp = $data['target_water_temp'];
+            $boiler->id_outside_thermostat = $data['id_outside_thermostat'];
 
             $boiler->save();
         });
@@ -57,6 +58,7 @@ class BoilerService
         $boiler->name = $data['name'];
         $boiler->ip_address = $data['ip_address_boiler'];
         $boiler->protocol = $data['type_boiler'];
+        $boiler->id_outside_thermostat = $data['id_outside_thermostat'];
 
         $boiler->thermostat = 0;
         $boiler->boiler = 1;

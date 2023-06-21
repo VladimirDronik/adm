@@ -11,26 +11,32 @@ use App\Models\Boiler;
 use App\Repositories\BoilerRepository;
 use App\Http\Requests\Boiler\UpdateRequest;
 use App\Http\Requests\Boiler\CreateRequest;
+use App\Repositories\TermostatRepository;
 use App\Services\BoilerService;
 
 class BoilerController extends Controller
 {
+    private $termostatRepository;
     private $boilerRepository;
     private $service;
 
-    public function __construct(BoilerRepository $boilerRepository, BoilerService $boilerService)
+    public function __construct(
+        BoilerRepository $boilerRepository,
+        BoilerService $boilerService,
+        TermostatRepository $termostatRepository
+    )
     {
-
+        $this->termostatRepository = $termostatRepository;
         $this->boilerRepository = $boilerRepository;
         $this->service = $boilerService;
-
     }
 
     public function edit($boilerIdObject)
     {
         $boiler = $this->boilerRepository->getBoiler($boilerIdObject);
+        $termostats = $this->termostatRepository->getAllToArray();
 
-        return view('engineering.boiler.edit', compact('boiler'));
+        return view('engineering.boiler.edit', compact('boiler', 'termostats'));
     }
 
 
@@ -72,7 +78,9 @@ class BoilerController extends Controller
     public function create()
     {
         $typesBoiler = Boiler::getTypes();
-        return view('engineering.boiler.create', compact('typesBoiler'));
+        $termostats = $this->termostatRepository->getAllToArray();
+
+        return view('engineering.boiler.create', compact('typesBoiler', 'termostats'));
     }
 
 }
