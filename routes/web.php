@@ -113,6 +113,10 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('extension_module/delete', 'DeviceController@extensionModuleDelete')->name('extension_module.delete');
         });
 
+        Route::group(['prefix' => 'boiler', 'as' => 'boiler.'], function () {
+            Route::post('auto/delete', 'BoilerController@boilerAutoDelete')->name('auto.delete');
+        });
+
         Route::group(['prefix' => 'views', 'as' => 'views.'], function () {
             Route::post('delete', 'ViewController@delete')->name('delete');
             Route::post('active', 'ViewController@active')->name('active');

@@ -32,35 +32,18 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_simple_text('ID объекта:', $boiler->id_object) }}
-                        {{ Form::bs_simple_text('Протокол обмена:', $boiler->protocol) }}
-                        {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_text('ip_address', 'ip адрес*:', null, ['required' => true]) }}
-
-
-                        {{ Form::bs_radio('thermostat', 'Состояние:', [0 => 'автономная работа', 1 => 'управляется сервером'], $boiler->thermostat, ['required' => true]) }}
-                        {{ Form::bs_radio('boiler', 'Режим:', [0 => 'только горячая вода', 1 => 'горячая вода и отопление'], $boiler->boiler, ['required' => true]) }}
-
-                        {{ Form::bs_text('target_heat_temp', 'Темп. отопления,°C*:', null, ['required' => true]) }}
-                        {{ Form::bs_text('target_water_temp', 'Темп. контура ГВС,°C*:', null, ['required' => true]) }}
-
-                        <div style="height: 10px;">&nbsp;</div>
-                        <hr>
-                        <div style="height: 40px;">&nbsp;</div>
-
-
-
-                        {{ Form::bs_simple_text('Подача:', $boiler->feed_heat_temp ? $boiler->feed_heat_temp.' °C' : '0°C' ) }}
-                        {{ Form::bs_simple_text('Обратка:', $boiler->back_heat_temp ? $boiler->back_heat_temp.' °C' : '0°C') }}
-                        {{ Form::bs_simple_text('Температура ГВС:', $boiler->water_temp ? $boiler->water_temp.' °C' : '0°C') }}
-                        {{ Form::bs_simple_text('Горелка:', $boiler->burner ? $boiler->burner : '0') }}
-                        {{ Form::bs_simple_text('Горелка ГВС:', $boiler->burner_GVS ? $boiler->burner_GVS : '0') }}
-                        {{ Form::bs_simple_text('Модуляция горелки:', $boiler->burner_modulation ? $boiler->burner_modulation.' %' : '0%') }}
-                        {{ Form::bs_simple_text('Состояние насоса:', $boiler->pump_status ? $boiler->pump_status : '0') }}
-                        {{ Form::bs_simple_text('Давление теплоносителя:', $boiler->pressue ? $boiler->pressue : '0' ) }}
-                        {{ Form::bs_simple_text('Установленная температура отопления:', $boiler->target_heat_temp ? $boiler->target_heat_temp.' °C' : '0°C' ) }}
-                        {{ Form::bs_simple_text('Установленная температура ГВС:', $boiler->target_water_temp ? $boiler->target_water_temp.' °C' : '0°C' ) }}
-
+                        <ul class="nav nav-tabs customtab" role="tablist">
+                            <li class="nav-item"> <a class="nav-link active"  data-toggle="tab" href="#boilertab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#boilertab2"  role="tab"><span class="hidden-sm-up"><i class="ti-command"></i></span> <span class="hidden-xs-down">Режим управления</span></a> </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane p-20 active" id="boilertab1" role="tabpanel">
+                                @include('engineering/boiler/edit_tabs/main')
+                            </div>
+                            <div class="tab-pane p-20" id="boilertab2" role="tabpanel">
+                                @include('engineering/boiler/edit_tabs/control_mode')
+                            </div>
+                        </div>
 
                     </div>
 
@@ -89,6 +72,43 @@
 @endsection
 
 @section('scripts')
+    <script>
+        const url_delete_boiler_auto = '{{ route('ajax.boiler.auto.delete') }}';
 
+        function deleteBoilerAuto(boilerAutoId) {
+            $.ajax({
+                url: url_delete_boiler_auto,
+                data: {
+                    '_token': _token, 'boiler_auto_id': boilerAutoId,
+                },
+                success: function (data) {
+                    if (data.result) {
+                        $("#deleteBoilerAuto"+boilerAutoId).parent().parent().remove();
+                    }
+                }
+            });
+        }
 
+        $(document).ready(function () {
+
+            function createNewFields() {
+                var newFields = $('<div class="moduleFields form-group row">' +
+                                    '<label class="control-label text-right col-md-3 label-fix"><strong>Уличная температура:</strong></label>' +
+                                    '<div class="col-md-2"><input class="form-control" name="t_out[]" autocomplete="off" required></div>' +
+                                    '<label class="control-label text-right col-md-3 label-fix"><strong>Температура теплоносителя:</strong></label>' +
+                                    '<div class="col-md-2"><input class="form-control" name="t_water[]" autocomplete="off" required></div>' +
+                                    '<div class="col-sm-2"><button type="button" class="deleteModuleBtn btn btn-outline-danger">Удалить</button></div>' +
+                                '</div>');
+                return newFields;
+            }
+
+            $("#addAutoFieldsBtn").click(function() {
+                var newFields = createNewFields();
+                $("#AutoFieldsContainer").append(newFields);
+                $(".col-sm-2 .deleteModuleBtn").click(function() {
+                    $(this).parent().parent().remove();
+                });
+            });
+        });
+    </script>
 @endsection
