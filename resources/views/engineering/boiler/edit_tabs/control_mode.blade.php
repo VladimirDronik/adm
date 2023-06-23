@@ -5,7 +5,7 @@
 </div>
 
 <div id="AutoFieldsContainer">
-    @if($boiler->object->boilerAuto)
+    @if($boiler->object->boilerAuto->isNotEmpty())
         @foreach($boiler->object->boilerAuto as $boilerAuto)
             <div class="form-group row">
                 <label class="control-label text-right col-md-3 label-fix">

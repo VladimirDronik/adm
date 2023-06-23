@@ -74,6 +74,7 @@
 @section('scripts')
     <script>
         const url_delete_boiler_auto = '{{ route('ajax.boiler.auto.delete') }}';
+        let is_added = 0;
 
         function deleteBoilerAuto(boilerAutoId) {
             $.ajax({
@@ -89,7 +90,62 @@
             });
         }
 
+        if ('{{ $boiler->mode }}' == 'manual') {
+            $('#manual_set_value').removeAttr('hidden');
+            $('#boiler_form input[name=set_value]').removeAttr('disabled');
+            $('#boiler_form input[name=set_value]').attr('required', true);
+            $('#AutoFieldsContainer').attr('hidden', true);
+            $('#addAutoFieldsBtn').attr('hidden', true);
+            $('#AutoFieldsContainer input').removeAttr('required');
+        } else {
+            $('#addAutoFieldsBtn').removeAttr('hidden');
+            $('#AutoFieldsContainer').removeAttr('hidden');
+            $('#boiler_form input[name=set_value]').removeAttr('required');
+            $('#manual_set_value').attr('hidden', true);
+            if ('{{ $boiler->object->boilerAuto->isEmpty() }}' && !is_added) {
+                $("#AutoFieldsContainer").append($('<div class="moduleFields form-group row">' +
+                            '<label class="control-label text-right col-md-3 label-fix"><strong>Уличная температура:</strong></label>' +
+                            '<div class="col-md-2"><input class="form-control" name="t_out[]" autocomplete="off" required></div>' +
+                            '<label class="control-label text-right col-md-3 label-fix"><strong>Температура теплоносителя:</strong></label>' +
+                            '<div class="col-md-2"><input class="form-control" name="t_water[]" autocomplete="off" required></div>' +
+                        '</div>'));
+                is_added = 1;
+            }
+        }
+
         $(document).ready(function () {
+
+            $('#boiler_form input[name=mode]').change(function() {
+                var options = $('#boiler_form input[name=mode]');
+                for (var i = 0; i < options.length; i++) {
+                    if (options[i].checked) {
+                        var selectedOption = options[i].value;
+                    }
+                }
+
+                if (selectedOption == 'manual') {
+                    $('#manual_set_value').removeAttr('hidden');
+                    $('#boiler_form input[name=set_value]').removeAttr('disabled');
+                    $('#boiler_form input[name=set_value]').attr('required', true);
+                    $('#AutoFieldsContainer').attr('hidden', true);
+                    $('#addAutoFieldsBtn').attr('hidden', true);
+                    $('#AutoFieldsContainer input').removeAttr('required');
+                } else {
+                    $('#addAutoFieldsBtn').removeAttr('hidden');
+                    $('#AutoFieldsContainer').removeAttr('hidden');
+                    $('#boiler_form input[name=set_value]').removeAttr('required');
+                    $('#manual_set_value').attr('hidden', true);
+                    if ('{{ $boiler->object->boilerAuto->isEmpty() }}' && !is_added) {
+                        $("#AutoFieldsContainer").append($('<div class="moduleFields form-group row">' +
+                                    '<label class="control-label text-right col-md-3 label-fix"><strong>Уличная температура:</strong></label>' +
+                                    '<div class="col-md-2"><input class="form-control" name="t_out[]" autocomplete="off" required></div>' +
+                                    '<label class="control-label text-right col-md-3 label-fix"><strong>Температура теплоносителя:</strong></label>' +
+                                    '<div class="col-md-2"><input class="form-control" name="t_water[]" autocomplete="off" required></div>' +
+                                '</div>'));
+                        is_added = 1;
+                    }
+                }
+            });
 
             function createNewFields() {
                 var newFields = $('<div class="moduleFields form-group row">' +
