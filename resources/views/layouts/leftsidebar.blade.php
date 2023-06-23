@@ -98,6 +98,22 @@
                         </ul>
                     </li>
                 @endcan
+                @can('cameras')
+                    <li>
+                        <a class="has-arrow" href="#" aria-expanded="false">
+                            <i class="fa fa-eye"></i>
+                            <span class="hide-menu">Видеоналюдение</span>
+                        </a>
+                        <ul aria-expanded="false" class="collapse">
+                            <li>
+                                <a href="{{ route('cameras.index') }}">
+                                    <i class="fa fa-video-camera"></i>
+                                    Камеры
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
                 @can('objects')
                     <!-- <li>
                         <a class="has-arrow" href="{{ route('objects.index') }}" aria-expanded="false">

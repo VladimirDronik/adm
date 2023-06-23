@@ -26,6 +26,7 @@ class UserPermission
                 ],
                 'objects' => false,
                 'rooms' => true,
+                'cameras' => true,
                 'views' => true,
                 'scenes' => true,
                 'network' => true,
@@ -57,6 +58,7 @@ class UserPermission
 
             User::TYPE_USER => [
                 'devices' => false,
+                'cameras' => true,
                 'objects' => false,
                 'rooms' => false,
                 'views' => false,
