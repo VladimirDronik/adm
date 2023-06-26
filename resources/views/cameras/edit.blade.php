@@ -6,7 +6,9 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-        ['title' => 'Добавление камеры', 'links' => [ route('cameras.index') => 'Камеры']])
+        ['title' => 'Редактирование камеры № '. $camera->id . ' «' . $camera->name .'»',
+        'links' => [ route('cameras.index') => 'Камеры'],
+        'last_link' => 'Редактирование камеры'])
 @endsection
 
 @section('content')
@@ -15,7 +17,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('cameras.index') }}" class="btn btn-success m-b-10 m-l-5">Камеры</a>
+                        <a href="{{ route('cameras.index') }}" class="btn btn-success m-b-10 m-l-5">Список камер</a>
+                        <a href="{{ route('cameras.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить камеру</a>
                     </div>
                 </div>
             </div>
@@ -23,7 +26,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::open(['route' => 'cameras.store', 'method' => 'post', 'id' => 'camera_form', 'class' => 'form-horizontal form-bordered', 'files' => true]) !!}
+                    {!! Form::model($camera, ['route' => ['cameras.update', $camera->id], 'id' => 'camera_form',
+                        'method' => 'put', 'class' => 'form-horizontal form-bordered', 'files' => true]) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
@@ -36,26 +40,26 @@
                             </label>
                             <div class="col-md-9">
                                 <p class="p-t-6">
-                                    <img id="image-preview" src="#" style="max-width: 100px; max-height: 100px; display: none;">
-                                    <input type="file" id="image-upload" name="image" accept="image/*" required>
+                                    <img id="image-preview" src="{{ $camera->image }}" style="max-width: 100px; max-height: 100px;">
+                                    <input type="file" id="image-upload" name="image" accept="image/*">
                                 </p>
                             </div>
                         </div>
 
-                        {{ Form::bs_text('link', 'Ссылка*:', old('link'), ['required' => true]) }}
+                        {{ Form::bs_text('link', 'Ссылка*:', old('link', $camera->link), ['required' => true]) }}
 
-                        {{ Form::bs_autoselect('room_id', 'Помещение*:', $rooms, old('room_id'), false, false, ['required' => true], null) }}
+                        {{ Form::bs_autoselect('room_id', 'Помещение*:', $rooms, old('room_id', $camera->room_id), false, false, ['required' => true], null) }}
 
-                        {{ Form::bs_checkbox('active', 'Активность*:', true) }}
+                        {{ Form::bs_checkbox('active', 'Активность*:', $camera->active) }}
 
                     </div>
 
                     {{ Form::bs_submit_btn() }}
+
                     {!! Form::close() !!}
                 </div>
                 <div style="height: 200px;">&nbsp;</div>
                 <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
-            </div>
         </div>
     </div>
     @include('components.info_modal')
@@ -74,7 +78,6 @@
 
                     reader.onload = function() {
                         $('#image-preview').attr('src', reader.result);
-                        $('#image-preview').show();
                     }
                     reader.readAsDataURL(file);
                 }

@@ -8,6 +8,6 @@ class CameraRepository
 {
     public function getAll($pagination_count = 30)
     {
-        return Camera::paginate($pagination_count);
+        return Camera::orderBy('sort')->paginate($pagination_count);
     }
 }

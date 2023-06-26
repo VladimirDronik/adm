@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Camera\DataRequest;
+use App\Http\Requests\Camera\CreateRequest;
+use App\Http\Requests\Camera\UpdateRequest;
+use App\Models\Camera;
 use App\Repositories\CameraRepository;
 use App\Repositories\RoomRepository;
 use App\Services\CameraService;
@@ -31,35 +33,29 @@ class CameraController extends Controller
         return view('cameras.index', compact('cameras'));
     }
 
-    // public function edit($id)
-    // {
-    //     $conditioner = Conditioner::findOrFail($id);
-    //     $objects = $this->objectRep->getAllToArray();
-    //     $devices = $this->deviceRep->getAllWithoutTypesToArray();
-    //     $rooms = $this->roomRep->getAllWithoutCommonToArray();
-    //     $conditionerKind = $conditioner->conditionerModel->conditionerKind;
-    //     $operationModes = json_decode($conditionerKind->operationModes, true)['modes'];
-    //     $fanModes = json_decode($conditionerKind->fanModes, true)['modes'];
-    //     $temp = range($conditionerKind->min, $conditionerKind->max, $conditionerKind->precision);
-    //     array_push($temp, 'off');
+    public function edit($id)
+    {
+        $camera = Camera::findOrFail($id);
+        $rooms = $this->roomRep->getAllWithoutCommonToArray();
 
-    //     return view('conditioners.edit', compact('conditioner', 'objects', 'rooms', 'operationModes', 'fanModes', 'temp', 'conditionerKind', 'devices'));
-    // }
+        return view('cameras.edit', compact('camera', 'rooms'));
+    }
 
-    // public function update(Request $r, Conditioner $conditioner)
-    // {
-    //     try {
-    //         if ($this->service->update($conditioner, $r->except('_token'))) {
-    //             return redirect()->route('conditioners.edit',[$conditioner->id])
-    //                 ->with('success', 'Кондиционер успешно изменен');
-    //         }
-    //     } catch (\Throwable $e) {
-    //         \Log::error('Ошибка при изменении кондиционера ' .
-    //             json_encode($r->all()).' '.$e->getMessage());
-    //     }
+    public function update(UpdateRequest $r, Camera $camera)
+    {
+        try {
+            $image = $r->file('image');
+            if ($this->service->update($camera, $r->except('_token'), $image)) {
+                return redirect()->route('cameras.edit',[$camera->id])
+                    ->with('success', 'Кондиционер успешно изменен');
+            }
+        } catch (\Throwable $e) {
+            \Log::error('Ошибка при изменении камеры ' .
+                json_encode($r->all()).' '.$e->getMessage());
+        }
 
-    //     return back()->withInput($r->all())->with('error', 'Ошибка при изменении кондиционера');
-    // }
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении камеры');
+    }
 
     public function create()
     {
@@ -68,13 +64,13 @@ class CameraController extends Controller
         return view('cameras.create', compact('rooms'));
     }
 
-    public function store(DataRequest $r)
+    public function store(CreateRequest $r)
     {
         try {
             $image = $r->file('image');
             if ($id = $this->service->store($r->except('_token'), $image)) {
-                // return redirect()->route('cameras.edit', [$id])
-                //     ->with('success', 'Камера успешно добавлена');
+                return redirect()->route('cameras.edit', [$id])
+                    ->with('success', 'Камера успешно добавлена');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при добавлении камеры ' .

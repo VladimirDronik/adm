@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Camera;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CameraService
@@ -14,7 +15,7 @@ class CameraService
         $camera->link = $data['link'];
         $camera->room_id = $data['room_id'];
         $camera->type = 'ivideon';
-        $camera->sort = $data['sort'];
+        $camera->sort = Camera::max('sort') + 1;
         $camera->active = array_key_exists('active', $data);
     }
 
@@ -45,35 +46,23 @@ class CameraService
      *
      * @param Camera $camera
      * @param array $data
+     * @param null|UploadedFile $image
      * @return int
      */
-    // public function update(Conditioner $conditioner, array $data): int
-    // {
-    //     $kind = $conditioner->conditionerModel->conditionerKind->id;
+    public function update(Camera $camera, array $data, ?UploadedFile $image): int
+    {
+        $this->prepare($camera, $data);
 
-    //     if (array_key_exists('code', $data)) {
-    //         if ($data['temp'] == 'off') {
-    //             $conditionerCode = $this->conditionersRep
-    //                 ->getOffCode((int)$kind, (string)$data['temp']);
-    //             $this->conditionersRep
-    //                 ->updateOrCreate($conditionerCode ?: null, (string)$data['code'], (int)$kind, null, null, null, true);
-    //         } else {
-    //             $conditionerCode = $this->conditionersRep
-    //                 ->getCode((int)$kind, (string)$data['operationMode'], (string)$data['fanMode'], (float)$data['temp']);
-    //             $this->conditionersRep
-    //                 ->updateOrCreate($conditionerCode ?: null, (string)$data['code'], (int)$kind, (string)$data['operationMode'], (string)$data['fanMode'], (float)$data['temp']);
-    //         }
-    //     }
+        if ($image) {
+            $path = Storage::disk('custom')->put("img/cameras", $image);
+            $fullPath = asset($path);
+            $camera->image = $fullPath;
+        }
 
-    //     $conditioner->id_object = $data['id_object'];
-    //     $conditioner->id_room = $data['id_room'];
-    //     $conditioner->device_id = $data['device_id'];
-    //     $conditioner->wb_mir = $data['wb_mir'];
+        $camera->save();
 
-    //     $conditioner->save();
-
-    //     return $conditioner->id;
-    // }
+        return $camera->id;
+    }
 
     /**
      * Изменение активности камеры
@@ -98,6 +87,34 @@ class CameraService
     public function delete(int $id)
     {
         return Camera::destroy($id);
+
+        return true;
+    }
+
+    private function updatePreviousSortRoom($camera, $previous_sort)
+    {
+        Camera::where('sort', $camera->sort)->update(['sort' => $previous_sort]);
+    }
+
+    public function sort(array $data)
+    {
+        $camera = Camera::findOrFail($data['id']);
+
+        $min = Camera::min('sort');
+        $max = Camera::max('sort');
+
+        if (($camera->sort === $min && $data['direction'] === 'up')
+            || ($camera->sort === $max && $data['direction'] === 'down')) {
+            return true;
+        }
+
+        $previous_sort = $camera->sort;
+        $camera->sort += $data['direction'] === 'up' ? -1 : 1;
+
+        DB::transaction(function () use ($camera, $previous_sort) {
+            $this->updatePreviousSortRoom($camera, $previous_sort);
+            $camera->save();
+        });
 
         return true;
     }

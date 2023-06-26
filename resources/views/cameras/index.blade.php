@@ -20,6 +20,7 @@
                                 <th>Тип</th>
                                 <th>Размещение</th>
                                 <th>Изображение</th>
+                                <th class="text-center">Сортировка</th>
                                 <th class="text-center">Активно</th>
                                 <th></th>
                                 <th></th>
@@ -40,6 +41,24 @@
                                     </td>
                                     <td scope="row">
                                         <img src="{{ $camera->image }}" width="80" height="80">
+                                    </td>
+                                    <td style="width: 150px;">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control input-default" readonly
+                                                       value="{{ $camera->sort }}">
+                                            </div>
+                                            <div class="col-md-6 text-left">
+                                                <button type="button" class="btn btn-info btn-xs"
+                                                        id="sortBtn{{ $camera->id }}"
+                                                        onclick="changeSort({{ $camera->id }}, 'up');">выше
+                                                </button>
+                                                <button type="button" class="btn btn-info btn-xs"
+                                                        id="sortBtn{{ $camera->id }}"
+                                                        onclick="changeSort({{ $camera->id }}, 'down');">ниже
+                                                </button>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td scope="row" align="center">
                                         <input type="checkbox" class="active_checkbox" style="cursor: pointer;" data-id="{{$camera->id}}" value="1" @if($camera->active) checked @endif>
@@ -67,6 +86,7 @@
                                         <th>Тип</th>
                                         <th>Размещение</th>
                                         <th>Изображение</th>
+                                        <th class="text-center">Сортировка</th>
                                         <th class="text-center">Активно</th>
                                         <th></th>
                                         <th></th>
@@ -89,6 +109,23 @@
 
 @section('scripts')
     <script>
+        const url = '{{ route('cameras.index') }}';
+        const sortUrl = '{{ route('ajax.cameras.sort') }}';
+
+        function changeSort(id, direction) {
+            $.ajax({
+                url: sortUrl,
+                data: {'_token': _token, 'id': id, 'direction': direction},
+                success: function (data) {
+                    if (data.result) {
+                        window.location.href = url;
+                    } else {
+                        showErrorModal('Ошибка при сохранении изменений');
+                    }
+                }
+            });
+        }
+
         $(document).ready(function () {
             $('.active_checkbox').change(function () {
                 let active = this.checked ? 1 : 0;

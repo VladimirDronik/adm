@@ -4,7 +4,7 @@ namespace App\Http\Requests\Camera;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DataRequest extends FormRequest
+class CreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +28,6 @@ class DataRequest extends FormRequest
             'image' => 'required|mimes:jpeg,jpg,png,gif,bmp,webp,svg',
             'link' => 'required|string|max:255',
             'room_id' => 'required|integer',
-            'sort' => 'required|integer',
             'active' => 'nullable|boolean',
         ];
     }

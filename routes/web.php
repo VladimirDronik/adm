@@ -94,6 +94,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::group(['namespace' => 'Ajax', 'as' => 'ajax.'], function () {
 
         Route::group(['prefix' => 'cameras', 'as' => 'cameras.'], function () {
+            Route::post('sort', 'CameraController@sort')->name('sort');
             Route::post('delete', 'CameraController@delete')->name('delete');
             Route::post('active', 'CameraController@active')->name('active');
         });
