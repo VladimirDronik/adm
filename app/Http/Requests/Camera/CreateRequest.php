@@ -27,7 +27,7 @@ class CreateRequest extends FormRequest
             'name' => 'required|string|max:255',
             'image' => 'required|mimes:jpeg,jpg,png,gif,bmp,webp,svg',
             'link' => 'required|string|max:255',
-            'room_id' => 'required|integer',
+            'room' => 'required|integer',
             'active' => 'nullable|boolean',
         ];
     }

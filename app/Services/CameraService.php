@@ -13,7 +13,7 @@ class CameraService
     {
         $camera->name = $data['name'];
         $camera->link = $data['link'];
-        $camera->room_id = $data['room_id'];
+        $camera->room = $data['room'];
         $camera->type = 'ivideon';
         $camera->sort = Camera::max('sort') + 1;
         $camera->active = array_key_exists('active', $data);

@@ -8,8 +8,8 @@ class Camera extends Model
 {
     protected $guarded = ['id'];
 
-    public function room()
+    public function relationRoom()
     {
-        return $this->belongsTo(Room::class);
+        return $this->belongsTo(Room::class, 'room', 'id');
     }
 }

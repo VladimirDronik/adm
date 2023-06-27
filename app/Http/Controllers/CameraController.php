@@ -47,7 +47,7 @@ class CameraController extends Controller
             $image = $r->file('image');
             if ($this->service->update($camera, $r->except('_token'), $image)) {
                 return redirect()->route('cameras.edit',[$camera->id])
-                    ->with('success', 'Кондиционер успешно изменен');
+                    ->with('success', 'Камера успешно изменена');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении камеры ' .

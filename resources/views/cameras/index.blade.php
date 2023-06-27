@@ -37,7 +37,7 @@
                                         {{ $camera->type }}
                                     </td>
                                     <td>
-                                        {{ $camera->room->name }}
+                                        {{ $camera->relationRoom->name }}
                                     </td>
                                     <td scope="row">
                                         <img src="{{ $camera->image }}" width="80" height="80">

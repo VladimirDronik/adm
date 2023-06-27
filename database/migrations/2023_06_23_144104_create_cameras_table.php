@@ -18,13 +18,13 @@ class CreateCamerasTable extends Migration
             $table->string('name', 255);
             $table->string('image', 255);
             $table->string('link', 255);
-            $table->unsignedInteger('room_id');
+            $table->unsignedInteger('room');
             $table->string('type', 20);
             $table->unsignedTinyInteger('sort');
             $table->boolean('active');
             $table->timestamps();
 
-            $table->foreign('room_id')
+            $table->foreign('room')
                 ->references('id')
                 ->on('rooms')
                 ->onUpdate('cascade')

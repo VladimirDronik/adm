@@ -48,7 +48,7 @@
 
                         {{ Form::bs_text('link', 'Ссылка*:', old('link', $camera->link), ['required' => true]) }}
 
-                        {{ Form::bs_autoselect('room_id', 'Помещение*:', $rooms, old('room_id', $camera->room_id), false, false, ['required' => true], null) }}
+                        {{ Form::bs_autoselect('room', 'Помещение*:', $rooms, old('room', $camera->room), false, false, ['required' => true], null) }}
 
                         {{ Form::bs_checkbox('active', 'Активность*:', $camera->active) }}
 
@@ -69,7 +69,7 @@
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script>
         $(document).ready(function () {
-            $("#auto_sel_room_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_room").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $('#image-upload').change(function(event) {
                 var file = event.target.files[0];
