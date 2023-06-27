@@ -7,7 +7,6 @@
 {{ Form::bs_radio('thermostat', 'Состояние:', [0 => 'автономная работа', 1 => 'управляется сервером'], $boiler->thermostat, ['required' => true]) }}
 {{ Form::bs_radio('boiler', 'Режим работы котла:', [0 => 'только горячая вода', 1 => 'горячая вода и отопление'], $boiler->boiler, ['required' => true]) }}
 
-{{ Form::bs_text('target_heat_temp', 'Темп. отопления,°C*:', null, ['required' => true]) }}
 {{ Form::bs_text('target_water_temp', 'Темп. контура ГВС,°C*:', null, ['required' => true]) }}
 
 <div style="height: 10px;">&nbsp;</div>

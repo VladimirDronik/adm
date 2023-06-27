@@ -37,7 +37,6 @@ class BoilerService
             $boiler->ip_address = $data['ip_address'];
             $boiler->thermostat = $data['thermostat'];
             $boiler->boiler = $data['boiler'];
-            $boiler->target_heat_temp = $data['target_heat_temp'];
             $boiler->target_water_temp = $data['target_water_temp'];
             $boiler->mode = $data['mode'];
 
