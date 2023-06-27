@@ -34,14 +34,14 @@
 
                         {{ Form::bs_text('name', 'Название*:', old('name'), ['required' => true]) }}
 
-                        <div class="form-group row ">
-                            <label class="control-label text-right col-md-3 label-fix">
+                        <div class="form-group row">
+                            <label class="control-label text-right col-md-3 label-fix" style="display: flex; align-items: center; justify-content: right;">
                                 <strong>Изображение*:</strong>
                             </label>
-                            <div class="col-md-9">
+                            <img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" style="max-width: 126px; max-height: 80px;" loading="lazy">
+                            <div class="col-md-7">
                                 <p class="p-t-6">
-                                    <img id="image-preview" src="{{ $camera->image }}" style="max-width: 100px; max-height: 100px;">
-                                    <input type="file" id="image-upload" name="image" accept="image/*">
+                                    <input class="form-control" autocomplete="off" name="image" type="text" value="{{ $camera->image }}">
                                 </p>
                             </div>
                         </div>
@@ -70,18 +70,6 @@
     <script>
         $(document).ready(function () {
             $("#auto_sel_room").chosen({width:"100%", no_results_text: "Не найдено"});
-
-            $('#image-upload').change(function(event) {
-                var file = event.target.files[0];
-                if (file) {
-                    var reader = new FileReader();
-
-                    reader.onload = function() {
-                        $('#image-preview').attr('src', reader.result);
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
         });
     </script>
 @endsection

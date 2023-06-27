@@ -23,24 +23,12 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::open(['route' => 'cameras.store', 'method' => 'post', 'id' => 'camera_form', 'class' => 'form-horizontal form-bordered', 'files' => true]) !!}
+                    {!! Form::open(['route' => 'cameras.store', 'method' => 'post', 'id' => 'camera_form', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
                         {{ Form::bs_text('name', 'Название*:', old('name'), ['required' => true]) }}
-
-                        <div class="form-group row ">
-                            <label class="control-label text-right col-md-3 label-fix">
-                                <strong>Изображение*:</strong>
-                            </label>
-                            <div class="col-md-9">
-                                <p class="p-t-6">
-                                    <img id="image-preview" src="#" style="max-width: 100px; max-height: 100px; display: none;">
-                                    <input type="file" id="image-upload" name="image" accept="image/*" required>
-                                </p>
-                            </div>
-                        </div>
 
                         {{ Form::bs_text('link', 'Ссылка*:', old('link'), ['required' => true]) }}
 
@@ -66,19 +54,6 @@
     <script>
         $(document).ready(function () {
             $("#auto_sel_room").chosen({width:"100%", no_results_text: "Не найдено"});
-
-            $('#image-upload').change(function(event) {
-                var file = event.target.files[0];
-                if (file) {
-                    var reader = new FileReader();
-
-                    reader.onload = function() {
-                        $('#image-preview').attr('src', reader.result);
-                        $('#image-preview').show();
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
         });
     </script>
 @endsection

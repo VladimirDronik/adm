@@ -40,7 +40,7 @@
                                         {{ $camera->relationRoom->name }}
                                     </td>
                                     <td scope="row">
-                                        <img src="{{ $camera->image }}" width="80" height="80">
+                                        <img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" width="140" height="80" loading="lazy">
                                     </td>
                                     <td style="width: 150px;">
                                         <div class="row">

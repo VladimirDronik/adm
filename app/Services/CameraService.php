@@ -14,6 +14,7 @@ class CameraService
         $camera->name = $data['name'];
         $camera->link = $data['link'];
         $camera->room = $data['room'];
+        $camera->image = $data['image'];
         $camera->type = 'ivideon';
         $camera->sort = Camera::max('sort') + 1;
         $camera->active = array_key_exists('active', $data);
@@ -23,19 +24,16 @@ class CameraService
      * Создание камеры
      *
      * @param array $data
-     * @param UploadedFile $image
      * @return int
      */
-    public function store(array $data, UploadedFile $image): int
+    public function store(array $data): int
     {
         $camera = new Camera();
 
+        $imageUrl = $this->parseIdAndNumberFromUrl($data['link']);
+        $data['image'] = $imageUrl;
+
         $this->prepare($camera, $data);
-
-        $path = Storage::disk('custom')->put("img/cameras", $image);
-        $fullPath = asset($path);
-        $camera->image = $fullPath;
-
         $camera->save();
 
         return $camera->id;
@@ -46,18 +44,11 @@ class CameraService
      *
      * @param Camera $camera
      * @param array $data
-     * @param null|UploadedFile $image
      * @return int
      */
-    public function update(Camera $camera, array $data, ?UploadedFile $image): int
+    public function update(Camera $camera, array $data): int
     {
         $this->prepare($camera, $data);
-
-        if ($image) {
-            $path = Storage::disk('custom')->put("img/cameras", $image);
-            $fullPath = asset($path);
-            $camera->image = $fullPath;
-        }
 
         $camera->save();
 
@@ -117,5 +108,32 @@ class CameraService
         });
 
         return true;
+    }
+
+    /**
+     * Распарсить полученную ссылку на камеру и получить id и номер для вывода изображения
+     *
+     * @param string $url
+     * @return null|string
+     */
+    private function parseIdAndNumberFromUrl(string $url): ?string
+    {
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            return null;
+        }
+
+        $components = parse_url($url);
+        parse_str($components['query'], $queryParameters);
+
+        if (!isset($queryParameters['server']) || !isset($queryParameters['camera'])) {
+            return null;
+        }
+
+        $serverId = $queryParameters['server'];
+        $cameraNumber = $queryParameters['camera'];
+
+        return 'https://openapi-alpha.ivideon.com/cameras/' .
+            $serverId . ':' . $cameraNumber .
+            '/live_preview?op=GET&access_token=public';
     }
 }

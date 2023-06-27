@@ -16,7 +16,7 @@ class CreateCamerasTable extends Migration
         Schema::create('cameras', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 255);
-            $table->string('image', 255);
+            $table->string('image', 255)->nullable();
             $table->string('link', 255);
             $table->unsignedInteger('room');
             $table->string('type', 20);

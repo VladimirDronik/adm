@@ -25,7 +25,6 @@ class CreateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'image' => 'required|mimes:jpeg,jpg,png,gif,bmp,webp,svg',
             'link' => 'required|string|max:255',
             'room' => 'required|integer',
             'active' => 'nullable|boolean',

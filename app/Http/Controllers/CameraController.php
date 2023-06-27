@@ -44,8 +44,7 @@ class CameraController extends Controller
     public function update(UpdateRequest $r, Camera $camera)
     {
         try {
-            $image = $r->file('image');
-            if ($this->service->update($camera, $r->except('_token'), $image)) {
+            if ($this->service->update($camera, $r->except('_token'))) {
                 return redirect()->route('cameras.edit',[$camera->id])
                     ->with('success', 'Камера успешно изменена');
             }
@@ -67,8 +66,7 @@ class CameraController extends Controller
     public function store(CreateRequest $r)
     {
         try {
-            $image = $r->file('image');
-            if ($id = $this->service->store($r->except('_token'), $image)) {
+            if ($id = $this->service->store($r->except('_token'))) {
                 return redirect()->route('cameras.edit', [$id])
                     ->with('success', 'Камера успешно добавлена');
             }
