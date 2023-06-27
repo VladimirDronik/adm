@@ -27,7 +27,7 @@
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
                     {!! Form::model($camera, ['route' => ['cameras.update', $camera->id], 'id' => 'camera_form',
-                        'method' => 'put', 'class' => 'form-horizontal form-bordered', 'files' => true]) !!}
+                        'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
