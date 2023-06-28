@@ -44,6 +44,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('curtains', 'CurtainController')->except('show','destroy')->middleware('can:devices');
     Route::resource('locks', 'LockController')->except('show','destroy')->middleware('can:devices');
     Route::resource('conditioners', 'ConditionerController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('cameras', 'CameraController')->except('show', 'destroy')->middleware('can:cameras');
 
 
 
@@ -91,6 +92,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     Route::group(['namespace' => 'Ajax', 'as' => 'ajax.'], function () {
+
+        Route::group(['prefix' => 'cameras', 'as' => 'cameras.'], function () {
+            Route::post('sort', 'CameraController@sort')->name('sort');
+            Route::post('delete', 'CameraController@delete')->name('delete');
+            Route::post('active', 'CameraController@active')->name('active');
+        });
 
         Route::group(['prefix' => 'conditioners', 'as' => 'conditioners.'], function () {
             Route::post('models', 'ConditionerController@modelsByVendor')->name('models');
