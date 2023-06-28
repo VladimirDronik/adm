@@ -17,8 +17,8 @@ class Boiler extends Model
     const PROP_CSUPPLY    = 'csupply';
     const PROP_CRETURN    = 'creturn';
     const PROP_STATE      = 'state';
-    const PROP_AUTOMODE   = 'automode';
-    const PROP_MANUALMODE = 'manualmode';
+    const PROP_AUTOMODE   = 'auto';
+    const PROP_MANUALMODE = 'manual';
     const PROP_HEAT_TEMP  = 'heat_temp';
     const PROP_WATER_TEMP = 'water_temp';
     const PROP_BURNER     = 'burner';
@@ -59,6 +59,16 @@ class Boiler extends Model
 //          self::PROP_MODULATION => 'Модуляция',
 //          self::PROP_PUMP       => 'Состояние насоса',
             self::PROP_PRESSURE   => 'Давление'
+        ];
+
+        return $properties;
+    }
+
+    public static function getModes()
+    {
+        $properties = [
+            self::PROP_AUTOMODE   => 'Автоматический режим',
+            self::PROP_MANUALMODE => 'Ручной режим',
         ];
 
         return $properties;

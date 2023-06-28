@@ -8,6 +8,7 @@
 
 namespace App\Services;
 use App\Models\Boiler;
+use App\Models\BoilerAuto;
 use App\Models\BoilerWater;
 use App\Models\BoilerManual;
 use App\Services\BoilerObjectService;
@@ -36,11 +37,44 @@ class BoilerService
             $boiler->ip_address = $data['ip_address'];
             $boiler->thermostat = $data['thermostat'];
             $boiler->boiler = $data['boiler'];
-            $boiler->target_heat_temp = $data['target_heat_temp'];
             $boiler->target_water_temp = $data['target_water_temp'];
             $boiler->id_outside_thermostat = $data['id_outside_thermostat'];
+            $boiler->mode = $data['mode'];
 
             $boiler->save();
+
+            if ($boiler->mode == Boiler::PROP_MANUALMODE) {
+                $boilerManual = $boiler->object->boilerManual;
+                $boilerManual->set_value = $data['set_value'];
+                $boilerManual->save();
+            }
+
+            if ($boiler->mode == Boiler::PROP_AUTOMODE) {
+                if (array_key_exists('boiler_auto', $data)) {
+                    foreach ($data['boiler_auto'] as $id => $boilerAutoData) {
+                        BoilerAuto::where('id', $id)->update($boilerAutoData);
+                    }
+                }
+
+                if (array_key_exists('t_out', $data) && array_key_exists('t_water', $data)) {
+                    $idObject = $boiler->object->id;
+                    $tOut = $data['t_out'];
+                    $tWater = $data['t_water'];
+                    $fieldsSet = [];
+
+                    for ($i = 0; $i < count($tOut); $i++) {
+                        $fieldsSet[] = [
+                            't_out' => $tOut[$i],
+                            't_water' => $tWater[$i],
+                            'id_object' => $idObject,
+                        ];
+                    }
+
+                    foreach ($fieldsSet as $fields) {
+                        BoilerAuto::create($fields);
+                    }
+                }
+            }
         });
 
         return true;
@@ -88,5 +122,16 @@ class BoilerService
         });
 
         return $boiler->id_object;
+    }
+
+    /**
+     * @param int $boilerAutoId
+     * @return bool
+     * @throws \Throwable
+     */
+    public function boilerAutoDelete(int $boilerAutoId)
+    {
+        BoilerAuto::where('id', $boilerAutoId)->delete();
+        return true;
     }
 }
