@@ -38,7 +38,7 @@
                         false, false, ['required' => true], null) }}
                             {{ Form::bs_text('ip_address_boiler', 'ip адрес*:', null, ['required' => true]) }}
 
-
+                        {{ Form::bs_autoselect('id_outside_thermostat', 'Уличный датчик температуры*:', $termostats, old('id_outside_thermostat'), false, false, ['required' => true], null) }}
 
                     </div>
 
@@ -59,14 +59,8 @@
 
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script>
-
-
-
         $(document).ready(function(){
-
-
+            $("#auto_sel_id_outside_thermostat").chosen({width:"100%", no_results_text: "Не найдено"});
         });
-
-
     </script>
 @endsection

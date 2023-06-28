@@ -10,4 +10,9 @@ class TermostatRepository {
     {
         return Termostat::with('eobject')->orderBy('id')->paginate($pagination_count);
     }
+
+    public function getAllToArray()
+    {
+        return Termostat::all()->pluck('name', 'id')->toArray();
+    }
 }

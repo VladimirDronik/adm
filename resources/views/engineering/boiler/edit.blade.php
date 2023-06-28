@@ -44,6 +44,8 @@
                         {{ Form::bs_text('target_heat_temp', 'Темп. отопления,°C*:', null, ['required' => true]) }}
                         {{ Form::bs_text('target_water_temp', 'Темп. контура ГВС,°C*:', null, ['required' => true]) }}
 
+                        {{ Form::bs_autoselect('id_outside_thermostat', 'Уличный датчик температуры*:', $termostats, old('id_outside_thermostat', $boiler->id_outside_thermostat), false, false, ['required' => true], null) }}
+
                         <div style="height: 10px;">&nbsp;</div>
                         <hr>
                         <div style="height: 40px;">&nbsp;</div>
@@ -89,6 +91,10 @@
 @endsection
 
 @section('scripts')
-
-
+    <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
+    <script>
+        $(document).ready(function(){
+            $("#auto_sel_id_outside_thermostat").chosen({width:"100%", no_results_text: "Не найдено"});
+        });
+    </script>
 @endsection
