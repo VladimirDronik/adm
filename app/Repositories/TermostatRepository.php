@@ -11,8 +11,8 @@ class TermostatRepository {
         return Termostat::with('eobject')->orderBy('id')->paginate($pagination_count);
     }
 
-    public function getAllToArray()
+    public function getAllWithIdObjectToArray()
     {
-        return Termostat::all()->pluck('name', 'id')->toArray();
+        return Termostat::all()->pluck('name', 'id_object')->toArray();
     }
 }

@@ -34,7 +34,7 @@ class BoilerController extends Controller
     public function edit($boilerIdObject)
     {
         $boiler = $this->boilerRepository->getBoiler($boilerIdObject);
-        $termostats = $this->termostatRepository->getAllToArray();
+        $termostats = $this->termostatRepository->getAllWithIdObjectToArray();
 
         return view('engineering.boiler.edit', compact('boiler', 'termostats'));
     }
@@ -78,7 +78,7 @@ class BoilerController extends Controller
     public function create()
     {
         $typesBoiler = Boiler::getTypes();
-        $termostats = $this->termostatRepository->getAllToArray();
+        $termostats = $this->termostatRepository->getAllWithIdObjectToArray();
 
         return view('engineering.boiler.create', compact('typesBoiler', 'termostats'));
     }
