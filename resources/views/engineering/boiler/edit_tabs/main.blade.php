@@ -2,7 +2,7 @@
 {{ Form::bs_simple_text('Протокол обмена:', $boiler->protocol) }}
 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 {{ Form::bs_text('ip_address', 'ip адрес*:', null, ['required' => true]) }}
-{{ Form::bs_autoselect('id_outside_thermostat', 'Уличный датчик температуры*:', $termostats, old('id_outside_thermostat', $boiler->id_outside_thermostat), false, false, ['required' => true], null) }}
+{{ Form::bs_autoselect('id_outside_thermostat', 'Уличный датчик температуры:', $termostats, old('id_outside_thermostat', $boiler->id_outside_thermostat), false, false, [], null) }}
 
 
 {{ Form::bs_radio('thermostat', 'Состояние:', [0 => 'автономная работа', 1 => 'управляется сервером'], $boiler->thermostat, ['required' => true]) }}

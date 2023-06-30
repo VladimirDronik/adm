@@ -38,7 +38,7 @@ class BoilerService
             $boiler->thermostat = $data['thermostat'];
             $boiler->boiler = $data['boiler'];
             $boiler->target_water_temp = $data['target_water_temp'];
-            $boiler->id_outside_thermostat = $data['id_outside_thermostat'];
+            $boiler->id_outside_thermostat = array_key_exists('id_outside_thermostat', $data) ? $data['id_outside_thermostat'] : null;
             $boiler->mode = $data['mode'];
 
             $boiler->save();
@@ -92,7 +92,7 @@ class BoilerService
         $boiler->name = $data['name'];
         $boiler->ip_address = $data['ip_address_boiler'];
         $boiler->protocol = $data['type_boiler'];
-        $boiler->id_outside_thermostat = $data['id_outside_thermostat'];
+        $boiler->id_outside_thermostat = array_key_exists('id_outside_thermostat', $data) ? $data['id_outside_thermostat'] : null;
 
         $boiler->thermostat = 0;
         $boiler->boiler = 1;

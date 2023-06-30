@@ -38,7 +38,7 @@
                         false, false, ['required' => true], null) }}
                             {{ Form::bs_text('ip_address_boiler', 'ip адрес*:', null, ['required' => true]) }}
 
-                        {{ Form::bs_autoselect('id_outside_thermostat', 'Уличный датчик температуры*:', $termostats, old('id_outside_thermostat'), false, false, ['required' => true], null) }}
+                        {{ Form::bs_autoselect('id_outside_thermostat', 'Уличный датчик температуры:', $termostats, old('id_outside_thermostat'), false, false, [], null) }}
 
                     </div>
 
