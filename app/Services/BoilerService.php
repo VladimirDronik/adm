@@ -93,6 +93,7 @@ class BoilerService
         $boiler->ip_address = $data['ip_address_boiler'];
         $boiler->protocol = $data['type_boiler'];
         $boiler->id_outside_thermostat = array_key_exists('id_outside_thermostat', $data) ? $data['id_outside_thermostat'] : null;
+        $boiler->target_water_temp = Boiler::DEFAULT_GVS_TEMP;
         $boiler->mode = Boiler::PROP_MANUALMODE;
 
         $boiler->thermostat = 0;
@@ -117,6 +118,7 @@ class BoilerService
                 'id_object' => $boiler->id_object,
                 'min_value' => BoilerManual::MIN_VALUE,
                 'max_value' => BoilerManual::MAX_VALUE,
+                'set_value' => BoilerManual::DEFAULT_SET_VALUE,
             ]);
 
             $boiler->save();

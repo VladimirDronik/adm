@@ -27,6 +27,8 @@ class Boiler extends Model
     const PROP_PUMP       = 'pump';
     const PROP_PRESSURE   = 'pressue';
 
+    const DEFAULT_GVS_TEMP = 45;
+
 
     protected $table = 'boiler';
     public $timestamps = false;

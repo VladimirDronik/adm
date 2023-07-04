@@ -29,6 +29,7 @@ class BoilerManual extends Model
 {
     const MIN_VALUE = 20;
     const MAX_VALUE = 80;
+    const DEFAULT_SET_VALUE = 55;
 
     public $timestamps = false;
 
