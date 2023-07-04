@@ -93,6 +93,7 @@ class BoilerService
         $boiler->ip_address = $data['ip_address_boiler'];
         $boiler->protocol = $data['type_boiler'];
         $boiler->id_outside_thermostat = array_key_exists('id_outside_thermostat', $data) ? $data['id_outside_thermostat'] : null;
+        $boiler->mode = Boiler::PROP_MANUALMODE;
 
         $boiler->thermostat = 0;
         $boiler->boiler = 1;
