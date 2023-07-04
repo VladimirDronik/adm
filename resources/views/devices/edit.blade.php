@@ -16,12 +16,154 @@
                         <a href="{{ route('devices.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок контроллеров</a>
                         <a href="{{ route('devices.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить контроллер</a>
                         <a href="{{ route('devices.edit',[$device->id]) }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
-                        <button type="button" id="settings_modal_btn" class="btn btn-success m-b-10 m-l-5" data-toggle="modal" data-target="#settings_modal">Настройки</button>
+                        @if($device->devtype->name !== 'ModbusTCP' && $device->devtype->name !== 'Monoblock 14IN/14OUT')
+                            <button type="button" id="settings_modal_btn" class="btn btn-success m-b-10 m-l-5" data-toggle="modal" data-target="#settings_modal">Настройки</button>
+                        @else
+                            <button type="button" id="deleteDeviceBtn" class="btn btn-outline-danger m-b-10 m-l-5 pull-right" data-dismiss="modal">Удалить контроллер</button>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
         <div class="card">
+            @if($device->devtype->name == 'ModbusTCP')
+                <div class="card-body">
+                    <div class="col-md-12 col-lg-8 col-xl-8">
+                        <div class="form-group row">
+                            <label class="control-label text-right col-md-2 label-fix" for="modalDevType">
+                                <strong>Тип:</strong>
+                            </label>
+                            <div class="col-md-9" style="display: flex; align-items: center;">
+                                {{ optional($device->devtype)->name }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label text-right col-md-2 label-fix" for="modalDevName">
+                                <strong>Название:</strong>
+                            </label>
+                            <div class="col-md-9">
+                                <input id="modalDevName" class="form-control" name="description" autocomplete="off" value="{{ $device->description}}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label text-right col-md-2 label-fix" for="modalDevIp">
+                                <strong>ip&nbsp;адрес:</strong>
+                            </label>
+                            <div class="col-md-9">
+                                <input id="modalDevIp" class="form-control" name="ip_address" autocomplete="off" value="{{ $device->ip_address }}" size="15">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label text-right col-md-2 label-fix" for="modalDevPort">
+                                <strong>Порт:</strong>
+                            </label>
+                            <div class="col-md-9">
+                                <input id="modalDevPort" class="form-control" name="port" autocomplete="off" value="{{ $device->port }}" type="number" min="0" max="65535">
+                            </div>
+                        </div>
+                        <input type="hidden" id="id_device" value="{{ $device->id }}">
+                        <button type="button" id="updateDeviceBtn" class="btn btn-success m-b-10 m-l-5" data-dismiss="modal" onclick="updateDevice();">Сохранить</button>
+                    </div>
+                </div>
+            @elseif($device->devtype->name == 'Monoblock 14IN/14OUT')
+                <ul class="nav nav-tabs customtab" role="tablist">
+                    <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#main_settings" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Основные настройки</span></a> </li>
+                    <li class="nav-item"> <a class="nav-link @if($tab!==1) active @endif"  data-toggle="tab" href="#ports_settings" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты контроллера</span></a> </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane p-20 @if($tab==1) active @endif" id="main_settings" role="tabpanel">
+                        <div class="card-body">
+                            <div class="col-md-12 col-lg-8 col-xl-8">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-2 label-fix" for="modalDevType">
+                                        <strong>Тип:</strong>
+                                    </label>
+                                    <div class="col-md-9" style="display: flex; align-items: center;">
+                                        {{ optional($device->devtype)->name }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-2 label-fix" for="modalDevName">
+                                        <strong>Название:</strong>
+                                    </label>
+                                    <div class="col-md-9">
+                                        <input id="modalDevName" class="form-control" name="description" autocomplete="off" value="{{ $device->description}}">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-2 label-fix" for="modalDevIp">
+                                        <strong>ip&nbsp;адрес:</strong>
+                                    </label>
+                                    <div class="col-md-9">
+                                        <input id="modalDevIp" class="form-control" name="ip_address" autocomplete="off" value="{{ $device->ip_address }}" size="15">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-2 label-fix" for="modalDevPassword">
+                                        <strong>Пароль:</strong>
+                                    </label>
+                                    <div class="col-md-9">
+                                        <input id="modalDevPassword" class="form-control" name="password" autocomplete="off" value="{{ $device->password }}">
+                                    </div>
+                                </div>
+                                <input type="hidden" id="id_device" value="{{ $device->id }}">
+                                <hr>
+                                <h4>Модули расширения:</h4>
+                                <br>
+                                @if($device->extensionModules)
+                                    @foreach($device->extensionModules as $extensionModule)
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-1 label-fix">
+                                            <strong>Тип:</strong>
+                                        </label>
+                                        <div class="col-sm-2" style="display: flex; align-items: center;">
+                                            {{ $extensionModule->extensionModuleType->name }}
+                                        </div>
+                                        <label class="control-label text-right col-md-1 label-fix">
+                                            <strong>SDA:</strong>
+                                        </label>
+                                        <div class="col-sm-1" style="display: flex; align-items: center;">
+                                            {{ $extensionModule->sda_port }}
+                                        </div>
+                                        <label class="control-label text-right col-md-1 label-fix">
+                                            <strong>SCL:</strong>
+                                        </label>
+                                        <div class="col-sm-1" style="display: flex; align-items: center;">
+                                            {{ $extensionModule->scl_port }}
+                                        </div>
+                                        <div class="col-sm-3"><button id="deleteExtensionModule{{ $extensionModule->id }}" onclick="deleteExtensionModule('{{ $extensionModule->id }}')" class="deleteExtensionModule btn btn-outline-danger">Удалить модуль</button></div>
+                                    </div>
+                                    @endforeach
+                                @endif
+                                <div id="extensionModulesContainer"></div>
+                                <button class="btn btn-success m-b-10 m-l-5" id="addExtensionModuleBtn">Добавить модуль</button>
+                                <hr><br>
+                                <button type="button" id="updateDeviceBtn" class="btn btn-success m-b-10 m-l-5" data-dismiss="modal" onclick="updateDevice();">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane p-20 @if($tab!==1) active @endif" id="ports_settings" role="tabpanel">
+                        <div class="card-body">
+                            @if(count($device->extensionModules))
+                                <ul class="nav nav-tabs customtab" role="tablist">
+                                    @foreach($device->extensionModules as $extensionModule)
+                                        <li class="nav-item"> <a class="nav-link @if($tab=='ext'.$extensionModule->id) active @endif"  data-toggle="tab" href="#extportstab{{ $extensionModule->id }}" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">{{ $extensionModule->extensionModuleType->name }}({{ $extensionModule->sda_port }})</span></a> </li>
+                                    @endforeach
+                                </ul>
+                                <div class="tab-content">
+                                    @foreach($device->extensionModules as $extensionModule)
+                                    <div class="tab-pane p-20 @if($tab=='ext'.$extensionModule->id) active @endif" id="extportstab{{ $extensionModule->id }}" role="tabpanel">
+                                        @include('devices.extension_module_ports', ['extensionModule' => $extensionModule])
+                                    </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p>Порты не найдены</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @else
             <div class="card-title"><h4>Порты контроллера</h4></div>
             <div class="card-body">
                 @if(count($device->ports))
@@ -58,6 +200,7 @@
                     <p>Порты не найдены</p>
                 @endif
             </div>
+            @endif
         </div>
     </div>
 
@@ -267,7 +410,9 @@
             data-toggle="modal" data-target="#methodsModal">&nbsp;</button>
 
     @include('components.params_modal')
-    @include('devices.modals.settings_modal')
+    @if($device->devtype->name !== 'ModbusTCP' && $device->devtype->name !== 'Monoblock 14IN/14OUT')
+        @include('devices.modals.settings_modal')
+    @endif
 @endsection
 
 @section('scripts')

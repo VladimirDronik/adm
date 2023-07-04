@@ -27,25 +27,14 @@
                         <input id="modalDevIp" class="form-control" name="ip_address" autocomplete="off" value="{{ $device->ip_address }}" size="15">
                     </div>
                 </div>
-                @if($device->devtype->name == 'ModbusTCP')
-                    <div class="form-group row">
-                        <label class="control-label text-right col-md-2 label-fix" for="modalDevPort">
-                            <strong>Порт:</strong>
-                        </label>
-                        <div class="col-md-9">
-                            <input id="modalDevPort" class="form-control" name="port" autocomplete="off" value="{{ $device->port }}" type="number" min="0" max="65535">
-                        </div>
+                <div class="form-group row">
+                    <label class="control-label text-right col-md-2 label-fix" for="modalDevPassword">
+                        <strong>Пароль:</strong>
+                    </label>
+                    <div class="col-md-9">
+                        <input id="modalDevPassword" class="form-control" name="password" autocomplete="off" value="{{ $device->password }}">
                     </div>
-                @else
-                    <div class="form-group row">
-                        <label class="control-label text-right col-md-2 label-fix" for="modalDevPassword">
-                            <strong>Пароль:</strong>
-                        </label>
-                        <div class="col-md-9">
-                            <input id="modalDevPassword" class="form-control" name="password" autocomplete="off" value="{{ $device->password }}">
-                        </div>
-                    </div>
-                @endif
+                </div>
                 <input type="hidden" id="id_device" value="{{ $device->id }}">
                 <hr>
                 <h4>Модули расширения:</h4>
