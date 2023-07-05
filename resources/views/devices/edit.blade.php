@@ -67,11 +67,48 @@
                 </div>
             @elseif($device->devtype->name == 'Monoblock 14IN/14OUT')
                 <ul class="nav nav-tabs customtab" role="tablist">
-                    <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#main_settings" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Основные настройки</span></a> </li>
-                    <li class="nav-item"> <a class="nav-link @if($tab!==1) active @endif"  data-toggle="tab" href="#ports_settings" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты контроллера</span></a> </li>
+                    <li class="nav-item"> <a class="nav-link active"  data-toggle="tab" href="#ports_settings" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты контроллера</span></a> </li>
+                    <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#main_settings" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Основные настройки</span></a> </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane p-20 @if($tab==1) active @endif" id="main_settings" role="tabpanel">
+                    <div class="tab-pane p-20 active" id="ports_settings" role="tabpanel">
+                        <div class="card-body">
+                            @if(count($device->ports))
+                                <ul class="nav nav-tabs customtab" role="tablist">
+
+                                    <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Порты IN</span></a> </li>
+                                    <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты OUT</span></a> </li>
+                                    <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты DIG</span></a> </li>
+                                    @if($device->extensionModules)
+                                        @foreach($device->extensionModules as $extensionModule)
+                                            <li class="nav-item"> <a class="nav-link @if($tab=='ext'.$extensionModule->id) active @endif"  data-toggle="tab" href="#extportstab{{ $extensionModule->id }}" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">{{ $extensionModule->extensionModuleType->name }}({{ $extensionModule->sda_port }})</span></a> </li>
+                                        @endforeach
+                                    @endif
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
+                                        @include('devices.in_ports')
+                                    </div>
+                                    <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
+                                        @include('devices.out_ports')
+                                    </div>
+                                    <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
+                                        @include('devices.dig_ports')
+                                    </div>
+                                    @if($device->extensionModules)
+                                        @foreach($device->extensionModules as $extensionModule)
+                                        <div class="tab-pane p-20 @if($tab=='ext'.$extensionModule->id) active @endif" id="extportstab{{ $extensionModule->id }}" role="tabpanel">
+                                            @include('devices.extension_module_ports', ['extensionModule' => $extensionModule])
+                                        </div>
+                                        @endforeach
+                                    @endif
+                                </div>
+                            @else
+                                <p>Порты не найдены</p>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="tab-pane p-20" id="main_settings" role="tabpanel">
                         <div class="card-body">
                             <div class="col-md-12 col-lg-8 col-xl-8">
                                 <div class="form-group row">
@@ -140,26 +177,6 @@
                                 <hr><br>
                                 <button type="button" id="updateDeviceBtn" class="btn btn-success m-b-10 m-l-5" data-dismiss="modal" onclick="updateDevice();">Сохранить</button>
                             </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane p-20 @if($tab!==1) active @endif" id="ports_settings" role="tabpanel">
-                        <div class="card-body">
-                            @if(count($device->extensionModules))
-                                <ul class="nav nav-tabs customtab" role="tablist">
-                                    @foreach($device->extensionModules as $extensionModule)
-                                        <li class="nav-item"> <a class="nav-link @if($tab=='ext'.$extensionModule->id) active @endif"  data-toggle="tab" href="#extportstab{{ $extensionModule->id }}" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">{{ $extensionModule->extensionModuleType->name }}({{ $extensionModule->sda_port }})</span></a> </li>
-                                    @endforeach
-                                </ul>
-                                <div class="tab-content">
-                                    @foreach($device->extensionModules as $extensionModule)
-                                    <div class="tab-pane p-20 @if($tab=='ext'.$extensionModule->id) active @endif" id="extportstab{{ $extensionModule->id }}" role="tabpanel">
-                                        @include('devices.extension_module_ports', ['extensionModule' => $extensionModule])
-                                    </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                <p>Порты не найдены</p>
-                            @endif
                         </div>
                     </div>
                 </div>
