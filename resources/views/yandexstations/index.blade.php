@@ -23,6 +23,7 @@
                         <a href="{{ route('yandexstations.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить устройство</a>
                         <a href="{{ route('yandexstations.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                         <a href="{{ route('yandexstations.editcookies') }}" class="btn btn-success m-b-10 m-l-5">Редактировать файл Cookies</a>
+                        <a href="{{ route('yandexstations.yandex_auth') }}" class="btn btn-success m-b-10 m-l-5">Авторизация</a>
                     </div>
                 </div>
             </div>

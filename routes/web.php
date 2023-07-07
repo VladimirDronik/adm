@@ -85,6 +85,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('logs/settings', 'LogController@settings')->name('logs.settings')->middleware('can:logs');
     Route::get('yandexstations/editcookies', 'YandexStationController@editCookies')->name('yandexstations.editcookies')->middleware('can:devices');
     Route::post('yandexstations/updatecookies', 'YandexStationController@updateCookies')->name('yandexstations.updatecookies')->middleware('can:devices');
+    Route::get('yandexstations/auth', 'YandexStationController@yandexAuth')->name('yandexstations.yandex_auth')->middleware('can:devices');
 
 
     Route::resource('scripts', 'ScriptController')->except('show','destroy')->middleware('can:scripts');
