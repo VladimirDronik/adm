@@ -13,4 +13,4 @@ npm-debug.log
 yarn-error.log
 .env
 /.phpstorm.meta.php
-cookie_yandex_ru.txt
+yandex_token.json

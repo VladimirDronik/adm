@@ -109,13 +109,4 @@ class YandexStationController extends Controller
         return redirect()->route('yandexstations.index')
             ->with('success', 'Файл cookies.txt успешно изменён.');
     }
-
-    /**
-     * Авторизация в яндексе и получение станций
-     */
-    public function yandexAuth(Request $r)
-    {
-        $yandexSession = new YandexQuasar('artem.s@webest.ru', '********');
-        dd($yandexSession->getStations());
-    }
 }

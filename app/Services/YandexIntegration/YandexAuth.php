@@ -2,90 +2,51 @@
 
 namespace App\Services\YandexIntegration;
 
-class YandexAuth extends BrowserRequests
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Log;
+
+class YandexAuth
 {
-    /**
-     * Парсим из контента страницы форму с инпутами
-     *
-     * @param string $pageCont
-     * @return array
-     */
-    private function parseForm(string $pageCont): array
+    protected $client;
+
+    public function __construct()
     {
-        $paramArr = [];
-
-        if ($pageCont) {
-            $pageCont = str_replace("\r" , "", $pageCont);
-            $pageCont = str_replace("\n" , "", $pageCont);
-
-            preg_match_all("/<FORM(.*?)<\/FORM>/i", $pageCont, $matchForm);
-            preg_match_all("/<INPUT(.*?)>/i", $pageCont, $matchInput);
-
-            foreach($matchInput[1] as $key => $value) {
-                preg_match_all("/NAME=\"(.*?)\"/i", $value, $matchName);
-                preg_match_all("/VALUE=\"(.*?)\"/i", $value, $matchValue);
-
-                $paramArr[$matchName[1][0]] = array_key_exists(0, $matchValue[1]) ? $matchValue[1][0] : '';
-            }
-
-            unset($paramArr['']);
-        }
-
-        return $paramArr;
+        $this->client = new Client();
     }
 
     /**
-     * Прохождение пошаговой авторизации яндекса и запись куки
+     * Получение oauth токена яндекс
      *
-     * @param string $login
-     * @param string $password
-     * @param string $cookie
-     * @param string $referer
+     * @param int $code
      * @return bool
      */
-    public function yaAuth(string $login, string $password, string $cookie, string $referer): bool
+    public function getYaOauth(int $code): bool
     {
-        $param = '';
+        try {
+            $response = $this->client->post('https://oauth.yandex.ru/token', [
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded'
+                ],
+                'form_params' => [
+                    'grant_type' => 'authorization_code',
+                    'code' => $code,
+                    'client_id' => config('yandex.client_id'),
+                    'client_secret' => config('yandex.client_secret'),
+                ]
+            ]);
 
-        $url = "https://frontend.vh.yandex.ru/csrf_token";
-        $pageCont = $this->browserGetContents($url, $cookie, $referer);
+            $responseData = json_decode($response->getBody(), true);
 
-        if (strlen($pageCont) == 33) {
-            return 1;
-        }
-
-        if (file_exists(base_path($cookie . '.txt'))) {
-            unlink(base_path($cookie . '.txt'));
-        }
-
-        $url = "https://passport.yandex.ru/auth?";
-        $pageCont = $this->browserGetContents($url, $cookie, $referer);
-        $paramArr = $this->parseForm($pageCont);
-
-        $paramArr['login'] = $login;
-        $paramArr['hidden-password'] = $password;
-        $url = "https://passport.yandex.ru/auth?retpath=https%3A%2F%2Fyandex.ru%2F?";
-
-        foreach($paramArr as $key => $value) {
-            $param .= "&" . $key . "=" . $value;
-        }
-
-        $pageCont = $this->browserPostContents($url, $param, $cookie, $referer);
-        $paramArr = $this->parseForm($pageCont);
-
-        $paramArr['login'] = $login;
-        $paramArr['passwd'] = $password;
-        $url = "https://passport.yandex.ru/auth?retpath=https%3A%2F%2Fyandex.ru%2F?";
-
-        foreach($paramArr as $key => $value) {
-            $param .= "&" . $key . "=" . $value;
-        }
-
-        $pageCont = $this->browserPostContents($url, $param, $cookie, $referer);
-
-        if (strstr($pageCont, "https://passport.yandex.ru/auth/finish")) {
-            return 1;
-        } else {
+            if (array_key_exists('access_token', $responseData)) {
+                file_put_contents(base_path('yandex_token.json'), $response->getBody());
+                return 1;
+            } else {
+                Log::error('Что-то пошло не так. Не удалось получить oauth токен');
+                return 0;
+            }
+        } catch (GuzzleException $e) {
+            Log::error('Ошибка получения токена: ' . $e->getMessage());
             return 0;
         }
     }

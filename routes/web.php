@@ -85,7 +85,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('logs/settings', 'LogController@settings')->name('logs.settings')->middleware('can:logs');
     Route::get('yandexstations/editcookies', 'YandexStationController@editCookies')->name('yandexstations.editcookies')->middleware('can:devices');
     Route::post('yandexstations/updatecookies', 'YandexStationController@updateCookies')->name('yandexstations.updatecookies')->middleware('can:devices');
-    Route::get('yandexstations/auth', 'YandexStationController@yandexAuth')->name('yandexstations.yandex_auth')->middleware('can:devices');
 
 
     Route::resource('scripts', 'ScriptController')->except('show','destroy')->middleware('can:scripts');
@@ -143,8 +142,12 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('engineering/delete', 'EngineeringController@delete')->name('engineering.delete');
         Route::post('curtains/delete', 'CurtainsController@delete')->name('curtains.delete');
         Route::post('locks/delete', 'LockController@delete')->name('locks.delete');
-        Route::post('yandexstations/delete', 'YandexStationController@delete')->name('yandexstations.delete');
 
+        Route::group(['prefix' => 'yandexstations', 'as' => 'yandexstations.'], function () {
+            Route::post('delete', 'YandexStationController@delete')->name('delete');
+            Route::post('auth', 'YandexStationController@auth')->name('auth');
+            Route::post('sync_stations', 'YandexStationController@syncStations')->name('sync_stations');
+        });
 
         Route::group(['prefix' => 'logs', 'as' => 'logs.'], function () {
             Route::post('active', 'LogsController@active')->name('active');

@@ -2,45 +2,47 @@
 
 namespace App\Services\YandexIntegration;
 
-use Illuminate\Support\Facades\Log;
+use GuzzleHttp\Exception\GuzzleException;
 
-class YandexQuasar extends BrowserRequests
+class YandexQuasar extends YandexAuth
 {
-    private $yandexAuth;
-    private $yaLogin;
-    private $yaPassword;
-
-    public function __construct(string $yaLogin, string $yaPassword)
-    {
-        $this->yaLogin = $yaLogin;
-        $this->yaPassword = $yaPassword;
-        $this->yandexAuth = new YandexAuth();
-    }
-
     /**
      * Получение списка станций
      *
      * @return null|array
      */
-    public function getStations(): string
+    public function getStations(): array
     {
-        $cookie = "cookie_yandex_ru";
-        $referer = "https://passport.yandex.ru/auth/";
+        $oauthToken = '';
 
-        for ($i = 0; $i < 5; $i++) {
-            $yaAuth = $this->yandexAuth->yaAuth($this->yaLogin, $this->yaPassword, $cookie, $referer);
-        }
-
-        if (!$yaAuth) {
-            if (file_exists(base_path($cookie . '.txt'))) {
-                unlink(base_path($cookie . '.txt'));
+        if (file_exists(base_path('yandex_token.json'))) {
+            $data = json_decode(file_get_contents(base_path('yandex_token.json')), true);
+            if (array_key_exists('access_token', $data)) {
+                $oauthToken = $data['access_token'];
+            } else {
+                return ['code' => 401];
             }
-            Log::error('Яндекс Станция: Что-то пошло не так! Не удалось авторизироваться в Яндексе.');
+        } else {
+            return ['code' => 401];
         }
 
-        $url = 'https://iot.quasar.yandex.ru/m/user/devices';
-        $response = $this->browserGetContents($url, $cookie, $referer);
+        try {
+            $response = $this->client->get('https://api.iot.yandex.net/v1.0/user/info', [
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                    'Authorization' => 'Bearer ' . $oauthToken,
+                ]
+            ]);
 
-        return $response;
+            $data = json_decode($response->getBody(), true);
+            $data['code'] = 200;
+
+            return $data;
+        } catch (GuzzleException $e) {
+            return [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage(),
+            ];
+        }
     }
 }
