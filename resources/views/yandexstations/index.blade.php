@@ -20,15 +20,26 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('yandexstations.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить устройство</a>
                         <a href="{{ route('yandexstations.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
-                        <a href="{{ route('yandexstations.editcookies') }}" class="btn btn-success m-b-10 m-l-5">Редактировать файл Cookies</a>
-                        <a href="https://oauth.yandex.ru/authorize?response_type=code&client_id={{ config('yandex.client_id') }}" target="_blank" class="btn btn-success m-b-10 m-l-5">Получить код для синхронизации</a>
-                        <button id="sync_devices" class="btn btn-success m-b-10 m-l-5">Синхронизировать устройства</button>
+                        @if(config('yandex.client_id'))
+                            <a href="https://oauth.yandex.ru/authorize?response_type=code&client_id={{ config('yandex.client_id') }}" target="_blank" class="btn btn-success m-b-10 m-l-5">Получить код для синхронизации</a>
+                            <button id="sync_devices" class="btn btn-success m-b-10 m-l-5">Синхронизировать устройства</button>
+                        @endif
+                        @if(file_exists(base_path('yandex_token.json')))
+                            <a href="{{ route('yandexstations.reset_user') }}" class="btn btn-danger m-b-10 m-l-5">Отвязать текущего пользователя</a>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
+        @if (session('success'))
+            <div class="alert alert-info alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                {{ session('success') }}
+            </div>
+        @endif
         <div class="card">
             <div class="card-title"><h4>ЯндексСтанции</h4></div>
             <div class="card-body">
@@ -113,6 +124,8 @@
                         location.reload();
                     } else if (data.code == 401) {
                         $('#modal_auth_modal_init_btn').click();
+                    } else {
+                        showErrorModal('Ошибка синхронизации устройств. Повторите попытку или обратитесь к администратору');
                     }
                 }
             });

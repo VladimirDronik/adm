@@ -71,7 +71,7 @@ class YandexStationController
     {
         $response = $this->yandexQuasar->getStations();
 
-        if ($response['code'] == 200) {
+        if ($response['code'] == 200 && array_key_exists('devices', $response)) {
             return response()->json(['code' => $this->service->store($response['devices']) ? 200 : 500]);
         } elseif ($response['code'] == 401) {
             return response()->json($response);

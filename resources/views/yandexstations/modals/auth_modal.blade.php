@@ -11,7 +11,7 @@
                         <strong>Код:</strong>
                     </label>
                     <div class="col-md-11">
-                        <input id="yaCode" class="form-control" name="ya_code" autocomplete="off" required>
+                        <input id="yaCode" class="form-control" name="ya_code" autocomplete="off" required type="number">
                         <small class="form-control-feedback">Если у вас нет кода пожтверждения, закройте окно и нажмите на кнопку "Получить код для синхронизации"</small>
                     </div>
                 </div>

@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\YandexStation\CreateRequest;
 use App\Http\Requests\YandexStation\UpdateRequest;
 use App\Models\YandexStation;
 use App\Repositories\RoomRepository;
 use App\Repositories\YandexStationRepository;
-use App\Services\YandexIntegration\YandexQuasar;
 use App\Services\YandexStationService;
-use Illuminate\Http\Request;
 
 class YandexStationController extends Controller
 {
@@ -33,34 +30,11 @@ class YandexStationController extends Controller
         return view('yandexstations.index', compact('yandexstations'));
     }
 
-
-    public function create()
-    {
-        $rooms = $this->room_rep->getAllToArray();
-
-        return view('yandexstations.create', compact( 'rooms' ));
-    }
-
     public function edit(YandexStation $yandexstation)
     {
         $rooms = $this->room_rep->getAllToArray();
 
         return view('yandexstations.edit', compact( 'rooms', 'yandexstation' ));
-    }
-
-    public function store(CreateRequest $r)
-    {
-        try {
-            if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('yandexstations.index')
-                    ->with('success', 'Станция успешно добавлена');
-            }
-        } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении станции ' .
-                json_encode($r->all()).' '.$e->getMessage());
-        }
-
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении станции');
     }
 
     public function update(UpdateRequest $r, YandexStation $yandexstation)
@@ -78,35 +52,13 @@ class YandexStationController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении станции');
     }
 
-    //Открывает файл cookies.txt для редакатирование
-    public function editCookies()
+    public function resetUser()
     {
-        $dir = env('SERVER_FOLDER');
-        $file = '';
+        if (file_exists(base_path('yandex_token.json'))) {
+            unlink(base_path('yandex_token.json'));
 
-        $handle = @fopen($dir."cookies.txt", "r");
-        if ($handle) {
-            while (($buffer = fgets($handle, 4096)) !== false) {
-                $file = $file.$buffer;
-            }
-            fclose($handle);
+            return redirect()->route('yandexstations.index')
+                ->with('success', 'Пользователь отвязан');
         }
-
-        return view('yandexstations.edit_cookies', compact( 'file' ));
-
-    }
-
-    //Сохраняет изменения в файле cookies.txt
-    public function updateCookies(Request $r)
-    {
-
-        $dir = env('SERVER_FOLDER');
-
-        //Очищаем файл и записываем в него данные о cookies
-        file_put_contents($dir."cookies.txt", '');
-        file_put_contents($dir."cookies.txt", $r->file, FILE_APPEND | LOCK_EX);
-
-        return redirect()->route('yandexstations.index')
-            ->with('success', 'Файл cookies.txt успешно изменён.');
     }
 }

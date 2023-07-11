@@ -18,7 +18,6 @@
                 <div class="card">
                     <div class="card-body">
                         <a href="{{ route('yandexstations.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок станций</a>
-                        <a href="{{ route('yandexstations.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить станцию</a>
                     </div>
                 </div>
             </div>
@@ -33,7 +32,6 @@
                         {{ Form::bs_alert() }}
 
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_text('speaker_id', 'ID станции*:', null, ['required' => true]) }}
                         {{ Form::bs_number('volume', 'Громкость звука:', old('volume', $yandexstation->volume), ['min' => 0, 'max' => 100, 'required' => false],'') }}
                         {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', $yandexstation->room), false, false) }}
 
