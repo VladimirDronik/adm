@@ -36,9 +36,6 @@
                                 <tr>
                                     <th style="width: 60px;">ID</th>
                                     <th>Название</th>
-                                    @can('devices.show-object')
-                                    <th>Объект</th>
-                                    @endcan
                                     <th>Значение</th>
                                     <th>Скорость</th>
                                     <th style="width: 60px;"></th>
@@ -50,14 +47,6 @@
                                     <tr id="tr{{$dimmer->id}}">
                                         <td scope="row">{{ $dimmer->object['id'] }}</td>
                                         <td><a href="{{ route('dimmers.edit', [$dimmer->id]) }}">{{ $dimmer->name }}</a></td>
-                                        @can('devices.show-object')
-                                        <td>@if($dimmer->object)
-                                                <a href="{{ route('objects.edit', [$dimmer->id_object]) }}">{{ optional($dimmer->object)->name }}</a>
-                                            @else
-                                                Не указан
-                                            @endif
-                                        </td>
-                                        @endcan
                                         <td>{{ $dimmer->value }}</td>
                                         <td>{{ $dimmer->speed }}</td>
                                         <td align="center" class="text-center">
@@ -79,9 +68,6 @@
                                     <tr>
                                         <th style="width: 60px;">ID</th>
                                         <th>Название</th>
-                                        @can('devices.show-object')
-                                        <th>Объект</th>
-                                        @endcan
                                         <th>Значение</th>
                                         <th>Скорость</th>
                                         <th style="width: 60px;"></th>
