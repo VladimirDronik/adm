@@ -4,7 +4,7 @@
 
 <div class="form-group row">
     <label class="control-label text-right col-md-3 label-fix" for="">
-        Тип реле:     </label>
+        Тип :     </label>
     <div class="col-md-9">
         <div class="mt-2">
             {{ $lamp->rus_type }}
