@@ -54,7 +54,6 @@ class DimmerService {
     public function prepareDimmer(Dimmer $dimmer, array $data)
     {
         $dimmer->name = trim($data['name']);
-        $dimmer->id_object = is_null($data['id_object']) ? null : (int)$data['id_object'];
         $dimmer->value = (int)$data['value'];
         $dimmer->speed= (int)$data['speed'];
     }
@@ -73,24 +72,20 @@ class DimmerService {
         $deviceID =  $data['device_id'];
         $this->prepareDimmer($dimmer, $data);
 
-        if ($data['object_type'] === 'manual') {
+        DB::transaction(function () use (&$dimmer, $data, $deviceID) {
+            $unique_name = HomeObject::getUniqueObjectName(0, $dimmer->name);
+            $object = $this->dimmer_object_service->createDimmerObject($unique_name);
+            $this->dimmer_object_service->createDimmerObjectMethods($object->id);
+            $dimmer->id_object = $object->id;
             $dimmer->save();
-        } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$dimmer, $data, $deviceID) {
-                $unique_name = HomeObject::getUniqueObjectName(0, $dimmer->name);
-                $object = $this->dimmer_object_service->createDimmerObject($unique_name);
-                $this->dimmer_object_service->createDimmerObjectMethods($object->id);
-                $dimmer->id_object = $object->id;
-                $dimmer->save();
 
-                if ($data['port_id']) {
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id, 'comment' => $data['name']]);
+            if ($data['port_id']) {
+                Port::where('id', $data['port_id'])->update(['object' => $object->id, 'comment' => $data['name']]);
 
-                    ConfigMegaService::setPortType($deviceID, $this->port_repository->getNumPortByID($data['port_id']), 'PWM');
+                ConfigMegaService::setPortType($deviceID, $this->port_repository->getNumPortByID($data['port_id']), 'PWM');
 
-                }
-            });
-        }
+            }
+        });
 
         return $dimmer->id;
     }

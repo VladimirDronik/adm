@@ -56,7 +56,6 @@ class RelayService {
         if (isset($data['type'])) {
             $relay->type = $data['type'];
         }
-        $relay->id_object = (int)$data['id_object'];
     }
 
     /**
@@ -74,30 +73,26 @@ class RelayService {
         $deviceID =  $data['device_id'];
         $this->prepareRelay($relay, $data);
 
-        if ($data['object_type'] === 'manual') {
+        DB::transaction(function () use (&$relay, $data, $deviceID) {
+            $unique_name = HomeObject::getUniqueObjectName(0, $relay->name);
+            $object = $this->relay_object_service->createRelayObject($unique_name, $relay->type);
+            $relay->id_object = $object->id;
             $relay->save();
-        } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$relay, $data, $deviceID) {
-                $unique_name = HomeObject::getUniqueObjectName(0, $relay->name);
-                $object = $this->relay_object_service->createRelayObject($unique_name, $relay->type);
-                $relay->id_object = $object->id;
-                $relay->save();
 
-                if ($data['port_id'] && $data['place'] == 'port') {
-                    $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $this->portRepository->getNumPortByID($data['port_id']));
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id, 'status' => 'OUT',
-                        'comment' => $data['name']]);
+            if ($data['port_id'] && $data['place'] == 'port') {
+                $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $this->portRepository->getNumPortByID($data['port_id']));
+                Port::where('id', $data['port_id'])->update(['object' => $object->id, 'status' => 'OUT',
+                    'comment' => $data['name']]);
 
-                    ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($data['port_id']), 'OUT');
+                ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($data['port_id']), 'OUT');
 
-                } elseif ($data['place'] == 'Hite-pro') {
-                    $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $data['hitepro_devices']);
-                    HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
-                                ->update(['id_object' => $object->id]);
+            } elseif ($data['place'] == 'Hite-pro') {
+                $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $data['hitepro_devices']);
+                HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
+                            ->update(['id_object' => $object->id]);
 
-                }
-            });
-        }
+            }
+        });
 
         return $relay->id;
     }
