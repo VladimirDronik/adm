@@ -35,33 +35,13 @@
                         {{ Form::bs_simple_text('ID объекта:', $usensor->iobject['id']) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-                        @if(($usensor->iobject && $usensor->iobject->is_system) || !$can['devices.show-object'])
-                            <div class="form-group row">
-                                <label class="control-label text-right col-md-3 label-fix" for="">
-                                    Объект универсального датчика:     </label>
-                                <div class="col-md-9">
-                                    <div class="mt-2">
-                                        <a class="a-color" href="{{ route('objects.edit', [$usensor->id_object]) }}">
-                                            {{ $usensor->iobject->name }} @if($usensor->iobject && $usensor->iobject->is_system) (системный) @endif </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <input type="hidden" name="id_object" value="{{ $usensor->id_object }}">
-                        @else
-                            {{ Form::bs_autoselect_and_btn('id_object', 'Объект универсалього датчика*:', $objects, old('id_object', $usensor->id_object),
-                                false, false, ['required' => true]) }}
-                        @endif
+                        <input type="hidden" name="id_object" value="{{ $usensor->id_object }}">
 
-                        <div class="col-sm-12 pr-0 mt-4">
-                            {{ Form::bs_autoselect('device_id', 'Контроллер*:', $devices, old('device_id', $usensor->device_id),
-                               false, false, [], null) }}
+                        {{ Form::bs_autoselect('device_id', 'Контроллер*:', $devices, old('device_id', $usensor->device_id), false, false, [], null) }}
 
-                            {{ Form::bs_autoselect('port_SCL', 'Порт SCL*:', $SCL, old('SCL', $usensor->port_SCL),
-                                false, false, [], null) }}
+                        {{ Form::bs_autoselect('port_SCL', 'Порт SCL*:', $SCL, old('SCL', $usensor->port_SCL), false, false, [], null) }}
 
-                            {{ Form::bs_autoselect('port_SDA', 'Порт SDA*:', $SDA, old('SDA', $usensor->port_SDA),
-                                false, false, [], null) }}
-                        </div>
+                        {{ Form::bs_autoselect('port_SDA', 'Порт SDA*:', $SDA, old('SDA', $usensor->port_SDA), false, false, [], null) }}
 
                         {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', is_null($usensor->room) ? 0 : $usensor->room ), false, false) }}
 
