@@ -93,22 +93,18 @@ class HygrostatService {
         $this->prepare($hygrostat, $data);
         $hygrostat->current = null;
 
-        if ($data['object_type'] === 'manual') {
+        DB::transaction(function () use (&$hygrostat,  $placeType) {
+            $unique_name = HomeObject::getUniqueObjectName(0, $hygrostat->name);
+            $object = $this->hygrostat_object_service->createHygrostatObject($unique_name);
+            $this->hygrostat_object_service->createHygrostatObjectMethodsWithEvents($object->id);
+
+            if($hygrostat->room != null)
+            RoomService::addHygrostat($hygrostat->room, $hygrostat->optimal);
+
+            $hygrostat->id_object = $object->id;
             $hygrostat->save();
-        } elseif ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$hygrostat,  $placeType) {
-                $unique_name = HomeObject::getUniqueObjectName(0, $hygrostat->name);
-                $object = $this->hygrostat_object_service->createHygrostatObject($unique_name);
-                $this->hygrostat_object_service->createHygrostatObjectMethodsWithEvents($object->id);
 
-                if($hygrostat->room != null)
-                RoomService::addHygrostat($hygrostat->room, $hygrostat->optimal);
-
-                $hygrostat->id_object = $object->id;
-                $hygrostat->save();
-
-            });
-        }
+        });
 
         return $hygrostat->id;
     }

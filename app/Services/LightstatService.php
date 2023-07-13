@@ -68,33 +68,27 @@ class LightstatService
         $this->prepare($lightstat, $data);
         $lightstat->current = 0;
 
+        DB::transaction(function () use (&$lightstat, $port_SDA, $port_SCL, $deviceId) {
 
-        if ($data['object_type'] === 'manual') {
+            $unique_name = HomeObject::getUniqueObjectName(0, $lightstat->name);
+            $object = $this->lightstat_object_service->createLightstatObject($unique_name);
+            $this->lightstat_object_service->createLightstatObjectMethodsWithEvents($object->id);
+            $lightstat->id_object = $object->id;
             $lightstat->save();
-        } elseif ($data['object_type'] === 'auto') {
 
-            DB::transaction(function () use (&$lightstat, $port_SDA, $port_SCL, $deviceId) {
+            if ($port_SDA) {
+                Port::where('id', $port_SDA)->update(['object' => $object->id, 'status' => 'I2C',
+                                                                    'comment' => $lightstat->name]);
+                ConfigMegaService::setPortType($deviceId, $this->portRepository->getNumPortByID($port_SDA), 'SDA');
+            }
 
-                $unique_name = HomeObject::getUniqueObjectName(0, $lightstat->name);
-                $object = $this->lightstat_object_service->createLightstatObject($unique_name);
-                $this->lightstat_object_service->createLightstatObjectMethodsWithEvents($object->id);
-                $lightstat->id_object = $object->id;
-                $lightstat->save();
+            if ($port_SCL) {
+                Port::where('id', $port_SCL)->update(['object' => $object->id, 'status' => 'I2C',
+                                                                    'comment' => $lightstat->name]);
+                ConfigMegaService::setPortType($deviceId, $this->portRepository->getNumPortByID($port_SCL), 'SCL');
 
-                if ($port_SDA) {
-                    Port::where('id', $port_SDA)->update(['object' => $object->id, 'status' => 'I2C',
-                                                                        'comment' => $lightstat->name]);
-                    ConfigMegaService::setPortType($deviceId, $this->portRepository->getNumPortByID($port_SDA), 'SDA');
-                }
-
-                if ($port_SCL) {
-                    Port::where('id', $port_SCL)->update(['object' => $object->id, 'status' => 'I2C',
-                                                                        'comment' => $lightstat->name]);
-                    ConfigMegaService::setPortType($deviceId, $this->portRepository->getNumPortByID($port_SCL), 'SCL');
-
-                }
-            });
-        }
+            }
+        });
 
         return $lightstat->id;
     }
