@@ -74,6 +74,12 @@
                 $('#types_form input[name=password]').removeAttr('disabled');
                 $('#types_form input[name=password]').attr('required', true);
             }
+
+            if (type === 'Monoblock 14IN/14OUT') {
+                $('#types_form input[name=password]').val('sec')
+            } else {
+                $('#types_form input[name=password]').val('')
+            }
         }
 
         getFormFieldsByType($('#types_form input[name=type]:checked').val())
