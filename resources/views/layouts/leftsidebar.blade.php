@@ -102,7 +102,7 @@
                     <li>
                         <a class="has-arrow" href="#" aria-expanded="false">
                             <i class="fa fa-eye"></i>
-                            <span class="hide-menu">Видеоналюдение</span>
+                            <span class="hide-menu">Видеонаблюдение</span>
                         </a>
                         <ul aria-expanded="false" class="collapse">
                             <li>
