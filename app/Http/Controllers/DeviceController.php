@@ -133,17 +133,7 @@ class DeviceController extends Controller
         }
         $moduleTypeOptionsJson = json_encode($moduleTypeOptionsArray);
 
-
-        if ($controller['type'] == 'Hite-pro') {
-
-            if(DeviceService::getStatus($id))
-                $devstorage = DeviceService::readHiteproDevices($id, $controller['address'], $controller['password']);
-            else $devstorage = [];
-
-            return view('devices.edit_hitepro', compact('device', 'devstorage', 'tab'));
-        }
-        else
-            return view('devices.edit', compact('device', 'tab', 'sdaSclOptionsJson', 'moduleTypeOptionsJson'));
+        return view('devices.edit', compact('device', 'tab', 'sdaSclOptionsJson', 'moduleTypeOptionsJson'));
     }
 
 

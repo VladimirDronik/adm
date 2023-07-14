@@ -140,10 +140,6 @@ class DeviceService {
 
         $data['type'] = $this->deviceRepository->getIdTypeByName($typeDevice);
 
-
-        if($typeDevice == 'Hite-pro')
-            $data['password'] = base64_encode($data['username'].':'.$data['password']);
-
         DB::beginTransaction();
 
         try {
@@ -158,10 +154,7 @@ class DeviceService {
 
                     $this->storeDevice($data, $is_notify);
 
-                    //Для устройств из семейства Мега сохраняем поры в БД
-                    if($typeDevice != 'Hite-pro')
-                        $this->storePorts();
-
+                    $this->storePorts();
 
                     DB::commit();
 
@@ -263,8 +256,6 @@ class DeviceService {
         $device->password = $data['password'] ?: null;
         $device->port = $data['port'] ?: null;
 
-        //Заливаем конфиг на устройство
-        if(DeviceRepository::getDevByIdDevice($data['id']) != 'Hite-pro')
         $configResult = ConfigMegaService::sendConfigToDevice($data['id']);
 
         if (trim($data['ip_address']) !== $device->ip_address) {
@@ -384,103 +375,5 @@ class DeviceService {
     public static function getDeviceIP($idDevice)
     {
         return Device::where('id', $idDevice)->first()->ip_address;
-    }
-
-    /**
-     * Загружает устройства, которые висят на контроллере hite-pro
-     */
-    public static function readHiteproDevices($id, $ipHitepro, $password)
-    {
-
-        $url = 'http://'.$ipHitepro.'/rest/devices';
-
-            $options = [
-                'http' => [
-                    'method'  => 'GET',
-                    'header'  => [
-                        'Content-type: application/json',
-                        'Authorization: Basic ' . $password,
-                    ],
-                ],
-            ];
-            $context = stream_context_create($options);
-
-            try {
-                $contents = file_get_contents($url, false, $context);
-
-                $devicesArray = json_decode($contents);
-
-
-                // HiteproDev::where('id_controller', $id)->delete();
-
-                $HPDevices = HiteproDev::select('id')->where('id_controller', $id)->pluck('id')->toArray();
-
-
-                //Проверяем какие есть устройства и добавляем новое, если его нет в таблице
-                foreach ($devicesArray AS $device) {
-
-                    //Если нашли такой id устройства в таблице изменяем его, значит перезаписываем его заново
-                    if(HiteproDev::where('id_controller', $id)->where('id', $device->id)->first() != null)
-                        HiteproDev::where('id_controller', $id)->where('id', $device->id)->update(['name' => $device->name]);
-                    else {
-                        $HiteProDevice = new HiteproDev();
-                        $HiteProDevice->id = $device->id;
-                        $HiteProDevice->id_controller = $id;
-                        $HiteProDevice->name = $device->name;
-                        $HiteProDevice->type = $device->type;
-                        $HiteProDevice->status = (!empty($device->status)) ? $device->status : '' ;
-                        $HiteProDevice->save();
-                    }
-
-                    $IDsArray[] = $device->id;
-                }
-
-                $difArray = array_diff($HPDevices, $IDsArray);
-
-                //Удаляем все записи массива, которые лишние
-                foreach ($difArray AS $idToDel) {
-                    HiteproDev::where('id', $idToDel)->delete();
-                }
-
-                return json_decode($contents);
-
-            }catch (\Exception $e) {
-                return $contents = [];
-            }
-
-
-    }
-
-    /**
-     * Получение устройств, которые находятся на контроллере hite-pro
-     * @param $idDevice
-     * @param $type
-     * @return array
-     */
-    public static function getHPDevices($idDevice, $type) {
-
-
-        if (!$idDevice) {
-            return [];
-        }
-
-        $typesArray = explode(',',$type);
-
-        if(count($typesArray) == 1)
-            $devices = HiteproDev::where('id_controller', $idDevice)->where('type', trim($typesArray[0]))->get();
-        elseif(count($typesArray) == 2)
-        $devices = HiteproDev::where('id_controller', $idDevice)->where('type', trim($typesArray[0]))->orwhere('type', trim($typesArray[1]))->get();
-
-
-            $arrayDevices = [];
-
-            foreach ($devices as $device) {
-                $arrayDevices[] = [
-                    'id' => $device->id,
-                    'name' => '['.$device->type.'] '.$device->name
-                ];
-            }
-
-            return $arrayDevices;
     }
 }

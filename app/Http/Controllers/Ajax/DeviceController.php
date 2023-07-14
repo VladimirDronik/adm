@@ -60,20 +60,13 @@ class DeviceController extends Controller
         if($r->device_id)
         $typeDevice = DeviceRepository::getDevByIdDevice((int)$r->device_id)['type'];
 
-        if($typeDevice == 'Hite-pro') {
+        $ports = $this->service->getPortsWithObjectsByDeviceId((int)$r->device_id, $r->has('status') ? $r->status : '');
 
-            $hiteProDevices = DeviceService::getHPDevices((int)$r->device_id, $r->has('type') ? $r->type : '');
-            $ports = [];
-        }
-            else {
-                $hiteProDevices = [];
-                $ports = $this->service->getPortsWithObjectsByDeviceId((int)$r->device_id,
-                    $r->has('status') ? $r->status : '');
-            }
-
-
-        return response()->json(['result' => true, 'ports' => $ports, 'hiteProDevices' => $hiteProDevices,
-                                'type_device' => $typeDevice]);
+        return response()->json([
+            'result' => true, 'ports' => $ports,
+            'type_device' => $typeDevice,
+            'hiteProDevices' => [],
+        ]);
     }
 
     // todo

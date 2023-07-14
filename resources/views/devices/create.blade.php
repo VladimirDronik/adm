@@ -63,16 +63,6 @@
                 $('#types_form input[name=username]').attr('disabled', true);
                 $('#username').attr('hidden', true);
                 $('#types_form input[name=username]').removeAttr('required');
-            } else if (type === 'Hite-pro') {
-                $('#types_form input[name=port]').attr('disabled', true);
-                $('#port').attr('hidden', true);
-                $('#types_form input[name=port]').removeAttr('required');
-                $('#password').removeAttr('hidden');
-                $('#types_form input[name=password]').removeAttr('disabled');
-                $('#types_form input[name=password]').attr('required', true);
-                $('#username').removeAttr('hidden');
-                $('#types_form input[name=username]').removeAttr('disabled');
-                $('#types_form input[name=username]').attr('required', true);
             } else {
                 $('#types_form input[name=port]').attr('disabled', true);
                 $('#port').attr('hidden', true);

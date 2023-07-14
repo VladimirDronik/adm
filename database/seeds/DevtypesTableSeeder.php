@@ -34,18 +34,6 @@ class DevtypesTableSeeder extends Seeder
                 'port_numbers' => 'in 0 7;out 8 14'
             ],
             [
-                'name' => 'wifi-in',
-                'port_numbers' => 'in 0 2'
-            ],
-            [
-                'name' => 'wifi-out',
-                'port_numbers' => 'out 0 2'
-            ],
-            [
-                'name' => 'Hite-pro',
-                'port_numbers' => ''
-            ],
-            [
                 'name' => 'ModbusTCP',
                 'port_numbers' => ''
             ],
