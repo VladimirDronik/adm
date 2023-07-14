@@ -32,8 +32,8 @@
                             <ul class="nav nav-tabs customtab" role="tablist">
                                 <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
                                 <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Свойства</span></a> </li>
-                                <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
                                 <li class="nav-item"> <a class="nav-link @if($tab==4) active @endif"  data-toggle="tab" href="#portstab4"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">События</span></a> </li>
+                                <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
                                 <li class="nav-item"> <a class="nav-link @if($tab==5) active @endif"  data-toggle="tab" href="#portstab5"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Планировщик</span></a> </li>
                             </ul>
                             <div class="tab-content">
@@ -43,11 +43,11 @@
                                 <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
                                     @include('lightstats/create_tabs/prop')
                                 </div>
-                                <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
+                                <div class="tab-pane p-20 @if($tab==4) active @endif" id="portstab4" role="tabpanel">
                                     @include('lightstats/create_tabs/methods')
                                 </div>
-                                <div class="tab-pane p-20 @if($tab==4) active @endif" id="portstab4" role="tabpanel">
-                                    <br> События будут доступны после сохранения светостата.
+                                <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
+                                    <br> Методы будут доступны после сохранения светостата.
                                 </div>
                                 <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
                                     <br> Задачи планировщика будут доступны после сохранения светостата.
