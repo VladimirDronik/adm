@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление виртуального устройства', 'links' => [ route('virtuals.index') => 'Виртуальное устройство']])
+       ['title' => 'Добавление виртуального устройства', 'links' => [ route('virtuals.index') => 'Виртуальные устройства']])
 @endsection
 
 @section('content')

@@ -7,7 +7,7 @@
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
        ['title' => 'Редактирование виртуального устройства № '. $virtual->object['id'] . ' «' . $virtual->name .'»',
-        'links' => [ route('virtuals.index') => 'Виртуальное устройство'],
+        'links' => [ route('virtuals.index') => 'Виртуальные устройства'],
         'last_link' => 'Редактирование виртуального устройства'])
 @endsection
 

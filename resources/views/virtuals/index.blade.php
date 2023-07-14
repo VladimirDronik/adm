@@ -8,7 +8,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
                 <li class="breadcrumb-item breadcrumb-item-no-link">Устройства</li>
-                <li class="breadcrumb-item active">Виртуальное</li>
+                <li class="breadcrumb-item active">Виртуальные устройства</li>
             </ol>
         </div>
     </div>
@@ -20,14 +20,14 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('virtuals.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить устройство</a>
+                        <a href="{{ route('virtuals.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить виртуальное устройство</a>
                         <a href="{{ route('virtuals.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card">
-            <div class="card-title"><h4>Виртуальное устройство</h4></div>
+            <div class="card-title"><h4>Виртуальные устройства</h4></div>
             <div class="card-body">
                 @if(count($virtuals))
                     <div class="table-responsive">
@@ -86,7 +86,7 @@
                     {{ $virtuals->appends(request()->input())->links() }}
                     <p class="text-right">Найдено: {{ $virtuals->total() }}</p>
                 @else
-                    <p>Реле не найдены</p>
+                    <p>Виртуальные устройства не найдены</p>
                 @endif
             </div>
         </div>
