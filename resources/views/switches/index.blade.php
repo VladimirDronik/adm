@@ -37,9 +37,9 @@
                                     <th style="width: 60px;">ID</th>
                                     <th>Тип</th>
                                     <th>Название</th>
-                                    @can('devices.show-object')
-                                        <th>Объект</th>
-                                    @endcan
+                                    <th style="width: 200px;">Одиночное нажатие</th>
+                                    <th style="width: 200px;">Двойное нажатие</th>
+                                    <th style="width: 200px;">Длительное нажатие</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
@@ -52,14 +52,38 @@
                                             {{ $switch->rus_type }}
                                         </td>
                                         <td><a href="{{ route('switches.edit', [$switch->id]) }}">{{ $switch->name }}</a></td>
-                                        @can('devices.show-object')
-                                            <td>@if($switch->object)
-                                                    <a href="{{ route('objects.edit', [$switch->id_object]) }}">{{ optional($switch->object)->name }}</a>
+                                        <td>
+                                            @if($switch->port && $switch->port->emethod)
+                                                Объект:&nbsp;{{ $switch->port->emethod->eobject->name }}
+                                                <br>
+                                                Метод:&nbsp;{{ $switch->port->emethod->name }}
+                                            @else
+                                                Метод не указан
+                                            @endif
+                                        </td>
+                                        @if($switch->type == 'button')
+                                            <td>
+                                                @if($switch->port && $switch->port->dcmethod)
+                                                    Объект:&nbsp;{{ $switch->port->dcmethod->eobject->name }}
+                                                    <br>
+                                                    Метод:&nbsp;{{ $switch->port->dcmethod->name }}
                                                 @else
-                                                    Не указан
+                                                    Метод не указан
                                                 @endif
                                             </td>
-                                        @endcan
+                                            <td>
+                                                @if($switch->port && $switch->port->lcmethod)
+                                                    Объект:&nbsp;{{ $switch->port->lcmethod->eobject->name }}
+                                                    <br>
+                                                    Метод:&nbsp;{{ $switch->port->lcmethod->name }}
+                                                @else
+                                                    Метод не указан
+                                                @endif
+                                            </td>
+                                        @else
+                                            <td></td>
+                                            <td></td>
+                                        @endif
                                         <td align="center" class="text-center">
                                             <a href="{{ route('switches.edit', [$switch->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>
@@ -79,9 +103,9 @@
                                     <th style="width: 60px;">ID</th>
                                     <th>Тип</th>
                                     <th>Название</th>
-                                    @can('devices.show-object')
-                                        <th>Объект</th>
-                                    @endcan
+                                    <th style="width: 200px;">Одиночное нажатие</th>
+                                    <th style="width: 200px;">Двойное нажатие</th>
+                                    <th style="width: 200px;">Длительное нажатие</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
