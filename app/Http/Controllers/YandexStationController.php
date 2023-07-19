@@ -54,11 +54,17 @@ class YandexStationController extends Controller
 
     public function resetUser()
     {
-        if (file_exists(base_path('yandex_token.json'))) {
-            unlink(base_path('yandex_token.json'));
+        $cookie = base_path(config('yandex.cookie_file'));
+        $token = base_path(config('yandex.token_file'));
 
-            return redirect()->route('yandexstations.index')
-                ->with('success', 'Пользователь отвязан');
+        if (file_exists($cookie)) {
+            unlink($cookie);
         }
+
+        if (file_exists($token)) {
+            unlink($token);
+        }
+
+        return redirect()->route('yandexstations.index')->with('success', 'Пользователь отвязан');
     }
 }

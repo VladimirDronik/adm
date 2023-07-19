@@ -21,11 +21,8 @@
                 <div class="card">
                     <div class="card-body">
                         <a href="{{ route('yandexstations.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
-                        @if(config('yandex.client_id'))
-                            <a href="https://oauth.yandex.ru/authorize?response_type=code&client_id={{ config('yandex.client_id') }}" target="_blank" class="btn btn-success m-b-10 m-l-5">Получить код для синхронизации</a>
-                            <button id="sync_devices" class="btn btn-success m-b-10 m-l-5">Синхронизировать устройства</button>
-                        @endif
-                        @if(file_exists(base_path('yandex_token.json')))
+                        <button id="sync_devices" class="btn btn-success m-b-10 m-l-5">Синхронизировать устройства</button>
+                        @if(file_exists(base_path(config('yandex.cookie_file'))) || file_exists(base_path(config('yandex.token_file'))))
                             <a href="{{ route('yandexstations.reset_user') }}" class="btn btn-danger m-b-10 m-l-5">Отвязать текущего пользователя</a>
                         @endif
                     </div>
@@ -132,9 +129,10 @@
         }
 
         function checkInput() {
-            var inputValue = $('#yaCode').val();
+            var inputLogin = $('#yaLogin').val();
+            var inputPassword = $('#yaPassword').val();
 
-            if (inputValue === '') {
+            if (inputLogin === '' || inputPassword === '') {
                 $('#send_yandex_auth').prop('disabled', true);
             } else {
                 $('#send_yandex_auth').prop('disabled', false);
@@ -172,23 +170,28 @@
                 syncYandexStations()
             });
 
-            $('#yaCode').on('input', function() {
+            $('#yaLogin').on('input', function() {
+                checkInput();
+            });
+
+            $('#yaPassword').on('input', function() {
                 checkInput();
             });
 
             $('#send_yandex_auth').click(function() {
                 $('#load_init_btn').click();
                 $('#content1_modal_body').text('Авторизация...');
-                let ya_code = $('#yaCode').val();
+                let ya_login = $('#yaLogin').val();
+                let ya_password = $('#yaPassword').val();
                 $.ajax({
                     url: yandex_auth_url,
-                    data: { '_token': _token, 'code': ya_code },
+                    data: { '_token': _token, 'login': ya_login, 'password': ya_password },
                     success: function (data) {
                         $('#dismiss_load_modal').click();
-                        if (data.result) {
+                        if (data.code == 200) {
                             syncYandexStations()
                         } else {
-                            showErrorModal('Ошибка авторизации. Повторите попытку или обратитесь к администратору');
+                            showErrorModal(data.message);
                         }
                     }
                 });

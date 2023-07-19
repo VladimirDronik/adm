@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'client_id' => env('YANDEX_CLIENT_ID'),
-    'client_secret' => env('YANDEX_CLIENT_SECRET'),
+    'cookie_file' => env('YANDEX_COOKIE_FILE', 'cookie_yandex.txt'),
+    'token_file' => env('YANDEX_TOKEN_FILE', 'yandex_token.json'),
 ];

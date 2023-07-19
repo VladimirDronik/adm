@@ -7,24 +7,24 @@ namespace App\Http\Controllers\Ajax;
 use App\Repositories\YandexStationRepository;
 use App\Services\YandexStationService;
 use Illuminate\Http\Request;
-use App\Services\YandexIntegration\YandexQuasar;
+use App\Services\YandexIntegration\YandexAuth;
 use Illuminate\Support\Facades\Log;
 
 class YandexStationController
 {
     private $service;
     private $repository;
-    private $yandexQuasar;
+    private $yandexAuth;
 
     public function __construct(
         YandexStationService $service,
         YandexStationRepository $repository,
-        YandexQuasar $yandexQuasar
+        YandexAuth $yandexAuth
     )
     {
         $this->service = $service;
         $this->repository = $repository;
-        $this->yandexQuasar = $yandexQuasar;
+        $this->yandexAuth = $yandexAuth;
     }
 
     /**
@@ -51,17 +51,39 @@ class YandexStationController
     }
 
     /**
-     * Авторизация в яндексе и получение станций
+     * Авторизация в яндексе
      */
     public function auth(Request $r)
     {
         $validated = $r->validate([
-            'code' => 'required|integer',
+            'login' => 'required|string',
+            'password' => 'required|string',
         ]);
 
-        $yaAuth = $this->yandexQuasar->getYaOauth($validated['code']);
+        $cookie = base_path(config('yandex.cookie_file'));
+        $token = base_path(config('yandex.token_file'));
 
-        return response()->json(['result' => $yaAuth]);
+        for ($i=0; $i < 5; $i++) { 
+            $yaAuth = $this->yandexAuth
+                ->yaAuth($validated['login'], $validated['password'], $cookie, 'https://passport.yandex.ru/auth/');
+
+            if ($yaAuth['code'] == 200) {
+                break;
+            }
+        }
+
+        if ($yaAuth['code'] !== 200) {
+            if (file_exists($cookie)) {
+                unlink($cookie);
+            }
+
+            if (file_exists($token)) {
+                unlink($token);
+            }
+            Log::error('Яндекс Станция: Что-то пошло не так! Не удалось авторизироваться в Яндексе.');
+        }
+
+        return response()->json($yaAuth);
     }
 
     /**
@@ -69,15 +91,17 @@ class YandexStationController
      */
     public function syncStations()
     {
-        $response = $this->yandexQuasar->getStations();
+        $response = $this->yandexAuth->checkOrGetCookies(base_path(config('yandex.cookie_file')));
 
-        if ($response['code'] == 200 && array_key_exists('devices', $response)) {
-            return response()->json(['code' => $this->service->store($response['devices']) ? 200 : 500]);
+        if ($response['code'] == 200) {
+            $dir = env('SERVER_FOLDER');
+            passthru("(cd {$dir} && php -f alice_init.php &) >> /dev/null 2>&1");
+            return response()->json(['code' => 200]);
         } elseif ($response['code'] == 401) {
             return response()->json($response);
         } else {
-            Log::error('Ошибка синхронизации станций: ' . $response['message']);
-            return response()->json($response);
+            Log::error('Ошибка синхронизации станций');
+            return response()->json(['code' => 500]);
         }
     }
 }
