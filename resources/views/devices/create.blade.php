@@ -63,6 +63,7 @@
                 $('#types_form input[name=username]').attr('disabled', true);
                 $('#username').attr('hidden', true);
                 $('#types_form input[name=username]').removeAttr('required');
+                $('#types_form input[name=port]').val('502')
             } else {
                 $('#types_form input[name=port]').attr('disabled', true);
                 $('#port').attr('hidden', true);
@@ -73,12 +74,7 @@
                 $('#password').removeAttr('hidden');
                 $('#types_form input[name=password]').removeAttr('disabled');
                 $('#types_form input[name=password]').attr('required', true);
-            }
-
-            if (type === 'Monoblock 14IN/14OUT') {
                 $('#types_form input[name=password]').val('sec')
-            } else {
-                $('#types_form input[name=password]').val('')
             }
         }
 
