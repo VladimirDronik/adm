@@ -100,6 +100,9 @@
     @include('components.del_modal')
     @include('components.info_modal')
     @include('yandexstations.modals.auth_modal')
+    @include('yandexstations.modals.auth_methods_modal')
+    @include('yandexstations.modals.qr_auth_modal')
+    @include('yandexstations.modals.repeat_qr_auth_modal')
     @include('components.load_modal')
 @endsection
 
@@ -108,6 +111,8 @@
         let url = '{{ route('yandexstations.index') }}';
         let yandex_auth_url = '{{ route('ajax.yandexstations.auth') }}';
         let yandex_sync_stations_url = '{{ route('ajax.yandexstations.sync_stations') }}';
+        let yandex_get_qr_url = '{{ route('ajax.yandexstations.get_qr') }}';
+        let yandex_login_qr_url = '{{ route('ajax.yandexstations.login_qr') }}';
 
         function syncYandexStations() {
             $('#load_init_btn').click();
@@ -120,10 +125,37 @@
                     if (data.code == 200) {
                         location.reload();
                     } else if (data.code == 401) {
-                        $('#modal_auth_modal_init_btn').click();
+                        $('#auth_methods_modal_init_btn').click();
                     } else {
                         showErrorModal('Ошибка синхронизации устройств. Повторите попытку или обратитесь к администратору');
                     }
+                },
+                error: function () {
+                    $('#dismiss_load_modal').click();
+                    showErrorModal('Сервер временно недоступен');
+                }
+            });
+        }
+
+        function loginYandexQr() {
+            $('#load_init_btn').click();
+            $('#content1_modal_body').text('Проверка авторизации QR-кода...');
+            $.ajax({
+                url: yandex_login_qr_url,
+                data: { '_token': _token},
+                success: function (data) {
+                    $('#dismiss_load_modal').click();
+                    if (data.code == 200) {
+                        syncYandexStations()
+                    } else if (data.code == 401) {
+                        $('#repeat_qr_auth_modal_init_btn').click();
+                    } else {
+                        showErrorModal(data.message);
+                    }
+                },
+                error: function () {
+                    $('#dismiss_load_modal').click();
+                    showErrorModal('Сервер временно недоступен');
                 }
             });
         }
@@ -170,6 +202,41 @@
                 syncYandexStations()
             });
 
+            $('#qr_yandex_auth').click(function() {
+                $('#load_init_btn').click();
+                $('#content1_modal_body').text('Генерируем QR-код...');
+                $.ajax({
+                    url: yandex_get_qr_url,
+                    data: { '_token': _token},
+                    success: function (data) {
+                        $('#dismiss_load_modal').click();
+                        if (data.code == 200) {
+                            $("#qr_code_image").attr("src", data.qr_url);
+                            $("#repeat_qr_code_image").attr("src", data.qr_url);
+                            $('#qr_auth_modal_init_btn').click();
+                        } else {
+                            showErrorModal(data.message);
+                        }
+                    },
+                    error: function () {
+                        $('#dismiss_load_modal').click();
+                        showErrorModal('Сервер временно недоступен');
+                    }
+                });
+            });
+
+            $('#send_yandex_qr_auth').click(function() {
+                loginYandexQr()
+            });
+
+            $('#repeat_send_yandex_qr_auth').click(function() {
+                loginYandexQr()
+            });
+
+            $('#password_yandex_auth').click(function() {
+                $('#password_auth_modal_init_btn').click();
+            });
+
             $('#yaLogin').on('input', function() {
                 checkInput();
             });
@@ -193,6 +260,10 @@
                         } else {
                             showErrorModal(data.message);
                         }
+                    },
+                    error: function () {
+                        $('#dismiss_load_modal').click();
+                        showErrorModal('Сервер временно недоступен');
                     }
                 });
             });

@@ -1,9 +1,9 @@
-<!-- модальное окно авторизации яндекс -->
+<!-- модальное окно авторизации по паролю яндекс -->
 <div id="auth_modal" class="modal">
     <div class="modal-dialog" style="max-width: 700px;">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Введите логин и пароль от вашего аккаунта яндекс</h5>
+                <h5 class="modal-title">Введите логин и пароль или одноразовый ключ от вашего аккаунта яндекс</h5>
             </div>
             <div class="modal-body">
                 <div class="form-group row">
@@ -30,4 +30,4 @@
         </div>
     </div>
 </div>
-<button type="button" id="modal_auth_modal_init_btn" style="display: none;" data-toggle="modal" data-target="#auth_modal">&nbsp;</button>
+<button type="button" id="password_auth_modal_init_btn" style="display: none;" data-toggle="modal" data-target="#auth_modal">&nbsp;</button>

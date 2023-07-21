@@ -146,6 +146,8 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('delete', 'YandexStationController@delete')->name('delete');
             Route::post('auth', 'YandexStationController@auth')->name('auth');
             Route::post('sync_stations', 'YandexStationController@syncStations')->name('sync_stations');
+            Route::post('get_qr', 'YandexStationController@getQr')->name('get_qr');
+            Route::post('login_qr', 'YandexStationController@loginQr')->name('login_qr');
         });
 
         Route::group(['prefix' => 'logs', 'as' => 'logs.'], function () {

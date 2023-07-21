@@ -96,12 +96,40 @@ class YandexStationController
         if ($response['code'] == 200) {
             $dir = env('SERVER_FOLDER');
             passthru("(cd {$dir} && php -f alice_init.php &) >> /dev/null 2>&1");
-            return response()->json(['code' => 200]);
-        } elseif ($response['code'] == 401) {
-            return response()->json($response);
-        } else {
-            Log::error('Ошибка синхронизации станций');
-            return response()->json(['code' => 500]);
         }
+
+        return response()->json($response);
+    }
+
+    /**
+     * Получить ссылку на qr
+     */
+    public function getQr()
+    {
+        return response()->json($this->yandexAuth->getQrCode());
+    }
+
+    /**
+     * Проверить авторизацию по qr коду
+     */
+    public function loginQr()
+    {
+        $cookie = base_path(config('yandex.cookie_file'));
+        $token = base_path(config('yandex.token_file'));
+
+        $loginQrCode = $this->yandexAuth->loginQrCode($cookie);
+
+        if ($loginQrCode['code'] !== 200) {
+            if (file_exists($cookie)) {
+                unlink($cookie);
+            }
+
+            if (file_exists($token)) {
+                unlink($token);
+            }
+            Log::error('Яндекс Станция: Что-то пошло не так! Не удалось авторизироваться в Яндексе.');
+        }
+
+        return response()->json($loginQrCode);
     }
 }
