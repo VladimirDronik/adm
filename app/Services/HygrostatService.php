@@ -65,7 +65,6 @@ class HygrostatService {
 
         $data['min_threshold'] = '0';
         $data['max_threshold'] = '100';
-        $data['current'] = '0';
 
         if (($data['room'] ?? 0) == 0) {
             $data['room'] = null;
@@ -91,7 +90,6 @@ class HygrostatService {
         $placeType = $data['placetype'];
 
         $this->prepare($hygrostat, $data);
-        $hygrostat->current = null;
 
         if ($data['object_type'] === 'manual') {
             $hygrostat->save();
