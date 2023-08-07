@@ -63,7 +63,7 @@ class YandexStationController
         $cookie = base_path(config('yandex.cookie_file'));
         $token = base_path(config('yandex.token_file'));
 
-        for ($i=0; $i < 5; $i++) { 
+        for ($i=0; $i < 5; $i++) {
             $yaAuth = $this->yandexAuth
                 ->yaAuth($validated['login'], $validated['password'], $cookie, 'https://passport.yandex.ru/auth/');
 

@@ -37,7 +37,7 @@ class YandexAuth extends BrowserRequests
                 preg_match_all("/NAME=\"(.*?)\"/i", $value, $matchName);
                 preg_match_all("/VALUE=\"(.*?)\"/i", $value, $matchValue);
 
-                $paramArr[$matchName[1][0]] = array_key_exists(0, $matchValue[1]) ? $matchValue[1][0] : '';
+                $paramArr[array_key_exists(0, $matchName[1]) ? $matchName[1][0] : ''] = array_key_exists(0, $matchValue[1]) ? $matchValue[1][0] : '';
             }
 
             unset($paramArr['']);
@@ -98,7 +98,7 @@ class YandexAuth extends BrowserRequests
         } else {
             return [
                 'code' => 500,
-                'message' => 'Ошибка авторизации. Повторите попытку или обратитесь к администратору'
+                'message' => 'Ошибка авторизации. Повторите попытку или воспользуйтесь другим способом авторизации'
             ];
         }
     }
