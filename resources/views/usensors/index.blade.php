@@ -41,6 +41,8 @@
                                     <th>Температура</th>
                                     <th>Влажность</th>
                                     <th>Освещение</th>
+                                    <th style="width: 195px;">Атмосферное давление</th>
+                                    <th style="width: 150px;">CO2</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
@@ -51,9 +53,11 @@
                                         <td scope="row">{{ $usensor->iobject['id'] }}</td>
                                         <td><a href="{{ route('usensors.edit',[$usensor->id]) }}">
                                                 {{ $usensor->name }}</a></td>
-                                        <td>{{ $usensor->temp }} &#176;С</td>
-                                        <td>{{ $usensor->hum }} %</td>
-                                        <td>{{ $usensor->lux }} ед.</td>
+                                        <td>{{ $usensor->temp ? $usensor->temp . ' &#176;С' : ''}}</td>
+                                        <td>{{ $usensor->hum ? $usensor->hum . ' %' : ''}}</td>
+                                        <td>{{ $usensor->lux ? $usensor->lux . ' ед.' : ''}}</td>
+                                        <td>{{ $usensor->atm_pressure ? $usensor->atm_pressure . ' мм рт.ст.' : ''}}</td>
+                                        <td>{{ $usensor->co2 ? $usensor->co2 . ' ppm' : ''}}</td>
                                         <td align="center" class="text-center">
                                             <a href="{{ route('usensors.edit',[$usensor->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>
@@ -75,6 +79,8 @@
                                     <th>Температура</th>
                                     <th>Влажность</th>
                                     <th>Освещение</th>
+                                    <th style="width: 195px;">Атмосферное давление</th>
+                                    <th style="width: 150px;">CO2</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
