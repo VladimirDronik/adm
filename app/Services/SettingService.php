@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Setting;
 use App\Repositories\SettingRepository;
+use Illuminate\Support\Facades\DB;
 
 class SettingService {
 
@@ -90,5 +91,7 @@ class SettingService {
         // Замена часового пояса в php
         exec("sed -i 's,.*date.timezone =.*,date.timezone = '\"$timeZone\"',g' /etc/php/7.4/fpm/php.ini");
         exec("sed -i 's,.*date.timezone =.*,date.timezone = '\"$timeZone\"',g' /etc/php/7.4/cli/php.ini");
+
+        DB::statement("SET global time_zone = '$timeZone'");
     }
 }
