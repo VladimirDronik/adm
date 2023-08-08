@@ -26,7 +26,7 @@ class CreateRequest extends FormRequest
         $rules = [
             'name' => 'required|string|max:250|unique:hygrostats,name',
             'id_termometr' => 'nullable|string|max:12',
-            'optimal' => 'required|integer|min:0|max:40',
+            'optimal' => 'required|integer|min:0',
             'gisteresis' => 'required|integer|min:0|max:10',
             'type' => 'required|integer|min:0|max:1',
 //            'min_threshold' => 'required|integer',    // Пока убрали на странице ввод этих значений
