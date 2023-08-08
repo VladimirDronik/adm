@@ -3,8 +3,6 @@
 {{ Form::bs_simple_text('ID объекта:', $hygrostat->iobject['id']) }}
 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-<div class="form-group row ">
-
     @if(($hygrostat->iobject && $hygrostat->iobject->is_system) || !$can['devices.show-object'])
         <div class="form-group row">
             <label class="control-label text-right col-md-3 label-fix" for="">
@@ -25,7 +23,7 @@
 
                 <div class="row" id="auto_object_div">
 
-                    <div class="col-sm-12 pr-0 mt-4">
+                    <!-- <div class="col-sm-12 pr-0 mt-4">
                         <div class="btn-group-toggle" data-toggle="buttons">
 
                             <label class="btn btn-success btn-sm @if($hygrostat->placetype == 'usensor') active @endif">
@@ -34,11 +32,11 @@
 
                             <label class="btn btn-success btn-sm @if($hygrostat->placetype == 'Hite-pro') active @endif">
                                 <input type="radio" name="placetype_radio" autocomplete="off" value="device">  Отдельное устройство
-                            </label>
+                            </label> -->
 
                             <input type="hidden" id="placetype" name="placetype" value="{{$hygrostat->placetype}}">
 
-                        </div>
+                        <!-- </div>
                     </div>
 
 
@@ -53,12 +51,10 @@
 
                         {{ Form::bs_autoselect('subdev_id', 'Термометр:', $subdevs, old('subdev_id', is_null($hygrostat->subdev_id) ? 0 : $hygrostat->subdev_id),
                         false, false, [], null) }}
-                    </div>
+                    </div> -->
 
                 </div>
             </div>
         </div>
-
-
-</div>
+{{ Form::bs_autoselect('usensor_id', 'Универсальный датчик:', $usensors, old('usensor_id', is_null($hygrostat->usensor_id) ? 0 : $hygrostat->usensor_id), false, false, [], null) }}
 @include('messages.two')
