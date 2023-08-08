@@ -108,6 +108,9 @@ class HygrostatService {
             });
         }
 
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php check_hygrostat.php ' . $hygrostat->id_object);
+
         return $hygrostat->id;
     }
 
@@ -128,8 +131,6 @@ class HygrostatService {
      */
     public function update(Hygrostat $hygrostat, array $data): int
     {
-
-
         $placeType = $data['placetype'];
 
         DB::transaction(function () use (&$hygrostat, $data, $placeType) {
@@ -146,6 +147,9 @@ class HygrostatService {
             $this->prepare($hygrostat, $data);
             $hygrostat->save();
         });
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php check_hygrostat.php ' . $hygrostat->id_object);
 
         return $hygrostat->id;
     }
