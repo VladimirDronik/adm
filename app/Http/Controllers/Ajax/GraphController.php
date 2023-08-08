@@ -26,9 +26,9 @@ class GraphController extends Controller
 
     public function getHumiditiesPeriodData(Request $r)
     {
-        abort_if(!ajaxHas($r, ['count_id','period']), 400);
+        abort_if(!ajaxHas($r, ['hygrostat_id','period']), 400);
 
-        list($result, $data) = $this->service->getGraphHumiditiesPeriodData($r->count_id, $r->period);
+        list($result, $data) = $this->service->getGraphHumiditiesPeriodData($r->hygrostat_id, $r->period);
 
         return response()->json(compact('result','data'));
     }

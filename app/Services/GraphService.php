@@ -7,6 +7,7 @@ use App\Models\GraphCount;
 use App\Models\GraphHumidity;
 use App\Models\GraphLight;
 use App\Models\GraphTermostat;
+use App\Models\Hygrostat;
 use App\Models\Room;
 use App\Models\Termostat;
 use Carbon\Carbon;
@@ -32,10 +33,7 @@ class GraphService {
 
     public function getGraphTermostatsData()
     {
-        $termostat_ids = GraphTermostat::select('id_termostat')
-            ->distinct()->pluck('id_termostat')->toArray();
-
-        $rooms_ids = Termostat::select('room')->whereIn('id', $termostat_ids)
+        $rooms_ids = Termostat::whereNotNull('room')->select('room')
             ->distinct()->pluck('room')->toArray();
 
         $data['rooms'] = Room::whereIn('id', $rooms_ids)
@@ -89,17 +87,20 @@ class GraphService {
 
     public function getGraphHumiditiesData()
     {
-        $count_ids = GraphHumidity::select('id_count')
-            ->distinct()->pluck('id_count')->toArray();
+        $rooms_ids = Hygrostat::whereNotNull('room')->select('room')
+            ->distinct()->pluck('room')->toArray();
 
-        $data['counts'] = $count_ids; // todo
+        $data['rooms'] = Room::whereIn('id', $rooms_ids)
+            ->with('hygrostats', 'hygrostats.last_graphs')->orderBy('id')->get();
+
+        $data['other_hygrostats'] = Hygrostat::with('last_graphs')->whereNull('room')->orderBy('id')->get();
 
         return $data;
     }
 
-    public function getGraphHumiditiesPeriodData(int $count_id, string $period)
+    public function getGraphHumiditiesPeriodData(int $hygrostat_id, string $period)
     {
-        $query = GraphHumidity::where('id_count', $count_id)
+        $query = GraphHumidity::where('id_hygrostat', $hygrostat_id)
             ->select('value', 'datetime')->orderBy('datetime');
 
         if ($period === '7') {

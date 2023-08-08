@@ -11,7 +11,8 @@
 @section('breadcrumbs')
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Графики: влажность</h3></div>
+            <h3 class="text-primary">Графики: влажность</h3>
+        </div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
@@ -35,28 +36,34 @@
         </div>
         <div class="card">
             <div class="card-body">
-                @if(count($data) && count($data['counts']))
-                    @foreach($data['counts'] as $count)
-                        <div class="row">
-                            <div class="col col-md-8">
-                                <h4>Датчик влажности «{{ $count }}»</h4>
-                            </div>
-                            <div class="col col-md-4">
-                                <select class="form-control select_period" id="select_period{{$count}}" autocomplete="off" data-id="{{ $count }}">
-                                    <option value="7" selected>за последние 7 дней</option>
-                                    @foreach($periods as $key => $period)
-                                        <option value="{{ $key }}">{{ $period }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-12">
-                                <div id="chart{{$count}}" class="chartdiv"></div>
-                            </div>
-                        </div>
+                @if(count($data) && (count($data['rooms']) || count($data['other_hygrostats'])))
+                    @foreach($data['rooms'] as $room)
+                        <h3>Помещение «{{ $room->name }}»</h3>
+                        @if(count($room->hygrostats))
+                            @foreach($room->hygrostats as $hygrostat)
+                                @include('graphs.humidities.period',compact('hygrostat'))
+                                <div class="row">
+                                    <div class="col col-md-12">
+                                        <div id="chart{{$hygrostat->id}}" class="chartdiv"></div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <p>Нет гигростатов</p>
+                        @endif
                         <hr>
                     @endforeach
+                    @if(count($data['other_hygrostats']))
+                        <h3>Остальные Гигростаты</h3>
+                        @foreach($data['other_hygrostats'] as $hygrostat)
+                            @include('graphs.humidities.period',compact('hygrostat'))
+                            <div class="row">
+                                <div class="col col-md-12">
+                                    <div id="chart{{$hygrostat->id}}" class="chartdiv"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
                 @else
                     <p>Нет данных</p>
                 @endif
@@ -78,7 +85,7 @@
 
             function createAmChart(id, dates, values) {
                 // Create chart
-                var chart = am4core.create("chart"+id, am4charts.XYChart);
+                var chart = am4core.create("chart" + id, am4charts.XYChart);
                 chart.paddingRight = 20;
                 chart.language.locale = am4lang_ru_RU;
                 chart.data = getChartData(dates, values);
@@ -105,8 +112,11 @@
                 chart.scrollbarX = new am4charts.XYChartScrollbar();
                 chart.scrollbarX.series.push(series);
 
-                chart.events.on("datavalidated", function () {
-                    dateAxis.zoom({start:0, end:1});
+                chart.events.on("datavalidated", function() {
+                    dateAxis.zoom({
+                        start: 0,
+                        end: 1
+                    });
                 });
             }
 
@@ -125,30 +135,36 @@
                 am4core.useTheme(am4themes_animated);
             });
 
-            function updateChart(termostat_id, data) {
-                createAmChart(termostat_id, data.dates, data.values);
+            function updateChart(hygrostat_id, data) {
+                createAmChart(hygrostat_id, data.dates, data.values);
             }
 
-            function getChartPeriodData(count_id, period) {
+            function getChartPeriodData(hygrostat_id, period) {
                 $.ajax({
                     url: url_graph,
-                    data: {'_token': _token, 'count_id': count_id, 'period': period},
+                    data: {'_token': _token, 'hygrostat_id': hygrostat_id, 'period': period},
                     success: function (resp) {
                         if (resp.result) {
-                            updateChart(count_id, resp.data);
+                            updateChart(hygrostat_id, resp.data);
                         }
                     }
                 });
             }
 
             $('body').on('change', '.select_period', function() {
-                let count_id = $(this).attr('data-id');
+                let hygrostat_id = $(this).attr('data-id');
                 let period = $(this).val();
-                getChartPeriodData(count_id, period);
+                getChartPeriodData(hygrostat_id, period);
             });
 
-            @foreach($data['counts'] as $count)
-                $('#select_period{{$count}}').change();
+            @foreach($data['rooms'] as $room)
+                @foreach($room->hygrostats as $hygrostat)
+                    $('#select_period{{$hygrostat->id}}').change();
+                @endforeach
+            @endforeach
+
+            @foreach($data['other_hygrostats'] as $hygrostat)
+                $('#select_period{{$hygrostat->id}}').change();
             @endforeach
         });
     </script>
