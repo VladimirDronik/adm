@@ -26,13 +26,13 @@ class CreateRequest extends FormRequest
         $rules = [
             'name' => 'required|string|max:250|unique:termostats,name',
             'id_termometr' => 'nullable|string|max:12',
-            'optimal' => 'required|integer|min:-60|max:60',
-            'gisteresis' => 'required|numeric|min:0|max:10',
+            'optimal' => 'required|numeric',
+            'gisteresis' => 'required|numeric',
             'thermostat' => 'required|integer|min:0|max:1',
-            'min_threshold' => 'required|integer|min:-60|max:60',
-            'max_threshold' => 'required|integer|min:-60|max:60',
-            'min_alarm' => 'required|integer|min:-60|max:60',
-            'max_alarm' => 'required|integer|min:-60|max:60',
+            'min_threshold' => 'required|integer',
+            'max_threshold' => 'required|integer',
+            'min_alarm' => 'required|integer',
+            'max_alarm' => 'required|integer',
             'room' => 'nullable|integer|min:0',
             'id_object' => 'nullable|integer|min:1'
         ];
