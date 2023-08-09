@@ -1,11 +1,10 @@
 <br>
 
-{{ Form::bs_radio('type', 'Режим*:', $types, old('type', -1), ['required' => true]) }}
+{{ Form::bs_radio('type', 'Режим*:', $types, old('type', 1), ['required' => true]) }}
 
-{{ Form::bs_number('optimal', 'Оптимальная влажность*:', null, ['min' => 0, 'max' => 100, 'required' => true],
+{{ Form::bs_number('optimal', 'Оптимальная влажность*:', old('optimal', 50), ['min' => 0, 'max' => 100, 'required' => true],
     'Влажность, которая должна быть в помещении') }}
-{{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', 1), ['min' => 0, 'max' => 10, 'required' => true]) }}
-
+{{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', 5), ['min' => 0, 'max' => 10, 'required' => true]) }}
 
 {{--{{ Form::bs_number('min_threshold', 'Минимально возможная влажность в помещении*:', old('min_threshold', 20), ['min' => 0, 'max' => 100, 'required' => true],--}}
 {{--    '') }}--}}
