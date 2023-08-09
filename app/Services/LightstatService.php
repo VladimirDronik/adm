@@ -96,6 +96,9 @@ class LightstatService
             });
         }
 
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php check_lightstat.php ' . $lightstat->id_object);
+
         return $lightstat->id;
     }
 
@@ -155,13 +158,10 @@ class LightstatService
      */
     public function update(Lightstat $lightstat, array $data): int
     {
-
-
         DB::transaction(function () use (&$lightstat, $data) {
             if ($this->isUpdateAutoObjectName($lightstat, $data['name'])) {
                 $lightstat->iobject->name = HomeObject::getUniqueObjectName($lightstat->iobject->id, trim($data['name']));
                 $lightstat->iobject->save();
-
             }
 
             //Убираем датчик портов, если он где-то был до этого
@@ -194,6 +194,9 @@ class LightstatService
             $this->prepare($lightstat, $data);
             $lightstat->save();
         });
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php check_lightstat.php ' . $lightstat->id_object);
 
         return $lightstat->id;
     }
