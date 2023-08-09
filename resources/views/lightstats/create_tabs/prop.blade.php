@@ -1,10 +1,10 @@
 <br>
 
-{{ Form::bs_radio('mode', 'Режим*:', $types, old('mode', -1), ['required' => true]) }}
+{{ Form::bs_radio('mode', 'Режим*:', $types, old('mode', 0), ['required' => true]) }}
 
-{{ Form::bs_number('optimal', 'Оптимальная освещенность*:', null, ['min' => 0, 'max' => 54612, 'required' => true],
+{{ Form::bs_number('optimal', 'Оптимальная освещенность*:', old('optimal', 10), ['min' => 0, 'max' => 54612, 'required' => true],
     'Освещенность, которая должна быть в помещении') }}
-{{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', 50), ['min' => 0, 'max' => 1000, 'required' => true]) }}
+{{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', 10), ['min' => 0, 'max' => 1000, 'required' => true]) }}
 
 
 {{ Form::bs_number('min_threshold', 'Минимальная освещенность*:', old('min_threshold', 0), ['min' => 0, 'max' => 54612, 'required' => true],
