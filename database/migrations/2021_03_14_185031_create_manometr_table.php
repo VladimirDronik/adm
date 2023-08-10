@@ -45,7 +45,6 @@ class CreateManometrTable extends Migration
 
             $table->foreign('room')->references('id')->on('rooms')
                 ->onUpdate('cascade')->onDelete('set null');
-
         });
     }
 

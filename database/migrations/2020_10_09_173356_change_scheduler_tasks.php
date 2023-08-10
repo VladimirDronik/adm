@@ -17,14 +17,17 @@ class ChangeSchedulerTasks extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('scheduler_tasks')) {
+            Schema::table('scheduler_tasks', function (Blueprint $table) {
+                $table->dropForeign(['object']);
+            });
+        }
 
         if (Schema::hasTable('scheduler_tasks')) {
             Schema::table('scheduler_tasks', function (Blueprint $table) {
-
-            $table->dropForeign(['object']);
-            $table->foreign('object')->references('id')->on('objects')
-            ->onUpdate('cascade')->onDelete('cascade');
-         });
+                $table->foreign('object')->references('id')->on('objects')
+                    ->onUpdate('cascade')->onDelete('cascade');
+            });
         }
     }
 

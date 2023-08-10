@@ -16,7 +16,11 @@ class ChangeViewItemsAndRoomsTables extends Migration
         Schema::table('view_items', function (Blueprint $table) {
             if (!Schema::hasColumn('view_items', 'room_group')) {
                 $table->unsignedInteger('room_group')->nullable();
+            }
+        });
 
+        Schema::table('view_items', function (Blueprint $table) {
+            if (!Schema::hasColumn('view_items', 'room_group')) {
                 $table->foreign('room_group')->references('id')->on('rooms')
                     ->onUpdate('cascade')->onDelete('set null');
             }
@@ -26,6 +30,9 @@ class ChangeViewItemsAndRoomsTables extends Migration
             if (!Schema::hasColumn('rooms', 'group_room')) {
                 $table->unsignedInteger('group_room')->nullable();
             }
+        });
+
+        Schema::table('rooms', function (Blueprint $table) {
             if (!Schema::hasColumn('rooms', 'is_group')) {
                 $table->boolean('is_group')->default(false);
             }

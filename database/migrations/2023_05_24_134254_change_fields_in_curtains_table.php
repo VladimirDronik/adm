@@ -20,11 +20,17 @@ class ChangeFieldsInCurtainsTable extends Migration
                 ->nullable()
                 ->default(null)
                 ->change();
+        });
 
+        Schema::table('curtains', function (Blueprint $table) {
             $table->unsignedInteger('device_id')->nullable();
+        });
 
+        Schema::table('curtains', function (Blueprint $table) {
             $table->dropColumn('gw_id');
+        });
 
+        Schema::table('curtains', function (Blueprint $table) {
             $table->foreign('device_id')
                 ->references('id')
                 ->on('devices')
@@ -32,7 +38,13 @@ class ChangeFieldsInCurtainsTable extends Migration
                 ->onDelete('set null');
         });
 
-        DB::statement("ALTER TABLE curtains MODIFY time TINYINT NULL DEFAULT NULL COMMENT 'время полного открытия или закрытия шторы'");
+        Schema::table('curtains', function (Blueprint $table) {
+            $table->integer('time')
+                ->comment('Время полного открытия или закрытия шторы')
+                ->nullable()
+                ->default(null)
+                ->change();
+        });
     }
 
     /**
@@ -44,11 +56,22 @@ class ChangeFieldsInCurtainsTable extends Migration
     {
         Schema::table('curtains', function (Blueprint $table) {
             $table->string('type', 20)->comment('Тип: штора, жалюзи, рольставня')->change();
+        });
+
+        Schema::table('curtains', function (Blueprint $table) {
             $table->unsignedInteger('gw_id')->nullable()->comment('id шлюза ModbusTCP');
+        });
+
+        Schema::table('curtains', function (Blueprint $table) {
             $table->dropForeign('curtains_device_id_foreign');
+        });
+
+        Schema::table('curtains', function (Blueprint $table) {
             $table->dropColumn('device_id');
         });
 
-        DB::statement("ALTER TABLE curtains MODIFY time TINYINT NOT NULL COMMENT 'время полного открытия или закрытия шторы'");
+        Schema::table('curtains', function (Blueprint $table) {
+            $table->integer('time')->comment('Время полного открытия или закрытия шторы')->change();
+        });
     }
 }

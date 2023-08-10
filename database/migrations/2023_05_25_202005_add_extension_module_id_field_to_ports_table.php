@@ -15,7 +15,9 @@ class AddExtensionModuleIdFieldToPortsTable extends Migration
     {
         Schema::table('ports', function (Blueprint $table) {
             $table->unsignedInteger('extension_module_id')->nullable();
+        });
 
+        Schema::table('ports', function (Blueprint $table) {
             $table->foreign('extension_module_id')
                 ->references('id')
                 ->on('extension_modules')
@@ -33,6 +35,9 @@ class AddExtensionModuleIdFieldToPortsTable extends Migration
     {
         Schema::table('ports', function (Blueprint $table) {
             $table->dropForeign('ports_extension_module_id_foreign');
+        });
+
+        Schema::table('ports', function (Blueprint $table) {
             $table->dropColumn('extension_module_id');
         });
     }

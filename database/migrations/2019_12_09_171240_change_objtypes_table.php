@@ -26,21 +26,28 @@ class ChangeObjtypesTable extends Migration
                 if (!Schema::hasColumn('objtypes', 'label')) {
                     $table->string('label', 30)->nullable();
                 }
+            });
+        }
+
+        if (Schema::hasTable('objtypes')) {
+            Schema::table('objtypes', function (Blueprint $table) {
+                $deleteColumns = [];
 
                 if (Schema::hasColumn('objtypes', 'view_type')) {
-                    $table->dropColumn('view_type');
+                    $deleteColumns[] = 'view_type';
                 }
-
                 if (Schema::hasColumn('objtypes', 'usestatus')) {
-                    $table->dropColumn('usestatus');
+                    $deleteColumns[] = 'usestatus';
                 }
-
                 if (Schema::hasColumn('objtypes', 'virt')) {
-                    $table->dropColumn('virt');
+                    $deleteColumns[] = 'virt';
+                }
+                if (Schema::hasColumn('objtypes', 'description')) {
+                    $deleteColumns[] = 'description';
                 }
 
-                if (Schema::hasColumn('objtypes', 'description')) {
-                    $table->dropColumn('description');
+                if (!empty($deleteColumns)) {
+                    $table->dropColumn($deleteColumns);
                 }
             });
         } else {
@@ -64,21 +71,37 @@ class ChangeObjtypesTable extends Migration
                 if (Schema::hasColumn('objtypes', 'label')) {
                     $table->dropColumn('label');
                 }
+            });
+        }
 
+        if (Schema::hasTable('objtypes')) {
+            Schema::table('objtypes', function (Blueprint $table) {
                 if (!Schema::hasColumn('objtypes', 'view_type')) {
                     $table->string('view_type', 20)->nullable();
                 }
+            });
+        }
 
+        if (Schema::hasTable('objtypes')) {
+            Schema::table('objtypes', function (Blueprint $table) {
                 if (!Schema::hasColumn('objtypes', 'usestatus')) {
                     $table->boolean('usestatus')->comment('используется ли смена состояния у объекта')
                         ->default(false);
                 }
+            });
+        }
 
+        if (Schema::hasTable('objtypes')) {
+            Schema::table('objtypes', function (Blueprint $table) {
                 if (!Schema::hasColumn('objtypes', 'virt')) {
                     $table->boolean('virt')->comment('виртуальный объект или реальный')
                         ->default(false);
                 }
+            });
+        }
 
+        if (Schema::hasTable('objtypes')) {
+            Schema::table('objtypes', function (Blueprint $table) {
                 if (!Schema::hasColumn('objtypes', 'description')) {
                     $table->text('description')->nullable();
                 }

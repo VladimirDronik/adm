@@ -15,11 +15,16 @@ class AddTypeToUsensorsTable extends Migration
     {
         Schema::table('usensors', function (Blueprint $table) {
             $table->string('type')->nullable();
+        });
 
+        Schema::table('usensors', function (Blueprint $table) {
             $table->double('atm_pressure')
                 ->nullable()
                 ->comment('текущий уровень атмосферного давления')
                 ->after('lux');
+        });
+
+        Schema::table('usensors', function (Blueprint $table) {
             $table->double('co2')
                 ->nullable()
                 ->comment('текущий уровень co2')

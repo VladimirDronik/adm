@@ -20,9 +20,7 @@ class CreateSoundsTable extends Migration
         });
 
         if (Schema::hasTable('notifsettings')) {
-
             Schema::table('notifsettings', function (Blueprint $table) {
-
                 $table->foreign('id_sound')->references('id')->on('sounds')
                     ->onUpdate('cascade')->onDelete('set null');
             });

@@ -15,10 +15,13 @@ class AddColumnsIntoCarbmonoxide extends Migration
     {
         if (Schema::hasTable('carbmonoxide')) {
             Schema::table('carbmonoxide', function (Blueprint $table) {
-
                 $table->string('low_method_params', 100)->nullable();
-                $table->string('high_method_params', 100)->nullable();
+            });
+        }
 
+        if (Schema::hasTable('carbmonoxide')) {
+            Schema::table('carbmonoxide', function (Blueprint $table) {
+                $table->string('high_method_params', 100)->nullable();
             });
         }
     }

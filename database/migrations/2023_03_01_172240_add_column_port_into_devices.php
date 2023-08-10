@@ -15,7 +15,6 @@ class AddColumnPortIntoDevices extends Migration
     {
         if (Schema::hasTable('devices')) {
             Schema::table('devices', function (Blueprint $table) {
-
                 $table->unsignedSmallInteger('port')->nullable();
             });
         }

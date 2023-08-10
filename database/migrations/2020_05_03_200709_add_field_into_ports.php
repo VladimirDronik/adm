@@ -15,7 +15,7 @@ class AddFieldIntoPorts extends Migration
     {
         Schema::table('ports', function (Blueprint $table) {
             if (!Schema::hasColumn('ports', 'type')) {
-                $table->string('type',3)->after('num_port')->comment('тип порта контроллера');
+                $table->string('type',3)->default('')->after('num_port')->comment('тип порта контроллера');
             }
         });
 

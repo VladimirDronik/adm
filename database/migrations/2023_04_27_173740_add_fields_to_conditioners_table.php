@@ -15,12 +15,25 @@ class AddFieldsToConditionersTable extends Migration
     {
         if (Schema::hasTable('conditioners')) {
             Schema::table('conditioners', function (Blueprint $table) {
-
                 $table->string('state', 3)->after('id_room')->nullable();
-                $table->decimal('temp', 5, 1)->after('state')->nullable();
-                $table->string('operation', 4)->after('temp')->nullable();
-                $table->string('fan', 4)->after('operation')->nullable();
+            });
+        }
 
+        if (Schema::hasTable('conditioners')) {
+            Schema::table('conditioners', function (Blueprint $table) {
+                $table->decimal('temp', 5, 1)->after('state')->nullable();
+            });
+        }
+
+        if (Schema::hasTable('conditioners')) {
+            Schema::table('conditioners', function (Blueprint $table) {
+                $table->string('operation', 4)->after('temp')->nullable();
+            });
+        }
+
+        if (Schema::hasTable('conditioners')) {
+            Schema::table('conditioners', function (Blueprint $table) {
+                $table->string('fan', 4)->after('operation')->nullable();
             });
         }
     }
@@ -33,10 +46,7 @@ class AddFieldsToConditionersTable extends Migration
     public function down()
     {
         Schema::table('conditioners', function (Blueprint $table) {
-            $table->dropColumn('state');
-            $table->dropColumn('temp');
-            $table->dropColumn('operation');
-            $table->dropColumn('fan');
+            $table->dropColumn(['state', 'temp', 'operation', 'fan']);
         });
     }
 }

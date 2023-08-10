@@ -10,7 +10,6 @@ class CreateYandexstationsTable extends Migration
     public function up()
     {
         Schema::create('yandexstations', function (Blueprint $table) {
-
             $table->increments('id');
             $table->string('speaker_id', 255)->nullable()->comment('ID колонки');
             $table->string('name', 255)->nullable()->comment('название колонки');

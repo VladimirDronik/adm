@@ -15,6 +15,9 @@ class ChangeMinAndMaxValueInBoilerWaterTable extends Migration
     {
         Schema::table('boiler_water', function (Blueprint $table) {
             $table->integer('min_value')->nullable()->default(null)->change();
+        });
+
+        Schema::table('boiler_water', function (Blueprint $table) {
             $table->integer('max_value')->nullable()->default(null)->change();
         });
     }
@@ -28,6 +31,9 @@ class ChangeMinAndMaxValueInBoilerWaterTable extends Migration
     {
         Schema::table('boiler_water', function (Blueprint $table) {
             $table->float('min_value')->nullable()->default(null)->change();
+        });
+
+        Schema::table('boiler_water', function (Blueprint $table) {
             $table->float('max_value')->nullable()->default(null)->change();
         });
     }

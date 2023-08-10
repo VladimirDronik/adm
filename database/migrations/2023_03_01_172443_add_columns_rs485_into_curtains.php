@@ -15,10 +15,24 @@ class AddColumnsRs485IntoCurtains extends Migration
     {
         if (Schema::hasTable('curtains')) {
             Schema::table('curtains', function (Blueprint $table) {
-
                 $table->unsignedTinyInteger('address')->nullable()->comment('адрес на шине RS485');
+            });
+        }
+
+        if (Schema::hasTable('curtains')) {
+            Schema::table('curtains', function (Blueprint $table) {
                 $table->unsignedTinyInteger('group')->nullable()->comment('группа на шине RS485');
+            });
+        }
+
+        if (Schema::hasTable('curtains')) {
+            Schema::table('curtains', function (Blueprint $table) {
                 $table->unsignedInteger('gw_id')->nullable()->comment('id шлюза ModbusTCP');
+            });
+        }
+
+        if (Schema::hasTable('curtains')) {
+            Schema::table('curtains', function (Blueprint $table) {
                 $table->unsignedTinyInteger('percent')->nullable()->comment('процент открытия шторы');
             });
         }

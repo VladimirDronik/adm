@@ -21,7 +21,7 @@ class CreateBoilerWaterTable extends Migration
                 $table->float('max_value')->nullable()->default(NULL);
 
                 $table->foreign('id_object')->references('id')->on('objects')
-                      ->onUpdate('cascade')->onDelete('cascade');
+                    ->onUpdate('cascade')->onDelete('cascade');
             });
         }
     }

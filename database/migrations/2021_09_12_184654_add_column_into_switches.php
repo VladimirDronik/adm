@@ -16,8 +16,17 @@ class AddColumnIntoSwitches extends Migration
         if (Schema::hasTable('switches')) {
             Schema::table('switches', function (Blueprint $table) {
                 $table->unsignedInteger('id_method')->nullable();
-                $table->string('method_params', 255)->nullable();
+            });
+        }
 
+        if (Schema::hasTable('switches')) {
+            Schema::table('switches', function (Blueprint $table) {
+                $table->string('method_params', 255)->nullable();
+            });
+        }
+
+        if (Schema::hasTable('switches')) {
+            Schema::table('switches', function (Blueprint $table) {
                 $table->foreign('id_method')->references('id')->on('methods')
                     ->onUpdate('cascade')->onDelete('set null');
             });

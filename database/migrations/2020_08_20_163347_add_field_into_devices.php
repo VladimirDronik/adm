@@ -13,11 +13,8 @@ class AddFieldIntoDevices extends Migration
      */
     public function up()
     {
-
         if (Schema::hasTable('devices')) {
-
             Schema::table('devices', function (Blueprint $table) {
-
                 $table->string('password')->nullable();
             });
         }

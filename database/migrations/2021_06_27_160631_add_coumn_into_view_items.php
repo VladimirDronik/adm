@@ -15,10 +15,13 @@ class AddCoumnIntoViewItems extends Migration
     {
         if (Schema::hasTable('view_items')) {
             Schema::table('view_items', function (Blueprint $table) {
-
                 $table->string('params', 255)->nullable();
-                $table->string('color', 20)->nullable();
+            });
+        }
 
+        if (Schema::hasTable('view_items')) {
+            Schema::table('view_items', function (Blueprint $table) {
+                $table->string('color', 20)->nullable();
             });
         }
     }

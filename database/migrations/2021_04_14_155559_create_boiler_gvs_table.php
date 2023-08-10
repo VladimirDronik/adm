@@ -9,8 +9,6 @@ class CreateBoilerGvsTable extends Migration
     public function up()
     {
         Schema::create('boiler_gvs', function (Blueprint $table) {
-
-
             $table->increments('id');
             $table->string('name',100);
             $table->string('model',30);
@@ -20,10 +18,8 @@ class CreateBoilerGvsTable extends Migration
             $table->tinyInteger('pressue')->nullable();
             $table->string('ip_address',15);
 
-
             $table->foreign('id_object')->references('id')->on('objects')
                 ->onUpdate('cascade')->onDelete('cascade');
-
         });
     }
 

@@ -15,15 +15,43 @@ class AddColumnsIntoMotionsensor extends Migration
     {
         if (Schema::hasTable('motionsensors')) {
             Schema::table('motionsensors', function (Blueprint $table) {
-
                 $table->string('method_normal_params', 100)->nullable();
-                $table->string('method_eco_params', 100)->nullable();
-                $table->string('method_night_params', 100)->nullable();
-                $table->string('method_morning_params', 100)->nullable();
-                $table->string('method_evening_params', 100)->nullable();
-                $table->string('method_guard_params', 100)->nullable();
-                $table->string('method_light_params', 100)->nullable();
+            });
+        }
 
+        if (Schema::hasTable('motionsensors')) {
+            Schema::table('motionsensors', function (Blueprint $table) {
+                $table->string('method_eco_params', 100)->nullable();
+            });
+        }
+
+        if (Schema::hasTable('motionsensors')) {
+            Schema::table('motionsensors', function (Blueprint $table) {
+                $table->string('method_night_params', 100)->nullable();
+            });
+        }
+
+        if (Schema::hasTable('motionsensors')) {
+            Schema::table('motionsensors', function (Blueprint $table) {
+                $table->string('method_morning_params', 100)->nullable();
+            });
+        }
+
+        if (Schema::hasTable('motionsensors')) {
+            Schema::table('motionsensors', function (Blueprint $table) {
+                $table->string('method_evening_params', 100)->nullable();
+            });
+        }
+
+        if (Schema::hasTable('motionsensors')) {
+            Schema::table('motionsensors', function (Blueprint $table) {
+                $table->string('method_guard_params', 100)->nullable();
+            });
+        }
+
+        if (Schema::hasTable('motionsensors')) {
+            Schema::table('motionsensors', function (Blueprint $table) {
+                $table->string('method_light_params', 100)->nullable();
             });
         }
     }

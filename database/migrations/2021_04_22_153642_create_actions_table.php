@@ -9,8 +9,6 @@ class CreateActionsTable extends Migration
     public function up()
     {
         Schema::create('actions', function (Blueprint $table) {
-
-
             $table->increments('id');
             $table->unsignedInteger('id_event')->nullable()->comment('событие, для которых назначены действия');
             $table->string('type', 20)->comment('тип действия');
@@ -21,7 +19,6 @@ class CreateActionsTable extends Migration
 
             $table->foreign('id_event')->references('id')->on('events')
                 ->onUpdate('cascade')->onDelete('cascade');
-
         });
     }
 

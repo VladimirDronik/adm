@@ -14,13 +14,10 @@ class AddFieldIntoMenu extends Migration
     public function up()
     {
         if (Schema::hasTable('menu')) {
-
             Schema::table('menu', function (Blueprint $table) {
-
                 $table->smallInteger('parent')->nullable()->after('image');
             });
         }
-
     }
 
     /**

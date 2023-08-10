@@ -15,31 +15,49 @@ class ChangeViewItemsTable extends Migration
     {
         if (Schema::hasTable('view_items')) {
             Schema::table('view_items', function (Blueprint $table) {
+                $deleteColumns = [];
+
+                if (Schema::hasColumn('view_items','name')) {
+                    $deleteColumns[] = 'name';
+                }
+                if (Schema::hasColumn('view_items','off_image')) {
+                    $deleteColumns[] = 'off_image';
+                }
+                if (Schema::hasColumn('view_items','off_title')) {
+                    $deleteColumns[] = 'off_title';
+                }
+
+                if (!empty($deleteColumns)) {
+                    $table->dropColumn($deleteColumns);
+                }
+            });
+        }
+
+        if (Schema::hasTable('view_items')) {
+            Schema::table('view_items', function (Blueprint $table) {
                 if (Schema::hasColumn('view_items', 'type_name')) {
                     $table->renameColumn('type_name', 'type');
                 }
+            });
+        }
 
-                if (Schema::hasColumn('view_items','name')) {
-                    $table->dropColumn('name');
-                }
-
+        if (Schema::hasTable('view_items')) {
+            Schema::table('view_items', function (Blueprint $table) {
                 if (Schema::hasColumn('view_items', 'on_image')) {
                     $table->renameColumn('on_image', 'icon');
                 }
+            });
+        }
 
+        if (Schema::hasTable('view_items')) {
+            Schema::table('view_items', function (Blueprint $table) {
                 if (Schema::hasColumn('view_items', 'on_title')) {
                     $table->renameColumn('on_title', 'title');
                 }
-
-                if (Schema::hasColumn('view_items','off_image')) {
-                    $table->dropColumn('off_image');
-                }
-
-                if (Schema::hasColumn('view_items','off_title')) {
-                    $table->dropColumn('off_title');
-                }
             });
+        }
 
+        if (Schema::hasTable('view_items')) {
             Schema::table('view_items', function (Blueprint $table) {
                 $table->string('type', 20)->change();
             });

@@ -15,10 +15,13 @@ class AddColumnsIntoManometr extends Migration
     {
         if (Schema::hasTable('manometr')) {
             Schema::table('manometr', function (Blueprint $table) {
-
                 $table->string('low_method_params', 100)->nullable();
-                $table->string('high_method_params', 100)->nullable();
+            });
+        }
 
+        if (Schema::hasTable('manometr')) {
+            Schema::table('manometr', function (Blueprint $table) {
+                $table->string('high_method_params', 100)->nullable();
             });
         }
     }

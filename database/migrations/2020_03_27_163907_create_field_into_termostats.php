@@ -18,13 +18,19 @@ class CreateFieldIntoTermostats extends Migration
             if (!Schema::hasColumn('termostats', 'usensor_id')) {
                 $table->unsignedInteger('usensor_id')->nullable();
             }
+        });
 
+        Schema::table('termostats', function (Blueprint $table) {
             if (!Schema::hasColumn('termostats', 'placetype')) {
                 $table->string('placetype',10)->nullable();
             }
+        });
 
-            $table->foreign('usensor_id')->references('id_object')->on('usensors')
-                ->onUpdate('cascade')->onDelete('set null');
+        Schema::table('termostats', function (Blueprint $table) {
+            if (!Schema::hasColumn('termostats', 'usensor_id')) {
+                $table->foreign('usensor_id')->references('id_object')->on('usensors')
+                    ->onUpdate('cascade')->onDelete('set null');
+            }
         });
     }
 

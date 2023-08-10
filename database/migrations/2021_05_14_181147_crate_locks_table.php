@@ -9,7 +9,6 @@ class CrateLocksTable extends Migration
     public function up()
     {
         Schema::create('locks', function (Blueprint $table) {
-
             $table->increments('id');
             $table->string('type', 20)->comment('Тип: электромеханический, магнитный, защелка');
             $table->string('name', 100);

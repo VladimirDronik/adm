@@ -9,7 +9,6 @@ class CreateCurtainsTable extends Migration
     public function up()
     {
         Schema::create('curtains', function (Blueprint $table) {
-
             $table->increments('id');
             $table->string('type', 20)->comment('Тип: штора, жалюзи, рольставня');
             $table->string('name', 100);

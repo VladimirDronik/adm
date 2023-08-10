@@ -28,7 +28,6 @@ class CreateElementsTable extends Migration
                 $table->tinyInteger('sort');
                 $table->tinyInteger('active');
 
-
                 $table->foreign('page')->references('id')->on('pages')
                     ->onUpdate('cascade')->onDelete('cascade');
 

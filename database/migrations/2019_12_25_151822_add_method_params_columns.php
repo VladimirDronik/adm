@@ -24,9 +24,15 @@ class AddMethodParamsColumns extends Migration
             if (!Schema::hasColumn('ports', 'method_params')) {
                 $table->string('method_params', 100)->nullable();
             }
+        });
+
+        Schema::table('ports', function (Blueprint $table) {
             if (!Schema::hasColumn('ports', 'dc_method_params')) {
                 $table->string('dc_method_params', 100)->nullable();
             }
+        });
+
+        Schema::table('ports', function (Blueprint $table) {
             if (!Schema::hasColumn('ports', 'lc_method_params')) {
                 $table->string('lc_method_params', 100)->nullable();
             }
@@ -36,6 +42,9 @@ class AddMethodParamsColumns extends Migration
             if (!Schema::hasColumn('termostats', 'method_on_params')) {
                 $table->string('method_on_params', 100)->nullable();
             }
+        });
+
+        Schema::table('termostats', function (Blueprint $table) {
             if (!Schema::hasColumn('termostats', 'method_off_params')) {
                 $table->string('method_off_params', 100)->nullable();
             }
