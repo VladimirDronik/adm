@@ -104,7 +104,7 @@
             let device_id = $("#auto_sel_device_id").chosen().val();
             $.ajax({
                 url: url_ports,
-                data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'switch, socket'},
+                data: {'_token': _token, 'device_id': device_id, 'status': 'OUT', 'type': 'switch, socket'},
                 success: function (data) {
                     createPortSelect('#auto_sel_port_id_open', data.ports, -1);
                     createPortSelect('#auto_sel_port_id_close', data.ports, -1);
@@ -124,7 +124,7 @@
                 let device_id = $(this).val();
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'switch, socket'},
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'OUT', 'type': 'switch, socket'},
                     success: function (data) {
                         createPortSelect('#auto_sel_port_id_open', data.ports, -1);
                         createPortSelect('#auto_sel_port_id_close', data.ports, -1);

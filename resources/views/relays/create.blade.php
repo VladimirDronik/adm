@@ -129,7 +129,7 @@
                 let device_id = $(this).val();
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'switch, socket'},
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'OUT', 'type': 'switch, socket'},
                     success: function (data) {
                         if (data.type_device == 'Hite-pro') {
                             $('#port_id_div').hide();

@@ -122,7 +122,7 @@
                 let device_id = $(this).val();
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'temperature'},
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'OUT', 'type': 'temperature'},
                     success: function (data) {
                         createMethodSelect('#auto_sel_subdev_id', data.hiteProDevices, -1);
                         $('#auto_sel_subdev_id').trigger("chosen:updated");

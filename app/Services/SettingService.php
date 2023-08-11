@@ -92,6 +92,6 @@ class SettingService {
         exec("sed -i 's,.*date.timezone =.*,date.timezone = '\"$timeZone\"',g' /etc/php/7.4/fpm/php.ini");
         exec("sed -i 's,.*date.timezone =.*,date.timezone = '\"$timeZone\"',g' /etc/php/7.4/cli/php.ini");
 
-        DB::statement("SET global time_zone = '$timeZone'");
+        // DB::statement("SET global time_zone = '$timeZone'");
     }
 }
