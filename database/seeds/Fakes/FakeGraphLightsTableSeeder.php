@@ -6,7 +6,7 @@ use Carbon\Carbon;
 
 class FakeGraphLightsTableSeeder extends Seeder
 {
-    const COUNT = 500;
+    const COUNT = 50;
 
     public function getGraphLights()
     {

@@ -60,6 +60,6 @@ class FakeDevicesTableSeeder extends Seeder
 
     public function getRandTypeId()
     {
-        return $this->devtypes[rand(0, count($this->devtypes)-1)]->id;
+        return $this->devtypes[rand(0, count($this->devtypes)-1)]->name;
     }
 }

@@ -6,7 +6,7 @@ use Faker\Factory;
 
 class FakeLogsTableSeeder extends Seeder
 {
-    const COUNT = 1000;
+    const COUNT = 50;
 
     public function getLogs()
     {

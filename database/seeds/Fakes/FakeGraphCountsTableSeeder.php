@@ -7,7 +7,7 @@ use App\Models\Count;
 
 class FakeGraphCountsTableSeeder extends Seeder
 {
-    const COUNT = 500;
+    const COUNT = 50;
 
     public function getGraphCounts()
     {

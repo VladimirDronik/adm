@@ -7,7 +7,7 @@ use App\Models\Termostat;
 
 class FakeGraphTermostatsTableSeeder extends Seeder
 {
-    const COUNT = 2000;
+    const COUNT = 10;
 
     public function getGraphTermostats()
     {

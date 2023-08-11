@@ -4,27 +4,27 @@ use Illuminate\Database\Seeder;
 use App\Models\HomeObject;
 use Faker\Factory;
 use App\Models\Script;
-use App\Models\Device;
+use App\Models\Port;
 
 class FakeMethodsTableSeeder extends Seeder
 {
     private $faker;
     private $names;
     private $scripts;
-    private $devices;
+    private $ports;
 
     public function __construct()
     {
         $this->faker = Factory::create();
         $this->names = $this->getNames();
         $this->scripts = Script::all();
-        $this->devices = Device::all();
+        $this->ports = Port::all();
     }
 
     public function getRandEasy()
     {
-        $device = $this->devices[rand(0, count($this->devices)-1)];
-        $port = $device->ports[rand(0, count($device->ports)-1)];
+        $port = $this->ports->random();
+        $device = $port->device;
 
         return $device->id.';'.$port->num_port.':'.rand(0,2);
     }
