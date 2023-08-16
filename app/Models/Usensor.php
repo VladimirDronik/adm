@@ -40,6 +40,29 @@ class Usensor extends Model
     public $timestamps = false;
     protected $guarded = ['id'];
 
+    const TYPE_HTU21D = 'htu21d';
+    const TYPE_BH1750 = 'bh1750';
+    const TYPE_BME280 = 'bme280';
+    const TYPE_SCD40 = 'scd40';
+    const TYPE_SCD41 = 'scd41';
+    const TYPE_OUTDOORV2 = 'outdoorv2';
+    const TYPE_OUTDOORV3 = 'outdoorv3';
+
+    public static function getTypes(bool $is_full = false)
+    {
+        $types = [
+            self::TYPE_HTU21D => 'HTU21D',
+            self::TYPE_BH1750 => 'BH1750',
+            self::TYPE_BME280 => 'BME280',
+            self::TYPE_SCD40 => 'SCD40',
+            self::TYPE_SCD41 => 'SCD41',
+            self::TYPE_OUTDOORV2 => 'Outdoor v2',
+            self::TYPE_OUTDOORV3 => 'Outdoor v3',
+        ];
+
+        return $is_full ? $types : array_keys($types);
+    }
+
     public function iobject()
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');

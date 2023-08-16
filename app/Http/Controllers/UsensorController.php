@@ -62,8 +62,9 @@ class UsensorController extends Controller
         list($objects, $rooms, $devices) = $this->getLists();
         $object_types =  HomeObject::getFullTypeIds();
         $can = gates('devices.show-object');
+        $types = Usensor::getTypes(true);
 
-        return view('usensors.create', compact('objects','rooms', 'devices', 'object_types', 'can'));
+        return view('usensors.create', compact('objects','rooms', 'devices', 'object_types', 'can', 'types'));
     }
 
     public function store(CreateRequest $r)
@@ -90,12 +91,10 @@ class UsensorController extends Controller
         $scripts = $script_rep->getAllToArray();
         $can = gates('devices.show-object');
         $SCL = $SDA = $portService->getPortsIntoList($usensor->device_id, 'IN,I2C,1WIRE,1W-BUS,ADC');
-
-
-
+        $types = Usensor::getTypes(true);
 
         return view('usensors.edit', compact('usensor', 'objects', 'rooms',
-            'devices', 'methods', 'object_types', 'scripts', 'can', 'SCL', 'SDA'));
+            'devices', 'methods', 'object_types', 'scripts', 'can', 'SCL', 'SDA', 'types'));
     }
 
     public function update(UpdateRequest $r, Usensor $usensor)

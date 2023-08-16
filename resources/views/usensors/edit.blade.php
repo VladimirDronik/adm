@@ -35,6 +35,8 @@
                         {{ Form::bs_simple_text('ID объекта:', $usensor->iobject['id']) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
+                        {{ Form::bs_radio('type', 'Тип*:', $types, old('type', $usensor->type)) }}
+
                         @if(($usensor->iobject && $usensor->iobject->is_system) || !$can['devices.show-object'])
                             <div class="form-group row">
                                 <label class="control-label text-right col-md-3 label-fix" for="">
@@ -112,6 +114,14 @@
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_SCL").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_SDA").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            $('#usensor_form').submit(function(e) {
+                if ($("#usensor_form input[name=type]").length && !$("#usensor_form input[name=type]:checked").val()) {
+                    $('#info_modal_body').html('<span class="text-danger">Не указан тип датчика</span>');
+                    $('#init_btn').click();
+                    return false;
+                }
+            });
 
             initMethodsVar({{ optional($usensor->eobject)->id }});
 

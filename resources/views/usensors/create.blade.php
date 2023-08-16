@@ -31,6 +31,8 @@
 
                             {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
+                            {{ Form::bs_radio('type', 'Тип*:', $types, old('type')) }}
+
                             <div class="form-group row ">
                                 <label class="control-label text-right col-md-3 label-fix" for="id_object">
                                     <strong>Объект универсального датчика*:</strong>
@@ -127,6 +129,14 @@
             $("#auto_sel_port_SCL").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_SDA").chosen({width:"100%", no_results_text: "Не найдено"});
 
+
+            $('#usensor_form').submit(function(e) {
+                if ($("#usensor_form input[name=type]").length && !$("#usensor_form input[name=type]:checked").val()) {
+                    $('#info_modal_body').html('<span class="text-danger">Не указан тип датчика</span>');
+                    $('#init_btn').click();
+                    return false;
+                }
+            });
 
             $("#auto_sel_object").chosen().change(function() {
                 let object_id = $(this).val();
