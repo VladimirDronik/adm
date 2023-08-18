@@ -2,6 +2,7 @@
 /public/hot
 /public/phpmyadmin
 /public/img
+/public/ela/images/views_items
 /storage/*.key
 /storage/app/devices/*.cfg
 /vendor
