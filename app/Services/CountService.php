@@ -56,7 +56,6 @@ class CountService {
         if (isset($data['type'])) {
             $count->type = $data['type'];
         }
-        $count->id_object = (int)$data['id_object'];
         $count->impulse = $data['impulse'];
         if (isset($data['unit'])) {
             $count->unit = trim($data['unit']);
@@ -78,25 +77,21 @@ class CountService {
         $count = new Count();
         $this->prepareCount($count, $data);
 
-        if ($data['object_type'] === 'manual') {
+        DB::transaction(function () use (&$count, $data) {
+            $unique_name = HomeObject::getUniqueObjectName(0, $count->name);
+            $object = $this->count_object_service->createCountObject($unique_name);
+            $this->count_object_service->createCountObjectMethodsWithEvents($object->id);
+            $count->id_object = $object->id;
             $count->save();
-        } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$count, $data) {
-                $unique_name = HomeObject::getUniqueObjectName(0, $count->name);
-                $object = $this->count_object_service->createCountObject($unique_name);
-                $this->count_object_service->createCountObjectMethodsWithEvents($object->id);
-                $count->id_object = $object->id;
-                $count->save();
 
-                if ($data['port_id']) {
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id, 'status' => 'IN',
-                        'comment' => $data['name']]);
+            if ($data['port_id']) {
+                Port::where('id', $data['port_id'])->update(['object' => $object->id, 'status' => 'IN',
+                    'comment' => $data['name']]);
 
-                    ConfigMegaService::setPortType($count->device_id, $this->portRepository->getNumPortByID($data['port_id']), 'IN');
+                ConfigMegaService::setPortType($count->device_id, $this->portRepository->getNumPortByID($data['port_id']), 'IN');
 
-                }
-            });
-        }
+            }
+        });
 
         return $count->id;
     }

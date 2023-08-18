@@ -59,11 +59,8 @@ class SwitchService {
 
     public function prepareSwitch(DeviceSwitch $switch, array $data)
     {
-
         $switch->name = trim($data['name']);
         $switch->type = $data['type'];
-        $switch->id_object = (int)$data['id_object'];
-
     }
 
     /**
@@ -107,46 +104,37 @@ class SwitchService {
         $switch = new DeviceSwitch();
         $this->prepareSwitch($switch, $data);
 
+        DB::transaction(function () use (&$switch, $data) {
+            $unique_name = HomeObject::getUniqueObjectName(0, $switch->name);
+            $object = $this->switch_object_service->createSwitchObject($unique_name, $switch->type);
+            $switch->id_object = $object->id;
 
-        if ($data['object_type'] === 'manual') {
+            // Если выбрано устройство хитпро, то добавляем метод в таблицу swithes, если выбрано
+            // другое устройство с портом, то добавляем на методы на порт
+            if($data['place'] == 'Hite-pro') {
+
+                $switch->id_method = $data['method'];
+                $switch->method_params = $data['method_params'];
+
+                HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
+                    ->update(['id_object' => $object->id]);
+
+            } elseif ($data['port_id']) {
+
+                $this->setPort($data['port_id'], $data['type']);
+
+                Port::where('id', $data['port_id'])->update(['object' => $object->id,
+                    'method' => $data['method'], 'method_params' => $data['method_params'],
+                    'dc_method' => $data['method_dc'], 'dc_method_params' => $data['method_dc_params'],
+                    'lc_method' => $data['method_lc'], 'lc_method_params' => $data['method_lc_params'],
+                    'status' => 'IN', 'comment' => $data['name']]);
+
+            }
+
             $switch->save();
-        } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$switch, $data) {
-                $unique_name = HomeObject::getUniqueObjectName(0, $switch->name);
-                $object = $this->switch_object_service->createSwitchObject($unique_name, $switch->type);
-                $switch->id_object = $object->id;
+            $result = true;
 
-                // Если выбрано устройство хитпро, то добавляем метод в таблицу swithes, если выбрано
-                // другое устройство с портом, то добавляем на методы на порт
-                if($data['place'] == 'Hite-pro') {
-
-                    $switch->id_method = $data['method'];
-                    $switch->method_params = $data['method_params'];
-
-                    HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
-                        ->update(['id_object' => $object->id]);
-
-                } else
-                if ($data['port_id']) {
-
-                    $this->setPort($data['port_id'], $data['type']);
-
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id,
-                        'method' => $data['method'], 'method_params' => $data['method_params'],
-                        'dc_method' => $data['method_dc'], 'dc_method_params' => $data['method_dc_params'],
-                        'lc_method' => $data['method_lc'], 'lc_method_params' => $data['method_lc_params'],
-                        'status' => 'IN', 'comment' => $data['name']]);
-
-                }
-
-
-                $switch->save();
-                $result = true;
-
-
-            });
-        }
-
+        });
 
         return $switch->id;
     }

@@ -26,7 +26,6 @@ class LampService {
     public function prepareLamp(Lamp $lamp, array $data)
     {
         $lamp->name = trim($data['name']);
-        $lamp->id_object = (int)$data['id_object'];
         $lamp->type = 'lamp';
     }
 
@@ -47,31 +46,26 @@ class LampService {
 
         $this->prepareLamp($lamp, $data);
 
-
-        if ($data['object_type'] === 'manual') {
+        DB::transaction(function () use (&$lamp, $data, $deviceID) {
+            $unique_name = HomeObject::getUniqueObjectName(0, $lamp->name);
+            $object = $this->lamp_object_service->createLampObject($unique_name, $lamp->type);
+            $this->lamp_object_service->createLampObjectMethods($object->id, $data['device_id'], $this->port_repository->getNumPortByID($data['port_id']));
+            $lamp->id_object = $object->id;
             $lamp->save();
-        } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$lamp, $data, $deviceID) {
-                $unique_name = HomeObject::getUniqueObjectName(0, $lamp->name);
-                $object = $this->lamp_object_service->createLampObject($unique_name, $lamp->type);
-                $this->lamp_object_service->createLampObjectMethods($object->id, $data['device_id'], $this->port_repository->getNumPortByID($data['port_id']));
-                $lamp->id_object = $object->id;
-                $lamp->save();
 
 
-                if ($data['port_id'] && $data['place'] == 'port') {
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id, 'comment' => $data['name'],
-                        'status' => 'OUT']);
+            if ($data['port_id'] && $data['place'] == 'port') {
+                Port::where('id', $data['port_id'])->update(['object' => $object->id, 'comment' => $data['name'],
+                    'status' => 'OUT']);
 
-                    ConfigMegaService::setPortType($deviceID, $this->port_repository->getNumPortByID($data['port_id']), 'OUT');
+                ConfigMegaService::setPortType($deviceID, $this->port_repository->getNumPortByID($data['port_id']), 'OUT');
 
-                } elseif ($data['place'] == 'Hite-pro') {
-                    HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
-                        ->update(['id_object' => $object->id]);
-                }
+            } elseif ($data['place'] == 'Hite-pro') {
+                HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
+                    ->update(['id_object' => $object->id]);
+            }
 
-            });
-        }
+        });
 
         return $lamp->id;
     }

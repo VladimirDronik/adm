@@ -36,12 +36,8 @@
                         <table class="table">
                             <thead>
                                 <tr>
-
-                                    <th style="width: 60px;">ID</th>
+                                    <th>ID</th>
                                     <th>Название</th>
-                                    @can('devices.show-object')
-                                        <th>Объект</th>
-                                    @endcan
                                     <th style="width: 60px;"></th>
                                     <th style="width: 160px;"></th>
                                 </tr>
@@ -51,14 +47,6 @@
                                     <tr id="tr{{$drycontact->id}}">
                                         <td scope="row">{{ $drycontact->object['id'] }}</td>
                                         <td><a href="{{ route('drycontacts.edit', [$drycontact->id]) }}">{{ $drycontact->name }}</a></td>
-                                        @can('devices.show-object')
-                                            <td>@if($drycontact->object)
-                                                    <a href="{{ route('objects.edit', [$drycontact->id_object]) }}">{{ optional($drycontact->object)->name }}</a>
-                                                @else
-                                                    Не указан
-                                                @endif
-                                            </td>
-                                        @endcan
                                         <td align="center" class="text-center">
                                             <a href="{{ route('drycontacts.edit', [$drycontact->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>
@@ -75,12 +63,8 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-
-                                    <th style="width: 60px;">ID</th>
+                                    <th>ID</th>
                                     <th>Название</th>
-                                    @can('devices.show-object')
-                                        <th>Объект</th>
-                                    @endcan
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>

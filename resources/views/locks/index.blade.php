@@ -37,9 +37,6 @@
                                 <th style="width: 60px;">ID</th>
                                 <th>Тип</th>
                                 <th>Название</th>
-                                @can('devices.show-object')
-                                    <th>Объект</th>
-                                @endcan
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>
                             </tr>
@@ -52,14 +49,6 @@
                                         {{ $lock->rus_type }}
                                     </td>
                                     <td><a href="{{ route('locks.edit', [$lock->id]) }}">{{ $lock->name }}</a></td>
-                                    @can('devices.show-object')
-                                        <td>@if($lock->object)
-                                                <a href="{{ route('objects.edit', [$lock->id_object]) }}">{{ optional($lock->object)->name }}</a>
-                                            @else
-                                                Не указан
-                                            @endif
-                                        </td>
-                                    @endcan
                                     <td align="center" class="text-center">
                                         <a href="{{ route('locks.edit', [$lock->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                             <i class="fa fa-cog fa-lg"></i>
@@ -79,9 +68,6 @@
                                 <th style="width: 60px;">ID</th>
                                 <th>Тип</th>
                                 <th>Название</th>
-                                @can('devices.show-object')
-                                    <th>Объект</th>
-                                @endcan
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>
                             </tr>

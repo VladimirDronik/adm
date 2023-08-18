@@ -34,16 +34,11 @@ class DrycontactService
 
     public function prepareDrycontact(Drycontact $drycontact, array $data)
     {
-
-
         $drycontact->name = trim($data['name']);
-        $drycontact->id_object = (int)$data['id_object'];
         $drycontact->method_on = $data['method_on'];
         $drycontact->method_off = $data['method_off'];
         $drycontact->param_method_on = $data['param_method_on'];
         $drycontact->param_method_off = $data['param_method_off'];
-
-
     }
 
 
@@ -55,25 +50,20 @@ class DrycontactService
         $drycontact = new Drycontact();
         $this->prepareDrycontact($drycontact, $data);
 
-        if ($data['object_type'] === 'manual') {
+        DB::transaction(function () use (&$drycontact, $data, $deviceID) {
+            $unique_name = HomeObject::getUniqueObjectName(0, $drycontact->name);
+            $object = $this->drycontact_object_service->createDrycontactObject($unique_name);
+            $drycontact->id_object = $object->id;
+           // $idNewMethod = $this->drycontact_object_service->createDryContactObjectMethods($object->id);
+
             $drycontact->save();
-        } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$drycontact, $data, $deviceID) {
-                $unique_name = HomeObject::getUniqueObjectName(0, $drycontact->name);
-                $object = $this->drycontact_object_service->createDrycontactObject($unique_name);
-                $drycontact->id_object = $object->id;
-               // $idNewMethod = $this->drycontact_object_service->createDryContactObjectMethods($object->id);
 
-                $drycontact->save();
-
-                if ($data['port_id']) {
-                    Port::where('id', $data['port_id'])->update(['object' => $object->id, 'method' => null,
-                        'status' => 'IN', 'comment' => $data['name']]);
-                    ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($data['port_id']), 'IN-P&R');
-
-                }
-            });
-        }
+            if ($data['port_id']) {
+                Port::where('id', $data['port_id'])->update(['object' => $object->id, 'method' => null,
+                    'status' => 'IN', 'comment' => $data['name']]);
+                ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($data['port_id']), 'IN-P&R');
+            }
+        });
 
         return $drycontact->id;
     }

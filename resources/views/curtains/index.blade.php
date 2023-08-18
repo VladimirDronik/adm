@@ -38,9 +38,6 @@
                                 <th>Тип</th>
                                 <th>Тип управления</th>
                                 <th>Название</th>
-                                @can('devices.show-object')
-                                    <th>Объект</th>
-                                @endcan
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>
                             </tr>
@@ -56,14 +53,6 @@
                                         {{ $curtain->rus_place }}
                                     </td>
                                     <td><a href="{{ route('curtains.edit', [$curtain->id]) }}">{{ $curtain->name }}</a></td>
-                                    @can('devices.show-object')
-                                        <td>@if($curtain->object)
-                                                <a href="{{ route('objects.edit', [$curtain->id_object]) }}">{{ optional($curtain->object)->name }}</a>
-                                            @else
-                                                Не указан
-                                            @endif
-                                        </td>
-                                    @endcan
                                     <td align="center" class="text-center">
                                         <a href="{{ route('curtains.edit', [$curtain->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                             <i class="fa fa-cog fa-lg"></i>
@@ -84,9 +73,6 @@
                                 <th>Тип</th>
                                 <th>Тип управления</th>
                                 <th>Название</th>
-                                @can('devices.show-object')
-                                    <th>Объект</th>
-                                @endcan
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>
                             </tr>

@@ -57,28 +57,22 @@ class MotionsensorService {
         $motionsensor = new Motionsensor();
         $this->prepareMotionsensor($motionsensor, $data);
 
-        if ($data['object_type'] === 'manual') {
+        DB::transaction(function () use (&$motionsensor, $data, $deviceID, $portID) {
+            $unique_name = HomeObject::getUniqueObjectName(0, $motionsensor->name);
+            $object = $this->motionsensor_object_service->createMotionsensorObject($unique_name);
+            $motionsensor->id_object = $object->id;
+
             $motionsensor->save();
-        } else if ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$motionsensor, $data, $deviceID, $portID) {
 
+            $idNewMethod = $this->motionsensor_object_service->createMotionsensorObjectMethods($object->id);
 
-                $unique_name = HomeObject::getUniqueObjectName(0, $motionsensor->name);
-                $object = $this->motionsensor_object_service->createMotionsensorObject($unique_name);
-                $motionsensor->id_object = $object->id;
+            if ($portID) {
 
-                $motionsensor->save();
-
-                $idNewMethod = $this->motionsensor_object_service->createMotionsensorObjectMethods($object->id);
-
-                if ($portID) {
-
-                    Port::where('id', $portID)->update(['object' => $object->id, 'method' => $idNewMethod,
-                        'status' => 'IN', 'comment' => $data['name']]);
-                    ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($portID), 'IN');
-                }
-            });
-        }
+                Port::where('id', $portID)->update(['object' => $object->id, 'method' => $idNewMethod,
+                    'status' => 'IN', 'comment' => $data['name']]);
+                ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($portID), 'IN');
+            }
+        });
 
         return $motionsensor->id;
     }

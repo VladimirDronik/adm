@@ -100,43 +100,37 @@ class TermostatService {
         $this->prepare($termostat, $data);
         $termostat->current = null;
 
-        if ($data['object_type'] === 'manual') {
+        DB::transaction(function () use (&$termostat, $port_id, $deviceId, $placeType) {
+            $unique_name = HomeObject::getUniqueObjectName(0, $termostat->name);
+            $object = $this->termostat_object_service->createTermostatObject($unique_name);
+            $this->termostat_object_service->createTermostatObjectMethodsWithEvents($object->id);
+
+            if($termostat->room != null)
+            RoomService::addTermostat($termostat->room, $termostat->optimal);
+
+            $termostat->id_object = $object->id;
             $termostat->save();
-            $this->id_object = $data['id_object'];
-        } elseif ($data['object_type'] === 'auto') {
-            DB::transaction(function () use (&$termostat, $port_id, $deviceId, $placeType) {
-                $unique_name = HomeObject::getUniqueObjectName(0, $termostat->name);
-                $object = $this->termostat_object_service->createTermostatObject($unique_name);
-                $this->termostat_object_service->createTermostatObjectMethodsWithEvents($object->id);
 
-                if($termostat->room != null)
-                RoomService::addTermostat($termostat->room, $termostat->optimal);
+            if ($port_id) {
+                Port::where('id', $port_id)->update(['object' => $object->id, 'comment' => $termostat->name]);
 
-                $termostat->id_object = $object->id;
-                $termostat->save();
+                //Переназначаем порт на контроллере
+                if($placeType == 'port'){
 
-                if ($port_id) {
-                    Port::where('id', $port_id)->update(['object' => $object->id,
-                                                                            'comment' => $termostat->name]);
-
-                    //Переназначаем порт на контроллере
-                    if($placeType == 'port'){
-
-                        Port::where('id', $port_id)->update(['status' => '1WIRE']);
-                        ConfigMegaService::setPortType($deviceId, $this->port_repository->getNumPortByID($port_id), '1WIRE');
-
-                    }
-                    elseif ($placeType == '1wbus') {
-
-                        Port::where('id', $port_id)->update(['status' => '1W-BUS']);
-                        ConfigMegaService::setPortType($deviceId, $this->port_repository->getNumPortByID($port_id), '1W-BUS');
-
-                    }
+                    Port::where('id', $port_id)->update(['status' => '1WIRE']);
+                    ConfigMegaService::setPortType($deviceId, $this->port_repository->getNumPortByID($port_id), '1WIRE');
 
                 }
-                $this->id_object = $object->id;
-            });
-        }
+                elseif ($placeType == '1wbus') {
+
+                    Port::where('id', $port_id)->update(['status' => '1W-BUS']);
+                    ConfigMegaService::setPortType($deviceId, $this->port_repository->getNumPortByID($port_id), '1W-BUS');
+
+                }
+
+            }
+            $this->id_object = $object->id;
+        });
 
         if ($this->id_object) {
             chdir(env('SERVER_FOLDER').'/scripts');
