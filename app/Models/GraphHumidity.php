@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\GraphHumidity
  *
  * @property int $id
- * @property int $id_count id датчика влажности
+ * @property int $id_hygrostat id датчика влажности
  * @property string $datetime дата и время значения
  * @property int $value значение параметра в процентах (от 0 до 100 вкл)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphHumidity newModelQuery()
@@ -22,6 +22,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class GraphHumidity extends Model
 {
-    protected $table = 'graph_humidities';
+    protected $table = 'graph_hygrostats';
     public $timestamps = false;
 }

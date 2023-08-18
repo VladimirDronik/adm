@@ -15,10 +15,10 @@ class FakeGraphHumiditiesTableSeeder extends Seeder
         $date = Carbon::now()->subDays(self::COUNT);
 
         for ($i = 0; $i < self::COUNT; $i++) {
-            for ($id_count = 1; $id_count <= 3; $id_count++) {
+            for ($id_hygrostat = 1; $id_hygrostat <= 3; $id_hygrostat++) {
                 $counts[] = [
                     'datetime' => $date->format('Y-m-d H:i:s'),
-                    'id_count' => $id_count,
+                    'id_hygrostat' => $id_hygrostat,
                     'value' => rand(0, 100)
                 ];
             }
@@ -35,6 +35,6 @@ class FakeGraphHumiditiesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('graph_humidities')->insert($this->getGraphHumidities());
+        DB::table('graph_hygrostats')->insert($this->getGraphHumidities());
     }
 }

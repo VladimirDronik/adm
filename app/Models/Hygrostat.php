@@ -166,7 +166,7 @@ class Hygrostat extends Model
 
     public function last_graphs()
     {
-        return $this->hasMany(GraphHygrostat::class, 'id_hygrostat', 'id')->where('datetime','>=', Carbon::now()->subDays(7))
+        return $this->hasMany(GraphHumidity::class, 'id_hygrostat', 'id')->where('datetime','>=', Carbon::now()->subDays(7))
             ->orderBy('datetime');
     }
 }
