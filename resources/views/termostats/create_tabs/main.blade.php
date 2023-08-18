@@ -68,10 +68,6 @@
                         <input type="radio" name="placetype_radio" autocomplete="off" value="usensor">  На унив. датчике
                     </label>
 
-                    <label class="btn btn-success btn-sm">
-                        <input type="radio" name="placetype_radio" autocomplete="off" value="device">  Отдельное устройство
-                    </label>
-
                     <input type="hidden" id="placetype" name="placetype" value="port">
 
                 </div>
@@ -92,14 +88,6 @@
             <div class="col-sm-12 pr-0 mt-4" id="usensor_div"  style="display: none;">
                 {{ Form::bs_autoselect('usensor_id', 'Универсальный датчик:', $usensors, old('usensor_id'),
                    false, false, [], null) }}
-            </div>
-
-            <div class="col-sm-12 pr-0 mt-4" id="device_div"  style="display: none";>
-                {{ Form::bs_autoselect('HPController_id', 'Контроллер:', $HPControllers, old('HPController_id'),
-                   false, false, [], null) }}
-
-                {{ Form::bs_autoselect('subdev_id', 'Термометр:', [], old('subdev_id'),
-                    false, false, [], null) }}
             </div>
 
         </div>

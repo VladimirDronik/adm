@@ -7,10 +7,8 @@
 
 {{ Form::bs_radio('thermostat', 'Режим*:', $types, old('thermostat', $termostat->thermostat), ['required' => true]) }}
 
-{{ Form::bs_number('min_threshold', 'Минимальная температура*:', old('min_threshold', $termostat->min_threshold), ['required' => true],
-    '') }}
-{{ Form::bs_number('max_threshold', 'Максимальная температура*:', old('max_threshold', $termostat->max_threshold), ['required' => true],
-    '') }}
+{{ Form::bs_simple_text('Минимальная температура:', $termostat->min_threshold . ' °C') }}
+{{ Form::bs_simple_text('Максимальная температура:', $termostat->max_threshold . ' °C') }}
 {{ Form::bs_number('min_alarm', 'Мин. аварийная температура*:', old('min_alarm', $termostat->min_alarm), ['required' => true],
     '') }}
 {{ Form::bs_number('max_alarm', 'Макс. аварийная температура*:', old('max_alarm', $termostat->max_alarm), ['required' => true],

@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\HomeObject;
 use App\Models\Port;
 use App\Models\Termostat;
+use App\Models\Usensor;
+use App\Repositories\ObjectRepository;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
 use App\Services\PortService;
@@ -15,13 +17,19 @@ class TermostatService {
     private $port_service;
     private $port_repository;
     private $id_object;
+    private $objectRepository;
 
-    public function __construct(TermostatObjectService $termostat_object_service,
-                                PortService $portService, PortRepository $portRepository)
+    public function __construct(
+        TermostatObjectService $termostat_object_service,
+        ObjectRepository $objectRepository,
+        PortService $portService,
+        PortRepository $portRepository
+    )
     {
         $this->termostat_object_service = $termostat_object_service;
         $this->port_service = $portService;
         $this->port_repository = $portRepository;
+        $this->objectRepository = $objectRepository;
     }
 
     /**
@@ -63,12 +71,30 @@ class TermostatService {
 
     public function prepare(Termostat $termostat, array $data)
     {
+        $placeType = $data['placetype'];
+
+        if ($placeType == 'port' || $placeType == '1wbus') {
+            $data['min_threshold'] = -55;
+            $data['max_threshold'] = 125;
+        } else {
+            $usensorObject = $this->objectRepository->getById($data['usensor_id']);
+            $usensor = $usensorObject->usensor;
+            if ($usensor->type == Usensor::TYPE_HTU21D || $usensor->type == Usensor::TYPE_OUTDOORV2) {
+                $data['min_threshold'] = -40;
+                $data['max_threshold'] = 105;
+            } elseif ($usensor->type == Usensor::TYPE_BME280 || $usensor->type == Usensor::TYPE_OUTDOORV3) {
+                $data['min_threshold'] = -40;
+                $data['max_threshold'] = 85;
+            } else {
+                $data['min_threshold'] = 0;
+                $data['max_threshold'] = 0;
+            }
+        }
 
         unset($data['object_type']);
         unset($data['device_id']);
         unset($data['port_id']);
         unset($data['placetype_radio']);
-        unset($data['HPController_id']);
 
         if (($data['room'] ?? 0) == 0) {
             $data['room'] = null;
@@ -87,7 +113,6 @@ class TermostatService {
      */
     public function store(array $data): int
     {
-
         $termostat = new Termostat();
 
         $port_id = $data['port_id'] ?? null;
@@ -95,7 +120,6 @@ class TermostatService {
         $placeType = $data['placetype'];
         unset($data['port_id']);
         unset($data['device_id']);
-
 
         $this->prepare($termostat, $data);
         $termostat->current = null;
@@ -116,23 +140,17 @@ class TermostatService {
                 $termostat->save();
 
                 if ($port_id) {
-                    Port::where('id', $port_id)->update(['object' => $object->id,
-                                                                            'comment' => $termostat->name]);
+                    Port::where('id', $port_id)
+                        ->update(['object' => $object->id, 'comment' => $termostat->name]);
 
                     //Переназначаем порт на контроллере
-                    if($placeType == 'port'){
-
+                    if ($placeType == 'port') {
                         Port::where('id', $port_id)->update(['status' => '1WIRE']);
                         ConfigMegaService::setPortType($deviceId, $this->port_repository->getNumPortByID($port_id), '1WIRE');
-
-                    }
-                    elseif ($placeType == '1wbus') {
-
+                    } elseif ($placeType == '1wbus') {
                         Port::where('id', $port_id)->update(['status' => '1W-BUS']);
                         ConfigMegaService::setPortType($deviceId, $this->port_repository->getNumPortByID($port_id), '1W-BUS');
-
                     }
-
                 }
                 $this->id_object = $object->id;
             });

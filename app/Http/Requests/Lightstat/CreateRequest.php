@@ -28,8 +28,6 @@ class CreateRequest extends FormRequest
             'optimal' => 'required|integer|min:0|max:54612',
             'gisteresis' => 'required|integer|min:0|max:5000',
             'mode' => 'required|integer|min:0|max:1',
-            'min_threshold' => 'required|integer',
-            'max_threshold' => 'required|integer|max:54612',
             'min_alarm' => 'required|integer',
             'max_alarm' => 'required|integer|max:54612',
             'room' => 'nullable|integer|min:0',

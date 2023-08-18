@@ -86,7 +86,6 @@
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_usensor_id").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_HPController_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_subdev_id").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_object").chosen().change(function() {
@@ -114,18 +113,6 @@
                     success: function (data) {
                         createMethodSelect('#auto_sel_port_id', data.ports, -1);
                         $('#auto_sel_port_id').trigger("chosen:updated");
-                    }
-                });
-            });
-
-            $("#auto_sel_HPController_id").chosen().change(function() {
-                let device_id = $(this).val();
-                $.ajax({
-                    url: url_ports,
-                    data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'temperature'},
-                    success: function (data) {
-                        createMethodSelect('#auto_sel_subdev_id', data.hiteProDevices, -1);
-                        $('#auto_sel_subdev_id').trigger("chosen:updated");
                     }
                 });
             });
@@ -218,18 +205,12 @@
                     $('#device_div').hide();
                     $('#1wbus_port_div').show();
                     $('#placetype').val('1wbus');
-                } else if ($(this).val() === 'usensor') {
+                } else {
                     $('#usensor_div').show();
                     $('#single_port_div').hide();
                     $('#device_div').hide();
                     $('#1wbus_port_div').hide();
                     $('#placetype').val('usensor');
-                } else {
-                    $('#usensor_div').hide();
-                    $('#single_port_div').hide();
-                    $('#1wbus_port_div').hide();
-                    $('#device_div').show();
-                    $('#placetype').val('Hite-pro');
                 }
 
                 return true;

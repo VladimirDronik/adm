@@ -124,7 +124,6 @@
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_usensor_id").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_HPController_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_subdev_id").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $('#auto_sel_btn_id_object').click(function() {
@@ -191,9 +190,6 @@
 
                 storeObject();
             });
-
-
-
 
             function storeObject() {
                 const name = $("#create_object_modal input[name=object_name]").val().trim();
@@ -293,24 +289,15 @@
                 $('#device_div').hide();
                 $('#1wbus_port_div').show();
                 $('#placetype').val('1wbus');
-            } else if ($(this).val() === 'usensor') {
+            } else {
                 $('#usensor_div').show();
                 $('#single_port_div').hide();
                 $('#device_div').hide();
                 $('#1wbus_port_div').hide();
                 $('#placetype').val('usensor');
-            } else {
-                $('#usensor_div').hide();
-                $('#single_port_div').hide();
-                $('#1wbus_port_div').hide();
-                $('#device_div').show();
-                $('#placetype').val('Hite-pro');
             }
-
 
             return true;
         });
-
-
     </script>
 @endsection
