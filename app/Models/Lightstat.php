@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -119,5 +120,11 @@ class Lightstat extends Model
     public function emethod_off()
     {
         return $this->belongsTo(Method::class, 'method_off', 'id');
+    }
+
+    public function last_graphs()
+    {
+        return $this->hasMany(GraphLight::class, 'id_count', 'id')->where('datetime','>=', Carbon::now()->subDays(7))
+            ->orderBy('datetime');
     }
 }

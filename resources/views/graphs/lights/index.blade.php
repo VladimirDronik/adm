@@ -35,28 +35,34 @@
         </div>
         <div class="card">
             <div class="card-body">
-                @if(count($data) && count($data['counts']))
-                    @foreach($data['counts'] as $count)
-                        <div class="row">
-                            <div class="col col-md-8">
-                                <h4>Датчик освещенности«{{ $count }}»</h4>
-                            </div>
-                            <div class="col col-md-4">
-                                <select class="form-control select_period" id="select_period{{$count}}" autocomplete="off" data-id="{{ $count }}">
-                                    <option value="7" selected>за последние 7 дней</option>
-                                    @foreach($periods as $key => $period)
-                                        <option value="{{ $key }}">{{ $period }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-12">
-                                <div id="chart{{$count}}" class="chartdiv"></div>
-                            </div>
-                        </div>
+                @if(count($data) && (count($data['rooms']) || count($data['other_lightstats'])))
+                    @foreach($data['rooms'] as $room)
+                        <h3>Помещение «{{ $room->name }}»</h3>
+                        @if(count($room->lightstats))
+                            @foreach($room->lightstats as $lightstat)
+                                @include('graphs.lights.period', compact('lightstat'))
+                                <div class="row">
+                                    <div class="col col-md-12">
+                                        <div id="chart{{$lightstat->id}}" class="chartdiv"></div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <p>Нет датчиков освещенности</p>
+                        @endif
                         <hr>
                     @endforeach
+                    @if(count($data['other_lightstats']))
+                        <h3>Остальные датчики освещенности</h3>
+                        @foreach($data['other_lightstats'] as $lightstat)
+                            @include('graphs.lights.period', compact('lightstat'))
+                            <div class="row">
+                                <div class="col col-md-12">
+                                    <div id="chart{{$lightstat->id}}" class="chartdiv"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
                 @else
                     <p>Нет данных</p>
                 @endif
@@ -147,8 +153,14 @@
                 getChartPeriodData(count_id, period);
             });
 
-            @foreach($data['counts'] as $count)
-            $('#select_period{{$count}}').change();
+            @foreach($data['rooms'] as $room)
+                @foreach($room->lightstats as $lightstat)
+                    $('#select_period{{$lightstat->id}}').change();
+                @endforeach
+            @endforeach
+
+            @foreach($data['other_lightstats'] as $lightstat)
+                $('#select_period{{$lightstat->id}}').change();
             @endforeach
         });
     </script>

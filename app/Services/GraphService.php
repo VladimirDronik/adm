@@ -8,6 +8,7 @@ use App\Models\GraphHumidity;
 use App\Models\GraphLight;
 use App\Models\GraphTermostat;
 use App\Models\Hygrostat;
+use App\Models\Lightstat;
 use App\Models\Room;
 use App\Models\Termostat;
 use Carbon\Carbon;
@@ -141,10 +142,13 @@ class GraphService {
 
     public function getGraphLightsData()
     {
-        $count_ids = GraphLight::select('id_count')
-            ->distinct()->pluck('id_count')->toArray();
+        $rooms_ids = Lightstat::whereNotNull('room')->select('room')
+            ->distinct()->pluck('room')->toArray();
 
-        $data['counts'] = $count_ids; // todo
+        $data['rooms'] = Room::whereIn('id', $rooms_ids)
+            ->with('lightstats', 'lightstats.last_graphs')->orderBy('id')->get();
+
+        $data['other_lightstats'] = Lightstat::with('last_graphs')->whereNull('room')->orderBy('id')->get();
 
         return $data;
     }

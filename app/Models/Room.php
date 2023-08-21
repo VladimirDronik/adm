@@ -85,6 +85,11 @@ class Room extends Model
         return $this->hasMany(Hygrostat::class, 'room', 'id')->orderBy('id');
     }
 
+    public function lightstats()
+    {
+        return $this->hasMany(Lightstat::class, 'room', 'id')->orderBy('id');
+    }
+
     public function temperature()
     {
         return $this->hasOne(Temperature::class, 'id_room');
