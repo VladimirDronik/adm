@@ -12,7 +12,7 @@ class CreateUser extends Command
      *
      * @var string
      */
-    protected $signature = 'create:user';
+    protected $signature = 'create:user {role} {login} {password}';
 
     /**
      * The console command description.
@@ -39,24 +39,24 @@ class CreateUser extends Command
     public function handle()
     {
         $userTypes = User::getTypes();
-        $type = $this->ask('input user role ('.implode(', ', $userTypes).')');
+        $type = $this->argument('role');
 
         if (!in_array(trim($type), $userTypes, true)) {
-            $this->error("user role is not valid");
+            $this->error("User role is not valid");
             return;
         }
 
-        $login = $this->ask('input user login');
+        $login = $this->argument('login');
 
         if (User::where('login', $login)->exists()) {
-            $this->error("login already exists");
+            $this->error("Login already exists");
             return;
         }
 
-        $password = $this->ask('input user password (six or more symbols)');
+        $password = $this->argument('password');
 
         if (strlen($password) < 6) {
-            $this->error("password contains less then six symbols");
+            $this->error("Password contains less then six symbols");
             return;
         }
 
