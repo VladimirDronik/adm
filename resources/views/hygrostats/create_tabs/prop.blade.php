@@ -1,6 +1,6 @@
 <br>
 
-{{ Form::bs_radio('type', 'Режим*:', $types, old('type', 1), ['required' => true]) }}
+{{ Form::bs_radio('type', 'Режим*:', $types, old('type', 0), ['required' => true]) }}
 
 {{ Form::bs_number('optimal', 'Оптимальная влажность*:', old('optimal', 50), ['min' => 0, 'max' => 100, 'required' => true],
     'Влажность, которая должна быть в помещении') }}
