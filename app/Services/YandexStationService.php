@@ -3,25 +3,40 @@
 namespace App\Services;
 
 use App\Models\YandexStation;
+use App\Repositories\RoomRepository;
 
 class YandexStationService
 {
-    public function store(array $devices): bool
+    private $roomRepository;
+
+    public function __construct(RoomRepository $roomRepository)
     {
-        if (!empty($devices)) {
-            foreach ($devices as $device) {
-                $station = YandexStation::where('speaker_id', $device['id'])->first();
-                if (!$station) {
-                    $station = new YandexStation();
-                }
+        $this->roomRepository = $roomRepository;
+    }
 
-                $station->speaker_id = $device['id'];
-                $station->name = $device['name'];
-                $station->active = 1;
+    public function store(array $data): bool
+    {
+        $station = YandexStation::where('speaker_id', $data['iot_id'])->first();
 
-                $station->save();
-            }
+        if (!$station) {
+            $station = new YandexStation();
         }
+
+        $station->name = $data['name'];
+        $station->platform = $data['platform'];
+        $station->device_id = $data['device_id'];
+        $station->speaker_id = $data['iot_id'];
+        $station->scenario_id = $data['scenario_id'];
+        $station->active = 1;
+
+        $room = $this->roomRepository->getByName($data['room']);
+        if ($room) {
+            $station->room = $room->id;
+        } else {
+            $station->room = null;
+        }
+
+        $station->save();
 
         return true;
     }

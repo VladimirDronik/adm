@@ -8,6 +8,7 @@ use App\Repositories\YandexStationRepository;
 use App\Services\YandexStationService;
 use Illuminate\Http\Request;
 use App\Services\YandexIntegration\YandexAuth;
+use App\Services\YandexIntegration\YandexTTS;
 use Illuminate\Support\Facades\Log;
 
 class YandexStationController
@@ -94,8 +95,10 @@ class YandexStationController
         $response = $this->yandexAuth->checkOrGetCookies(base_path(config('yandex.cookie_file')));
 
         if ($response['code'] == 200) {
-            $dir = env('SERVER_FOLDER');
-            passthru("(cd {$dir} && php -f alice_init.php &) >> /dev/null 2>&1");
+            $tts = new YandexTTS();
+            $ttsResponse = $tts->init();
+
+            return response()->json(['code' => $ttsResponse ? 200 : 500]);
         }
 
         return response()->json($response);
