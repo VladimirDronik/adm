@@ -35,8 +35,9 @@
                             <thead>
                             <tr>
                                 <th style="width: 60px;">ID</th>
-                                <th>Тип</th>
-                                <th>Название</th>
+                                <th style="width: 200px;">Тип</th>
+                                <th style="width: 300px;">Название</th>
+                                <th>Статус</th>
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>
                             </tr>
@@ -49,6 +50,13 @@
                                         {{ $relay->rus_type }}
                                     </td>
                                     <td><a href="{{ route('relays.edit', [$relay->id]) }}">{{ $relay->name }}</a></td>
+                                    <td>
+                                        @if($relay->object->status == 'on')
+                                            <span class="badge badge-success">{{ $relay->object->status }}</span>
+                                        @else
+                                            <span class="badge badge-primary">{{ $relay->object->status }}</span>
+                                        @endif
+                                    </td>
                                     <td align="center" class="text-center">
                                         <a href="{{ route('relays.edit', [$relay->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                             <i class="fa fa-cog fa-lg"></i>
@@ -66,8 +74,9 @@
                             <tfoot>
                             <tr>
                                 <th style="width: 60px;">ID</th>
-                                <th>Тип</th>
-                                <th>Название</th>
+                                <th style="width: 200px;">Тип</th>
+                                <th style="width: 300px;">Название</th>
+                                <th>Статус</th>
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>
                             </tr>
