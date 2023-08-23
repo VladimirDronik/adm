@@ -16,7 +16,6 @@ class CameraService
         $camera->room = $data['room'];
         $camera->image = $data['image'];
         $camera->type = 'ivideon';
-        $camera->sort = Camera::max('sort') + 1;
         $camera->active = array_key_exists('active', $data);
     }
 
@@ -34,6 +33,7 @@ class CameraService
         $data['image'] = $imageUrl;
 
         $this->prepare($camera, $data);
+        $camera->sort = Camera::max('sort') + 1;
         $camera->save();
 
         return $camera->id;
