@@ -88,6 +88,10 @@ class ObjtypesTableSeeder extends Seeder
             [
                 'name' => ObjType::TYPE_CONDITIONER,
                 'label' => 'Кондиционер'
+            ],
+            [
+                'name' => ObjType::TYPE_YANDEX_STATION,
+                'label' => 'Яндекс Станция'
             ]
         ];
     }

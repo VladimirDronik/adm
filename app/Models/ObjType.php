@@ -38,6 +38,7 @@ class ObjType extends Model
     const TYPE_BOILER = 'boiler';
     const TYPE_BOILER_GVS = 'boiler_gvs';
     const TYPE_CONDITIONER = 'conditioner';
+    const TYPE_YANDEX_STATION = 'yandex_station';
 
     protected $table = 'objtypes';
     public $timestamps = false;

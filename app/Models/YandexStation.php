@@ -37,4 +37,9 @@ class YandexStation extends Model
     {
         return $this->belongsTo(Room::class, 'room', 'id');
     }
+
+    public function object()
+    {
+        return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+    }
 }
