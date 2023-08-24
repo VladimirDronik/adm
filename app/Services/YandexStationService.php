@@ -45,6 +45,7 @@ class YandexStationService
         DB::transaction(function () use ($station, $object) {
             $object->save();
             $station->object()->associate($object);
+            $this->createMethods($object);
             $station->save();
         });
 
@@ -72,7 +73,13 @@ class YandexStationService
     public function delete(int $idStation)
     {
         $station = YandexStation::findOrFail($idStation);
-        $station->delete();
+
+        if ($station->object) {
+            DB::transaction(function () use ($station) {
+                $station->object->delete();
+                $station->delete();
+            });
+        }
 
         return true;
     }
@@ -101,5 +108,27 @@ class YandexStationService
         $object->name = $unique_name;
 
         return $object;
+    }
+
+    private static function createMethods(HomeObject $object)
+    {
+        $methods = [
+            [
+                'name' => 'Запустить команду "Сказать"',
+                'comment' => 'Передать сообщение станции. Станция произнесет полученное сообщение',
+                'params' => 'Сообщение (Это сообщение отправится станции)',
+                'is_system' => 1
+            ],
+            [
+                'name' => 'Запустить команду "CMD"',
+                'comment' => 'Передать сообщение станции. Станция обработает сообщение и даст ответ на него',
+                'params' => 'Сообщение (Это сообщение отправится станции)',
+                'is_system' => 1
+            ]
+        ];
+
+        foreach ($methods as $method) {
+            $object->methods()->updateOrCreate(['name' => $method['name']], $method);
+        }
     }
 }
