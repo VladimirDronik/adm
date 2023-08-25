@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Color extends Model
 {
-    const GREY = 'grey';
     const BLUE = 'blue';
     const ORANGE = 'orange';
     const RED = 'red';
@@ -36,7 +35,6 @@ class Color extends Model
     public static function getColors(bool $is_full = true)
     {
         $colors = [
-            self::GREY => '#656565',
             self::BLUE => '#0060aa',
             self::ORANGE => '#f36f21',
             self::RED => '#ff0000',
