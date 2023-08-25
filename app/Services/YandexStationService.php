@@ -4,10 +4,12 @@ namespace App\Services;
 
 use App\Models\HomeObject;
 use App\Models\ObjType;
+use App\Models\Script;
 use App\Models\YandexStation;
 use App\Repositories\RoomRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use ScriptsTableSeeder;
 
 class YandexStationService
 {
@@ -110,25 +112,52 @@ class YandexStationService
         return $object;
     }
 
-    private static function createMethods(HomeObject $object)
+    /**
+     * Создание методов для станции
+     *
+     * @param HomeObject $object
+     * @return void
+     */
+    private function createMethods(HomeObject $object): void
     {
         $methods = [
             [
                 'name' => 'Запустить команду "Сказать"',
                 'comment' => 'Передать сообщение станции. Станция произнесет полученное сообщение',
                 'params' => 'Сообщение (Это сообщение отправится станции)',
-                'is_system' => 1
+                'is_system' => 1,
+                'script' => $this->getScriptIdByLink('yandex_station_say.php'),
             ],
             [
                 'name' => 'Запустить команду "CMD"',
                 'comment' => 'Передать сообщение станции. Станция обработает сообщение и даст ответ на него',
                 'params' => 'Сообщение (Это сообщение отправится станции)',
-                'is_system' => 1
+                'is_system' => 1,
+                'script' => $this->getScriptIdByLink('yandex_station_cmd.php'),
             ]
         ];
 
         foreach ($methods as $method) {
             $object->methods()->updateOrCreate(['name' => $method['name']], $method);
         }
+    }
+
+    /**
+     * Поиск скрипта, если не находится, то создаем
+     *
+     * @param string $link
+     * @return int
+     */
+    private function getScriptIdByLink(string $link): int
+    {
+        $scripts = ScriptsTableSeeder::getYandexStationScripts();
+
+        foreach ($scripts as $scriptData) {
+            Script::updateOrCreate(['link' => $scriptData['link']], $scriptData);
+        }
+
+        $script = Script::where('link', $link)->first();
+
+        return $script->id;
     }
 }

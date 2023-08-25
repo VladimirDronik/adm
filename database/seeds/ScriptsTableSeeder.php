@@ -264,6 +264,29 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
+    /**
+     * Скрипты для яндекс станций
+     *
+     * @return array
+     */
+    public static function getYandexStationScripts(): array
+    {
+        return [
+            [
+                'name' => 'Скрипт команды "Сказать"',
+                'link' => 'yandex_station_say.php',
+                'count' => 0,
+                'system' => 1
+            ],
+            [
+                'name' => 'Скрипт команды "CMD"',
+                'link' => 'yandex_station_cmd.php',
+                'count' => 0,
+                'system' => 1
+            ],
+        ];
+    }
+
 
     private function getScripts(): array
     {
@@ -271,6 +294,7 @@ class ScriptsTableSeeder extends Seeder
 
         $scripts = array_merge($scripts, self::getCurtainScripts());
         $scripts = array_merge($scripts, self::getLockScripts());
+        $scripts = array_merge($scripts, self::getYandexStationScripts());
         $scripts[] = self::getResetGraphsScript();
         $scripts[] = self::getCheckCountScript();
         $scripts[] = self::getResetCountScript();
@@ -282,7 +306,6 @@ class ScriptsTableSeeder extends Seeder
         $scripts[] = self::deleteLogsScript();
         $scripts[] = self::getCheckManometrScript();
         $scripts[] = self::getCheckBoilerScript();
-
 
         return $scripts;
     }
