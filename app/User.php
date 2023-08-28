@@ -42,14 +42,7 @@ class User extends Authenticatable
     const TYPE_ADMIN = 'admin';
     const TYPE_SUPERADMIN = 'superadmin';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'password',
-    ];
+    protected $guarded = ['id'];
 
     /**
      * The attributes that should be hidden for arrays.

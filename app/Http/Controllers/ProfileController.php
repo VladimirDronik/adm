@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Profile\UpdateRequest;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -19,7 +20,7 @@ class ProfileController extends Controller
         $user->login = trim($r->login);
 
         if (!is_null($r->password)) {
-            $user->password = bcrypt($r->password);
+            $user->password = Hash::make($r->password);
         }
 
         $user->save();

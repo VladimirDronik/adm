@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Hash;
 
 class CreateUser extends Command
 {
@@ -63,7 +64,7 @@ class CreateUser extends Command
         $user = new User();
         $user->type = $type;
         $user->login = $login;
-        $user->password = bcrypt($password);
+        $user->password = Hash::make($password);
         $user->save();
 
         $this->info("User created");

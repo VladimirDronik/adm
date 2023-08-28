@@ -34,12 +34,12 @@ class GenerateFakeData extends Command
     public function handle()
     {
         $tables = ['Users', 'Objects', 'Scripts', 'Devices', 'Dimmers',
-            'Rooms', 'Methods', 'Termostats', 'Scenes', 'Counts', 'ViewItems', 'SchedulerTasks',
+            'Rooms', 'Methods', 'Termostats', 'Hygrostats', 'Scenes', 'Counts', 'ViewItems', 'SchedulerTasks',
             'GraphCounts', 'GraphTermostats', 'GraphLights', 'GraphHumidities', 'Logs',
             'Switches', 'Relays'];
 
         foreach ($tables as $table) {
-            Artisan::call('db:seed', ['--class' => 'Fake'.$table.'TableSeeder']);
+            Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Fakes\\Fake'.$table.'TableSeeder']);
             $this->info('Fake '.$table.' - done!');
         }
     }

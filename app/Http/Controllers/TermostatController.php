@@ -26,30 +26,21 @@ use App\Repositories\SoundRepository;
 
 class TermostatController extends Controller
 {
-    private $termostat_rep;
-    private $object_rep;
-    private $device_rep;
-    private $usensors_rep;
-    private $room_rep;
-    private $service;
-    private $event_rep;
-    private $view_rep;
-
-
-    public function __construct(TermostatRepository $termostat_rep, ObjectRepository $object_rep, UsensorRepository $usensor_rep,
-                                DeviceRepository $device_rep, RoomRepository $room_rep, TermostatService $service,
-                                EventRepository $eventRepository, ViewRepository $viewRepository)
-    {
-        $this->termostat_rep = $termostat_rep;
-        $this->object_rep = $object_rep;
-        $this->device_rep = $device_rep;
-        $this->usensors_rep = $usensor_rep;
-        $this->room_rep = $room_rep;
-        $this->service = $service;
-        $this->event_rep = $eventRepository;
-        $this->view_rep = $viewRepository;
-
-    }
+    public function __construct(
+        private TermostatRepository $termostat_rep,
+        private ObjectRepository $object_rep,
+        private DeviceRepository $device_rep,
+        private UsensorRepository $usensors_rep,
+        private RoomRepository $room_rep,
+        private TermostatService $service,
+        private EventRepository $event_rep,
+        private ViewRepository $view_rep,
+        private ObjectService $object_service,
+        private ScriptRepository $script_rep,
+        private PortService $portsService,
+        private MessageService $messagesService,
+    )
+    {}
 
     public function index()
     {
@@ -102,29 +93,28 @@ class TermostatController extends Controller
 
 
 
-    public function edit(Termostat $termostat, $tab=1, ObjectService $object_service, ScriptRepository $script_rep,
-                         PortService $portsService, MessageService $messagesService)
+    public function edit(Termostat $termostat, $tab=1)
     {
 
         list($objects, $rooms, $types, $devices, $usensors, $HPControllers) = $this->getLists();
 
 
-        $methods = $object_service->getMethodsByObjectIdToArray($termostat->object);
+        $methods = $this->object_service->getMethodsByObjectIdToArray($termostat->object);
         $object_types = HomeObject::getFullTypeIds();
-        $scripts = $script_rep->getAllToArray();
+        $scripts = $this->script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
-        $deviceAndPort = $portsService->getIdDeviceAndPortId($termostat->id_object);
+        $deviceAndPort = $this->portsService->getIdDeviceAndPortId($termostat->id_object);
 
         $deviceId = $deviceAndPort['id_device'];
         $portId = $deviceAndPort['id_port'];
 
-        $ports =  $portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
+        $ports =  $this->portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
-        $messages = $messagesService->getNotifications($termostat->id_object);
+        $messages = $this->messagesService->getNotifications($termostat->id_object);
 
-        $id_controller = $portsService->getIdControllerBySubdevice($termostat->subdev_id, 'Hite-pro');
-        $subdevs = $portsService->getSubdevsForController($id_controller, 'Hite-pro', 'temperature');
+        $id_controller = $this->portsService->getIdControllerBySubdevice($termostat->subdev_id, 'Hite-pro');
+        $subdevs = $this->portsService->getSubdevsForController($id_controller, 'Hite-pro', 'temperature');
 
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
@@ -135,8 +125,6 @@ class TermostatController extends Controller
         $sounds = SoundRepository::getAllToArray();
         $views = $this->view_rep->getAllToArray();
         $allEvents = '';
-
-
 
         return view('termostats.edit', compact('termostat', 'objects', 'rooms',
             'types', 'devices', 'methods', 'object_types', 'scripts', 'HPControllers', 'id_controller',
