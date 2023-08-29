@@ -29,30 +29,21 @@ use App\Repositories\SoundRepository;
 
 class HygrostatController extends Controller
 {
-    private $hygrostat_rep;
-    private $object_rep;
-    private $device_rep;
-    private $usensors_rep;
-    private $room_rep;
-    private $service;
-    private $event_rep;
-    private $view_rep;
-
-
-    public function __construct(HygrostatRepository $hygrostat_rep, ObjectRepository $object_rep, UsensorRepository $usensor_rep,
-                                DeviceRepository $device_rep, RoomRepository $room_rep, HygrostatService $service,
-                                EventRepository $eventRepository, ViewRepository $viewRepository)
-    {
-        $this->hygrostat_rep = $hygrostat_rep;
-        $this->object_rep = $object_rep;
-        $this->device_rep = $device_rep;
-        $this->usensors_rep = $usensor_rep;
-        $this->room_rep = $room_rep;
-        $this->service = $service;
-        $this->event_rep = $eventRepository;
-        $this->view_rep = $viewRepository;
-
-    }
+    public function __construct(
+        private HygrostatRepository $hygrostat_rep,
+        private ObjectRepository $object_rep,
+        private DeviceRepository $device_rep,
+        private UsensorRepository $usensor_rep,
+        private RoomRepository $room_rep,
+        private HygrostatService $service,
+        private EventRepository $event_rep,
+        private ViewRepository $view_rep,
+        private ObjectService $object_service,
+        private ScriptRepository $script_rep,
+        private PortService $portsService,
+        private MessageService $messagesService,
+    )
+    {}
 
     public function index()
     {
@@ -68,7 +59,7 @@ class HygrostatController extends Controller
         $rooms = $this->room_rep->getAllToArray();
         $types = Hygrostat::getFullHygrostatIds();
         $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
-        $usensors = $this->usensors_rep->getAllToArray();
+        $usensors = $this->usensor_rep->getAllToArray();
         $HPControllers = $this->device_rep->getAllByTypesToArray(['Hite-pro']);
 
 
@@ -105,26 +96,25 @@ class HygrostatController extends Controller
 
 
 
-    public function edit(Hygrostat $hygrostat, $tab=1, ObjectService $object_service, ScriptRepository $script_rep,
-                         PortService $portsService, MessageService $messagesService)
+    public function edit(Hygrostat $hygrostat, $tab=1)
     {
 
         list($objects, $rooms, $types, $devices, $usensors, $HPControllers) = $this->getLists();
 
 
-        $methods = $object_service->getMethodsByObjectIdToArray($hygrostat->object);
+        $methods = $this->object_service->getMethodsByObjectIdToArray($hygrostat->object);
         $object_types = HomeObject::getFullTypeIds();
-        $scripts = $script_rep->getAllToArray();
+        $scripts = $this->script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
-        $deviceAndPort = $portsService->getIdDeviceAndPortId($hygrostat->id_object);
+        $deviceAndPort = $this->portsService->getIdDeviceAndPortId($hygrostat->id_object);
 
         $deviceId = $deviceAndPort['id_device'];
 
-        $messages = $messagesService->getNotifications($hygrostat->id_object);
+        $messages = $this->messagesService->getNotifications($hygrostat->id_object);
 
-        $id_controller = $portsService->getIdControllerBySubdevice($hygrostat->subdev_id, 'Hite-pro');
-        $subdevs = $portsService->getSubdevsForController($id_controller, 'Hite-pro', 'temperature');
+        $id_controller = $this->portsService->getIdControllerBySubdevice($hygrostat->subdev_id, 'Hite-pro');
+        $subdevs = $this->portsService->getSubdevsForController($id_controller, 'Hite-pro', 'temperature');
 
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';

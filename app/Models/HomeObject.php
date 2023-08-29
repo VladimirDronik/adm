@@ -32,6 +32,7 @@ class HomeObject extends Model
 {
     protected $table = 'objects';
     public $timestamps = false;
+    protected $guarded = ['id'];
 
     public static function getFullTypeIds()
     {

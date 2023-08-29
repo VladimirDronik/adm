@@ -6,7 +6,7 @@ use App\Models\HomeObject;
 use App\Models\Method;
 use App\Models\ObjType;
 use App\Models\Script;
-use ScriptsTableSeeder;
+use Database\Seeders\ScriptsTableSeeder;
 
 class UsensorObjectService {
 

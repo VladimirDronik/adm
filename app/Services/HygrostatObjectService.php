@@ -8,7 +8,7 @@ use App\Models\ObjType;
 use App\Models\SchedulerPoint;
 use App\Models\SchedulerTask;
 use App\Models\Script;
-use ScriptsTableSeeder;
+use Database\Seeders\ScriptsTableSeeder;
 
 class HygrostatObjectService {
 

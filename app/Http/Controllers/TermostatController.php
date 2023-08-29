@@ -21,8 +21,7 @@ use App\Services\PortService;
 use App\Services\TermostatService;
 use App\Repositories\EventRepository;
 use App\Repositories\SoundRepository;
-
-
+use Illuminate\Support\Facades\Log;
 
 class TermostatController extends Controller
 {
@@ -30,15 +29,15 @@ class TermostatController extends Controller
         private TermostatRepository $termostat_rep,
         private ObjectRepository $object_rep,
         private DeviceRepository $device_rep,
-        private UsensorRepository $usensors_rep,
+        private UsensorRepository $usensor_rep,
         private RoomRepository $room_rep,
         private TermostatService $service,
         private EventRepository $event_rep,
         private ViewRepository $view_rep,
         private ObjectService $object_service,
         private ScriptRepository $script_rep,
-        private PortService $portsService,
-        private MessageService $messagesService,
+        private PortService $portService,
+        private MessageService $messageService,
     )
     {}
 
@@ -56,7 +55,7 @@ class TermostatController extends Controller
         $rooms = $this->room_rep->getAllToArray();
         $types = Termostat::getFullThermostatIds();
         $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
-        $usensors = $this->usensors_rep->getAllToArray();
+        $usensors = $this->usensor_rep->getAllToArray();
         $HPControllers = $this->device_rep->getAllByTypesToArray(['Hite-pro']);
 
 
@@ -85,7 +84,7 @@ class TermostatController extends Controller
                     ->with('success', 'Термостат успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении термостата '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error('Ошибка при добавлении термостата '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении термостата');
@@ -104,17 +103,17 @@ class TermostatController extends Controller
         $scripts = $this->script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
-        $deviceAndPort = $this->portsService->getIdDeviceAndPortId($termostat->id_object);
+        $deviceAndPort = $this->portService->getIdDeviceAndPortId($termostat->id_object);
 
         $deviceId = $deviceAndPort['id_device'];
         $portId = $deviceAndPort['id_port'];
 
-        $ports =  $this->portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
+        $ports =  $this->portService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
-        $messages = $this->messagesService->getNotifications($termostat->id_object);
+        $messages = $this->messageService->getNotifications($termostat->id_object);
 
-        $id_controller = $this->portsService->getIdControllerBySubdevice($termostat->subdev_id, 'Hite-pro');
-        $subdevs = $this->portsService->getSubdevsForController($id_controller, 'Hite-pro', 'temperature');
+        $id_controller = $this->portService->getIdControllerBySubdevice($termostat->subdev_id, 'Hite-pro');
+        $subdevs = $this->portService->getSubdevsForController($id_controller, 'Hite-pro', 'temperature');
 
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
@@ -142,7 +141,7 @@ class TermostatController extends Controller
                 return redirect()->route('termostats.edit', [$termostat->id])->with('success','Термостат успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении термостата '.$termostat->id.' ' .json_encode($r->all()).' '.$e->getMessage());
+            Log::error('Ошибка при изменении термостата '.$termostat->id.' ' .json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении термостата');

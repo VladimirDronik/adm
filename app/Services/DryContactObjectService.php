@@ -10,7 +10,7 @@ namespace App\Services;
 
 use App\Models\HomeObject;
 use App\Models\ObjType;
-use ScriptsTableSeeder;
+use Database\Seeders\ScriptsTableSeeder;
 use App\Models\Method;
 use App\Models\Script;
 

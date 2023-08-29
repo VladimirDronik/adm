@@ -5,7 +5,7 @@ namespace App\Services;
 
 use App\Models\HomeObject;
 use App\Models\Method;
-use ScriptsTableSeeder;
+use Database\Seeders\ScriptsTableSeeder;
 use App\Models\Script;
 
 class LockObjectService {

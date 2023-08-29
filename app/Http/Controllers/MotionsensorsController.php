@@ -21,26 +21,18 @@ use App\Services\PortService;
 
 class MotionsensorsController extends Controller
 {
-
-    private $motionsens_rep;
-    private $object_rep;
-    private $device_rep;
-    private $service;
-    private $methods_rep;
-    private $lightstat_rep;
-
-
-    public function __construct(MotionsensorRepository $motionsens_rep, ObjectRepository $object_rep, DeviceRepository $device_rep,
-                                MotionsensorService $service, MethodRepository $methods_rep, LightstatRepository $lightstat_rep)
-    {
-
-        $this->motionsens_rep = $motionsens_rep;
-        $this->object_rep = $object_rep;
-        $this->device_rep = $device_rep;
-        $this->service = $service;
-        $this->methods_rep = $methods_rep;
-        $this->lightstat_rep = $lightstat_rep;
-    }
+    public function __construct(
+        private MotionsensorRepository $motionsens_rep,
+        private ObjectRepository $object_rep,
+        private DeviceRepository $device_rep,
+        private MotionsensorService $service,
+        private MethodRepository $methods_rep,
+        private LightstatRepository $lightstat_rep,
+        private ScriptRepository $script_rep,
+        private PortService $portsService,
+        private MessageService $messageService,
+    )
+    {}
 
     public function index()
     {
@@ -78,8 +70,7 @@ class MotionsensorsController extends Controller
     }
 
 
-    public function edit(int $id, ScriptRepository $script_rep, PortService $portsService,
-        MessageService $messageService, $tab=1)
+    public function edit(int $id, $tab=1)
     {
         $motionsensor = Motionsensor::findOrFail($id);
 
@@ -105,10 +96,10 @@ class MotionsensorsController extends Controller
         $object_light = $this->methods_rep->getObjectByMethod($motionsensor->method_light);
         $methods_light = $this->methods_rep->getAllMethodsByObjectToArray($object_light);
 
-        $deviceAndPort = $portsService->getIdDeviceAndPortId($motionsensor->id_object);
+        $deviceAndPort = $this->portsService->getIdDeviceAndPortId($motionsensor->id_object);
         $deviceId = $deviceAndPort['id_device'];
         $portId = $deviceAndPort['id_port'];
-        $ports = $portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
+        $ports = $this->portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
         $messagePoint['first'] = 'При любом срабатывании';
         $messagePoint['second'] = 'Срабатывание в реж. охраны';
