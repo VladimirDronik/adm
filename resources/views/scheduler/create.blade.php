@@ -137,11 +137,6 @@
                 if (params.is(":visible") && params.val().trim() === '') {
                     return 'Не указан параметр метода';
                 }
-                params_int = parseInt(params.val().trim());
-                if (params.is(":visible") &&
-                    (params.val().trim() != params_int || params_int < 0 || params_int > 100)) {
-                    return 'Недопустимое значение параметра метода';
-                }
             }
             return '';
         }
