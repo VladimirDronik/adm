@@ -906,7 +906,7 @@
                         'ip_address': ip_address, 'password': password, 'port': port, extension_modules: data},
                     success: function (data) {
                         if (!data.result) {
-                            showErrorModal(data.message);
+                            showErrorModal('Ошибка при обновлении устройства');
                         } else {
                             location.reload();
                         // $('#reloadDeviceBtn').click();

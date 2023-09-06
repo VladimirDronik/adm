@@ -245,7 +245,7 @@ class ConfigMegaService
     /**
      * Отправить текущий конфиг на физическое устройство
      */
-     static public function sendConfigToDevice($idDevice)
+    static public function sendConfigToDevice($idDevice)
     {
 
         $countResult = 0; //количество успешных шагов

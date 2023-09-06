@@ -256,16 +256,14 @@ class DeviceService {
         $device->password = $data['password'] ?: null;
         $device->port = $data['port'] ?: null;
 
-        $configResult = ConfigMegaService::sendConfigToDevice($data['id']);
+        // $configResult = ConfigMegaService::sendConfigToDevice($data['id']);
 
         if (trim($data['ip_address']) !== $device->ip_address) {
-
             $device->ip_address = $data['ip_address'];
 
             DB::beginTransaction();
 
             try {
-
                 $device->save();
 
                 //Меняем адрес устойства
@@ -276,33 +274,19 @@ class DeviceService {
                 }
 
                 DB::commit();
-
-                if($configResult['error'] == '')
-                    return [true, '', $configResult['count_all'], $configResult['count_result']];
-                else
-                    return [false, $configResult['error'], '', ''];
-
-
+                return true;
             } catch (\Throwable $e) {
-
                 DB::rollback();
-
                 \Log::error('Ошибка при обновлении устройства', [$e->getMessage()]);
             }
-
         } else {
-
             $device->save();
 
             if ($extensionModules) {
                 $this->storeExtensionModules($extensionModules, $device);
             }
 
-            if($configResult['error'] == '')
-                return [true, '', $configResult['count_all'], $configResult['count_result']];
-            else
-                return [false, $configResult['error'], '', ''];
-
+            return true;
         }
 
         return [false, 'Не удалось изменить данные устройства: '.$e->getMessage(), '', ''];
