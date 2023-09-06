@@ -21,25 +21,18 @@ use App\Services\PortService;
 
 class UsensorController extends Controller
 {
-
-    private $usensor_rep;
-    private $object_rep;
-    private $device_rep;
-    private $room_rep;
-    private $service;
-    private $portService;
-
-    public function __construct(UsensorRepository $usensor_rep, ObjectRepository $object_rep,
-                                DeviceRepository $device_rep, RoomRepository $room_rep, UsensorService $service,
-                                PortService $port_service)
-    {
-        $this->usensor_rep = $usensor_rep;
-        $this->object_rep = $object_rep;
-        $this->device_rep = $device_rep;
-        $this->room_rep = $room_rep;
-        $this->service = $service;
-        $this->portService = $port_service;
-    }
+    public function __construct(
+        private UsensorRepository $usensor_rep,
+        private ObjectRepository $object_rep,
+        private DeviceRepository $device_rep,
+        private RoomRepository $room_rep,
+        private UsensorService $service,
+        private PortService $portService,
+        private ScriptRepository $script_rep,
+        private PortService $portsService,
+        private ObjectService $object_service,
+    )
+    {}
 
     public function index()
     {
@@ -82,15 +75,15 @@ class UsensorController extends Controller
     }
 
 
-    public function edit(Usensor $usensor, ObjectService $object_service, ScriptRepository $script_rep, PortService $portService)
+    public function edit(Usensor $usensor)
     {
         list($objects, $rooms, $devices) = $this->getLists();
 
-        $methods = $object_service->getMethodsByObjectIdToArray($usensor->object);
+        $methods = $this->object_service->getMethodsByObjectIdToArray($usensor->object);
         $object_types = HomeObject::getFullTypeIds();
-        $scripts = $script_rep->getAllToArray();
+        $scripts = $this->script_rep->getAllToArray();
         $can = gates('devices.show-object');
-        $SCL = $SDA = $portService->getPortsIntoList($usensor->device_id, 'IN,I2C,1WIRE,1W-BUS,ADC');
+        $SCL = $SDA = $this->portService->getPortsIntoList($usensor->device_id, 'IN,I2C,1WIRE,1W-BUS,ADC');
         $types = Usensor::getTypes(true);
 
         return view('usensors.edit', compact('usensor', 'objects', 'rooms',

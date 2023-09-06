@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
-
-
 use App\Repositories\CarbmonoxideRepository;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
@@ -22,47 +19,32 @@ use App\Services\Service;
 
 class CarbmonoxideController extends Controller
 {
-
-    private $carbmonoxide_rep;
-    private $object_rep;
-    private $room_rep;
-    private $device_rep;
-    private $service;
-    private $object_service;
-    private $script_repository;
-    private $port_service;
-    private $messagesService;
-
-    public function __construct(CarbmonoxideRepository $carbmonoxideRepository, ObjectRepository $objectRepository,
-                                RoomRepository $roomRepository, DeviceRepository $deviceRepository, CarbmonoxideService $service,
-                                ObjectService $objectService, ScriptRepository $scriptRepository, PortService $portService,
-                                MessageService $messageService)
-    {
-        $this->carbmonoxide_rep = $carbmonoxideRepository;
-        $this->object_rep = $objectRepository;
-        $this->room_rep = $roomRepository;
-        $this->device_rep = $deviceRepository;
-        $this->service = $service;
-        $this->object_service = $objectService;
-        $this->script_repository = $scriptRepository;
-        $this->port_service = $portService;
-        $this->messagesService = $messageService;
-
-    }
+    public function __construct(
+        private CarbmonoxideRepository $carbmonoxideRepository,
+        private ObjectRepository $objectRepository,
+        private RoomRepository $roomRepository,
+        private DeviceRepository $deviceRepository,
+        private CarbmonoxideService $service,
+        private ObjectService $objectService,
+        private ScriptRepository $scriptRepository,
+        private PortService $portService,
+        private MessageService $messageService,
+    )
+    {}
 
     public function index()
     {
 
-        $carbmonoxides = $this->carbmonoxide_rep->getAll();
+        $carbmonoxides = $this->carbmonoxideRepository->getAll();
 
         return view('carbmonoxide.index', compact('carbmonoxides'));
     }
 
     private function getLists()
     {
-        $objects = $this->object_rep->getAllToArray();
-        $rooms = $this->room_rep->getAllToArray();
-        $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
+        $objects = $this->objectRepository->getAllToArray();
+        $rooms = $this->roomRepository->getAllToArray();
+        $devices = $this->deviceRepository->getAllWithoutTypesToArray(['Hite-pro']);
 
 
         return [$objects, $rooms, $devices];
@@ -93,23 +75,22 @@ class CarbmonoxideController extends Controller
 
     }
 
-    public function edit(Carbmonoxide $carbmonoxide, ObjectService $object_service, ScriptRepository $script_rep,
-                         PortService $portsService, MessageService $messagesService, $tab=1)
+    public function edit(Carbmonoxide $carbmonoxide, $tab=1)
     {
         list($objects, $rooms, $devices) = $this->getLists();
 
 
-        $low_methods = $object_service->getMethodsByObjectIdToArray($carbmonoxide->low_object);
-        $high_methods = $object_service->getMethodsByObjectIdToArray($carbmonoxide->low_object);
+        $low_methods = $this->objectService->getMethodsByObjectIdToArray($carbmonoxide->low_object);
+        $high_methods = $this->objectService->getMethodsByObjectIdToArray($carbmonoxide->low_object);
 
         $can = gates('devices.show-object');
 
-        $deviceAndPort = $portsService->getIdDeviceAndPortId($carbmonoxide->id_object);
+        $deviceAndPort = $this->portService->getIdDeviceAndPortId($carbmonoxide->id_object);
 
         $deviceId = $deviceAndPort['id_device'];
         $port = $deviceAndPort['id_port'];
 
-        $ports =  $portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
+        $ports =  $this->portService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
 
         list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
@@ -140,5 +121,4 @@ class CarbmonoxideController extends Controller
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении датчика УГ');
     }
-
 }

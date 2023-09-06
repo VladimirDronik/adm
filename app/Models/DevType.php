@@ -32,6 +32,7 @@ class DevType extends Model
 {
     protected $table = 'devtypes';
     public $timestamps = false;
+    protected $guarded = ['id'];
 
     public function getPortsForInserting(int $device_id): array
     {

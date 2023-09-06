@@ -2,23 +2,22 @@
 
 namespace Tests\Feature;
 
+use App\Models\Carbmonoxide;
+use App\Models\Drycontact;
 use App\Models\Hygrostat;
 use App\Models\Lightstat;
 use App\Models\Motionsensor;
 use App\Models\Termostat;
 use App\User;
-use Database\Seeders\Tests\HygrostatSeeder;
-use Database\Seeders\Tests\LightstatSeeder;
-use Database\Seeders\Tests\MotionsensorSeeder;
-use Database\Seeders\Tests\TermostatSeeder;
 use Database\Seeders\Tests\TestAdminSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Tests\TestData\SensorsData;
 
 class SensorsTest extends TestCase
 {
     use RefreshDatabase;
+
     protected $seeder = TestAdminSeeder::class;
 
     public function test_get_termostats_list_successful(): void
@@ -43,11 +42,11 @@ class SensorsTest extends TestCase
     {
         $user = User::where('login', 'TestAdmin')->first();
 
-        $this->seed(TermostatSeeder::class);
+        $generator = new SensorsData();
 
-        $termostat = Termostat::where('name', 'Тестовый Термостат')->first();
+        $data = $generator->generateTermostat();
 
-        $response = $this->actingAs($user)->get("/termostats/$termostat->id/edit");
+        $response = $this->actingAs($user)->get('/termostats/'. $data['termostat']->id .'/edit');
 
         $response->assertStatus(200);
     }
@@ -82,15 +81,15 @@ class SensorsTest extends TestCase
     {
         $user = User::where('login', 'TestAdmin')->first();
 
-        $this->seed(TermostatSeeder::class);
+        $generator = new SensorsData();
 
-        $termostat = Termostat::where('name', 'Тестовый Термостат')->first();
+        $data = $generator->generateTermostat();
 
-        $response = $this->actingAs($user)->post("termostats/$termostat->id", [
+        $response = $this->actingAs($user)->post('termostats/'. $data['termostat']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового термостата',
             'placetype' => 'port',
-            'id_object' => $termostat->id_object,
+            'id_object' => $data['termostat']->id_object,
             'device_id' => null,
             'port_id' => null,
             'room' => 0,
@@ -103,7 +102,7 @@ class SensorsTest extends TestCase
             'max_alarm' => '40',
         ]);
 
-        $response->assertRedirect("/termostats/$termostat->id/edit");
+        $response->assertRedirect('/termostats/'. $data['termostat']->id .'/edit');
 
         $this->assertDatabaseHas('termostats', [
             'name' => 'Обновление тестового термостата',
@@ -114,12 +113,12 @@ class SensorsTest extends TestCase
     {
         $user = User::where('login', 'TestAdmin')->first();
 
-        $this->seed(TermostatSeeder::class);
+        $generator = new SensorsData();
 
-        $termostat = Termostat::where('name', 'Тестовый Термостат')->first();
+        $data = $generator->generateTermostat();
 
         $response = $this->actingAs($user)
-            ->postJson('termostats/delete', ['id' => $termostat->id], ['X-Requested-With' => 'XMLHttpRequest']);
+            ->postJson('termostats/delete', ['id' => $data['termostat']->id], ['X-Requested-With' => 'XMLHttpRequest']);
 
         $response->assertStatus(200)
             ->assertJson(['result' => true]);
@@ -151,11 +150,11 @@ class SensorsTest extends TestCase
     {
         $user = User::where('login', 'TestAdmin')->first();
 
-        $this->seed(HygrostatSeeder::class);
+        $generator = new SensorsData();
 
-        $hygrostat = Hygrostat::where('name', 'Тестовый Гигростат')->first();
+        $data = $generator->generateHygrostat();
 
-        $response = $this->actingAs($user)->get("/hygrostats/$hygrostat->id/edit");
+        $response = $this->actingAs($user)->get('/hygrostats/'. $data['hygrostat']->id .'/edit');
 
         $response->assertStatus(200);
     }
@@ -190,15 +189,15 @@ class SensorsTest extends TestCase
     {
         $user = User::where('login', 'TestAdmin')->first();
 
-        $this->seed(HygrostatSeeder::class);
+        $generator = new SensorsData();
 
-        $hygrostat = Hygrostat::where('name', 'Тестовый Гигростат')->first();
+        $data = $generator->generateHygrostat();
 
-        $response = $this->actingAs($user)->post("hygrostats/$hygrostat->id", [
+        $response = $this->actingAs($user)->post('hygrostats/'. $data['hygrostat']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового гигростата',
             'placetype' => 'usensor',
-            'id_object' => $hygrostat->id_object,
+            'id_object' => $data['hygrostat']->id_object,
             'room' => 0,
             'type' => '1',
             'optimal' => '22',
@@ -209,7 +208,7 @@ class SensorsTest extends TestCase
             'max_alarm' => '40',
         ]);
 
-        $response->assertRedirect("/hygrostats/$hygrostat->id/edit");
+        $response->assertRedirect('/hygrostats/'. $data['hygrostat']->id .'/edit');
 
         $this->assertDatabaseHas('hygrostats', [
             'name' => 'Обновление тестового гигростата',
@@ -220,12 +219,12 @@ class SensorsTest extends TestCase
     {
         $user = User::where('login', 'TestAdmin')->first();
 
-        $this->seed(HygrostatSeeder::class);
+        $generator = new SensorsData();
 
-        $hygrostat = Hygrostat::where('name', 'Тестовый Гигростат')->first();
+        $data = $generator->generateHygrostat();
 
         $response = $this->actingAs($user)
-            ->postJson('hygrostats/delete', ['id' => $hygrostat->id], ['X-Requested-With' => 'XMLHttpRequest']);
+            ->postJson('hygrostats/delete', ['id' => $data['hygrostat']->id], ['X-Requested-With' => 'XMLHttpRequest']);
 
         $response->assertStatus(200)
             ->assertJson(['result' => true]);
@@ -257,11 +256,11 @@ class SensorsTest extends TestCase
     {
         $user = User::where('login', 'TestAdmin')->first();
 
-        $this->seed(LightstatSeeder::class);
+        $generator = new SensorsData();
 
-        $lightstat = Lightstat::where('name', 'Тестовый Светостат')->first();
+        $data = $generator->generateLightstat();
 
-        $response = $this->actingAs($user)->get("/lightstats/$lightstat->id/edit");
+        $response = $this->actingAs($user)->get('/lightstats/'. $data['lightstat']->id .'/edit');
 
         $response->assertStatus(200);
     }
@@ -296,15 +295,15 @@ class SensorsTest extends TestCase
     {
         $user = User::where('login', 'TestAdmin')->first();
 
-        $this->seed(LightstatSeeder::class);
+        $generator = new SensorsData();
 
-        $lightstat = Lightstat::where('name', 'Тестовый Светостат')->first();
+        $data = $generator->generateLightstat();
 
-        $response = $this->actingAs($user)->post("lightstats/$lightstat->id", [
+        $response = $this->actingAs($user)->post('lightstats/'. $data['lightstat']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового светостата',
             'placetype' => 'port',
-            'id_object' => $lightstat->id_object,
+            'id_object' => $data['lightstat']->id_object,
             'device_id' => null,
             'port_SCL' => null,
             'port_SDA' => null,
@@ -318,7 +317,7 @@ class SensorsTest extends TestCase
             'max_alarm' => '40',
         ]);
 
-        $response->assertRedirect("/lightstats/$lightstat->id/edit");
+        $response->assertRedirect('/lightstats/'. $data['lightstat']->id .'/edit');
 
         $this->assertDatabaseHas('lightstats', [
             'name' => 'Обновление тестового светостата',
@@ -329,12 +328,12 @@ class SensorsTest extends TestCase
     {
         $user = User::where('login', 'TestAdmin')->first();
 
-        $this->seed(LightstatSeeder::class);
+        $generator = new SensorsData();
 
-        $lightstat = Lightstat::where('name', 'Тестовый Светостат')->first();
+        $data = $generator->generateLightstat();
 
         $response = $this->actingAs($user)
-            ->postJson('lightstats/delete', ['id' => $lightstat->id], ['X-Requested-With' => 'XMLHttpRequest']);
+            ->postJson('lightstats/delete', ['id' => $data['lightstat']->id], ['X-Requested-With' => 'XMLHttpRequest']);
 
         $response->assertStatus(200)
             ->assertJson(['result' => true]);
@@ -366,11 +365,11 @@ class SensorsTest extends TestCase
     {
         $user = User::where('login', 'TestAdmin')->first();
 
-        $this->seed(MotionsensorSeeder::class);
+        $generator = new SensorsData();
 
-        $motionsensor = Motionsensor::where('name', 'Тестовый Датчик движения')->first();
+        $data = $generator->generateMotionsensor();
 
-        $response = $this->actingAs($user)->get("/motionsensors/$motionsensor->id/edit");
+        $response = $this->actingAs($user)->get('/motionsensors/'. $data['motionsensor']->id .'/edit');
 
         $response->assertStatus(200);
     }
@@ -398,18 +397,18 @@ class SensorsTest extends TestCase
     {
         $user = User::where('login', 'TestAdmin')->first();
 
-        $this->seed(MotionsensorSeeder::class);
+        $generator = new SensorsData();
 
-        $motionsensor = Motionsensor::where('name', 'Тестовый Датчик движения')->first();
+        $data = $generator->generateMotionsensor();
 
-        $response = $this->actingAs($user)->post("motionsensors/$motionsensor->id", [
+        $response = $this->actingAs($user)->post('motionsensors/'. $data['motionsensor']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового Датчика движения',
-            'id_object' => $motionsensor->id_object,
+            'id_object' => $data['motionsensor']->id_object,
             'port_id' => null,
         ]);
 
-        $response->assertRedirect("/motionsensors/$motionsensor->id/edit");
+        $response->assertRedirect('/motionsensors/'. $data['motionsensor']->id .'/edit');
 
         $this->assertDatabaseHas('motionsensors', [
             'name' => 'Обновление тестового Датчика движения',
@@ -420,18 +419,314 @@ class SensorsTest extends TestCase
     {
         $user = User::where('login', 'TestAdmin')->first();
 
-        $this->seed(MotionsensorSeeder::class);
+        $generator = new SensorsData();
 
-        $motionsensor = Motionsensor::where('name', 'Тестовый Датчик движения')->first();
+        $data = $generator->generateMotionsensor();
 
         $response = $this->actingAs($user)
-            ->postJson('motionsensors/delete', ['id' => $motionsensor->id], ['X-Requested-With' => 'XMLHttpRequest']);
+            ->postJson('motionsensors/delete', ['id' => $data['motionsensor']->id], ['X-Requested-With' => 'XMLHttpRequest']);
 
         $response->assertStatus(200)
             ->assertJson(['result' => true]);
 
         $this->assertDatabaseMissing('motionsensors', [
             'name' => 'Тестовый Датчик движения',
+        ]);
+    }
+
+    public function test_get_usensors_list_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $response = $this->actingAs($user)->get('/usensors');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_get_usensor_create_page_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $response = $this->actingAs($user)->get('/usensors/create');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_get_usensor_edit_page_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $generator = new SensorsData();
+
+        $data = $generator->generateUsensor();
+
+        $response = $this->actingAs($user)->get('/usensors/'. $data['usensor']->id .'/edit');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_post_usensor_store_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $generator = new SensorsData();
+
+        $data = $generator->generateUsensor();
+
+        $response = $this->actingAs($user)->post('/usensors', [
+            'name' => 'Создание тестового универсального датчика',
+            'type' => 'htu21d',
+            'device_id' => $data['device']->id,
+            'port_SCL' => $data['port']->id,
+            'port_SDA' => $data['port']->id,
+            'room' => null,
+        ]);
+
+        $response->assertRedirect('/usensors');
+
+        $this->assertDatabaseHas('usensors', [
+            'name' => 'Создание тестового универсального датчика',
+        ]);
+    }
+
+    public function test_post_usensor_update_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $generator = new SensorsData();
+
+        $data = $generator->generateUsensor();
+
+        $response = $this->actingAs($user)->post('usensors/' . $data['usensor']->id, [
+            '_method' => 'PUT',
+            'name' => 'Обновление тестового универсального датчика',
+            'id_object' => $data['usensor']->id_object,
+            'device_id' => $data['usensor']->device_id,
+            'port_SCL' => $data['usensor']->port_SCL,
+            'port_SDA' => $data['usensor']->port_SDA,
+        ]);
+
+        $response->assertRedirect('/usensors/'. $data['usensor']->id .'/edit');
+
+        $this->assertDatabaseHas('usensors', [
+            'name' => 'Обновление тестового универсального датчика',
+        ]);
+    }
+
+    public function test_delete_usensor_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $generator = new SensorsData();
+
+        $data = $generator->generateUsensor();
+
+        $response = $this->actingAs($user)
+            ->postJson('usensors/delete', ['id' => $data['usensor']->id], ['X-Requested-With' => 'XMLHttpRequest']);
+
+        $response->assertStatus(200)
+            ->assertJson(['result' => true]);
+
+        $this->assertDatabaseMissing('usensors', [
+            'name' => 'Тестовый универсальный датчик',
+        ]);
+    }
+
+    public function test_get_drycontacts_list_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $response = $this->actingAs($user)->get('/drycontacts');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_get_drycontact_create_page_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $response = $this->actingAs($user)->get('/drycontacts/create');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_get_drycontact_edit_page_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $generator = new SensorsData();
+
+        $data = $generator->generateDrycontact();
+
+        $response = $this->actingAs($user)->get('/drycontacts/'. $data['drycontact']->id .'/edit');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_post_drycontact_store_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $response = $this->actingAs($user)->post('/drycontacts', [
+            'name' => 'Создание тестового сухого контакта',
+            'device_id' => null,
+            'method_on' => null,
+            'method_off' => null,
+            'param_method_on' => null,
+            'param_method_off' => null,
+            'port_id' => null,
+        ]);
+
+        $drycontact = Drycontact::where('name', 'Создание тестового сухого контакта')->first();
+
+        $response->assertRedirect('/drycontacts/'. ($drycontact ? $drycontact->id : 1) .'/edit');
+
+        $this->assertDatabaseHas('drycontacts', [
+            'name' => 'Создание тестового сухого контакта',
+        ]);
+    }
+
+    public function test_post_drycontact_update_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $generator = new SensorsData();
+
+        $data = $generator->generateDrycontact();
+
+        $response = $this->actingAs($user)->post('drycontacts/' . $data['drycontact']->id, [
+            '_method' => 'PUT',
+            'name' => 'Обновление тестового сухого контакта',
+            'id_object' => $data['drycontact']->id_object,
+            'device_id' => null,
+            'method_on' => null,
+            'method_off' => null,
+            'param_method_on' => null,
+            'param_method_off' => null,
+            'port_id' => null,
+        ]);
+
+        $response->assertRedirect('/drycontacts/'. $data['drycontact']->id .'/edit');
+
+        $this->assertDatabaseHas('drycontacts', [
+            'name' => 'Обновление тестового сухого контакта',
+        ]);
+    }
+
+    public function test_delete_drycontact_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $generator = new SensorsData();
+
+        $data = $generator->generateDrycontact();
+
+        $response = $this->actingAs($user)
+            ->postJson('drycontacts/delete', ['id' => $data['drycontact']->id], ['X-Requested-With' => 'XMLHttpRequest']);
+
+        $response->assertStatus(200)
+            ->assertJson(['result' => true]);
+
+        $this->assertDatabaseMissing('drycontacts', [
+            'name' => 'Тестовый сухой контакт',
+        ]);
+    }
+
+    public function test_get_carbmonoxide_list_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $response = $this->actingAs($user)->get('/carbmonoxide');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_get_carbmonoxide_create_page_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $response = $this->actingAs($user)->get('/carbmonoxide/create');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_get_carbmonoxide_edit_page_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $generator = new SensorsData();
+
+        $data = $generator->generateCarbmonoxide();
+
+        $response = $this->actingAs($user)->get('/carbmonoxide/'. $data['carbmonoxide']->id .'/edit');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_post_carbmonoxide_store_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $response = $this->actingAs($user)->post('/carbmonoxide', [
+            'name' => 'Создание тестового датчика УГ',
+            'device_id' => null,
+            'cur_value' => 0,
+            'low_value' => 50,
+            'high_value' => 100,
+            'calibration' => 2,
+        ]);
+
+        $carbmonoxide = Carbmonoxide::where('name', 'Создание тестового датчика УГ')->first();
+
+        $response->assertRedirect('/carbmonoxide/'. ($carbmonoxide ? $carbmonoxide->id : 1) .'/edit');
+
+        $this->assertDatabaseHas('carbmonoxide', [
+            'name' => 'Создание тестового датчика УГ',
+        ]);
+    }
+
+    public function test_post_carbmonoxide_update_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $generator = new SensorsData();
+
+        $data = $generator->generateCarbmonoxide();
+
+        $response = $this->actingAs($user)->post('carbmonoxide/' . $data['carbmonoxide']->id, [
+            '_method' => 'PUT',
+            'name' => 'Обновление тестового датчика УГ',
+            'id_object' => $data['carbmonoxide']->id_object,
+            'port' => null,
+            'cur_value' => 0,
+            'low_value' => 50,
+            'high_value' => 100,
+            'calibration' => 2,
+        ]);
+
+        $response->assertRedirect('/carbmonoxide/'. $data['carbmonoxide']->id .'/edit');
+
+        $this->assertDatabaseHas('carbmonoxide', [
+            'name' => 'Обновление тестового датчика УГ',
+        ]);
+    }
+
+    public function test_delete_carbmonoxide_successful(): void
+    {
+        $user = User::where('login', 'TestAdmin')->first();
+
+        $generator = new SensorsData();
+
+        $data = $generator->generateCarbmonoxide();
+
+        $response = $this->actingAs($user)
+            ->postJson('carbmonoxide/delete', ['id' => $data['carbmonoxide']->id], ['X-Requested-With' => 'XMLHttpRequest']);
+
+        $response->assertStatus(200)
+            ->assertJson(['result' => true]);
+
+        $this->assertDatabaseMissing('carbmonoxide', [
+            'name' => 'Тестовый датчик УГ',
         ]);
     }
 }

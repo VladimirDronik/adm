@@ -19,21 +19,17 @@ use App\Repositories\ScriptRepository;
 
 class DrycontactController extends Controller
 {
-    private $drycontact_rep;
-    private $object_rep;
-    private $device_rep;
-    private $service;
-    private $portService;
-
-    public function __construct(DrycontactRepository $drycontact_rep, DeviceRepository $device_rep,
-                                ObjectRepository $object_rep, DrycontactService $service, PortService $portService)
-    {
-        $this->drycontact_rep = $drycontact_rep;
-        $this->device_rep = $device_rep;
-        $this->object_rep = $object_rep;
-        $this->service = $service;
-        $this->portService = $portService;
-    }
+    public function __construct(
+        private DrycontactRepository $drycontact_rep,
+        private DeviceRepository $device_rep,
+        private ObjectRepository $object_rep,
+        private DrycontactService $service,
+        private PortService $portService,
+        private ScriptRepository $script_rep,
+        private MessageService $messagesService,
+        private ObjectService $objectService,
+    )
+    {}
 
     public function index()
     {
@@ -68,8 +64,7 @@ class DrycontactController extends Controller
     }
 
 
-    public function edit(int $id, ScriptRepository $script_rep, ObjectService $objectService,
-                         MessageService $messagesService, $tab=1)
+    public function edit(int $id, $tab=1)
     {
         $drycontact = Drycontact::findOrFail($id);
 
@@ -78,15 +73,12 @@ class DrycontactController extends Controller
             'IN,I2C,1WIRE,1W-BUS');
 
         $method_on = $drycontact->method_on;
-        $object_on = $objectService->getObjectByMethod($method_on);
-        $methods_on = $objectService->getMethodsByObjectIdToArray($object_on);
-
+        $object_on = $this->objectService->getObjectByMethod($method_on);
+        $methods_on = $this->objectService->getMethodsByObjectIdToArray($object_on);
 
         $method_off = $drycontact->method_off;
-        $object_off = $objectService->getObjectByMethod($method_off);
-        $methods_off = $objectService->getMethodsByObjectIdToArray($object_off);
-
-
+        $object_off = $this->objectService->getObjectByMethod($method_off);
+        $methods_off = $this->objectService->getMethodsByObjectIdToArray($object_off);
 
         $messagePoint['first'] = 'При замыкании';
         $messagePoint['second'] = 'При размыкании';
