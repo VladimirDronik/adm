@@ -16,20 +16,12 @@ use App\Services\BoilerService;
 
 class BoilerController extends Controller
 {
-    private $termostatRepository;
-    private $boilerRepository;
-    private $service;
-
     public function __construct(
-        BoilerRepository $boilerRepository,
-        BoilerService $boilerService,
-        TermostatRepository $termostatRepository
+        private BoilerRepository $boilerRepository,
+        private BoilerService $service,
+        private TermostatRepository $termostatRepository
     )
-    {
-        $this->termostatRepository = $termostatRepository;
-        $this->boilerRepository = $boilerRepository;
-        $this->service = $boilerService;
-    }
+    {}
 
     public function edit($boilerIdObject)
     {

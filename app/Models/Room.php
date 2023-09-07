@@ -43,6 +43,7 @@ class Room extends Model
 {
     const COMMON_NAME = 'Общие';
     public $timestamps = false;
+    protected $guarded = ['id'];
 
     /* attributes */
 

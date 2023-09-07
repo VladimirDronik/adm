@@ -141,4 +141,22 @@ class ConditionerService {
 
         return $output ? json_decode($output[0], true) : null;
     }
+
+    /**
+     * Удаление кондиционера и объекта.
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function delete(int $id): bool
+    {
+        $conditioner = Conditioner::findOrFail($id);
+
+        DB::transaction(function () use (&$conditioner) {
+            $conditioner->object->delete();
+            $conditioner->delete();
+        });
+
+        return true;
+    }
 }

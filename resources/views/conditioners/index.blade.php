@@ -53,7 +53,7 @@
                                     <td class="text-center">
                                         <button type="button"
                                                 class="btn btn-danger btn-sm btn-rounded m-b-10 m-l-5 del_btn"
-                                                data-id="{{ $conditioner->id }}" data-name="{{ $conditioner->name }}">
+                                                data-id="{{ $conditioner->id }}">
                                             <i class="fa fa-trash fa-lg"></i>
                                         </button>
                                     </td>
@@ -73,7 +73,7 @@
                             </tfoot>
                         </table>
                     </div>
-                   {{ $conditioners->appends(request()->input())->links() }}
+                    {{ $conditioners->appends(request()->input())->links() }}
                     <p class="text-right">Найдено: {{ $conditioners->total() }}</p>
                 @else
                     <p>Данные не найдены</p>
@@ -86,56 +86,31 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('ela/js/pagescripts/page.js') }}"></script>
     <script>
-        const deleteUrl = '{{ route('ajax.engineering.delete') }}';
-        const addMenuUrl = '{{ route('ajax.menu.add') }}';
-        //const storeUrl = '{{ route('ajax.page.store') }}';
-  
-        let url = '{{ route('engineering.index') }}';
-        let del_id;
-
- @if(!empty(Session::get('success')) && Session::get('success') == 'Котёл успешно добавлен')
-	let idObject = '{{ Session::get('idObject') }}';
-
-
-              $('#modalNewMenu').show();
-              $('#modal_newmenu_init_btn').click();
-	@endif
+        const deleteUrl = '{{ route('ajax.conditioners.delete') }}';
 
         $(document).ready(function(){
-
-            $('.del_btn').click(function () {
-
+            let del_id;
+            $('.del_btn').click(function() {
                 del_id = $(this).data('id');
-
-                $('#del_modal_body').text('Удалить оборудование № ' + $(this).data('id') +
-                    ' «' + $(this).data('name') + '»?');
+                $('#del_modal_body').text('Удалить кондиционер № ' + $(this).data('id') + ' ?');
                 $('#del_init_btn').click();
-
             });
-
-
-            $('#del_modal_btn').click(del);
-
-
-            $('#addPageBtn').click(function() {
-                $('#modalPage #modal_groups_div').show();
-                $('#modalPage #namePage').val('');
-                $('#modal_page_init_btn').click();
+            $('#del_modal_btn').click(function(){
+                if (del_id) {
+                    $.ajax({
+                        url: deleteUrl,
+                        data: { '_token': _token, 'id': del_id },
+                        success: function (data) {
+                            if (data.result) {
+                                $('#tr'+del_id).hide();
+                            } else {
+                                showErrorModal('Ошибка при удалении кондиционера');
+                            }
+                        }
+                    });
+                }
             });
-            
-           
-            
-            $('#newmenu_success_btn').click(function() {
-            addMenu(idObject);
-            });
-            
-
         });
-        
-       
-
-        
     </script>
 @endsection

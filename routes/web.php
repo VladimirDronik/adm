@@ -106,6 +106,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('recive_code', 'ConditionerController@reciveCode')->name('recive_code');
             Route::post('save_code', 'ConditionerController@saveCode')->name('save_code');
             Route::post('read_code/cancel', 'ConditionerController@cancelReadingCode')->name('cancel_reading_code');
+            Route::post('delete', 'ConditionerController@delete')->name('delete');
         });
 
         Route::group(['prefix' => 'devices', 'as' => 'devices.'], function () {

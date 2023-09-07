@@ -36,7 +36,6 @@ class BoilerGVSController extends Controller
 
     public function update(UpdateRequest $r, int $idObject)
     {
-
         $boiler = $this->boilerRepository->getBoiler($idObject);
 
         try {
