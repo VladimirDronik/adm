@@ -18,20 +18,15 @@ use App\Services\MessageService;
 
 class VirtualsController extends Controller
 {
-
-    private $virt_rep;
-    private $object_rep;
-    private $device_rep;
-    private $service;
-
-    public function __construct(VirtualRepository $virtualRepository, ObjectRepository $objectRepository,
-                                DeviceRepository $deviceRepository, VirtualService $virtualService) {
-
-        $this->virt_rep = $virtualRepository;
-        $this->object_rep = $objectRepository;
-        $this->device_rep = $deviceRepository;
-        $this->service = $virtualService;
-    }
+    public function __construct(
+        private VirtualRepository $virt_rep,
+        private ObjectRepository $object_rep,
+        private DeviceRepository $device_rep,
+        private VirtualService $service,
+        private ScriptRepository $script_rep,
+        private MessageService $messageService,
+    )
+    {}
 
     public function index()
     {
@@ -42,7 +37,6 @@ class VirtualsController extends Controller
 
     public function create()
     {
-
         $objects = $this->object_rep->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
         $devices = $this->device_rep->getAllToArray();
@@ -65,10 +59,8 @@ class VirtualsController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении виртуального устройства');
     }
 
-
-    public function edit(Virtual $virtual, ScriptRepository $script_rep, MessageService $messageService, $tab =1)
+    public function edit(Virtual $virtual, $tab =1)
     {
-
         $can = gates('devices.show-object');
 
         list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice) =
@@ -82,12 +74,10 @@ class VirtualsController extends Controller
 
         $allEvents = '';
 
-
         return view('virtuals.edit', compact('virtual', 'tab', 'allEvents', 'alice', 'rooms', 'events',
-             'availableEvents', 'properties', 'sounds', 'views',
-             'messagePoint', 'messages', 'objects', 'object_types', 'scripts', 'can'));
+            'availableEvents', 'properties', 'sounds', 'views',
+            'messagePoint', 'messages', 'objects', 'object_types', 'scripts', 'can'));
     }
-
 
     public function update(UpdateRequest $r, Virtual $virtual)
     {

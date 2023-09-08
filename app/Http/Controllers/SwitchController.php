@@ -22,21 +22,17 @@ use App\Services\SwitchService;
 
 class SwitchController extends Controller
 {
-    private $switch_rep;
-    private $object_rep;
-    private $device_rep;
-    private $service;
-    private $portService;
-
-    public function __construct(SwitchRepository $switch_rep, ObjectRepository $object_rep, DeviceRepository $device_rep,
-                                SwitchService $service, PortService $portService)
-    {
-        $this->switch_rep = $switch_rep;
-        $this->object_rep = $object_rep;
-        $this->device_rep = $device_rep;
-        $this->service = $service;
-        $this->portService = $portService;
-    }
+    public function __construct(
+        private SwitchRepository $switch_rep,
+        private ObjectRepository $object_rep,
+        private DeviceRepository $device_rep,
+        private SwitchService $service,
+        private PortService $portService,
+        private ScriptRepository $script_rep,
+        private ObjectService $objectService,
+        private MessageService $messagesService,
+    )
+    {}
 
     public function index()
     {
@@ -71,9 +67,7 @@ class SwitchController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении выключателя');
     }
 
-    public function edit(int $id, ScriptRepository $script_rep,
-                         ObjectService $objectService, PortService $portService,
-                         MessageService $messagesService,DeviceRepository $device_rep, $tab = 1)
+    public function edit(int $id, $tab = 1)
     {
         $switch = DeviceSwitch::findOrFail($id);
 
@@ -86,9 +80,9 @@ class SwitchController extends Controller
 
         $object_types =  HomeObject::getFullTypeIds();
 
-        $deviceAndPort = $portService->getIdDeviceAndPortId($switch->id_object);
+        $deviceAndPort = $this->portService->getIdDeviceAndPortId($switch->id_object);
 
-        $port = $portService->getMethodsByObject($switch->id_object);
+        $port = $this->portService->getMethodsByObject($switch->id_object);
 
         list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) = $this->portService->getCurrentDevPort($switch->id_object, 'IN,I2C,1WIRE,1W-BUS,ADC');
         list($messages, $events, $sounds, $views, $rooms, $scripts, , $object_types, $alice, $allEvents) =
@@ -105,31 +99,31 @@ class SwitchController extends Controller
 
         if($port) {
             $method = $port->method;
-            $object = $objectService->getObjectByMethod($method);
-            $methods = $objectService->getMethodsByObjectIdToArray($object);
+            $object = $this->objectService->getObjectByMethod($method);
+            $methods = $this->objectService->getMethodsByObjectIdToArray($object);
             if($port->method) {
                 $params['value'] = $port->method_params;
-                $params['name'] = $objectService->getParamsByMethodId($port->method);
+                $params['name'] = $this->objectService->getParamsByMethodId($port->method);
             }
 
 
             $method_dc = $port->dc_method;
-            $object_dc = $objectService->getObjectByMethod($method_dc);
-            $methods_dc = $objectService->getMethodsByObjectIdToArray($object_dc);
+            $object_dc = $this->objectService->getObjectByMethod($method_dc);
+            $methods_dc = $this->objectService->getMethodsByObjectIdToArray($object_dc);
 
             if($port->dc_method) {
                 $params_dc['value'] = $port->dc_method_params;
-                $params_dc['name'] = $objectService->getParamsByMethodId($port->dc_method);
+                $params_dc['name'] = $this->objectService->getParamsByMethodId($port->dc_method);
             }
 
 
             $method_lc = $port->lc_method;
-            $object_lc = $objectService->getObjectByMethod($method_lc);
-            $methods_lc = $objectService->getMethodsByObjectIdToArray($object_lc);
+            $object_lc = $this->objectService->getObjectByMethod($method_lc);
+            $methods_lc = $this->objectService->getMethodsByObjectIdToArray($object_lc);
 
             if($port->lc_method) {
                 $params_lc['value'] = $port->lc_method_params;
-                $params_lc['name'] = $objectService->getParamsByMethodId($port->lc_method);
+                $params_lc['name'] = $this->objectService->getParamsByMethodId($port->lc_method);
             }
 
             $place = 'port';
@@ -149,23 +143,23 @@ class SwitchController extends Controller
             //Если выбрано устройство hite-pro, значит контроллер тоже хитпро
             if($hp_device != null) {
                 $method = $switch->id_method;
-                $object = $objectService->getObjectByMethod($method);
-                $methods = $objectService->getMethodsByObjectIdToArray($object);
+                $object = $this->objectService->getObjectByMethod($method);
+                $methods = $this->objectService->getMethodsByObjectIdToArray($object);
                 $place = 'Hite-pro';
                 if($switch->id_method) {
                     $params['value'] = $switch->method_params;
-                    $params['name'] = $objectService->getParamsByMethodId($switch->id_method);
+                    $params['name'] = $this->objectService->getParamsByMethodId($switch->id_method);
                 }
             }
         }
 
 
-        $messages = $messagesService->getNotifications($switch->id_object);
+        $messages = $this->messagesService->getNotifications($switch->id_object);
 
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
 
-        $scripts = $script_rep->getAllToArray();
+        $scripts = $this->script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
         $availableEvents = DeviceSwitch::getEvents();
@@ -173,7 +167,7 @@ class SwitchController extends Controller
 
         //Если тип = кнопка, то выводим в устройствах хит-про
         if($switch->type == 'button') {
-            $devices = $device_rep->getAllWithoutTypesToArray();
+            $devices = $this->device_rep->getAllWithoutTypesToArray();
         }
 
 

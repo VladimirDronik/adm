@@ -29,6 +29,7 @@ class DeviceSwitch extends Model
 
     protected $table = 'switches';
     public $timestamps = false;
+    protected $guarded = ['id'];
 
     public static function getTypes(bool $is_full = false)
     {

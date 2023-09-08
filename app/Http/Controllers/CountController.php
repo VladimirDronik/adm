@@ -16,21 +16,15 @@ use App\Services\Service;
 
 class CountController extends Controller
 {
-    private $count_rep;
-    private $object_rep;
-    private $device_rep;
-    private $portService;
-    private $service;
-
-    public function __construct(CountRepository $count_rep, ObjectRepository $object_rep, DeviceRepository $device_rep,
-                                CountService $service, PortService $portService)
-    {
-        $this->count_rep = $count_rep;
-        $this->object_rep = $object_rep;
-        $this->device_rep = $device_rep;
-        $this->service = $service;
-        $this->portService = $portService;
-    }
+    public function __construct(
+        private CountRepository $count_rep,
+        private ObjectRepository $object_rep,
+        private DeviceRepository $device_rep,
+        private CountService $service,
+        private PortService $portService,
+        private ScriptRepository $script_rep,
+    )
+    {}
 
     public function index()
     {
@@ -45,7 +39,6 @@ class CountController extends Controller
         $objects = $this->object_rep->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
         $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
-
 
         return view('counts.create', compact('types', 'objects', 'object_types', 'devices'));
     }
@@ -65,13 +58,13 @@ class CountController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении счетчика');
     }
 
-    public function edit(Count $count, ScriptRepository $script_rep, $tab=1)
+    public function edit(Count $count, $tab=1)
     {
         $types = Count::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
         $object_types =  HomeObject::getFullTypeIds();
 
-        $scripts = $script_rep->getAllToArray();
+        $scripts = $this->script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
         list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($count->id_object, 'IN,I2C,1WIRE,1W-BUS');

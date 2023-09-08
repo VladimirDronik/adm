@@ -29,6 +29,7 @@ class Dimmer extends Model
 {
     protected $table = 'dimmers';
     public $timestamps = false;
+    protected $guarded = ['id'];
 
     /* relations */
 

@@ -8,7 +8,7 @@ class Virtual extends Model
 {
     protected $table = 'virtualsdev';
     public $timestamps = false;
-
+    protected $guarded = ['id'];
 
     /**
      * Получение доступных событий для объекта

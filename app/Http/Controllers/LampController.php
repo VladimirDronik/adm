@@ -18,23 +18,14 @@ use App\Http\Requests\Lamp\UpdateRequest;
 
 class LampController extends Controller
 {
-
-    private $lamp_rep;
-    private $object_rep;
-    private $device_rep;
-    private $service;
-    private $portService;
-
-
-    public function __construct(LampRepository $lamp_rep, ObjectRepository $object_rep, DeviceRepository $device_rep,
-                                LampService $service, PortService $portService)
-    {
-        $this->lamp_rep = $lamp_rep;
-        $this->object_rep = $object_rep;
-        $this->device_rep = $device_rep;
-        $this->service = $service;
-        $this->portService = $portService;
-    }
+    public function __construct(
+        private LampRepository $lamp_rep,
+        private ObjectRepository $object_rep,
+        private DeviceRepository $device_rep,
+        private LampService $service,
+        private PortService $portService,
+    )
+    {}
 
     public function index()
     {

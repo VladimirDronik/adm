@@ -15,21 +15,14 @@ use App\Services\Service;
 
 class DimmerController extends Controller
 {
-    private $dimmer_rep;
-    private $object_rep;
-    private $device_rep;
-    private $portService;
-    private $service;
-
-    public function __construct(DimmerRepository $dimmer_rep, ObjectRepository $object_rep, DeviceRepository $device_rep,
-                                DimmerService $service, PortService $portService)
-    {
-        $this->dimmer_rep = $dimmer_rep;
-        $this->object_rep = $object_rep;
-        $this->device_rep = $device_rep;
-        $this->portService = $portService;
-        $this->service = $service;
-    }
+    public function __construct(
+        private DimmerRepository $dimmer_rep,
+        private ObjectRepository $object_rep,
+        private DeviceRepository $device_rep,
+        private DimmerService $service,
+        private PortService $portService,
+    )
+    {}
 
     public function index()
     {

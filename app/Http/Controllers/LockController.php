@@ -19,24 +19,14 @@ use App\Models\HomeObject;
 
 class LockController extends Controller
 {
-
-    private $portService;
-    private $object_rep;
-    private $device_rep;
-    private $lock_rep;
-    private $lockService;
-
-
-    public function __construct(LockRepository $lockRepository, PortService $portService,
-                                LockService $lockService, ObjectRepository $objectRepository,
-                                DeviceRepository $deviceRepository)
-    {
-        $this->lock_rep = $lockRepository;
-        $this->portService = $portService;
-        $this->lockService = $lockService;
-        $this->object_rep = $objectRepository;
-        $this->device_rep = $deviceRepository;
-    }
+    public function __construct(
+        private LockRepository $lock_rep,
+        private PortService $portService,
+        private LockService $lockService,
+        private ObjectRepository $object_rep,
+        private DeviceRepository $device_rep,
+    )
+    {}
 
     public function index()
     {
@@ -57,13 +47,11 @@ class LockController extends Controller
         list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice) =
             Service::getListElements($lock->id_object);
 
-
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
 
         $availableEvents = Lock::getEvents();
         $properties = Lock::getProperties();
-
 
         $devices = $this->device_rep->getAllToArray();
         $idPort_open = $lock->port_open;
@@ -80,7 +68,6 @@ class LockController extends Controller
             $label_hitepro = 'Устройство: ';
         }
 
-
         $allEvents = '';
 
         return view('locks.edit', compact('lock', 'types', 'events', 'sounds', 'views', 'rooms',
@@ -88,8 +75,6 @@ class LockController extends Controller
             'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'idPort_open', 'idPort_close',
             'label_port', 'label_hitepro', 'hp_device_open', 'hp_device_close', 'allEvents', 'place', 'can'));
     }
-
-
 
     public function update(UpdateRequest $r, int $id)
     {
@@ -108,7 +93,6 @@ class LockController extends Controller
         return back()->withInput($r->all())->with('error','Ошибка при изменении замка');
     }
 
-
     public function create()
     {
         $types = Lock::getTypes(true);
@@ -119,7 +103,6 @@ class LockController extends Controller
 
         return view('locks.create', compact('types', 'tab', 'objects', 'object_types', 'devices'));
     }
-
 
     public function store(CreateRequest $r)
     {
@@ -135,6 +118,4 @@ class LockController extends Controller
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении замка');
     }
-
-
 }

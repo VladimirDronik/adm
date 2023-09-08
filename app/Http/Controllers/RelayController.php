@@ -15,21 +15,14 @@ use App\Services\Service;
 
 class RelayController extends Controller
 {
-    private $relay_rep;
-    private $object_rep;
-    private $device_rep;
-    private $service;
-    private $portService;
-
-    public function __construct(RelayRepository $relay_rep, ObjectRepository $object_rep, DeviceRepository $device_rep,
-                                RelayService $service, PortService $portService)
-    {
-        $this->relay_rep = $relay_rep;
-        $this->object_rep = $object_rep;
-        $this->device_rep = $device_rep;
-        $this->portService = $portService;
-        $this->service = $service;
-    }
+    public function __construct(
+        private RelayRepository $relay_rep,
+        private ObjectRepository $object_rep,
+        private DeviceRepository $device_rep,
+        private RelayService $service,
+        private PortService $portService,
+    )
+    {}
 
     public function index()
     {
