@@ -29,8 +29,6 @@ class CreateRequest extends FormRequest
             'optimal' => 'required|numeric',
             'gisteresis' => 'required|numeric',
             'thermostat' => 'required|integer|min:0|max:1',
-            'min_threshold' => 'required|integer',
-            'max_threshold' => 'required|integer',
             'min_alarm' => 'required|integer',
             'max_alarm' => 'required|integer',
             'room' => 'nullable|integer|min:0',

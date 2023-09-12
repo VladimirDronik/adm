@@ -66,22 +66,19 @@ class TermostatController extends Controller
         $types = Termostat::getFullThermostatIds();
         $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
         $usensors = $this->usensors_rep->getAllToArray();
-        $HPControllers = $this->device_rep->getAllByTypesToArray(['Hite-pro']);
 
-
-
-        return [$objects, $rooms, $types, $devices, $usensors, $HPControllers];
+        return [$objects, $rooms, $types, $devices, $usensors];
     }
 
     public function create()
     {
-        list($objects, $rooms, $types, $devices, $usensors, $HPControllers) = $this->getLists();
+        list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
         $object_types =  HomeObject::getFullTypeIds();
         $can = gates('devices.show-object');
         $tab =1;
 
         return view('termostats.create', compact('objects','rooms', 'types', 'devices',
-            'usensors', 'object_types', 'HPControllers', 'can', 'tab'));
+            'usensors', 'object_types', 'can', 'tab'));
     }
 
 
@@ -106,7 +103,7 @@ class TermostatController extends Controller
                          PortService $portsService, MessageService $messagesService)
     {
 
-        list($objects, $rooms, $types, $devices, $usensors, $HPControllers) = $this->getLists();
+        list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
 
 
         $methods = $object_service->getMethodsByObjectIdToArray($termostat->object);
@@ -139,7 +136,7 @@ class TermostatController extends Controller
 
 
         return view('termostats.edit', compact('termostat', 'objects', 'rooms',
-            'types', 'devices', 'methods', 'object_types', 'scripts', 'HPControllers', 'id_controller',
+            'types', 'devices', 'methods', 'object_types', 'scripts', 'id_controller',
             'subdevs', 'usensors', 'deviceId', 'portId', 'ports', 'messages', 'messagePoint', 'can', 'tab', 'events',
             'availableEvents', 'properties', 'sounds', 'views', 'allEvents'));
     }

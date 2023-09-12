@@ -6,11 +6,6 @@
     'Освещенность, которая должна быть в помещении') }}
 {{ Form::bs_number('gisteresis', 'Гистерезис*:', old('gisteresis', 10), ['min' => 0, 'max' => 1000, 'required' => true]) }}
 
-
-{{ Form::bs_number('min_threshold', 'Минимальная освещенность*:', old('min_threshold', 0), ['min' => 0, 'max' => 54612, 'required' => true],
-    '') }}
-{{ Form::bs_number('max_threshold', 'Максимальная освещенность*:', old('max_threshold', 54612), ['min' => 0, 'max' => 54612, 'required' => true],
-    '') }}
 {{ Form::bs_number('min_alarm', 'Мин. аварийная освещенность*:', old('min_alarm', 0), ['min' => 0, 'max' => 54612, 'required' => true],
     '') }}
 {{ Form::bs_number('max_alarm', 'Макс. аварийная освещенность*:', old('max_alarm', 54612), ['min' => 0, 'max' => 54612, 'required' => true],

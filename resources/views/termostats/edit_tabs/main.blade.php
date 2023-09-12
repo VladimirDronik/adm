@@ -20,10 +20,6 @@
                 <input type="radio" name="placetype_radio" autocomplete="off" value="usensor"> На унив. датчике
             </label>
 
-            <label class="btn btn-success btn-sm @if($termostat->placetype == 'Hite-pro') active @endif">
-                <input type="radio" name="placetype_radio" autocomplete="off" value="device"> Отдельное устройство
-            </label>
-
             <input type="hidden" id="placetype" name="placetype" value="{{$termostat->placetype}}">
         </div>
     </div>
@@ -41,12 +37,6 @@
 
 <div class="col-sm-12 pr-0 mt-4" id="usensor_div" @if($termostat->placetype != 'usensor') style="display: none;" @endif>
     {{ Form::bs_autoselect('usensor_id', 'Универсальный датчик:', $usensors, old('usensor_id', is_null($termostat->usensor_id) ? 0 : $termostat->usensor_id), false, false, [], null) }}
-</div>
-
-<div class="col-sm-12 pr-0 mt-4" id="device_div" @if($termostat->placetype != 'Hite-pro') style="display: none;" @endif>
-    {{ Form::bs_autoselect('HPController_id', 'Контроллер:', $HPControllers, old('HPController_id', is_null($id_controller) ? 0 : $id_controller), false, false, [], null) }}
-
-    {{ Form::bs_autoselect('subdev_id', 'Термометр:', $subdevs, old('subdev_id', is_null($termostat->subdev_id) ? 0 : $termostat->subdev_id), false, false, [], null) }}
 </div>
 
 @include('messages.two')

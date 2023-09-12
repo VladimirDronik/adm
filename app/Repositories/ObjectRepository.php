@@ -59,10 +59,9 @@ class ObjectRepository {
     {
         return HomeObject::select('name')->where('id', $idObject)->first();
     }
-    
-     public static function getById($idObject)
+
+    public static function getById($idObject)
     {
         return HomeObject::where('id', $idObject)->first();
     }
-
 }

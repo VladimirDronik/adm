@@ -154,6 +154,11 @@ class HomeObject extends Model
         return $this->hasOne(Curtain::class, 'id_object', 'id');
     }
 
+    public function usensor()
+    {
+        return $this->hasOne(Usensor::class, 'id_object', 'id');
+    }
+
     public function boilerManual()
     {
         return $this->hasOne(BoilerManual::class, 'id_object', 'id');

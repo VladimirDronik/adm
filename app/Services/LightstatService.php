@@ -41,6 +41,9 @@ class LightstatService
         unset($data['placetype_radio']);
         unset($data['place_type']);
 
+        $data['min_threshold'] = 0;
+        $data['max_threshold'] = 54612;
+
         if (($data['room'] ?? 0) == 0) {
             $data['room'] = null;
         }
