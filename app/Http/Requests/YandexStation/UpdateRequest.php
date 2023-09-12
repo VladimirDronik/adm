@@ -25,7 +25,6 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'speaker_id' => 'required|string|max:255',
             'volume' =>  'required|integer|min:0|max:100',
         ];
     }
@@ -35,8 +34,6 @@ class UpdateRequest extends FormRequest
         return [
             'name.required' => 'Не указано название',
             'name.max' => 'Название содержит более 250 символов',
-            'speaker_id.required' => 'ID устройства не указано',
-            'speaker_id.max' => 'ID устройства содержит более 250 символов',
             'volume.required' => 'Не указана громкость',
         ];
     }

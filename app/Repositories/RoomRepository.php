@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Room;
+use Illuminate\Database\Eloquent\Model;
 
 class RoomRepository
 {
@@ -61,5 +62,16 @@ class RoomRepository
         }
 
         return optional($rooms->firstWhere('id', $room_id))->name;
+    }
+
+    /**
+     * Поиск комнаты по названию
+     *
+     * @param null|string $name
+     * @return null|Model
+     */
+    public function getByName(?string $name): ?Model
+    {
+        return Room::where('name', $name)->first();
     }
 }

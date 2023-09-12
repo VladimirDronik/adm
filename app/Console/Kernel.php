@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('get:images')->daily();
+        $schedule->command('refresh:yandex_auth')->daily();
     }
 
     /**

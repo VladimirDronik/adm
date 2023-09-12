@@ -18,7 +18,6 @@
                 <div class="card">
                     <div class="card-body">
                         <a href="{{ route('yandexstations.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок станций</a>
-                        <a href="{{ route('yandexstations.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить станцию</a>
                     </div>
                 </div>
             </div>
@@ -32,17 +31,21 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_text('speaker_id', 'ID станции*:', null, ['required' => true]) }}
-                        {{ Form::bs_number('volume', 'Громкость звука:', old('volume', $yandexstation->volume), ['min' => 0, 'max' => 100, 'required' => false],'') }}
-                        {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', $yandexstation->room), false, false) }}
-
+                        <ul class="nav nav-tabs customtab" role="tablist">
+                            <li class="nav-item"> <a class="nav-link active"  data-toggle="tab" href="#portstab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#portstab2"  role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane p-20 active" id="portstab1" role="tabpanel">
+                                @include('yandexstations.edit_tabs.main')
+                            </div>
+                            <div class="tab-pane p-20" id="portstab2" role="tabpanel">
+                                @include('yandexstations.edit_tabs.methods', ['object' => $yandexstation->object])
+                            </div>
+                        </div>
                     </div>
 
-
-
                     {{ Form::bs_submit_btn() }}
-
 
                     {!! Form::close() !!}
                 </div>

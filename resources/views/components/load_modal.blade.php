@@ -15,6 +15,7 @@
 
         </div>
     </div>
+    <button type="button" id="dismiss_load_modal" style="display: none;" data-dismiss="modal">&nbsp;</button>
 </div>
 
 <button type="button" id="load_init_btn" style="display: none;" data-toggle="modal" data-target="#load_modal">&nbsp;</button>

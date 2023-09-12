@@ -64,7 +64,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('users', 'UserController')->except('show','destroy')->middleware('can:rooms');
     Route::resource('notifications', 'NotificationController')->except('show','destroy')->middleware('can:settings');
     Route::resource('virtuals', 'VirtualsController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('yandexstations', 'YandexStationController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('yandexstations', 'YandexStationController')->except('show','destroy','create','store')->middleware('can:devices');
+    Route::get('yandexstations/reset_user', 'YandexStationController@resetUser')->name('yandexstations.reset_user')->middleware('can:devices');
 
     //Route::get('termostats/{termostat}/edit/{tab?}', 'TermostatController@edit')->name('termostats.edit')->middleware('can:devices');
 
@@ -83,8 +84,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('graphs/humidities', 'GraphController@humidities')->name('graphs.humidities.index')->middleware('can:graphs');
     Route::get('graphs/counts', 'GraphController@counts')->name('graphs.counts.index')->middleware('can:graphs');
     Route::get('logs/settings', 'LogController@settings')->name('logs.settings')->middleware('can:logs');
-    Route::get('yandexstations/editcookies', 'YandexStationController@editCookies')->name('yandexstations.editcookies')->middleware('can:devices');
-    Route::post('yandexstations/updatecookies', 'YandexStationController@updateCookies')->name('yandexstations.updatecookies')->middleware('can:devices');
 
 
     Route::resource('scripts', 'ScriptController')->except('show','destroy')->middleware('can:scripts');
@@ -142,8 +141,14 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('engineering/delete', 'EngineeringController@delete')->name('engineering.delete');
         Route::post('curtains/delete', 'CurtainsController@delete')->name('curtains.delete');
         Route::post('locks/delete', 'LockController@delete')->name('locks.delete');
-        Route::post('yandexstations/delete', 'YandexStationController@delete')->name('yandexstations.delete');
 
+        Route::group(['prefix' => 'yandexstations', 'as' => 'yandexstations.'], function () {
+            Route::post('delete', 'YandexStationController@delete')->name('delete');
+            Route::post('auth', 'YandexStationController@auth')->name('auth');
+            Route::post('sync_stations', 'YandexStationController@syncStations')->name('sync_stations');
+            Route::post('get_qr', 'YandexStationController@getQr')->name('get_qr');
+            Route::post('login_qr', 'YandexStationController@loginQr')->name('login_qr');
+        });
 
         Route::group(['prefix' => 'logs', 'as' => 'logs.'], function () {
             Route::post('active', 'LogsController@active')->name('active');

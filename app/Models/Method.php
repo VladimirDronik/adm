@@ -39,6 +39,7 @@ use Illuminate\Database\Eloquent\Model;
 class Method extends Model
 {
     public $timestamps = false;
+    protected $guarded = ['id'];
 
     public function getTypeAttribute()
     {
