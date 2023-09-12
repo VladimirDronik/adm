@@ -11,20 +11,12 @@ use App\Services\CameraService;
 
 class CameraController extends Controller
 {
-    private $cameraRep;
-    private $roomRep;
-    private $service;
-
     public function __construct(
-        CameraRepository $cameraRep,
-        RoomRepository $roomRep,
-        CameraService $service
+        private CameraRepository $cameraRep,
+        private RoomRepository $roomRep,
+        private CameraService $service
     )
-    {
-        $this->cameraRep = $cameraRep;
-        $this->roomRep = $roomRep;
-        $this->service = $service;
-    }
+    {}
 
     public function index()
     {

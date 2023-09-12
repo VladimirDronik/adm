@@ -8,12 +8,10 @@ use App\Http\Controllers\Controller;
 
 class RoomController extends Controller
 {
-    private $service;
-
-    public function __construct(RoomService $service)
-    {
-        $this->service = $service;
-    }
+    public function __construct(
+        private RoomService $service
+    )
+    {}
 
     public function delete(Request $r)
     {

@@ -50,10 +50,6 @@ class VirtualTest extends TestCase
     {
         $user = User::where('login', 'TestAdmin')->first();
 
-        $generator = new VirtualsData();
-
-        $data = $generator->generateVirtual();
-
         $response = $this->actingAs($user)->post('/virtuals', [
             'name' => 'Создание тестового виртуального устройства',
         ]);

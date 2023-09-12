@@ -130,7 +130,13 @@ class RoomService
     private function setColorIfEmpty($color)
     {
         if (empty($color)) {
-            return optional(ColorService::getAll()[0])->name ?? 'red';
+            $colors = ColorService::getAll();
+
+            if ($colors->isEmpty()) {
+                return 'red';
+            }
+
+            return $colors->first()->name;
         }
 
         return $color;

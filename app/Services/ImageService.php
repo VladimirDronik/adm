@@ -12,7 +12,7 @@ class ImageService {
 
     public static function getImages(string $path)
     {
-        return array_values(array_diff(scandir($path), ['..', '.']));
+        return array_values(array_diff(file_exists($path) ? scandir($path) : scandir(base_path('public/'.$path)), ['..', '.']));
     }
 
     /**

@@ -11,14 +11,11 @@ use App\Services\RoomService;
 
 class RoomController extends Controller
 {
-    private $room_rep;
-    private $service;
-
-    public function __construct(RoomRepository $room_rep, RoomService $service)
-    {
-        $this->room_rep = $room_rep;
-        $this->service = $service;
-    }
+    public function __construct(
+        private RoomRepository $room_rep,
+        private RoomService $service
+    )
+    {}
 
     public function index()
     {
