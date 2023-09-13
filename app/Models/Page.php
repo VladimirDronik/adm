@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model
 {
-
     const TYPE_2FIELD = '2field';
 
     protected $table = 'pages';
     public $timestamps = false;
+    protected $guarded = ['id'];
 
     public static function getTypes(bool $is_full = false)
     {

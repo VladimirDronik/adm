@@ -18,32 +18,23 @@ use App\Services\ObjectService;
 
 class ElementController extends Controller
 {
-    private $elementRepository;
-    private $service;
-    private $objectRepository;
-    private $objectService;
-
-    public function __construct(ElementRepository $elementRepository, ElementService $service,
-                                ObjectRepository $objectRepository, ObjectService $objectService)
-    {
-        $this->elementRepository = $elementRepository;
-        $this->service = $service;
-        $this->objectRepository = $objectRepository;
-        $this->objectService = $objectService;
-    }
+    public function __construct(
+        private ElementRepository $elementRepository,
+        private ElementService $service,
+        private ObjectRepository $objectRepository,
+        private ObjectService $objectService
+    )
+    {}
 
     public function create($pageId){
-
         $types = Elements::getTypes(true);
         $parents = $this->elementRepository->getParentsToArray($pageId);
         $images = ImageService::getMainImages();
         $objects = $objects = $this->objectRepository->getAllToArray();
         $settings = false;
 
-
         return view('elements.create', compact('types', 'parents', 'pageId',
-                                               'images', 'objects', 'settings'));
-
+                                                'images', 'objects', 'settings'));
     }
 
 
@@ -80,13 +71,13 @@ class ElementController extends Controller
     {
         try {
             if ($this->service->update($element, $r->except('_token'))) {
-                return redirect()->route('elements.edit',[$element->id])->with('success','Настройки успешно изменены');
+                return redirect()->route('elements.edit',[$element->id])->with('success','Элемент успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении настроек'.$element->id.' '
+            \Log::error('Ошибка при изменении элемента '.$element->id.' '
                 .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении настроек помещения');
+        return back()->withInput($r->all())->with('error','Ошибка при изменении элемента');
     }
 }

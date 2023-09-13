@@ -19,23 +19,16 @@ use App\Repositories\PageRepository;
 
 class ViewController extends Controller
 {
-    private $view_rep;
-    private $room_rep;
-    private $scene_rep;
-    private $object_rep;
-    private $service;
-    private $pages_rep;
-
-    public function __construct(ViewRepository $view_rep, RoomRepository $room_rep, SceneRepository $scene_rep,
-                                ViewService $service, ObjectRepository $object_rep, PageRepository $pageRepository)
-    {
-        $this->view_rep = $view_rep;
-        $this->room_rep = $room_rep;
-        $this->scene_rep = $scene_rep;
-        $this->object_rep = $object_rep;
-        $this->service = $service;
-        $this->pages_rep = $pageRepository;
-    }
+    public function __construct(
+        private ViewRepository $view_rep,
+        private RoomRepository $room_rep,
+        private SceneRepository $scene_rep,
+        private ViewService $service,
+        private ObjectRepository $object_rep,
+        private PageRepository $pages_rep,
+        private ObjectService $object_service
+    )
+    {}
 
     public function getLists()
     {
@@ -83,10 +76,10 @@ class ViewController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении отображения');
     }
 
-    public function edit(View $view, ObjectService $object_service)
+    public function edit(View $view)
     {
         list($types, $rooms, $objects, $scenes, $images, $links, $safeTypes) = $this->getLists();
-        $methods = $object_service->getMethodsByObjectIdToArray($view->id_object);
+        $methods = $this->object_service->getMethodsByObjectIdToArray($view->id_object);
 
         $colors = ColorRepository::getColors();
 

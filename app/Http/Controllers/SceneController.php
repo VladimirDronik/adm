@@ -11,14 +11,11 @@ use App\Services\SceneService;
 
 class SceneController extends Controller
 {
-    private $scene_rep;
-    private $service;
-
-    public function __construct(SceneRepository $scene_rep, SceneService $service)
-    {
-        $this->scene_rep = $scene_rep;
-        $this->service = $service;
-    }
+    public function __construct(
+        private SceneRepository $scene_rep,
+        private SceneService $service
+    )
+    {}
 
     public function index()
     {

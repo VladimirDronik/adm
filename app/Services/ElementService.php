@@ -187,9 +187,8 @@ class ElementService
 
     public function update(Elements $element, array $data)
     {
-
         DB::transaction(function () use ($element, $data) {
-            if (array_key_exists($data, 'handle') &&
+            if (array_key_exists('handle', $data) &&
                 $data['handle'] != Boiler::PROP_WATER_TEMP &&
                 $data['handle'] != Boiler::PROP_AUTOMODE   &&
                 $data['handle'] != Boiler::PROP_MANUALMODE)

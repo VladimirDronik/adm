@@ -53,10 +53,6 @@ class RoomTest extends TestCase
     {
         $user = User::where('login', 'TestAdmin')->first();
 
-        $generator = new RoomsData();
-
-        $data = $generator->generateRoom();
-
         $response = $this->actingAs($user)->postJson('/rooms/store', [
             'name' => 'Создание тестовой комнаты',
             'image' => 'noimage.png',

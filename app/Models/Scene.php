@@ -34,6 +34,7 @@ class Scene extends Model
     protected $table = 'scenes';
     protected $primaryKey = 'id';
     public $timestamps = false;
+    protected $guarded = ['id'];
 
     public function getImagePathAttribute()
     {
