@@ -3,25 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Notifsettings\UpdateRequest;
-use App\Models\Notification;
 use App\Models\NotificationSettings;
-use App\Models\Sound;
 use App\Repositories\NotificationServiceRepository;
 use App\Repositories\SoundRepository;
 use App\Services\NotificationService;
-use Illuminate\Http\Request;
-
 
 class NotificationController extends Controller
 {
-    private $notification_rep;
-    private $service;
-
-    public function __construct(NotificationServiceRepository $notification_rep, NotificationService $service)
-    {
-        $this->notification_rep = $notification_rep;
-        $this->service = $service;
-    }
+    public function __construct(
+        private NotificationServiceRepository $notification_rep,
+        private NotificationService $service)
+    {}
 
     public function index()
     {
@@ -30,7 +22,7 @@ class NotificationController extends Controller
         return view('notifications.index', compact('notifications'));
     }
 
-    public function edit(NotificationSettings $notification, SoundRepository $soundRepository)
+    public function edit(NotificationSettings $notification)
     {
         $priority = [1 => 'Важное', 2 => 'Обычное'];
         $text_flag = [1 => 'Включено', 0 => 'Выключено'];

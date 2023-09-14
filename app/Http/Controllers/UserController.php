@@ -11,14 +11,11 @@ use App\Http\Requests\User\UpdateRequest;
 
 class UserController extends Controller
 {
-    private $devuser_rep;
-    private $service;
-
-    public function __construct(DevuserRepository $devuser_rep, UserService $service)
-    {
-        $this->devuser_rep = $devuser_rep;
-        $this->service = $service;
-    }
+    public function __construct(
+        private DevuserRepository $devuser_rep,
+        private UserService $service
+    )
+    {}
 
     public function index()
     {
@@ -56,7 +53,6 @@ class UserController extends Controller
 
     public function update(UpdateRequest $r, User $user)
     {
-
         try {
             if ($this->service->update($user, $r->except('_token'))) {
                 return redirect()->route('users.index')
@@ -69,5 +65,4 @@ class UserController extends Controller
 
         return back()->withInput($r->all())->with('error','Ошибка при изменении пользователя');
     }
-
 }

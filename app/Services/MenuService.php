@@ -122,11 +122,11 @@ class MenuService {
         return $this->storeMenu($data);
     }
 
-
     private function storeGroup(array $data)
     {
         $menu = new Menu();
 
+        $menu->parent = 0;
         $menu->sort = $this->getSortMax($menu) + 1;
 
         array_walk($data, function (&$value) {
@@ -137,7 +137,6 @@ class MenuService {
         $menu->image = $this->setImageIfEmpty($data['image']);
         $menu->link = $data['link'];
         $menu->active = 1;
-        $menu->parent = 0;
 
         $menu->save();
 

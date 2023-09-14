@@ -15,20 +15,14 @@ use Illuminate\Http\Request;
 
 class SchedulerController extends Controller
 {
-    private $event_rep;
-    private $object_rep;
-    private $script_rep;
-    private $service;
-
-    public function __construct(SchedulerRepository $event_rep, ObjectRepository $object_rep,
-                                ScriptRepository $script_rep, SchedulerService $service)
-    {
-        $this->event_rep = $event_rep;
-        $this->object_rep = $object_rep;
-        $this->script_rep = $script_rep;
-
-        $this->service = $service;
-    }
+    public function __construct(
+        private SchedulerRepository $event_rep,
+        private ObjectRepository $object_rep,
+        private ScriptRepository $script_rep,
+        private SchedulerService $service,
+        private ObjectService $object_service
+    )
+    {}
 
     private function getFilter(Request $r)
     {
@@ -73,7 +67,7 @@ class SchedulerController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении задачи планировщика');
     }
 
-    public function edit(int $id, ObjectService $object_service)
+    public function edit(int $id)
     {
         $event = SchedulerTask::where('id', $id)
             ->with('points', 'eobject', 'emethod', 'escript', 'eobject')->first();
@@ -83,7 +77,7 @@ class SchedulerController extends Controller
         }
 
         $objects = $this->object_rep->getAllToArray();
-        $methods = $object_service->getMethodsByObjectIdToArray($event->object);
+        $methods = $this->object_service->getMethodsByObjectIdToArray($event->object);
         $scripts = $this->script_rep->getAllToArray();
 
         $types = SchedulerPoint::getFullTypeIds();

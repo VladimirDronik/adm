@@ -11,14 +11,11 @@ use Illuminate\Http\Request;
 
 class ScriptController extends Controller
 {
-    private $script_rep;
-    private $service;
-
-    public function __construct(ScriptRepository $script_rep, ScriptService $service)
-    {
-        $this->script_rep = $script_rep;
-        $this->service = $service;
-    }
+    public function __construct(
+        private ScriptRepository $script_rep,
+        private ScriptService $service
+    )
+    {}
 
     public function index(Request $r)
     {

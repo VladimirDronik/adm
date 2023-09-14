@@ -109,7 +109,7 @@ class CameraTest extends TestCase
             ->assertJson(['result' => true]);
 
         $this->assertDatabaseMissing('cameras', [
-            'name' => 'Тестовое виртуальное устройство',
+            'name' => 'Тестовая камера',
         ]);
     }
 }

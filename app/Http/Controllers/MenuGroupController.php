@@ -13,15 +13,11 @@ use App\Services\ImageService;
 
 class MenuGroupController
 {
-
-    private $menu_rep;
-    private $service;
-
-    public function __construct(MenuRepository $menu_rep, MenuService $service)
-    {
-        $this->menu_rep = $menu_rep;
-        $this->service = $service;
-    }
+    public function __construct(
+        private MenuRepository $menu_rep,
+        private MenuService $service
+    )
+    {}
 
     public function index(int $id)
     {
@@ -38,6 +34,4 @@ class MenuGroupController
         return view('menu.group_index', compact('group', 'menus',
             'groups',  'images'));
     }
-
-
 }

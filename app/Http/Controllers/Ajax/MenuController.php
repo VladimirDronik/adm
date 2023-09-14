@@ -61,7 +61,7 @@ class MenuController extends Controller
 
         return response()->json(['result' => (bool)$this->service->store($r->all())]);
     }
-    
+
     public function add(Request $r)
     {
         abort_if(!ajaxHas($r, ['idObject']), 400);
@@ -69,6 +69,4 @@ class MenuController extends Controller
     	$this->service->addMenu((int)$r->idObject);
     	return response()->json(['result' => true]);
     }
-
-
 }
