@@ -9,14 +9,11 @@ use App\Services\SettingService;
 
 class TimeZoneSettingController extends Controller
 {
-    private $setting_rep;
-    private $service;
-
-    public function __construct(SettingRepository $setting_rep, SettingService $service)
-    {
-        $this->setting_rep = $setting_rep;
-        $this->service = $service;
-    }
+    public function __construct(
+        private SettingRepository $setting_rep,
+        private SettingService $service
+    )
+    {}
 
     public function create()
     {
