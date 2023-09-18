@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class BoilerController extends Controller
 {
-    private $service;
-
-    public function __construct(BoilerService $boilerService)
-    {
-        $this->service = $boilerService;
+    public function __construct(
+        private BoilerService $service
+    ) {
     }
 
     public function boilerAutoDelete(Request $r)

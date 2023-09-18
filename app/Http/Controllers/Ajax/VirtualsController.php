@@ -13,11 +13,9 @@ use Illuminate\Http\Request;
 
 class VirtualsController
 {
-    private $service;
-
-    public function __construct(VirtualService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private VirtualService $service
+    ) {
     }
 
     /**

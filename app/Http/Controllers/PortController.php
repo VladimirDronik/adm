@@ -9,11 +9,9 @@ use App\Services\PortService;
 
 class PortController extends Controller
 {
-    private $service;
-
-    public function __construct(PortService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private PortService $service
+    ) {
     }
 
     public function store(UpdateRequest $r)

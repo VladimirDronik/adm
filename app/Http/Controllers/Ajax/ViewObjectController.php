@@ -12,11 +12,9 @@ use Illuminate\Http\Request;
 
 class ViewObjectController extends Controller
 {
-    private $service;
-
-    public function __construct(ObjectService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private ObjectService $service
+    ) {
     }
 
     /**

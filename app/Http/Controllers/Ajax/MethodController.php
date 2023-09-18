@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class MethodController extends Controller
 {
-    private $service;
-
-    public function __construct(MethodService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private MethodService $service
+    ) {
     }
 
     public function delete(Request $r)

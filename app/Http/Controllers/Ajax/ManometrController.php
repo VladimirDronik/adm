@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class ManometrController extends Controller
 {
-    private $service;
-
-    public function __construct(ManometrService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private ManometrService $service
+    ) {
     }
 
     /**

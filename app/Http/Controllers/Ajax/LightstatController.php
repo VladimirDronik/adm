@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class LightstatController extends Controller
 {
-    private $service;
-
-    public function __construct(LightstatService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private LightstatService $service
+    ) {
     }
 
     /**

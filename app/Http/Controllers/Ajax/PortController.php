@@ -11,11 +11,9 @@ use Illuminate\Http\Request;
 
 class PortController extends Controller
 {
-    private $service;
-
-    public function __construct(PortService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private PortService $service
+    ) {
     }
 
     public function updateComment(Request $r)

@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class SwitchController extends Controller
 {
-    private $service;
-
-    public function __construct(SwitchService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private SwitchService $service
+    ) {
     }
 
     /**

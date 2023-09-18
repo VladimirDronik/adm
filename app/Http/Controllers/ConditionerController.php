@@ -12,28 +12,13 @@ use Illuminate\Http\Request;
 
 class ConditionerController extends Controller
 {
-    private $conditionersRep;
-
-    private $objectRep;
-
-    private $roomRep;
-
-    private $deviceRep;
-
-    private $service;
-
     public function __construct(
-        ConditionerRepository $conditionersRep,
-        ObjectRepository $objectRep,
-        RoomRepository $roomRep,
-        DeviceRepository $deviceRep,
-        ConditionerService $service
+        private ConditionerRepository $conditionersRep,
+        private ObjectRepository $objectRep,
+        private RoomRepository $roomRep,
+        private DeviceRepository $deviceRep,
+        private ConditionerService $service
     ) {
-        $this->conditionersRep = $conditionersRep;
-        $this->objectRep = $objectRep;
-        $this->roomRep = $roomRep;
-        $this->deviceRep = $deviceRep;
-        $this->service = $service;
     }
 
     public function index()

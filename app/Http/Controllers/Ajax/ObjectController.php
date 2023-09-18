@@ -10,11 +10,9 @@ use Illuminate\Http\Request;
 
 class ObjectController extends Controller
 {
-    private $service;
-
-    public function __construct(ObjectService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private ObjectService $service
+    ) {
     }
 
     public function delete(Request $r)

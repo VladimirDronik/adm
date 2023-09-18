@@ -12,8 +12,8 @@ class PageController extends Controller
     public function __construct(
         private PageRepository $pageRepository,
         private Page $pages,
-        private ElementRepository $elementRepository)
-    {
+        private ElementRepository $elementRepository
+    ) {
     }
 
     public function index()

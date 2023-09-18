@@ -16,16 +16,10 @@ use App\Services\BoilerGVSService;
 
 class BoilerGVSController extends Controller
 {
-    private $boilerRepository;
-
-    private $service;
-
-    public function __construct(BoilerGVSRepository $boilerRepository, BoilerGVSService $boilerService)
-    {
-
-        $this->boilerRepository = $boilerRepository;
-        $this->service = $boilerService;
-
+    public function __construct(
+        private BoilerGVSRepository $boilerRepository,
+        private BoilerGVSService $service
+    ) {
     }
 
     public function edit($boilerIdObject)

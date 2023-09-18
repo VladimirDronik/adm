@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class CurtainsController extends Controller
 {
-    private $service;
-
-    public function __construct(CurtainService $curtainService)
-    {
-        $this->service = $curtainService;
+    public function __construct(
+        private CurtainService $service
+    ) {
     }
 
     /**

@@ -14,11 +14,9 @@ use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
-    private $service;
-
-    public function __construct(EventService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private EventService $service
+    ) {
     }
 
     public function update(Request $r)

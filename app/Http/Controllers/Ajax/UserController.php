@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    private $service;
-
-    public function __construct(UserService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private UserService $service
+    ) {
     }
 
     public function delete(Request $r)

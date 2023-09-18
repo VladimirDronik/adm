@@ -14,11 +14,9 @@ use Illuminate\Http\Request;
 
 class EngineeringController extends Controller
 {
-    private $service;
-
-    public function __construct(EngineeringService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private EngineeringService $service
+    ) {
     }
 
     public function delete(Request $r)

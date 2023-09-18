@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class SceneController extends Controller
 {
-    private $service;
-
-    public function __construct(SceneService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private SceneService $service
+    ) {
     }
 
     public function delete(Request $r)

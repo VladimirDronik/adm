@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class MotionsensorController extends Controller
 {
-    private $service;
-
-    public function __construct(MotionsensorService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private MotionsensorService $service
+    ) {
     }
 
     /**

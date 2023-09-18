@@ -10,18 +10,11 @@ use Illuminate\Http\Request;
 
 class DeviceController extends Controller
 {
-    private $service;
-
-    private $megaService;
-
-    private $deviceRepository;
-
-    public function __construct(DeviceService $service, ConfigMegaService $megaService,
-        DeviceRepository $deviceRepository)
-    {
-        $this->service = $service;
-        $this->megaService = $megaService;
-        $this->deviceRepository = $deviceRepository;
+    public function __construct(
+        private DeviceService $service,
+        private ConfigMegaService $megaService,
+        private DeviceRepository $deviceRepository
+    ) {
     }
 
     public function delete(Request $r)

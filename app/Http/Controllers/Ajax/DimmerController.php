@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class DimmerController extends Controller
 {
-    private $service;
-
-    public function __construct(DimmerService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private DimmerService $service
+    ) {
     }
 
     /**

@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class LockController extends Controller
 {
-    private $service;
-
-    public function __construct(LockService $lockService)
-    {
-        $this->service = $lockService;
+    public function __construct(
+        private LockService $service
+    ) {
     }
 
     /**

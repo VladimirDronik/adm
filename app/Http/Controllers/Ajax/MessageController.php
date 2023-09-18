@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class MessageController extends Controller
 {
-    private $service;
-
-    public function __construct(MessageService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private MessageService $service
+    ) {
     }
 
     public function delete(Request $r)

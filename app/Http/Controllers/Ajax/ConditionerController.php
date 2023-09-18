@@ -9,14 +9,10 @@ use Illuminate\Http\Request;
 
 class ConditionerController extends Controller
 {
-    private $conditionersRep;
-
-    private $service;
-
-    public function __construct(ConditionerRepository $conditionersRep, ConditionerService $service)
-    {
-        $this->conditionersRep = $conditionersRep;
-        $this->service = $service;
+    public function __construct(
+        private ConditionerRepository $conditionersRep,
+        private ConditionerService $service
+    ) {
     }
 
     public function modelsByVendor(Request $r)

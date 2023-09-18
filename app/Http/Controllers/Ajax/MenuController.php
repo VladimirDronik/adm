@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
-    private $service;
-
-    public function __construct(MenuService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private MenuService $service
+    ) {
     }
 
     public function sort(Request $r)

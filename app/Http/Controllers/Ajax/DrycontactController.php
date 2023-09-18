@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class DrycontactController extends Controller
 {
-    private $service;
-
-    public function __construct(DrycontactService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private DrycontactService $service
+    ) {
     }
 
     /**

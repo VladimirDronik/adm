@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class ElementController extends Controller
 {
-    private $service;
-
-    public function __construct(ElementService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private ElementService $service
+    ) {
     }
 
     public function sort(Request $r)

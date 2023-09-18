@@ -12,24 +12,12 @@ use Illuminate\Http\Request;
 
 class DeviceController extends Controller
 {
-    private $device_rep;
-
-    private $service;
-
-    private $megaService;
-
-    private $ext_module_rep;
-
     public function __construct(
-        DeviceRepository $device_rep,
-        DeviceService $service,
-        ConfigMegaService $megaService,
-        ExtensionModuleRepository $ext_module_rep)
-    {
-        $this->device_rep = $device_rep;
-        $this->service = $service;
-        $this->megaService = $megaService;
-        $this->ext_module_rep = $ext_module_rep;
+        private DeviceRepository $device_rep,
+        private DeviceService $service,
+        private ConfigMegaService $megaService,
+        private ExtensionModuleRepository $ext_module_rep
+    ) {
     }
 
     public function index()

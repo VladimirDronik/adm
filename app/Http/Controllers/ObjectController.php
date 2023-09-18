@@ -12,14 +12,10 @@ use Illuminate\Http\Request;
 
 class ObjectController extends Controller
 {
-    private $object_rep;
-
-    private $service;
-
-    public function __construct(ObjectRepository $object_rep, ObjectService $service)
-    {
-        $this->object_rep = $object_rep;
-        $this->service = $service;
+    public function __construct(
+        private ObjectRepository $object_rep,
+        private ObjectService $service
+    ) {
     }
 
     public function index(Request $r)

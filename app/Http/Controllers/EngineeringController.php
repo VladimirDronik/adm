@@ -12,13 +12,9 @@ use App\Repositories\ObjectRepository;
 
 class EngineeringController extends Controller
 {
-    private $objectRepository;
-
-    public function __construct(ObjectRepository $objectRepository)
-    {
-
-        $this->objectRepository = $objectRepository;
-
+    public function __construct(
+        private ObjectRepository $objectRepository
+    ) {
     }
 
     public function index()

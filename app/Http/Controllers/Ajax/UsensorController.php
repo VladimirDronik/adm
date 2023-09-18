@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class UsensorController extends Controller
 {
-    private $service;
-
-    public function __construct(UsensorService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private UsensorService $service
+    ) {
     }
 
     /**

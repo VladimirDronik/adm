@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class SchedulerPointController extends Controller
 {
-    private $service;
-
-    public function __construct(SchedulerService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private SchedulerService $service
+    ) {
     }
 
     public function delete(Request $r)

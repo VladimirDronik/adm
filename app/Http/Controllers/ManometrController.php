@@ -19,39 +19,17 @@ use App\Services\Service;
 
 class ManometrController extends Controller
 {
-    private $manometr_rep;
-
-    private $object_rep;
-
-    private $room_rep;
-
-    private $device_rep;
-
-    private $service;
-
-    private $object_service;
-
-    private $script_repository;
-
-    private $port_service;
-
-    private $messagesService;
-
-    public function __construct(ManometrRepository $manometrRepository, ObjectRepository $objectRepository,
-        RoomRepository $roomRepository, DeviceRepository $deviceRepository, ManometrService $service,
-        ObjectService $objectService, ScriptRepository $scriptRepository, PortService $portService,
-        MessageService $messageService)
-    {
-        $this->manometr_rep = $manometrRepository;
-        $this->object_rep = $objectRepository;
-        $this->room_rep = $roomRepository;
-        $this->device_rep = $deviceRepository;
-        $this->service = $service;
-        $this->object_service = $objectService;
-        $this->script_repository = $scriptRepository;
-        $this->port_service = $portService;
-        $this->messagesService = $messageService;
-
+    public function __construct(
+        private ManometrRepository $manometr_rep,
+        private ObjectRepository $object_rep,
+        private RoomRepository $room_rep,
+        private DeviceRepository $device_rep,
+        private ManometrService $service,
+        private ObjectService $object_service,
+        private ScriptRepository $script_repository,
+        private PortService $port_service,
+        private MessageService $messagesService
+    ) {
     }
 
     public function index()

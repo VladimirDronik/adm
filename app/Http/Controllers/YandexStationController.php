@@ -12,18 +12,11 @@ use Illuminate\Http\Request;
 
 class YandexStationController extends Controller
 {
-    private $yandexstation_rep;
-
-    private $room_rep;
-
-    private $service;
-
-    public function __construct(YandexStationRepository $yandexstationRepository, RoomRepository $roomRepository,
-        YandexStationService $yandexStationService)
-    {
-        $this->yandexstation_rep = $yandexstationRepository;
-        $this->room_rep = $roomRepository;
-        $this->service = $yandexStationService;
+    public function __construct(
+        private YandexStationRepository $yandexstation_rep,
+        private RoomRepository $room_rep,
+        private YandexStationService $service
+    ) {
     }
 
     public function index()

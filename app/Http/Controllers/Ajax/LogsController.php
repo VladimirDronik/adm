@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class LogsController extends Controller
 {
-    private $service;
-
-    public function __construct(LogService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private LogService $service
+    ) {
     }
 
     public function active(Request $r)

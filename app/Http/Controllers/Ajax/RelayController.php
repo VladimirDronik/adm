@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class RelayController extends Controller
 {
-    private $service;
-
-    public function __construct(RelayService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private RelayService $service
+    ) {
     }
 
     /**

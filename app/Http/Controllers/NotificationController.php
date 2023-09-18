@@ -12,8 +12,8 @@ class NotificationController extends Controller
 {
     public function __construct(
         private NotificationServiceRepository $notification_rep,
-        private NotificationService $service)
-    {
+        private NotificationService $service
+    ) {
     }
 
     public function index()

@@ -14,11 +14,9 @@ use Illuminate\Http\Request;
 
 class ActionController extends Controller
 {
-    private $service;
-
-    public function __construct(ActionService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private ActionService $service
+    ) {
     }
 
     /**

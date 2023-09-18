@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class CameraController extends Controller
 {
-    private $service;
-
-    public function __construct(CameraService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private CameraService $service
+    ) {
     }
 
     public function sort(Request $r)

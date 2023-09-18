@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class ViewController extends Controller
 {
-    private $service;
-
-    public function __construct(ViewService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private ViewService $service
+    ) {
     }
 
     public function delete(Request $r)

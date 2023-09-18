@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class GraphController extends Controller
 {
-    private $service;
-
-    public function __construct(GraphService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private GraphService $service
+    ) {
     }
 
     public function getTermostatsPeriodData(Request $r)

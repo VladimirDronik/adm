@@ -8,14 +8,10 @@ use Illuminate\Http\Request;
 
 class YandexStationController
 {
-    private $service;
-
-    private $repository;
-
-    public function __construct(YandexStationService $service, YandexStationRepository $repository)
-    {
-        $this->service = $service;
-        $this->repository = $repository;
+    public function __construct(
+        private YandexStationService $service,
+        private YandexStationRepository $repository
+    ) {
     }
 
     /**

@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class ScriptController extends Controller
 {
-    private $service;
-
-    public function __construct(ScriptService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private ScriptService $service
+    ) {
     }
 
     public function delete(Request $r)

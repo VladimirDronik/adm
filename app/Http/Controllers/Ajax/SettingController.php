@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
-    private $service;
-
-    public function __construct(SettingService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private SettingService $service
+    ) {
     }
 
     public function delete(Request $r)

@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
-    private $service;
-
-    public function __construct(PageService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private PageService $service
+    ) {
     }
 
     public function updateName(Request $r)
