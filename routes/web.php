@@ -9,70 +9,64 @@ Route::get('access/error', 'HomeController@accessError')->name('accescarbmonoxid
 
 Route::group(['middleware' => ['auth']], function () {
 
-    Route::redirect('/','home');
+    Route::redirect('/', 'home');
     Route::get('home', 'HomeController@index')->name('home');
 
-    Route::get('profile','ProfileController@edit')->name('profile.edit');
-    Route::put('profile','ProfileController@update')->name('profile.update');
+    Route::get('profile', 'ProfileController@edit')->name('profile.edit');
+    Route::put('profile', 'ProfileController@update')->name('profile.update');
 
-    Route::resource('views', 'ViewController')->except('show','destroy')->middleware('can:views');
-    Route::resource('pages', 'PageController')->except('show','destroy')->middleware('can:views');
+    Route::resource('views', 'ViewController')->except('show', 'destroy')->middleware('can:views');
+    Route::resource('pages', 'PageController')->except('show', 'destroy')->middleware('can:views');
     Route::get('pages/{idPage}/edit', 'PageController@edit')->middleware('can:devices');
     Route::get('pages/{idPage}/edit/{idTab}', 'PageController@edit')->middleware('can:devices');
-    Route::resource('objects', 'ObjectController')->except('show','destroy')->middleware('can:objects');
-    Route::resource('engineering', 'EngineeringController')->except('show','destroy')->middleware('can:views');
-    Route::resource('boiler', 'BoilerController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('boiler_gvs', 'BoilerGVSController')->except('show','destroy')->middleware('can:devices');
-
+    Route::resource('objects', 'ObjectController')->except('show', 'destroy')->middleware('can:objects');
+    Route::resource('engineering', 'EngineeringController')->except('show', 'destroy')->middleware('can:views');
+    Route::resource('boiler', 'BoilerController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('boiler_gvs', 'BoilerGVSController')->except('show', 'destroy')->middleware('can:devices');
 
     Route::get('page/{idPage}/createElement', 'ElementController@create')->name('page.createElement')->middleware('can:views');
-    Route::resource('elements', 'ElementController')->except('show','destroy','create')->middleware('can:views');
-
+    Route::resource('elements', 'ElementController')->except('show', 'destroy', 'create')->middleware('can:views');
 
     Route::get('devices/{idDevice}/editport/{idPort}', 'DeviceController@editPort')->middleware('can:devices');
     Route::get('devices/sendconfig/{idDevice}', 'DeviceController@sendConfig')->name('devices.sendconfig')->middleware('can:devices');
     Route::get('devices/sendallconfigs', 'DeviceController@sendAllConfigs')->name('devices.sendallconfigs')->middleware('can:devices');
 
-
     Route::resource('ports', 'PortController')->except('show', 'destroy')->middleware('can:devices');
-    Route::resource('devices', 'DeviceController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('counts', 'CountController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('switches', 'SwitchController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('relays', 'RelayController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('lamps', 'LampController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('dimmers', 'DimmerController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('curtains', 'CurtainController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('locks', 'LockController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('conditioners', 'ConditionerController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('devices', 'DeviceController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('counts', 'CountController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('switches', 'SwitchController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('relays', 'RelayController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('lamps', 'LampController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('dimmers', 'DimmerController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('curtains', 'CurtainController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('locks', 'LockController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('conditioners', 'ConditionerController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('cameras', 'CameraController')->except('show', 'destroy')->middleware('can:cameras');
 
-
-
-    Route::resource('settings', 'SettingController')->except('show','destroy')->middleware('can:settings');
-    Route::resource('time_zone', 'TimeZoneSettingController')->except('show','destroy','index')->middleware('can:settings');
-    Route::resource('scenes', 'SceneController')->except('show','destroy')->middleware('can:scenes');
-    Route::resource('termostats', 'TermostatController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('hygrostats', 'HygrostatController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('motionsensors', 'MotionsensorsController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('lightstats', 'LightstatController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('carbmonoxide', 'CarbmonoxideController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('manometr', 'ManometrController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('usensors', 'UsensorController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('drycontacts', 'DrycontactController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('scheduler', 'SchedulerController')->except('show','destroy')->middleware('can:events');
+    Route::resource('settings', 'SettingController')->except('show', 'destroy')->middleware('can:settings');
+    Route::resource('time_zone', 'TimeZoneSettingController')->except('show', 'destroy', 'index')->middleware('can:settings');
+    Route::resource('scenes', 'SceneController')->except('show', 'destroy')->middleware('can:scenes');
+    Route::resource('termostats', 'TermostatController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('hygrostats', 'HygrostatController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('motionsensors', 'MotionsensorsController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('lightstats', 'LightstatController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('carbmonoxide', 'CarbmonoxideController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('manometr', 'ManometrController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('usensors', 'UsensorController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('drycontacts', 'DrycontactController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('scheduler', 'SchedulerController')->except('show', 'destroy')->middleware('can:events');
     Route::resource('logs', 'LogController')->only('index')->middleware('can:logs');
-    Route::resource('users', 'UserController')->except('show','destroy')->middleware('can:rooms');
-    Route::resource('notifications', 'NotificationController')->except('show','destroy')->middleware('can:settings');
-    Route::resource('virtuals', 'VirtualsController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('yandexstations', 'YandexStationController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('users', 'UserController')->except('show', 'destroy')->middleware('can:rooms');
+    Route::resource('notifications', 'NotificationController')->except('show', 'destroy')->middleware('can:settings');
+    Route::resource('virtuals', 'VirtualsController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('yandexstations', 'YandexStationController')->except('show', 'destroy')->middleware('can:devices');
 
     //Route::get('termostats/{termostat}/edit/{tab?}', 'TermostatController@edit')->name('termostats.edit')->middleware('can:devices');
 
-
-    Route::resource('rooms', 'RoomController')->except('show','create','store','destroy')->middleware('can:rooms');
+    Route::resource('rooms', 'RoomController')->except('show', 'create', 'store', 'destroy')->middleware('can:rooms');
     Route::get('rooms/group/{id}', 'RoomGroupController@index')->name('rooms.group.index')->middleware('can:rooms');
 
-    Route::resource('menu', 'MenuController')->except('show','create','store','destroy')->middleware('can:rooms');
+    Route::resource('menu', 'MenuController')->except('show', 'create', 'store', 'destroy')->middleware('can:rooms');
     Route::get('menu/group/{id}', 'MenuGroupController@index')->name('menu.group.index')->middleware('can:rooms');
 
     Route::get('network', 'NetworkController@edit')->name('network.edit')->middleware('can:network');
@@ -86,10 +80,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('yandexstations/editcookies', 'YandexStationController@editCookies')->name('yandexstations.editcookies')->middleware('can:devices');
     Route::post('yandexstations/updatecookies', 'YandexStationController@updateCookies')->name('yandexstations.updatecookies')->middleware('can:devices');
 
-
-    Route::resource('scripts', 'ScriptController')->except('show','destroy')->middleware('can:scripts');
-
-
+    Route::resource('scripts', 'ScriptController')->except('show', 'destroy')->middleware('can:scripts');
 
     Route::group(['namespace' => 'Ajax', 'as' => 'ajax.'], function () {
 
@@ -145,7 +136,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('locks/delete', 'LockController@delete')->name('locks.delete');
         Route::post('yandexstations/delete', 'YandexStationController@delete')->name('yandexstations.delete');
 
-
         Route::group(['prefix' => 'logs', 'as' => 'logs.'], function () {
             Route::post('active', 'LogsController@active')->name('active');
         });
@@ -196,7 +186,6 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('delete', 'EventController@delete')->name('delete');
             Route::post('create', 'EventController@create')->name('create');
         });
-
 
         Route::group(['prefix' => 'page', 'as' => 'page.'], function () {
             Route::post('delete', 'PageController@delete')->name('delete');
@@ -259,7 +248,6 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('delete', 'MessageController@delete')->name('delete');
             Route::post('store', 'MessageController@store')->name('store');
         });
-
 
         Route::group(['prefix' => 'ports', 'as' => 'ports.'], function () {
             Route::post('update/comment', 'PortController@updateComment')->name('update.comment');

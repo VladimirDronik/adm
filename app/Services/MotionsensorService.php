@@ -2,24 +2,24 @@
 
 namespace App\Services;
 
-
-use App\Models\Motionsensor;
 use App\Models\HomeObject;
-use App\Services\MotionSensorObjectService;
-use Illuminate\Support\Facades\DB;
+use App\Models\Motionsensor;
 use App\Models\Port;
 use App\Repositories\PortRepository;
-use App\Services\PortService;
+use Illuminate\Support\Facades\DB;
 
-class MotionsensorService {
-
+class MotionsensorService
+{
     private $motionsensor_object_service;
+
     private $objectService;
+
     private $portRepository;
+
     private $portService;
 
     public function __construct(MotionSensorObjectService $motionsensor_object_service, ObjectService $objectService,
-                                PortRepository $portRepository, PortService $portService)
+        PortRepository $portRepository, PortService $portService)
     {
         $this->motionsensor_object_service = $motionsensor_object_service;
         $this->objectService = $objectService;
@@ -47,12 +47,11 @@ class MotionsensorService {
         $motionsensor->Fill($data);
     }
 
-
     public function store(array $data): int
     {
 
         $deviceID = $data['device_id'];
-        $portID =  $data['port_id'];
+        $portID = $data['port_id'];
 
         $motionsensor = new Motionsensor();
         $this->prepareMotionsensor($motionsensor, $data);
@@ -92,7 +91,6 @@ class MotionsensorService {
 
             }
 
-
             if ($data['port_id']) {
 
                 ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_id']), 'IN');
@@ -100,10 +98,9 @@ class MotionsensorService {
                 Port::where('object', $motionsensor->id_object)->update(['object' => null, 'method' => null, 'comment' => '']);
                 Port::where('id', $data['port_id'])->update(['object' => $motionsensor->id_object,
                     'method' => $this->objectService->getMethodByObject($motionsensor->id_object), 'comment' => $data['name'],
-                'status' => 'IN']);
+                    'status' => 'IN']);
 
             }
-
 
             $this->prepareMotionsensor($motionsensor, $data);
             $motionsensor->save();
@@ -116,8 +113,6 @@ class MotionsensorService {
      * Удаление датчика освещения. Если связанный объект системный, то удаление объекта, метода, события,
      * созданных автоматически при создании светостата
      *
-     * @param int $id
-     * @return bool
      * @throws \Throwable
      */
     public function delete(int $id): bool
@@ -137,5 +132,4 @@ class MotionsensorService {
 
         return true;
     }
-
 }

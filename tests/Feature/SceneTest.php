@@ -41,7 +41,7 @@ class SceneTest extends TestCase
 
         $data = $generator->generateScene();
 
-        $response = $this->actingAs($user)->get('/scenes/'. $data['scene']->id .'/edit');
+        $response = $this->actingAs($user)->get('/scenes/'.$data['scene']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -59,7 +59,7 @@ class SceneTest extends TestCase
 
         $scene = Scene::where('label', 'Создание тестовой сцены')->first();
 
-        $response->assertRedirect('/scenes/'. ($scene ? $scene->id : 1) .'/edit');
+        $response->assertRedirect('/scenes/'.($scene ? $scene->id : 1).'/edit');
 
         $this->assertDatabaseHas('scenes', [
             'label' => 'Создание тестовой сцены',
@@ -74,7 +74,7 @@ class SceneTest extends TestCase
 
         $data = $generator->generateScene();
 
-        $response = $this->actingAs($user)->post('scenes/'. $data['scene']->id, [
+        $response = $this->actingAs($user)->post('scenes/'.$data['scene']->id, [
             '_method' => 'PUT',
             'label' => 'Обновление тестовой сцены',
             'active' => 1,
@@ -82,7 +82,7 @@ class SceneTest extends TestCase
             'background_color' => '#E9E9F0',
         ]);
 
-        $response->assertRedirect('/scenes/'. $data['scene']->id .'/edit');
+        $response->assertRedirect('/scenes/'.$data['scene']->id.'/edit');
 
         $this->assertDatabaseHas('scenes', [
             'label' => 'Обновление тестовой сцены',

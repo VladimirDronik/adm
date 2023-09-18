@@ -8,8 +8,8 @@ use App\Models\SchedulerTask;
 use App\Models\Script;
 use Illuminate\Support\Facades\DB;
 
-class MethodService {
-
+class MethodService
+{
     public function delete(int $id)
     {
         DB::transaction(function () use ($id) {
@@ -28,7 +28,7 @@ class MethodService {
             $method->script = null;
             $method->easy = null;
         } elseif ($data['type'] === 'script') {
-            $method->script = empty($data['script_id']) ? null : (int)$data['script_id'];
+            $method->script = empty($data['script_id']) ? null : (int) $data['script_id'];
             $method->easy = null;
         } elseif ($data['type'] === 'easy') {
             $method->script = null;
@@ -48,15 +48,15 @@ class MethodService {
             'device_id' => $method->device_id,
             'port' => $method->port,
             'action' => $method->action,
-            'type' => $method->type
+            'type' => $method->type,
         ];
     }
 
     public function store(array $data)
     {
-        $method = empty($data['id']) ? new Method() : Method::find((int)$data['id']);
+        $method = empty($data['id']) ? new Method() : Method::find((int) $data['id']);
 
-        $method->id_object = (int)$data['object_id'];
+        $method->id_object = (int) $data['object_id'];
         $method->name = trim($data['name']);
         $method->comment = trim($data['comment']) === '' ? $method->name : trim($data['comment']);
 
@@ -66,9 +66,4 @@ class MethodService {
 
         return $this->getMethodData($method);
     }
-
-
-
-
-
 }

@@ -13,8 +13,8 @@ use App\Models\Room;
 use App\Models\Termostat;
 use Carbon\Carbon;
 
-class GraphService {
-
+class GraphService
+{
     public function getTermostatsPeriods()
     {
         $periods = [];
@@ -52,11 +52,11 @@ class GraphService {
 
         if ($period === '7') {
             $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
-            $graphs = $query->where('datetime','>=',$week_ago_date)->get();
+            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
         } else {
-            $period_parts = explode("-", $period);
-            $month = (int)$period_parts[0];
-            $year = (int)$period_parts[1];
+            $period_parts = explode('-', $period);
+            $month = (int) $period_parts[0];
+            $year = (int) $period_parts[1];
             $graphs = $query->whereMonth('datetime', '=', $month)
                 ->whereYear('datetime', '=', $year)->get();
         }
@@ -106,11 +106,11 @@ class GraphService {
 
         if ($period === '7') {
             $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
-            $graphs = $query->where('datetime','>=',$week_ago_date)->get();
+            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
         } else {
-            $period_parts = explode("-", $period);
-            $month = (int)$period_parts[0];
-            $year = (int)$period_parts[1];
+            $period_parts = explode('-', $period);
+            $month = (int) $period_parts[0];
+            $year = (int) $period_parts[1];
             $graphs = $query->whereMonth('datetime', '=', $month)
                 ->whereYear('datetime', '=', $year)->get();
         }
@@ -160,11 +160,11 @@ class GraphService {
 
         if ($period === '7') {
             $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
-            $graphs = $query->where('datetime','>=',$week_ago_date)->get();
+            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
         } else {
-            $period_parts = explode("-", $period);
-            $month = (int)$period_parts[0];
-            $year = (int)$period_parts[1];
+            $period_parts = explode('-', $period);
+            $month = (int) $period_parts[0];
+            $year = (int) $period_parts[1];
             $graphs = $query->whereMonth('datetime', '=', $month)
                 ->whereYear('datetime', '=', $year)->get();
         }
@@ -211,11 +211,11 @@ class GraphService {
 
         if ($period === '7') {
             $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d');
-            $graphs = $query->where('datetime','>=',$week_ago_date)->get();
+            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
         } else {
-            $period_parts = explode("-", $period);
-            $month = (int)$period_parts[0];
-            $year = (int)$period_parts[1];
+            $period_parts = explode('-', $period);
+            $month = (int) $period_parts[0];
+            $year = (int) $period_parts[1];
             $graphs = $query->whereMonth('datetime', '=', $month)
                 ->whereYear('datetime', '=', $year)->get();
         }

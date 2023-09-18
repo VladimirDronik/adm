@@ -8,8 +8,6 @@ class RoomsData
 {
     /**
      * Генератор сущностей для комнаты
-     *
-     * @return array
      */
     public function generateRoom(): array
     {

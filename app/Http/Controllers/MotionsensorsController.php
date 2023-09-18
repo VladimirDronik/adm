@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Motionsensor\CreateRequest;
+use App\Http\Requests\Motionsensor\UpdateRequest;
+use App\Models\HomeObject;
 use App\Models\Motionsensor;
+use App\Repositories\DeviceRepository;
 use App\Repositories\LightstatRepository;
 use App\Repositories\MethodRepository;
-use App\Services\MessageService;
-use App\Services\MotionsensorService;
-use App\Services\Service;
-use Illuminate\Http\Request;
 use App\Repositories\MotionsensorRepository;
 use App\Repositories\ObjectRepository;
-use App\Repositories\DeviceRepository;
-use App\Models\HomeObject;
-use App\Http\Requests\Motionsensor\CreateRequest;
 use App\Repositories\ScriptRepository;
-use App\Http\Requests\Motionsensor\UpdateRequest;
+use App\Services\MessageService;
+use App\Services\MotionsensorService;
 use App\Services\PortService;
-
+use App\Services\Service;
 
 class MotionsensorsController extends Controller
 {
@@ -31,8 +29,8 @@ class MotionsensorsController extends Controller
         private ScriptRepository $script_rep,
         private PortService $portsService,
         private MessageService $messageService,
-    )
-    {}
+    ) {
+    }
 
     public function index()
     {
@@ -45,7 +43,7 @@ class MotionsensorsController extends Controller
     {
 
         $objects = $this->object_rep->getAllToArray();
-        $object_types =  HomeObject::getFullTypeIds();
+        $object_types = HomeObject::getFullTypeIds();
         $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
         $lightstats = $this->lightstat_rep->getAllToArray();
         $can = gates('devices.show-object');
@@ -62,24 +60,22 @@ class MotionsensorsController extends Controller
                     ->with('success', 'Датчик движения успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении датчика движения ' .
+            \Log::error('Ошибка при добавлении датчика движения '.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении датчика движения');
     }
 
-
-    public function edit(int $id, $tab=1)
+    public function edit(int $id, $tab = 1)
     {
         $motionsensor = Motionsensor::findOrFail($id);
 
         $objects = $this->object_rep->getAllToArray();
-        $object_types =  HomeObject::getFullTypeIds();
+        $object_types = HomeObject::getFullTypeIds();
         $lightstats = $this->lightstat_rep->getAllToArray();
         $equality = ['>' => 'Больше', '<' => 'Меньше'];
         $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
-
 
         $object_normal = $this->methods_rep->getObjectByMethod($motionsensor->method_normal);
         $methods_normal = $this->methods_rep->getAllMethodsByObjectToArray($object_normal);
@@ -106,7 +102,7 @@ class MotionsensorsController extends Controller
 
         $can = gates('motionsensors.show-object');
 
-        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
+        [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents] =
             Service::getListElements($motionsensor->id_object);
 
         $availableEvents = Motionsensor::getEvents();
@@ -120,18 +116,16 @@ class MotionsensorsController extends Controller
             'object_light', 'methods_light', 'deviceId', 'portId', 'devices', 'messagePoint', 'ports', 'tab'));
     }
 
-
     public function update(UpdateRequest $r, Motionsensor $motionsensor)
     {
         try {
             if ($this->service->update($motionsensor, $r->except('_token'))) {
-                return redirect()->route('motionsensors.edit', [$motionsensor->id])->with('success','Датчик движения успешно изменен');
+                return redirect()->route('motionsensors.edit', [$motionsensor->id])->with('success', 'Датчик движения успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении датчика движения '.$motionsensor->id.' ' .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при изменении датчика движения '.$motionsensor->id.' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении датчика движения');
     }
-
 }

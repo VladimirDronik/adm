@@ -41,7 +41,7 @@ class ConditionerTest extends TestCase
 
         $data = $generator->generateConditioner();
 
-        $response = $this->actingAs($user)->get('/conditioners/'. $data['conditioner']->id .'/edit');
+        $response = $this->actingAs($user)->get('/conditioners/'.$data['conditioner']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -64,7 +64,7 @@ class ConditionerTest extends TestCase
 
         $conditioner = Conditioner::where('wb_mir', '123456789')->first();
 
-        $response->assertRedirect('/conditioners/'. ($conditioner ? $conditioner->id : 1) .'/edit');
+        $response->assertRedirect('/conditioners/'.($conditioner ? $conditioner->id : 1).'/edit');
 
         $this->assertDatabaseHas('conditioners', [
             'wb_mir' => '123456789',
@@ -79,7 +79,7 @@ class ConditionerTest extends TestCase
 
         $data = $generator->generateConditioner();
 
-        $response = $this->actingAs($user)->post('conditioners/'. $data['conditioner']->id, [
+        $response = $this->actingAs($user)->post('conditioners/'.$data['conditioner']->id, [
             '_method' => 'PUT',
             'id_object' => $data['object']->id,
             'device_id' => $data['device']->id,
@@ -90,7 +90,7 @@ class ConditionerTest extends TestCase
             'temp' => '16',
         ]);
 
-        $response->assertRedirect('/conditioners/'. $data['conditioner']->id .'/edit');
+        $response->assertRedirect('/conditioners/'.$data['conditioner']->id.'/edit');
 
         $this->assertDatabaseHas('conditioners', [
             'wb_mir' => '123456789',

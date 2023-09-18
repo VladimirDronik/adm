@@ -6,13 +6,10 @@ use App\Models\DeviceSwitch;
 use App\Models\HomeObject;
 use App\Models\ObjType;
 
-class SwitchObjectService {
-
+class SwitchObjectService
+{
     /**
      * Автосоздание объекта для выключателя
-     *
-     * @param string $name
-     * @return HomeObject
      */
     public function createSwitchObject(string $name, string $type): HomeObject
     {
@@ -30,10 +27,6 @@ class SwitchObjectService {
 
     /**
      * Изменение типа объекта
-     *
-     * @param HomeObject $object
-     * @param string $type
-     * @return HomeObject
      */
     public function updateSwitchObjectType(HomeObject $object, string $type): HomeObject
     {

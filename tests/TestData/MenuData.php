@@ -8,8 +8,6 @@ class MenuData
 {
     /**
      * Генератор сущностей для меню
-     *
-     * @return array
      */
     public function generateMenu(): array
     {

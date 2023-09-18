@@ -7,15 +7,14 @@
  */
 
 namespace App\Repositories;
+
 use App\Models\Events;
 
 class EventRepository
 {
-
     /**
      * Получить все события объекта
      *
-     * @param $idObject
      * @return mixed
      */
     public function getAllById($idObject)
@@ -26,10 +25,9 @@ class EventRepository
 
     /**
      * Получить данные выбранного события
-    */
+     */
     public function getEvent($idEvent)
     {
         return Events::where('id', $idEvent)->first();
     }
-
 }

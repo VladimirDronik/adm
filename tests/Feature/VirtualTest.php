@@ -41,7 +41,7 @@ class VirtualTest extends TestCase
 
         $data = $generator->generateVirtual();
 
-        $response = $this->actingAs($user)->get('/virtuals/'. $data['virtual']->id .'/edit');
+        $response = $this->actingAs($user)->get('/virtuals/'.$data['virtual']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -56,7 +56,7 @@ class VirtualTest extends TestCase
 
         $virtual = Virtual::where('name', 'Создание тестового виртуального устройства')->first();
 
-        $response->assertRedirect('/virtuals/'. ($virtual ? $virtual->id : 1) .'/edit');
+        $response->assertRedirect('/virtuals/'.($virtual ? $virtual->id : 1).'/edit');
 
         $this->assertDatabaseHas('virtualsdev', [
             'name' => 'Создание тестового виртуального устройства',
@@ -71,7 +71,7 @@ class VirtualTest extends TestCase
 
         $data = $generator->generateVirtual();
 
-        $response = $this->actingAs($user)->post('virtuals/'. $data['virtual']->id, [
+        $response = $this->actingAs($user)->post('virtuals/'.$data['virtual']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового виртуального устройства',
             'id_object' => $data['object']->id,
@@ -80,7 +80,7 @@ class VirtualTest extends TestCase
             'event_idobject' => null,
         ]);
 
-        $response->assertRedirect('/virtuals/'. $data['virtual']->id .'/edit');
+        $response->assertRedirect('/virtuals/'.$data['virtual']->id.'/edit');
 
         $this->assertDatabaseHas('virtualsdev', [
             'name' => 'Обновление тестового виртуального устройства',

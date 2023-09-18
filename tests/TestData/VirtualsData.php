@@ -9,8 +9,6 @@ class VirtualsData
 {
     /**
      * Генератор сущностей для виртуального устройства
-     *
-     * @return array
      */
     public function generateVirtual(): array
     {

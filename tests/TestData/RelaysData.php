@@ -9,8 +9,6 @@ class RelaysData
 {
     /**
      * Генератор сущностей для реле
-     *
-     * @return array
      */
     public function generateRelay(): array
     {

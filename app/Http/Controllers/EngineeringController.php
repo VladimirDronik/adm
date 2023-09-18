@@ -7,12 +7,11 @@
  */
 
 namespace App\Http\Controllers;
+
 use App\Repositories\ObjectRepository;
-use App\Models\Boiler;
 
 class EngineeringController extends Controller
 {
-
     private $objectRepository;
 
     public function __construct(ObjectRepository $objectRepository)
@@ -25,6 +24,7 @@ class EngineeringController extends Controller
     public function index()
     {
         $equipments = $this->objectRepository->getAllEngineering();
+
         return view('engineering.index', compact('equipments'));
     }
 }

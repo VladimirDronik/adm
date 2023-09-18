@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $background_color
  * @property int $sort
  * @property int $active
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scene newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scene newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scene query()
@@ -25,15 +26,21 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scene whereLabel($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scene whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scene whereSort($value)
+ *
  * @mixin \Eloquent
+ *
  * @property-read mixed $image_path
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scene whereBackgroundColor($value)
  */
 class Scene extends Model
 {
     protected $table = 'scenes';
+
     protected $primaryKey = 'id';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     public function getImagePathAttribute()

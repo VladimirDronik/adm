@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Setting;
+use Illuminate\Database\Seeder;
 
 class SettingsTableSeeder extends Seeder
 {
@@ -25,54 +25,54 @@ class SettingsTableSeeder extends Seeder
             [
                 'name' => 'time_zone',
                 'value' => 'Europe/Moscow',
-                'comment' => 'Часовой пояс приложения'
+                'comment' => 'Часовой пояс приложения',
             ],
             [
                 'name' => 'heating_mode',
                 'value' => 'eco',
-                'comment' => 'План отопления дома: eco, night, normal'
+                'comment' => 'План отопления дома: eco, night, normal',
             ],
             [
                 'name' => 'night_mode',
                 'value' => 'false',
-                'comment' => 'Ночной режим'
+                'comment' => 'Ночной режим',
             ],
             [
                 'name' => 'eco_mode',
                 'value' => 'false',
-                'comment' => 'Режим экономии'
+                'comment' => 'Режим экономии',
             ],
             [
                 'name' => 'light_mode',
                 'value' => 'day',
-                'comment' => 'Режим освещения: night, day, evening'
+                'comment' => 'Режим освещения: night, day, evening',
             ],
             [
                 'name' => 'graphdate',
                 'value' => '365',
-                'comment' => 'Сколько дней хранить информацию в графиках'
+                'comment' => 'Сколько дней хранить информацию в графиках',
             ],
             [
                 'name' => 'logging',
                 'value' => 'DB',
-                'comment' => 'Где хранить логи: file или DB'
+                'comment' => 'Где хранить логи: file или DB',
             ],
             [
                 'name' => 'storage_logs',
                 'value' => '30',
-                'comment' => 'Количество дней хранения логов'
+                'comment' => 'Количество дней хранения логов',
             ],
             [
                 'name' => 'guard_mode',
                 'value' => 'false',
-                'comment' => 'Режим охраны'
+                'comment' => 'Режим охраны',
             ],
         ];
 
         $result_settings = [];
 
         foreach ($settings as $setting) {
-            if (!in_array($setting['name'], $this->settings, true)) {
+            if (! in_array($setting['name'], $this->settings, true)) {
                 $result_settings[] = $setting;
             }
         }

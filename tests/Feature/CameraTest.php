@@ -41,7 +41,7 @@ class CameraTest extends TestCase
 
         $data = $generator->generateCamera();
 
-        $response = $this->actingAs($user)->get('/cameras/'. $data['camera']->id .'/edit');
+        $response = $this->actingAs($user)->get('/cameras/'.$data['camera']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -63,7 +63,7 @@ class CameraTest extends TestCase
 
         $camera = Camera::where('name', 'Создание тестовой камеры')->first();
 
-        $response->assertRedirect('/cameras/'. ($camera ? $camera->id : 1) .'/edit');
+        $response->assertRedirect('/cameras/'.($camera ? $camera->id : 1).'/edit');
 
         $this->assertDatabaseHas('cameras', [
             'name' => 'Создание тестовой камеры',
@@ -78,7 +78,7 @@ class CameraTest extends TestCase
 
         $data = $generator->generateCamera();
 
-        $response = $this->actingAs($user)->post('cameras/'. $data['camera']->id, [
+        $response = $this->actingAs($user)->post('cameras/'.$data['camera']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестовой камеры',
             'active' => 1,
@@ -87,7 +87,7 @@ class CameraTest extends TestCase
             'room' => $data['room']->id,
         ]);
 
-        $response->assertRedirect('/cameras/'. $data['camera']->id .'/edit');
+        $response->assertRedirect('/cameras/'.$data['camera']->id.'/edit');
 
         $this->assertDatabaseHas('cameras', [
             'name' => 'Обновление тестовой камеры',

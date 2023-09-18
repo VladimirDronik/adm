@@ -2,21 +2,20 @@
 
 namespace App\Services;
 
-class NetworkService {
-
+class NetworkService
+{
     private $pathNet = '/etc/network/interfaces.d/netcfg';
 
     /**
      * Установка параметров для сетевого интерфейса
      *
-     * @param string $address
-     * @param string $netmask
-     * @param ?string $gateway
+     * @param  ?string  $gateway
+     *
      * @throws \Exception
      */
-    public function setIface(string $address, string $netmask, ?string $gateway = null)
+    public function setIface(string $address, string $netmask, string $gateway = null)
     {
-        if (!$address || !$netmask) {
+        if (! $address || ! $netmask) {
             throw new \Exception('Не хватает данных');
         }
 
@@ -36,9 +35,6 @@ class NetworkService {
 
     /**
      * Чтение параметров сетевого интерфейса
-     *
-     * @param bool $main
-     * @return array
      */
     public function getIface(bool $main = false): array
     {
@@ -60,16 +56,13 @@ class NetworkService {
 
     /**
      * Перезагрузка сервера
-     *
-     * @param string $mainIp
-     * @param string $ip
      */
     public function reload(string $mainIp, string $ip)
     {
         $output = null;
         $resultCode = null;
 
-        exec('/opt/touchon/scripts/network.sh ' . $mainIp . ' ' . $ip, $output, $resultCode);
+        exec('/opt/touchon/scripts/network.sh '.$mainIp.' '.$ip, $output, $resultCode);
 
         if ($resultCode) {
             throw new \Exception(implode(', ', $output), $resultCode);

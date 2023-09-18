@@ -9,8 +9,6 @@ class CountsData
 {
     /**
      * Генератор сущностей для счетчика
-     *
-     * @return array
      */
     public function generateCount(): array
     {

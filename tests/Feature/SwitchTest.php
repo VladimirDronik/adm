@@ -41,7 +41,7 @@ class SwitchTest extends TestCase
 
         $data = $generator->generateSwitch();
 
-        $response = $this->actingAs($user)->get('/switches/'. $data['switch']->id .'/edit');
+        $response = $this->actingAs($user)->get('/switches/'.$data['switch']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -70,7 +70,7 @@ class SwitchTest extends TestCase
 
         $switch = DeviceSwitch::where('name', 'Создание тестового выключателя')->first();
 
-        $response->assertRedirect('/switches/'. ($switch ? $switch->id : 1) .'/edit');
+        $response->assertRedirect('/switches/'.($switch ? $switch->id : 1).'/edit');
 
         $this->assertDatabaseHas('switches', [
             'name' => 'Создание тестового выключателя',
@@ -85,7 +85,7 @@ class SwitchTest extends TestCase
 
         $data = $generator->generateSwitch();
 
-        $response = $this->actingAs($user)->post('switches/'. $data['switch']->id, [
+        $response = $this->actingAs($user)->post('switches/'.$data['switch']->id, [
             '_method' => 'PUT',
             'type' => 'switch',
             'name' => 'Обновление тестового выключателя',
@@ -106,7 +106,7 @@ class SwitchTest extends TestCase
             'place' => null,
         ]);
 
-        $response->assertRedirect('/switches/'. $data['switch']->id .'/edit');
+        $response->assertRedirect('/switches/'.$data['switch']->id.'/edit');
 
         $this->assertDatabaseHas('switches', [
             'name' => 'Обновление тестового выключателя',

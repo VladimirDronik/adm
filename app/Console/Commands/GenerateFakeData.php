@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use Artisan;
+use Illuminate\Console\Command;
 
 class GenerateFakeData extends Command
 {

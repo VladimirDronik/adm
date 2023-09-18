@@ -9,12 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class RoomService
 {
-
     public function delete(int $id)
     {
         $room = Room::find($id);
 
-        if (!$room) {
+        if (! $room) {
             return false;
         }
 
@@ -34,8 +33,8 @@ class RoomService
             } else {
                 Room::room()->where('group_room', $room->group_room)
                     ->where('sort', '>', max($room->sort, 0))->update([
-                    'sort' => DB::raw('sort-1'),
-                ]);
+                        'sort' => DB::raw('sort-1'),
+                    ]);
             }
             $room->delete();
         });
@@ -86,7 +85,7 @@ class RoomService
     {
         $room = Room::find($data['id']);
 
-        if (!$room) {
+        if (! $room) {
             return false;
         }
 
@@ -187,7 +186,6 @@ class RoomService
 
         $room->save();
 
-
         $temperature = new Temperature();
         $temperature->id_room = $room->id;
         $temperature->normal = 0.00;
@@ -238,22 +236,22 @@ class RoomService
                 })->where('sort', '>', $room->sort)->update([
                     'sort' => DB::raw('sort-1'),
                 ]);
-                View::where('room', $room->id)->update(['room_group' => (int)$data['group_room']]);
+                View::where('room', $room->id)->update(['room_group' => (int) $data['group_room']]);
                 $room->group_room = $data['group_room'];
-            } elseif (!is_null($room->group_room) && $data['group_room'] === '0') {
+            } elseif (! is_null($room->group_room) && $data['group_room'] === '0') {
                 // из конкретных в отдельную
                 Room::room()->where('group_room', $room->group_room)->where('sort', '>', $room->sort)->update([
                     'sort' => DB::raw('sort-1'),
                 ]);
                 View::where('room', $room->id)->update(['room_group' => $room->id]);
                 $room->group_room = null;
-            } elseif (!is_null($room->group_room) && $room->group_room !== (int)$data['group_room']) {
+            } elseif (! is_null($room->group_room) && $room->group_room !== (int) $data['group_room']) {
                 // из конкретной в конкретную
                 Room::room()->where('group_room', $room->group_room)->where('sort', '>', $room->sort)->update([
                     'sort' => DB::raw('sort-1'),
                 ]);
-                View::where('room', $room->id)->update(['room_group' => (int)$data['group_room']]);
-                $room->group_room = (int)$data['group_room'];
+                View::where('room', $room->id)->update(['room_group' => (int) $data['group_room']]);
+                $room->group_room = (int) $data['group_room'];
             }
 
             $room->sort = $this->getSortMax($room) + 1;
@@ -261,15 +259,15 @@ class RoomService
 
             $temperature = Temperature::where('id_room', $room->id)->first();
 
-            if (!$temperature) {
+            if (! $temperature) {
                 $temperature = new Temperature();
                 $temperature->id_room = $room->id;
                 $temperature->sort = 1;
             }
 
-            $temperature->normal = (int)$data['temperature_normal'];
-            $temperature->night = (int)$data['temperature_night'];
-            $temperature->eco = (int)$data['temperature_eco'];
+            $temperature->normal = (int) $data['temperature_normal'];
+            $temperature->night = (int) $data['temperature_night'];
+            $temperature->eco = (int) $data['temperature_eco'];
 
             $temperature->save();
         });
@@ -280,21 +278,24 @@ class RoomService
     /**
      * Добавление термостата к комнате.
      */
-    static public function addTermostat($idRoom, $termostatValue)
+    public static function addTermostat($idRoom, $termostatValue)
     {
 
         $temperature = Temperature::where('id_room', $idRoom)->first();
 
         if ($temperature->id) {
 
-            if($temperature->normal == null)
+            if ($temperature->normal == null) {
                 $temperature->normal = $termostatValue;
+            }
 
-            if($temperature->night == null)
+            if ($temperature->night == null) {
                 $temperature->night = $termostatValue;
+            }
 
-            if($temperature->eco == null)
+            if ($temperature->eco == null) {
                 $temperature->eco = $termostatValue;
+            }
 
             $temperature->save();
         }
@@ -304,24 +305,24 @@ class RoomService
     /**
      * Добавление гигростата к комнате.
      */
-    static public function addHygrostat($idRoom, $hygrostatValue)
+    public static function addHygrostat($idRoom, $hygrostatValue)
     {
 
-//        $temperature = Temperature::where('id_room', $idRoom)->first();
-//
-//        if ($temperature->id) {
-//
-//            if($temperature->normal == null)
-//                $temperature->normal = $termostatValue;
-//
-//            if($temperature->night == null)
-//                $temperature->night = $termostatValue;
-//
-//            if($temperature->eco == null)
-//                $temperature->eco = $termostatValue;
-//
-//            $temperature->save();
-//        }
+        //        $temperature = Temperature::where('id_room', $idRoom)->first();
+        //
+        //        if ($temperature->id) {
+        //
+        //            if($temperature->normal == null)
+        //                $temperature->normal = $termostatValue;
+        //
+        //            if($temperature->night == null)
+        //                $temperature->night = $termostatValue;
+        //
+        //            if($temperature->eco == null)
+        //                $temperature->eco = $termostatValue;
+        //
+        //            $temperature->save();
+        //        }
 
     }
 }

@@ -31,7 +31,7 @@ class RoomTest extends TestCase
 
         $data = $generator->generateRoom();
 
-        $response = $this->actingAs($user)->get('/rooms/group/' . $data['room_group']->id);
+        $response = $this->actingAs($user)->get('/rooms/group/'.$data['room_group']->id);
 
         $response->assertStatus(200);
     }
@@ -44,7 +44,7 @@ class RoomTest extends TestCase
 
         $data = $generator->generateRoom();
 
-        $response = $this->actingAs($user)->get('/rooms/'. $data['room']->id .'/edit');
+        $response = $this->actingAs($user)->get('/rooms/'.$data['room']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -77,7 +77,7 @@ class RoomTest extends TestCase
 
         $data = $generator->generateRoom();
 
-        $response = $this->actingAs($user)->post('rooms/'. $data['room']->id, [
+        $response = $this->actingAs($user)->post('rooms/'.$data['room']->id, [
             '_method' => 'PUT',
             'group_room' => $data['room_group']->id,
             'temperature_normal' => 15,
@@ -85,7 +85,7 @@ class RoomTest extends TestCase
             'temperature_eco' => 15,
         ]);
 
-        $response->assertRedirect('/rooms/'. $data['room']->id .'/edit');
+        $response->assertRedirect('/rooms/'.$data['room']->id.'/edit');
 
         $this->assertDatabaseHas('rooms', [
             'name' => 'Тестовая комната',

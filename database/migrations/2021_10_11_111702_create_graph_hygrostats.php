@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateGraphHygrostats extends Migration
 {
@@ -13,7 +13,7 @@ class CreateGraphHygrostats extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('graph_hygrostats')) {
+        if (! Schema::hasTable('graph_hygrostats')) {
             Schema::create('graph_hygrostats', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('id_hygrostat')->comment('id гигрсотата из таблицы гигсростатов');

@@ -42,22 +42,25 @@ class CreateUser extends Command
         $userTypes = User::getTypes();
         $type = $this->argument('role');
 
-        if (!in_array(trim($type), $userTypes, true)) {
-            $this->error("User role is not valid");
+        if (! in_array(trim($type), $userTypes, true)) {
+            $this->error('User role is not valid');
+
             return;
         }
 
         $login = $this->argument('login');
 
         if (User::where('login', $login)->exists()) {
-            $this->error("Login already exists");
+            $this->error('Login already exists');
+
             return;
         }
 
         $password = $this->argument('password');
 
         if (strlen($password) < 6) {
-            $this->error("Password contains less then six symbols");
+            $this->error('Password contains less then six symbols');
+
             return;
         }
 
@@ -67,6 +70,6 @@ class CreateUser extends Command
         $user->password = Hash::make($password);
         $user->save();
 
-        $this->info("User created");
+        $this->info('User created');
     }
 }

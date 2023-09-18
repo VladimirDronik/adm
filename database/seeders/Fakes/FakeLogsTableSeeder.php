@@ -2,9 +2,9 @@
 
 namespace Database\Seeders\Fakes;
 
-use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 use Faker\Factory;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class FakeLogsTableSeeder extends Seeder
@@ -23,8 +23,8 @@ class FakeLogsTableSeeder extends Seeder
         for ($i = 0; $i < self::COUNT; $i++) {
             $logs[] = [
                 'date' => $date->format('Y-m-d H:i:s'),
-                'type' => $types[rand(0, count($types)-1)],
-                'message' => $faker->sentence
+                'type' => $types[rand(0, count($types) - 1)],
+                'message' => $faker->sentence,
             ];
 
             $date->addDay();

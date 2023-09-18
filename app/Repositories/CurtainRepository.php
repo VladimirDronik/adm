@@ -12,7 +12,6 @@ use App\Models\Curtain;
 
 class CurtainRepository
 {
-
     public function getAll(int $pagination_count = 30)
     {
         return Curtain::with('object')->orderBy('id', 'desc')

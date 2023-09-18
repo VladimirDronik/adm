@@ -10,13 +10,10 @@ use App\Models\SchedulerTask;
 use App\Models\Script;
 use Database\Seeders\ScriptsTableSeeder;
 
-class ManometrObjectService {
-
+class ManometrObjectService
+{
     /**
      * Автосоздание объекта для манометра
-     *
-     * @param string $name
-     * @return HomeObject
      */
     public function createManometrObject(string $name): HomeObject
     {
@@ -46,8 +43,6 @@ class ManometrObjectService {
 
     /**
      * Создание метода 'Проверка манометра' и задачи 'Проверка манометра' (каждую 1 мин)
-     *
-     * @param int $object_id
      */
     public function createCheckMethodWithEvent(int $object_id)
     {
@@ -58,7 +53,7 @@ class ManometrObjectService {
             'id_object' => $object_id,
             'comment' => 'Периодическая проверка текущих значений манометра',
             'is_system' => 1,
-            'script' => $script_id
+            'script' => $script_id,
         ])->id;
 
         $scheduler_task_id = SchedulerTask::forceCreate([
@@ -66,7 +61,7 @@ class ManometrObjectService {
             'is_system' => 1,
             'is_hidden' => 1,
             'object' => $object_id,
-            'method' => $method_id
+            'method' => $method_id,
         ])->id;
 
         // каждые 1 мин
@@ -76,7 +71,7 @@ class ManometrObjectService {
             'time' => '1',
             'days' => '',
             'close' => 1,
-            'system' => 1
+            'system' => 1,
         ]);
     }
 
@@ -84,7 +79,6 @@ class ManometrObjectService {
      * Автосоздание методов и их событий для объекта, который был
      * создан автоматически
      *
-     * @param int $object_id
      * @return void
      */
     public function createManometrObjectMethodsWithEvents(int $object_id)

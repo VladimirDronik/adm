@@ -21,7 +21,6 @@ class UpdateRequest extends FormRequest
      *
      * @return array
      */
-
     public function rules()
     {
         return [
@@ -33,7 +32,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             //'comment.required' => 'Не указано название',
-            'comment.max' => 'Название содержит более 255 символов'
+            'comment.max' => 'Название содержит более 255 символов',
         ];
     }
 }

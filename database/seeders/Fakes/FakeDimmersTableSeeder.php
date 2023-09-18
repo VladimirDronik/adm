@@ -2,10 +2,10 @@
 
 namespace Database\Seeders\Fakes;
 
-use Illuminate\Database\Seeder;
-use Faker\Factory;
 use App\Models\Dimmer;
 use App\Models\HomeObject;
+use Faker\Factory;
+use Illuminate\Database\Seeder;
 
 class FakeDimmersTableSeeder extends Seeder
 {
@@ -30,13 +30,13 @@ class FakeDimmersTableSeeder extends Seeder
                 'name' => 'Диммер в спальне',
                 'id_object' => $objects[0]->id,
                 'value' => 100,
-                'speed' => 2
+                'speed' => 2,
             ],
             [
                 'name' => 'Диммер на кухне',
                 'id_object' => $objects[1]->id,
                 'value' => 50,
-                'speed' => 5
+                'speed' => 5,
             ],
         ];
 

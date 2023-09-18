@@ -12,14 +12,14 @@ class RoomGroupController extends Controller
     public function __construct(
         private RoomRepository $room_rep,
         private RoomService $service
-    )
-    {}
+    ) {
+    }
 
     public function index(int $id)
     {
         $group = $this->room_rep->getGroup($id);
 
-        if (!$group) {
+        if (! $group) {
             return redirect()->route('rooms.index');
         }
 

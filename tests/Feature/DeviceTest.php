@@ -41,7 +41,7 @@ class DeviceTest extends TestCase
 
         $data = $generator->generateDevice();
 
-        $response = $this->actingAs($user)->get('/devices/'. $data['device']->id .'/edit');
+        $response = $this->actingAs($user)->get('/devices/'.$data['device']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -63,7 +63,7 @@ class DeviceTest extends TestCase
 
         $device = Device::where('description', 'Создание тестового контроллера')->first();
 
-        $response->assertRedirect('/devices/'. ($device ? $device->id : 1) .'/edit');
+        $response->assertRedirect('/devices/'.($device ? $device->id : 1).'/edit');
 
         $this->assertDatabaseHas('devices', [
             'description' => 'Создание тестового контроллера',

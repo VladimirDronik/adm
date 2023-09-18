@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateScenesTable extends Migration
 {
@@ -13,7 +13,7 @@ class CreateScenesTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('scenes')) {
+        if (! Schema::hasTable('scenes')) {
             Schema::create('scenes', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('label', 150);

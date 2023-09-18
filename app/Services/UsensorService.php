@@ -11,19 +11,19 @@ namespace App\Services;
 use App\Models\HomeObject;
 use App\Models\Port;
 use App\Models\Usensor;
-use Illuminate\Support\Facades\DB;
 use App\Repositories\PortRepository;
-use App\Services\PortService;
+use Illuminate\Support\Facades\DB;
 
 class UsensorService
 {
-
     private $usensor_object_service;
+
     private $portRepository;
+
     private $portService;
 
     public function __construct(UsensorObjectService $usensor_object_service, PortRepository $portRepository,
-                PortService $portService)
+        PortService $portService)
     {
         $this->usensor_object_service = $usensor_object_service;
         $this->portRepository = $portRepository;
@@ -43,8 +43,6 @@ class UsensorService
      * Создание универсального датчка. Если $data['type'] === 'auto',
      * то еще создается объект с методом.
      *
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function store(array $data): int
@@ -83,13 +81,10 @@ class UsensorService
         return $usensor->id;
     }
 
-
     /**
      * Удаление универсального датчика. Если связанный объект системный, то удаление объекта, метода, задачи планировщика,
      * созданных автоматически при создании термостата
      *
-     * @param int $id
-     * @return bool
      * @throws \Throwable
      */
     public function delete(int $id): bool
@@ -97,13 +92,12 @@ class UsensorService
         $usensor = Usensor::findOrFail($id);
 
         //Убираем все данные на порту
-        Port::where('object', $usensor->id_object)->update(['object' => NULL, 'status' => 'IN',
+        Port::where('object', $usensor->id_object)->update(['object' => null, 'status' => 'IN',
             'comment' => '']);
 
         $deviceAndPort = $this->portService->getIdDeviceAndPortId($usensor->id_object);
 
         ConfigMegaService::setPortType($deviceAndPort['id_device'], $this->portRepository->getNumPortByID($deviceAndPort['id_port']), 'IN');
-
 
         if ($usensor->iobject && $usensor->iobject->is_system) {
             DB::transaction(function () use (&$usensor) {
@@ -119,7 +113,6 @@ class UsensorService
         return true;
     }
 
-
     private function isUpdateAutoObjectName(Usensor $usensor, string $name): bool
     {
         return $usensor->name !== trim($name) && $usensor->iobject && $usensor->iobject->is_system;
@@ -130,14 +123,10 @@ class UsensorService
      * изменяем название объекта.
      * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
      *
-     * @param Usensor $usensor
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function update(Usensor $usensor, array $data): int
     {
-
 
         DB::transaction(function () use (&$usensor, $data) {
             if ($this->isUpdateAutoObjectName($usensor, $data['name'])) {
@@ -146,12 +135,11 @@ class UsensorService
             }
 
             //Убираем все данные на порту
-            Port::where('object', $usensor->id_object)->update(['object' => NULL, 'status' => 'IN',
+            Port::where('object', $usensor->id_object)->update(['object' => null, 'status' => 'IN',
                 'comment' => '']);
 
             ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_SDA']), 'IN');
             ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_SCL']), 'IN');
-
 
             if ($data['port_SDA']) {
                 Port::where('id', $data['port_SDA'])->update(['object' => $data['id_object'],
@@ -168,7 +156,6 @@ class UsensorService
                 ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_SCL']), 'SCL');
 
             }
-
 
             $this->prepare($usensor, $data);
             $usensor->save();

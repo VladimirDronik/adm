@@ -50,7 +50,7 @@ class SettingTest extends TestCase
 
         $data = $generator->generateSetting();
 
-        $response = $this->actingAs($user)->get('/settings/'. $data['setting']->id .'/edit');
+        $response = $this->actingAs($user)->get('/settings/'.$data['setting']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -63,7 +63,7 @@ class SettingTest extends TestCase
 
         $data = $generator->generateSetting();
 
-        $response = $this->actingAs($user)->get('/time_zone/'. $data['time_zone']->id .'/edit');
+        $response = $this->actingAs($user)->get('/time_zone/'.$data['time_zone']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -80,7 +80,7 @@ class SettingTest extends TestCase
 
         $setting = Setting::where('name', 'test_setting')->first();
 
-        $response->assertRedirect('/settings/'. ($setting ? $setting->id : 1) .'/edit');
+        $response->assertRedirect('/settings/'.($setting ? $setting->id : 1).'/edit');
 
         $this->assertDatabaseHas('settings', [
             'name' => 'test_setting',
@@ -99,7 +99,7 @@ class SettingTest extends TestCase
 
         $setting = Setting::where('name', 'time_zone')->first();
 
-        $response->assertRedirect('/time_zone/'. ($setting ? $setting->id : 1) .'/edit');
+        $response->assertRedirect('/time_zone/'.($setting ? $setting->id : 1).'/edit');
 
         $this->assertDatabaseHas('settings', [
             'name' => 'time_zone',
@@ -114,14 +114,14 @@ class SettingTest extends TestCase
 
         $data = $generator->generateSetting();
 
-        $response = $this->actingAs($user)->post('settings/'. $data['setting']->id, [
+        $response = $this->actingAs($user)->post('settings/'.$data['setting']->id, [
             '_method' => 'PUT',
             'name' => 'upd_test_setting',
             'value' => 'upd_test_value',
             'comment' => 'Тестовая настройка',
         ]);
 
-        $response->assertRedirect('/settings/'. $data['setting']->id .'/edit');
+        $response->assertRedirect('/settings/'.$data['setting']->id.'/edit');
 
         $this->assertDatabaseHas('settings', [
             'name' => 'upd_test_setting',
@@ -136,14 +136,14 @@ class SettingTest extends TestCase
 
         $data = $generator->generateSetting();
 
-        $response = $this->actingAs($user)->post('time_zone/'. $data['time_zone']->id, [
+        $response = $this->actingAs($user)->post('time_zone/'.$data['time_zone']->id, [
             '_method' => 'PUT',
             'name' => 'time_zone',
             'value' => 'Europe/Moscow',
             'comment' => 'Обновление тестовой настройки часового пояса',
         ]);
 
-        $response->assertRedirect('/time_zone/'. $data['time_zone']->id .'/edit');
+        $response->assertRedirect('/time_zone/'.$data['time_zone']->id.'/edit');
 
         $this->assertDatabaseHas('settings', [
             'comment' => 'Обновление тестовой настройки часового пояса',

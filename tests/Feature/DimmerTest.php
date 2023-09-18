@@ -41,7 +41,7 @@ class DimmerTest extends TestCase
 
         $data = $generator->generateDimmer();
 
-        $response = $this->actingAs($user)->get('/dimmers/'. $data['dimmer']->id .'/edit');
+        $response = $this->actingAs($user)->get('/dimmers/'.$data['dimmer']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -60,7 +60,7 @@ class DimmerTest extends TestCase
 
         $dimmer = Dimmer::where('name', 'Создание тестового диммера')->first();
 
-        $response->assertRedirect('/dimmers/'. ($dimmer ? $dimmer->id : 1) .'/edit');
+        $response->assertRedirect('/dimmers/'.($dimmer ? $dimmer->id : 1).'/edit');
 
         $this->assertDatabaseHas('dimmers', [
             'name' => 'Создание тестового диммера',
@@ -75,7 +75,7 @@ class DimmerTest extends TestCase
 
         $data = $generator->generateDimmer();
 
-        $response = $this->actingAs($user)->post('dimmers/'. $data['dimmer']->id, [
+        $response = $this->actingAs($user)->post('dimmers/'.$data['dimmer']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового диммера',
             'id_object' => $data['object']->id,
@@ -88,7 +88,7 @@ class DimmerTest extends TestCase
             'event_idobject' => $data['object']->id,
         ]);
 
-        $response->assertRedirect('/dimmers/'. $data['dimmer']->id .'/edit');
+        $response->assertRedirect('/dimmers/'.$data['dimmer']->id.'/edit');
 
         $this->assertDatabaseHas('dimmers', [
             'name' => 'Обновление тестового диммера',

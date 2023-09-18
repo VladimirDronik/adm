@@ -7,15 +7,14 @@ use App\Http\Requests\View\UpdateRequest;
 use App\Models\View;
 use App\Repositories\ColorRepository;
 use App\Repositories\ObjectRepository;
+use App\Repositories\PageRepository;
 use App\Repositories\RoomRepository;
 use App\Repositories\SceneRepository;
 use App\Repositories\ViewRepository;
-use App\Services\ColorService;
 use App\Services\ImageService;
 use App\Services\ObjectService;
 use App\Services\ViewService;
 use Illuminate\Http\Request;
-use App\Repositories\PageRepository;
 
 class ViewController extends Controller
 {
@@ -27,8 +26,8 @@ class ViewController extends Controller
         private ObjectRepository $object_rep,
         private PageRepository $pages_rep,
         private ObjectService $object_service
-    )
-    {}
+    ) {
+    }
 
     public function getLists()
     {
@@ -56,7 +55,7 @@ class ViewController extends Controller
 
     public function create()
     {
-        list($types, $rooms, $objects, $scenes, $images, $links, $safeTypes) = $this->getLists();
+        [$types, $rooms, $objects, $scenes, $images, $links, $safeTypes] = $this->getLists();
 
         $colors = ColorRepository::getColors();
 
@@ -67,7 +66,7 @@ class ViewController extends Controller
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('views.edit',[$id])->with('success', 'Отображение успешно добавлено');
+                return redirect()->route('views.edit', [$id])->with('success', 'Отображение успешно добавлено');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при добавлении отображения ', [$r->all(), $e->getMessage()]);
@@ -78,7 +77,7 @@ class ViewController extends Controller
 
     public function edit(View $view)
     {
-        list($types, $rooms, $objects, $scenes, $images, $links, $safeTypes) = $this->getLists();
+        [$types, $rooms, $objects, $scenes, $images, $links, $safeTypes] = $this->getLists();
         $methods = $this->object_service->getMethodsByObjectIdToArray($view->id_object);
 
         $colors = ColorRepository::getColors();
@@ -92,33 +91,31 @@ class ViewController extends Controller
         $link = null;
         $safe_type = null;
 
-        if($view->type == 'termostat') {
-            $onmethodparams = explode(';',$view->params);
-            $enabletermostat = explode('=',$onmethodparams[0])[1];
-            $lowval_termostat = explode('=',$onmethodparams[1])[1];
-            $highval_termostat = explode('=',$onmethodparams[2])[1];
+        if ($view->type == 'termostat') {
+            $onmethodparams = explode(';', $view->params);
+            $enabletermostat = explode('=', $onmethodparams[0])[1];
+            $lowval_termostat = explode('=', $onmethodparams[1])[1];
+            $highval_termostat = explode('=', $onmethodparams[2])[1];
             if (array_key_exists(3, $onmethodparams)) {
-                $safe_type = explode('=',$onmethodparams[3])[1];
+                $safe_type = explode('=', $onmethodparams[3])[1];
             }
         } elseif ($view->type == 'label') {
-            $onmethodparams = explode('&',$view->params);
-            $pushlabel = explode('=',$onmethodparams[0])[1];
-            $modallabel = explode('=',$onmethodparams[1])[1];
-            $label_longclick_text = explode('=',$onmethodparams[2])[1];
+            $onmethodparams = explode('&', $view->params);
+            $pushlabel = explode('=', $onmethodparams[0])[1];
+            $modallabel = explode('=', $onmethodparams[1])[1];
+            $label_longclick_text = explode('=', $onmethodparams[2])[1];
             if (array_key_exists(3, $onmethodparams)) {
-                $safe_type = explode('=',$onmethodparams[3])[1];
+                $safe_type = explode('=', $onmethodparams[3])[1];
             }
         } elseif ($view->type == 'link') {
-            $params = explode(';',$view->params);
-            $link = explode('=',$params[0])[1];
+            $params = explode(';', $view->params);
+            $link = explode('=', $params[0])[1];
             if (array_key_exists(1, $params)) {
-                $safe_type = explode('=',$params[1])[1];
+                $safe_type = explode('=', $params[1])[1];
             }
         } elseif ($view->params) {
-            $safe_type = explode('=',$view->params)[1];
+            $safe_type = explode('=', $view->params)[1];
         }
-
-
 
         return view('views.edit', compact('view', 'types', 'safeTypes', 'link',
             'rooms', 'methods', 'objects', 'scenes', 'images', 'links', 'colors', 'safe_type',
@@ -129,14 +126,14 @@ class ViewController extends Controller
     {
         try {
             if ($this->service->update($view, $r->except('_token'))) {
-                return redirect()->route('views.edit',[$view->id])
-                    ->with('success','Отображение успешно изменено');
+                return redirect()->route('views.edit', [$view->id])
+                    ->with('success', 'Отображение успешно изменено');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении отображения '.$view->id.' '
                 .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении отображения');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении отображения');
     }
 }

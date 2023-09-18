@@ -2,16 +2,18 @@
 
 namespace Database\Seeders\Fakes;
 
-use Illuminate\Database\Seeder;
-use App\Models\Room;
 use App\Models\Color;
+use App\Models\Room;
+use Illuminate\Database\Seeder;
 
 class FakeRoomsTableSeeder extends Seeder
 {
     const GROUP_COUNT = 4;
 
     private $images;
+
     private $colors;
+
     private $room_names;
 
     public function __construct()
@@ -42,7 +44,7 @@ class FakeRoomsTableSeeder extends Seeder
                 'image' => $this->getRandImage(),
                 'style' => $this->getRandColor(),
                 'sort' => $i + 1,
-                'is_group' => 1
+                'is_group' => 1,
             ];
         }
 
@@ -68,7 +70,7 @@ class FakeRoomsTableSeeder extends Seeder
                     'style' => $this->getRandColor(),
                     'sort' => $i + 1,
                     'is_group' => 0,
-                    'group_room' => $group->id
+                    'group_room' => $group->id,
                 ];
             }
         }
@@ -83,7 +85,7 @@ class FakeRoomsTableSeeder extends Seeder
                 'style' => $this->getRandColor(),
                 'sort' => count($groups) + $i + 1,
                 'is_group' => 0,
-                'group_room' => null
+                'group_room' => null,
             ];
         }
 

@@ -3,9 +3,9 @@
 namespace Database\Seeders\Fakes;
 
 use App\Models\Hygrostat;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class FakeGraphHumiditiesTableSeeder extends Seeder
 {
@@ -23,7 +23,7 @@ class FakeGraphHumiditiesTableSeeder extends Seeder
                 $counts[] = [
                     'datetime' => $date->format('Y-m-d H:i:s'),
                     'id_hygrostat' => $hygrostat->id,
-                    'value' => rand(0, 100)
+                    'value' => rand(0, 100),
                 ];
             }
             $date->addDay();

@@ -25,7 +25,7 @@ class CreateRequest extends FormRequest
     {
         return [
             'label' => 'required|string|max:150',
-            'background_color' => 'nullable|string|max:7'
+            'background_color' => 'nullable|string|max:7',
         ];
     }
 

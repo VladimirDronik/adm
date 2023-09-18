@@ -2,9 +2,9 @@
 
 namespace Database\Seeders\Fakes;
 
+use App\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\User;
 use Illuminate\Support\Facades\Hash;
 
 class FakeUsersTableSeeder extends Seeder
@@ -25,7 +25,7 @@ class FakeUsersTableSeeder extends Seeder
             'type' => User::TYPE_ADMIN,
             'password' => Hash::make(self::PASSWORD),
             'created_at' => $this->now,
-            'updated_at' => $this->now
+            'updated_at' => $this->now,
         ];
     }
 
@@ -36,7 +36,7 @@ class FakeUsersTableSeeder extends Seeder
             'type' => User::TYPE_SUPERADMIN,
             'password' => Hash::make(self::PASSWORD),
             'created_at' => $this->now,
-            'updated_at' => $this->now
+            'updated_at' => $this->now,
         ];
     }
 
@@ -47,7 +47,7 @@ class FakeUsersTableSeeder extends Seeder
             'type' => User::TYPE_USER,
             'password' => Hash::make(self::PASSWORD),
             'created_at' => $this->now,
-            'updated_at' => $this->now
+            'updated_at' => $this->now,
         ];
     }
 
@@ -85,8 +85,8 @@ class FakeUsersTableSeeder extends Seeder
      */
     public function run()
     {
-       $this->insertSuperAdmin();
-       $this->insertAdmin();
-       $this->insertUser();
+        $this->insertSuperAdmin();
+        $this->insertAdmin();
+        $this->insertUser();
     }
 }

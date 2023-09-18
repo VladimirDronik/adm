@@ -5,18 +5,18 @@ namespace App\Services;
 use App\Models\Scene;
 use Illuminate\Support\Facades\DB;
 
-class SceneService {
-
+class SceneService
+{
     public function delete(int $id)
     {
         $scene = Scene::find($id);
 
-        if (!$scene) {
+        if (! $scene) {
             return false;
         }
 
         DB::transaction(function () use ($scene) {
-            Scene::where('sort','>', max($scene->sort, 0))->update([
+            Scene::where('sort', '>', max($scene->sort, 0))->update([
                 'sort' => DB::raw('sort-1'),
             ]);
             $scene->delete();
@@ -29,7 +29,7 @@ class SceneService {
     {
         $scene = Scene::find($data['id']);
 
-        if (!$scene) {
+        if (! $scene) {
             return false;
         }
 
@@ -63,7 +63,7 @@ class SceneService {
     {
         $scene->label = trim($data['label']);
         $scene->active = $data['active'] ?? 0;
-        $scene->image = basename($data['_image']);;
+        $scene->image = basename($data['_image']);
         $scene->background_color = trim($data['background_color']);
     }
 

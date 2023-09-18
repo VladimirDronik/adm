@@ -1,16 +1,11 @@
 <?php
 
-
 namespace App\Services;
 
-
 use App\Models\YandexStation;
-use Illuminate\Support\Facades\Storage;
 
 class YandexStationService
 {
-
-
     private function prepare(YandexStation $station, array $data)
     {
 
@@ -34,8 +29,6 @@ class YandexStationService
 
         //Выполняем внешний файл инициализации яндексстанции
         passthru("(cd {$dir} && php -f alice_init.php &) >> /dev/null 2>&1");
-
-
 
         return $station->id;
     }

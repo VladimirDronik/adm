@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\MenuRepository;;
-use App\Services\MenuService;
-use App\Services\ImageService;
-use App\Models\Menu;
 use App\Http\Requests\Menu\UpdateRequest;
+use App\Models\Menu;
+use App\Repositories\MenuRepository;
+use App\Services\ImageService;
+use App\Services\MenuService;
 
 class MenuController extends Controller
 {
     public function __construct(
         private MenuRepository $menu_rep,
         private MenuService $service
-    )
-    {}
+    ) {
+    }
 
     public function index()
     {
@@ -42,13 +42,13 @@ class MenuController extends Controller
     {
         try {
             if ($this->service->update($menu, $r->except('_token'))) {
-                return redirect()->route('menu.edit',[$menu->id])->with('success','Настройки успешно изменены');
+                return redirect()->route('menu.edit', [$menu->id])->with('success', 'Настройки успешно изменены');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении настроек меню'.$menu->id.' '
                 .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении настроек меню');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении настроек меню');
     }
 }

@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Carbmonoxide\CreateRequest;
+use App\Http\Requests\Carbmonoxide\UpdateRequest;
+use App\Models\Carbmonoxide;
+use App\Models\HomeObject;
 use App\Repositories\CarbmonoxideRepository;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
-use App\Models\HomeObject;
-use App\Models\Carbmonoxide;
-use App\Services\CarbmonoxideService;
-use App\Http\Requests\Carbmonoxide\CreateRequest;
-use App\Services\ObjectService;
 use App\Repositories\ScriptRepository;
-use App\Services\PortService;
+use App\Services\CarbmonoxideService;
 use App\Services\MessageService;
-use App\Http\Requests\Carbmonoxide\UpdateRequest;
+use App\Services\ObjectService;
+use App\Services\PortService;
 use App\Services\Service;
 
 class CarbmonoxideController extends Controller
@@ -29,8 +29,8 @@ class CarbmonoxideController extends Controller
         private ScriptRepository $scriptRepository,
         private PortService $portService,
         private MessageService $messageService,
-    )
-    {}
+    ) {
+    }
 
     public function index()
     {
@@ -46,18 +46,17 @@ class CarbmonoxideController extends Controller
         $rooms = $this->roomRepository->getAllToArray();
         $devices = $this->deviceRepository->getAllWithoutTypesToArray(['Hite-pro']);
 
-
         return [$objects, $rooms, $devices];
     }
 
     public function create()
     {
 
-        list($objects, $rooms, $devices) = $this->getLists();
-        $object_types =  HomeObject::getFullTypeIds();
+        [$objects, $rooms, $devices] = $this->getLists();
+        $object_types = HomeObject::getFullTypeIds();
         $can = gates('devices.show-object');
 
-        return view('carbmonoxide.create', compact('objects','rooms', 'devices', 'object_types', 'can'));
+        return view('carbmonoxide.create', compact('objects', 'rooms', 'devices', 'object_types', 'can'));
     }
 
     public function store(CreateRequest $r)
@@ -75,10 +74,9 @@ class CarbmonoxideController extends Controller
 
     }
 
-    public function edit(Carbmonoxide $carbmonoxide, $tab=1)
+    public function edit(Carbmonoxide $carbmonoxide, $tab = 1)
     {
-        list($objects, $rooms, $devices) = $this->getLists();
-
+        [$objects, $rooms, $devices] = $this->getLists();
 
         $low_methods = $this->objectService->getMethodsByObjectIdToArray($carbmonoxide->low_object);
         $high_methods = $this->objectService->getMethodsByObjectIdToArray($carbmonoxide->low_object);
@@ -90,10 +88,9 @@ class CarbmonoxideController extends Controller
         $deviceId = $deviceAndPort['id_device'];
         $port = $deviceAndPort['id_port'];
 
-        $ports =  $this->portService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
+        $ports = $this->portService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
-
-        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
+        [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents] =
             Service::getListElements($carbmonoxide->id_object);
 
         $messagePoint['first'] = 'При нижнем пороге';
@@ -108,15 +105,14 @@ class CarbmonoxideController extends Controller
             'scripts', 'deviceId', 'ports', 'messagePoint', 'port', 'tab', 'can'));
     }
 
-
     public function update(UpdateRequest $r, Carbmonoxide $carbmonoxide)
     {
         try {
             if ($this->service->update($carbmonoxide, $r->except('_token'))) {
-                return redirect()->route('carbmonoxide.edit', [$carbmonoxide->id])->with('success','Датчик УГ успешно изменен');
+                return redirect()->route('carbmonoxide.edit', [$carbmonoxide->id])->with('success', 'Датчик УГ успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении датчика УГ '.$carbmonoxide->id.' ' .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при изменении датчика УГ '.$carbmonoxide->id.' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении датчика УГ');

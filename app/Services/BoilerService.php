@@ -7,18 +7,17 @@
  */
 
 namespace App\Services;
+
 use App\Models\Boiler;
 use App\Models\BoilerAuto;
-use App\Models\BoilerWater;
 use App\Models\BoilerManual;
-use App\Services\BoilerObjectService;
-use Illuminate\Support\Facades\DB;
+use App\Models\BoilerWater;
 use App\Models\HomeObject;
+use Illuminate\Support\Facades\DB;
 
 class BoilerService
 {
     private $boiler_object_service;
-
 
     public function __construct(BoilerObjectService $boilerObjectService)
     {
@@ -80,7 +79,6 @@ class BoilerService
         return true;
     }
 
-
     private function isUpdateAutoObjectName(Boiler $boiler, string $name): bool
     {
         return $boiler->name !== trim($name) && $boiler->object && $boiler->object->is_system;
@@ -100,8 +98,7 @@ class BoilerService
         $boiler->boiler = 1;
         $boiler->lock = 0;
 
-
-        DB::transaction(function () use (&$boiler, $data) {
+        DB::transaction(function () use (&$boiler) {
 
             $unique_name = HomeObject::getUniqueObjectName(0, $boiler->name);
             $object = $this->boiler_object_service->createBoilerObject($unique_name);
@@ -128,13 +125,14 @@ class BoilerService
     }
 
     /**
-     * @param int $boilerAutoId
      * @return bool
+     *
      * @throws \Throwable
      */
     public function boilerAutoDelete(int $boilerAutoId)
     {
         BoilerAuto::where('id', $boilerAutoId)->delete();
+
         return true;
     }
 }

@@ -2,17 +2,18 @@
 
 namespace Database\Seeders\Fakes;
 
-use Illuminate\Database\Seeder;
 use App\Models\HomeObject;
-use App\Models\Script;
-use App\Models\SchedulerTask;
 use App\Models\SchedulerPoint;
+use App\Models\SchedulerTask;
+use App\Models\Script;
+use Illuminate\Database\Seeder;
 
 class FakeSchedulerTasksTableSeeder extends Seeder
 {
     const COUNT = 10;
 
     private $scripts;
+
     private $objects;
 
     public function __construct()
@@ -23,17 +24,17 @@ class FakeSchedulerTasksTableSeeder extends Seeder
 
     public function getRandScriptId()
     {
-        return $this->scripts[rand(0, count($this->scripts)-1)]->id;
+        return $this->scripts[rand(0, count($this->scripts) - 1)]->id;
     }
 
     public function getRandObject()
     {
-        return $this->objects[rand(0, count($this->objects)-1)];
+        return $this->objects[rand(0, count($this->objects) - 1)];
     }
 
     public function getRandObjectMethodId($object)
     {
-        return $object->methods[rand(0, count($object->methods)-1)]->id;
+        return $object->methods[rand(0, count($object->methods) - 1)]->id;
     }
 
     public function createSchedulerTask($index)
@@ -65,7 +66,8 @@ class FakeSchedulerTasksTableSeeder extends Seeder
         }
     }
 
-    public function createMinutePoint($task_id) {
+    public function createMinutePoint($task_id)
+    {
         $point = new SchedulerPoint();
 
         $point->id_task = $task_id;
@@ -78,7 +80,8 @@ class FakeSchedulerTasksTableSeeder extends Seeder
         $point->save();
     }
 
-    public function createDayPoint($task_id) {
+    public function createDayPoint($task_id)
+    {
         $point = new SchedulerPoint();
 
         $point->id_task = $task_id;
@@ -91,7 +94,8 @@ class FakeSchedulerTasksTableSeeder extends Seeder
         $point->save();
     }
 
-    public function createMonthPoint($task_id) {
+    public function createMonthPoint($task_id)
+    {
         $point = new SchedulerPoint();
 
         $point->id_task = $task_id;
@@ -104,7 +108,8 @@ class FakeSchedulerTasksTableSeeder extends Seeder
         $point->save();
     }
 
-    public function createYearPoint($task_id) {
+    public function createYearPoint($task_id)
+    {
         $point = new SchedulerPoint();
 
         $point->id_task = $task_id;

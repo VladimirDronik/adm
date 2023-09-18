@@ -6,8 +6,8 @@ use App\Models\Setting;
 use App\Repositories\SettingRepository;
 use Illuminate\Support\Facades\DB;
 
-class SettingService {
-
+class SettingService
+{
     public function delete(int $id)
     {
         return Setting::destroy($id);
@@ -36,7 +36,6 @@ class SettingService {
     public function update(Setting $setting, array $data)
     {
 
-
         $this->prepareSetting($setting, $data);
         $setting->save();
 
@@ -49,31 +48,25 @@ class SettingService {
 
     /**
      * Отдает значение настройки по имени\
-     *
-     * @param string $name
      */
-    static public function get(string $name)
+    public static function get(string $name)
     {
         return SettingRepository::get($name);
     }
 
     /**
      * Устанавливает значение для выбранной настройки
-     *
-     * @param string $name
-     * @param string $value
      */
-    static public function set(string $name, string $value)
+    public static function set(string $name, string $value)
     {
         SettingRepository::set($name, $value);
     }
 
     /**
      * Производит замену часового пояса в системе, php и laravel
-     *
-     * @param string $timeZone
      */
-    private function changeTimeZone(string $timeZone) {
+    private function changeTimeZone(string $timeZone)
+    {
 
         // Замена часового пояса в laravel
         $path = base_path('.env');
@@ -85,7 +78,7 @@ class SettingService {
         }
 
         // Замена часового пояса в системе
-        exec("rm -rf /etc/localtime");
+        exec('rm -rf /etc/localtime');
         exec("ln -snf /usr/share/zoneinfo/$timeZone /etc/localtime && echo $timeZone > /etc/timezone");
 
         // Замена часового пояса в php

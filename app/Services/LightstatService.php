@@ -8,30 +8,27 @@
 
 namespace App\Services;
 
-
-use App\Models\Lightstat;
 use App\Models\HomeObject;
+use App\Models\Lightstat;
+use App\Models\Port;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
-use App\Services\LightstatObjectService;
-use App\Models\Port;
-use App\Services\PortService;
-
 
 class LightstatService
 {
     private $lightstat_object_service;
+
     private $portRepository;
+
     private $portService;
 
     public function __construct(LightstatObjectService $lightstat_object_service, PortRepository $port_rep,
-                                PortService $portService)
+        PortService $portService)
     {
         $this->lightstat_object_service = $lightstat_object_service;
         $this->portRepository = $port_rep;
         $this->portService = $portService;
     }
-
 
     public function prepare(Lightstat $lightstat, array $data)
     {
@@ -52,8 +49,6 @@ class LightstatService
      * Создание светостата. Если $data['type'] === 'auto',
      * то еще создается объект с методом и событием.
      *
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function store(array $data): int
@@ -78,20 +73,20 @@ class LightstatService
 
             if ($port_SDA) {
                 Port::where('id', $port_SDA)->update(['object' => $object->id, 'status' => 'I2C',
-                                                                    'comment' => $lightstat->name]);
+                    'comment' => $lightstat->name]);
                 ConfigMegaService::setPortType($deviceId, $this->portRepository->getNumPortByID($port_SDA), 'SDA');
             }
 
             if ($port_SCL) {
                 Port::where('id', $port_SCL)->update(['object' => $object->id, 'status' => 'I2C',
-                                                                    'comment' => $lightstat->name]);
+                    'comment' => $lightstat->name]);
                 ConfigMegaService::setPortType($deviceId, $this->portRepository->getNumPortByID($port_SCL), 'SCL');
 
             }
         });
 
         chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php check_lightstat.php ' . $lightstat->id_object);
+        exec('php check_lightstat.php '.$lightstat->id_object);
 
         return $lightstat->id;
     }
@@ -100,8 +95,6 @@ class LightstatService
      * Удаление светостата. Если связанный объект системный, то удаление объекта, метода, задачи,
      * созданных автоматически при создании светостата
      *
-     * @param int $id
-     * @return bool
      * @throws \Throwable
      */
     public function delete(int $id): bool
@@ -112,15 +105,14 @@ class LightstatService
 
         $deviceAndPort = $this->portService->getIdDeviceAndPortId($lightstat->id_object);
 
-        Port::where('object', $lightstat->id_object)->update(['object' => NULL, 'status' => 'IN',
+        Port::where('object', $lightstat->id_object)->update(['object' => null, 'status' => 'IN',
             'comment' => '']);
 
         ConfigMegaService::setPortType($deviceAndPort['id_device'], $this->portRepository->getNumPortByID($deviceAndPort['id_port']), 'IN');
 
         //В портах удаляем все упоминания о термостате, порт переводим в режим IN
-        Port::where('object', $lightstat->id_object)->update(['status' => 'IN', 'object' => NULL,
+        Port::where('object', $lightstat->id_object)->update(['status' => 'IN', 'object' => null,
             'comment' => '']);
-
 
         if ($lightstat->iobject && $lightstat->iobject->is_system) {
             DB::transaction(function () use (&$lightstat) {
@@ -130,7 +122,6 @@ class LightstatService
         } else {
             $lightstat->delete();
         }
-
 
         return true;
     }
@@ -145,9 +136,6 @@ class LightstatService
      * изменяем название объекта.
      * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
      *
-     * @param Lightstat $lightstat
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function update(Lightstat $lightstat, array $data): int
@@ -159,17 +147,16 @@ class LightstatService
             }
 
             //Убираем датчик портов, если он где-то был до этого
-            Port::where('object', $lightstat->id_object)->update(['object' => NULL, 'status' => 'IN',
+            Port::where('object', $lightstat->id_object)->update(['object' => null, 'status' => 'IN',
                 'comment' => '']);
 
             ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_SDA']), 'IN');
             ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_SCL']), 'IN');
 
-
-            if($data['placetype'] == 'port') {
+            if ($data['placetype'] == 'port') {
                 if ($data['port_SDA']) {
                     Port::where('id', $data['port_SDA'])->update(['object' => $lightstat->id_object, 'status' => 'I2C',
-                                                                        'comment' => $lightstat->name]);
+                        'comment' => $lightstat->name]);
 
                     ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_SDA']), 'SDA');
 
@@ -177,22 +164,20 @@ class LightstatService
 
                 if ($data['port_SCL']) {
                     Port::where('id', $data['port_SCL'])->update(['object' => $lightstat->id_object, 'status' => 'I2C',
-                                                                        'comment' => $lightstat->name]);
+                        'comment' => $lightstat->name]);
 
                     ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_SCL']), 'SCL');
 
                 }
             }
 
-
             $this->prepare($lightstat, $data);
             $lightstat->save();
         });
 
         chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php check_lightstat.php ' . $lightstat->id_object);
+        exec('php check_lightstat.php '.$lightstat->id_object);
 
         return $lightstat->id;
     }
-
 }

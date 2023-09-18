@@ -2,12 +2,12 @@
 
 namespace Database\Seeders\Fakes;
 
-use Illuminate\Database\Seeder;
-use App\Models\Room;
 use App\Models\HomeObject;
+use App\Models\Room;
 use App\Models\Scene;
 use App\Models\View;
 use Faker\Factory;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class FakeViewItemsTableSeeder extends Seeder
@@ -28,15 +28,15 @@ class FakeViewItemsTableSeeder extends Seeder
 
         for ($i = 0; $i < count($rooms) / 2; $i++) {
 
-            $typeName = $typeNames[rand(0, count($typeNames)-1)];
+            $typeName = $typeNames[rand(0, count($typeNames) - 1)];
             $count = rand(1, 5);
             $room = rand(0, 10) > 6 ? null : $rooms[$i];
-            $room_group = !is_null($room)
+            $room_group = ! is_null($room)
                 ? (is_null($room->group_room) ? $room->id : $room->group_room)
                 : null;
 
             for ($j = 0; $j < $count; $j++) {
-                $object = rand(0, 10) > 4 ? $objects[rand(0, count($objects)-1)] : null;
+                $object = rand(0, 10) > 4 ? $objects[rand(0, count($objects) - 1)] : null;
                 $left = rand(0, 10) > 6 ? null : rand(50, 80);
                 $top = is_null($left) ? null : rand(50, 90);
 
@@ -50,18 +50,18 @@ class FakeViewItemsTableSeeder extends Seeder
                     'status' => rand(0, 10) > 6 ? 'off' : 'on',
                     'id_object' => is_null($object) ? null : $object->id,
                     'on_method' => is_null($object) ? null
-                        : $object->methods[rand(0, count($object->methods)-1)]->id,
+                        : $object->methods[rand(0, count($object->methods) - 1)]->id,
                     'off_method' => (is_null($object) || $typeName !== View::TYPE_SWITCH) ? null
-                        : $object->methods[rand(0, count($object->methods)-1)]->id,
+                        : $object->methods[rand(0, count($object->methods) - 1)]->id,
                     'icon' => rand(0, 10) > 6 ? 'lamp' : 'noimage',
                     'title' => 'стол<br>свет вкл',
                     'position_left' => $left,
                     'position_top' => $top,
                     'room' => is_null($room) ? null : $room->id,
                     'room_group' => $room_group,
-                    'scene' => rand(0, 10) > 6 ? null : $scenes[rand(0, count($scenes)-1)]->id,
-                    'sort' =>  is_null($room) ? $common_sort : $j + 1,
-                    'active' => rand(0, 10) > 6 ? 0 : 1
+                    'scene' => rand(0, 10) > 6 ? null : $scenes[rand(0, count($scenes) - 1)]->id,
+                    'sort' => is_null($room) ? $common_sort : $j + 1,
+                    'active' => rand(0, 10) > 6 ? 0 : 1,
                 ];
             }
         }

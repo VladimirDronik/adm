@@ -46,7 +46,7 @@ class SensorsTest extends TestCase
 
         $data = $generator->generateTermostat();
 
-        $response = $this->actingAs($user)->get('/termostats/'. $data['termostat']->id .'/edit');
+        $response = $this->actingAs($user)->get('/termostats/'.$data['termostat']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -70,7 +70,7 @@ class SensorsTest extends TestCase
 
         $termostat = Termostat::where('name', 'Создание тестового термостата')->first();
 
-        $response->assertRedirect('/termostats/'. ($termostat ? $termostat->id : 1) .'/edit');
+        $response->assertRedirect('/termostats/'.($termostat ? $termostat->id : 1).'/edit');
 
         $this->assertDatabaseHas('termostats', [
             'name' => 'Создание тестового термостата',
@@ -85,7 +85,7 @@ class SensorsTest extends TestCase
 
         $data = $generator->generateTermostat();
 
-        $response = $this->actingAs($user)->post('termostats/'. $data['termostat']->id, [
+        $response = $this->actingAs($user)->post('termostats/'.$data['termostat']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового термостата',
             'placetype' => 'port',
@@ -102,7 +102,7 @@ class SensorsTest extends TestCase
             'max_alarm' => '40',
         ]);
 
-        $response->assertRedirect('/termostats/'. $data['termostat']->id .'/edit');
+        $response->assertRedirect('/termostats/'.$data['termostat']->id.'/edit');
 
         $this->assertDatabaseHas('termostats', [
             'name' => 'Обновление тестового термостата',
@@ -154,7 +154,7 @@ class SensorsTest extends TestCase
 
         $data = $generator->generateHygrostat();
 
-        $response = $this->actingAs($user)->get('/hygrostats/'. $data['hygrostat']->id .'/edit');
+        $response = $this->actingAs($user)->get('/hygrostats/'.$data['hygrostat']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -178,7 +178,7 @@ class SensorsTest extends TestCase
 
         $hygrostat = Hygrostat::where('name', 'Создание тестового гигростата')->first();
 
-        $response->assertRedirect('/hygrostats/'. ($hygrostat ? $hygrostat->id : 1) .'/edit');
+        $response->assertRedirect('/hygrostats/'.($hygrostat ? $hygrostat->id : 1).'/edit');
 
         $this->assertDatabaseHas('hygrostats', [
             'name' => 'Создание тестового гигростата',
@@ -193,7 +193,7 @@ class SensorsTest extends TestCase
 
         $data = $generator->generateHygrostat();
 
-        $response = $this->actingAs($user)->post('hygrostats/'. $data['hygrostat']->id, [
+        $response = $this->actingAs($user)->post('hygrostats/'.$data['hygrostat']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового гигростата',
             'placetype' => 'usensor',
@@ -208,7 +208,7 @@ class SensorsTest extends TestCase
             'max_alarm' => '40',
         ]);
 
-        $response->assertRedirect('/hygrostats/'. $data['hygrostat']->id .'/edit');
+        $response->assertRedirect('/hygrostats/'.$data['hygrostat']->id.'/edit');
 
         $this->assertDatabaseHas('hygrostats', [
             'name' => 'Обновление тестового гигростата',
@@ -260,7 +260,7 @@ class SensorsTest extends TestCase
 
         $data = $generator->generateLightstat();
 
-        $response = $this->actingAs($user)->get('/lightstats/'. $data['lightstat']->id .'/edit');
+        $response = $this->actingAs($user)->get('/lightstats/'.$data['lightstat']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -284,7 +284,7 @@ class SensorsTest extends TestCase
 
         $lightstat = Lightstat::where('name', 'Создание тестового светостата')->first();
 
-        $response->assertRedirect('/lightstats/'. ($lightstat ? $lightstat->id : 1) .'/edit');
+        $response->assertRedirect('/lightstats/'.($lightstat ? $lightstat->id : 1).'/edit');
 
         $this->assertDatabaseHas('lightstats', [
             'name' => 'Создание тестового светостата',
@@ -299,7 +299,7 @@ class SensorsTest extends TestCase
 
         $data = $generator->generateLightstat();
 
-        $response = $this->actingAs($user)->post('lightstats/'. $data['lightstat']->id, [
+        $response = $this->actingAs($user)->post('lightstats/'.$data['lightstat']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового светостата',
             'placetype' => 'port',
@@ -317,7 +317,7 @@ class SensorsTest extends TestCase
             'max_alarm' => '40',
         ]);
 
-        $response->assertRedirect('/lightstats/'. $data['lightstat']->id .'/edit');
+        $response->assertRedirect('/lightstats/'.$data['lightstat']->id.'/edit');
 
         $this->assertDatabaseHas('lightstats', [
             'name' => 'Обновление тестового светостата',
@@ -369,7 +369,7 @@ class SensorsTest extends TestCase
 
         $data = $generator->generateMotionsensor();
 
-        $response = $this->actingAs($user)->get('/motionsensors/'. $data['motionsensor']->id .'/edit');
+        $response = $this->actingAs($user)->get('/motionsensors/'.$data['motionsensor']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -386,7 +386,7 @@ class SensorsTest extends TestCase
 
         $motionsensor = Motionsensor::where('name', 'Создание тестового Датчика движения')->first();
 
-        $response->assertRedirect('/motionsensors/'. ($motionsensor ? $motionsensor->id : 1) .'/edit');
+        $response->assertRedirect('/motionsensors/'.($motionsensor ? $motionsensor->id : 1).'/edit');
 
         $this->assertDatabaseHas('motionsensors', [
             'name' => 'Создание тестового Датчика движения',
@@ -401,14 +401,14 @@ class SensorsTest extends TestCase
 
         $data = $generator->generateMotionsensor();
 
-        $response = $this->actingAs($user)->post('motionsensors/'. $data['motionsensor']->id, [
+        $response = $this->actingAs($user)->post('motionsensors/'.$data['motionsensor']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового Датчика движения',
             'id_object' => $data['motionsensor']->id_object,
             'port_id' => null,
         ]);
 
-        $response->assertRedirect('/motionsensors/'. $data['motionsensor']->id .'/edit');
+        $response->assertRedirect('/motionsensors/'.$data['motionsensor']->id.'/edit');
 
         $this->assertDatabaseHas('motionsensors', [
             'name' => 'Обновление тестового Датчика движения',
@@ -460,7 +460,7 @@ class SensorsTest extends TestCase
 
         $data = $generator->generateUsensor();
 
-        $response = $this->actingAs($user)->get('/usensors/'. $data['usensor']->id .'/edit');
+        $response = $this->actingAs($user)->get('/usensors/'.$data['usensor']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -497,7 +497,7 @@ class SensorsTest extends TestCase
 
         $data = $generator->generateUsensor();
 
-        $response = $this->actingAs($user)->post('usensors/' . $data['usensor']->id, [
+        $response = $this->actingAs($user)->post('usensors/'.$data['usensor']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового универсального датчика',
             'id_object' => $data['usensor']->id_object,
@@ -506,7 +506,7 @@ class SensorsTest extends TestCase
             'port_SDA' => $data['usensor']->port_SDA,
         ]);
 
-        $response->assertRedirect('/usensors/'. $data['usensor']->id .'/edit');
+        $response->assertRedirect('/usensors/'.$data['usensor']->id.'/edit');
 
         $this->assertDatabaseHas('usensors', [
             'name' => 'Обновление тестового универсального датчика',
@@ -558,7 +558,7 @@ class SensorsTest extends TestCase
 
         $data = $generator->generateDrycontact();
 
-        $response = $this->actingAs($user)->get('/drycontacts/'. $data['drycontact']->id .'/edit');
+        $response = $this->actingAs($user)->get('/drycontacts/'.$data['drycontact']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -579,7 +579,7 @@ class SensorsTest extends TestCase
 
         $drycontact = Drycontact::where('name', 'Создание тестового сухого контакта')->first();
 
-        $response->assertRedirect('/drycontacts/'. ($drycontact ? $drycontact->id : 1) .'/edit');
+        $response->assertRedirect('/drycontacts/'.($drycontact ? $drycontact->id : 1).'/edit');
 
         $this->assertDatabaseHas('drycontacts', [
             'name' => 'Создание тестового сухого контакта',
@@ -594,7 +594,7 @@ class SensorsTest extends TestCase
 
         $data = $generator->generateDrycontact();
 
-        $response = $this->actingAs($user)->post('drycontacts/' . $data['drycontact']->id, [
+        $response = $this->actingAs($user)->post('drycontacts/'.$data['drycontact']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового сухого контакта',
             'id_object' => $data['drycontact']->id_object,
@@ -606,7 +606,7 @@ class SensorsTest extends TestCase
             'port_id' => null,
         ]);
 
-        $response->assertRedirect('/drycontacts/'. $data['drycontact']->id .'/edit');
+        $response->assertRedirect('/drycontacts/'.$data['drycontact']->id.'/edit');
 
         $this->assertDatabaseHas('drycontacts', [
             'name' => 'Обновление тестового сухого контакта',
@@ -658,7 +658,7 @@ class SensorsTest extends TestCase
 
         $data = $generator->generateCarbmonoxide();
 
-        $response = $this->actingAs($user)->get('/carbmonoxide/'. $data['carbmonoxide']->id .'/edit');
+        $response = $this->actingAs($user)->get('/carbmonoxide/'.$data['carbmonoxide']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -678,7 +678,7 @@ class SensorsTest extends TestCase
 
         $carbmonoxide = Carbmonoxide::where('name', 'Создание тестового датчика УГ')->first();
 
-        $response->assertRedirect('/carbmonoxide/'. ($carbmonoxide ? $carbmonoxide->id : 1) .'/edit');
+        $response->assertRedirect('/carbmonoxide/'.($carbmonoxide ? $carbmonoxide->id : 1).'/edit');
 
         $this->assertDatabaseHas('carbmonoxide', [
             'name' => 'Создание тестового датчика УГ',
@@ -693,7 +693,7 @@ class SensorsTest extends TestCase
 
         $data = $generator->generateCarbmonoxide();
 
-        $response = $this->actingAs($user)->post('carbmonoxide/' . $data['carbmonoxide']->id, [
+        $response = $this->actingAs($user)->post('carbmonoxide/'.$data['carbmonoxide']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового датчика УГ',
             'id_object' => $data['carbmonoxide']->id_object,
@@ -704,7 +704,7 @@ class SensorsTest extends TestCase
             'calibration' => 2,
         ]);
 
-        $response->assertRedirect('/carbmonoxide/'. $data['carbmonoxide']->id .'/edit');
+        $response->assertRedirect('/carbmonoxide/'.$data['carbmonoxide']->id.'/edit');
 
         $this->assertDatabaseHas('carbmonoxide', [
             'name' => 'Обновление тестового датчика УГ',

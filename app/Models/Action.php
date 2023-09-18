@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Action extends Model
 {
-
     protected $table = 'actions';
-    public $timestamps = false;
-    protected $guarded = ['id'];
 
+    public $timestamps = false;
+
+    protected $guarded = ['id'];
 }

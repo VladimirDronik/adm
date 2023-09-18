@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddFieldIntoPorts extends Migration
 {
@@ -14,8 +14,8 @@ class AddFieldIntoPorts extends Migration
     public function up()
     {
         Schema::table('ports', function (Blueprint $table) {
-            if (!Schema::hasColumn('ports', 'type')) {
-                $table->string('type',3)->after('num_port')->comment('тип порта контроллера');
+            if (! Schema::hasColumn('ports', 'type')) {
+                $table->string('type', 3)->after('num_port')->comment('тип порта контроллера');
             }
         });
 

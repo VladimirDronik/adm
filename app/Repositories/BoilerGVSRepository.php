@@ -7,15 +7,13 @@
  */
 
 namespace App\Repositories;
+
 use App\Models\BoilerGVS;
 
 class BoilerGVSRepository
 {
-
     public function getBoiler($boilerIdObject)
     {
-      return  BoilerGVS::where('id_object', $boilerIdObject)->first();
+        return BoilerGVS::where('id_object', $boilerIdObject)->first();
     }
-
-
 }

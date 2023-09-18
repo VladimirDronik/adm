@@ -9,8 +9,6 @@ class SchedulersData
 {
     /**
      * Генератор сущностей для задачи
-     *
-     * @return array
      */
     public function generateScheduler(): array
     {

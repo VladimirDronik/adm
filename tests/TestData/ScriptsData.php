@@ -8,8 +8,6 @@ class ScriptsData
 {
     /**
      * Генератор сущностей для скрипта
-     *
-     * @return array
      */
     public function generateScript(): array
     {

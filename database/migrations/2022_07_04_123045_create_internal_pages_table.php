@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateInternalPagesTable extends Migration
 {
@@ -13,13 +13,13 @@ class CreateInternalPagesTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('internalPages')) {
+        if (! Schema::hasTable('internalPages')) {
             Schema::create('internalPages', function (Blueprint $table) {
                 $table->increments('id');
-                $table->unsignedInteger('idElement')->nullable()->default(NULL);
+                $table->unsignedInteger('idElement')->nullable()->default(null);
 
                 $table->foreign('idElement')->references('id')->on('elements')
-                      ->onUpdate('cascade')->onDelete('cascade');
+                    ->onUpdate('cascade')->onDelete('cascade');
             });
         }
     }

@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Color;
+use Illuminate\Database\Seeder;
 
 class ColorsTableSeeder extends Seeder
 {
@@ -19,7 +19,7 @@ class ColorsTableSeeder extends Seeder
 
         $new_colors = [];
         foreach ($colors as $color) {
-            if (!in_array($color, $db_colors, true)) {
+            if (! in_array($color, $db_colors, true)) {
                 $new_colors[] = ['name' => $color];
             }
         }

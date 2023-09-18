@@ -8,13 +8,10 @@
 
 namespace App\Services;
 
-use App\Models\Action;
 use App\Models\Events;
-use App\Services\ActionService;
 
 class EventService
 {
-
     private $actionService;
 
     public function __construct(ActionService $actionService)
@@ -41,15 +38,14 @@ class EventService
     {
         $event = Events::find($idEvent);
 
-        if (!$event) {
+        if (! $event) {
             return false;
         }
 
         $event->delete();
+
         return true;
     }
-
-
 
     public function create($data)
     {
@@ -61,18 +57,16 @@ class EventService
         $event->value = $data->value;
         $event->id_object = $data->id_object;
 
-
         $event->save();
 
-        if(isset($data->tempActions))
-        //Создание Actions из массива временных actions, которые были созданы ввиду отсутвия события
-        $this->actionService->createActionsByTempActions($data->tempActions, $event->id);
-
+        if (isset($data->tempActions)) {
+            //Создание Actions из массива временных actions, которые были созданы ввиду отсутвия события
+            $this->actionService->createActionsByTempActions($data->tempActions, $event->id);
+        }
 
         return $this->getEventData($event);
 
     }
-
 
     private function getEventData($event)
     {
@@ -83,8 +77,7 @@ class EventService
             'event' => $event->event,
             'property' => $event->property,
             'comparison' => $event->comparison,
-            'value' => $event->value
+            'value' => $event->value,
         ];
     }
-
 }

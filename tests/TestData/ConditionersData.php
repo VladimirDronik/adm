@@ -15,8 +15,6 @@ class ConditionersData
 {
     /**
      * Генератор сущностей для кондиционера
-     *
-     * @return array
      */
     public function generateConditioner(): array
     {

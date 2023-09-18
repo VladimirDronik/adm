@@ -6,14 +6,13 @@ use App\Models\DeviceSwitch;
 use App\Models\HiteproDev;
 use App\Models\HomeObject;
 use App\Models\Port;
-use App\Models\Device;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
-use App\Services\DeviceService;
 
-class SwitchService {
-
+class SwitchService
+{
     private $switch_object_service;
+
     private $portRepository;
 
     public function __construct(SwitchObjectService $switch_object_service, PortRepository $portRepository)
@@ -27,8 +26,6 @@ class SwitchService {
      * Удаление выключателя. Если связанный объект системный, то удаление объекта,
      * созданного автоматически при создании выключателя
      *
-     * @param int $id
-     * @return bool
      * @throws \Throwable
      */
     public function delete(int $id): bool
@@ -44,15 +41,13 @@ class SwitchService {
         if ($switch->object && $switch->object->is_system) {
             DB::transaction(function () use (&$switch) {
                 //if (!HomeObject::isObjectUsed($switch->id_object, $switch->id, 'switches')) {
-                    HomeObject::deleteAutoObject($switch->id_object);
+                HomeObject::deleteAutoObject($switch->id_object);
                 //}
                 $switch->delete();
             });
         } else {
             $switch->delete();
         }
-
-
 
         return true;
     }
@@ -65,27 +60,28 @@ class SwitchService {
 
     /**
      * Настройка физического порта устройства
-     * @param int $idPort - ИД порта, который будем изменять
-     * @param string $typeObject - тип объекта switch или button
+     *
+     * @param  int  $idPort - ИД порта, который будем изменять
+     * @param  string  $typeObject - тип объекта switch или button
      * @return bool
      */
     private function setPort($idPort, $typeObject)
     {
 
-        if($idPort) {
+        if ($idPort) {
 
-        $port = Port::where('id', $idPort)->first();
+            $port = Port::where('id', $idPort)->first();
 
-
-            if ($typeObject == 'button')
-                $paramsString = 'ecmd=&af=&eth=&naf=&d=&mt=&pty=0&m=3&nr=1'; //for button
-            else
-                $paramsString = 'ecmd=&af=&eth=&naf=&misc=&d=&mt=&pty=0&m=0&nr=1'; //for switch
+            if ($typeObject == 'button') {
+                $paramsString = 'ecmd=&af=&eth=&naf=&d=&mt=&pty=0&m=3&nr=1';
+            } //for button
+            else {
+                $paramsString = 'ecmd=&af=&eth=&naf=&misc=&d=&mt=&pty=0&m=0&nr=1';
+            } //for switch
 
             $answer = ConfigMegaService::setPortSetting($port->id_device, $port->num_port, $paramsString);
 
-
-        return $answer;
+            return $answer;
         }
 
     }
@@ -94,8 +90,6 @@ class SwitchService {
      * Создание выключателя. Если $data['type'] === 'auto',
      * то еще создается объект
      *
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function store(array $data): int
@@ -111,7 +105,7 @@ class SwitchService {
 
             // Если выбрано устройство хитпро, то добавляем метод в таблицу swithes, если выбрано
             // другое устройство с портом, то добавляем на методы на порт
-            if($data['place'] == 'Hite-pro') {
+            if ($data['place'] == 'Hite-pro') {
 
                 $switch->id_method = $data['method'];
                 $switch->method_params = $data['method_params'];
@@ -149,9 +143,6 @@ class SwitchService {
      * то изменяем название объекта.
      * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
      *
-     * @param DeviceSwitch $switch
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function update(DeviceSwitch $switch, array $data): int
@@ -167,10 +158,9 @@ class SwitchService {
             $switch->save();
         });
 
-
         // Если выбрано устройство хитпро, то добавляем метод в таблицу swithes, если выбрано
         // другое устройство с портом, то добавляем на методы на порт
-        if($data['place'] == 'Hite-pro') {
+        if ($data['place'] == 'Hite-pro') {
 
             $switch->id_method = $data['method'];
             $switch->method_params = $data['method_params'];
@@ -179,8 +169,7 @@ class SwitchService {
             Port::where('object', $switch->object->id)->update(['object' => null, 'method' => null]);
             HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
                 ->update(['id_object' => $switch->object->id]);
-        } else
-        if ($data['port_id']) {
+        } elseif ($data['port_id']) {
 
             //$this->setPort($this->portRepository->getPortByObject($switch->object->id), 'button');
             HiteproDev::where('id_object', $switch->object->id)->update(['id_object' => null]);
@@ -195,14 +184,14 @@ class SwitchService {
 
             if ($data['type'] == DeviceSwitch::TYPE_BUTTON) {
                 Port::where('id', $data['port_id'])->update(['object' => $data['id_object'],
-                'method' => $data['method'], 'method_params' => $data['method_params'],
-                'dc_method' => $data['method_dc'], 'dc_method_params' => $data['method_dc_params'],
-                'lc_method' => $data['method_lc'], 'lc_method_params' => $data['method_lc_params'],
-                'comment' => $data['name'], 'status' => 'IN']);
+                    'method' => $data['method'], 'method_params' => $data['method_params'],
+                    'dc_method' => $data['method_dc'], 'dc_method_params' => $data['method_dc_params'],
+                    'lc_method' => $data['method_lc'], 'lc_method_params' => $data['method_lc_params'],
+                    'comment' => $data['name'], 'status' => 'IN']);
             } else {
                 Port::where('id', $data['port_id'])->update(['object' => $data['id_object'],
-                'method' => $data['method'], 'method_params' => $data['method_params'],
-                'comment' => $data['name'], 'status' => 'IN']);
+                    'method' => $data['method'], 'method_params' => $data['method_params'],
+                    'comment' => $data['name'], 'status' => 'IN']);
             }
         }
 

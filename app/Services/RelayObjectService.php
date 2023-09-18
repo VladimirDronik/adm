@@ -7,13 +7,10 @@ use App\Models\Method;
 use App\Models\ObjType;
 use App\Models\Relay;
 
-class RelayObjectService {
-
+class RelayObjectService
+{
     /**
      * Автосоздание объекта для реле
-     *
-     * @param string $name
-     * @return HomeObject
      */
     public function createRelayObject(string $name, string $type): HomeObject
     {
@@ -31,17 +28,17 @@ class RelayObjectService {
 
     /**
      * Создание метода 'Выключить реле'
-     *
-     * @param int $object_id
      */
-    public function createMethodOff(int $object_id,  $device_id,  $port_id)
+    public function createMethodOff(int $object_id, $device_id, $port_id)
     {
-        if($device_id && !is_null($port_id))
+        if ($device_id && ! is_null($port_id)) {
             $easyString = $device_id.';'.$port_id.':0';
-        else $easyString = null;
+        } else {
+            $easyString = null;
+        }
 
         //Обнуляем все простые действия, которые были назначены для этого порта
-        Method::where('easy', $easyString)->update(['easy' => NULL]);
+        Method::where('easy', $easyString)->update(['easy' => null]);
 
         Method::forceCreate([
             'name' => 'Выключить реле',
@@ -49,47 +46,47 @@ class RelayObjectService {
             'script' => null,
             'easy' => $easyString,
             'comment' => 'Выключить реле',
-            'is_system' => 1
+            'is_system' => 1,
         ]);
     }
 
     /**
      * Создание метода 'Включить реле'
-     *
-     * @param int $object_id
      */
-    public function createMethodOn(int $object_id,  $device_id,  $port_id)
+    public function createMethodOn(int $object_id, $device_id, $port_id)
     {
-        if($device_id && !is_null($port_id))
+        if ($device_id && ! is_null($port_id)) {
             $easyString = $device_id.';'.$port_id.':1';
-        else $easyString = null;
+        } else {
+            $easyString = null;
+        }
 
         //Обнуляем все простые действия, которые были назначены для этого порта
-        Method::where('easy', $easyString)->update(['easy' => NULL]);
+        Method::where('easy', $easyString)->update(['easy' => null]);
 
-         Method::forceCreate([
+        Method::forceCreate([
             'name' => 'Включить реле',
             'id_object' => $object_id,
             'script' => null,
-             'easy' => $easyString,
+            'easy' => $easyString,
             'comment' => 'Включить реле',
-            'is_system' => 1
+            'is_system' => 1,
         ]);
     }
 
     /**
      * Создание метода 'Включить реле'
-     *
-     * @param int $object_id
      */
-    public function createMethodOnOff(int $object_id,  $device_id,  $port_id)
+    public function createMethodOnOff(int $object_id, $device_id, $port_id)
     {
-        if($device_id && !is_null($port_id))
+        if ($device_id && ! is_null($port_id)) {
             $easyString = $device_id.';'.$port_id.':2';
-        else $easyString = null;
+        } else {
+            $easyString = null;
+        }
 
         //Обнуляем все простые действия, которые были назначены для этого порта
-        Method::where('easy', $easyString)->update(['easy' => NULL]);
+        Method::where('easy', $easyString)->update(['easy' => null]);
 
         Method::forceCreate([
             'name' => 'Переключить реле',
@@ -97,46 +94,52 @@ class RelayObjectService {
             'script' => null,
             'easy' => $easyString,
             'comment' => 'Переключить реле',
-            'is_system' => 1
+            'is_system' => 1,
         ]);
     }
 
-    private function updateMethodOn(int $object_id,  $device_id,  $port_id)
+    private function updateMethodOn(int $object_id, $device_id, $port_id)
     {
-        if($device_id && !is_null($port_id))
+        if ($device_id && ! is_null($port_id)) {
             $easyString = $device_id.';'.$port_id.':1';
-        else $easyString = null;
+        } else {
+            $easyString = null;
+        }
 
         //Обнуляем все простые действия, которые были назначены для этого порта
-        Method::where('easy', $easyString)->update(['easy' => NULL]);
+        Method::where('easy', $easyString)->update(['easy' => null]);
 
         Method::where('id_object', $object_id)->where('name', 'Включить реле')->
         update(['easy' => $easyString]);
     }
 
-    private function updateMethodOff(int $object_id,  $device_id,  $port_id)
+    private function updateMethodOff(int $object_id, $device_id, $port_id)
     {
 
-        if($device_id && !is_null($port_id))
+        if ($device_id && ! is_null($port_id)) {
             $easyString = $device_id.';'.$port_id.':0';
-        else $easyString = null;
+        } else {
+            $easyString = null;
+        }
 
         //Обнуляем все простые действия, которые были назначены для этого порта
-        Method::where('easy', $easyString)->update(['easy' => NULL]);
+        Method::where('easy', $easyString)->update(['easy' => null]);
 
         Method::where('id_object', $object_id)->where('name', 'Выключить реле')->
         update(['easy' => $easyString]);
     }
 
-    private function updateMethodOnOff(int $object_id,  $device_id,  $port_id)
+    private function updateMethodOnOff(int $object_id, $device_id, $port_id)
     {
 
-        if($device_id && !is_null($port_id))
+        if ($device_id && ! is_null($port_id)) {
             $easyString = $device_id.';'.$port_id.':2';
-        else $easyString = null;
+        } else {
+            $easyString = null;
+        }
 
         //Обнуляем все простые действия, которые были назначены для этого порта
-        Method::where('easy', $easyString)->update(['easy' => NULL]);
+        Method::where('easy', $easyString)->update(['easy' => null]);
 
         Method::where('id_object', $object_id)->where('name', 'Переключить реле')->
         update(['easy' => $easyString]);
@@ -146,7 +149,6 @@ class RelayObjectService {
      * Автосоздание методов для объекта, который был
      * создан автоматически для реле
      *
-     * @param int $object_id
      * @return void
      */
     public function createRelayObjectMethods(int $object_id, $device_id, $port_id)
@@ -156,13 +158,12 @@ class RelayObjectService {
         $this->createMethodOnOff($object_id, $device_id, $port_id);
     }
 
-    public function updateRelayObjectMethods(int $object_id,  $device_id,  $port_id)
+    public function updateRelayObjectMethods(int $object_id, $device_id, $port_id)
     {
 
-        $this->updateMethodOff($object_id,  $device_id,  $port_id);
-        $this->updateMethodOn($object_id,  $device_id,  $port_id);
-        $this->updateMethodOnOff($object_id,  $device_id,  $port_id);
-
+        $this->updateMethodOff($object_id, $device_id, $port_id);
+        $this->updateMethodOn($object_id, $device_id, $port_id);
+        $this->updateMethodOnOff($object_id, $device_id, $port_id);
 
     }
 }

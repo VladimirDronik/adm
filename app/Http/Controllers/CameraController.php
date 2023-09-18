@@ -15,8 +15,8 @@ class CameraController extends Controller
         private CameraRepository $cameraRep,
         private RoomRepository $roomRep,
         private CameraService $service
-    )
-    {}
+    ) {
+    }
 
     public function index()
     {
@@ -37,11 +37,11 @@ class CameraController extends Controller
     {
         try {
             if ($this->service->update($camera, $r->except('_token'))) {
-                return redirect()->route('cameras.edit',[$camera->id])
+                return redirect()->route('cameras.edit', [$camera->id])
                     ->with('success', 'Камера успешно изменена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении камеры ' .
+            \Log::error('Ошибка при изменении камеры '.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 
@@ -63,7 +63,7 @@ class CameraController extends Controller
                     ->with('success', 'Камера успешно добавлена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении камеры ' .
+            \Log::error('Ошибка при добавлении камеры '.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 

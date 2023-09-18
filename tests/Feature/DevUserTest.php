@@ -41,7 +41,7 @@ class DevUserTest extends TestCase
 
         $data = $generator->generateDevUser();
 
-        $response = $this->actingAs($user)->get('/users/'. $data['dev_user']->id .'/edit');
+        $response = $this->actingAs($user)->get('/users/'.$data['dev_user']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -60,7 +60,7 @@ class DevUserTest extends TestCase
 
         $devUser = DevUser::where('name', 'Создание тестового пользователя')->first();
 
-        $response->assertRedirect('/users?' . $devUser->id);
+        $response->assertRedirect('/users?'.$devUser->id);
 
         $this->assertDatabaseHas('devusers', [
             'name' => 'Создание тестового пользователя',
@@ -75,7 +75,7 @@ class DevUserTest extends TestCase
 
         $data = $generator->generateDevUser();
 
-        $response = $this->actingAs($user)->post('users/'. $data['dev_user']->id, [
+        $response = $this->actingAs($user)->post('users/'.$data['dev_user']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового пользователя',
             'dev_id' => 1,

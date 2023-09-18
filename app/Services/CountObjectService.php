@@ -10,13 +10,10 @@ use App\Models\SchedulerTask;
 use App\Models\Script;
 use Database\Seeders\ScriptsTableSeeder;
 
-class CountObjectService {
-
+class CountObjectService
+{
     /**
      * Автосоздание объекта для счетчика
-     *
-     * @param string $name
-     * @return HomeObject
      */
     public function createCountObject(string $name): HomeObject
     {
@@ -50,8 +47,6 @@ class CountObjectService {
 
     /**
      * Создание метода 'Проверка счетчика' и задачи планировщика 'Проверка счетчика' (каждый час)
-     *
-     * @param int $object_id
      */
     public function createCheckMethodWithEvent(int $object_id)
     {
@@ -61,7 +56,7 @@ class CountObjectService {
             'id_object' => $object_id,
             'script' => $script_id,
             'comment' => 'Периодическая проверка текущих значений счетчика',
-            'is_system' => 1
+            'is_system' => 1,
         ])->id;
 
         $scheduler_task_id = SchedulerTask::forceCreate([
@@ -69,7 +64,7 @@ class CountObjectService {
             'is_system' => 1,
             'is_hidden' => 1,
             'object' => $object_id,
-            'method' => $method_id
+            'method' => $method_id,
         ])->id;
 
         // каждый час
@@ -79,14 +74,12 @@ class CountObjectService {
             'time' => '60',
             'days' => '',
             'close' => 1,
-            'system' => 1
+            'system' => 1,
         ]);
     }
 
     /**
      * Создание метода 'Обнуление счетчика' и задачи планировщика 'Обнуление счетчика' (каждый день в 23:55)
-     *
-     * @param int $object_id
      */
     public function createResetMethodWithEvent(int $object_id)
     {
@@ -97,7 +90,7 @@ class CountObjectService {
             'id_object' => $object_id,
             'script' => $script_id,
             'comment' => 'Обнуление значений счетчика за текущий день',
-            'is_system' => 1
+            'is_system' => 1,
         ])->id;
 
         $scheduler_task_id = SchedulerTask::forceCreate([
@@ -105,7 +98,7 @@ class CountObjectService {
             'is_system' => 1,
             'is_hidden' => 1,
             'object' => $object_id,
-            'method' => $method_id
+            'method' => $method_id,
         ])->id;
 
         // каждый день в 23:55
@@ -115,7 +108,7 @@ class CountObjectService {
             'time' => '23:55',
             'days' => '0,1,2,3,4,5,6',
             'close' => 1,
-            'system' => 1
+            'system' => 1,
         ]);
     }
 
@@ -123,7 +116,6 @@ class CountObjectService {
      * Автосоздание методов и их событий для объекта, который был
      * создан автоматически для счетчика
      *
-     * @param int $object_id
      * @return void
      */
     public function createCountObjectMethodsWithEvents(int $object_id)

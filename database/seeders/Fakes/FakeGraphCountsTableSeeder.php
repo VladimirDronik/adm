@@ -2,10 +2,10 @@
 
 namespace Database\Seeders\Fakes;
 
+use App\Models\Count;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
-use App\Models\Count;
 
 class FakeGraphCountsTableSeeder extends Seeder
 {
@@ -23,7 +23,7 @@ class FakeGraphCountsTableSeeder extends Seeder
                 $counts[] = [
                     'datetime' => $date->format('Y-m-d'),
                     'id_count' => $count->id,
-                    'value' => rand(2000, 6000).'.'.rand(10,90)
+                    'value' => rand(2000, 6000).'.'.rand(10, 90),
                 ];
             }
             $date->addDay();

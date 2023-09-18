@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use App\Http\Controllers\Controller;
 use App\Services\MenuService;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-
 
 class MenuController extends Controller
 {
@@ -18,55 +17,56 @@ class MenuController extends Controller
 
     public function sort(Request $r)
     {
-        abort_if(!ajaxHas($r, ['id', 'direction']), 400);
+        abort_if(! ajaxHas($r, ['id', 'direction']), 400);
 
         return response()->json(['result' => $this->service->sort($r->all())]);
     }
 
     public function active(Request $r)
     {
-        abort_if(!ajaxHas($r, ['id','active']), 400);
+        abort_if(! ajaxHas($r, ['id', 'active']), 400);
 
-        return response()->json(['result' => $this->service->changeActive((int)$r->id, (int)$r->active)]);
+        return response()->json(['result' => $this->service->changeActive((int) $r->id, (int) $r->active)]);
     }
 
     public function delete(Request $r)
     {
-        abort_if(!ajaxHas($r, ['id']), 400);
+        abort_if(! ajaxHas($r, ['id']), 400);
 
-        return response()->json(['result' => $this->service->delete((int)$r->id)]);
+        return response()->json(['result' => $this->service->delete((int) $r->id)]);
     }
 
     public function updateImage(Request $r)
     {
-        abort_if(!ajaxHas($r, ['id', 'image']), 400);
+        abort_if(! ajaxHas($r, ['id', 'image']), 400);
 
-        $this->service->updateImage((int)$r->id, (string)$r->image);
+        $this->service->updateImage((int) $r->id, (string) $r->image);
 
         return response()->json(['result' => true]);
     }
 
     public function updateName(Request $r)
     {
-        abort_if(!ajaxHas($r, ['id', 'name']), 400);
+        abort_if(! ajaxHas($r, ['id', 'name']), 400);
 
-        $this->service->updateName((int)$r->id, (string)$r->name);
+        $this->service->updateName((int) $r->id, (string) $r->name);
 
         return response()->json(['success' => true, 'html' => $r->name]);
     }
 
     public function store(Request $r)
     {
-        abort_if(!ajaxHas($r, ['name', 'image', 'style', 'type', 'link']), 400);
+        abort_if(! ajaxHas($r, ['name', 'image', 'style', 'type', 'link']), 400);
 
-        return response()->json(['result' => (bool)$this->service->store($r->all())]);
+        return response()->json(['result' => (bool) $this->service->store($r->all())]);
     }
 
     public function add(Request $r)
     {
-        abort_if(!ajaxHas($r, ['idObject']), 400);
+        abort_if(! ajaxHas($r, ['idObject']), 400);
 
-    	$this->service->addMenu((int)$r->idObject);
-    	return response()->json(['result' => true]);
+        $this->service->addMenu((int) $r->idObject);
+
+        return response()->json(['result' => true]);
     }
 }

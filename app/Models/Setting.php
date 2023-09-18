@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property string $value
  * @property string $comment
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Setting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Setting newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Setting query()
@@ -18,11 +19,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Setting whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Setting whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Setting whereValue($value)
+ *
  * @mixin \Eloquent
  */
 class Setting extends Model
 {
     protected $table = 'settings';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 }

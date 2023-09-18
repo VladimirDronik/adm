@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $method_light Метод при пороговом значении освещенности
  * @property-read \App\Models\HomeObject|null $iobject
  * @property-read \App\Models\HomeObject|null $object
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Motionsensor newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Motionsensor newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Motionsensor query()
@@ -38,7 +39,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Motionsensor whereMethodNight($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Motionsensor whereMethodNormal($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Motionsensor whereName($value)
+ *
  * @mixin \Eloquent
+ *
  * @property-read \App\Models\Method|null $emethod_eco
  * @property-read \App\Models\Method|null $emethod_evening
  * @property-read \App\Models\Method|null $emethod_guard
@@ -50,7 +53,9 @@ use Illuminate\Database\Eloquent\Model;
 class Motionsensor extends Model
 {
     protected $table = 'motionsensors';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     public static function getEvents()
@@ -69,6 +74,7 @@ class Motionsensor extends Model
     /**
      * Получение доступных свойств объекта.
      * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     *
      * @return array
      */
     public static function getProperties()

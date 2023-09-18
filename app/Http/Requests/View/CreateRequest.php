@@ -38,7 +38,7 @@ class CreateRequest extends FormRequest
         return [
             'type.required' => 'Не указан тип элемента',
             'room.required' => 'Не указано помещение',
-            'description.max' => 'Описание содержит более 255 символов'
+            'description.max' => 'Описание содержит более 255 символов',
         ];
     }
 }

@@ -26,7 +26,7 @@ class UpdateRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'speaker_id' => 'required|string|max:255',
-            'volume' =>  'required|integer|min:0|max:100',
+            'volume' => 'required|integer|min:0|max:100',
         ];
     }
 

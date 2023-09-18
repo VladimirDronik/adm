@@ -12,10 +12,8 @@ use App\Models\Action;
 
 class ActionRepository
 {
-
     /**
      * Отдает все доступные действия для выбранного события
-     * @param $idEvent
      */
     public function getAllActionsByEvent($idEvent)
     {

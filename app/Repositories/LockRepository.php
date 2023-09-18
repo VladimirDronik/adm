@@ -12,7 +12,6 @@ use App\Models\Lock;
 
 class LockRepository
 {
-
     public function getAll(int $pagination_count = 30)
     {
         return Lock::with('object')->orderBy('id', 'desc')

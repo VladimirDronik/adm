@@ -8,13 +8,12 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use App\Http\Controllers\Controller;
 use App\Services\ActionService;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class ActionController extends Controller
 {
-
     private $service;
 
     public function __construct(ActionService $service)
@@ -27,30 +26,27 @@ class ActionController extends Controller
      */
     public function getForEvent(Request $r)
     {
-       // abort_if(!ajaxHas($r, ['id_event']), 400);
+        // abort_if(!ajaxHas($r, ['id_event']), 400);
 
-       return response()->json(['actions' => $this->service->getForEvent($r->id_event, $r->actions)]);
-
+        return response()->json(['actions' => $this->service->getForEvent($r->id_event, $r->actions)]);
 
     }
-
 
     public function addAction(Request $r)
     {
-        abort_if(!ajaxHas($r, ['id_event']), 400);
+        abort_if(! ajaxHas($r, ['id_event']), 400);
 
         $result = $this->service->addAction($r->id_event, $r->data);
 
-        return response()->json(['result' =>  $result]);
+        return response()->json(['result' => $result]);
     }
-
 
     public function delete(Request $r)
     {
-        abort_if(!ajaxHas($r, ['id_action']), 400);
+        abort_if(! ajaxHas($r, ['id_action']), 400);
 
         $result = $this->service->delete($r->id_action, $r);
 
-        return response()->json(['result' =>  $result]);
+        return response()->json(['result' => $result]);
     }
 }

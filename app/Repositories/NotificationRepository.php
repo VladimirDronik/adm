@@ -8,16 +8,12 @@
 
 namespace App\Repositories;
 
-
 use App\Models\Notification;
 
 class NotificationRepository
 {
-
     public function getByObject($idObject)
     {
         return Notification::where('id_object', $idObject)->first();
     }
-
-
 }

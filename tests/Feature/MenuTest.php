@@ -31,7 +31,7 @@ class MenuTest extends TestCase
 
         $data = $generator->generateMenu();
 
-        $response = $this->actingAs($user)->get('/menu/group/' . $data['menu_group']->id);
+        $response = $this->actingAs($user)->get('/menu/group/'.$data['menu_group']->id);
 
         $response->assertStatus(200);
     }
@@ -44,7 +44,7 @@ class MenuTest extends TestCase
 
         $data = $generator->generateMenu();
 
-        $response = $this->actingAs($user)->get('/menu/'. $data['menu']->id .'/edit');
+        $response = $this->actingAs($user)->get('/menu/'.$data['menu']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -55,7 +55,7 @@ class MenuTest extends TestCase
 
         $response = $this->actingAs($user)->postJson('/menu/store', [
             'name' => 'Созд тестового меню',
-            'image' => "noimage.png",
+            'image' => 'noimage.png',
             'style' => null,
             'type' => 'group',
             'link' => 'test-create-menu',
@@ -77,14 +77,14 @@ class MenuTest extends TestCase
 
         $data = $generator->generateMenu();
 
-        $response = $this->actingAs($user)->post('menu/'. $data['menu_group']->id, [
+        $response = $this->actingAs($user)->post('menu/'.$data['menu_group']->id, [
             '_method' => 'PUT',
             'title' => 'upd-test-menu-group',
             'link' => 'upd-test-menu-group',
             'parent' => 0,
         ]);
 
-        $response->assertRedirect('/menu/'. $data['menu_group']->id .'/edit');
+        $response->assertRedirect('/menu/'.$data['menu_group']->id.'/edit');
 
         $this->assertDatabaseHas('menu', [
             'title' => 'upd-test-menu-group',

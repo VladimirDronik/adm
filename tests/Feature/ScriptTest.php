@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Script;
 use App\User;
 use Database\Seeders\Tests\TestAdminSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -41,7 +40,7 @@ class ScriptTest extends TestCase
 
         $data = $generator->generateScript();
 
-        $response = $this->actingAs($user)->get('/scripts/'. $data['script']->id .'/edit');
+        $response = $this->actingAs($user)->get('/scripts/'.$data['script']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -70,13 +69,13 @@ class ScriptTest extends TestCase
 
         $data = $generator->generateScript();
 
-        $response = $this->actingAs($user)->post('scripts/'. $data['script']->id, [
+        $response = $this->actingAs($user)->post('scripts/'.$data['script']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового скрипта',
             'code' => 'update_test_script',
         ]);
 
-        $response->assertRedirect('/scripts/'. $data['script']->id .'/edit');
+        $response->assertRedirect('/scripts/'.$data['script']->id.'/edit');
 
         $this->assertDatabaseHas('scripts', [
             'name' => 'Обновление тестового скрипта',

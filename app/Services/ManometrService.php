@@ -8,16 +8,16 @@
 
 namespace App\Services;
 
-use App\Models\Manometr;
-use Illuminate\Support\Facades\DB;
 use App\Models\HomeObject;
+use App\Models\Manometr;
 use App\Models\Port;
 use App\Repositories\PortRepository;
+use Illuminate\Support\Facades\DB;
 
 class ManometrService
 {
-
     private $manometr_object_service;
+
     private $portRepository;
 
     public function __construct(ManometrObjectService $objectService, PortRepository $portRepository)
@@ -26,13 +26,11 @@ class ManometrService
         $this->portRepository = $portRepository;
     }
 
-
     public function prepare(Manometr $manometr, array $data)
     {
 
         unset($data['device_id']);
         unset($data['port']);
-
 
         if (($data['room'] ?? 0) == 0) {
             $data['room'] = null;
@@ -44,8 +42,6 @@ class ManometrService
     /**
      * Создание датчика.
      *
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function store(array $data): int
@@ -58,7 +54,6 @@ class ManometrService
 
         $this->prepare($manometr, $data);
         $manometr->cur_value = 0;
-
 
         DB::transaction(function () use (&$manometr, $port, $deviceID) {
 
@@ -79,18 +74,15 @@ class ManometrService
 
         });
 
-
         return $manometr->id;
     }
-
 
     public function delete(int $id): bool
     {
         $manometr = Manometr::findOrFail($id);
 
-        Port::where('object', $manometr->id_object)->update(['object' => NULL, 'comment' => '',
+        Port::where('object', $manometr->id_object)->update(['object' => null, 'comment' => '',
             'status' => 'IN']);
-
 
         if ($manometr->iobject && $manometr->iobject->is_system) {
             DB::transaction(function () use (&$manometr) {
@@ -119,10 +111,9 @@ class ManometrService
 
             }
 
-
             if ($data['port']) {
 
-                Port::where('object', $manometr->id_object)->update(['object' => NULL, 'comment' => '',
+                Port::where('object', $manometr->id_object)->update(['object' => null, 'comment' => '',
                     'status' => 'IN']);
                 Port::where('id', $data['port'])->update(['object' => $manometr->id_object,
                     'comment' => $data['name'], 'status' => 'ADC']);
@@ -131,12 +122,10 @@ class ManometrService
 
             }
 
-
             $this->prepare($manometr, $data);
             $manometr->save();
         });
 
         return $manometr->id;
     }
-
 }

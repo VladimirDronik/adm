@@ -2,19 +2,17 @@
 
 namespace App\Services;
 
-
+use App\Models\HiteproDev;
 use App\Models\HomeObject;
-use App\Models\Method;
+use App\Models\Lamp;
 use App\Models\Port;
-use App\Repositories\AliceDevicesRepository;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
-use App\Models\Lamp;
-use App\Models\HiteproDev;
 
-class LampService {
-
+class LampService
+{
     private $lamp_object_service;
+
     private $port_repository;
 
     public function __construct(LampObjectService $lamp_object_service, PortRepository $portRepository)
@@ -33,8 +31,6 @@ class LampService {
      * Создание лампы. Если $data['type'] === 'auto',
      * то еще создается объект с методами
      *
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function store(array $data): int
@@ -42,7 +38,7 @@ class LampService {
 
         $lamp = new Lamp();
 
-        $deviceID =  $data['device_id'];
+        $deviceID = $data['device_id'];
 
         $this->prepareLamp($lamp, $data);
 
@@ -52,7 +48,6 @@ class LampService {
             $this->lamp_object_service->createLampObjectMethods($object->id, $data['device_id'], $this->port_repository->getNumPortByID($data['port_id']));
             $lamp->id_object = $object->id;
             $lamp->save();
-
 
             if ($data['port_id'] && $data['place'] == 'port') {
                 Port::where('id', $data['port_id'])->update(['object' => $object->id, 'comment' => $data['name'],
@@ -70,19 +65,15 @@ class LampService {
         return $lamp->id;
     }
 
-
     /**
      * Удаление лампы. Если связанный объект системный, то удаление объекта и методов,
      * созданных автоматически при создании лампы
      *
-     * @param int $id
-     * @return bool
      * @throws \Throwable
      */
     public function delete(int $id): bool
     {
         $lamp = Lamp::findOrFail($id);
-
 
         Port::where('object', $lamp->object->id)->update(['object' => null, 'method' => null, 'status' => 'OUT',
             'comment' => '']);
@@ -98,7 +89,6 @@ class LampService {
             $lamp->delete();
         }
 
-
         return true;
     }
 
@@ -112,16 +102,14 @@ class LampService {
      * то изменяем название объекта.
      * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
      *
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function update(Lamp $lamp, array $data): int
     {
 
-        $deviceID =  $data['device_id'];
+        $deviceID = $data['device_id'];
 
-        DB::transaction(function () use (&$lamp, $data, $deviceID) {
+        DB::transaction(function () use (&$lamp, $data) {
             if ($this->isUpdateAutoObjectName($lamp, $data['name'])) {
                 $lamp->object->name = HomeObject::getUniqueObjectName($lamp->object->id, trim($data['name']));
                 $lamp->object->save();
@@ -132,15 +120,15 @@ class LampService {
             $lamp->save();
         });
 
-
         //Сохраняем данные в таблицу Алисы или включаем запись если она есть уже
-        if(isset($data['alice_checkbox']))
+        if (isset($data['alice_checkbox'])) {
             AliceDevicesService::addOrReplaceDevice($lamp->object->id, $data['alice_command'], $data['room']);
-        else
+        } else {
             AliceDevicesService::setActive($lamp->object->id, 0);
+        }
 
         //Делаем манипуляции с портами контроллера, если необходимо
-        if (!is_null($data['port_id']) && $data['place'] == 'port') {
+        if (! is_null($data['port_id']) && $data['place'] == 'port') {
 
             Port::where('object', $lamp->object->id)->update(['object' => null, 'method' => null, 'status' => 'OUT',
                 'comment' => '']);
@@ -150,12 +138,10 @@ class LampService {
 
             ConfigMegaService::setPortType($deviceID, $this->port_repository->getNumPortByID($data['port_id']), 'OUT');
 
-
             //Меняем метод easy для всех трех системных методов лампы
             $this->lamp_object_service->updateLampObjectMethods($lamp->object->id, $data['device_id'], $this->port_repository->getNumPortByID($data['port_id']));
 
-
-        }elseif ($data['place'] == 'Hite-pro') {
+        } elseif ($data['place'] == 'Hite-pro') {
 
             HiteproDev::where('id_object', $lamp->object->id)->update(['id_object' => null]);
             Port::where('object', $lamp->object->id)->update(['object' => null, 'method' => null, 'status' => 'OUT',
@@ -170,5 +156,4 @@ class LampService {
 
         return $lamp->id;
     }
-
 }

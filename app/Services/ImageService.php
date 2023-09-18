@@ -2,12 +2,16 @@
 
 namespace App\Services;
 
-class ImageService {
-
+class ImageService
+{
     const ROOM_PATH = 'ela/images/rooms';
+
     const VIEW_PATH = 'ela/images/views_items';
+
     const SCENE_PATH = 'ela/images/scenes';
+
     const MENU_PATH = 'ela/images/menu';
+
     const NO_IMAGE_PATH = 'ela/images/rooms/noimage.png';
 
     public static function getImages(string $path)
@@ -19,7 +23,6 @@ class ImageService {
      * Вывод изображений для всех помемещний
      *
      * @return array;
-     *
      */
     public static function getRoomImages()
     {
@@ -30,25 +33,22 @@ class ImageService {
      * Вывод изображений для всех помемещний
      *
      * @return array;
-     *
      */
     public static function getMainImages()
     {
         return self::getImages(self::VIEW_PATH);
     }
 
-
     /**
      * Вывод изображений для всех отображений
      *
      * @return array;
-     *
      */
     public static function getViewImages()
     {
         $images = self::getImages(self::VIEW_PATH);
 
-        foreach($images as &$image) {
+        foreach ($images as &$image) {
             $image = self::VIEW_PATH.'/'.$image;
         }
 
@@ -64,7 +64,7 @@ class ImageService {
     {
         $images = self::getImages(self::SCENE_PATH);
 
-        foreach($images as &$image) {
+        foreach ($images as &$image) {
             $image = self::SCENE_PATH.'/'.$image;
         }
 

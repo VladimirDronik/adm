@@ -2,10 +2,10 @@
 
 namespace Database\Seeders\Fakes;
 
-use Illuminate\Database\Seeder;
-use Faker\Factory;
 use App\Models\DeviceSwitch;
 use App\Models\HomeObject;
+use Faker\Factory;
+use Illuminate\Database\Seeder;
 
 class FakeSwitchesTableSeeder extends Seeder
 {

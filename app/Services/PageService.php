@@ -7,24 +7,22 @@
  */
 
 namespace App\Services;
-use App\Models\Page;
+
 use App\Models\Elements;
+use App\Models\Page;
 use Illuminate\Support\Facades\DB;
 
 class PageService
 {
-
     public function updateName(int $id, string $name)
     {
         Page::where('id', $id)->update(['name' => $this->setNameIfEmpty($name)]);
     }
 
-
     public function updateLink(int $id, string $link)
     {
         Page::where('id', $id)->update(['link' => $this->setLinkIfEmpty($link)]);
     }
-
 
     private function setNameIfEmpty($name)
     {
@@ -35,7 +33,6 @@ class PageService
         return $name;
     }
 
-
     private function setLinkIfEmpty($link)
     {
         if (empty($link)) {
@@ -44,7 +41,6 @@ class PageService
 
         return $link;
     }
-
 
     public function store(array $data)
     {
@@ -60,8 +56,6 @@ class PageService
 
         return $page->id;
     }
-    
-
 
     public function delete($idPage)
     {
@@ -75,9 +69,6 @@ class PageService
             $page->delete();
         });
 
-
         return true;
     }
-
-
 }

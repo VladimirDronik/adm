@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $id_object
  * @property-read mixed $rus_type
  * @property-read \App\Models\HomeObject|null $object
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Relay newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Relay newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Relay query()
@@ -20,22 +21,26 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Relay whereIdObject($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Relay whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Relay whereType($value)
+ *
  * @mixin \Eloquent
  */
 class Relay extends Model
 {
     const TYPE_RELAY = 'relay';
+
     const TYPE_SOCKET = 'socket';
 
     protected $table = 'relays';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     public static function getTypes(bool $is_full = false)
     {
         $types = [
             self::TYPE_RELAY => 'Реле',
-            self::TYPE_SOCKET => 'Розетка'
+            self::TYPE_SOCKET => 'Розетка',
         ];
 
         return $is_full ? $types : array_keys($types);
@@ -43,6 +48,7 @@ class Relay extends Model
 
     /**
      * Получение доступных событий для объекта
+     *
      * @return array
      */
     public static function getEvents()
@@ -56,6 +62,7 @@ class Relay extends Model
     /**
      * Получение доступных свойств объекта.
      * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     *
      * @return array
      */
     public static function getProperties()

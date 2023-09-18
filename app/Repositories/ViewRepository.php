@@ -4,11 +4,11 @@ namespace App\Repositories;
 
 use App\Models\View;
 
-class ViewRepository {
-
+class ViewRepository
+{
     public function getAll()
     {
-        return View::with('eroom','escene')->orderBy('id')->get();
+        return View::with('eroom', 'escene')->orderBy('id')->get();
     }
 
     public function getAllToArray()
@@ -27,7 +27,7 @@ class ViewRepository {
 
         if ($room_id === '0') {
             $query->whereNull('room')->orderBy('sort');
-        } elseif (!is_null($room_id)) {
+        } elseif (! is_null($room_id)) {
             $query->where('room', $room_id)->orderBy('sort');
         } else {
             $query->orderBy('id');
@@ -78,9 +78,8 @@ class ViewRepository {
         }
     }
 
-
     public static function getNameById($idView)
     {
-       return View::where('id', $idView)->first();
+        return View::where('id', $idView)->first();
     }
 }

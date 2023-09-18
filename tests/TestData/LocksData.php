@@ -12,8 +12,6 @@ class LocksData
 {
     /**
      * Генератор сущностей для замка
-     *
-     * @return array
      */
     public function generateLock(): array
     {

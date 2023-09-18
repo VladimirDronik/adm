@@ -4,23 +4,23 @@ namespace App\Services;
 
 use App\Models\Device;
 use App\Models\ExtensionModule;
-use App\Models\HiteproDev;
 use App\Models\Port;
 use App\Repositories\DeviceRepository;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
 
-
-class DeviceService {
-
+class DeviceService
+{
     private $device;
 
     private $networkService;
+
     private $deviceRepository;
+
     private $portRepository;
 
     public function __construct(NetworkService $networkService, DeviceRepository $deviceRepository,
-                                    PortRepository $portRepository)
+        PortRepository $portRepository)
     {
         $this->networkService = $networkService;
         $this->deviceRepository = $deviceRepository;
@@ -28,8 +28,8 @@ class DeviceService {
     }
 
     /**
-     * @param int $id
      * @return bool
+     *
      * @throws \Throwable
      */
     public function delete(int $id)
@@ -43,8 +43,8 @@ class DeviceService {
     }
 
     /**
-     * @param int $extensionModuleId
      * @return bool
+     *
      * @throws \Throwable
      */
     public function extensionModuleDelete(int $extensionModuleId)
@@ -64,8 +64,7 @@ class DeviceService {
 
     /**
      * Создание портов для модуля расширения
-     * @param ExtensionModule $extensionModule
-     * @param int $deviceId
+     *
      * @return void
      */
     public function storeExtensionModulePorts(ExtensionModule $extensionModule, int $deviceId)
@@ -85,7 +84,6 @@ class DeviceService {
     /**
      * Передача ip нового устройства на удаленный сервер
      *
-     * @param array $data
      * @throws \Exception
      */
     public function notifyDeviceIp(array $data)
@@ -97,9 +95,11 @@ class DeviceService {
             throw new \Exception('Не указан ip-адрес для подсети устройств в разделе «Настройка сети»');
         }
 
-        if(self::getStatus($data['id']))
-        $answer = file_get_contents($this->getDeviceIpNotificationParams($oldIP, $data['ip_address'], $sip));
-        else $answer = false;
+        if (self::getStatus($data['id'])) {
+            $answer = file_get_contents($this->getDeviceIpNotificationParams($oldIP, $data['ip_address'], $sip));
+        } else {
+            $answer = false;
+        }
 
         if ($answer === false) {
             throw new \Exception('Некорректный ответ от устройства или устройство недоступно');
@@ -109,7 +109,6 @@ class DeviceService {
     /**
      * Создание устройства с оповещением на удаленный сервер ip и созданием портов
      *
-     * @param array $data
      * @throws \Exception
      */
     public function storeDevice(array $data, bool $is_notify = true)
@@ -122,18 +121,17 @@ class DeviceService {
 
         $this->device->save();
 
-
         if ($is_notify) {
             $this->notifyDeviceIp($data);
         }
     }
 
     /**
-     * @param array $data
      * @return mixed
+     *
      * @throws \Throwable
      */
-    public function store(array $data,  bool $forcedCreate = true, bool  $is_notify = false) //true для реализации функции настройки устройства с дефолтным адресом
+    public function store(array $data, bool $forcedCreate = true, bool $is_notify = false) //true для реализации функции настройки устройства с дефолтным адресом
     {
 
         $typeDevice = $data['type'];
@@ -144,24 +142,26 @@ class DeviceService {
 
         try {
 
-                exec("ping -c 1 {$data['ip_address']}",$output, $status);
-                if ($status==0)
-                    $data['active'] = 1;
-                else
-                    $data['active'] = 0;
+            exec("ping -c 1 {$data['ip_address']}", $output, $status);
+            if ($status == 0) {
+                $data['active'] = 1;
+            } else {
+                $data['active'] = 0;
+            }
 
-                if(($data['active'] == 1) || ($forcedCreate)) {
+            if (($data['active'] == 1) || ($forcedCreate)) {
 
-                    $this->storeDevice($data, $is_notify);
+                $this->storeDevice($data, $is_notify);
 
-                    $this->storePorts();
+                $this->storePorts();
 
-                    DB::commit();
+                DB::commit();
 
-                    return $this->device->id;
+                return $this->device->id;
 
-                } else throw new \Exception('Устройство недоступно!');
-
+            } else {
+                throw new \Exception('Устройство недоступно!');
+            }
 
         } catch (\Throwable $e) {
             DB::rollback();
@@ -171,19 +171,18 @@ class DeviceService {
 
     private function isDoubleDescription(array $data)
     {
-        return Device::where('id','!=',$data['id'])
-            ->where('description',$data['description'])->exists();
+        return Device::where('id', '!=', $data['id'])
+            ->where('description', $data['description'])->exists();
     }
 
     private function isValidIpAddress(array $data)
     {
-        $doubleAddress = Device::where('id','!=',$data['id'])
-            ->where('ip_address',$data['ip_address'])->exists();
-
+        $doubleAddress = Device::where('id', '!=', $data['id'])
+            ->where('ip_address', $data['ip_address'])->exists();
 
         $filterAddress = filter_var($data['ip_address'], FILTER_VALIDATE_IP);
 
-        (!$doubleAddress && $filterAddress) ? $return = true : $return = false;
+        (! $doubleAddress && $filterAddress) ? $return = true : $return = false;
 
         return $return;
     }
@@ -191,8 +190,6 @@ class DeviceService {
     /**
      * Добавление модулей расширения
      *
-     * @param array $modules
-     * @param Device $device
      * @throws \Exception
      */
     private function storeExtensionModules(array $modules, Device $device)
@@ -222,8 +219,8 @@ class DeviceService {
     /**
      * Изменение устройства с оповещением ip удаленного сервера
      *
-     * @param array $data
      * @return array
+     *
      * @throws \Exception
      */
     public function update(array $data)
@@ -241,14 +238,13 @@ class DeviceService {
             return [false, 'Устройство с таким названием уже существует. Необходимо изменить название', '', ''];
         }
 
-
-        if (!$this->isValidIpAddress($data)) {
+        if (! $this->isValidIpAddress($data)) {
             return [false, 'Недопустимый ip адрес'.$this->isValidIpAddress($data), '', ''];
         }
 
         $device = Device::find($data['id']);
 
-        if (!$device) {
+        if (! $device) {
             return [false, 'Устройство не найдено', '', ''];
         }
 
@@ -277,11 +273,11 @@ class DeviceService {
 
                 DB::commit();
 
-                if($configResult['error'] == '')
+                if ($configResult['error'] == '') {
                     return [true, '', $configResult['count_all'], $configResult['count_result']];
-                else
+                } else {
                     return [false, $configResult['error'], '', ''];
-
+                }
 
             } catch (\Throwable $e) {
 
@@ -298,25 +294,23 @@ class DeviceService {
                 $this->storeExtensionModules($extensionModules, $device);
             }
 
-            if($configResult['error'] == '')
+            if ($configResult['error'] == '') {
                 return [true, '', $configResult['count_all'], $configResult['count_result']];
-            else
+            } else {
                 return [false, $configResult['error'], '', ''];
+            }
 
         }
 
         return [false, 'Не удалось изменить данные устройства: '.$e->getMessage(), '', ''];
     }
 
-
-
-
     public function updatePort(array $data)
     {
         $port = Port::where('id', $data['port_id'])
             ->where('id_device', $data['id'])->first();
-        
-        if (!$port) {
+
+        if (! $port) {
             return false;
         }
 
@@ -329,7 +323,7 @@ class DeviceService {
 
     public function getPortsByDeviceId(int $device_id)
     {
-        if (!$device_id) {
+        if (! $device_id) {
             return [];
         }
 
@@ -341,7 +335,7 @@ class DeviceService {
 
     public function getPortsWithObjectsByDeviceId(int $device_id, string $status = '')
     {
-        if (!$device_id) {
+        if (! $device_id) {
             return [];
         }
 
@@ -353,7 +347,7 @@ class DeviceService {
                 'id' => $port->id,
                 'name' => $port->status.' ['.$port->num_port.']'
                     .($port->extensionModule ? ' EXT_SDA ('.$port->extensionModule->sda_port.')' : '')
-                    .($port->eobject ? ' ('.optional($port->eobject)->name.')' : '')
+                    .($port->eobject ? ' ('.optional($port->eobject)->name.')' : ''),
             ];
         }
 
@@ -370,7 +364,6 @@ class DeviceService {
 
     /**
      * Выводит ip адрес устройства
-     * @param $idDevice
      */
     public static function getDeviceIP($idDevice)
     {

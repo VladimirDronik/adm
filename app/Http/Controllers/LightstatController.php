@@ -3,21 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Lightstat\CreateRequest;
+use App\Http\Requests\Lightstat\UpdateRequest;
+use App\Models\HomeObject;
 use App\Models\Lightstat;
 use App\Repositories\DeviceRepository;
 use App\Repositories\LightstatRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
+use App\Repositories\ScriptRepository;
 use App\Repositories\UsensorRepository;
 use App\Services\LightstatService;
-use App\Models\HomeObject;
 use App\Services\MessageService;
 use App\Services\ObjectService;
-use App\Repositories\ScriptRepository;
 use App\Services\PortService;
-use App\Http\Requests\Lightstat\UpdateRequest;
 use App\Services\Service;
-
 
 class LightstatController extends Controller
 {
@@ -32,8 +31,8 @@ class LightstatController extends Controller
         private ScriptRepository $script_rep,
         private PortService $portsService,
         private MessageService $messageService,
-    )
-    {}
+    ) {
+    }
 
     public function index()
     {
@@ -42,7 +41,6 @@ class LightstatController extends Controller
 
         return view('lightstats.index', compact('lightstats'));
     }
-
 
     public function store(CreateRequest $r)
     {
@@ -72,8 +70,7 @@ class LightstatController extends Controller
 
     public function edit(Lightstat $lightstat, $tab = 1)
     {
-        list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
-
+        [$objects, $rooms, $types, $devices, $usensors] = $this->getLists();
 
         $methods = $this->object_service->getMethodsByObjectIdToArray($lightstat->object);
         $can = gates('devices.show-object');
@@ -84,11 +81,10 @@ class LightstatController extends Controller
         $port_SCL = $lightstat->port_SCL;
         $port_SDA = $lightstat->port_SDA;
 
-        $portsSCL =  $this->portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
-        $portsSDA =  $this->portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
+        $portsSCL = $this->portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
+        $portsSDA = $this->portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
-
-        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
+        [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents] =
             Service::getListElements($lightstat->id_object);
 
         $messagePoint['first'] = 'При включении';
@@ -106,12 +102,12 @@ class LightstatController extends Controller
     public function create()
     {
 
-        list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
-        $object_types =  HomeObject::getFullTypeIds();
+        [$objects, $rooms, $types, $devices, $usensors] = $this->getLists();
+        $object_types = HomeObject::getFullTypeIds();
         $can = gates('devices.show-object');
         $tab = 1;
 
-        return view('lightstats.create', compact('objects','rooms', 'types', 'devices', 'usensors',
+        return view('lightstats.create', compact('objects', 'rooms', 'types', 'devices', 'usensors',
             'object_types', 'tab', 'can'));
     }
 
@@ -119,14 +115,12 @@ class LightstatController extends Controller
     {
         try {
             if ($this->service->update($lightstat, $r->except('_token'))) {
-                return redirect()->route('lightstats.edit', [$lightstat->id])->with('success','Светостат успешно изменен');
+                return redirect()->route('lightstats.edit', [$lightstat->id])->with('success', 'Светостат успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении светостата '.$lightstat->id.' ' .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при изменении светостата '.$lightstat->id.' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении светостата');
     }
-
-
 }

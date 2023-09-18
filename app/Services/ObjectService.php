@@ -9,8 +9,8 @@ use App\Models\Termostat;
 use App\Repositories\ObjectRepository;
 use Illuminate\Support\Facades\DB;
 
-class ObjectService {
-
+class ObjectService
+{
     private $rep;
 
     public function __construct(ObjectRepository $rep)
@@ -69,10 +69,8 @@ class ObjectService {
         return [];
     }
 
-
     /**
      * Получение описание параметров метода по его ид
-     * @param int $methodId
      */
     public function getParamsByMethodId(int $methodId)
     {
@@ -81,14 +79,11 @@ class ObjectService {
 
     }
 
-
-
     public function getPropertiesByObjectId($object_id, $easyArray = true): array
     {
 
         if ($object_id) {
             $object = HomeObject::find($object_id);
-
 
             switch ($object->type) {
 
@@ -101,44 +96,43 @@ class ObjectService {
                 default: return [];
             }
 
-            if($easyArray) {
+            if ($easyArray) {
 
                 $propertiesArray = [];
 
                 foreach ($properties as $key => $property) {
-                    $propertiesArray[] = ['id'=> $key, 'name' => $property];
+                    $propertiesArray[] = ['id' => $key, 'name' => $property];
                 }
 
                 return $propertiesArray;
-            }else
+            } else {
                 return $properties;
+            }
 
         }
 
         return [];
     }
 
-
     public function getObjectsByType($typeObject): array
     {
 
         $query = HomeObject::query();
 
-
         if ($typeObject) {
 
             $query->where('type', $typeObject);
 
-            if(($typeObject == 'switch') || ($typeObject == 'button'))
+            if (($typeObject == 'switch') || ($typeObject == 'button')) {
                 $query->orwhere('type', 'lamp')
                     ->orwhere('type', 'relay')
                     ->orwhere('type', 'socket')
                     ->orwhere('type', 'curtain')
                     ->orwhere('type', 'lock')
                     ->orwhere('type', 'virtual');
+            }
 
-
-                return $query->orderBy('name')->select('id', 'name')->get()->toArray();
+            return $query->orderBy('name')->select('id', 'name')->get()->toArray();
         }
 
         return [];
@@ -148,7 +142,7 @@ class ObjectService {
     {
         if ($object_id) {
             return Method::where('id_object', $object_id)
-               ->orderBy('name')->select('id', 'name')
+                ->orderBy('name')->select('id', 'name')
                 ->pluck('name', 'id')->toArray();
 
         }
@@ -173,12 +167,14 @@ class ObjectService {
 
     /**
      * Возвращает id объекта, соответсвующего методу
+     *
      * @param $idMethod - id метода
      */
     public function getObjectByMethod($idMethod)
     {
         if ($idMethod) {
-            $return =  Method::where('id', $idMethod)->first();
+            $return = Method::where('id', $idMethod)->first();
+
             return $return->id_object;
         }
 
@@ -190,9 +186,11 @@ class ObjectService {
      */
     public function getMethodByObject($idObject)
     {
-        if($idObject) {
+        if ($idObject) {
             $return = Method::where('id_object', $idObject)->where('is_system', 1)->first();
-            if($return) return $return->id;
+            if ($return) {
+                return $return->id;
+            }
         }
 
         return null;

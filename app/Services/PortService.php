@@ -11,20 +11,21 @@ use App\Repositories\DeviceRepository;
 use App\Repositories\HiteProDevRepository;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
-use App\Services\ConfigMegaService;
-use function Sodium\library_version_major;
 
-class PortService {
-
+class PortService
+{
     const NONE = 'отсутствует';
 
     private $rep;
+
     private $object_service;
+
     private $device_rep;
+
     private $hiteproDevRep;
 
     public function __construct(PortRepository $rep, ObjectService $object_service,
-                                DeviceRepository $device_rep, HiteProDevRepository $hiteproDevRep)
+        DeviceRepository $device_rep, HiteProDevRepository $hiteproDevRep)
     {
         $this->rep = $rep;
         $this->object_service = $object_service;
@@ -42,7 +43,7 @@ class PortService {
 
         Port::where('id', $data['port_id'])
             ->where('id_device', $data['device_id'])->update([
-                'comment' => $comment
+                'comment' => $comment,
             ]);
     }
 
@@ -72,9 +73,9 @@ class PortService {
             }
         }
 
-        $html = (String)view('ajax.actions',
+        $html = (string) view('ajax.actions',
             ['action' => $r->methodmode, 'port_id' => $r->port_id, 'object' => $eport->object]
-            + compact('device','port', 'act', 'value'));
+            + compact('device', 'port', 'act', 'value'));
 
         return $html;
     }
@@ -85,34 +86,34 @@ class PortService {
             case 'device':
                 $devices = Device::orderBy('description')->get();
                 $title_action = 'Выбор контроллера';
-                $html = (String)view('ajax.devices', compact('devices'));
+                $html = (string) view('ajax.devices', compact('devices'));
                 break;
             case 'port':
                 //Определяем, если девайс - хитпро, то выводим устройство вместо портов
-                if(DeviceRepository::getDevByIdDevice((int)$r->device)['type'] == 'Hite-pro') {
-                    $devices = $this->hiteproDevRep->getHPDevByDeviceId((int)$r->device);
+                if (DeviceRepository::getDevByIdDevice((int) $r->device)['type'] == 'Hite-pro') {
+                    $devices = $this->hiteproDevRep->getHPDevByDeviceId((int) $r->device);
                     $title_action = 'Выбор устройства';
-                    $html = (String)view('ajax.HPDevices', compact('devices'));
-                }else {
+                    $html = (string) view('ajax.HPDevices', compact('devices'));
+                } else {
 
-                $ports = $this->rep->getOutPortsByDeviceId((int)$r->device);
-                $title_action = 'Выбор порта';
-                $html = (String)view('ajax.ports', compact('ports'));
+                    $ports = $this->rep->getOutPortsByDeviceId((int) $r->device);
+                    $title_action = 'Выбор порта';
+                    $html = (string) view('ajax.ports', compact('ports'));
                 }
                 break;
             case 'action':
                 $title_action = 'Выбор действия';
-                $html = (String)view('ajax.act');
+                $html = (string) view('ajax.act');
                 break;
             case 'script':
                 $scripts = Script::orderBy('name')->get();
                 $title_action = 'Выбор скрипта';
-                $html = (String)view('ajax.scripts', compact('scripts'));
+                $html = (string) view('ajax.scripts', compact('scripts'));
                 break;
-            case 'method' :
+            case 'method':
                 $methods = Method::where('id_object', $r->object_id)->orderBy('name')->get();
                 $title_action = 'Выбор метода объекта';
-                $html = (String)view('ajax.methods', compact('methods'));
+                $html = (string) view('ajax.methods', compact('methods'));
                 break;
         }
 
@@ -123,7 +124,7 @@ class PortService {
     {
         switch ($r->methodmode) {
             case 'easy':
-                $this->rep->updateEasy($r->id_port, $r->device . ';' . $r->port . ':' . $r->act);
+                $this->rep->updateEasy($r->id_port, $r->device.';'.$r->port.':'.$r->act);
                 break;
             case 'method':
                 $this->rep->updateMethod($r->id_port, $r->id_object, $r->method_id);
@@ -138,15 +139,13 @@ class PortService {
     }
 
     /**
-     * @param array $data
-     * @return array
      * @throws \Exception
      */
     public function getPortMethods(array $data): array
     {
         $port = Port::where('id_device', $data['device_id'])->where('id', $data['port_id'])->first();
 
-        if (!$port) {
+        if (! $port) {
             throw new \Exception('Порт не найден');
         }
 
@@ -161,7 +160,7 @@ class PortService {
             $portData['objects'][] = [
                 'id' => $object->id,
                 'name' => $object->name,
-                'type_img' => (string)view('objects.type_img', compact('object'))
+                'type_img' => (string) view('objects.type_img', compact('object')),
             ];
         }
 
@@ -199,7 +198,7 @@ class PortService {
             $data['method_name'] = $port->dcmethod->name;
             $data['object_name'] = optional($port->dcmethod->eobject)->name;
             $data['params'] = $port->dc_method_params;
-        }  elseif ($type === 'long' && $port->lcmethod) {
+        } elseif ($type === 'long' && $port->lcmethod) {
             $data['method_id'] = $port->lc_method;
             $data['object_id'] = $port->lcmethod->id_object;
             $data['method_name'] = $port->lcmethod->name;
@@ -213,9 +212,6 @@ class PortService {
         return $data;
     }
 
-    /**
-     * @param array $data
-     */
     public function deletePortMethod(array $data)
     {
         $methodColumnName = $this->getMethodColumnName($data['type']);
@@ -272,88 +268,90 @@ class PortService {
     /**
      * Добавление портов для вывода в выпадающем списке
      *
-     * @param int $deviceId - ИД устройства, для которого отбираем порты
-     * @param string $typePort - тип выбираемых портов
-    */
+     * @param  int  $deviceId - ИД устройства, для которого отбираем порты
+     * @param  string  $typePort - тип выбираемых портов
+     */
     public function getPortsIntoList($deviceId, $typesPort = 'IN')
     {
 
-        if($deviceId) {
+        if ($deviceId) {
 
             $ports = $this->rep->getPortsByDeviceId($deviceId, $typesPort);
 
             $portsArray = [];
 
-                foreach ($ports AS $port) {
+            foreach ($ports as $port) {
 
-                    if ($port->comment)
-                        $commentString = ' (' . $port->comment . ')';
-                    else $commentString = '';
-
-                    $portsArray[$port->id] = $port->status . ' [' . $port->num_port .'] ' .
-                        ($port->extensionModule ? ' EXT_SDA ('.$port->extensionModule->sda_port.')' : '') . $commentString;
+                if ($port->comment) {
+                    $commentString = ' ('.$port->comment.')';
+                } else {
+                    $commentString = '';
                 }
 
-                return $portsArray;
-        } else return [];
+                $portsArray[$port->id] = $port->status.' ['.$port->num_port.'] '.
+                    ($port->extensionModule ? ' EXT_SDA ('.$port->extensionModule->sda_port.')' : '').$commentString;
+            }
+
+            return $portsArray;
+        } else {
+            return [];
+        }
     }
-
-
-
-
 
     private function getHPDevicesIntoList($deviceID, $hpType = 'switch')
     {
-        $hpTypes = explode(',',$hpType);
+        $hpTypes = explode(',', $hpType);
 
-        if($deviceID) {
+        if ($deviceID) {
 
-            foreach ( $hpTypes As $type) {
+            foreach ($hpTypes as $type) {
 
-                    switch (trim($type)) {
+                switch (trim($type)) {
 
-                        case 'switch':
-                            $HPdevices = $this->hiteproDevRep->getSwitchByDeviceId($deviceID);
-                            break;
+                    case 'switch':
+                        $HPdevices = $this->hiteproDevRep->getSwitchByDeviceId($deviceID);
+                        break;
 
-                        case 'socket':
-                            $HPdevices = $this->hiteproDevRep->getSocketByDeviceId($deviceID);
-                            break;
+                    case 'socket':
+                        $HPdevices = $this->hiteproDevRep->getSocketByDeviceId($deviceID);
+                        break;
 
-                        case 'temperature':
-                            $HPdevices = $this->hiteproDevRep->getTermometrsByDeviceId($deviceID);
-                            break;
+                    case 'temperature':
+                        $HPdevices = $this->hiteproDevRep->getTermometrsByDeviceId($deviceID);
+                        break;
 
-                        case 'transmitter':
-                            $HPdevices = $this->hiteproDevRep->getTransmittersByDeviceId($deviceID);
-                            break;
+                    case 'transmitter':
+                        $HPdevices = $this->hiteproDevRep->getTransmittersByDeviceId($deviceID);
+                        break;
                         /*
                                         case 'dimmer': $HPdevices = $this->hiteproDevRep->getInPortsByDeviceId($deviceID);
                                             break;
                         */
 
-                        default: $HPdevices = [];
+                    default: $HPdevices = [];
                         break;
-                    }
+                }
             }
 
             $HPdevicesArray = [];
 
-            foreach ($HPdevices AS $HPdevice) {
+            foreach ($HPdevices as $HPdevice) {
 
-                $HPdevicesArray[$HPdevice->id] = '['.$HPdevice->type.']'. ' ' . $HPdevice->name;
+                $HPdevicesArray[$HPdevice->id] = '['.$HPdevice->type.']'.' '.$HPdevice->name;
             }
 
             return $HPdevicesArray;
-        } else return [];
+        } else {
+            return [];
+        }
     }
 
     /**
      * Получаем текущий контроллер и порт, на котором находится объект
-    */
+     */
     public function getIdDeviceAndPortId($idObject)
     {
-        if($port = Port::where('object', $idObject)->first()) {
+        if ($port = Port::where('object', $idObject)->first()) {
             $deviceId = $port->id_device;
             $portId = $port->id;
             $typePort = $port->status;
@@ -363,7 +361,7 @@ class PortService {
             $typePort = null;
         }
 
-        return array('id_device' => $deviceId, 'id_port' => $portId, 'type_port' => $typePort);
+        return ['id_device' => $deviceId, 'id_port' => $portId, 'type_port' => $typePort];
     }
 
     /**
@@ -371,45 +369,47 @@ class PortService {
      */
     public function getIdControllerBySubdevice($subevice, $typeController)
     {
-        if($subevice) {
-            if($typeController == 'Hite-pro')
-                $controller  = HiteproDev::where('id', $subevice)->first()->id_controller;
+        if ($subevice) {
+            if ($typeController == 'Hite-pro') {
+                $controller = HiteproDev::where('id', $subevice)->first()->id_controller;
+            }
 
             return $controller;
-        } else return null;
-
+        } else {
+            return null;
+        }
 
     }
 
     /**
      * Получаем устройства для контроллера
      */
-    public function getSubdevsForController($idController, $typeController, $typeDevice) {
+    public function getSubdevsForController($idController, $typeController, $typeDevice)
+    {
 
-        if($typeController == 'Hite-pro')
+        if ($typeController == 'Hite-pro') {
             return $this->getHPDevicesIntoList($idController, $typeDevice);
-
+        }
 
     }
 
     /**
      * Подготовка данных для изменения у порта
      *
-     * @param array $data Массив с данными
-     * @param Port $port - объект модели порта
+     * @param  array  $data Массив с данными
+     * @param  Port  $port - объект модели порта
      */
     private function preparePort(array $data, Port $port)
     {
-        $port->id_device = (int)$data['id_controller'];
+        $port->id_device = (int) $data['id_controller'];
         $port->status = $data['status'];
         $port->comment = trim($data['comment']);
     }
 
-
     /**
      * Сохранение измененых данных на порту
      *
-     * @param array $data - данные порта с формы
+     * @param  array  $data - данные порта с формы
      * @return bool - резульат выполнения
      */
     public function store(array $data)
@@ -417,27 +417,24 @@ class PortService {
 
         $port = Port::where('id', $data['id_port'])->first();
 
-        if (!$port) {
+        if (! $port) {
             $result = false;
         }
 
         $this->preparePort($data, $port);
 
+        DB::transaction(function () use (&$port, &$result) {
 
+            $answer = ConfigMegaService::setPortType($port->id_device, $port->num_port, $port->status);
 
-            DB::transaction(function () use (&$port, $data, &$result) {
+            if ($answer === false) {
+                throw new \Exception('Некорректный ответ от удаленного сервера');
+            } else {
+                $port->save();
+                $result = true;
+            }
 
-                $answer = ConfigMegaService::setPortType($port->id_device, $port->num_port, $port->status);
-
-                if ($answer === false) {
-                    throw new \Exception('Некорректный ответ от удаленного сервера');
-                } else {
-                    $port->save();
-                    $result = true;
-                }
-
-            });
-
+        });
 
         return $result;
     }
@@ -447,31 +444,32 @@ class PortService {
      */
     public function getMethodsByObject($idObject)
     {
-       return Port::where('object', $idObject)->first();
+        return Port::where('object', $idObject)->first();
     }
 
     /**
      * Возвращает массив с значениями текущего порта и устройства для выбранного объекта,
      * а также все устройства и порты для выбранного устройства
-     * @param $idObject
+     *
      * @return array
      */
     public function getCurrentDevPort($idObject, $typesPorts = null)
     {
         $deviceAndPort = $this->getIdDeviceAndPortId($idObject);
-        $idDevice =  $deviceAndPort['id_device'];
+        $idDevice = $deviceAndPort['id_device'];
         $idPort = $deviceAndPort['id_port'];
 
-        if($typesPorts == null)
-        $typePort = $deviceAndPort['type_port'];
-        else
+        if ($typesPorts == null) {
+            $typePort = $deviceAndPort['type_port'];
+        } else {
             $typePort = $typesPorts;
+        }
 
         $hp_device = null;
         $hp_type = null;
 
         //Если не нашли в портах устройство, пробуем искать на hitepro
-        if($idDevice === null) {
+        if ($idDevice === null) {
             $controllerAndDevice = $this->getCurrentDevHitepro($idObject);
             $idDevice = $controllerAndDevice['id_device'];
             $hp_device = $controllerAndDevice['hp_device'];
@@ -479,10 +477,10 @@ class PortService {
         }
 
         $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
-        $ports =  $this->getPortsIntoList($idDevice, $typePort);
+        $ports = $this->getPortsIntoList($idDevice, $typePort);
         $hp_devices = $this->getHPDevicesIntoList($idDevice, $hp_type);
 
-        if(!$devices || !$ports) {
+        if (! $devices || ! $ports) {
             $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
             $ports = [];
         }
@@ -492,11 +490,10 @@ class PortService {
 
     /**
      * Возвращает id контроллера hite-pro и устройства к которому привязан объект
-     * @param $idObject
      */
     private function getCurrentDevHitepro($idObject)
     {
-        if($hitepro = HiteproDev::where('id_object', $idObject)->first()){
+        if ($hitepro = HiteproDev::where('id_object', $idObject)->first()) {
 
             $deviceId = $hitepro->id_controller;
             $HPDevice = $hitepro->id;
@@ -507,14 +504,12 @@ class PortService {
             $HPType = null;
         }
 
-
-        return array('id_device' => $deviceId, 'hp_device' => $HPDevice, 'hp_type' => $HPType);
+        return ['id_device' => $deviceId, 'hp_device' => $HPDevice, 'hp_type' => $HPType];
 
     }
 
     /**
      * Установка для порта дефолтных значений в БД (например, если объект ранее был на одном порту, а переносим на другой)
-     * @param $idObject
      */
     public static function removeObjectOnPorts($idObject)
     {
@@ -526,28 +521,24 @@ class PortService {
             'comment' => '']);
 
         HiteproDev::where('id_object', $idObject)->update([
-        'id_object' => null]);
+            'id_object' => null]);
     }
-
 
     /**
      * Настроить порт в БД в соответсвии с параметрами
      *
-     * @param $idObject
-     * @param $idPort
-     * @param $status
-     * @param null $comment
-     * @param null $method
-     * @param null $method_params
-     * @param null $dc_method
-     * @param null $dc_method_params
-     * @param null $lc_method
-     * @param null $lc_method_params
+     * @param  null  $comment
+     * @param  null  $method
+     * @param  null  $method_params
+     * @param  null  $dc_method
+     * @param  null  $dc_method_params
+     * @param  null  $lc_method
+     * @param  null  $lc_method_params
      */
     public static function setObjectOnSelectedPort($idObject, $idPort, $status, $comment,
-                                                   $method = null, $method_params = null,
-                                                   $dc_method = null, $dc_method_params = null,
-                                                   $lc_method = null, $lc_method_params = null )
+        $method = null, $method_params = null,
+        $dc_method = null, $dc_method_params = null,
+        $lc_method = null, $lc_method_params = null)
     {
         Port::where('id', $idPort)->update(['object' => $idObject,
             'method' => $method, 'method_params' => $method_params,
@@ -558,13 +549,11 @@ class PortService {
 
     /**
      * Добавить объект на устройство хитпро
-     * @param $idObject
+     *
      * @param $idDevice
      */
     public static function setObjectOnHitePro($idObject, $idHPDevice)
     {
         HiteproDev::where('id', $idHPDevice)->update(['id_object' => $idObject]);
     }
-
-
 }

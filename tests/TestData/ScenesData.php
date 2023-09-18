@@ -8,8 +8,6 @@ class ScenesData
 {
     /**
      * Генератор сущностей для сцены
-     *
-     * @return array
      */
     public function generateScene(): array
     {

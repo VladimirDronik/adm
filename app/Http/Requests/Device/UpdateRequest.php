@@ -39,7 +39,7 @@ class UpdateRequest extends FormRequest
             'ip_address.required' => 'Не указан ip адрес',
             'ip_address.max' => 'IP адрес содержит более 15 символов',
             'ip_address.ip' => 'Недопустимый ip адрес',
-            'description.unique' => 'Контроллер с таким названием уже существует. Необходимо изменить название'
+            'description.unique' => 'Контроллер с таким названием уже существует. Необходимо изменить название',
         ];
     }
 }

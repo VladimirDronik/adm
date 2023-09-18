@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Script;
+use Illuminate\Database\Seeder;
 
 class ScriptsTableSeeder extends Seeder
 {
@@ -20,7 +20,7 @@ class ScriptsTableSeeder extends Seeder
             'name' => 'Очистка графиков',
             'link' => 'reset_graphs.php',
             'count' => 0,
-            'system' => 1
+            'system' => 1,
         ];
     }
 
@@ -30,7 +30,7 @@ class ScriptsTableSeeder extends Seeder
             'name' => 'Проверка счетчика',
             'link' => 'check_count.php',
             'count' => 0,
-            'system' => 1
+            'system' => 1,
         ];
     }
 
@@ -40,7 +40,7 @@ class ScriptsTableSeeder extends Seeder
             'name' => 'Сброс счетчика',
             'link' => 'reset_count.php',
             'count' => 0,
-            'system' => 1
+            'system' => 1,
         ];
     }
 
@@ -50,7 +50,7 @@ class ScriptsTableSeeder extends Seeder
             'name' => 'Проверка термостата',
             'link' => 'check_termostat.php', // используется в TermostatObjectService
             'count' => 0,
-            'system' => 1
+            'system' => 1,
         ];
     }
 
@@ -60,7 +60,7 @@ class ScriptsTableSeeder extends Seeder
             'name' => 'Проверка гигростата',
             'link' => 'check_hygrostat.php', // используется в HygrostatObjectService
             'count' => 0,
-            'system' => 1
+            'system' => 1,
         ];
     }
 
@@ -70,7 +70,7 @@ class ScriptsTableSeeder extends Seeder
             'name' => 'Проверка светостата',
             'link' => 'check_lightstat.php', // используется в LightstatObjectService
             'count' => 0,
-            'system' => 1
+            'system' => 1,
         ];
 
     }
@@ -81,7 +81,7 @@ class ScriptsTableSeeder extends Seeder
             'name' => 'Проверка универсального датчика',
             'link' => 'check_usensor.php', // используется в UsensorObjectService
             'count' => 0,
-            'system' => 1
+            'system' => 1,
         ];
     }
 
@@ -92,7 +92,7 @@ class ScriptsTableSeeder extends Seeder
             'name' => 'Проверка текущего состояния контакта',
             'link' => 'check_drycontact.php',
             'count' => 0,
-            'system' => 1
+            'system' => 1,
         ];
     }
 
@@ -103,7 +103,7 @@ class ScriptsTableSeeder extends Seeder
             'name' => 'Срабатывание датчика движения',
             'link' => 'run_motionsensor.php',
             'count' => 0,
-            'system' => 1
+            'system' => 1,
         ];
     }
 
@@ -113,7 +113,7 @@ class ScriptsTableSeeder extends Seeder
             'name' => 'Проверка датчика УГ',
             'link' => 'check_carbmonoxide.php',
             'count' => 0,
-            'system' => 1
+            'system' => 1,
         ];
 
     }
@@ -124,18 +124,19 @@ class ScriptsTableSeeder extends Seeder
             'name' => 'Проверка манометра',
             'link' => 'check_manometr.php',
             'count' => 0,
-            'system' => 1
+            'system' => 1,
         ];
 
     }
 
-    private static function deleteLogsScript(): array {
+    private static function deleteLogsScript(): array
+    {
 
         return [
             'name' => 'Удаление старых логов',
             'link' => 'delete_logs.php',
             'count' => 0,
-            'system' => 1
+            'system' => 1,
         ];
 
     }
@@ -146,18 +147,13 @@ class ScriptsTableSeeder extends Seeder
             'name' => 'Проверка котла',
             'link' => 'check_boiler.php', // используется в BoilerObjectService
             'count' => 0,
-            'system' => 1
+            'system' => 1,
         ];
     }
-
-
-
 
     /**
      * Изменение скриптов в этой функции влияет на методы, которые
      * автоматически создаются для объекта диммера
-     *
-     * @return array
      */
     public static function getDimmerScripts(): array
     {
@@ -166,55 +162,51 @@ class ScriptsTableSeeder extends Seeder
                 'name' => 'Включить диммер',
                 'link' => 'on_dimmer.php',
                 'count' => 0,
-                'system' => 1
+                'system' => 1,
             ],
             [
                 'name' => 'Выключить диммер',
                 'link' => 'off_dimmer.php',
                 'count' => 0,
-                'system' => 1
+                'system' => 1,
             ],
             [
                 'name' => 'Увеличить яркость диммера',
                 'link' => 'up_dimmer.php',
                 'count' => 0,
-                'system' => 1
+                'system' => 1,
             ],
             [
                 'name' => 'Уменьшить яркость диммера',
                 'link' => 'down_dimmer.php',
                 'count' => 0,
-                'system' => 1
+                'system' => 1,
             ],
             [
                 'name' => 'Установить яркость диммера',
                 'link' => 'set_dimmer.php',
                 'count' => 0,
-                'system' => 1
+                'system' => 1,
             ],
             [
                 'name' => 'Выключить диммер',
                 'link' => 'off_dimmer.php',
                 'count' => 0,
-                'system' => 1
+                'system' => 1,
             ],
             [
                 'name' => 'Включить диммер на последнем уровне яркости',
                 'link' => 'on_dimmer.php',
                 'count' => 0,
-                'system' => 1
+                'system' => 1,
             ],
 
         ];
     }
 
-
-
     /**
      * Изменение скриптов в этой функции влияет на методы, которые
      * автоматически создаются для объекта шторы
-     *
-     * @return array
      */
     public static function getCurtainScripts(): array
     {
@@ -223,30 +215,27 @@ class ScriptsTableSeeder extends Seeder
                 'name' => 'Открыть штору',
                 'link' => 'open_curtain.php',
                 'count' => 0,
-                'system' => 1
+                'system' => 1,
             ],
             [
                 'name' => 'Закрыть штору',
                 'link' => 'close_curtain.php',
                 'count' => 0,
-                'system' => 1
+                'system' => 1,
             ],
             [
                 'name' => 'Открыть штору на %',
                 'link' => 'open_half_curtain.php',
                 'count' => 0,
-                'system' => 1
+                'system' => 1,
             ],
 
         ];
     }
 
-
     /**
      * Изменение скриптов в этой функции влияет на методы, которые
      * автоматически создаются для объекта замки
-     *
-     * @return array
      */
     public static function getLockScripts(): array
     {
@@ -255,17 +244,16 @@ class ScriptsTableSeeder extends Seeder
                 'name' => 'Открыть замок',
                 'link' => 'open_lock.php',
                 'count' => 0,
-                'system' => 1
+                'system' => 1,
             ],
             [
                 'name' => 'Закрыть замок',
                 'link' => 'close_lock.php',
                 'count' => 0,
-                'system' => 1
+                'system' => 1,
             ],
         ];
     }
-
 
     private function getScripts(): array
     {
@@ -285,7 +273,6 @@ class ScriptsTableSeeder extends Seeder
         $scripts[] = self::getCheckManometrScript();
         $scripts[] = self::getCheckBoilerScript();
 
-
         return $scripts;
     }
 
@@ -300,7 +287,7 @@ class ScriptsTableSeeder extends Seeder
         $result_scripts = [];
 
         foreach ($scripts as $script) {
-            if (!in_array($script['name'], $this->scripts, true)) {
+            if (! in_array($script['name'], $this->scripts, true)) {
                 $result_scripts[] = $script;
             }
         }

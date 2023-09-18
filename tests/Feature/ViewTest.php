@@ -41,7 +41,7 @@ class ViewTest extends TestCase
 
         $data = $generator->generateView();
 
-        $response = $this->actingAs($user)->get('/views/'. $data['view']->id .'/edit');
+        $response = $this->actingAs($user)->get('/views/'.$data['view']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -53,7 +53,7 @@ class ViewTest extends TestCase
         $response = $this->actingAs($user)->post('/views', [
             'type' => 'dimmer',
             'description' => 'Создание тестового отображения',
-            'active' => "1",
+            'active' => '1',
             'safe_type' => null,
             'id_object' => null,
             'id_method' => null,
@@ -62,7 +62,7 @@ class ViewTest extends TestCase
             'off_method' => null,
             'off_method_params' => null,
             'title' => null,
-            'color' => "null",
+            'color' => 'null',
             'icon_image' => 'ela/images/rooms/noimage.png',
             'room' => 0,
             'scene' => null,
@@ -78,7 +78,7 @@ class ViewTest extends TestCase
 
         $view = View::where('description', 'Создание тестового отображения')->first();
 
-        $response->assertRedirect('/views/'. ($view ? $view->id : 1) .'/edit');
+        $response->assertRedirect('/views/'.($view ? $view->id : 1).'/edit');
 
         $this->assertDatabaseHas('view_items', [
             'description' => 'Создание тестового отображения',
@@ -93,7 +93,7 @@ class ViewTest extends TestCase
 
         $data = $generator->generateView();
 
-        $response = $this->actingAs($user)->post('views/'. $data['view']->id, [
+        $response = $this->actingAs($user)->post('views/'.$data['view']->id, [
             '_method' => 'PUT',
             'description' => 'Обновление тестового отображения',
             'type' => 'dimmer',
@@ -117,7 +117,7 @@ class ViewTest extends TestCase
             'label_longclick_text' => null,
         ]);
 
-        $response->assertRedirect('/views/'. $data['view']->id .'/edit');
+        $response->assertRedirect('/views/'.$data['view']->id.'/edit');
 
         $this->assertDatabaseHas('view_items', [
             'description' => 'Обновление тестового отображения',

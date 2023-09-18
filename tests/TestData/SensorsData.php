@@ -18,8 +18,6 @@ class SensorsData
 {
     /**
      * Генератор сущностей для термостата
-     *
-     * @return array
      */
     public function generateTermostat(): array
     {
@@ -49,8 +47,6 @@ class SensorsData
 
     /**
      * Генератор сущностей для гигростата
-     *
-     * @return array
      */
     public function generateHygrostat(): array
     {
@@ -80,8 +76,6 @@ class SensorsData
 
     /**
      * Генератор сущностей для светостата
-     *
-     * @return array
      */
     public function generateLightstat(): array
     {
@@ -112,8 +106,6 @@ class SensorsData
 
     /**
      * Генератор сущностей для датчика движения
-     *
-     * @return array
      */
     public function generateMotionsensor(): array
     {
@@ -136,8 +128,6 @@ class SensorsData
 
     /**
      * Генератор сущностей для универсального датчика
-     *
-     * @return array
      */
     public function generateUsensor(): array
     {
@@ -188,8 +178,6 @@ class SensorsData
 
     /**
      * Генератор сущностей для сухого контакта
-     *
-     * @return array
      */
     public function generateDrycontact(): array
     {
@@ -212,8 +200,6 @@ class SensorsData
 
     /**
      * Генератор сущностей для датчика УГ
-     *
-     * @return array
      */
     public function generateCarbmonoxide(): array
     {

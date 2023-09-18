@@ -4,9 +4,9 @@
  * Меняем в таблице scheduler_tasks связь по ключу object, что бы при удалении объекта удалялось и само событие
  */
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class ChangeSchedulerTasks extends Migration
 {
@@ -21,10 +21,10 @@ class ChangeSchedulerTasks extends Migration
         if (Schema::hasTable('scheduler_tasks')) {
             Schema::table('scheduler_tasks', function (Blueprint $table) {
 
-            $table->dropForeign(['object']);
-            $table->foreign('object')->references('id')->on('objects')
-            ->onUpdate('cascade')->onDelete('cascade');
-         });
+                $table->dropForeign(['object']);
+                $table->foreign('object')->references('id')->on('objects')
+                    ->onUpdate('cascade')->onDelete('cascade');
+            });
         }
     }
 

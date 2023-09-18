@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class ChangeViewItemsTable extends Migration
 {
@@ -19,7 +19,7 @@ class ChangeViewItemsTable extends Migration
                     $table->renameColumn('type_name', 'type');
                 }
 
-                if (Schema::hasColumn('view_items','name')) {
+                if (Schema::hasColumn('view_items', 'name')) {
                     $table->dropColumn('name');
                 }
 
@@ -31,11 +31,11 @@ class ChangeViewItemsTable extends Migration
                     $table->renameColumn('on_title', 'title');
                 }
 
-                if (Schema::hasColumn('view_items','off_image')) {
+                if (Schema::hasColumn('view_items', 'off_image')) {
                     $table->dropColumn('off_image');
                 }
 
-                if (Schema::hasColumn('view_items','off_title')) {
+                if (Schema::hasColumn('view_items', 'off_title')) {
                     $table->dropColumn('off_title');
                 }
             });

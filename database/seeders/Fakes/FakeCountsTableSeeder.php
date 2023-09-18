@@ -2,10 +2,10 @@
 
 namespace Database\Seeders\Fakes;
 
-use Illuminate\Database\Seeder;
-use Faker\Factory;
 use App\Models\Count;
 use App\Models\HomeObject;
+use Faker\Factory;
+use Illuminate\Database\Seeder;
 
 class FakeCountsTableSeeder extends Seeder
 {
@@ -33,7 +33,7 @@ class FakeCountsTableSeeder extends Seeder
                 'impulse' => 10.5,
                 'unit' => 'л',
                 'today_value' => 0.7,
-                'total_value' => 65.5
+                'total_value' => 65.5,
             ],
             [
                 'name' => 'Счетчик электричества',
@@ -42,7 +42,7 @@ class FakeCountsTableSeeder extends Seeder
                 'impulse' => 64.3,
                 'unit' => 'кв/ч',
                 'today_value' => 60.5,
-                'total_value' => 16.88
+                'total_value' => 16.88,
             ],
         ];
 

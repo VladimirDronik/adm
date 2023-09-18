@@ -67,7 +67,7 @@ class FakeObjectsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement("ALTER TABLE objects AUTO_INCREMENT = 1;");
+        DB::statement('ALTER TABLE objects AUTO_INCREMENT = 1;');
         DB::table('objects')->insert($this->getObjects());
     }
 }

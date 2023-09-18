@@ -14,8 +14,8 @@ class RoomController extends Controller
     public function __construct(
         private RoomRepository $room_rep,
         private RoomService $service
-    )
-    {}
+    ) {
+    }
 
     public function index()
     {
@@ -42,13 +42,13 @@ class RoomController extends Controller
     {
         try {
             if ($this->service->update($room, $r->except('_token'))) {
-                return redirect()->route('rooms.edit',[$room->id])->with('success','Настройки успешно изменены');
+                return redirect()->route('rooms.edit', [$room->id])->with('success', 'Настройки успешно изменены');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении настроек помещения'.$room->id.' '
                 .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении настроек помещения');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении настроек помещения');
     }
 }

@@ -41,7 +41,7 @@ class SchedulerTest extends TestCase
 
         $data = $generator->generateScheduler();
 
-        $response = $this->actingAs($user)->get('/scheduler/'. $data['scheduler']->id .'/edit');
+        $response = $this->actingAs($user)->get('/scheduler/'.$data['scheduler']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -66,7 +66,7 @@ class SchedulerTest extends TestCase
 
         $scheduler = SchedulerTask::where('name', 'Создание тестовой задачи')->first();
 
-        $response->assertRedirect('/scheduler/'. ($scheduler ? $scheduler->id : 1) .'/edit');
+        $response->assertRedirect('/scheduler/'.($scheduler ? $scheduler->id : 1).'/edit');
 
         $this->assertDatabaseHas('scheduler_tasks', [
             'name' => 'Создание тестовой задачи',
@@ -81,7 +81,7 @@ class SchedulerTest extends TestCase
 
         $data = $generator->generateScheduler();
 
-        $response = $this->actingAs($user)->post('scheduler/'. $data['scheduler']->id, [
+        $response = $this->actingAs($user)->post('scheduler/'.$data['scheduler']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестовой задачи',
             'active' => 1,
@@ -92,7 +92,7 @@ class SchedulerTest extends TestCase
             'script' => $data['script']->id,
         ]);
 
-        $response->assertRedirect('/scheduler/'. $data['scheduler']->id .'/edit');
+        $response->assertRedirect('/scheduler/'.$data['scheduler']->id.'/edit');
 
         $this->assertDatabaseHas('scheduler_tasks', [
             'name' => 'Обновление тестовой задачи',

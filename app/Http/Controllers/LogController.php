@@ -10,8 +10,8 @@ class LogController extends Controller
 {
     public function __construct(
         private LogRepository $log_rep
-    )
-    {}
+    ) {
+    }
 
     private function getFilter(Request $r)
     {

@@ -3,9 +3,7 @@
 namespace App\Services;
 
 use App\Models\Camera;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class CameraService
 {
@@ -21,9 +19,6 @@ class CameraService
 
     /**
      * Создание камеры
-     *
-     * @param array $data
-     * @return int
      */
     public function store(array $data): int
     {
@@ -41,10 +36,6 @@ class CameraService
 
     /**
      * Изменение камеры
-     *
-     * @param Camera $camera
-     * @param array $data
-     * @return int
      */
     public function update(Camera $camera, array $data): int
     {
@@ -58,8 +49,6 @@ class CameraService
     /**
      * Изменение активности камеры
      *
-     * @param int $id
-     * @param int $active
      * @return bool
      */
     public function changeActive(int $id, int $active)
@@ -72,7 +61,6 @@ class CameraService
     /**
      * Удалить камеру
      *
-     * @param int $id
      * @return bool
      */
     public function delete(int $id)
@@ -112,28 +100,25 @@ class CameraService
 
     /**
      * Распарсить полученную ссылку на камеру и получить id и номер для вывода изображения
-     *
-     * @param string $url
-     * @return null|string
      */
     private function parseIdAndNumberFromUrl(string $url): ?string
     {
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        if (! filter_var($url, FILTER_VALIDATE_URL)) {
             return null;
         }
 
         $components = parse_url($url);
         parse_str($components['query'], $queryParameters);
 
-        if (!isset($queryParameters['server']) || !isset($queryParameters['camera'])) {
+        if (! isset($queryParameters['server']) || ! isset($queryParameters['camera'])) {
             return null;
         }
 
         $serverId = $queryParameters['server'];
         $cameraNumber = $queryParameters['camera'];
 
-        return 'https://openapi-alpha.ivideon.com/cameras/' .
-            $serverId . ':' . $cameraNumber .
+        return 'https://openapi-alpha.ivideon.com/cameras/'.
+            $serverId.':'.$cameraNumber.
             '/live_preview?op=GET&access_token=public';
     }
 }

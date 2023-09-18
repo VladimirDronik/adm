@@ -8,8 +8,6 @@ class SettingsData
 {
     /**
      * Генератор сущностей для настроек
-     *
-     * @return array
      */
     public function generateSetting(): array
     {

@@ -6,11 +6,11 @@ use App\Http\Requests\Scheduler\CreateRequest;
 use App\Http\Requests\Scheduler\UpdateRequest;
 use App\Models\SchedulerPoint;
 use App\Models\SchedulerTask;
-use App\Repositories\SchedulerRepository;
 use App\Repositories\ObjectRepository;
+use App\Repositories\SchedulerRepository;
 use App\Repositories\ScriptRepository;
-use App\Services\SchedulerService;
 use App\Services\ObjectService;
+use App\Services\SchedulerService;
 use Illuminate\Http\Request;
 
 class SchedulerController extends Controller
@@ -21,8 +21,8 @@ class SchedulerController extends Controller
         private ScriptRepository $script_rep,
         private SchedulerService $service,
         private ObjectService $object_service
-    )
-    {}
+    ) {
+    }
 
     private function getFilter(Request $r)
     {
@@ -61,7 +61,7 @@ class SchedulerController extends Controller
                     ->with('success', 'Событие успешно сохранено. Осталось указать расписание');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении задачи планировщика ' .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при добавлении задачи планировщика '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении задачи планировщика');
@@ -72,7 +72,7 @@ class SchedulerController extends Controller
         $event = SchedulerTask::where('id', $id)
             ->with('points', 'eobject', 'emethod', 'escript', 'eobject')->first();
 
-        if (!$event) {
+        if (! $event) {
             return redirect()->route('scheduler.index')->with('error', 'Событие не найдено');
         }
 
@@ -94,17 +94,17 @@ class SchedulerController extends Controller
         try {
             $event = SchedulerTask::find($id);
 
-            if (!$event) {
+            if (! $event) {
                 return redirect()->route('events.index')->with('error', 'Событие не найдено');
             }
 
             if ($this->service->update($event, $r->except('_token'))) {
-                return redirect()->route('scheduler.edit', [$event->id])->with('success','Событие успешно изменено');
+                return redirect()->route('scheduler.edit', [$event->id])->with('success', 'Событие успешно изменено');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении задачи планировщика '.$event->id.' ' .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при изменении задачи планировщика '.$event->id.' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении задачи');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении задачи');
     }
 }

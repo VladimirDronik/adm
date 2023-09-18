@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\ObjType;
+use Illuminate\Database\Seeder;
 
 class ObjtypesTableSeeder extends Seeder
 {
@@ -17,80 +17,78 @@ class ObjtypesTableSeeder extends Seeder
     /**
      * Если тип с указанным именем не существует в таблице,
      * то добавляем, иначе обновляем label.
-     *
-     * @return array
      */
     private function getObjtypes(): array
     {
         return [
             [
                 'name' => ObjType::TYPE_BUTTON,
-                'label' => 'Кнопка'
+                'label' => 'Кнопка',
             ],
             [
                 'name' => 'lamp',
-                'label' => 'Лампа'
+                'label' => 'Лампа',
             ],
             [
                 'name' => ObjType::TYPE_SOCKET,
-                'label' => 'Розетка'
+                'label' => 'Розетка',
             ],
             [
                 'name' => ObjType::TYPE_TERMOSTAT,
-                'label' => 'Термостат'
+                'label' => 'Термостат',
             ],
             [
                 'name' => ObjType::TYPE_USENSOR,
-                'label' => 'Универсальный датчик'
+                'label' => 'Универсальный датчик',
             ],
             [
                 'name' => 'hygrometer',
-                'label' => 'Гигрометр'
+                'label' => 'Гигрометр',
             ],
             [
                 'name' => 'Motion_sens',
-                'label' => 'Датчик движения'
+                'label' => 'Датчик движения',
             ],
             [
                 'name' => ObjType::TYPE_SWITCH,
-                'label' => 'Выключатель'
+                'label' => 'Выключатель',
             ],
             [
                 'name' => ObjType::TYPE_COUNT,
-                'label' => 'Счетчик'
+                'label' => 'Счетчик',
             ],
             [
                 'name' => 'IR_transmitter',
-                'label' => 'ИК передатчик'
+                'label' => 'ИК передатчик',
             ],
             [
                 'name' => 'pass_sensor',
-                'label' => 'Датчик прохода'
+                'label' => 'Датчик прохода',
             ],
             [
                 'name' => 'dry_contact',
-                'label' => 'Сухой контакт'
+                'label' => 'Сухой контакт',
             ],
             [
                 'name' => ObjType::TYPE_RELAY,
-                'label' => 'Реле'
+                'label' => 'Реле',
             ],
             [
                 'name' => ObjType::TYPE_DIMMER,
-                'label' => 'Диммер'
+                'label' => 'Диммер',
             ],
             [
                 'name' => ObjType::TYPE_DRYCONTACT,
-                'label' => 'Сухой контакт'
+                'label' => 'Сухой контакт',
             ],
             [
                 'name' => ObjType::TYPE_MANOMETR,
-                'label' => 'Манометр'
+                'label' => 'Манометр',
             ],
             [
                 'name' => ObjType::TYPE_CONDITIONER,
-                'label' => 'Кондиционер'
-            ]
+                'label' => 'Кондиционер',
+            ],
         ];
     }
 
@@ -105,7 +103,7 @@ class ObjtypesTableSeeder extends Seeder
         $result_objtypes = [];
 
         foreach ($objtypes as $objtype) {
-            if (!in_array($objtype['name'], $this->objtypes, true)) {
+            if (! in_array($objtype['name'], $this->objtypes, true)) {
                 $result_objtypes[] = $objtype;
             } else {
                 ObjType::where('name', $objtype['name'])

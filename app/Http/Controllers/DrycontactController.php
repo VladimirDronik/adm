@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DryContact\CreateRequest;
+use App\Http\Requests\DryContact\UpdateRequest;
 use App\Models\Drycontact;
+use App\Models\HomeObject;
+use App\Repositories\DeviceRepository;
+use App\Repositories\DrycontactRepository;
+use App\Repositories\ObjectRepository;
+use App\Repositories\ScriptRepository;
 use App\Services\DrycontactService;
 use App\Services\MessageService;
 use App\Services\ObjectService;
 use App\Services\PortService;
 use App\Services\Service;
-use Illuminate\Http\Request;
-use App\Http\Requests\DryContact\CreateRequest;
-use App\Http\Requests\DryContact\UpdateRequest;
-use App\Repositories\DrycontactRepository;
-use App\Repositories\DeviceRepository;
-use App\Repositories\ObjectRepository;
-use App\Models\HomeObject;
-use App\Repositories\ScriptRepository;
 
 class DrycontactController extends Controller
 {
@@ -28,8 +27,8 @@ class DrycontactController extends Controller
         private ScriptRepository $script_rep,
         private MessageService $messagesService,
         private ObjectService $objectService,
-    )
-    {}
+    ) {
+    }
 
     public function index()
     {
@@ -42,7 +41,7 @@ class DrycontactController extends Controller
     {
 
         $objects = $this->object_rep->getAllToArray();
-        $object_types =  HomeObject::getFullTypeIds();
+        $object_types = HomeObject::getFullTypeIds();
         $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
 
         return view('drycontacts.create', compact('objects', 'object_types', 'devices'));
@@ -56,20 +55,18 @@ class DrycontactController extends Controller
                     ->with('success', 'Сухой контакт успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении сухого контакта ' .
+            \Log::error('Ошибка при добавлении сухого контакта '.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении сухого контакта');
     }
 
-
-    public function edit(int $id, $tab=1)
+    public function edit(int $id, $tab = 1)
     {
         $drycontact = Drycontact::findOrFail($id);
 
-
-        list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($drycontact->id_object,
+        [$idDevice, $idPort, $devices, $ports] = $this->portService->getCurrentDevPort($drycontact->id_object,
             'IN,I2C,1WIRE,1W-BUS');
 
         $method_on = $drycontact->method_on;
@@ -85,7 +82,7 @@ class DrycontactController extends Controller
 
         $can = gates('devices.show-object');
 
-        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
+        [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents] =
             Service::getListElements($drycontact->id_object);
 
         $availableEvents = Drycontact::getEvents();
@@ -96,7 +93,6 @@ class DrycontactController extends Controller
             'idDevice', 'idPort', 'devices', 'ports', 'events', 'sounds', 'views', 'rooms', 'allEvents',
             'objects', 'object_types', 'scripts', 'messages', 'availableEvents', 'properties', 'can'));
     }
-
 
     public function update(UpdateRequest $r, int $id)
     {
@@ -109,9 +105,9 @@ class DrycontactController extends Controller
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении сухого контакта '.$drycontact->id
-                .' ' .json_encode($r->all()).' '.$e->getMessage());
+                .' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении сухого контакта');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении сухого контакта');
     }
 }

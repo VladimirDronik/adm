@@ -26,7 +26,7 @@ class UpdateTimeZoneRequest extends FormRequest
         return [
             'name' => 'required|string|max:20',
             'value' => 'required|string|timezone|max:20',
-            'comment' => 'required|string|max:255'
+            'comment' => 'required|string|max:255',
         ];
     }
 
@@ -38,7 +38,7 @@ class UpdateTimeZoneRequest extends FormRequest
             'value.required' => 'Не указано значение',
             'value.max' => 'Значение должно содержать не более 20 символов',
             'comment.required' => 'Не указано описание',
-            'comment.max' => 'Описание должно содержать не более 255 символов'
+            'comment.max' => 'Описание должно содержать не более 255 символов',
         ];
     }
 }

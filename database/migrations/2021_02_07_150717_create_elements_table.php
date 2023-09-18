@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateElementsTable extends Migration
 {
@@ -13,7 +13,7 @@ class CreateElementsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('elements')) {
+        if (! Schema::hasTable('elements')) {
             Schema::create('elements', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name');
@@ -27,7 +27,6 @@ class CreateElementsTable extends Migration
                 $table->smallInteger('position');
                 $table->tinyInteger('sort');
                 $table->tinyInteger('active');
-
 
                 $table->foreign('page')->references('id')->on('pages')
                     ->onUpdate('cascade')->onDelete('cascade');

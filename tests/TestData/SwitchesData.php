@@ -9,8 +9,6 @@ class SwitchesData
 {
     /**
      * Генератор сущностей для выключателя
-     *
-     * @return array
      */
     public function generateSwitch(): array
     {

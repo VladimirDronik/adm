@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\ExtensionModuleType;
+use Illuminate\Database\Seeder;
 
 class ExtensionModuleTypeSeeder extends Seeder
 {
@@ -13,7 +13,6 @@ class ExtensionModuleTypeSeeder extends Seeder
     {
         $this->extensionModuleTypes = ExtensionModuleType::pluck('name')->toArray();
     }
-
 
     /**
      * Run the database seeds.
@@ -25,14 +24,14 @@ class ExtensionModuleTypeSeeder extends Seeder
         $extensionModuleTypes = [
             [
                 'name' => '0-10V',
-                'ports' => '0..10V 0 7;'
+                'ports' => '0..10V 0 7;',
             ],
         ];
 
         $result_extensionModuleTypes = [];
 
         foreach ($extensionModuleTypes as $extensionModuleType) {
-            if (!in_array($extensionModuleType['name'], $this->extensionModuleTypes, true)) {
+            if (! in_array($extensionModuleType['name'], $this->extensionModuleTypes, true)) {
                 $result_extensionModuleTypes[] = $extensionModuleType;
             }
         }

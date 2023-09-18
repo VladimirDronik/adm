@@ -2,10 +2,10 @@
 
 namespace Database\Seeders\Fakes;
 
-use Illuminate\Database\Seeder;
 use App\Models\HomeObject;
 use App\Models\Room;
 use Exception;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class FakeHygrostatsTableSeeder extends Seeder
@@ -13,17 +13,19 @@ class FakeHygrostatsTableSeeder extends Seeder
     const COUNT = 5;
 
     private $rooms;
+
     private $objects;
 
     /**
      * FakeHygrostatsTableSeeder constructor.
+     *
      * @throws Exception
      */
     public function __construct()
     {
         $this->rooms = Room::all();
         $this->objects = HomeObject::with('methods')->whereHas('methods')->get();
-        if (!count($this->objects)) {
+        if (! count($this->objects)) {
             throw new Exception('Hygrostats seeder: Objects with methods not found');
         }
     }
@@ -34,17 +36,17 @@ class FakeHygrostatsTableSeeder extends Seeder
             return null;
         }
 
-        return $this->rooms[rand(0, count($this->rooms)-1)]->id;
+        return $this->rooms[rand(0, count($this->rooms) - 1)]->id;
     }
 
     public function getRandObject()
     {
-        return $this->objects[rand(0, count($this->objects)-1)];
+        return $this->objects[rand(0, count($this->objects) - 1)];
     }
 
     public function getRandObjectMethodId($object)
     {
-        return $object->methods[rand(0, count($object->methods)-1)]->id;
+        return $object->methods[rand(0, count($object->methods) - 1)]->id;
     }
 
     public function getHygrostats()
@@ -56,7 +58,7 @@ class FakeHygrostatsTableSeeder extends Seeder
             $object = $this->getRandObject();
 
             $hygrostats[] = [
-                'name' => 'Гигростат '.($i+1),
+                'name' => 'Гигростат '.($i + 1),
                 'id_object' => $this->getRandObject()->id,
                 'current' => rand(20, 30).'.'.rand(10, 99),
                 'optimal' => rand(20, 30),
@@ -69,7 +71,7 @@ class FakeHygrostatsTableSeeder extends Seeder
                 'max_threshold' => rand(19, 25),
                 'min_alarm' => rand(3, 7),
                 'max_alarm' => rand(28, 35),
-                'room' => $this->getRandRoomId()
+                'room' => $this->getRandRoomId(),
             ];
         }
 

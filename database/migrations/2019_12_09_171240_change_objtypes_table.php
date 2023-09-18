@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class ChangeObjtypesTable extends Migration
 {
@@ -23,7 +23,7 @@ class ChangeObjtypesTable extends Migration
 
         if (Schema::hasTable('objtypes')) {
             Schema::table('objtypes', function (Blueprint $table) {
-                if (!Schema::hasColumn('objtypes', 'label')) {
+                if (! Schema::hasColumn('objtypes', 'label')) {
                     $table->string('label', 30)->nullable();
                 }
 
@@ -65,21 +65,21 @@ class ChangeObjtypesTable extends Migration
                     $table->dropColumn('label');
                 }
 
-                if (!Schema::hasColumn('objtypes', 'view_type')) {
+                if (! Schema::hasColumn('objtypes', 'view_type')) {
                     $table->string('view_type', 20)->nullable();
                 }
 
-                if (!Schema::hasColumn('objtypes', 'usestatus')) {
+                if (! Schema::hasColumn('objtypes', 'usestatus')) {
                     $table->boolean('usestatus')->comment('используется ли смена состояния у объекта')
                         ->default(false);
                 }
 
-                if (!Schema::hasColumn('objtypes', 'virt')) {
+                if (! Schema::hasColumn('objtypes', 'virt')) {
                     $table->boolean('virt')->comment('виртуальный объект или реальный')
                         ->default(false);
                 }
 
-                if (!Schema::hasColumn('objtypes', 'description')) {
+                if (! Schema::hasColumn('objtypes', 'description')) {
                     $table->text('description')->nullable();
                 }
             });

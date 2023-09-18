@@ -2,18 +2,21 @@
 
 namespace Database\Seeders\Fakes;
 
-use Illuminate\Database\Seeder;
 use App\Models\HomeObject;
-use Faker\Factory;
-use App\Models\Script;
 use App\Models\Port;
+use App\Models\Script;
+use Faker\Factory;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class FakeMethodsTableSeeder extends Seeder
 {
     private $faker;
+
     private $names;
+
     private $scripts;
+
     private $ports;
 
     public function __construct()
@@ -29,12 +32,12 @@ class FakeMethodsTableSeeder extends Seeder
         $port = $this->ports->random();
         $device = $port->device;
 
-        return $device->id.';'.$port->num_port.':'.rand(0,2);
+        return $device->id.';'.$port->num_port.':'.rand(0, 2);
     }
 
     public function getRandScriptId()
     {
-        return $this->scripts[rand(0, count($this->scripts)-1)]->id;
+        return $this->scripts[rand(0, count($this->scripts) - 1)]->id;
     }
 
     public function getMethods()
@@ -46,9 +49,9 @@ class FakeMethodsTableSeeder extends Seeder
         foreach ($objects as $object) {
             $method_count = rand(1, 3);
             for ($i = 0; $i < $method_count; $i++) {
-                $name = $this->names[rand(0, count($this->names)-1)];
+                $name = $this->names[rand(0, count($this->names) - 1)];
 
-                if (rand(0,10) > 6) {
+                if (rand(0, 10) > 6) {
                     $script = null;
                     $easy = $this->getRandEasy();
                 } else {
@@ -61,7 +64,7 @@ class FakeMethodsTableSeeder extends Seeder
                     'comment' => $name,
                     'name' => $name,
                     'script' => $script,
-                    'easy' => $easy
+                    'easy' => $easy,
                 ];
             }
         }
@@ -104,7 +107,7 @@ class FakeMethodsTableSeeder extends Seeder
             'Вкл/выкл свет фасад',
             'Вкл котел',
             'Выкл котел',
-            'Проверка термостата'
+            'Проверка термостата',
         ];
     }
 }

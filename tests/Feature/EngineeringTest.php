@@ -40,7 +40,7 @@ class EngineeringTest extends TestCase
 
         $data = $generator->generateBoiler();
 
-        $response = $this->actingAs($user)->get('/boiler/'. $data['boiler']->id_object .'/edit');
+        $response = $this->actingAs($user)->get('/boiler/'.$data['boiler']->id_object.'/edit');
 
         $response->assertStatus(200);
     }
@@ -71,7 +71,7 @@ class EngineeringTest extends TestCase
 
         $data = $generator->generateBoiler();
 
-        $response = $this->actingAs($user)->post('boiler/'. $data['boiler']->id_object, [
+        $response = $this->actingAs($user)->post('boiler/'.$data['boiler']->id_object, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового котла',
             'ip_address' => '161.165.20.179',
@@ -83,7 +83,7 @@ class EngineeringTest extends TestCase
             'set_value' => '55',
         ]);
 
-        $response->assertRedirect('/boiler/'. $data['boiler']->id_object .'/edit');
+        $response->assertRedirect('/boiler/'.$data['boiler']->id_object.'/edit');
 
         $this->assertDatabaseHas('boiler', [
             'name' => 'Обновление тестового котла',
@@ -130,7 +130,7 @@ class EngineeringTest extends TestCase
 
         $data = $generator->generateBoilerGvs();
 
-        $response = $this->actingAs($user)->get('/boiler_gvs/'. $data['boiler_gvs']->id_object .'/edit');
+        $response = $this->actingAs($user)->get('/boiler_gvs/'.$data['boiler_gvs']->id_object.'/edit');
 
         $response->assertStatus(200);
     }
@@ -160,13 +160,13 @@ class EngineeringTest extends TestCase
 
         $data = $generator->generateBoilerGvs();
 
-        $response = $this->actingAs($user)->post('boiler_gvs/'. $data['boiler_gvs']->id_object, [
+        $response = $this->actingAs($user)->post('boiler_gvs/'.$data['boiler_gvs']->id_object, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового котла ГВС',
             'ip_address' => '161.165.20.179',
         ]);
 
-        $response->assertRedirect('/boiler_gvs/'. $data['boiler_gvs']->id_object .'/edit');
+        $response->assertRedirect('/boiler_gvs/'.$data['boiler_gvs']->id_object.'/edit');
 
         $this->assertDatabaseHas('boiler_gvs', [
             'name' => 'Обновление тестового котла ГВС',

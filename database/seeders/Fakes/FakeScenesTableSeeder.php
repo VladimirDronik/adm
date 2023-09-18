@@ -2,9 +2,9 @@
 
 namespace Database\Seeders\Fakes;
 
-use Illuminate\Database\Seeder;
-use Faker\Factory;
 use App\Models\Scene;
+use Faker\Factory;
+use Illuminate\Database\Seeder;
 
 class FakeScenesTableSeeder extends Seeder
 {
@@ -28,21 +28,21 @@ class FakeScenesTableSeeder extends Seeder
                 'image' => 'scene1.jpg',
                 'background_color' => '#fffff',
                 'sort' => 1,
-                'active' => 1
+                'active' => 1,
             ],
             [
                 'label' => 'Дом 2-й этаж',
                 'image' => 'scene2_1400.jpg',
                 'background_color' => '#00ffff',
                 'sort' => 2,
-                'active' => 0
+                'active' => 0,
             ],
             [
                 'label' => 'Подвал',
                 'image' => 'scene1.jpg',
                 'background_color' => '',
                 'sort' => 3,
-                'active' => 0
+                'active' => 0,
             ],
         ];
 

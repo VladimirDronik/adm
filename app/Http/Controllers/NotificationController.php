@@ -13,7 +13,8 @@ class NotificationController extends Controller
     public function __construct(
         private NotificationServiceRepository $notification_rep,
         private NotificationService $service)
-    {}
+    {
+    }
 
     public function index()
     {
@@ -45,10 +46,9 @@ class NotificationController extends Controller
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении настроек '.$notifsetting->id
-                .' ' .json_encode($r->all()).' '.$e->getMessage());
+                .' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении настроек');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении настроек');
     }
-
 }

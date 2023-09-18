@@ -9,8 +9,6 @@ class PagesData
 {
     /**
      * Генератор сущностей для страницы
-     *
-     * @return array
      */
     public function generatePage(): array
     {

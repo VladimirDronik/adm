@@ -12,13 +12,14 @@ use Illuminate\Http\Request;
 
 class YandexStationController extends Controller
 {
-
     private $yandexstation_rep;
+
     private $room_rep;
+
     private $service;
 
     public function __construct(YandexStationRepository $yandexstationRepository, RoomRepository $roomRepository,
-    YandexStationService $yandexStationService)
+        YandexStationService $yandexStationService)
     {
         $this->yandexstation_rep = $yandexstationRepository;
         $this->room_rep = $roomRepository;
@@ -32,19 +33,18 @@ class YandexStationController extends Controller
         return view('yandexstations.index', compact('yandexstations'));
     }
 
-
     public function create()
     {
         $rooms = $this->room_rep->getAllToArray();
 
-        return view('yandexstations.create', compact( 'rooms' ));
+        return view('yandexstations.create', compact('rooms'));
     }
 
     public function edit(YandexStation $yandexstation)
     {
         $rooms = $this->room_rep->getAllToArray();
 
-        return view('yandexstations.edit', compact( 'rooms', 'yandexstation' ));
+        return view('yandexstations.edit', compact('rooms', 'yandexstation'));
     }
 
     public function store(CreateRequest $r)
@@ -55,7 +55,7 @@ class YandexStationController extends Controller
                     ->with('success', 'Станция успешно добавлена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении станции ' .
+            \Log::error('Ошибка при добавлении станции '.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 
@@ -66,12 +66,12 @@ class YandexStationController extends Controller
     {
         try {
             if ($this->service->update($yandexstation, $r->except('_token'))) {
-                return redirect()->route('yandexstations.edit',[$yandexstation->id])
+                return redirect()->route('yandexstations.edit', [$yandexstation->id])
                     ->with('success', 'Станция успешно изменена');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении станции '.$yandexstation->id
-                .' ' .json_encode($r->all()).' '.$e->getMessage());
+                .' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении станции');
@@ -83,7 +83,7 @@ class YandexStationController extends Controller
         $dir = env('SERVER_FOLDER');
         $file = '';
 
-        $handle = @fopen($dir."cookies.txt", "r");
+        $handle = @fopen($dir.'cookies.txt', 'r');
         if ($handle) {
             while (($buffer = fgets($handle, 4096)) !== false) {
                 $file = $file.$buffer;
@@ -91,7 +91,7 @@ class YandexStationController extends Controller
             fclose($handle);
         }
 
-        return view('yandexstations.edit_cookies', compact( 'file' ));
+        return view('yandexstations.edit_cookies', compact('file'));
 
     }
 
@@ -102,8 +102,8 @@ class YandexStationController extends Controller
         $dir = env('SERVER_FOLDER');
 
         //Очищаем файл и записываем в него данные о cookies
-        file_put_contents($dir."cookies.txt", '');
-        file_put_contents($dir."cookies.txt", $r->file, FILE_APPEND | LOCK_EX);
+        file_put_contents($dir.'cookies.txt', '');
+        file_put_contents($dir.'cookies.txt', $r->file, FILE_APPEND | LOCK_EX);
 
         return redirect()->route('yandexstations.index')
             ->with('success', 'Файл cookies.txt успешно изменён.');

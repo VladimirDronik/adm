@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use App\Services\BoilerService;
 use App\Http\Controllers\Controller;
+use App\Services\BoilerService;
 use Illuminate\Http\Request;
 
 class BoilerController extends Controller
@@ -17,8 +17,8 @@ class BoilerController extends Controller
 
     public function boilerAutoDelete(Request $r)
     {
-        abort_if(!ajaxHas($r, ['boiler_auto_id']), 400);
+        abort_if(! ajaxHas($r, ['boiler_auto_id']), 400);
 
-        return response()->json(['result' => (bool)$this->service->boilerAutoDelete((int)$r->boiler_auto_id)]);
+        return response()->json(['result' => (bool) $this->service->boilerAutoDelete((int) $r->boiler_auto_id)]);
     }
 }

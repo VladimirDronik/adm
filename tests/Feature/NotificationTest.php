@@ -31,10 +31,10 @@ class NotificationTest extends TestCase
             'name' => 'Оповещения о недоступности устройства',
             'type' => 'device_not_available',
             'priority' => 1,
-            'message' => 'Устройство {$device->name} ({$device->ip}) недоступно'
+            'message' => 'Устройство {$device->name} ({$device->ip}) недоступно',
         ]);
 
-        $response = $this->actingAs($user)->get('/notifications/'. $notification->id .'/edit');
+        $response = $this->actingAs($user)->get('/notifications/'.$notification->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -47,10 +47,10 @@ class NotificationTest extends TestCase
             'name' => 'Оповещения о недоступности устройства',
             'type' => 'device_not_available',
             'priority' => 1,
-            'message' => 'Устройство {$device->name} ({$device->ip}) недоступно'
+            'message' => 'Устройство {$device->name} ({$device->ip}) недоступно',
         ]);
 
-        $response = $this->actingAs($user)->post('notifications/'. $notification->id, [
+        $response = $this->actingAs($user)->post('notifications/'.$notification->id, [
             '_method' => 'PUT',
             'priority' => 1,
             'message' => 'Тестовое сообщение',
@@ -59,7 +59,7 @@ class NotificationTest extends TestCase
             'id_sound' => null,
         ]);
 
-        $response->assertRedirect('/notifications/' . $notification->id . '/edit');
+        $response->assertRedirect('/notifications/'.$notification->id.'/edit');
 
         $this->assertDatabaseHas('notifsettings', [
             'message' => 'Тестовое сообщение',

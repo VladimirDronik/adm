@@ -9,8 +9,6 @@ class CamerasData
 {
     /**
      * Генератор сущностей для камеры
-     *
-     * @return array
      */
     public function generateCamera(): array
     {

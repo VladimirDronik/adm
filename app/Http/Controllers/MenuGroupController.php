@@ -7,23 +7,24 @@
  */
 
 namespace App\Http\Controllers;
+
 use App\Repositories\MenuRepository;
-use App\Services\MenuService;
 use App\Services\ImageService;
+use App\Services\MenuService;
 
 class MenuGroupController
 {
     public function __construct(
         private MenuRepository $menu_rep,
         private MenuService $service
-    )
-    {}
+    ) {
+    }
 
     public function index(int $id)
     {
         $group = $this->menu_rep->getGroup($id);
 
-        if (!$group) {
+        if (! $group) {
             return redirect()->route('menu.index');
         }
 
@@ -32,6 +33,6 @@ class MenuGroupController
         $images = ImageService::getMainImages();
 
         return view('menu.group_index', compact('group', 'menus',
-            'groups',  'images'));
+            'groups', 'images'));
     }
 }

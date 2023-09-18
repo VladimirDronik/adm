@@ -2,8 +2,8 @@
 
 namespace Database\Seeders\Fakes;
 
-use Illuminate\Database\Seeder;
 use App\Models\Script;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class FakeScriptsTableSeeder extends Seeder
@@ -17,8 +17,6 @@ class FakeScriptsTableSeeder extends Seeder
 
     /**
      * Добавляются в таблицу только если она пустая, то есть не сработал основной сидер ScriptsTableSeeder
-     *
-     * @return array
      */
     public function getScripts(): array
     {
@@ -27,19 +25,19 @@ class FakeScriptsTableSeeder extends Seeder
                 'name' => 'Проверка термостата в гостиной',
                 'link' => 'termostat_kotel.php',
                 'count' => 0,
-                'system' => 0
+                'system' => 0,
             ],
             [
                 'name' => 'Вкл света в прихожей по датчику движения',
                 'link' => 'penetration.php',
                 'count' => 5,
-                'system' => 1
+                'system' => 1,
             ],
             [
                 'name' => 'Включение обычного режима отопления',
                 'link' => 'normal_mode.php',
                 'count' => 3,
-                'system' => 0
+                'system' => 0,
             ],
         ];
     }
@@ -51,7 +49,7 @@ class FakeScriptsTableSeeder extends Seeder
      */
     public function run()
     {
-        if (!Script::count()) {
+        if (! Script::count()) {
             DB::table('scripts')->insert($this->getScripts());
         }
     }

@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id_task id задачи расписания
  * @property int $close Если 1, то событие нельзя удалить
  * @property int $system Если 1, тоне показываем в планировщике у клиента
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerPoint newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerPoint newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerPoint query()
@@ -25,7 +26,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerPoint whereSystem($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerPoint whereTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerPoint whereType($value)
+ *
  * @mixin \Eloquent
+ *
  * @property-read \App\Models\SchedulerTask $etask
  * @property-read mixed $description
  * @property-read mixed $is_close
@@ -41,12 +44,17 @@ class SchedulerPoint extends Model
     const CRON_PERIODS = [1, 5, 10, 15, 30, 60]; // minutes
 
     const TYPE_DAYS = 'w';
+
     const TYPE_MONTHS = 'm';
+
     const TYPE_YEARS = 'y';
+
     const TYPE_CRON = 'c';
 
     protected $table = 'scheduler_points';
+
     public $timestamps = false;
+
     protected $casts = ['close' => 'integer', 'system' => 'integer'];
 
     public static function isInCronPeriods(int $period)
@@ -76,13 +84,15 @@ class SchedulerPoint extends Model
 
     public function getMonthDescription()
     {
-        $days = str_replace(",",", ", $this->days);
+        $days = str_replace(',', ', ', $this->days);
+
         return 'В '.$this->time.' по '.$days.' числам каждого месяца';
     }
 
     public function getYearDescription()
     {
-        $dates = str_replace(",",", ", $this->days);
+        $dates = str_replace(',', ', ', $this->days);
+
         return 'В '.$this->time.' по датам '.$dates.' каждого года';
     }
 
@@ -114,7 +124,7 @@ class SchedulerPoint extends Model
         }
 
         if ($description !== '') {
-            return $description . $this->getSystemHtml();
+            return $description.$this->getSystemHtml();
         }
 
         return '';
@@ -122,7 +132,7 @@ class SchedulerPoint extends Model
 
     public function getIsSystemMethodAttribute()
     {
-        return (bool)$this->etask->emethod->is_system;
+        return (bool) $this->etask->emethod->is_system;
     }
 
     /* relations */

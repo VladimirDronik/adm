@@ -11,8 +11,6 @@ class CurtainsData
 {
     /**
      * Генератор сущностей для шторы
-     *
-     * @return array
      */
     public function generateCurtain(): array
     {

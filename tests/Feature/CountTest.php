@@ -41,7 +41,7 @@ class CountTest extends TestCase
 
         $data = $generator->generateCount();
 
-        $response = $this->actingAs($user)->get('/counts/'. $data['count']->id .'/edit');
+        $response = $this->actingAs($user)->get('/counts/'.$data['count']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -67,7 +67,7 @@ class CountTest extends TestCase
 
         $count = Count::where('name', 'Создание тестового счетчика')->first();
 
-        $response->assertRedirect('/counts/'. ($count ? $count->id : 1) .'/edit');
+        $response->assertRedirect('/counts/'.($count ? $count->id : 1).'/edit');
 
         $this->assertDatabaseHas('counts', [
             'name' => 'Создание тестового счетчика',
@@ -82,7 +82,7 @@ class CountTest extends TestCase
 
         $data = $generator->generateCount();
 
-        $response = $this->actingAs($user)->post('counts/'. $data['count']->id, [
+        $response = $this->actingAs($user)->post('counts/'.$data['count']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового счетчика',
             'id_object' => $data['object']->id,
@@ -94,7 +94,7 @@ class CountTest extends TestCase
             'event_idobject' => $data['object']->id,
         ]);
 
-        $response->assertRedirect('/counts/'. $data['count']->id .'/edit');
+        $response->assertRedirect('/counts/'.$data['count']->id.'/edit');
 
         $this->assertDatabaseHas('counts', [
             'name' => 'Обновление тестового счетчика',

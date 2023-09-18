@@ -12,8 +12,8 @@ class TimeZoneSettingController extends Controller
     public function __construct(
         private SettingRepository $setting_rep,
         private SettingService $service
-    )
-    {}
+    ) {
+    }
 
     public function create()
     {
@@ -30,7 +30,7 @@ class TimeZoneSettingController extends Controller
                     ->with('success', 'Параметр часового пояса успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении параметра часового пояса' .
+            \Log::error('Ошибка при добавлении параметра часового пояса'.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 
@@ -56,20 +56,21 @@ class TimeZoneSettingController extends Controller
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении параметра часового пояса '.$setting->id
-                .' ' .json_encode($r->all()).' '.$e->getMessage());
+                .' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении параметра часового пояса');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении параметра часового пояса');
     }
 
-    static private function getTimeZoneList()
+    private static function getTimeZoneList()
     {
         return \Cache::rememberForever('timezones_list', function () {
             $timestamp = time();
             foreach (timezone_identifiers_list(\DateTimeZone::ALL) as $key => $value) {
                 date_default_timezone_set($value);
-                $timezone[$value] = '(UTC ' . date('P', $timestamp) . ') ' . str_replace('/', ', ', $value);
+                $timezone[$value] = '(UTC '.date('P', $timestamp).') '.str_replace('/', ', ', $value);
             }
+
             return $timezone;
         });
     }

@@ -41,7 +41,7 @@ class LampTest extends TestCase
 
         $data = $generator->generateLamp();
 
-        $response = $this->actingAs($user)->get('/lamps/'. $data['lamp']->id .'/edit');
+        $response = $this->actingAs($user)->get('/lamps/'.$data['lamp']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -60,7 +60,7 @@ class LampTest extends TestCase
 
         $lamp = Lamp::where('name', 'Создание тестовой лампы')->first();
 
-        $response->assertRedirect('/lamps/'. ($lamp ? $lamp->id : 1) .'/edit');
+        $response->assertRedirect('/lamps/'.($lamp ? $lamp->id : 1).'/edit');
 
         $this->assertDatabaseHas('lamps', [
             'name' => 'Создание тестовой лампы',
@@ -75,7 +75,7 @@ class LampTest extends TestCase
 
         $data = $generator->generateLamp();
 
-        $response = $this->actingAs($user)->post('lamps/'. $data['lamp']->id, [
+        $response = $this->actingAs($user)->post('lamps/'.$data['lamp']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестовой лампы',
             'id_object' => $data['object']->id,
@@ -88,7 +88,7 @@ class LampTest extends TestCase
             'event_idobject' => $data['object']->id,
         ]);
 
-        $response->assertRedirect('/lamps/'. $data['lamp']->id .'/edit');
+        $response->assertRedirect('/lamps/'.$data['lamp']->id.'/edit');
 
         $this->assertDatabaseHas('lamps', [
             'name' => 'Обновление тестовой лампы',

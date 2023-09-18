@@ -11,8 +11,6 @@ class UserPermission
      * Если ключа-действия в подмассиве нет, то это действие в разделе разрешено.
      * Если ключа-раздела нет, то все разрешено.
      * Если ключа-типа пользователя нет, то ему все запрещено.
-     *
-     * @return array
      */
     public static function permissions(): array
     {
@@ -22,7 +20,7 @@ class UserPermission
             User::TYPE_ADMIN => [
                 'devices' => [
                     'show-object' => false,
-                    'create-manual-object' => false
+                    'create-manual-object' => false,
                 ],
                 'objects' => false,
                 'rooms' => true,
@@ -46,14 +44,14 @@ class UserPermission
                     'show-hidden' => true,
                     'create-hidden' => true,
                     'edit-hidden' => true,
-                    'delete-hidden' => true
+                    'delete-hidden' => true,
                 ],
                 'settings' => [
                     'create' => false,
-                    'delete' => false
+                    'delete' => false,
                 ],
                 'logs' => true,
-                'graphs' => true
+                'graphs' => true,
             ],
 
             User::TYPE_USER => [
@@ -74,11 +72,11 @@ class UserPermission
                     'show-hidden' => false,
                     'create-hidden' => false,
                     'edit-hidden' => false,
-                    'delete-hidden' => false
+                    'delete-hidden' => false,
                 ],
                 'settings' => false,
                 'logs' => false,
-                'graphs' => true
+                'graphs' => true,
             ],
         ];
     }
@@ -87,10 +85,6 @@ class UserPermission
      * Есть ли у пользователя данного типа доступ к $slug
      * Примеры slug: events.system
      *               devices
-     *
-     * @param string $userType
-     * @param string $slug
-     * @return bool
      */
     public static function hasAccess(string $userType, string $slug): bool
     {
@@ -135,8 +129,6 @@ class UserPermission
 
     /**
      * Список всех slugs разрешений для инициализации gates
-     *
-     * @return array
      */
     public static function slugs(): array
     {
@@ -144,18 +136,18 @@ class UserPermission
         $slugs = [];
 
         foreach ($permissions as $permission) {
-            if (!is_array($permission)) {
+            if (! is_array($permission)) {
                 continue;
             }
 
             foreach ($permission as $section => $actions) {
                 $slugs[] = $section;
-                if (!is_array($actions)) {
+                if (! is_array($actions)) {
                     continue;
                 }
 
                 foreach ($actions as $action => $value) {
-                    $slugs[] = $section . '.' . $action;
+                    $slugs[] = $section.'.'.$action;
                 }
             }
         }

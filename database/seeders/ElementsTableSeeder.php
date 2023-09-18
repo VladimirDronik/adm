@@ -2,25 +2,24 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Elements;
+use Illuminate\Database\Seeder;
 
 class ElementsTableSeeder extends Seeder
 {
-
     private $elements;
 
     public function __construct()
     {
         $this->elements = Elements::pluck('name')->toArray();
     }
+
     /**
      * Run the database seeds.
      *
      * @return void
      */
-
-        public function run()
+    public function run()
     {
         $elements = [
             /////////////////page_1///////////////////////
@@ -33,7 +32,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 1
+                'sort' => 1,
             ],
             [
                 'name' => 'Обратка',
@@ -44,7 +43,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 2
+                'sort' => 2,
             ],
             [
                 'name' => 'Улица',
@@ -55,7 +54,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 3
+                'sort' => 3,
             ],
             [
                 'name' => 'Состояние',
@@ -66,7 +65,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 1
+                'sort' => 1,
             ],
             [
                 'name' => 'Автоматический режим',
@@ -77,7 +76,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 2
+                'sort' => 2,
             ],
             [
                 'name' => 'Ручной режим',
@@ -88,7 +87,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 3
+                'sort' => 3,
             ],
             [
                 'name' => 'Состояние горелки',
@@ -99,7 +98,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 4
+                'sort' => 4,
             ],
             [
                 'name' => 'Состояние горелки ГВС',
@@ -110,7 +109,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 5
+                'sort' => 5,
             ],
             [
                 'name' => 'Модуляция горелки, %',
@@ -121,7 +120,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 6
+                'sort' => 6,
             ],
             [
                 'name' => 'Состояние насоса',
@@ -132,7 +131,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 7
+                'sort' => 7,
             ],
             [
                 'name' => 'Давление теплоносителя, бар',
@@ -143,7 +142,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 8
+                'sort' => 8,
             ],
             /////////////////page_2///////////////////////
             [
@@ -155,7 +154,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 1
+                'sort' => 1,
             ],
             [
                 'name' => 'Обратка',
@@ -166,7 +165,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 2
+                'sort' => 2,
             ],
             [
                 'name' => 'Улица',
@@ -177,7 +176,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 3
+                'sort' => 3,
             ],
             [
                 'name' => 'Состояние',
@@ -188,7 +187,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 1
+                'sort' => 1,
             ],
             [
                 'name' => 'Автоматический режим',
@@ -199,7 +198,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 2
+                'sort' => 2,
             ],
             [
                 'name' => 'Ручной режим',
@@ -210,7 +209,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 3
+                'sort' => 3,
             ],
             [
                 'name' => 'Состояние насоса',
@@ -221,7 +220,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 4
+                'sort' => 4,
             ],
             ///////////////////page_3//////////////////
             [
@@ -233,7 +232,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 1
+                'sort' => 1,
             ],
             [
                 'name' => 'Обратка',
@@ -244,7 +243,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 2
+                'sort' => 2,
             ],
             [
                 'name' => 'Улица',
@@ -255,7 +254,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 3
+                'sort' => 3,
             ],
             [
                 'name' => 'Автоматический режим',
@@ -266,7 +265,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 1
+                'sort' => 1,
             ],
             [
                 'name' => 'Ручной режим',
@@ -277,7 +276,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 2
+                'sort' => 2,
             ],
             [
                 'name' => 'Состояние насоса',
@@ -288,7 +287,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 3
+                'sort' => 3,
             ],
             [
                 'name' => 'Проток жидкости в контуре, л',
@@ -299,7 +298,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 4
+                'sort' => 4,
             ],
             /////////////////////page_4//////////////////////////
             [
@@ -311,7 +310,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 1
+                'sort' => 1,
             ],
             [
                 'name' => 'Обратка',
@@ -322,7 +321,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 2
+                'sort' => 2,
             ],
             [
                 'name' => 'Улица',
@@ -333,7 +332,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 3
+                'sort' => 3,
             ],
             [
                 'name' => 'Циркуляционный насос 1',
@@ -344,7 +343,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 1
+                'sort' => 1,
             ],
             [
                 'name' => 'Циркуляционный насос 2',
@@ -355,7 +354,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 2
+                'sort' => 2,
             ],
             [
                 'name' => 'Скважинный насос',
@@ -366,7 +365,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 3
+                'sort' => 3,
             ],
             [
                 'name' => 'Давление воды в системе, бар',
@@ -377,7 +376,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 4
+                'sort' => 4,
             ],
             [
                 'name' => 'Проток теплоносителя',
@@ -388,7 +387,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 5
+                'sort' => 5,
             ],
             //////////////page_5//////////////
             [
@@ -400,7 +399,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 1
+                'sort' => 1,
             ],
             [
                 'name' => 'Фаза B',
@@ -411,7 +410,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 2
+                'sort' => 2,
             ],
             [
                 'name' => 'Фаза C',
@@ -422,7 +421,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 3
+                'sort' => 3,
             ],
             [
                 'name' => 'Напряжение в сети, В',
@@ -433,7 +432,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 1
+                'sort' => 1,
             ],
             [
                 'name' => 'Источник электроэнергии',
@@ -444,7 +443,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 2
+                'sort' => 2,
             ],
             [
                 'name' => 'Заряд батареи, %',
@@ -455,7 +454,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 3
+                'sort' => 3,
             ],
             ///////////////page_6////////////////
             [
@@ -467,7 +466,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 1
+                'sort' => 1,
             ],
             [
                 'name' => 'Обратка',
@@ -478,7 +477,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 2
+                'sort' => 2,
             ],
             [
                 'name' => 'Улица',
@@ -489,7 +488,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 1,
                 'active' => 1,
-                'sort' => 3
+                'sort' => 3,
             ],
             [
                 'name' => 'Приточная вентиляция',
@@ -500,7 +499,7 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 1
+                'sort' => 1,
             ],
             [
                 'name' => 'Вытяжная вентиляция',
@@ -511,14 +510,14 @@ class ElementsTableSeeder extends Seeder
                 'parent' => 0,
                 'position' => 2,
                 'active' => 1,
-                'sort' => 2
+                'sort' => 2,
             ],
         ];
 
         $result_elements = [];
 
         foreach ($elements as $element) {
-            if (!in_array($element['name'], $this->elements, true)) {
+            if (! in_array($element['name'], $this->elements, true)) {
                 $result_elements[] = $element;
             }
         }
@@ -527,5 +526,4 @@ class ElementsTableSeeder extends Seeder
             Elements::insert($result_elements);
         }
     }
-
 }

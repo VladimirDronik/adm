@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $min_alarm минимальное значение аварии
  * @property int $max_alarm максимальное значение аварии
  * @property int|null $room
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat query()
@@ -45,7 +46,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat wherePort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat whereRoom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat whereThermostat($value)
+ *
  * @mixin \Eloquent
+ *
  * @property-read \App\Models\HomeObject|null $eobject
  * @property-read \App\Models\Room|null $eroom
  * @property-read \App\Models\Device|null $edevice
@@ -56,25 +59,33 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\HomeObject|null $iobject
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\GraphTermostat[] $last_graphs
  * @property string|null $name
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat whereName($value)
+ *
  * @property string|null $method_on_params
  * @property string|null $method_off_params
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat whereMethodOffParams($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat whereMethodOnParams($value)
+ *
  * @property int|null $usensor_id
  * @property string|null $placetype
  * @property-read int|null $graphs_count
  * @property-read int|null $last_graphs_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat wherePlacetype($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Termostat whereUsensorId($value)
  */
 class Termostat extends Model
 {
     const THERMOSTAT_COLD = 0;
+
     const THERMOSTAT_HOT = 1;
 
     protected $table = 'termostats';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     public static function getFullThermostatIds()
@@ -84,7 +95,6 @@ class Termostat extends Model
             self::THERMOSTAT_HOT => 'Нагревание',
         ];
     }
-
 
     public static function getEvents()
     {
@@ -97,10 +107,10 @@ class Termostat extends Model
         ];
     }
 
-
     /**
      * Получение доступных свойств объекта.
      * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     *
      * @return array
      */
     public static function getProperties()
@@ -119,13 +129,13 @@ class Termostat extends Model
         ];
     }
 
-
     public static function getThermostatIds()
     {
         return array_keys(self::getFullThermostatIds());
     }
 
-    public static function getThermostatById($id) {
+    public static function getThermostatById($id)
+    {
         return self::getFullThermostatIds()[$id] ?? '';
     }
 
@@ -168,7 +178,7 @@ class Termostat extends Model
 
     public function last_graphs()
     {
-        return $this->hasMany(GraphTermostat::class, 'id_termostat', 'id')->where('datetime','>=', Carbon::now()->subDays(7))
+        return $this->hasMany(GraphTermostat::class, 'id_termostat', 'id')->where('datetime', '>=', Carbon::now()->subDays(7))
             ->orderBy('datetime');
     }
 }

@@ -41,7 +41,7 @@ class LockTest extends TestCase
 
         $data = $generator->generateLock();
 
-        $response = $this->actingAs($user)->get('/locks/'. $data['lock']->id .'/edit');
+        $response = $this->actingAs($user)->get('/locks/'.$data['lock']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -68,7 +68,7 @@ class LockTest extends TestCase
 
         $lock = Lock::where('name', 'Создание тестового замка')->first();
 
-        $response->assertRedirect('/locks/'. ($lock ? $lock->id : 1) .'/edit');
+        $response->assertRedirect('/locks/'.($lock ? $lock->id : 1).'/edit');
 
         $this->assertDatabaseHas('locks', [
             'name' => 'Создание тестового замка',
@@ -83,7 +83,7 @@ class LockTest extends TestCase
 
         $data = $generator->generateLock();
 
-        $response = $this->actingAs($user)->post('locks/'. $data['lock']->id, [
+        $response = $this->actingAs($user)->post('locks/'.$data['lock']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового замка',
             'id_object' => $data['object']->id,
@@ -99,7 +99,7 @@ class LockTest extends TestCase
             'event_idobject' => $data['object']->id,
         ]);
 
-        $response->assertRedirect('/locks/'. $data['lock']->id .'/edit');
+        $response->assertRedirect('/locks/'.$data['lock']->id.'/edit');
 
         $this->assertDatabaseHas('locks', [
             'name' => 'Обновление тестового замка',

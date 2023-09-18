@@ -8,13 +8,10 @@ use App\Models\ObjType;
 use App\Models\Script;
 use Database\Seeders\ScriptsTableSeeder;
 
-class UsensorObjectService {
-
+class UsensorObjectService
+{
     /**
      * Автосоздание объекта для термостата
-     *
-     * @param string $name
-     * @return HomeObject
      */
     public function createUsensorObject(string $name): HomeObject
     {
@@ -44,8 +41,6 @@ class UsensorObjectService {
 
     /**
      * Создание метода 'Проверка универсального датчика'
-     *
-     * @param int $object_id
      */
     public function createCheckMethodWithEvent(int $object_id)
     {
@@ -56,7 +51,7 @@ class UsensorObjectService {
             'id_object' => $object_id,
             'comment' => 'Периодическая проверка текущих значений универсального дачика',
             'is_system' => 1,
-            'script' => $script_id
+            'script' => $script_id,
         ])->id;
 
     }
@@ -65,7 +60,6 @@ class UsensorObjectService {
      * Автосоздание методов и их событий для объекта, который был
      * создан автоматически для универсального датчика
      *
-     * @param int $object_id
      * @return void
      */
     public function createUsensorObjectMethodsWithEvents(int $object_id)

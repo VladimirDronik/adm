@@ -12,8 +12,6 @@ class EngineeringData
 {
     /**
      * Генератор сущностей для котла
-     *
-     * @return array
      */
     public function generateBoiler(): array
     {
@@ -58,8 +56,6 @@ class EngineeringData
 
     /**
      * Генератор сущностей для котла ГВС
-     *
-     * @return array
      */
     public function generateBoilerGvs(): array
     {

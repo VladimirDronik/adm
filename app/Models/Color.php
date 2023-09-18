@@ -10,10 +10,13 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Color newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Color newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Color query()
+ *
  * @mixin \Eloquent
+ *
  * @property int $id
  * @property string $name
  * @property string $color
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Color whereColor($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Color whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Color whereName($value)
@@ -21,13 +24,21 @@ use Illuminate\Database\Eloquent\Model;
 class Color extends Model
 {
     const BLUE = 'blue';
+
     const ORANGE = 'orange';
+
     const RED = 'red';
+
     const GREEN = 'green';
+
     const PURPLE = 'purple';
+
     const TURQUOISE = 'turquoise';
+
     const LIGHT_GREEN = 'lightGreen';
+
     const YELLOW = 'yellow';
+
     const GOLD = 'gold';
 
     public $timestamps = false;
@@ -43,7 +54,7 @@ class Color extends Model
             self::TURQUOISE => '#328F9D',
             self::LIGHT_GREEN => '#7EDF44',
             self::YELLOW => '#EEFB4C',
-            self::GOLD => '#FFD700'
+            self::GOLD => '#FFD700',
         ];
 
         return $is_full ? $colors : array_keys($colors);

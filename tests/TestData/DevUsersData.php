@@ -8,8 +8,6 @@ class DevUsersData
 {
     /**
      * Генератор сущностей для пользователя
-     *
-     * @return array
      */
     public function generateDevUser(): array
     {

@@ -8,19 +8,17 @@
 
 namespace App\Repositories;
 
-
 use App\Models\Color;
 
 class ColorRepository
 {
-
     /**
      * Отдать в массиве доступные цвета для кнопок
+     *
      * @return mixed
      */
-     public static function getColors()
-     {
-         return Color::select('id','name')->orderBy('name')->pluck('name', 'id')->toArray();
-     }
-
+    public static function getColors()
+    {
+        return Color::select('id', 'name')->orderBy('name')->pluck('name', 'id')->toArray();
+    }
 }

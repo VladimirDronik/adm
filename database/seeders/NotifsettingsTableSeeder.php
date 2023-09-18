@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\NotificationSettings;
+use Illuminate\Database\Seeder;
 
 class NotifsettingsTableSeeder extends Seeder
 {
-
     private $settings;
 
     public function __construct()
@@ -27,26 +26,26 @@ class NotifsettingsTableSeeder extends Seeder
                 'name' => 'Оповещения о недоступности устройства',
                 'type' => 'device_not_available',
                 'priority' => 1,
-                'message' => 'Устройство {$device->name} ({$device->ip}) недоступно'
+                'message' => 'Устройство {$device->name} ({$device->ip}) недоступно',
             ],
             [
                 'name' => 'Оповещения о доступности устройства',
                 'type' => 'device_is_available',
                 'priority' => 1,
-                'message' => 'Устройство {$device->name} ({$device->ip}) снова доступно'
+                'message' => 'Устройство {$device->name} ({$device->ip}) снова доступно',
             ],
             [
                 'name' => 'Оповещения об аварии термостата',
                 'type' => 'termostat_alarm',
                 'priority' => 1,
-                'message' => 'Термостат {$termostat->name} вышел за границы диапазона.T={$termostat->temp}'
+                'message' => 'Термостат {$termostat->name} вышел за границы диапазона.T={$termostat->temp}',
             ],
         ];
 
         $result_settings = [];
 
         foreach ($settings as $setting) {
-            if (!in_array($setting['name'], $this->settings, true)) {
+            if (! in_array($setting['name'], $this->settings, true)) {
                 $result_settings[] = $setting;
             }
         }

@@ -5,12 +5,13 @@ namespace App\Services;
 use App\Models\Count;
 use App\Models\HomeObject;
 use App\Models\Port;
-use Illuminate\Support\Facades\DB;
 use App\Repositories\PortRepository;
+use Illuminate\Support\Facades\DB;
 
-class CountService {
-
+class CountService
+{
     private $count_object_service;
+
     private $portRepository;
 
     public function __construct(CountObjectService $count_object_service, PortRepository $portRepository)
@@ -23,8 +24,6 @@ class CountService {
      * Удаление счетчика. Если связанный объект системный, то удаление объекта, методов, событий,
      * созданных автоматически при создании счетчика
      *
-     * @param int $id
-     * @return bool
      * @throws \Throwable
      */
     public function delete(int $id): bool
@@ -34,10 +33,9 @@ class CountService {
         Port::where('object', $count->id_object)->update(['object' => null, 'method' => null, 'status' => 'IN',
             'comment' => '']);
 
-
         if ($count->object && $count->object->is_system) {
             DB::transaction(function () use (&$count) {
-                if (!HomeObject::isObjectUsed($count->id_object, $count->id, 'counts')) {
+                if (! HomeObject::isObjectUsed($count->id_object, $count->id, 'counts')) {
                     HomeObject::deleteAutoObject($count->id_object);
                 }
                 $count->delete();
@@ -45,7 +43,6 @@ class CountService {
         } else {
             $count->delete();
         }
-
 
         return true;
     }
@@ -68,8 +65,6 @@ class CountService {
      * Создание счетчика. Если $data['type'] === 'auto',
      * то еще создается объект с методами и задача в расписании.
      *
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function store(array $data): int
@@ -106,9 +101,6 @@ class CountService {
      * то изменяем название объекта.
      * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
      *
-     * @param Count $count
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function update(Count $count, array $data): int
@@ -132,8 +124,6 @@ class CountService {
             }
 
         });
-
-
 
         return $count->id;
     }

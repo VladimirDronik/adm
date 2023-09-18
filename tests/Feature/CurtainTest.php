@@ -41,7 +41,7 @@ class CurtainTest extends TestCase
 
         $data = $generator->generateCurtain();
 
-        $response = $this->actingAs($user)->get('/curtains/'. $data['curtain']->id .'/edit');
+        $response = $this->actingAs($user)->get('/curtains/'.$data['curtain']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -65,7 +65,7 @@ class CurtainTest extends TestCase
 
         $curtain = Curtain::where('name', 'Создание тестовой шторы')->first();
 
-        $response->assertRedirect('/curtains/'. ($curtain ? $curtain->id : 1) .'/edit');
+        $response->assertRedirect('/curtains/'.($curtain ? $curtain->id : 1).'/edit');
 
         $this->assertDatabaseHas('curtains', [
             'name' => 'Создание тестовой шторы',
@@ -80,7 +80,7 @@ class CurtainTest extends TestCase
 
         $data = $generator->generateCurtain();
 
-        $response = $this->actingAs($user)->post('curtains/'. $data['curtain']->id, [
+        $response = $this->actingAs($user)->post('curtains/'.$data['curtain']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестовой шторы',
             'type' => Curtain::TYPE_CURTAIN,
@@ -94,7 +94,7 @@ class CurtainTest extends TestCase
             'event_idobject' => $data['object']->id,
         ]);
 
-        $response->assertRedirect('/curtains/'. $data['curtain']->id .'/edit');
+        $response->assertRedirect('/curtains/'.$data['curtain']->id.'/edit');
 
         $this->assertDatabaseHas('curtains', [
             'name' => 'Обновление тестовой шторы',

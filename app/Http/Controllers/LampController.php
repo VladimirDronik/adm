@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lamp;
-use App\Models\Room;
-use App\Services\PortService;
-use App\Services\Service;
-use Illuminate\Http\Request;
-use App\Repositories\LampRepository;
-use App\Repositories\ObjectRepository;
-use App\Repositories\DeviceRepository;
-use App\Services\LampService;
-use App\Models\HomeObject;
 use App\Http\Requests\Lamp\CreateRequest;
 use App\Http\Requests\Lamp\UpdateRequest;
-
+use App\Models\HomeObject;
+use App\Models\Lamp;
+use App\Repositories\DeviceRepository;
+use App\Repositories\LampRepository;
+use App\Repositories\ObjectRepository;
+use App\Services\LampService;
+use App\Services\PortService;
+use App\Services\Service;
 
 class LampController extends Controller
 {
@@ -24,8 +21,8 @@ class LampController extends Controller
         private DeviceRepository $device_rep,
         private LampService $service,
         private PortService $portService,
-    )
-    {}
+    ) {
+    }
 
     public function index()
     {
@@ -38,10 +35,10 @@ class LampController extends Controller
     {
 
         $objects = $this->object_rep->getAllToArray();
-        $object_types =  HomeObject::getFullTypeIds();
+        $object_types = HomeObject::getFullTypeIds();
         $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
 
-        return view('lamps.create', compact( 'objects', 'object_types', 'devices'));
+        return view('lamps.create', compact('objects', 'object_types', 'devices'));
     }
 
     public function store(CreateRequest $r)
@@ -52,7 +49,7 @@ class LampController extends Controller
                     ->with('success', 'Лампа успешно добавлена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении лампы ' .
+            \Log::error('Ошибка при добавлении лампы '.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 
@@ -70,21 +67,21 @@ class LampController extends Controller
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении лампы '.$lamp->id
-                .' ' .json_encode($r->all()).' '.$e->getMessage());
+                .' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении лампы');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении лампы');
     }
 
-    public function edit(Lamp $lamp, $tab=1)
+    public function edit(Lamp $lamp, $tab = 1)
     {
 
         $can = gates('devices.show-object');
 
-        list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) =
+        [$idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices] =
             $this->portService->getCurrentDevPort($lamp->id_object);
 
-        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
+        [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents] =
             Service::getListElements($lamp->id_object);
 
         $messagePoint['first'] = 'При включении';
@@ -93,10 +90,8 @@ class LampController extends Controller
         $availableEvents = Lamp::getEvents();
         $properties = Lamp::getProperties();
 
-
-
         return view('lamps.edit', compact('lamp',
-            'idDevice','idPort','devices','ports', 'messagePoint', 'messages', 'properties', 'sounds', 'views', 'rooms',
+            'idDevice', 'idPort', 'devices', 'ports', 'messagePoint', 'messages', 'properties', 'sounds', 'views', 'rooms',
             'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'can', 'tab', 'events',
             'alice', 'availableEvents', 'allEvents'));
     }

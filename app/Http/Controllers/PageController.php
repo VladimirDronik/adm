@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Repositories\PageRepository;
+
 use App\Models\Page;
 use App\Repositories\ElementRepository;
+use App\Repositories\PageRepository;
 use App\Services\ImageService;
-
 
 class PageController extends Controller
 {
@@ -13,12 +13,13 @@ class PageController extends Controller
         private PageRepository $pageRepository,
         private Page $pages,
         private ElementRepository $elementRepository)
-    {}
+    {
+    }
 
     public function index()
     {
         $pages = $this->pageRepository->getAll();
-        $types =  Page::getTypes(true);
+        $types = Page::getTypes(true);
 
         return view('pages.index', compact('pages', 'types'));
     }

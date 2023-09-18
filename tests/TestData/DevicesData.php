@@ -9,8 +9,6 @@ class DevicesData
 {
     /**
      * Генератор сущностей для контроллера
-     *
-     * @return array
      */
     public function generateDevice(): array
     {

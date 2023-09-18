@@ -10,6 +10,7 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = user();
+
         return view('profile.edit', compact('user'));
     }
 
@@ -19,12 +20,12 @@ class ProfileController extends Controller
 
         $user->login = trim($r->login);
 
-        if (!is_null($r->password)) {
+        if (! is_null($r->password)) {
             $user->password = Hash::make($r->password);
         }
 
         $user->save();
 
-        return redirect()->route('profile.edit')->with('success','Данные успешно изменены');
+        return redirect()->route('profile.edit')->with('success', 'Данные успешно изменены');
     }
 }

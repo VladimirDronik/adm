@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddColumnsIsSystemAndNameToObjectsAndMethodsTables extends Migration
 {
@@ -15,7 +15,7 @@ class AddColumnsIsSystemAndNameToObjectsAndMethodsTables extends Migration
     {
         if (Schema::hasTable('objects')) {
             Schema::table('objects', function (Blueprint $table) {
-                if (!Schema::hasColumn('objects', 'is_system')) {
+                if (! Schema::hasColumn('objects', 'is_system')) {
                     $table->boolean('is_system')->default(false);
                 }
             });
@@ -23,14 +23,14 @@ class AddColumnsIsSystemAndNameToObjectsAndMethodsTables extends Migration
 
         if (Schema::hasTable('methods')) {
             Schema::table('methods', function (Blueprint $table) {
-                if (!Schema::hasColumn('methods', 'is_system')) {
+                if (! Schema::hasColumn('methods', 'is_system')) {
                     $table->boolean('is_system')->default(false);
                 }
             });
         }
 
         Schema::table('termostats', function (Blueprint $table) {
-            if (!Schema::hasColumn('termostats', 'name')) {
+            if (! Schema::hasColumn('termostats', 'name')) {
                 $table->string('name')->nullable()->after('id');
             }
         });

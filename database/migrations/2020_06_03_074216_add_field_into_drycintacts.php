@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddFieldIntoDrycintacts extends Migration
 {
@@ -16,7 +16,6 @@ class AddFieldIntoDrycintacts extends Migration
         if (Schema::hasTable('drycontacts')) {
 
             Schema::table('drycontacts', function (Blueprint $table) {
-
 
                 $table->unsignedInteger('method_on')->nullable();
                 $table->unsignedInteger('method_off')->nullable();

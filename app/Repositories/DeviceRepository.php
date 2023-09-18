@@ -5,16 +5,15 @@ namespace App\Repositories;
 use App\Models\Device;
 use App\Models\DevType;
 use App\Models\Port;
-use Illuminate\Support\Facades\DB;
 
-class DeviceRepository {
-
+class DeviceRepository
+{
     public function getByName($name = '', $pagination_count = 30)
     {
         $query = Device::with('devtype');
 
-        if (!empty($name)) {
-            $query->where('name','like','%'.$name.'%');
+        if (! empty($name)) {
+            $query->where('name', 'like', '%'.$name.'%');
         }
 
         return $query->orderBy('id')->paginate($pagination_count);
@@ -26,12 +25,10 @@ class DeviceRepository {
         //Выводим все контроллеры, кроме Hite-pro
         $devices = Device::select('devices.id', 'devices.description')
             ->join('devtypes', 'devices.type', '=', 'devtypes.id', 'left outer')
-            ->pluck('devices.description','devices.id')->toArray();
-
+            ->pluck('devices.description', 'devices.id')->toArray();
 
         return $devices;
     }
-
 
     /**
      * Вывод всех устройств по типу, кроме перечисленных
@@ -44,17 +41,14 @@ class DeviceRepository {
         $query->join('devtypes', 'devices.type', '=', 'devtypes.id')
             ->select('devices.id', 'description');
 
-
-        foreach ($devicesTypes As $devType) {
+        foreach ($devicesTypes as $devType) {
 
             $query->where('devtypes.name', '!=', $devType);
         }
 
-
         $devices = $query->orderBy('description')
-            ->pluck('description','devices.id')
+            ->pluck('description', 'devices.id')
             ->toArray();
-
 
         return $devices;
 
@@ -68,30 +62,22 @@ class DeviceRepository {
 
         $query = Device::query();
 
-
         $query->join('devtypes', 'devices.type', '=', 'devtypes.id')
             ->select('devices.id', 'description');
 
-
-        foreach ($devicesTypes As $devType) {
-            $query->orwhere('devtypes.name',$devType);
+        foreach ($devicesTypes as $devType) {
+            $query->orwhere('devtypes.name', $devType);
         }
 
-
         //Управляем форматом вывода - для загрузки через страницу используем pluck, для загрузки через AJAX не используем
-        if ($pluck){
+        if ($pluck) {
             $devices = $query->orderBy('description')
-                ->pluck('description','devices.id')
+                ->pluck('description', 'devices.id')
                 ->toArray();
-        }else {
+        } else {
             $devices = $query->orderBy('description')
                 ->get()->toArray();
         }
-
-
-
-
-
 
         return $devices;
 
@@ -99,7 +85,7 @@ class DeviceRepository {
 
     public function getDevTypesToArray()
     {
-        return DevType::orderBy('name')->pluck('name','name')->toArray();
+        return DevType::orderBy('name')->pluck('name', 'name')->toArray();
     }
 
     public static function getDevTypeById($id)
@@ -120,7 +106,7 @@ class DeviceRepository {
         $address = '';
         $password = '';
 
-        if($id) {
+        if ($id) {
             $type = self::getDevTypeById(Device::where('id', $id)->with('devtype')->first()->type);
             $address = $device->ip_address;
             $password = $device->password;
@@ -137,11 +123,10 @@ class DeviceRepository {
 
     /**
      * Получение id устройства по id порта
-     * @param $idPort
      */
-    public static function getDevByPort($idPort) {
+    public static function getDevByPort($idPort)
+    {
 
         return Port::select('id_device')->where('id', $idPort)->first()->id_device;
     }
-
 }

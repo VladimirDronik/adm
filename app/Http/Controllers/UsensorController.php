@@ -2,22 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Usensor;
-use Illuminate\Http\Request;
 use App\Http\Requests\Usensor\CreateRequest;
 use App\Http\Requests\Usensor\UpdateRequest;
 use App\Models\HomeObject;
+use App\Models\Usensor;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
-use App\Repositories\UsensorRepository;
 use App\Repositories\ScriptRepository;
-use App\Services\UsensorService;
+use App\Repositories\UsensorRepository;
 use App\Services\ObjectService;
 use App\Services\PortService;
-
-
-
+use App\Services\UsensorService;
 
 class UsensorController extends Controller
 {
@@ -31,8 +27,8 @@ class UsensorController extends Controller
         private ScriptRepository $script_rep,
         private PortService $portsService,
         private ObjectService $object_service,
-    )
-    {}
+    ) {
+    }
 
     public function index()
     {
@@ -52,12 +48,12 @@ class UsensorController extends Controller
 
     public function create()
     {
-        list($objects, $rooms, $devices) = $this->getLists();
-        $object_types =  HomeObject::getFullTypeIds();
+        [$objects, $rooms, $devices] = $this->getLists();
+        $object_types = HomeObject::getFullTypeIds();
         $can = gates('devices.show-object');
         $types = Usensor::getTypes(true);
 
-        return view('usensors.create', compact('objects','rooms', 'devices', 'object_types', 'can', 'types'));
+        return view('usensors.create', compact('objects', 'rooms', 'devices', 'object_types', 'can', 'types'));
     }
 
     public function store(CreateRequest $r)
@@ -74,10 +70,9 @@ class UsensorController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении универсального датчика');
     }
 
-
     public function edit(Usensor $usensor)
     {
-        list($objects, $rooms, $devices) = $this->getLists();
+        [$objects, $rooms, $devices] = $this->getLists();
 
         $methods = $this->object_service->getMethodsByObjectIdToArray($usensor->object);
         $object_types = HomeObject::getFullTypeIds();
@@ -94,10 +89,10 @@ class UsensorController extends Controller
     {
         try {
             if ($this->service->update($usensor, $r->except('_token'))) {
-                return redirect()->route('usensors.edit', [$usensor->id])->with('success','Универсальный датчик успешно изменен');
+                return redirect()->route('usensors.edit', [$usensor->id])->with('success', 'Универсальный датчик успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении универсального датчика '.$usensor->id.' ' .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при изменении универсального датчика '.$usensor->id.' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении универсального датчика');

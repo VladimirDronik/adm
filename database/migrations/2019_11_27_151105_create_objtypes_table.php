@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateObjtypesTable extends Migration
 {
@@ -13,7 +13,7 @@ class CreateObjtypesTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('objtypes')) {
+        if (! Schema::hasTable('objtypes')) {
             Schema::create('objtypes', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name', 20);

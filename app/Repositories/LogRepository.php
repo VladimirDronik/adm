@@ -5,8 +5,8 @@ namespace App\Repositories;
 use App\Models\Log;
 use Carbon\Carbon;
 
-class LogRepository {
-
+class LogRepository
+{
     public function getTypes()
     {
         $types = Log::select('type')->distinct()->orderBy('type')->get()->pluck('type')->toArray();

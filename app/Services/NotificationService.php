@@ -8,15 +8,12 @@
 
 namespace App\Services;
 
-
 use App\Models\NotificationSettings;
 
 class NotificationService
 {
-
     public function prepareSetting(NotificationSettings $setting, array $data)
     {
-
 
         $setting->priority = $data['priority'];
         $setting->message = trim($data['message']);
@@ -34,5 +31,4 @@ class NotificationService
 
         return $notifsettings->id;
     }
-
 }

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateLightstatsTable extends Migration
 {
@@ -13,7 +13,7 @@ class CreateLightstatsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('lightstats')) {
+        if (! Schema::hasTable('lightstats')) {
             Schema::create('lightstats', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name')->nullable();
@@ -33,11 +33,9 @@ class CreateLightstatsTable extends Migration
                 $table->integer('max_alarm')->comment('максимальное значение аварии');
                 $table->unsignedInteger('room')->nullable();
                 $table->unsignedInteger('usensor_id')->nullable();
-                $table->string('placetype',10)->nullable();
+                $table->string('placetype', 10)->nullable();
                 $table->integer('port_SCL')->nullable();
                 $table->integer('port_SDA')->nullable();
-
-
 
                 $table->foreign('id_object')->references('id')->on('objects')
                     ->onUpdate('cascade')->onDelete('set null');

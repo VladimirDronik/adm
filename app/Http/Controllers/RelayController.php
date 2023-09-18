@@ -21,8 +21,8 @@ class RelayController extends Controller
         private DeviceRepository $device_rep,
         private RelayService $service,
         private PortService $portService,
-    )
-    {}
+    ) {
+    }
 
     public function index()
     {
@@ -35,7 +35,7 @@ class RelayController extends Controller
     {
         $types = Relay::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
-        $object_types =  HomeObject::getFullTypeIds();
+        $object_types = HomeObject::getFullTypeIds();
         $devices = $this->device_rep->getAllToArray();
 
         return view('relays.create', compact('types', 'objects', 'object_types', 'devices'));
@@ -49,24 +49,23 @@ class RelayController extends Controller
                     ->with('success', 'Реле успешно добавлено');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении реле ' .
+            \Log::error('Ошибка при добавлении реле '.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении реле');
     }
 
-    public function edit(Relay $relay, $tab =1)
+    public function edit(Relay $relay, $tab = 1)
     {
         $types = Relay::getTypes(true);
 
         $can = gates('devices.show-object');
 
-        list ($idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices) = $this->portService->getCurrentDevPort($relay->id_object);
+        [$idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices] = $this->portService->getCurrentDevPort($relay->id_object);
 
-        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice) =
+        [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice] =
             Service::getListElements($relay->id_object);
-
 
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
@@ -77,7 +76,7 @@ class RelayController extends Controller
         $allEvents = '';
 
         return view('relays.edit', compact('relay', 'types', 'events', 'sounds', 'views', 'rooms',
-            'idDevice','idPort','devices','ports', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents', 'properties',
+            'idDevice', 'idPort', 'devices', 'ports', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents', 'properties',
             'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'allEvents', 'can'));
     }
 
@@ -90,9 +89,9 @@ class RelayController extends Controller
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении реле '.$relay->id
-                .' ' .json_encode($r->all()).' '.$e->getMessage());
+                .' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении реле');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении реле');
     }
 }

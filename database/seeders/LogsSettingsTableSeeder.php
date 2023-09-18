@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Logging;
+use Illuminate\Database\Seeder;
 
 class LogsSettingsTableSeeder extends Seeder
 {
@@ -25,44 +25,44 @@ class LogsSettingsTableSeeder extends Seeder
             [
                 'point' => 'port',
                 'value' => 1,
-                'description' => 'Срабатывание портов'
+                'description' => 'Срабатывание портов',
             ],
             [
                 'point' => 'button',
                 'value' => 1,
-                'description' => 'Сообщения кнопок / выключателей'
+                'description' => 'Сообщения кнопок / выключателей',
             ],
             [
                 'point' => 'dimmer',
                 'value' => 1,
-                'description' => 'Сообщения диммера'
+                'description' => 'Сообщения диммера',
             ],
             [
                 'point' => 'controller',
                 'value' => 1,
-                'description' => 'Сообщения контроллера'
+                'description' => 'Сообщения контроллера',
             ],
             [
                 'point' => 'sensor',
                 'value' => 1,
-                'description' => 'Сообщения сенсоров'
+                'description' => 'Сообщения сенсоров',
             ],
             [
                 'point' => 'scripts',
                 'value' => 1,
-                'description' => 'Сообщения скриптов'
+                'description' => 'Сообщения скриптов',
             ],
             [
                 'point' => 'socket_server',
                 'value' => 1,
-                'description' => 'Сообщения сервера сокетов'
+                'description' => 'Сообщения сервера сокетов',
             ],
         ];
 
         $result_settings = [];
 
         foreach ($settings as $setting) {
-            if (!in_array($setting['point'], $this->settings, true)) {
+            if (! in_array($setting['point'], $this->settings, true)) {
                 $result_settings[] = $setting;
             }
         }

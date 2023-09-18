@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $high_method_params
  * @property-read \App\Models\HomeObject $eobject
  * @property-read \App\Models\HomeObject|null $iobject
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Manometr newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Manometr newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Manometr query()
@@ -40,14 +41,18 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Manometr whereLowValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manometr whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manometr whereRoom($value)
+ *
  * @mixin \Eloquent
+ *
  * @property-read \App\Models\Method|null $emethod_low
  * @property-read \App\Models\Method|null $emethod_high
  */
 class Manometr extends Model
 {
     protected $table = 'manometr';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     public static function getEvents()
@@ -62,6 +67,7 @@ class Manometr extends Model
     /**
      * Получение доступных свойств объекта.
      * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     *
      * @return array
      */
     public static function getProperties()

@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\CurtainRepository;
+use App\Http\Requests\Curtain\CurtainFormRequest;
 use App\Models\Curtain;
+use App\Models\HomeObject;
+use App\Repositories\CurtainRepository;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
+use App\Services\CurtainService;
 use App\Services\PortService;
 use App\Services\Service;
-use App\Services\CurtainService;
-use App\Models\HomeObject;
-use App\Http\Requests\Curtain\CurtainFormRequest;
 
 class CurtainController extends Controller
 {
@@ -20,8 +20,8 @@ class CurtainController extends Controller
         private CurtainService $curtainService,
         private ObjectRepository $objectRepository,
         private DeviceRepository $deviceRepository,
-    )
-    {}
+    ) {
+    }
 
     public function index()
     {
@@ -36,13 +36,13 @@ class CurtainController extends Controller
         $ports = '';
 
         if ($curtain->place == Curtain::PLACE_PORT || $curtain->place == Curtain::PLACE_PHASE) {
-            list($idDevice, , , $ports) =
+            [$idDevice, , , $ports] =
                 $this->portService->getCurrentDevPort($curtain->id_object, 'OUT');
         } else {
             $idDevice = $curtain->device_id;
         }
 
-        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice) =
+        [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice] =
             Service::getListElements($curtain->id_object);
 
         $types = Curtain::getTypes(true);
@@ -69,10 +69,10 @@ class CurtainController extends Controller
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении шторы '.$curtain->id
-                .' ' .json_encode($r->all()).' '.$e->getMessage());
+                .' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении шторы');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении шторы');
     }
 
     public function create()
@@ -80,7 +80,7 @@ class CurtainController extends Controller
         $types = Curtain::getTypes(true);
         $places = Curtain::getPlaces(true);
         $objects = $this->objectRepository->getAllToArray();
-        $object_types =  HomeObject::getFullTypeIds();
+        $object_types = HomeObject::getFullTypeIds();
         $devices = $this->deviceRepository->getAllToArray();
         $tab = 1;
 
@@ -95,7 +95,7 @@ class CurtainController extends Controller
                     ->with('success', 'Штора успешно добавлена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении шторы ' .
+            \Log::error('Ошибка при добавлении шторы '.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 

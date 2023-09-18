@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreatePortsTable extends Migration
 {
@@ -13,7 +13,7 @@ class CreatePortsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('ports')) {
+        if (! Schema::hasTable('ports')) {
             Schema::create('ports', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('id_device')->comment('id девайса из таблицы devices');

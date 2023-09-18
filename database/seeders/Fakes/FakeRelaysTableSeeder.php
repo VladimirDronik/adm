@@ -2,10 +2,10 @@
 
 namespace Database\Seeders\Fakes;
 
-use Illuminate\Database\Seeder;
-use Faker\Factory;
-use App\Models\Relay;
 use App\Models\HomeObject;
+use App\Models\Relay;
+use Faker\Factory;
+use Illuminate\Database\Seeder;
 
 class FakeRelaysTableSeeder extends Seeder
 {

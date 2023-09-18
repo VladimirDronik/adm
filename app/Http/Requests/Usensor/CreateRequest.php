@@ -29,7 +29,7 @@ class CreateRequest extends FormRequest
             'id_object' => 'nullable|integer|min:1',
             'device_id' => 'required|integer|min:1,device_id',
             'port_SCL' => 'required|integer|min:1,port_SCL',
-            'port_SDA' => 'required|integer|min:1,port_SDA'
+            'port_SDA' => 'required|integer|min:1,port_SDA',
         ];
 
         return $rules;

@@ -2,9 +2,9 @@
 
 namespace Database\Seeders\Fakes;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class FakeGraphLightsTableSeeder extends Seeder
 {
@@ -21,7 +21,7 @@ class FakeGraphLightsTableSeeder extends Seeder
                 $counts[] = [
                     'datetime' => $date->format('Y-m-d H:i:s'),
                     'id_count' => $id_count,
-                    'value' => rand(20, 25).'.'.rand(10,99)
+                    'value' => rand(20, 25).'.'.rand(10, 99),
                 ];
             }
             $date->addDay();

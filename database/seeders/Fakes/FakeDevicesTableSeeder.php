@@ -2,24 +2,26 @@
 
 namespace Database\Seeders\Fakes;
 
-use Illuminate\Database\Seeder;
-use Faker\Factory;
+use App\Models\Device;
 use App\Models\DevType;
 use App\Services\DeviceService;
-use App\Models\Device;
 use Exception;
+use Faker\Factory;
+use Illuminate\Database\Seeder;
 
 class FakeDevicesTableSeeder extends Seeder
 {
     const COUNT = 10;
 
     private $faker;
+
     private $devtypes;
+
     private $device_service;
 
     /**
      * FakeDevicesTableSeeder constructor.
-     * @param DeviceService $device_service
+     *
      * @throws Exception
      */
     public function __construct(DeviceService $device_service)
@@ -27,7 +29,7 @@ class FakeDevicesTableSeeder extends Seeder
         $this->faker = Factory::create();
         $this->devtypes = DevType::all();
 
-        if (!count($this->devtypes)) {
+        if (! count($this->devtypes)) {
             throw new Exception('Таблица Devtypes пустая. Генерация контроллеров невозможна');
         }
 
@@ -43,11 +45,10 @@ class FakeDevicesTableSeeder extends Seeder
             $this->createDevice($i);
         }
 
-        Device::inRandomOrder()->limit((int)(self::COUNT/3))->update(['active' => 1]);
+        Device::inRandomOrder()->limit((int) (self::COUNT / 3))->update(['active' => 1]);
     }
 
     /**
-     * @param $index
      * @throws Throwable
      */
     public function createDevice($index)
@@ -55,7 +56,7 @@ class FakeDevicesTableSeeder extends Seeder
         $data = [
             'type' => $this->getRandTypeId(),
             'description' => 'Контроллер '.(1 + $index),
-            'ip_address' => $this->faker->ipv4
+            'ip_address' => $this->faker->ipv4,
         ];
 
         $this->device_service->store($data, true, false);
@@ -63,6 +64,6 @@ class FakeDevicesTableSeeder extends Seeder
 
     public function getRandTypeId()
     {
-        return $this->devtypes[rand(0, count($this->devtypes)-1)]->name;
+        return $this->devtypes[rand(0, count($this->devtypes) - 1)]->name;
     }
 }

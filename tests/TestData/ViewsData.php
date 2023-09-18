@@ -8,8 +8,6 @@ class ViewsData
 {
     /**
      * Генератор сущностей для отображений
-     *
-     * @return array
      */
     public function generateView(): array
     {

@@ -9,20 +9,15 @@
 namespace App\Services;
 
 use App\Models\HomeObject;
-use App\Models\ObjType;
-use Database\Seeders\ScriptsTableSeeder;
 use App\Models\Method;
+use App\Models\ObjType;
 use App\Models\Script;
+use Database\Seeders\ScriptsTableSeeder;
 
 class DryContactObjectService
 {
-
-
     /**
      * Автосоздание объекта для сухого контакта
-     *
-     * @param string $name
-     * @return HomeObject
      */
     public function createDrycontactObject(string $name): HomeObject
     {
@@ -38,11 +33,8 @@ class DryContactObjectService
         return $object;
     }
 
-
     /**
      * Если скрипт не найден, то создаем
-     *
-     * @return int
      */
     private function getScriptId(array $scriptArray): int
     {
@@ -50,7 +42,7 @@ class DryContactObjectService
         $script = Script::where('name', $scriptArray['name'])
             ->where('system', 1)->first();
 
-        if (!$script) {
+        if (! $script) {
             $script = Script::forceCreate($scriptArray);
         }
 
@@ -61,16 +53,13 @@ class DryContactObjectService
      * Автосоздание методов для объекта, который был
      * создан автоматически
      *
-     * @param int $object_id
      * @return void
      */
     public function createDryContactObjectMethods(int $object_id)
     {
         $script = ScriptsTableSeeder::getDrycontactsScript();
 
-
-            $script_id = $this->getScriptId($script);
-
+        $script_id = $this->getScriptId($script);
 
         $method = new Method();
 
@@ -81,9 +70,8 @@ class DryContactObjectService
         $method->params = null;
         $method->is_system = 1;
 
-
         $method->save();
+
         return $method->id;
     }
-
 }

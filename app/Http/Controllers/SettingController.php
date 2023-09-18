@@ -13,8 +13,8 @@ class SettingController extends Controller
     public function __construct(
         private SettingRepository $setting_rep,
         private SettingService $service
-    )
-    {}
+    ) {
+    }
 
     public function index()
     {
@@ -36,7 +36,7 @@ class SettingController extends Controller
                     ->with('success', 'Параметр успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении параметра настройки' .
+            \Log::error('Ошибка при добавлении параметра настройки'.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 
@@ -57,9 +57,9 @@ class SettingController extends Controller
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении параметра настройки '.$setting->id
-                .' ' .json_encode($r->all()).' '.$e->getMessage());
+                .' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении параметра');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении параметра');
     }
 }

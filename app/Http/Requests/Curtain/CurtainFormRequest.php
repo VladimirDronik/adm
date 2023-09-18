@@ -45,7 +45,7 @@ class CurtainFormRequest extends FormRequest
 
     public function messages()
     {
-        $messages =  [
+        $messages = [
             'name.required' => 'Не указано название',
             'device_id.required' => 'Не выбран контроллер',
         ];

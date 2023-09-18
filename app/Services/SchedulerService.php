@@ -6,8 +6,8 @@ use App\Models\SchedulerPoint;
 use App\Models\SchedulerTask;
 use Illuminate\Support\Facades\DB;
 
-class SchedulerService {
-
+class SchedulerService
+{
     public function prepare(SchedulerTask $task, array $data)
     {
         if ($data['type'] === 'method') {
@@ -57,11 +57,11 @@ class SchedulerService {
     {
         $event = SchedulerTask::find($id);
 
-        if (!$event) {
+        if (! $event) {
             return ['result' => false, 'message' => 'Событие не найдено'];
         }
 
-        $result = !SchedulerTask::where('id', '!=', $id)
+        $result = ! SchedulerTask::where('id', '!=', $id)
             ->where('name', trim($name))->exists();
         $message = $result ? '' : 'Событие с таким названием уже существует. Выберите другое название';
 
@@ -78,7 +78,7 @@ class SchedulerService {
             'close' => $point->close,
             'system' => $point->system,
             'single_rus_type' => $point->single_rus_type,
-            'description' => $point->description
+            'description' => $point->description,
         ];
     }
 
@@ -89,20 +89,20 @@ class SchedulerService {
 
         switch ($data['type']) {
             case SchedulerPoint::TYPE_CRON:
-                if (!SchedulerPoint::isInCronPeriods((int)$point->time)) {
+                if (! SchedulerPoint::isInCronPeriods((int) $point->time)) {
                     throw new \Exception();
                 }
                 $point->days = '';
                 break;
             default:
-                $point->days = implode(",",$data['days']);
+                $point->days = implode(',', $data['days']);
                 break;
         }
     }
 
     public function storePoint(array $data)
     {
-        $task = SchedulerTask::findOrFail((int)$data['event_id']);
+        $task = SchedulerTask::findOrFail((int) $data['event_id']);
 
         $point = new SchedulerPoint();
 
@@ -119,8 +119,8 @@ class SchedulerService {
 
     public function updatePoint(array $data)
     {
-        $point = SchedulerPoint::where('id_task', (int)$data['event_id'])
-            ->where('id', (int)$data['id'])->firstOrFail();
+        $point = SchedulerPoint::where('id_task', (int) $data['event_id'])
+            ->where('id', (int) $data['id'])->firstOrFail();
 
         $this->storePointType($point, $data);
         $point->save();
@@ -135,7 +135,7 @@ class SchedulerService {
 
     public function deletePoint(int $id)
     {
-        SchedulerPoint::where('close','!=',1)->where('id', $id)->delete();
+        SchedulerPoint::where('close', '!=', 1)->where('id', $id)->delete();
 
         return true;
     }

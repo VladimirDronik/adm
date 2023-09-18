@@ -7,13 +7,14 @@
  */
 
 namespace App\Http\Controllers;
-use App\Models\Elements;
-use App\Repositories\ElementRepository;
-use App\Services\ImageService;
-use App\Services\ElementService;
+
 use App\Http\Requests\Element\CreateRequest;
 use App\Http\Requests\Element\UpdateRequest;
+use App\Models\Elements;
+use App\Repositories\ElementRepository;
 use App\Repositories\ObjectRepository;
+use App\Services\ElementService;
+use App\Services\ImageService;
 use App\Services\ObjectService;
 
 class ElementController extends Controller
@@ -23,10 +24,11 @@ class ElementController extends Controller
         private ElementService $service,
         private ObjectRepository $objectRepository,
         private ObjectService $objectService
-    )
-    {}
+    ) {
+    }
 
-    public function create($pageId){
+    public function create($pageId)
+    {
         $types = Elements::getTypes(true);
         $parents = $this->elementRepository->getParentsToArray($pageId);
         $images = ImageService::getMainImages();
@@ -34,9 +36,8 @@ class ElementController extends Controller
         $settings = false;
 
         return view('elements.create', compact('types', 'parents', 'pageId',
-                                                'images', 'objects', 'settings'));
+            'images', 'objects', 'settings'));
     }
-
 
     public function store(CreateRequest $r)
     {
@@ -64,20 +65,20 @@ class ElementController extends Controller
         $handles = $this->objectService->getPropertiesByObjectId($element->id_object, false);
 
         return view('elements.edit', compact('element', 'types', 'parents',
-                    'objects', 'images', 'handles', 'settings'));
+            'objects', 'images', 'handles', 'settings'));
     }
 
     public function update(UpdateRequest $r, Elements $element)
     {
         try {
             if ($this->service->update($element, $r->except('_token'))) {
-                return redirect()->route('elements.edit',[$element->id])->with('success','Элемент успешно изменен');
+                return redirect()->route('elements.edit', [$element->id])->with('success', 'Элемент успешно изменен');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении элемента '.$element->id.' '
                 .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении элемента');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении элемента');
     }
 }

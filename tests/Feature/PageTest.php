@@ -31,7 +31,7 @@ class PageTest extends TestCase
 
         $data = $generator->generatePage();
 
-        $response = $this->actingAs($user)->get('/pages/'. $data['page']->id .'/edit');
+        $response = $this->actingAs($user)->get('/pages/'.$data['page']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -44,7 +44,7 @@ class PageTest extends TestCase
 
         $data = $generator->generatePage();
 
-        $response = $this->actingAs($user)->get('/page/'. $data['page']->id .'/createElement');
+        $response = $this->actingAs($user)->get('/page/'.$data['page']->id.'/createElement');
 
         $response->assertStatus(200);
     }
@@ -57,7 +57,7 @@ class PageTest extends TestCase
 
         $data = $generator->generatePage();
 
-        $response = $this->actingAs($user)->get('/elements/'. $data['element']->id .'/edit');
+        $response = $this->actingAs($user)->get('/elements/'.$data['element']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -101,7 +101,7 @@ class PageTest extends TestCase
             'handle' => null,
         ]);
 
-        $response->assertRedirect('/pages/'. $data['page']->id .'/edit');
+        $response->assertRedirect('/pages/'.$data['page']->id.'/edit');
 
         $this->assertDatabaseHas('elements', [
             'name' => 'Создание тестового элемента',
@@ -116,7 +116,7 @@ class PageTest extends TestCase
 
         $data = $generator->generatePage();
 
-        $response = $this->actingAs($user)->post('elements/'. $data['element']->id, [
+        $response = $this->actingAs($user)->post('elements/'.$data['element']->id, [
             '_method' => 'PUT',
             'type' => 'label',
             'name' => 'Обновление тестового элемента',
@@ -130,7 +130,7 @@ class PageTest extends TestCase
             'handle' => null,
         ]);
 
-        $response->assertRedirect('/elements/'. $data['element']->id .'/edit');
+        $response->assertRedirect('/elements/'.$data['element']->id.'/edit');
 
         $this->assertDatabaseHas('elements', [
             'name' => 'Обновление тестового элемента',

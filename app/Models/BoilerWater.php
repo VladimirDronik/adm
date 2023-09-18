@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use \Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * \App\Models\BoilerWater
@@ -11,13 +10,14 @@ use \Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device query()
+ *
  * @mixin \Eloquent
  *
  * @property int    $id
  * @property int    $id_object
- * @property double $set_value
- * @property double $min_value
- * @property double $max_value
+ * @property float $set_value
+ * @property float $min_value
+ * @property float $max_value
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device whereDescription($value)
@@ -28,11 +28,13 @@ use \Illuminate\Database\Eloquent\Model;
 class BoilerWater extends Model
 {
     const MIN_VALUE = 20;
+
     const MAX_VALUE = 80;
 
     public $timestamps = false;
 
-    protected $table   = 'boiler_water';
+    protected $table = 'boiler_water';
+
     protected $guarded = ['id'];
 
     /* relations */

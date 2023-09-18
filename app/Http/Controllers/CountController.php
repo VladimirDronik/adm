@@ -23,8 +23,8 @@ class CountController extends Controller
         private CountService $service,
         private PortService $portService,
         private ScriptRepository $script_rep,
-    )
-    {}
+    ) {
+    }
 
     public function index()
     {
@@ -37,7 +37,7 @@ class CountController extends Controller
     {
         $types = Count::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
-        $object_types =  HomeObject::getFullTypeIds();
+        $object_types = HomeObject::getFullTypeIds();
         $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
 
         return view('counts.create', compact('types', 'objects', 'object_types', 'devices'));
@@ -51,31 +51,31 @@ class CountController extends Controller
                     ->with('success', 'Счетчик успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении счетчика ' .
+            \Log::error('Ошибка при добавлении счетчика '.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении счетчика');
     }
 
-    public function edit(Count $count, $tab=1)
+    public function edit(Count $count, $tab = 1)
     {
         $types = Count::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
-        $object_types =  HomeObject::getFullTypeIds();
+        $object_types = HomeObject::getFullTypeIds();
 
         $scripts = $this->script_rep->getAllToArray();
         $can = gates('devices.show-object');
 
-        list ($idDevice, $idPort, $devices, $ports) = $this->portService->getCurrentDevPort($count->id_object, 'IN,I2C,1WIRE,1W-BUS');
-        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
+        [$idDevice, $idPort, $devices, $ports] = $this->portService->getCurrentDevPort($count->id_object, 'IN,I2C,1WIRE,1W-BUS');
+        [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents] =
             Service::getListElements($count->id_object);
 
         $availableEvents = Count::getEvents();
         $properties = Count::getProperties();
 
         return view('counts.edit', compact('count', 'types', 'tab',
-            'idDevice','idPort','devices','ports', 'events', 'allEvents', 'availableEvents', 'properties', 'sounds',
+            'idDevice', 'idPort', 'devices', 'ports', 'events', 'allEvents', 'availableEvents', 'properties', 'sounds',
             'views',
             'objects', 'object_types', 'scripts', 'can'));
     }
@@ -84,14 +84,14 @@ class CountController extends Controller
     {
         try {
             if ($this->service->update($count, $r->except('_token'))) {
-                return redirect()->route('counts.edit',[$count->id])
+                return redirect()->route('counts.edit', [$count->id])
                     ->with('success', 'Счетчик успешно изменен');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении счетчика '.$count->id
-                .' ' .json_encode($r->all()).' '.$e->getMessage());
+                .' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении счетчика');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении счетчика');
     }
 }

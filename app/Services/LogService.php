@@ -8,7 +8,6 @@
 
 namespace App\Services;
 
-
 use App\Models\Logging;
 
 class LogService

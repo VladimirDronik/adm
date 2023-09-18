@@ -9,8 +9,6 @@ class LampsData
 {
     /**
      * Генератор сущностей для лампы
-     *
-     * @return array
      */
     public function generateLamp(): array
     {

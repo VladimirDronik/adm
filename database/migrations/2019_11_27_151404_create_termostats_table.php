@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateTermostatsTable extends Migration
 {
@@ -13,7 +13,7 @@ class CreateTermostatsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('termostats')) {
+        if (! Schema::hasTable('termostats')) {
             Schema::create('termostats', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('id_object')->nullable()->comment('id термостата из таблицы объектов');

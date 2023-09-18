@@ -41,7 +41,7 @@ class RelayTest extends TestCase
 
         $data = $generator->generateRelay();
 
-        $response = $this->actingAs($user)->get('/relays/'. $data['relay']->id .'/edit');
+        $response = $this->actingAs($user)->get('/relays/'.$data['relay']->id.'/edit');
 
         $response->assertStatus(200);
     }
@@ -61,7 +61,7 @@ class RelayTest extends TestCase
 
         $relay = Relay::where('name', 'Создание тестового реле')->first();
 
-        $response->assertRedirect('/relays/'. ($relay ? $relay->id : 1) .'/edit');
+        $response->assertRedirect('/relays/'.($relay ? $relay->id : 1).'/edit');
 
         $this->assertDatabaseHas('relays', [
             'name' => 'Создание тестового реле',
@@ -76,7 +76,7 @@ class RelayTest extends TestCase
 
         $data = $generator->generateRelay();
 
-        $response = $this->actingAs($user)->post('relays/'. $data['relay']->id, [
+        $response = $this->actingAs($user)->post('relays/'.$data['relay']->id, [
             '_method' => 'PUT',
             'name' => 'Обновление тестового реле',
             'id_object' => $data['object']->id,
@@ -89,7 +89,7 @@ class RelayTest extends TestCase
             'place' => null,
         ]);
 
-        $response->assertRedirect('/relays/'. $data['relay']->id .'/edit');
+        $response->assertRedirect('/relays/'.$data['relay']->id.'/edit');
 
         $this->assertDatabaseHas('relays', [
             'name' => 'Обновление тестового реле',

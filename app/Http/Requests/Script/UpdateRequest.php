@@ -35,7 +35,7 @@ class UpdateRequest extends FormRequest
             'name.required' => 'Не указано название',
             'name.max' => 'Название содержит более 100 символов',
             'name.unique' => 'Скрипт с таким названием уже существует. Укажите другое название',
-            'code.required' => 'Не указан код скрипта'
+            'code.required' => 'Не указан код скрипта',
         ];
     }
 }

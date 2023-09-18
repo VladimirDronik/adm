@@ -9,8 +9,6 @@ class DimmersData
 {
     /**
      * Генератор сущностей для диммера
-     *
-     * @return array
      */
     public function generateDimmer(): array
     {

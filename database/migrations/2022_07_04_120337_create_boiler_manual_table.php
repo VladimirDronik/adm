@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateBoilerManualTable extends Migration
 {
@@ -13,16 +13,16 @@ class CreateBoilerManualTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('boiler_manual')) {
+        if (! Schema::hasTable('boiler_manual')) {
             Schema::create('boiler_manual', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('id_object')->unsigned();
-                $table->float('set_value')->nullable()->default(NULL);
-                $table->float('min_value')->nullable()->default(NULL);
-                $table->float('max_value')->nullable()->default(NULL);
+                $table->float('set_value')->nullable()->default(null);
+                $table->float('min_value')->nullable()->default(null);
+                $table->float('max_value')->nullable()->default(null);
 
                 $table->foreign('id_object')->references('id')->on('objects')
-                      ->onUpdate('cascade')->onDelete('cascade');
+                    ->onUpdate('cascade')->onDelete('cascade');
             });
         }
     }

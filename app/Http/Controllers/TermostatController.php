@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Termostat\CreateRequest;
 use App\Http\Requests\Termostat\UpdateRequest;
 use App\Models\HomeObject;
-use App\Models\Sound;
 use App\Models\Termostat;
 use App\Repositories\DeviceRepository;
+use App\Repositories\EventRepository;
 use App\Repositories\ObjectRepository;
-use App\Repositories\PortRepository;
 use App\Repositories\RoomRepository;
 use App\Repositories\ScriptRepository;
+use App\Repositories\SoundRepository;
 use App\Repositories\TermostatRepository;
 use App\Repositories\UsensorRepository;
 use App\Repositories\ViewRepository;
@@ -19,8 +19,6 @@ use App\Services\MessageService;
 use App\Services\ObjectService;
 use App\Services\PortService;
 use App\Services\TermostatService;
-use App\Repositories\EventRepository;
-use App\Repositories\SoundRepository;
 use Illuminate\Support\Facades\Log;
 
 class TermostatController extends Controller
@@ -38,13 +36,12 @@ class TermostatController extends Controller
         private ScriptRepository $script_rep,
         private PortService $portService,
         private MessageService $messageService,
-    )
-    {}
+    ) {
+    }
 
     public function index()
     {
         $termostats = $this->termostat_rep->getAll();
-
 
         return view('termostats.index', compact('termostats'));
     }
@@ -58,23 +55,19 @@ class TermostatController extends Controller
         $usensors = $this->usensor_rep->getAllToArray();
         $HPControllers = $this->device_rep->getAllByTypesToArray(['Hite-pro']);
 
-
-
         return [$objects, $rooms, $types, $devices, $usensors, $HPControllers];
     }
 
     public function create()
     {
-        list($objects, $rooms, $types, $devices, $usensors, $HPControllers) = $this->getLists();
-        $object_types =  HomeObject::getFullTypeIds();
+        [$objects, $rooms, $types, $devices, $usensors, $HPControllers] = $this->getLists();
+        $object_types = HomeObject::getFullTypeIds();
         $can = gates('devices.show-object');
-        $tab =1;
+        $tab = 1;
 
-        return view('termostats.create', compact('objects','rooms', 'types', 'devices',
+        return view('termostats.create', compact('objects', 'rooms', 'types', 'devices',
             'usensors', 'object_types', 'HPControllers', 'can', 'tab'));
     }
-
-
 
     public function store(CreateRequest $r)
     {
@@ -90,13 +83,10 @@ class TermostatController extends Controller
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении термостата');
     }
 
-
-
-    public function edit(Termostat $termostat, $tab=1)
+    public function edit(Termostat $termostat, $tab = 1)
     {
 
-        list($objects, $rooms, $types, $devices, $usensors, $HPControllers) = $this->getLists();
-
+        [$objects, $rooms, $types, $devices, $usensors, $HPControllers] = $this->getLists();
 
         $methods = $this->object_service->getMethodsByObjectIdToArray($termostat->object);
         $object_types = HomeObject::getFullTypeIds();
@@ -108,7 +98,7 @@ class TermostatController extends Controller
         $deviceId = $deviceAndPort['id_device'];
         $portId = $deviceAndPort['id_port'];
 
-        $ports =  $this->portService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
+        $ports = $this->portService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
         $messages = $this->messageService->getNotifications($termostat->id_object);
 
@@ -131,17 +121,14 @@ class TermostatController extends Controller
             'availableEvents', 'properties', 'sounds', 'views', 'allEvents'));
     }
 
-
-
-
     public function update(UpdateRequest $r, Termostat $termostat)
     {
         try {
             if ($this->service->update($termostat, $r->except('_token'))) {
-                return redirect()->route('termostats.edit', [$termostat->id])->with('success','Термостат успешно изменен');
+                return redirect()->route('termostats.edit', [$termostat->id])->with('success', 'Термостат успешно изменен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при изменении термостата '.$termostat->id.' ' .json_encode($r->all()).' '.$e->getMessage());
+            Log::error('Ошибка при изменении термостата '.$termostat->id.' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении термостата');

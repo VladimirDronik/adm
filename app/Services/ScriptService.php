@@ -7,7 +7,6 @@ use App\Models\Script;
 class ScriptService
 {
     /**
-     * @param int $id
      * @return int
      */
     public function delete(int $id)
@@ -22,8 +21,6 @@ class ScriptService
     }
 
     /**
-     * @param Script $script
-     * @param array $data
      * @throws \Exception
      */
     public function prepareScript(Script $script, array $data)
@@ -35,8 +32,8 @@ class ScriptService
     }
 
     /**
-     * @param array $data
      * @return int
+     *
      * @throws \Exception
      */
     public function store(array $data)

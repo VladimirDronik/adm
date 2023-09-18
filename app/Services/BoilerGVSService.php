@@ -7,14 +7,14 @@
  */
 
 namespace App\Services;
+
 use App\Models\BoilerGVS;
-use Illuminate\Support\Facades\DB;
 use App\Models\HomeObject;
+use Illuminate\Support\Facades\DB;
 
 class BoilerGVSService
 {
     private $boiler_object_service;
-
 
     public function __construct(BoilerObjectService $boilerObjectService)
     {
@@ -53,8 +53,7 @@ class BoilerGVSService
         $boiler->model = $data['type_boiler'];
         $boiler->mode = 'auto';
 
-
-        DB::transaction(function () use (&$boiler, $data) {
+        DB::transaction(function () use (&$boiler) {
 
             $unique_name = HomeObject::getUniqueObjectName(0, $boiler->name);
             $object = $this->boiler_object_service->createBoilerGVSObject($unique_name);

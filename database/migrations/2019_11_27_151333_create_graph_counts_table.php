@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateGraphCountsTable extends Migration
 {
@@ -13,7 +13,7 @@ class CreateGraphCountsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('graph_counts')) {
+        if (! Schema::hasTable('graph_counts')) {
             Schema::create('graph_counts', function (Blueprint $table) {
 
                 $table->date('datetime');

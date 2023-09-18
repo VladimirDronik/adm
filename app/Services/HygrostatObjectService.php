@@ -10,13 +10,10 @@ use App\Models\SchedulerTask;
 use App\Models\Script;
 use Database\Seeders\ScriptsTableSeeder;
 
-class HygrostatObjectService {
-
+class HygrostatObjectService
+{
     /**
      * Автосоздание объекта для гигростата
-     *
-     * @param string $name
-     * @return HomeObject
      */
     public function createHygrostatObject(string $name): HomeObject
     {
@@ -46,8 +43,6 @@ class HygrostatObjectService {
 
     /**
      * Создание метода 'Проверка гигростата' и элемента планировщика 'Проверка гигростата' (каждые 5 мин)
-     *
-     * @param int $object_id
      */
     public function createCheckMethodWithEvent(int $object_id)
     {
@@ -58,7 +53,7 @@ class HygrostatObjectService {
             'id_object' => $object_id,
             'comment' => 'Периодическая проверка текущих значений гигростата',
             'is_system' => 1,
-            'script' => $script_id
+            'script' => $script_id,
         ])->id;
 
         $scheduler_task_id = SchedulerTask::forceCreate([
@@ -66,7 +61,7 @@ class HygrostatObjectService {
             'is_system' => 1,
             'is_hidden' => 1,
             'object' => $object_id,
-            'method' => $method_id
+            'method' => $method_id,
         ])->id;
 
         // каждые 5 мин
@@ -76,7 +71,7 @@ class HygrostatObjectService {
             'time' => '5',
             'days' => '',
             'close' => 1,
-            'system' => 1
+            'system' => 1,
         ]);
     }
 
@@ -84,7 +79,6 @@ class HygrostatObjectService {
      * Автосоздание методов и их событий для объекта, который был
      * создан автоматически для гигростата
      *
-     * @param int $object_id
      * @return void
      */
     public function createHygrostatObjectMethodsWithEvents(int $object_id)

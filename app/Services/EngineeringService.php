@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\DB;
 
 class EngineeringService
 {
-
-
     public function delete(int $idObject, bool $delMenuAndPages)
     {
 
@@ -25,27 +23,27 @@ class EngineeringService
 
         $object = HomeObject::findOrFail($idObject);
 
-            DB::transaction(function () use (&$object, $idObject, $delMenuAndPages, $menuRep) {
-                if ($delMenuAndPages) {
-                    $boilerMenu = $menuRep->getByName('Котёл');
-                    if ($boilerMenu) {
-                        $boilerMenu->delete();
-                    }
-
-                    $parentMenu = $menuRep->getByName('Инженерное');
-                    if ($parentMenu && $parentMenu->children->isEmpty()) {
-                        $parentMenu->delete();
-                    }
-
-                    $page = Page::where('name', $object->name);
-                    if ($page) {
-                        $page->delete();
-                    }
+        DB::transaction(function () use (&$object, $idObject, $delMenuAndPages, $menuRep) {
+            if ($delMenuAndPages) {
+                $boilerMenu = $menuRep->getByName('Котёл');
+                if ($boilerMenu) {
+                    $boilerMenu->delete();
                 }
 
-                HomeObject::deleteAutoObject($idObject);
-                $object->delete();
-            });
+                $parentMenu = $menuRep->getByName('Инженерное');
+                if ($parentMenu && $parentMenu->children->isEmpty()) {
+                    $parentMenu->delete();
+                }
+
+                $page = Page::where('name', $object->name);
+                if ($page) {
+                    $page->delete();
+                }
+            }
+
+            HomeObject::deleteAutoObject($idObject);
+            $object->delete();
+        });
 
         return true;
 
