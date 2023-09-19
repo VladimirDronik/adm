@@ -16,18 +16,11 @@ use Illuminate\Support\Facades\DB;
 
 class UsensorService
 {
-    private $usensor_object_service;
-
-    private $portRepository;
-
-    private $portService;
-
-    public function __construct(UsensorObjectService $usensor_object_service, PortRepository $portRepository,
-        PortService $portService)
-    {
-        $this->usensor_object_service = $usensor_object_service;
-        $this->portRepository = $portRepository;
-        $this->portService = $portService;
+    public function __construct(
+        private UsensorObjectService $usensor_object_service,
+        private PortRepository $portRepository,
+        private PortService $portService
+    ) {
     }
 
     public function prepare(Usensor $usensor, array $data)
@@ -47,7 +40,6 @@ class UsensorService
      */
     public function store(array $data): int
     {
-
         $usensor = new Usensor();
 
         $port_SDA = $data['port_SDA'] ?? null;
@@ -58,23 +50,42 @@ class UsensorService
 
         DB::transaction(function () use (&$usensor, $port_SDA, $port_SCL, $data, $deviceID) {
             $unique_name = HomeObject::getUniqueObjectName(0, $usensor->name);
-            $object = $this->usensor_object_service->createUsensorObject($unique_name);
-            $this->usensor_object_service->createUsensorObjectMethodsWithEvents($object->id);
+
+            $object = $this->usensor_object_service
+                ->createUsensorObject($unique_name);
+
+            $this->usensor_object_service
+                ->createUsensorObjectMethodsWithEvents($object->id);
+
             $usensor->id_object = $object->id;
             $usensor->save();
 
             if ($port_SDA) {
-                Port::where('id', $port_SDA)->update(['object' => $object->id,
-                    'status' => 'I2C', 'comment' => $data['name']]);
+                Port::where('id', $port_SDA)->update([
+                    'object' => $object->id,
+                    'status' => 'I2C',
+                    'comment' => $data['name'],
+                ]);
 
-                ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($port_SDA), 'SDA');
+                ConfigMegaService::setPortType(
+                    $deviceID,
+                    $this->portRepository->getNumPortByID($port_SDA),
+                    'SDA'
+                );
             }
 
             if ($port_SCL) {
-                Port::where('id', $port_SCL)->update(['object' => $object->id,
-                    'status' => 'I2C', 'comment' => $data['name']]);
+                Port::where('id', $port_SCL)->update([
+                    'object' => $object->id,
+                    'status' => 'I2C',
+                    'comment' => $data['name'],
+                ]);
 
-                ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($port_SCL), 'SCL');
+                ConfigMegaService::setPortType(
+                    $deviceID,
+                    $this->portRepository->getNumPortByID($port_SCL),
+                    'SCL'
+                );
             }
         });
 
@@ -92,12 +103,21 @@ class UsensorService
         $usensor = Usensor::findOrFail($id);
 
         //Убираем все данные на порту
-        Port::where('object', $usensor->id_object)->update(['object' => null, 'status' => 'IN',
-            'comment' => '']);
+        Port::where('object', $usensor->id_object)
+            ->update([
+                'object' => null,
+                'status' => 'IN',
+                'comment' => '',
+            ]);
 
-        $deviceAndPort = $this->portService->getIdDeviceAndPortId($usensor->id_object);
+        $deviceAndPort = $this->portService
+            ->getIdDeviceAndPortId($usensor->id_object);
 
-        ConfigMegaService::setPortType($deviceAndPort['id_device'], $this->portRepository->getNumPortByID($deviceAndPort['id_port']), 'IN');
+        ConfigMegaService::setPortType(
+            $deviceAndPort['id_device'],
+            $this->portRepository->getNumPortByID($deviceAndPort['id_port']),
+            'IN'
+        );
 
         if ($usensor->iobject && $usensor->iobject->is_system) {
             DB::transaction(function () use (&$usensor) {
@@ -127,36 +147,64 @@ class UsensorService
      */
     public function update(Usensor $usensor, array $data): int
     {
-
         DB::transaction(function () use (&$usensor, $data) {
             if ($this->isUpdateAutoObjectName($usensor, $data['name'])) {
-                $usensor->iobject->name = HomeObject::getUniqueObjectName($usensor->iobject->id, trim($data['name']));
+                $usensor->iobject->name = HomeObject::getUniqueObjectName(
+                    $usensor->iobject->id,
+                    trim($data['name'])
+                );
                 $usensor->iobject->save();
             }
 
             //Убираем все данные на порту
-            Port::where('object', $usensor->id_object)->update(['object' => null, 'status' => 'IN',
-                'comment' => '']);
+            Port::where('object', $usensor->id_object)
+                ->update([
+                    'object' => null,
+                    'status' => 'IN',
+                    'comment' => '',
+                ]);
 
-            ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_SDA']), 'IN');
-            ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_SCL']), 'IN');
+            ConfigMegaService::setPortType(
+                $data['device_id'],
+                $this->portRepository->getNumPortByID($data['port_SDA']),
+                'IN'
+            );
+
+            ConfigMegaService::setPortType(
+                $data['device_id'],
+                $this->portRepository->getNumPortByID($data['port_SCL']),
+                'IN'
+            );
 
             if ($data['port_SDA']) {
-                Port::where('id', $data['port_SDA'])->update(['object' => $data['id_object'],
-                    'status' => 'I2C', 'comment' => $data['name']]);
+                Port::where('id', $data['port_SDA'])
+                    ->update([
+                        'object' => $data['id_object'],
+                        'status' => 'I2C',
+                        'comment' => $data['name'],
+                    ]);
 
-                ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_SDA']), 'SDA');
-
+                ConfigMegaService::setPortType(
+                    $data['device_id'],
+                    $this->portRepository->getNumPortByID($data['port_SDA']),
+                    'SDA'
+                );
             }
 
             if ($data['port_SCL']) {
-                Port::where('id', $data['port_SCL'])->update(['object' => $data['id_object'],
-                    'status' => 'I2C', 'comment' => $data['name']]);
+                Port::where('id', $data['port_SCL'])
+                    ->update([
+                        'object' => $data['id_object'],
+                        'status' => 'I2C',
+                        'comment' => $data['name'],
+                    ]);
 
-                ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_SCL']), 'SCL');
-
+                ConfigMegaService::setPortType(
+                    $data['device_id'],
+                    $this->portRepository->getNumPortByID($data['port_SCL']),
+                    'SCL'
+                );
             }
-
             $this->prepare($usensor, $data);
             $usensor->save();
         });

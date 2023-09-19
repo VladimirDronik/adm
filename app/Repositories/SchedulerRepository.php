@@ -8,7 +8,9 @@ class SchedulerRepository
 {
     public function getAll($pagination_count = 30)
     {
-        return SchedulerTask::with('points', 'emethod')->orderBy('name')->paginate($pagination_count);
+        return SchedulerTask::with('points', 'emethod')
+            ->orderBy('name')
+            ->paginate($pagination_count);
     }
 
     public function getByNameAndType(array $filter, bool $with_system = true, bool $with_hidden = true, $pagination_count = 30)

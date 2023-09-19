@@ -13,13 +13,17 @@ class ObjectRepository
 
     public function getAllToArray()
     {
-        return HomeObject::select('id', 'name')->orderBy('name')
-            ->pluck('name', 'id')->toArray();
+        return HomeObject::select('id', 'name')
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray();
     }
 
     public function getAllExcludeGivenType(string $type)
     {
-        return HomeObject::where('type', '!=', $type)->orderBy('name')->get();
+        return HomeObject::where('type', '!=', $type)
+            ->orderBy('name')
+            ->get();
     }
 
     /**
@@ -36,7 +40,6 @@ class ObjectRepository
         }
 
         return $queryEquipments->orderBy('objects.name')->paginate($pagination_count);
-
     }
 
     public function getByName($name, $pagination_count = 30)
@@ -52,7 +55,9 @@ class ObjectRepository
 
     public static function getNameById($idObject)
     {
-        return HomeObject::select('name')->where('id', $idObject)->first();
+        return HomeObject::select('name')
+            ->where('id', $idObject)
+            ->first();
     }
 
     public static function getById($idObject)

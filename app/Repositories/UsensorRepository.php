@@ -8,12 +8,16 @@ class UsensorRepository
 {
     public function getAll($pagination_count = 30)
     {
-        return Usensor::with('eobject')->orderBy('id')->paginate($pagination_count);
+        return Usensor::with('eobject')
+            ->orderBy('id')
+            ->paginate($pagination_count);
     }
 
     public function getAllToArray()
     {
-        return Usensor::select('id_object', 'name')->orderBy('name')
-            ->pluck('name', 'id_object')->toArray();
+        return Usensor::select('id_object', 'name')
+            ->orderBy('name')
+            ->pluck('name', 'id_object')
+            ->toArray();
     }
 }

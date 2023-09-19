@@ -29,10 +29,11 @@ class ElementService
         $element->active = 1;
         $element->save();
 
-        if (array_key_exists('handle', $data) &&
-            ($data['handle'] == Boiler::PROP_WATER_TEMP ||
-             $data['handle'] == Boiler::PROP_MANUALMODE ||
-             $data['handle'] == Boiler::PROP_AUTOMODE)) {
+        if (array_key_exists('handle', $data) && (
+            $data['handle'] == Boiler::PROP_WATER_TEMP ||
+            $data['handle'] == Boiler::PROP_MANUALMODE ||
+            $data['handle'] == Boiler::PROP_AUTOMODE
+        )) {
             InternalPage::create([
                 'idElement' => $element->id,
             ]);
@@ -81,7 +82,6 @@ class ElementService
         $data['sort'] = $this->getSortMax($data['page'], $data['parent'], $data['position']) + 1;
 
         $element->fill($data);
-
     }
 
     private function getSortMax($page, $parent, $position): int
@@ -110,18 +110,15 @@ class ElementService
         }
 
         DB::transaction(function () use ($element) {
-
             //Если выбран для удаления родительский пункт, то удаляем и дочерние
             if ($element->parent == 0) {
                 Elements::where('parent', $element->id)->delete();
             }
 
             $element->delete();
-
         });
 
         return true;
-
     }
 
     public function changeActive(int $id, int $active)
@@ -160,7 +157,8 @@ class ElementService
 
     public function updateImage(int $id, string $image)
     {
-        Elements::where('id', $id)->update(['image' => $this->setImageIfEmpty($image)]);
+        Elements::where('id', $id)
+            ->update(['image' => $this->setImageIfEmpty($image)]);
     }
 
     private function setImageIfEmpty($image)
@@ -178,16 +176,19 @@ class ElementService
             if (array_key_exists('handle', $data) &&
                 $data['handle'] != Boiler::PROP_WATER_TEMP &&
                 $data['handle'] != Boiler::PROP_AUTOMODE &&
-                $data['handle'] != Boiler::PROP_MANUALMODE) {
+                $data['handle'] != Boiler::PROP_MANUALMODE
+            ) {
                 if ($element->handle == Boiler::PROP_WATER_TEMP ||
                     $element->handle == Boiler::PROP_AUTOMODE ||
-                    $element->handle == Boiler::PROP_MANUALMODE) {
+                    $element->handle == Boiler::PROP_MANUALMODE
+                ) {
                     InternalPage::where('idElement', $element->id)->delete();
                 }
             } else {
                 if ($element->handle != Boiler::PROP_WATER_TEMP &&
                     $element->handle != Boiler::PROP_AUTOMODE &&
-                    $element->handle != Boiler::PROP_MANUALMODE) {
+                    $element->handle != Boiler::PROP_MANUALMODE
+                ) {
                     InternalPage::create([
                         'idElement' => $element->id,
                     ]);

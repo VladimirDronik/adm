@@ -17,7 +17,6 @@ class AliceDevicesRepository
      */
     public function getNameAndRoomByObject($idObject)
     {
-
         $alice = Alice::select('name', 'room', 'active')->where('id_object', $idObject)->first();
 
         if (! $alice) {

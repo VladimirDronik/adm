@@ -30,13 +30,16 @@ class UsensorObjectService
     public function getOrCreateCheckUsensorScriptId(): int
     {
         $script_id = Script::where('link', 'check_usensor.php')
-            ->where('system', 1)->value('id');
+            ->where('system', 1)
+            ->value('id');
 
         if ($script_id) {
             return $script_id;
         }
 
-        return Script::forceCreate(ScriptsTableSeeder::getCheckUsensorScript())->id;
+        return Script::forceCreate(
+            ScriptsTableSeeder::getCheckUsensorScript()
+        )->id;
     }
 
     /**
@@ -53,7 +56,6 @@ class UsensorObjectService
             'is_system' => 1,
             'script' => $script_id,
         ])->id;
-
     }
 
     /**

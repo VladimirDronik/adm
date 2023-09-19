@@ -16,18 +16,11 @@ use Illuminate\Support\Facades\DB;
 
 class DrycontactService
 {
-    private $drycontact_object_service;
-
-    private $objectService;
-
-    private $portRepository;
-
-    public function __construct(DryContactObjectService $drycontact_object_service, ObjectService $objectService,
-        PortRepository $portRepository)
-    {
-        $this->drycontact_object_service = $drycontact_object_service;
-        $this->objectService = $objectService;
-        $this->portRepository = $portRepository;
+    public function __construct(
+        private DryContactObjectService $drycontact_object_service,
+        private ObjectService $objectService,
+        private PortRepository $portRepository
+    ) {
     }
 
     public function prepareDrycontact(Drycontact $drycontact, array $data)
@@ -41,7 +34,6 @@ class DrycontactService
 
     public function store(array $data): int
     {
-
         $deviceID = $data['device_id'];
 
         $drycontact = new Drycontact();
@@ -79,7 +71,6 @@ class DrycontactService
      */
     public function update(Drycontact $drycontact, array $data): int
     {
-
         $deviceID = $data['device_id'];
 
         DB::transaction(function () use (&$drycontact, $data) {
@@ -93,13 +84,26 @@ class DrycontactService
         });
 
         if ($data['port_id']) {
+            Port::where('object', $drycontact->object->id)
+                ->update([
+                    'object' => null,
+                    'method' => null,
+                    'comment' => '',
+                ]);
 
-            Port::where('object', $drycontact->object->id)->update(['object' => null, 'method' => null, 'comment' => '']);
-            Port::where('id', $data['port_id'])->update(['object' => $drycontact->object->id,
-                'method' => null, 'status' => 'IN', 'comment' => $data['name']]);
+            Port::where('id', $data['port_id'])
+                ->update([
+                    'object' => $drycontact->object->id,
+                    'method' => null,
+                    'status' => 'IN',
+                    'comment' => $data['name'],
+                ]);
 
-            ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($data['port_id']), 'IN-P&R');
-
+            ConfigMegaService::setPortType(
+                $deviceID,
+                $this->portRepository->getNumPortByID($data['port_id']),
+                'IN-P&R'
+            );
         }
 
         return $drycontact->id;
@@ -115,7 +119,12 @@ class DrycontactService
     {
         $drycontact = Drycontact::findOrFail($id);
 
-        Port::where('object', $drycontact->id_object)->update(['object' => null, 'method' => null, 'comment' => '']);
+        Port::where('object', $drycontact->id_object)
+            ->update([
+                'object' => null,
+                'method' => null,
+                'comment' => '',
+            ]);
 
         if ($drycontact->object && $drycontact->object->is_system) {
             DB::transaction(function () use (&$drycontact) {

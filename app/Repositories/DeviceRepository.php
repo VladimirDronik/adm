@@ -21,11 +21,11 @@ class DeviceRepository
 
     public function getAllToArray()
     {
-
         //Выводим все контроллеры, кроме Hite-pro
         $devices = Device::select('devices.id', 'devices.description')
             ->join('devtypes', 'devices.type', '=', 'devtypes.id', 'left outer')
-            ->pluck('devices.description', 'devices.id')->toArray();
+            ->pluck('devices.description', 'devices.id')
+            ->toArray();
 
         return $devices;
     }
@@ -35,7 +35,6 @@ class DeviceRepository
      */
     public function getAllWithoutTypesToArray(array $devicesTypes = [])
     {
-
         $query = Device::query();
 
         $query->join('devtypes', 'devices.type', '=', 'devtypes.id')
@@ -51,7 +50,6 @@ class DeviceRepository
             ->toArray();
 
         return $devices;
-
     }
 
     /**
@@ -59,7 +57,6 @@ class DeviceRepository
      */
     public function getAllByTypesToArray(array $devicesTypes, $pluck = true)
     {
-
         $query = Device::query();
 
         $query->join('devtypes', 'devices.type', '=', 'devtypes.id')
@@ -80,23 +77,29 @@ class DeviceRepository
         }
 
         return $devices;
-
     }
 
     public function getDevTypesToArray()
     {
-        return DevType::orderBy('name')->pluck('name', 'name')->toArray();
+        return DevType::orderBy('name')
+            ->pluck('name', 'name')
+            ->toArray();
     }
 
     public static function getDevTypeById($id)
     {
-        return DevType::select('name')->where('id', $id)->first()->name;
+        return DevType::select('name')
+            ->where('id', $id)
+            ->first()
+            ->name;
     }
 
     public function getIdTypeByName($name)
     {
-        return DevType::select('id')->where('name', $name)->first()->id;
-
+        return DevType::select('id')
+            ->where('name', $name)
+            ->first()
+            ->id;
     }
 
     public static function getDevByIdDevice($id)
@@ -117,8 +120,10 @@ class DeviceRepository
 
     public static function getAllDevicesForConfigs()
     {
-        return Device::select('id')->where('active', 1)
-            ->where('changed', 1)->get();
+        return Device::select('id')
+            ->where('active', 1)
+            ->where('changed', 1)
+            ->get();
     }
 
     /**
@@ -126,7 +131,9 @@ class DeviceRepository
      */
     public static function getDevByPort($idPort)
     {
-
-        return Port::select('id_device')->where('id', $idPort)->first()->id_device;
+        return Port::select('id_device')
+            ->where('id', $idPort)
+            ->first()
+            ->id_device;
     }
 }

@@ -13,13 +13,9 @@ use App\Repositories\NotificationRepository;
 
 class MessageService
 {
-    private $notificationRep;
-
-    public function __construct(NotificationRepository $notificationRep)
-    {
-
-        $this->notificationRep = $notificationRep;
-
+    public function __construct(
+        private NotificationRepository $notificationRep
+    ) {
     }
 
     public function store(array $data)
@@ -49,18 +45,15 @@ class MessageService
         $notification->save();
 
         return $data['message'];
-
     }
 
     public function getNotifications(int $idObject)
     {
-
         return $this->notificationRep->getByObject($idObject);
     }
 
     public function delete(string $message, int $id_object)
     {
-
         if ($message === 'on') {
             $message = 'message_1';
             $priority = 'priority_1';
@@ -69,7 +62,8 @@ class MessageService
             $priority = 'priority_2';
         }
 
-        Notification::where('id_object', $id_object)->update([$message => null, $priority => null]);
+        Notification::where('id_object', $id_object)
+            ->update([$message => null, $priority => null]);
 
         return true;
     }

@@ -13,18 +13,11 @@ class DeviceService
 {
     private $device;
 
-    private $networkService;
-
-    private $deviceRepository;
-
-    private $portRepository;
-
-    public function __construct(NetworkService $networkService, DeviceRepository $deviceRepository,
-        PortRepository $portRepository)
-    {
-        $this->networkService = $networkService;
-        $this->deviceRepository = $deviceRepository;
-        $this->portRepository = $portRepository;
+    public function __construct(
+        private NetworkService $networkService,
+        private DeviceRepository $deviceRepository,
+        private PortRepository $portRepository
+    ) {
     }
 
     /**
@@ -113,7 +106,6 @@ class DeviceService
      */
     public function storeDevice(array $data, bool $is_notify = true)
     {
-
         $this->device = new Device();
 
         $this->device->fill($data);
@@ -133,7 +125,6 @@ class DeviceService
      */
     public function store(array $data, bool $forcedCreate = true, bool $is_notify = false) //true для реализации функции настройки устройства с дефолтным адресом
     {
-
         $typeDevice = $data['type'];
 
         $data['type'] = $this->deviceRepository->getIdTypeByName($typeDevice);
@@ -141,7 +132,6 @@ class DeviceService
         DB::beginTransaction();
 
         try {
-
             exec("ping -c 1 {$data['ip_address']}", $output, $status);
             if ($status == 0) {
                 $data['active'] = 1;
@@ -150,7 +140,6 @@ class DeviceService
             }
 
             if (($data['active'] == 1) || ($forcedCreate)) {
-
                 $this->storeDevice($data, $is_notify);
 
                 $this->storePorts();
@@ -158,11 +147,9 @@ class DeviceService
                 DB::commit();
 
                 return $this->device->id;
-
             } else {
                 throw new \Exception('Устройство недоступно!');
             }
-
         } catch (\Throwable $e) {
             DB::rollback();
             throw $e;
@@ -172,13 +159,15 @@ class DeviceService
     private function isDoubleDescription(array $data)
     {
         return Device::where('id', '!=', $data['id'])
-            ->where('description', $data['description'])->exists();
+            ->where('description', $data['description'])
+            ->exists();
     }
 
     private function isValidIpAddress(array $data)
     {
         $doubleAddress = Device::where('id', '!=', $data['id'])
-            ->where('ip_address', $data['ip_address'])->exists();
+            ->where('ip_address', $data['ip_address'])
+            ->exists();
 
         $filterAddress = filter_var($data['ip_address'], FILTER_VALIDATE_IP);
 
@@ -207,9 +196,7 @@ class DeviceService
 
                 $this->storeExtensionModulePorts($extensionModule, $device->id);
             }
-
             DB::commit();
-
         } catch (\Throwable $e) {
             DB::rollback();
             throw $e;
@@ -255,13 +242,11 @@ class DeviceService
         $configResult = ConfigMegaService::sendConfigToDevice($data['id']);
 
         if (trim($data['ip_address']) !== $device->ip_address) {
-
             $device->ip_address = $data['ip_address'];
 
             DB::beginTransaction();
 
             try {
-
                 $device->save();
 
                 //Меняем адрес устойства
@@ -278,16 +263,12 @@ class DeviceService
                 } else {
                     return [false, $configResult['error'], '', ''];
                 }
-
             } catch (\Throwable $e) {
-
                 DB::rollback();
 
                 \Log::error('Ошибка при обновлении устройства', [$e->getMessage()]);
             }
-
         } else {
-
             $device->save();
 
             if ($extensionModules) {
@@ -299,7 +280,6 @@ class DeviceService
             } else {
                 return [false, $configResult['error'], '', ''];
             }
-
         }
 
         return [false, 'Не удалось изменить данные устройства: '.$e->getMessage(), '', ''];
@@ -308,7 +288,8 @@ class DeviceService
     public function updatePort(array $data)
     {
         $port = Port::where('id', $data['port_id'])
-            ->where('id_device', $data['id'])->first();
+            ->where('id_device', $data['id'])
+            ->first();
 
         if (! $port) {
             return false;
@@ -327,8 +308,10 @@ class DeviceService
             return [];
         }
 
-        $ports = Port::where('id_device', $device_id)->orderBy('num_port')
-            ->pluck('num_port', 'id')->toArray();
+        $ports = Port::where('id_device', $device_id)
+            ->orderBy('num_port')
+            ->pluck('num_port', 'id')
+            ->toArray();
 
         return array_values($ports);
     }
@@ -339,7 +322,9 @@ class DeviceService
             return [];
         }
 
-        $ports = $this->portRepository->getPortsByDeviceId($device_id, $status);
+        $ports = $this->portRepository
+            ->getPortsByDeviceId($device_id, $status);
+
         $arrayPorts = [];
 
         foreach ($ports as $port) {

@@ -10,11 +10,9 @@ use Illuminate\Support\Facades\DB;
 
 class ConditionerService
 {
-    private $conditionersRep;
-
-    public function __construct(ConditionerRepository $conditionersRep)
-    {
-        $this->conditionersRep = $conditionersRep;
+    public function __construct(
+        private ConditionerRepository $conditionersRep
+    ) {
     }
 
     /**
@@ -24,7 +22,6 @@ class ConditionerService
      */
     public function store(array $data): int
     {
-
         $conditioner = new Conditioner();
         $conditioner->model = $data['model_id'];
         $conditioner->id_room = $data['room_id'];
@@ -63,13 +60,32 @@ class ConditionerService
             if ($data['temp'] == 'off') {
                 $conditionerCode = $this->conditionersRep
                     ->getOffCode((int) $kind, (string) $data['temp']);
+
                 $this->conditionersRep
-                    ->updateOrCreate($conditionerCode ?: null, (string) $data['code'], (int) $kind, null, null, null, true);
+                    ->updateOrCreate(
+                        $conditionerCode ?: null,
+                        (string) $data['code'],
+                        (int) $kind,
+                        null, null, null, true
+                    );
             } else {
                 $conditionerCode = $this->conditionersRep
-                    ->getCode((int) $kind, (string) $data['operationMode'], (string) $data['fanMode'], (float) $data['temp']);
+                    ->getCode(
+                        (int) $kind,
+                        (string) $data['operationMode'],
+                        (string) $data['fanMode'],
+                        (float) $data['temp']
+                    );
+
                 $this->conditionersRep
-                    ->updateOrCreate($conditionerCode ?: null, (string) $data['code'], (int) $kind, (string) $data['operationMode'], (string) $data['fanMode'], (float) $data['temp']);
+                    ->updateOrCreate(
+                        $conditionerCode ?: null,
+                        (string) $data['code'],
+                        (int) $kind,
+                        (string) $data['operationMode'],
+                        (string) $data['fanMode'],
+                        (float) $data['temp']
+                    );
             }
         }
 

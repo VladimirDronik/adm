@@ -10,21 +10,12 @@ use Illuminate\Support\Facades\DB;
 
 class MotionsensorService
 {
-    private $motionsensor_object_service;
-
-    private $objectService;
-
-    private $portRepository;
-
-    private $portService;
-
-    public function __construct(MotionSensorObjectService $motionsensor_object_service, ObjectService $objectService,
-        PortRepository $portRepository, PortService $portService)
-    {
-        $this->motionsensor_object_service = $motionsensor_object_service;
-        $this->objectService = $objectService;
-        $this->portRepository = $portRepository;
-        $this->portService = $portService;
+    public function __construct(
+        private MotionSensorObjectService $motionsensor_object_service,
+        private ObjectService $objectService,
+        private PortRepository $portRepository,
+        private PortService $portService
+    ) {
     }
 
     public function prepareMotionsensor(Motionsensor $motionsensor, array $data)
@@ -49,7 +40,6 @@ class MotionsensorService
 
     public function store(array $data): int
     {
-
         $deviceID = $data['device_id'];
         $portID = $data['port_id'];
 
@@ -58,18 +48,30 @@ class MotionsensorService
 
         DB::transaction(function () use (&$motionsensor, $data, $deviceID, $portID) {
             $unique_name = HomeObject::getUniqueObjectName(0, $motionsensor->name);
-            $object = $this->motionsensor_object_service->createMotionsensorObject($unique_name);
-            $motionsensor->id_object = $object->id;
 
+            $object = $this->motionsensor_object_service
+                ->createMotionsensorObject($unique_name);
+
+            $motionsensor->id_object = $object->id;
             $motionsensor->save();
 
-            $idNewMethod = $this->motionsensor_object_service->createMotionsensorObjectMethods($object->id);
+            $idNewMethod = $this->motionsensor_object_service
+                ->createMotionsensorObjectMethods($object->id);
 
             if ($portID) {
+                Port::where('id', $portID)
+                    ->update([
+                        'object' => $object->id,
+                        'method' => $idNewMethod,
+                        'status' => 'IN',
+                        'comment' => $data['name'],
+                    ]);
 
-                Port::where('id', $portID)->update(['object' => $object->id, 'method' => $idNewMethod,
-                    'status' => 'IN', 'comment' => $data['name']]);
-                ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($portID), 'IN');
+                ConfigMegaService::setPortType(
+                    $deviceID,
+                    $this->portRepository->getNumPortByID($portID),
+                    'IN'
+                );
             }
         });
 
@@ -83,25 +85,38 @@ class MotionsensorService
 
     public function update(Motionsensor $motionsensor, array $data): int
     {
-
         DB::transaction(function () use (&$motionsensor, $data) {
             if ($this->isUpdateAutoObjectName($motionsensor, $data['name'])) {
-                $motionsensor->iobject->name = HomeObject::getUniqueObjectName($motionsensor->iobject->id, trim($data['name']));
-                $motionsensor->iobject->save();
+                $motionsensor->iobject->name = HomeObject::getUniqueObjectName(
+                    $motionsensor->iobject->id,
+                    trim($data['name'])
+                );
 
+                $motionsensor->iobject->save();
             }
 
             if ($data['port_id']) {
+                ConfigMegaService::setPortType(
+                    $data['device_id'],
+                    $this->portRepository->getNumPortByID($data['port_id']),
+                    'IN'
+                );
 
-                ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port_id']), 'IN');
+                Port::where('object', $motionsensor->id_object)
+                    ->update([
+                        'object' => null,
+                        'method' => null,
+                        'comment' => '',
+                    ]);
 
-                Port::where('object', $motionsensor->id_object)->update(['object' => null, 'method' => null, 'comment' => '']);
-                Port::where('id', $data['port_id'])->update(['object' => $motionsensor->id_object,
-                    'method' => $this->objectService->getMethodByObject($motionsensor->id_object), 'comment' => $data['name'],
-                    'status' => 'IN']);
-
+                Port::where('id', $data['port_id'])
+                    ->update([
+                        'object' => $motionsensor->id_object,
+                        'method' => $this->objectService->getMethodByObject($motionsensor->id_object),
+                        'comment' => $data['name'],
+                        'status' => 'IN',
+                    ]);
             }
-
             $this->prepareMotionsensor($motionsensor, $data);
             $motionsensor->save();
         });
@@ -119,7 +134,8 @@ class MotionsensorService
     {
         $motionsensor = Motionsensor::findOrFail($id);
 
-        Port::where('object', $motionsensor->id_object)->update(['object' => null, 'method' => null, 'comment' => '']);
+        Port::where('object', $motionsensor->id_object)
+            ->update(['object' => null, 'method' => null, 'comment' => '']);
 
         if ($motionsensor->iobject && $motionsensor->iobject->is_system) {
             DB::transaction(function () use (&$motionsensor) {

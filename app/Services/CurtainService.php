@@ -16,17 +16,13 @@ use Illuminate\Support\Facades\DB;
 
 class CurtainService
 {
-    private $curtainObjectService;
-
-    public function __construct(CurtainObjectService $service)
-    {
-        $this->curtainObjectService = $service;
-
+    public function __construct(
+        private CurtainObjectService $curtainObjectService
+    ) {
     }
 
     public function prepare(Curtain $curtain, array $data)
     {
-
         $curtain->name = trim($data['name']);
         if (isset($data['type'])) {
             $curtain->type = $data['type'];
@@ -50,10 +46,12 @@ class CurtainService
 
     public function update(Curtain $curtain, array $data): int
     {
-
         DB::transaction(function () use (&$curtain, $data) {
             if ($this->isUpdateAutoObjectName($curtain, $data['name'])) {
-                $curtain->object->name = HomeObject::getUniqueObjectName($curtain->object->id, trim($data['name']));
+                $curtain->object->name = HomeObject::getUniqueObjectName(
+                    $curtain->object->id,
+                    trim($data['name'])
+                );
                 $curtain->object->save();
             }
             $curtain->id_object = (int) $data['id_object'];
@@ -62,7 +60,11 @@ class CurtainService
 
             //Сохраняем данные в таблицу Алисы или включаем запись если она есть уже
             if (isset($data['alice_checkbox'])) {
-                AliceDevicesService::addOrReplaceDevice($curtain->id_object, $data['alice_command'], $data['room']);
+                AliceDevicesService::addOrReplaceDevice(
+                    $curtain->id_object,
+                    $data['alice_command'],
+                    $data['room']
+                );
             } else {
                 AliceDevicesService::setActive($curtain->id_object, 0);
             }
@@ -72,12 +74,32 @@ class CurtainService
                 PortService::removeObjectOnPorts($data['id_object']);
 
                 //Настройка контроллера для порта открытия
-                ConfigMegaService::setPortType($data['device_id'], PortRepository::getNumberPortByID($data['port_id_open']), 'OUT');
-                PortService::setObjectOnSelectedPort($data['id_object'], $data['port_id_open'], 'OUT', $data['name']);
+                ConfigMegaService::setPortType(
+                    $data['device_id'],
+                    PortRepository::getNumberPortByID($data['port_id_open']),
+                    'OUT'
+                );
+
+                PortService::setObjectOnSelectedPort(
+                    $data['id_object'],
+                    $data['port_id_open'],
+                    'OUT',
+                    $data['name']
+                );
 
                 //Настройка контроллера для порта закрытия
-                ConfigMegaService::setPortType($data['device_id'], PortRepository::getNumberPortByID($data['port_id_close']), 'OUT');
-                PortService::setObjectOnSelectedPort($data['id_object'], $data['port_id_close'], 'OUT', $data['name']);
+                ConfigMegaService::setPortType(
+                    $data['device_id'],
+                    PortRepository::getNumberPortByID($data['port_id_close']),
+                    'OUT'
+                );
+
+                PortService::setObjectOnSelectedPort(
+                    $data['id_object'],
+                    $data['port_id_close'],
+                    'OUT',
+                    $data['name']
+                );
             } else {
                 $curtain->update([
                     'address' => $data['address'],
@@ -96,28 +118,51 @@ class CurtainService
 
     public function store(array $data): int
     {
-
         $curtain = new Curtain();
         $deviceID = $data['device_id'];
         $this->prepare($curtain, $data);
 
         DB::transaction(function () use (&$curtain, $data, $deviceID) {
             $unique_name = HomeObject::getUniqueObjectName(0, $curtain->name);
-            $object = $this->curtainObjectService->createCurtainObject($unique_name);
+
+            $object = $this->curtainObjectService
+                ->createCurtainObject($unique_name);
+
             $curtain->id_object = $object->id;
             $curtain->save();
 
             if ($data['place'] == Curtain::PLACE_PORT || $data['place'] == Curtain::PLACE_PHASE) {
-                $this->curtainObjectService->createCurtainObjectMethods($object->id);
+                $this->curtainObjectService
+                    ->createCurtainObjectMethods($object->id);
 
-                PortService::setObjectOnSelectedPort($object->id, $data['port_id_open'], 'OUT', $curtain->name);
-                ConfigMegaService::setPortType($deviceID, PortRepository::getNumberPortByID($data['port_id_open']), 'OUT');
+                PortService::setObjectOnSelectedPort(
+                    $object->id,
+                    $data['port_id_open'],
+                    'OUT',
+                    $curtain->name
+                );
 
-                PortService::setObjectOnSelectedPort($object->id, $data['port_id_close'], 'OUT', $curtain->name);
-                ConfigMegaService::setPortType($deviceID, PortRepository::getNumberPortByID($data['port_id_close']), 'OUT');
+                ConfigMegaService::setPortType(
+                    $deviceID,
+                    PortRepository::getNumberPortByID($data['port_id_open']),
+                    'OUT'
+                );
 
+                PortService::setObjectOnSelectedPort(
+                    $object->id,
+                    $data['port_id_close'],
+                    'OUT',
+                    $curtain->name
+                );
+
+                ConfigMegaService::setPortType(
+                    $deviceID,
+                    PortRepository::getNumberPortByID($data['port_id_close']),
+                    'OUT'
+                );
             } else {
-                $this->curtainObjectService->createCurtainObjectMethods($object->id, true);
+                $this->curtainObjectService
+                    ->createCurtainObjectMethods($object->id, true);
 
                 $curtain->update([
                     'address' => $data['address'],
@@ -141,8 +186,13 @@ class CurtainService
 
         PortService::removeObjectOnPorts($curtain->id_object);
 
-        Port::where('object', $curtain->id_object)->update(['object' => null, 'method' => null,
-            'comment' => '', 'status' => 'OUT']);
+        Port::where('object', $curtain->id_object)
+            ->update([
+                'object' => null,
+                'method' => null,
+                'comment' => '',
+                'status' => 'OUT',
+            ]);
 
         if ($curtain->object && $curtain->object->is_system) {
             DB::transaction(function () use (&$curtain) {

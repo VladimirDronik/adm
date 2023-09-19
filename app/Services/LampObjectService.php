@@ -105,7 +105,6 @@ class LampObjectService
 
     private function updateMethodOff(int $object_id, $device_id, $port_id)
     {
-
         if ($device_id && ! is_null($port_id)) {
             $easyString = $device_id.';'.$port_id.':0';
         } else {
@@ -115,8 +114,9 @@ class LampObjectService
         //Обнуляем все простые действия, которые были назначены для этого порта
         Method::where('easy', $easyString)->update(['easy' => null]);
 
-        Method::where('id_object', $object_id)->where('name', 'Выключить лампу')->
-        update(['easy' => $easyString]);
+        Method::where('id_object', $object_id)
+            ->where('name', 'Выключить лампу')
+            ->update(['easy' => $easyString]);
     }
 
     private function updateMethodOn(int $object_id, $device_id, $port_id)
@@ -130,13 +130,13 @@ class LampObjectService
         //Обнуляем все простые действия, которые были назначены для этого порта
         Method::where('easy', $easyString)->update(['easy' => null]);
 
-        Method::where('id_object', $object_id)->where('name', 'Включить лампу')->
-        update(['easy' => $easyString]);
+        Method::where('id_object', $object_id)
+            ->where('name', 'Включить лампу')
+            ->update(['easy' => $easyString]);
     }
 
     private function updateMethodOnOff(int $object_id, $device_id, $port_id)
     {
-
         if ($device_id && ! is_null($port_id)) {
             $easyString = $device_id.';'.$port_id.':2';
         } else {
@@ -146,8 +146,9 @@ class LampObjectService
         //Обнуляем все простые действия, которые были назначены для этого порта
         Method::where('easy', $easyString)->update(['easy' => null]);
 
-        Method::where('id_object', $object_id)->where('name', 'Смена состояния лампы')->
-        update(['easy' => $easyString]);
+        Method::where('id_object', $object_id)
+            ->where('name', 'Смена состояния лампы')
+            ->update(['easy' => $easyString]);
     }
 
     /**
@@ -167,10 +168,8 @@ class LampObjectService
 
     public function updateLampObjectMethods(int $object_id, $device_id, $port_id)
     {
-
         $this->updateMethodOff($object_id, $device_id, $port_id);
         $this->updateMethodOn($object_id, $device_id, $port_id);
         $this->updateMethodOnOff($object_id, $device_id, $port_id);
-
     }
 }

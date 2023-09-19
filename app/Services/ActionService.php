@@ -18,11 +18,9 @@ use App\Repositories\ViewRepository;
 
 class ActionService
 {
-    private $actionRepository;
-
-    public function __construct(ActionRepository $actionRepository)
-    {
-        $this->actionRepository = $actionRepository;
+    public function __construct(
+        private ActionRepository $actionRepository
+    ) {
     }
 
     /**
@@ -61,7 +59,6 @@ class ActionService
             $delete = false;
 
             switch ($action->type) {
-
                 case 'script':
                     $script = ScriptRepository::getNameById($action->relate);
 
@@ -70,7 +67,6 @@ class ActionService
                     } else {
                         $delete = true;
                     }
-
                     break;
 
                 case 'method':
@@ -82,7 +78,6 @@ class ActionService
                     } else {
                         $delete = true;
                     }
-
                     break;
 
                 case 'notification':
@@ -97,7 +92,6 @@ class ActionService
                     } else {
                         $delete = true;
                     }
-
                     break;
 
                 case 'property':
@@ -109,7 +103,6 @@ class ActionService
                     } else {
                         $delete = true;
                     }
-
                     break;
 
                 case 'view':
@@ -121,7 +114,6 @@ class ActionService
                     } else {
                         $delete = true;
                     }
-
                     break;
 
                 case 'log':
@@ -131,7 +123,6 @@ class ActionService
                 case 'alice':
                     $nameValue = $action->value;
                     break;
-
             }
 
             //Если был где-то указан флаг, это значит, что не удалось найти связанный объект, метод, скрипт и т.д.
@@ -139,10 +130,13 @@ class ActionService
             if ($delete) {
                 $action->delete();
             } else {
-                $resultActions[] = ['id' => $action->id, 'type' => $action->type, 'nameValue' => $nameValue,
-                    'objectName' => $objectName];
+                $resultActions[] = [
+                    'id' => $action->id,
+                    'type' => $action->type,
+                    'nameValue' => $nameValue,
+                    'objectName' => $objectName,
+                ];
             }
-
         }
 
         return $resultActions;
@@ -170,7 +164,6 @@ class ActionService
         $action->active = 1;
 
         switch ($actionParams['typeAction']) {
-
             case 'script':
                 $action->relate = $actionParams['action_script'];
                 break;
@@ -211,11 +204,9 @@ class ActionService
                 }
 
             default: break;
-
         }
 
         return $action;
-
     }
 
     public function delete($id_action)
@@ -240,6 +231,5 @@ class ActionService
         foreach ($tempActions as $tempAction) {
             $this->addAction($idEvent, $tempAction);
         }
-
     }
 }

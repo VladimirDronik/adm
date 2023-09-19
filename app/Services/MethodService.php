@@ -13,9 +13,14 @@ class MethodService
     public function delete(int $id)
     {
         DB::transaction(function () use ($id) {
-            Port::whereNotNull('method')->where('method', $id)
+            Port::whereNotNull('method')
+                ->where('method', $id)
                 ->update(['method' => null]);
-            SchedulerTask::whereNotNull('method')->where('method', $id)->update(['method' => null, 'object' => null]);
+
+            SchedulerTask::whereNotNull('method')
+                ->where('method', $id)
+                ->update(['method' => null, 'object' => null]);
+
             Method::destroy($id);
         });
 

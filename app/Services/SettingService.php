@@ -35,7 +35,6 @@ class SettingService
 
     public function update(Setting $setting, array $data)
     {
-
         $this->prepareSetting($setting, $data);
         $setting->save();
 
@@ -67,7 +66,6 @@ class SettingService
      */
     private function changeTimeZone(string $timeZone)
     {
-
         // Замена часового пояса в laravel
         $path = base_path('.env');
 

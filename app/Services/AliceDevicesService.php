@@ -21,7 +21,10 @@ class AliceDevicesService
             $room = null;
         }
 
-        Alice::updateOrCreate(['id_object' => $idObject], ['name' => $name, 'room' => $room, 'active' => 1]);
+        Alice::updateOrCreate(
+            ['id_object' => $idObject],
+            ['name' => $name, 'room' => $room, 'active' => 1]
+        );
     }
 
     public static function setActive($idObject, $statusActive)
@@ -32,6 +35,5 @@ class AliceDevicesService
             $aliceDevice->active = $statusActive;
             $aliceDevice->save();
         }
-
     }
 }

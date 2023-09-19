@@ -17,7 +17,6 @@ class EngineeringService
 {
     public function delete(int $idObject, bool $delMenuAndPages)
     {
-
         //HomeObject::deleteAutoObject(idObject);
         $menuRep = new MenuRepository();
 
@@ -40,12 +39,10 @@ class EngineeringService
                     $page->delete();
                 }
             }
-
             HomeObject::deleteAutoObject($idObject);
             $object->delete();
         });
 
         return true;
-
     }
 }

@@ -16,9 +16,9 @@ class SceneService
         }
 
         DB::transaction(function () use ($scene) {
-            Scene::where('sort', '>', max($scene->sort, 0))->update([
-                'sort' => DB::raw('sort-1'),
-            ]);
+            Scene::where('sort', '>', max($scene->sort, 0))
+                ->update(['sort' => DB::raw('sort-1')]);
+
             $scene->delete();
         });
 
@@ -36,8 +36,9 @@ class SceneService
         $min = Scene::min('sort');
         $max = Scene::max('sort');
 
-        if (($scene->sort === $min && $data['direction'] === 'up')
-            || ($scene->sort === $max && $data['direction'] === 'down')) {
+        if (($scene->sort === $min && $data['direction'] === 'up') ||
+            ($scene->sort === $max && $data['direction'] === 'down')
+        ) {
             return true;
         }
 
@@ -45,7 +46,9 @@ class SceneService
         $scene->sort += $data['direction'] === 'up' ? -1 : 1;
 
         DB::transaction(function () use ($scene, $previous_sort) {
-            Scene::where('sort', $scene->sort)->update(['sort' => $previous_sort]);
+            Scene::where('sort', $scene->sort)
+                ->update(['sort' => $previous_sort]);
+
             $scene->save();
         });
 
@@ -54,7 +57,8 @@ class SceneService
 
     public function changeActive(int $id, int $active)
     {
-        Scene::where('id', $id)->update(['active' => $active]);
+        Scene::where('id', $id)
+            ->update(['active' => $active]);
 
         return true;
     }

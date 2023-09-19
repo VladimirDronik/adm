@@ -34,7 +34,8 @@ class CountObjectService
         $script_name = ScriptsTableSeeder::getCheckCountScript()['name'];
 
         return Script::where('name', $script_name)
-            ->where('system', 1)->value('id');
+            ->where('system', 1)
+            ->value('id');
     }
 
     private function getScriptIdForResetMethod(): ?int
@@ -42,7 +43,8 @@ class CountObjectService
         $script_name = ScriptsTableSeeder::getResetCountScript()['name'];
 
         return Script::where('name', $script_name)
-            ->where('system', 1)->value('id');
+            ->where('system', 1)
+            ->value('id');
     }
 
     /**

@@ -9,18 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class HygrostatService
 {
-    private $hygrostat_object_service;
-
-    private $port_service;
-
-    private $port_repository;
-
-    public function __construct(HygrostatObjectService $hygrostat_object_service,
-        PortService $portService, PortRepository $portRepository)
-    {
-        $this->hygrostat_object_service = $hygrostat_object_service;
-        $this->port_service = $portService;
-        $this->port_repository = $portRepository;
+    public function __construct(
+        private HygrostatObjectService $hygrostat_object_service,
+        private PortService $port_service,
+        private PortRepository $port_repository
+    ) {
     }
 
     /**
@@ -51,7 +44,6 @@ class HygrostatService
 
     public function prepare(Hygrostat $hygrostat, array $data)
     {
-
         unset($data['object_type']);
         unset($data['device_id']);
         unset($data['placetype_radio']);
@@ -75,7 +67,6 @@ class HygrostatService
      */
     public function store(array $data): int
     {
-
         $hygrostat = new Hygrostat();
 
         $placeType = $data['placetype'];

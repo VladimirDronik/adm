@@ -23,7 +23,6 @@ class UserService
 
     public function store(array $data)
     {
-
         $user = new User();
 
         $this->prepareUser($user, $data);

@@ -8,12 +8,15 @@ class SettingRepository
 {
     public function getAll($pagination_count = 30)
     {
-        return Setting::orderBy('name')->paginate($pagination_count);
+        return Setting::orderBy('name')
+            ->paginate($pagination_count);
     }
 
     public static function get($name)
     {
-        return Setting::where('name', $name)->first()->value;
+        return Setting::where('name', $name)
+            ->first()
+            ->value;
     }
 
     public static function getById($id)
@@ -28,6 +31,7 @@ class SettingRepository
 
     public static function set($name, $value)
     {
-        Setting::where('name', $name)->update(['value' => $value]);
+        Setting::where('name', $name)
+            ->update(['value' => $value]);
     }
 }

@@ -9,11 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class VirtualService
 {
-    private $virtual_object_service;
-
-    public function __construct(VirtualObjectService $virtual_object_service)
-    {
-        $this->virtual_object_service = $virtual_object_service;
+    public function __construct(
+        private VirtualObjectService $virtual_object_service
+    ) {
     }
 
     /**
@@ -37,7 +35,8 @@ class VirtualService
             $virtual->delete();
         }
 
-        Port::where('object', $virtual->id_object)->update(['object' => null, 'method' => null]);
+        Port::where('object', $virtual->id_object)
+            ->update(['object' => null, 'method' => null]);
 
         return true;
     }
@@ -54,7 +53,6 @@ class VirtualService
      */
     public function store(array $data): int
     {
-
         $virtual = new Virtual();
         $this->preparevirtual($virtual, $data);
 
@@ -66,7 +64,6 @@ class VirtualService
             $virtual->method_on = $methods['method_on'];
             $virtual->method_off = $methods['method_off'];
             $virtual->save();
-
         });
 
         return $virtual->id;
@@ -84,23 +81,27 @@ class VirtualService
      */
     public function update(Virtual $virtual, array $data): int
     {
-
         DB::transaction(function () use (&$virtual, $data) {
             if ($this->isUpdateAutoObjectName($virtual, $data['name'])) {
-                $virtual->object->name = HomeObject::getUniqueObjectName($virtual->object->id, trim($data['name']));
+                $virtual->object->name = HomeObject::getUniqueObjectName(
+                    $virtual->object->id,
+                    trim($data['name'])
+                );
                 $virtual->object->save();
-
             }
             $this->prepareVirtual($virtual, $data);
             $virtual->save();
 
             //Сохраняем данные в таблицу Алисы или включаем запись если она есть уже
             if (isset($data['alice_checkbox'])) {
-                AliceDevicesService::addOrReplaceDevice($virtual->object->id, $data['alice_command'], $data['room']);
+                AliceDevicesService::addOrReplaceDevice(
+                    $virtual->object->id,
+                    $data['alice_command'],
+                    $data['room']
+                );
             } else {
                 AliceDevicesService::setActive($virtual->object->id, 0);
             }
-
         });
 
         return $virtual->id;

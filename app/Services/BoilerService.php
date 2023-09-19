@@ -17,18 +17,19 @@ use Illuminate\Support\Facades\DB;
 
 class BoilerService
 {
-    private $boiler_object_service;
-
-    public function __construct(BoilerObjectService $boilerObjectService)
-    {
-        $this->boiler_object_service = $boilerObjectService;
+    public function __construct(
+        private BoilerObjectService $boiler_object_service
+    ) {
     }
 
     public function update(Boiler $boiler, array $data): int
     {
         DB::transaction(function () use (&$boiler, $data) {
             if ($this->isUpdateAutoObjectName($boiler, $data['name'])) {
-                $boiler->object->name = HomeObject::getUniqueObjectName($boiler->id_object, trim($data['name']));
+                $boiler->object->name = HomeObject::getUniqueObjectName(
+                    $boiler->id_object,
+                    trim($data['name'])
+                );
                 $boiler->object->save();
             }
 
@@ -37,7 +38,9 @@ class BoilerService
             $boiler->thermostat = $data['thermostat'];
             $boiler->boiler = $data['boiler'];
             $boiler->target_water_temp = $data['target_water_temp'];
-            $boiler->id_outside_thermostat = array_key_exists('id_outside_thermostat', $data) ? $data['id_outside_thermostat'] : null;
+            $boiler->id_outside_thermostat = array_key_exists('id_outside_thermostat', $data) ?
+                $data['id_outside_thermostat'] :
+                null;
             $boiler->mode = $data['mode'];
 
             $boiler->save();
@@ -90,7 +93,9 @@ class BoilerService
         $boiler->name = $data['name'];
         $boiler->ip_address = $data['ip_address_boiler'];
         $boiler->protocol = $data['type_boiler'];
-        $boiler->id_outside_thermostat = array_key_exists('id_outside_thermostat', $data) ? $data['id_outside_thermostat'] : null;
+        $boiler->id_outside_thermostat = array_key_exists('id_outside_thermostat', $data) ?
+            $data['id_outside_thermostat'] :
+            null;
         $boiler->target_water_temp = Boiler::DEFAULT_GVS_TEMP;
         $boiler->mode = Boiler::PROP_MANUALMODE;
 
@@ -99,7 +104,6 @@ class BoilerService
         $boiler->lock = 0;
 
         DB::transaction(function () use (&$boiler) {
-
             $unique_name = HomeObject::getUniqueObjectName(0, $boiler->name);
             $object = $this->boiler_object_service->createBoilerObject($unique_name);
             $this->boiler_object_service->createBoilerObjectMethodsWithEvents($object->id);

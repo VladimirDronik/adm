@@ -16,19 +16,14 @@ use Illuminate\Support\Facades\DB;
 
 class CarbmonoxideService
 {
-    private $carbmonoxide_object_service;
-
-    private $portRepository;
-
-    public function __construct(CarbmonoxideObjectService $objectService, PortRepository $portRepository)
-    {
-        $this->carbmonoxide_object_service = $objectService;
-        $this->portRepository = $portRepository;
+    public function __construct(
+        private CarbmonoxideObjectService $carbmonoxide_object_service,
+        private PortRepository $portRepository
+    ) {
     }
 
     public function prepare(Carbmonoxide $carbmonoxide, array $data)
     {
-
         unset($data['device_id']);
         unset($data['port']);
 
@@ -46,7 +41,6 @@ class CarbmonoxideService
      */
     public function store(array $data): int
     {
-
         $carbmonoxide = new Carbmonoxide();
 
         $port = $data['port'] ?? null;
@@ -56,22 +50,30 @@ class CarbmonoxideService
         $carbmonoxide->cur_value = 0;
 
         DB::transaction(function () use (&$carbmonoxide, $port, $deviceID) {
-
             $unique_name = HomeObject::getUniqueObjectName(0, $carbmonoxide->name);
-            $object = $this->carbmonoxide_object_service->createCarbmonoxideObject($unique_name);
-            $this->carbmonoxide_object_service->createCarbmonoxideObjectMethodsWithEvents($object->id);
+            $object = $this->carbmonoxide_object_service
+                ->createCarbmonoxideObject($unique_name);
+
+            $this->carbmonoxide_object_service
+                ->createCarbmonoxideObjectMethodsWithEvents($object->id);
+
             $carbmonoxide->id_object = $object->id;
             $carbmonoxide->save();
 
             if ($port) {
+                Port::where('id', $port)->update([
+                    'object' => $object->id,
+                    'method' => null,
+                    'status' => 'ADC',
+                    'comment' => $carbmonoxide['name'],
+                ]);
 
-                Port::where('id', $port)->update(['object' => $object->id, 'method' => null,
-                    'status' => 'ADC', 'comment' => $carbmonoxide['name']]);
-
-                ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($port), 'ADC');
-
+                ConfigMegaService::setPortType(
+                    $deviceID,
+                    $this->portRepository->getNumPortByID($port),
+                    'ADC'
+                );
             }
-
         });
 
         return $carbmonoxide->id;
@@ -81,8 +83,12 @@ class CarbmonoxideService
     {
         $carbmonoxide = Carbmonoxide::findOrFail($id);
 
-        Port::where('object', $carbmonoxide->id_object)->update(['object' => null, 'comment' => '',
-            'status' => 'IN']);
+        Port::where('object', $carbmonoxide->id_object)
+            ->update([
+                'object' => null,
+                'comment' => '',
+                'status' => 'IN',
+            ]);
 
         if ($carbmonoxide->iobject && $carbmonoxide->iobject->is_system) {
             DB::transaction(function () use (&$carbmonoxide) {
@@ -103,23 +109,33 @@ class CarbmonoxideService
 
     public function update(Carbmonoxide $carbmonoxide, array $data): int
     {
-
         DB::transaction(function () use (&$carbmonoxide, $data) {
             if ($this->isUpdateAutoObjectName($carbmonoxide, $data['name'])) {
-                $carbmonoxide->iobject->name = HomeObject::getUniqueObjectName($carbmonoxide->iobject->id, trim($data['name']));
+                $carbmonoxide->iobject->name = HomeObject::getUniqueObjectName(
+                    $carbmonoxide->iobject->id,
+                    trim($data['name'])
+                );
                 $carbmonoxide->iobject->save();
-
             }
 
             if ($data['port']) {
+                Port::where('object', $carbmonoxide->id_object)->update([
+                    'object' => null,
+                    'comment' => '',
+                    'status' => 'IN',
+                ]);
 
-                Port::where('object', $carbmonoxide->id_object)->update(['object' => null, 'comment' => '',
-                    'status' => 'IN']);
-                Port::where('id', $data['port'])->update(['object' => $carbmonoxide->id_object,
-                    'comment' => $data['name'], 'status' => 'ADC']);
+                Port::where('id', $data['port'])->update([
+                    'object' => $carbmonoxide->id_object,
+                    'comment' => $data['name'],
+                    'status' => 'ADC',
+                ]);
 
-                ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port']), 'ADC');
-
+                ConfigMegaService::setPortType(
+                    $data['device_id'],
+                    $this->portRepository->getNumPortByID($data['port']),
+                    'ADC'
+                );
             }
 
             $this->prepare($carbmonoxide, $data);

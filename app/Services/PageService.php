@@ -16,12 +16,14 @@ class PageService
 {
     public function updateName(int $id, string $name)
     {
-        Page::where('id', $id)->update(['name' => $this->setNameIfEmpty($name)]);
+        Page::where('id', $id)
+            ->update(['name' => $this->setNameIfEmpty($name)]);
     }
 
     public function updateLink(int $id, string $link)
     {
-        Page::where('id', $id)->update(['link' => $this->setLinkIfEmpty($link)]);
+        Page::where('id', $id)
+            ->update(['link' => $this->setLinkIfEmpty($link)]);
     }
 
     private function setNameIfEmpty($name)
@@ -44,7 +46,6 @@ class PageService
 
     public function store(array $data)
     {
-
         $page = new Page();
 
         $page->name = $this->setNameIfEmpty($data['name']);
@@ -62,7 +63,6 @@ class PageService
         $page = Page::find($idPage);
 
         DB::transaction(function () use ($page) {
-
             //Удаляем все элементы для страницы
             Elements::where('page', $page->id)->delete();
 

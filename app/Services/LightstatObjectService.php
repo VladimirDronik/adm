@@ -32,13 +32,16 @@ class LightstatObjectService
     public function getOrCreateCheckLightstatScriptId(): int
     {
         $script_id = Script::where('link', 'check_lightstat.php')
-            ->where('system', 1)->value('id');
+            ->where('system', 1)
+            ->value('id');
 
         if ($script_id) {
             return $script_id;
         }
 
-        return Script::forceCreate(ScriptsTableSeeder::getCheckLightstatScript())->id;
+        return Script::forceCreate(
+            ScriptsTableSeeder::getCheckLightstatScript()
+        )->id;
     }
 
     /**

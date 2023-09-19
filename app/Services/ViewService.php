@@ -29,7 +29,6 @@ class ViewService
         }
 
         if (trim($data['type']) == 'termostat') {
-
             $stringMethod = 'editable='.$data['enabletermostat'].';';
             $stringMethod .= 'lowval='.$data['lowval_termostat'].';';
             if ($safeType) {
@@ -121,24 +120,26 @@ class ViewService
         return true;
     }
 
-    //
-
     private function getSortMin($view): int
     {
         return (int) View::where('room', $view->room)
-            ->where('room_group', $view->room_group)->min('sort');
+            ->where('room_group', $view->room_group)
+            ->min('sort');
     }
 
     private function getSortMax($view): int
     {
         return (int) View::where('room', $view->room)
-            ->where('room_group', $view->room_group)->max('sort');
+            ->where('room_group', $view->room_group)
+            ->max('sort');
     }
 
     private function updatePreviousSortView($view, $previous_sort)
     {
-        View::where('room', $view->room)->where('room_group', $view->room_group)
-            ->where('sort', $view->sort)->update(['sort' => $previous_sort]);
+        View::where('room', $view->room)
+            ->where('room_group', $view->room_group)
+            ->where('sort', $view->sort)
+            ->update(['sort' => $previous_sort]);
     }
 
     public function sort(array $data)
@@ -152,8 +153,9 @@ class ViewService
         $min = $this->getSortMin($view);
         $max = $this->getSortMax($view);
 
-        if (($view->sort === $min && $data['direction'] === 'up')
-            || ($view->sort === $max && $data['direction'] === 'down')) {
+        if (($view->sort === $min && $data['direction'] === 'up') ||
+            ($view->sort === $max && $data['direction'] === 'down')
+        ) {
             return true;
         }
 

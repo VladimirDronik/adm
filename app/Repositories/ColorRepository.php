@@ -19,6 +19,9 @@ class ColorRepository
      */
     public static function getColors()
     {
-        return Color::select('id', 'name')->orderBy('name')->pluck('name', 'id')->toArray();
+        return Color::select('id', 'name')
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray();
     }
 }

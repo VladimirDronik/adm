@@ -10,14 +10,10 @@ use Illuminate\Support\Facades\DB;
 
 class DimmerService
 {
-    private $dimmer_object_service;
-
-    private $port_repository;
-
-    public function __construct(DimmerObjectService $dimmer_object_service, PortRepository $portRepository)
-    {
-        $this->dimmer_object_service = $dimmer_object_service;
-        $this->port_repository = $portRepository;
+    public function __construct(
+        private DimmerObjectService $dimmer_object_service,
+        private PortRepository $port_repository
+    ) {
     }
 
     /**
@@ -30,8 +26,13 @@ class DimmerService
     {
         $dimmer = Dimmer::findOrFail($id);
 
-        Port::where('object', $dimmer->id_object)->update(['object' => null, 'method' => null,
-            'comment' => '', 'status' => 'OUT']);
+        Port::where('object', $dimmer->id_object)
+            ->update([
+                'object' => null,
+                'method' => null,
+                'comment' => '',
+                'status' => 'OUT',
+            ]);
 
         if ($dimmer->object && $dimmer->object->is_system) {
             DB::transaction(function () use (&$dimmer) {
@@ -74,10 +75,17 @@ class DimmerService
             $dimmer->save();
 
             if ($data['port_id']) {
-                Port::where('id', $data['port_id'])->update(['object' => $object->id, 'comment' => $data['name']]);
+                Port::where('id', $data['port_id'])
+                    ->update([
+                        'object' => $object->id,
+                        'comment' => $data['name'],
+                    ]);
 
-                ConfigMegaService::setPortType($deviceID, $this->port_repository->getNumPortByID($data['port_id']), 'PWM');
-
+                ConfigMegaService::setPortType(
+                    $deviceID,
+                    $this->port_repository->getNumPortByID($data['port_id']),
+                    'PWM'
+                );
             }
         });
 
@@ -112,16 +120,34 @@ class DimmerService
 
             //Сохраняем данные в таблицу Алисы или включаем запись если она есть уже
             if (isset($data['alice_checkbox'])) {
-                AliceDevicesService::addOrReplaceDevice($dimmer->object->id, $data['alice_command'], $data['room']);
+                AliceDevicesService::addOrReplaceDevice(
+                    $dimmer->object->id,
+                    $data['alice_command'],
+                    $data['room']
+                );
             } else {
                 AliceDevicesService::setActive($dimmer->object->id, 0);
             }
 
             if ($data['port_id']) {
-                Port::where('object', $dimmer->id_object)->update(['object' => null, 'method' => null, 'comment' => '']);
-                Port::where('id', $data['port_id'])->update(['object' => $dimmer->id_object, 'comment' => $data['name']]);
+                Port::where('object', $dimmer->id_object)
+                    ->update([
+                        'object' => null,
+                        'method' => null,
+                        'comment' => '',
+                    ]);
 
-                ConfigMegaService::setPortType($deviceID, $this->port_repository->getNumPortByID($data['port_id']), 'PWM');
+                Port::where('id', $data['port_id'])
+                    ->update([
+                        'object' => $dimmer->id_object,
+                        'comment' => $data['name'],
+                    ]);
+
+                ConfigMegaService::setPortType(
+                    $deviceID,
+                    $this->port_repository->getNumPortByID($data['port_id']),
+                    'PWM'
+                );
             }
         });
 

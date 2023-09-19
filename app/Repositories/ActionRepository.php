@@ -18,6 +18,5 @@ class ActionRepository
     public function getAllActionsByEvent($idEvent)
     {
         return Action::where('id_event', $idEvent)->get();
-
     }
 }

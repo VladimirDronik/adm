@@ -8,8 +8,10 @@ class ScriptRepository
 {
     public function getAllToArray()
     {
-        return Script::orderBy('name')->select('id', 'name')
-            ->pluck('name', 'id')->toArray();
+        return Script::orderBy('name')
+            ->select('id', 'name')
+            ->pluck('name', 'id')
+            ->toArray();
     }
 
     public function getByName($name, bool $with_system = true, $pagination_count = 30)
@@ -29,12 +31,15 @@ class ScriptRepository
 
     public static function getNameById($idScript)
     {
-        return Script::select('name')->where('id', '=', $idScript)->first();
+        return Script::select('name')
+            ->where('id', '=', $idScript)
+            ->first();
     }
 
     public static function getIdByLink($link)
     {
-
-        return Script::select('id')->where('link', '=', $link)->first();
+        return Script::select('id')
+            ->where('link', '=', $link)
+            ->first();
     }
 }

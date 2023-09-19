@@ -62,7 +62,9 @@ class SchedulerService
         }
 
         $result = ! SchedulerTask::where('id', '!=', $id)
-            ->where('name', trim($name))->exists();
+            ->where('name', trim($name))
+            ->exists();
+
         $message = $result ? '' : 'Событие с таким названием уже существует. Выберите другое название';
 
         return compact('result', 'message');
@@ -94,6 +96,7 @@ class SchedulerService
                 }
                 $point->days = '';
                 break;
+
             default:
                 $point->days = implode(',', $data['days']);
                 break;
@@ -120,7 +123,8 @@ class SchedulerService
     public function updatePoint(array $data)
     {
         $point = SchedulerPoint::where('id_task', (int) $data['event_id'])
-            ->where('id', (int) $data['id'])->firstOrFail();
+            ->where('id', (int) $data['id'])
+            ->firstOrFail();
 
         $this->storePointType($point, $data);
         $point->save();
@@ -135,28 +139,33 @@ class SchedulerService
 
     public function deletePoint(int $id)
     {
-        SchedulerPoint::where('close', '!=', 1)->where('id', $id)->delete();
+        SchedulerPoint::where('close', '!=', 1)
+            ->where('id', $id)
+            ->delete();
 
         return true;
     }
 
     public function changeSystem(int $id, int $is_system)
     {
-        SchedulerTask::where('id', $id)->update(['is_system' => $is_system]);
+        SchedulerTask::where('id', $id)
+            ->update(['is_system' => $is_system]);
 
         return true;
     }
 
     public function changeHidden(int $id, int $is_hidden)
     {
-        SchedulerTask::where('id', $id)->update(['is_hidden' => $is_hidden]);
+        SchedulerTask::where('id', $id)
+            ->update(['is_hidden' => $is_hidden]);
 
         return true;
     }
 
     public function changeActive(int $id, int $active)
     {
-        SchedulerTask::where('id', $id)->update(['active' => $active]);
+        SchedulerTask::where('id', $id)
+            ->update(['active' => $active]);
 
         return true;
     }

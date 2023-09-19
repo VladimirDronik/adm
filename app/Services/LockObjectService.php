@@ -58,7 +58,8 @@ class LockObjectService
     private function getScriptId(array $scriptArray): int
     {
         $script = Script::where('name', $scriptArray['name'])
-            ->where('system', 1)->first();
+            ->where('system', 1)
+            ->first();
 
         if (! $script) {
             $script = Script::forceCreate($scriptArray);

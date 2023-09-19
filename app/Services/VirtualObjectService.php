@@ -81,8 +81,9 @@ class VirtualObjectService
         //Обнуляем все простые действия, которые были назначены для этого порта
         Method::where('easy', $easyString)->update(['easy' => null]);
 
-        Method::where('id_object', $object_id)->where('name', 'Включить реле')->
-        update(['easy' => $easyString]);
+        Method::where('id_object', $object_id)
+            ->where('name', 'Включить реле')
+            ->update(['easy' => $easyString]);
     }
 
     private function updateMethodOff(int $object_id, $device_id, $port_id)
@@ -97,13 +98,13 @@ class VirtualObjectService
         //Обнуляем все простые действия, которые были назначены для этого порта
         Method::where('easy', $easyString)->update(['easy' => null]);
 
-        Method::where('id_object', $object_id)->where('name', 'Выключить реле')->
-        update(['easy' => $easyString]);
+        Method::where('id_object', $object_id)
+            ->where('name', 'Выключить реле')
+            ->update(['easy' => $easyString]);
     }
 
     private function updateMethodOnOff(int $object_id, $device_id, $port_id)
     {
-
         if ($device_id && ! is_null($port_id)) {
             $easyString = $device_id.';'.$port_id.':2';
         } else {
@@ -113,8 +114,9 @@ class VirtualObjectService
         //Обнуляем все простые действия, которые были назначены для этого порта
         Method::where('easy', $easyString)->update(['easy' => null]);
 
-        Method::where('id_object', $object_id)->where('name', 'Переключить реле')->
-        update(['easy' => $easyString]);
+        Method::where('id_object', $object_id)
+            ->where('name', 'Переключить реле')
+            ->update(['easy' => $easyString]);
     }
 
     /**
@@ -137,10 +139,8 @@ class VirtualObjectService
 
     public function updateRelayObjectMethods(int $object_id, $device_id, $port_id)
     {
-
         $this->updateMethodOff($object_id, $device_id, $port_id);
         $this->updateMethodOn($object_id, $device_id, $port_id);
         $this->updateMethodOnOff($object_id, $device_id, $port_id);
-
     }
 }

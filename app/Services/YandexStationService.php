@@ -8,7 +8,6 @@ class YandexStationService
 {
     private function prepare(YandexStation $station, array $data)
     {
-
         if (($data['room'] ?? 0) == 0) {
             $data['room'] = null;
         }
@@ -18,7 +17,6 @@ class YandexStationService
 
     public function store(array $data): int
     {
-
         $station = new YandexStation();
         $this->prepare($station, $data);
         $station->active = 1;

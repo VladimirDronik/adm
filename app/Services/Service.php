@@ -43,7 +43,6 @@ class Service
      */
     public static function getListElements($idObject)
     {
-
         $eventRepository = new EventRepository();
         $viewRepository = new ViewRepository();
         $scriptRepository = new ScriptRepository();

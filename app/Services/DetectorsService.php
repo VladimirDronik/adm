@@ -50,7 +50,6 @@ class DetectorsService
 
     public function getManometrCount(): int
     {
-
         return Manometr::count();
     }
 }

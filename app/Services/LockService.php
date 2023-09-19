@@ -18,17 +18,13 @@ use Illuminate\Support\Facades\DB;
 
 class LockService
 {
-    private $lockObjectService;
-
-    public function __construct(LockObjectService $service)
-    {
-        $this->lockObjectService = $service;
-
+    public function __construct(
+        private LockObjectService $lockObjectService
+    ) {
     }
 
     public function prepare(Lock $lock, array $data)
     {
-
         $lock->name = trim($data['name']);
         if (isset($data['type'])) {
             $lock->type = $data['type'];
@@ -48,10 +44,12 @@ class LockService
 
     public function update(Lock $lock, array $data): int
     {
-
         DB::transaction(function () use (&$lock, $data) {
             if ($this->isUpdateAutoObjectName($lock, $data['name'])) {
-                $lock->object->name = HomeObject::getUniqueObjectName($lock->object->id, trim($data['name']));
+                $lock->object->name = HomeObject::getUniqueObjectName(
+                    $lock->object->id,
+                    trim($data['name'])
+                );
                 $lock->object->save();
             }
             $lock->id_object = (int) $data['id_object'];
@@ -60,7 +58,11 @@ class LockService
 
             //Сохраняем данные в таблицу Алисы или включаем запись если она есть уже
             if (isset($data['alice_checkbox'])) {
-                AliceDevicesService::addOrReplaceDevice($lock->id_object, $data['alice_command'], $data['room']);
+                AliceDevicesService::addOrReplaceDevice(
+                    $lock->id_object,
+                    $data['alice_command'],
+                    $data['room']
+                );
             } else {
                 AliceDevicesService::setActive($lock->id_object, 0);
             }
@@ -70,25 +72,49 @@ class LockService
 
             //Если штора находится на портах контроллера, то настраиваем эти порты, иначе штора находится на хитпро
             if ($lock->place == 'port') {
-
                 $idDevice = DeviceRepository::getDevByPort($data['port_id_open']);
 
                 //Настройка контроллера для порта открытия
                 if ($data['port_id_open']) {
-                    ConfigMegaService::setPortType($idDevice, PortRepository::getNumberPortByID($data['port_id_open']), 'OUT');
-                    PortService::setObjectOnSelectedPort($data['id_object'], $data['port_id_open'], 'OUT', $data['name']);
+                    ConfigMegaService::setPortType(
+                        $idDevice,
+                        PortRepository::getNumberPortByID($data['port_id_open']),
+                        'OUT'
+                    );
+
+                    PortService::setObjectOnSelectedPort(
+                        $data['id_object'], $data['port_id_open'],
+                        'OUT',
+                        $data['name']
+                    );
                 }
 
                 //Настройка контроллера для порта закрытия
                 if ($data['port_id_close']) {
-                    ConfigMegaService::setPortType($idDevice, PortRepository::getNumberPortByID($data['port_id_close']), 'OUT');
-                    PortService::setObjectOnSelectedPort($data['id_object'], $data['port_id_close'], 'OUT', $data['name']);
+                    ConfigMegaService::setPortType(
+                        $idDevice,
+                        PortRepository::getNumberPortByID($data['port_id_close']),
+                        'OUT'
+                    );
+
+                    PortService::setObjectOnSelectedPort(
+                        $data['id_object'],
+                        $data['port_id_close'],
+                        'OUT',
+                        $data['name']
+                    );
                 }
             } else {
-                PortService::setObjectOnHitePro($data['id_object'], $data['hitepro_device_open']);
-                PortService::setObjectOnHitePro($data['id_object'], $data['hitepro_device_close']);
-            }
+                PortService::setObjectOnHitePro(
+                    $data['id_object'],
+                    $data['hitepro_device_open']
+                );
 
+                PortService::setObjectOnHitePro(
+                    $data['id_object'],
+                    $data['hitepro_device_close']
+                );
+            }
         });
 
         return $lock->id;
@@ -101,7 +127,6 @@ class LockService
 
     public function store(array $data): int
     {
-
         $lock = new Lock();
         $deviceID = $data['device_id'];
         $this->prepare($lock, $data);
@@ -115,26 +140,45 @@ class LockService
             $this->lockObjectService->createLockObjectMethods($object->id, $data['device_id']);
 
             if ($data['place'] == 'port') {
-
                 if ($data['port_id_open']) {
-                    PortService::setObjectOnSelectedPort($object->id, $data['port_id_open'], 'OUT', $lock->name);
-                    ConfigMegaService::setPortType($deviceID, PortRepository::getNumberPortByID($data['port_id_open']), 'OUT');
+                    PortService::setObjectOnSelectedPort(
+                        $object->id,
+                        $data['port_id_open'],
+                        'OUT',
+                        $lock->name
+                    );
+
+                    ConfigMegaService::setPortType(
+                        $deviceID,
+                        PortRepository::getNumberPortByID($data['port_id_open']),
+                        'OUT'
+                    );
                 }
 
                 if ($data['port_id_close']) {
-                    PortService::setObjectOnSelectedPort($object->id, $data['port_id_close'], 'OUT', $lock->name);
-                    ConfigMegaService::setPortType($deviceID, PortRepository::getNumberPortByID($data['port_id_close']), 'OUT');
+                    PortService::setObjectOnSelectedPort(
+                        $object->id,
+                        $data['port_id_close'],
+                        'OUT',
+                        $lock->name
+                    );
+
+                    ConfigMegaService::setPortType(
+                        $deviceID,
+                        PortRepository::getNumberPortByID($data['port_id_close']),
+                        'OUT'
+                    );
                 }
-
             } elseif ($data['place'] == 'Hite-pro') {
-
                 if ($data['hitepro_device_open']) {
-                    HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_device_open'])
+                    HiteproDev::where('id_controller', $data['device_id'])
+                        ->where('id', $data['hitepro_device_open'])
                         ->update(['id_object' => $object->id]);
                 }
 
                 if ($data['hitepro_device_close']) {
-                    HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_device_close'])
+                    HiteproDev::where('id_controller', $data['device_id'])
+                        ->where('id', $data['hitepro_device_close'])
                         ->update(['id_object' => $object->id]);
                 }
             }
@@ -155,8 +199,13 @@ class LockService
 
         PortService::removeObjectOnPorts($lock->id_object);
 
-        Port::where('object', $lock->id_object)->update(['object' => null, 'method' => null,
-            'comment' => '', 'status' => 'OUT']);
+        Port::where('object', $lock->id_object)
+            ->update([
+                'object' => null,
+                'method' => null,
+                'comment' => '',
+                'status' => 'OUT',
+            ]);
 
         if ($lock->object && $lock->object->is_system) {
             DB::transaction(function () use (&$lock) {

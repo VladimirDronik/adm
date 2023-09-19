@@ -32,13 +32,16 @@ class HygrostatObjectService
     public function getOrCreateCheckHygrostatScriptId(): int
     {
         $script_id = Script::where('link', 'check_hygrostat.php')
-            ->where('system', 1)->value('id');
+            ->where('system', 1)
+            ->value('id');
 
         if ($script_id) {
             return $script_id;
         }
 
-        return Script::forceCreate(ScriptsTableSeeder::getCheckHygrostatScript())->id;
+        return Script::forceCreate(
+            ScriptsTableSeeder::getCheckHygrostatScript()
+        )->id;
     }
 
     /**

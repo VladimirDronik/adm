@@ -16,19 +16,14 @@ use Illuminate\Support\Facades\DB;
 
 class ManometrService
 {
-    private $manometr_object_service;
-
-    private $portRepository;
-
-    public function __construct(ManometrObjectService $objectService, PortRepository $portRepository)
-    {
-        $this->manometr_object_service = $objectService;
-        $this->portRepository = $portRepository;
+    public function __construct(
+        private ManometrObjectService $manometr_object_service,
+        private PortRepository $portRepository
+    ) {
     }
 
     public function prepare(Manometr $manometr, array $data)
     {
-
         unset($data['device_id']);
         unset($data['port']);
 
@@ -46,7 +41,6 @@ class ManometrService
      */
     public function store(array $data): int
     {
-
         $manometr = new Manometr();
 
         $port = $data['port'] ?? null;
@@ -56,7 +50,6 @@ class ManometrService
         $manometr->cur_value = 0;
 
         DB::transaction(function () use (&$manometr, $port, $deviceID) {
-
             $unique_name = HomeObject::getUniqueObjectName(0, $manometr->name);
             $object = $this->manometr_object_service->createManometrObject($unique_name);
             $this->manometr_object_service->createManometrObjectMethodsWithEvents($object->id);
@@ -64,14 +57,20 @@ class ManometrService
             $manometr->save();
 
             if ($port) {
+                Port::where('id', $port)
+                    ->update([
+                        'object' => $object->id,
+                        'method' => null,
+                        'status' => 'ADC',
+                        'comment' => $manometr['name'],
+                    ]);
 
-                Port::where('id', $port)->update(['object' => $object->id, 'method' => null,
-                    'status' => 'ADC', 'comment' => $manometr['name']]);
-
-                ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($port), 'ADC');
-
+                ConfigMegaService::setPortType(
+                    $deviceID,
+                    $this->portRepository->getNumPortByID($port),
+                    'ADC'
+                );
             }
-
         });
 
         return $manometr->id;
@@ -81,8 +80,12 @@ class ManometrService
     {
         $manometr = Manometr::findOrFail($id);
 
-        Port::where('object', $manometr->id_object)->update(['object' => null, 'comment' => '',
-            'status' => 'IN']);
+        Port::where('object', $manometr->id_object)
+            ->update([
+                'object' => null,
+                'comment' => '',
+                'status' => 'IN',
+            ]);
 
         if ($manometr->iobject && $manometr->iobject->is_system) {
             DB::transaction(function () use (&$manometr) {
@@ -103,25 +106,36 @@ class ManometrService
 
     public function update(Manometr $manometr, array $data): int
     {
-
         DB::transaction(function () use (&$manometr, $data) {
             if ($this->isUpdateAutoObjectName($manometr, $data['name'])) {
-                $manometr->iobject->name = HomeObject::getUniqueObjectName($manometr->iobject->id, trim($data['name']));
+                $manometr->iobject->name = HomeObject::getUniqueObjectName(
+                    $manometr->iobject->id,
+                    trim($data['name'])
+                );
                 $manometr->iobject->save();
-
             }
 
             if ($data['port']) {
+                Port::where('object', $manometr->id_object)
+                    ->update([
+                        'object' => null,
+                        'comment' => '',
+                        'status' => 'IN',
+                    ]);
 
-                Port::where('object', $manometr->id_object)->update(['object' => null, 'comment' => '',
-                    'status' => 'IN']);
-                Port::where('id', $data['port'])->update(['object' => $manometr->id_object,
-                    'comment' => $data['name'], 'status' => 'ADC']);
+                Port::where('id', $data['port'])
+                    ->update([
+                        'object' => $manometr->id_object,
+                        'comment' => $data['name'],
+                        'status' => 'ADC',
+                    ]);
 
-                ConfigMegaService::setPortType($data['device_id'], $this->portRepository->getNumPortByID($data['port']), 'ADC');
-
+                ConfigMegaService::setPortType(
+                    $data['device_id'],
+                    $this->portRepository->getNumPortByID($data['port']),
+                    'ADC'
+                );
             }
-
             $this->prepare($manometr, $data);
             $manometr->save();
         });

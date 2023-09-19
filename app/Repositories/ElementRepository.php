@@ -16,10 +16,10 @@ class ElementRepository
     {
         $elements = Elements::where('page', $idPage)
             ->where('parent', 0)
-            ->orderBy('sort')->paginate($pagination_count);
+            ->orderBy('sort')
+            ->paginate($pagination_count);
 
         foreach ($elements as $key => $element) {
-
             $element->value = $this->parser($element->value, 'status');
             $element->childs = null;
 
@@ -32,7 +32,6 @@ class ElementRepository
                     $element->childs = $childs;
                 }
             }
-
         }
 
         return $elements;

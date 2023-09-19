@@ -55,13 +55,16 @@ class BoilerObjectService
     public function getOrCreateCheckBoilerScriptId(): int
     {
         $script_id = Script::where('link', 'check_boiler.php')
-            ->where('system', 1)->value('id');
+            ->where('system', 1)
+            ->value('id');
 
         if ($script_id) {
             return $script_id;
         }
 
-        return Script::forceCreate(ScriptsTableSeeder::getCheckBoilerScript())->id;
+        return Script::forceCreate(
+            ScriptsTableSeeder::getCheckBoilerScript()
+        )->id;
     }
 
     /**

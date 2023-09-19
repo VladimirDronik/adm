@@ -12,11 +12,9 @@ use App\Models\Events;
 
 class EventService
 {
-    private $actionService;
-
-    public function __construct(ActionService $actionService)
-    {
-        $this->actionService = $actionService;
+    public function __construct(
+        private ActionService $actionService
+    ) {
     }
 
     public function update($idEvent, $data)
@@ -61,11 +59,11 @@ class EventService
 
         if (isset($data->tempActions)) {
             //Создание Actions из массива временных actions, которые были созданы ввиду отсутвия события
-            $this->actionService->createActionsByTempActions($data->tempActions, $event->id);
+            $this->actionService
+                ->createActionsByTempActions($data->tempActions, $event->id);
         }
 
         return $this->getEventData($event);
-
     }
 
     private function getEventData($event)

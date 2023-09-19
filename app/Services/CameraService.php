@@ -40,7 +40,6 @@ class CameraService
     public function update(Camera $camera, array $data): int
     {
         $this->prepare($camera, $data);
-
         $camera->save();
 
         return $camera->id;
@@ -72,7 +71,8 @@ class CameraService
 
     private function updatePreviousSortRoom($camera, $previous_sort)
     {
-        Camera::where('sort', $camera->sort)->update(['sort' => $previous_sort]);
+        Camera::where('sort', $camera->sort)
+            ->update(['sort' => $previous_sort]);
     }
 
     public function sort(array $data)
