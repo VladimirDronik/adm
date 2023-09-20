@@ -120,8 +120,11 @@ class DeviceService {
         $this->device->fill($data);
         //$this->device->active = 1;
 
-        $this->device->save();
+        if (array_key_exists('wb_led_port', $data)) {
+            $this->device->port = $data['wb_led_port'];
+        }
 
+        $this->device->save();
 
         if ($is_notify) {
             $this->notifyDeviceIp($data);
