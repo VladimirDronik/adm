@@ -97,9 +97,11 @@ class DeviceService {
             throw new \Exception('Не указан ip-адрес для подсети устройств в разделе «Настройка сети»');
         }
 
-        if(self::getStatus($data['id']))
-        $answer = file_get_contents($this->getDeviceIpNotificationParams($oldIP, $data['ip_address'], $sip));
-        else $answer = false;
+        if (self::getStatus($data['id'])) {
+            $answer = file_get_contents($this->getDeviceIpNotificationParams($oldIP, $data['ip_address'], $sip));
+        } else {
+            $answer = false;
+        }
 
         if ($answer === false) {
             throw new \Exception('Некорректный ответ от устройства или устройство недоступно');
@@ -241,23 +243,27 @@ class DeviceService {
         trimArray($data);
 
         if ($this->isDoubleDescription($data)) {
-            return [false, 'Устройство с таким названием уже существует. Необходимо изменить название', '', ''];
-        }
-
-
-        if (!$this->isValidIpAddress($data)) {
-            return [false, 'Недопустимый ip адрес'.$this->isValidIpAddress($data), '', ''];
+            return ['result' => false, 'message' => 'Устройство с таким названием уже существует. Необходимо изменить название', '', ''];
         }
 
         $device = Device::find($data['id']);
 
         if (!$device) {
-            return [false, 'Устройство не найдено', '', ''];
+            return ['result' => false, 'message' => 'Устройство не найдено', '', ''];
+        }
+
+        if ($device->devtype->name != 'WB-LED' && !$this->isValidIpAddress($data)) {
+            return ['result' => false, 'message' => 'Недопустимый ip адрес'.$this->isValidIpAddress($data), '', ''];
         }
 
         $device->description = $data['description'];
         $device->password = $data['password'] ?: null;
-        $device->port = $data['port'] ?: null;
+
+        if ($data['port'] === '0') {
+            $device->port = $data['port'];
+        } else {
+            $device->port = $data['port'] ?: null;
+        }
 
         // $configResult = ConfigMegaService::sendConfigToDevice($data['id']);
 
@@ -270,14 +276,16 @@ class DeviceService {
                 $device->save();
 
                 //Меняем адрес устойства
-                $this->notifyDeviceIp($data);
+                if ($device->devtype->name != 'WB-LED') {
+                    $this->notifyDeviceIp($data);
+                }
 
                 if ($extensionModules) {
                     $this->storeExtensionModules($extensionModules, $device);
                 }
 
                 DB::commit();
-                return true;
+                return ['result' => true];
             } catch (\Throwable $e) {
                 DB::rollback();
                 \Log::error('Ошибка при обновлении устройства', [$e->getMessage()]);
@@ -289,10 +297,10 @@ class DeviceService {
                 $this->storeExtensionModules($extensionModules, $device);
             }
 
-            return true;
+            return ['result' => true];
         }
 
-        return [false, 'Не удалось изменить данные устройства: '.$e->getMessage(), '', ''];
+        return ['result' => false, 'message' => 'Не удалось изменить данные устройства: '.$e->getMessage(), '', ''];
     }
 
 
