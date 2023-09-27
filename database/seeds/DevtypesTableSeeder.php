@@ -39,7 +39,7 @@ class DevtypesTableSeeder extends Seeder
             ],
             [
                 'name' => 'WB-LED',
-                'port_numbers' => 'in 0 3;out 4 7'
+                'port_numbers' => 'in 1 4;out 1 4'
             ],
         ];
 

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use App\Models\Device;
 use App\Repositories\DeviceRepository;
 use App\Services\ConfigMegaService;
 use App\Services\DeviceService;
@@ -64,6 +63,24 @@ class DeviceController extends Controller
             'result' => true, 'ports' => $ports,
             'type_device' => $typeDevice,
             'hiteProDevices' => [],
+        ]);
+    }
+
+    public function getFreeWbLedPortsByType(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['device_id', 'types', 'led_type']), 400);
+
+        $portsData = $this->service->getAllPortsDataForWbLed(
+            $r->device_id,
+            $r->types,
+            $r->led_type,
+            $r->has('object_id') ? $r->object_id : null
+        );
+
+        return response()->json([
+            'result' => true,
+            'ports' => $portsData['ports'],
+            'ports_info' => $portsData['ports_info'],
         ]);
     }
 

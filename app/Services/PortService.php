@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Device;
 use App\Models\HiteproDev;
+use App\Models\LedTape;
 use App\Models\Method;
 use App\Models\Port;
 use App\Models\Script;
@@ -488,6 +489,42 @@ class PortService {
         }
 
         return [$idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices];
+    }
+
+    /**
+     * Получить текущие контроллер и порты для led ленты
+     *
+     * @param LedTape $ledTape
+     * @return array
+     */
+    public function getCurrentDeviceAndPortsForLedTape(LedTape $ledTape): array
+    {
+        if ($ledTape->type == LedTape::TYPE_RGBW || $ledTape->type == LedTape::TYPE_RGB) {
+            $ports = Port::where('object', $ledTape->id_object)->get();
+            $deviceId = null;
+            $portsIds = null;
+
+            if ($ports->isNotEmpty()) {
+                $deviceId = $ports->first()->id_device;
+                $portsIds = [];
+                foreach ($ports as $port) {
+                    $portsIds[] = $port->id;
+                }
+            }
+
+            return [$deviceId, $portsIds];
+        } else {
+            $port = Port::where('object', $ledTape->id_object)->first();
+            $deviceId = null;
+            $portsId = null;
+
+            if ($port) {
+                $deviceId = $port->id_device;
+                $portsId = $port->id;
+            }
+
+            return [$deviceId, $portsId];
+        }
     }
 
     /**

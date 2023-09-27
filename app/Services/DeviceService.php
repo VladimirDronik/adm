@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Device;
 use App\Models\ExtensionModule;
 use App\Models\HiteproDev;
+use App\Models\LedTape;
 use App\Models\Port;
 use App\Repositories\DeviceRepository;
 use App\Repositories\PortRepository;
@@ -353,6 +354,123 @@ class DeviceService {
         }
 
         return $arrayPorts;
+    }
+
+    /**
+     * Вертнуть свободные и занятые порты устройства, которые соответсвуют указанным типам
+     *
+     * @param null|int $deviceId
+     * @param string $types
+     */
+    public function getAllDevicePortsByPortType(?int $deviceId, string $types = '')
+    {
+        if (!$deviceId) {
+            return [];
+        }
+
+        $ports = $this->portRepository->getPortsByTypes($deviceId, $types);
+        $arrayPorts = [];
+
+        foreach ($ports as $port) {
+            $arrayPorts[] = [
+                'name' => 'Порт '.$port->type.' ['.$port->num_port.']' . (
+                    $port->eobject ?
+                    ': <span style="color:red">занят</span> ' . $port->eobject->name.' '.$port->eobject->id :
+                    ': <span style="color:green">свободен</span>'
+                )
+            ];
+        }
+
+        return $arrayPorts;
+    }
+
+    /**
+     * Вертнуть свободные порты устройства, которые соответсвуют указанным типам
+     *
+     * @param null|int $deviceId
+     * @param string $types
+     * @param null|int $currentObjectId = null
+     */
+    public function getFreeDevicePortsByPortType(?int $deviceId, string $types, ?int $currentObjectId = null)
+    {
+        if (!$deviceId) {
+            return [];
+        }
+
+        $ports = $this->portRepository->getPortsByTypes($deviceId, $types);
+        $arrayPorts = [];
+
+        foreach ($ports as $port) {
+            if (($currentObjectId && $port->eobject && $port->eobject->id == $currentObjectId) || !$port->eobject) {
+                $arrayPorts[] = [
+                    'id' => $port->id,
+                    'num_port' => $port->num_port,
+                    'name' => 'Порт '.$port->type.' ['.$port->num_port.']'
+                ];
+            }
+        }
+
+        return $arrayPorts;
+    }
+
+    /**
+     * Вертнуть все данные по портам для контроллера WB-LED
+     *
+     * @param null|int $deviceId
+     * @param string $portTypes
+     * @param string $ledType
+     * @param null|int $objectId = null
+     */
+    public function getAllPortsDataForWbLed(?int $deviceId, string $portTypes, string $ledType, ?int $objectId = null)
+    {
+        if ($ledType == LedTape::TYPE_RGBW) {
+            $ports = $this->getFreeDevicePortsByPortType($deviceId, $portTypes, $objectId);
+            if (count($ports) >= 4) {
+                $combinedPorts = [
+                    'id' => [],
+                    'name' => '',
+                ];
+
+                foreach ($ports as $port) {
+                    $combinedPorts['id'][] = $port['id'];
+                }
+                $combinedPorts['name'] = $ports[0]['name'] . ' - ' . end($ports)['name'];
+
+                $ports = [$combinedPorts];
+            } else {
+                $ports = [];
+            }
+        } elseif ($ledType == LedTape::TYPE_RGB) {
+            $ports = $this->getFreeDevicePortsByPortType($deviceId, $portTypes, $objectId);
+            if (count($ports) >= 3) {
+                $requiredNumPorts = [1, 2, 3];
+
+                $filteredPorts = collect($ports)->filter(function ($item) use ($requiredNumPorts) {
+                    return in_array($item['num_port'], $requiredNumPorts);
+                });
+
+                if ($filteredPorts->count() === count($requiredNumPorts)) {
+                    $filteredPorts = $filteredPorts->toArray();
+
+                    foreach ($filteredPorts as $port) {
+                        $combinedPorts['id'][] = $port['id'];
+                    }
+                    $combinedPorts['name'] = $filteredPorts[0]['name'] . ' - ' . end($filteredPorts)['name'];
+
+                    $ports = [$combinedPorts];
+                } else {
+                    $ports = [];
+                }
+            } else {
+                $ports = [];
+            }
+        } else {
+            $ports = $this->getFreeDevicePortsByPortType($deviceId, $portTypes, $objectId);
+        }
+
+        $portsInfo = $this->getAllDevicePortsByPortType($deviceId, $portTypes);
+
+        return ['ports' => $ports, 'ports_info' => $portsInfo];
     }
 
     /**

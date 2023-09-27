@@ -127,7 +127,7 @@ class ViewService {
             ->where('room_group', $view->room_group)->min('sort');
     }
 
-    private function getSortMax($view): int
+    public function getSortMax($view): int
     {
         return (int)View::where('room', $view->room)
             ->where('room_group', $view->room_group)->max('sort');
