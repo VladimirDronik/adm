@@ -6,18 +6,10 @@ use App\Models\HomeObject;
 use App\Models\LedTape;
 use App\Models\ObjType;
 use App\Models\Port;
-use App\Models\View;
 use Illuminate\Support\Facades\DB;
 
 class LedTapeService
 {
-    private $viewService;
-
-    public function __construct(ViewService $viewService)
-    {
-        $this->viewService = $viewService;
-    }
-
     /**
      * Создание led ленты
      *
@@ -51,15 +43,15 @@ class LedTapeService
             $object->is_system = 1;
             $object->save();
 
-            $view = new View();
-            $view->type = View::TYPE_TAPE;
-            $view->icon = 'noimage';
-            $view->description = 'Отображение для led ленты - '.$ledTape->name;
-            $view->status = 'off';
-            $view->sort = $this->viewService->getSortMax($view) + 1;
-            $view->active = 1;
-            $view->id_object = $object->id;
-            $view->save();
+            // $view = new View();
+            // $view->type = View::TYPE_TAPE;
+            // $view->icon = 'noimage';
+            // $view->description = 'Отображение для led ленты - '.$ledTape->name;
+            // $view->status = 'off';
+            // $view->sort = $this->viewService->getSortMax($view) + 1;
+            // $view->active = 1;
+            // $view->id_object = $object->id;
+            // $view->save();
 
             if ($ledTape->type == LedTape::TYPE_RGBW || $ledTape->type == LedTape::TYPE_RGB) {
                 $portsIds = explode(',', $data['port_id']);
@@ -104,9 +96,9 @@ class LedTapeService
                 $ledTape->object->name = HomeObject::getUniqueObjectName($ledTape->object->id, $newName);
                 $ledTape->object->save();
 
-                View::where('id_object', $ledTape->object->id)->update([
-                    'description' => 'Отображение для led ленты - '.$newName,
-                ]);
+                // View::where('id_object', $ledTape->object->id)->update([
+                //     'description' => 'Отображение для led ленты - '.$newName,
+                // ]);
             }
 
             Port::where('object', $ledTape->object->id)
@@ -163,7 +155,7 @@ class LedTapeService
                     'comment' => ''
                 ]);
 
-            View::where('id_object', $ledTape->object->id)->delete();
+            // View::where('id_object', $ledTape->object->id)->delete();
 
             $ledTape->object()->delete();
         });

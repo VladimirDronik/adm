@@ -149,12 +149,17 @@ class DeviceService {
         DB::beginTransaction();
 
         try {
+                if ($typeDevice != 'WB-LED') {
+                    exec("ping -c 1 {$data['ip_address']}",$output, $status);
 
-                exec("ping -c 1 {$data['ip_address']}",$output, $status);
-                if ($status==0)
+                    if ($status == 0) {
+                        $data['active'] = 1;
+                    } else {
+                        $data['active'] = 0;
+                    }
+                } else {
                     $data['active'] = 1;
-                else
-                    $data['active'] = 0;
+                }
 
                 if(($data['active'] == 1) || ($forcedCreate)) {
 
