@@ -48,7 +48,13 @@ class Room extends Model
 
     public function getColorStyleAttribute()
     {
-        return Color::getStyleByColor($this->style);
+        $color = Color::where('name', $this->style)->first();
+
+        if ($color) {
+            return $color->value;
+        }
+
+        return '';
     }
 
     public function getPrefixNameAttribute()

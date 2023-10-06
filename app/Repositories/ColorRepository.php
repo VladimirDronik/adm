@@ -15,12 +15,28 @@ class ColorRepository
 {
 
     /**
-     * Отдать в массиве доступные цвета для кнопок
+     * Отдать в массиве доступные цвета по name типу
      * @return mixed
      */
-     public static function getColors()
-     {
-         return Color::select('id','name')->orderBy('name')->pluck('name', 'id')->toArray();
-     }
+    public static function getNameTypeColors()
+    {
+        return Color::where('type', Color::NAME_TYPE)
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray();
+    }
 
+    /**
+     * Отдать в массиве доступные цвета по hsv типу
+     * @return mixed
+     */
+    public static function getHsvTypeColors()
+    {
+        return Color::where('type', Color::HSV_TYPE)
+            ->select('id', 'value')
+            ->orderBy('value')
+            ->pluck('value', 'id')
+            ->toArray();
+    }
 }

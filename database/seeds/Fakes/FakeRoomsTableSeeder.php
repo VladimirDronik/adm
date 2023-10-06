@@ -15,7 +15,7 @@ class FakeRoomsTableSeeder extends Seeder
     public function __construct()
     {
         $this->images = ['1et_.svg', '2et_.svg', 'kuhn.png', 'ulica.svg'];
-        $this->colors = Color::getColors(false);
+        $this->colors = Color::where('type', Color::NAME_TYPE)->get()->pluck('name')->toArray();
         $this->room_names = ['Кухня', 'Гостиная', 'Детская', 'Ванная',
             'Прихожая', 'Чердак', 'Подвал', 'Балкон'];
     }

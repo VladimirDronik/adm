@@ -10,7 +10,6 @@ use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
 use App\Repositories\SceneRepository;
 use App\Repositories\ViewRepository;
-use App\Services\ColorService;
 use App\Services\ImageService;
 use App\Services\ObjectService;
 use App\Services\ViewService;
@@ -65,7 +64,7 @@ class ViewController extends Controller
     {
         list($types, $rooms, $objects, $scenes, $images, $links, $safeTypes) = $this->getLists();
 
-        $colors = ColorRepository::getColors();
+        $colors = ColorRepository::getNameTypeColors();
 
         return view('views.create', compact('types', 'rooms', 'objects', 'scenes', 'images', 'links', 'colors', 'safeTypes'));
     }
@@ -88,7 +87,7 @@ class ViewController extends Controller
         list($types, $rooms, $objects, $scenes, $images, $links, $safeTypes) = $this->getLists();
         $methods = $object_service->getMethodsByObjectIdToArray($view->id_object);
 
-        $colors = ColorRepository::getColors();
+        $colors = ColorRepository::getNameTypeColors();
 
         $enabletermostat = null;
         $lowval_termostat = null;
