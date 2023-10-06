@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateTableHygrostats extends Migration
 {
@@ -13,7 +13,7 @@ class CreateTableHygrostats extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('hygrostats')) {
+        if (! Schema::hasTable('hygrostats')) {
             Schema::create('hygrostats', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name')->nullable();
@@ -34,7 +34,7 @@ class CreateTableHygrostats extends Migration
                 $table->unsignedInteger('room')->nullable();
                 $table->integer('subdev_id')->nullable();
                 $table->unsignedInteger('usensor_id')->nullable();
-                $table->string('placetype',10)->nullable();
+                $table->string('placetype', 10)->nullable();
 
                 $table->foreign('id_object')->references('id')->on('objects')
                     ->onUpdate('cascade')->onDelete('set null');

@@ -5,20 +5,20 @@ namespace App\Services;
 use App\Models\Scene;
 use Illuminate\Support\Facades\DB;
 
-class SceneService {
-
+class SceneService
+{
     public function delete(int $id)
     {
         $scene = Scene::find($id);
 
-        if (!$scene) {
+        if (! $scene) {
             return false;
         }
 
         DB::transaction(function () use ($scene) {
-            Scene::where('sort','>', max($scene->sort, 0))->update([
-                'sort' => DB::raw('sort-1'),
-            ]);
+            Scene::where('sort', '>', max($scene->sort, 0))
+                ->update(['sort' => DB::raw('sort-1')]);
+
             $scene->delete();
         });
 
@@ -29,15 +29,16 @@ class SceneService {
     {
         $scene = Scene::find($data['id']);
 
-        if (!$scene) {
+        if (! $scene) {
             return false;
         }
 
         $min = Scene::min('sort');
         $max = Scene::max('sort');
 
-        if (($scene->sort === $min && $data['direction'] === 'up')
-            || ($scene->sort === $max && $data['direction'] === 'down')) {
+        if (($scene->sort === $min && $data['direction'] === 'up') ||
+            ($scene->sort === $max && $data['direction'] === 'down')
+        ) {
             return true;
         }
 
@@ -45,7 +46,9 @@ class SceneService {
         $scene->sort += $data['direction'] === 'up' ? -1 : 1;
 
         DB::transaction(function () use ($scene, $previous_sort) {
-            Scene::where('sort', $scene->sort)->update(['sort' => $previous_sort]);
+            Scene::where('sort', $scene->sort)
+                ->update(['sort' => $previous_sort]);
+
             $scene->save();
         });
 
@@ -54,7 +57,8 @@ class SceneService {
 
     public function changeActive(int $id, int $active)
     {
-        Scene::where('id', $id)->update(['active' => $active]);
+        Scene::where('id', $id)
+            ->update(['active' => $active]);
 
         return true;
     }
@@ -63,7 +67,7 @@ class SceneService {
     {
         $scene->label = trim($data['label']);
         $scene->active = $data['active'] ?? 0;
-        $scene->image = basename($data['_image']);;
+        $scene->image = basename($data['_image']);
         $scene->background_color = trim($data['background_color']);
     }
 

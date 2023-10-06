@@ -5,39 +5,38 @@ namespace App\Services;
 use App\Models\Count;
 use App\Models\HomeObject;
 use App\Models\Port;
-use Illuminate\Support\Facades\DB;
 use App\Repositories\PortRepository;
+use Illuminate\Support\Facades\DB;
 
-class CountService {
-
-    private $count_object_service;
-    private $portRepository;
-
-    public function __construct(CountObjectService $count_object_service, PortRepository $portRepository)
-    {
-        $this->count_object_service = $count_object_service;
-        $this->portRepository = $portRepository;
+class CountService
+{
+    public function __construct(
+        private CountObjectService $count_object_service,
+        private PortRepository $portRepository
+    ) {
     }
 
     /**
      * Удаление счетчика. Если связанный объект системный, то удаление объекта, методов, событий,
      * созданных автоматически при создании счетчика
      *
-     * @param int $id
-     * @return bool
      * @throws \Throwable
      */
     public function delete(int $id): bool
     {
         $count = Count::findOrFail($id);
 
-        Port::where('object', $count->id_object)->update(['object' => null, 'method' => null, 'status' => 'IN',
-            'comment' => '']);
-
+        Port::where('object', $count->id_object)
+            ->update([
+                'object' => null,
+                'method' => null,
+                'status' => 'IN',
+                'comment' => '',
+            ]);
 
         if ($count->object && $count->object->is_system) {
             DB::transaction(function () use (&$count) {
-                if (!HomeObject::isObjectUsed($count->id_object, $count->id, 'counts')) {
+                if (! HomeObject::isObjectUsed($count->id_object, $count->id, 'counts')) {
                     HomeObject::deleteAutoObject($count->id_object);
                 }
                 $count->delete();
@@ -45,7 +44,6 @@ class CountService {
         } else {
             $count->delete();
         }
-
 
         return true;
     }
@@ -68,8 +66,6 @@ class CountService {
      * Создание счетчика. Если $data['type'] === 'auto',
      * то еще создается объект с методами и задача в расписании.
      *
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function store(array $data): int
@@ -79,17 +75,29 @@ class CountService {
 
         DB::transaction(function () use (&$count, $data) {
             $unique_name = HomeObject::getUniqueObjectName(0, $count->name);
-            $object = $this->count_object_service->createCountObject($unique_name);
-            $this->count_object_service->createCountObjectMethodsWithEvents($object->id);
+
+            $object = $this->count_object_service
+                ->createCountObject($unique_name);
+
+            $this->count_object_service
+                ->createCountObjectMethodsWithEvents($object->id);
+
             $count->id_object = $object->id;
             $count->save();
 
             if ($data['port_id']) {
-                Port::where('id', $data['port_id'])->update(['object' => $object->id, 'status' => 'IN',
-                    'comment' => $data['name']]);
+                Port::where('id', $data['port_id'])
+                    ->update([
+                        'object' => $object->id,
+                        'status' => 'IN',
+                        'comment' => $data['name'],
+                    ]);
 
-                ConfigMegaService::setPortType($count->device_id, $this->portRepository->getNumPortByID($data['port_id']), 'IN');
-
+                ConfigMegaService::setPortType(
+                    $count->device_id,
+                    $this->portRepository->getNumPortByID($data['port_id']),
+                    'IN'
+                );
             }
         });
 
@@ -106,34 +114,44 @@ class CountService {
      * то изменяем название объекта.
      * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
      *
-     * @param Count $count
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function update(Count $count, array $data): int
     {
         DB::transaction(function () use (&$count, $data) {
             if ($this->isUpdateAutoObjectName($count, $data['name'])) {
-                $count->object->name = HomeObject::getUniqueObjectName($count->object->id, trim($data['name']));
+                $count->object->name = HomeObject::getUniqueObjectName(
+                    $count->object->id,
+                    trim($data['name'])
+                );
                 $count->object->save();
             }
             $this->prepareCount($count, $data);
             $count->save();
 
             if ($data['port_id']) {
-                Port::where('object', $count->id_object)->update(['object' => null, 'method' => null,
-                    'comment' => '', 'status' => 'IN']);
-                Port::where('id', $data['port_id'])->update(['object' => $count->id_object, 'status' => 'IN',
-                    'comment' => $data['port_id']]);
+                Port::where('object', $count->id_object)
+                    ->update([
+                        'object' => null,
+                        'method' => null,
+                        'comment' => '',
+                        'status' => 'IN',
+                    ]);
 
-                ConfigMegaService::setPortType($count->device_id, $this->portRepository->getNumPortByID($data['port_id']), 'IN');
+                Port::where('id', $data['port_id'])
+                    ->update([
+                        'object' => $count->id_object,
+                        'status' => 'IN',
+                        'comment' => $data['port_id'],
+                    ]);
 
+                ConfigMegaService::setPortType(
+                    $count->device_id,
+                    $this->portRepository->getNumPortByID($data['port_id']),
+                    'IN',
+                );
             }
-
         });
-
-
 
         return $count->id;
     }

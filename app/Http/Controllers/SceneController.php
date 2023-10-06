@@ -11,13 +11,10 @@ use App\Services\SceneService;
 
 class SceneController extends Controller
 {
-    private $scene_rep;
-    private $service;
-
-    public function __construct(SceneRepository $scene_rep, SceneService $service)
-    {
-        $this->scene_rep = $scene_rep;
-        $this->service = $service;
+    public function __construct(
+        private SceneRepository $scene_rep,
+        private SceneService $service
+    ) {
     }
 
     public function index()
@@ -38,10 +35,10 @@ class SceneController extends Controller
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('scenes.edit',[$id])->with('success', 'Сцена успешно добавлена');
+                return redirect()->route('scenes.edit', [$id])->with('success', 'Сцена успешно добавлена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении сцены ' .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при добавлении сцены '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении сцены');
@@ -58,12 +55,12 @@ class SceneController extends Controller
     {
         try {
             if ($this->service->update($scene, $r->except('_token'))) {
-                return redirect()->route('scenes.edit',[$scene->id])->with('success','Сцена успешно изменена');
+                return redirect()->route('scenes.edit', [$scene->id])->with('success', 'Сцена успешно изменена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении сцены '.$scene->id.' ' .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при изменении сцены '.$scene->id.' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении сцены');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении сцены');
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateSchedulerPointsTable extends Migration
 {
@@ -13,7 +13,7 @@ class CreateSchedulerPointsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('scheduler_points')) {
+        if (! Schema::hasTable('scheduler_points')) {
             Schema::create('scheduler_points', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('type', 1)->comment('w-недельные, m-месячные, y-годовые');

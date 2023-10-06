@@ -27,7 +27,7 @@ class UpdateRequest extends FormRequest
             'name' => 'required|string|max:100',
             'id_object' => 'required|integer|min:1',
             'value' => 'required|numeric|max:127',
-            'speed' => 'required|numeric|min:0|max:127'
+            'speed' => 'required|numeric|min:0|max:127',
         ];
 
     }

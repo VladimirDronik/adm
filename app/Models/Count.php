@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $today_value
  * @property int $total_value
  * @property-read \App\Models\HomeObject|null $object
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Count newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Count newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Count query()
@@ -27,25 +28,32 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Count whereTotalValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Count whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Count whereUnit($value)
+ *
  * @mixin \Eloquent
+ *
  * @property-read mixed $image
  * @property-read mixed $rus_type
  */
 class Count extends Model
 {
     const TYPE_WATER = 'water';
+
     const TYPE_ELECTRO = 'electro';
+
     const TYPE_GAS = 'gas';
 
     protected $table = 'counts';
+
     public $timestamps = false;
+
+    protected $guarded = ['id'];
 
     public static function getTypes(bool $is_full = false)
     {
         $types = [
             self::TYPE_WATER => 'Вода',
             self::TYPE_ELECTRO => 'Электричество',
-            self::TYPE_GAS => 'Газ'
+            self::TYPE_GAS => 'Газ',
         ];
 
         return $is_full ? $types : array_keys($types);
@@ -63,6 +71,7 @@ class Count extends Model
 
     /**
      * Получение всех методов для объекта
+     *
      * @return array
      */
     public static function getEvents()
@@ -72,10 +81,10 @@ class Count extends Model
         ];
     }
 
-
     /**
      * Получение доступных свойств объекта.
      * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     *
      * @return array
      */
     public static function getProperties()

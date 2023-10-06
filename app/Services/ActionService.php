@@ -9,11 +9,8 @@
 namespace App\Services;
 
 use App\Models\Action;
-use App\Models\Method;
 use App\Repositories\ActionRepository;
 use App\Repositories\MethodRepository;
-use App\Repositories\NotificationRepository;
-use App\Repositories\NotificationServiceRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\SoundRepository;
@@ -21,37 +18,32 @@ use App\Repositories\ViewRepository;
 
 class ActionService
 {
-    private $actionRepository;
-
-
-    public function __construct(ActionRepository $actionRepository)
-    {
-        $this->actionRepository = $actionRepository;
+    public function __construct(
+        private ActionRepository $actionRepository
+    ) {
     }
-
 
     /**
      * Отдает массив действий для события
      * Если событие указано, то достаем actions для него из БД, если не указано, то берем actions из $tempActions
-     * @param $idEvent
+     *
      * @return array
      */
     public function getForEvent($idEvent, $tempActions)
     {
-        if($idEvent)
+        if ($idEvent) {
             $actions = $this->actionRepository->getAllActionsByEvent($idEvent);
-        else {
+        } else {
             //Берем все значения из $tempActions и с помощью
-            foreach ($tempActions AS $tempAction)
-            $actions[] = $this->prepareAction($tempAction);
+            foreach ($tempActions as $tempAction) {
+                $actions[] = $this->prepareAction($tempAction);
+            }
         }
 
         $resultActions = $this->fillActionValues($actions);
 
         return $resultActions;
     }
-
-
 
     /**
      * Заполнение $nameValue, $objectName для action
@@ -66,26 +58,26 @@ class ActionService
             $nameValue = '';
             $delete = false;
 
-
             switch ($action->type) {
-
                 case 'script':
                     $script = ScriptRepository::getNameById($action->relate);
 
                     if ($script != null) {
                         $nameValue = $script->name;
-                    } else $delete = true;
-
+                    } else {
+                        $delete = true;
+                    }
                     break;
 
                 case 'method':
-                    $method =  MethodRepository::getMethodByID($action->relate);
+                    $method = MethodRepository::getMethodByID($action->relate);
 
                     if ($method != null) {
                         $nameValue = $method->name;
                         $objectName = ObjectRepository::getNameById($method->id_object)->name;
-                    } else $delete = true;
-
+                    } else {
+                        $delete = true;
+                    }
                     break;
 
                 case 'notification':
@@ -97,8 +89,9 @@ class ActionService
 
                     if ($sound != null) {
                         $nameValue = $sound->name;
-                    } else $delete = true;
-
+                    } else {
+                        $delete = true;
+                    }
                     break;
 
                 case 'property':
@@ -107,8 +100,9 @@ class ActionService
                     if ($object != null) {
                         $nameValue = $action->value;
                         $objectName = $object->name;
-                    } else $delete = true;
-
+                    } else {
+                        $delete = true;
+                    }
                     break;
 
                 case 'view':
@@ -117,8 +111,9 @@ class ActionService
                     if ($view != null) {
                         $nameValue = $action->value;
                         $objectName = $view->description;
-                    } else $delete = true;
-
+                    } else {
+                        $delete = true;
+                    }
                     break;
 
                 case 'log':
@@ -128,35 +123,37 @@ class ActionService
                 case 'alice':
                     $nameValue = $action->value;
                     break;
-
-
             }
 
             //Если был где-то указан флаг, это значит, что не удалось найти связанный объект, метод, скрипт и т.д.
             // Возможно он был удален, но т.к. таблицы у нас не связаны, то в этом случае удаляем action вручную.
-            if($delete) $action->delete();
-            else
-                $resultActions[] = ['id' => $action->id, 'type' => $action->type, 'nameValue' => $nameValue,
-                    'objectName' => $objectName];
-
+            if ($delete) {
+                $action->delete();
+            } else {
+                $resultActions[] = [
+                    'id' => $action->id,
+                    'type' => $action->type,
+                    'nameValue' => $nameValue,
+                    'objectName' => $objectName,
+                ];
+            }
         }
 
         return $resultActions;
     }
 
-
     public function addAction($idEvent, $actionParams)
     {
         $action = $this->prepareAction($actionParams, $idEvent);
+
         return $action->save();
     }
-
 
     /**
      * Подготовка параметров action для записи в БД. Если idEvent не указан, то поготовливаем данные для отображения
      * временного action при создании события (в том случае, если idEvent еще неизвестен)
-     * @param $actionParams
-     * @param null $idEvent
+     *
+     * @param  null  $idEvent
      * @return Action
      */
     private function prepareAction($actionParams, $idEvent = null)
@@ -167,7 +164,6 @@ class ActionService
         $action->active = 1;
 
         switch ($actionParams['typeAction']) {
-
             case 'script':
                 $action->relate = $actionParams['action_script'];
                 break;
@@ -186,41 +182,40 @@ class ActionService
 
             case 'property':
                 $action->relate = $actionParams['action_object'];
-                $action->value =  $actionParams['action_property'].'='.$actionParams['action_value'];
+                $action->value = $actionParams['action_property'].'='.$actionParams['action_value'];
                 break;
 
             case 'view':
                 $action->relate = $actionParams['action_view'];
-                $action->value =  $actionParams['action_view_status'];
+                $action->value = $actionParams['action_view_status'];
                 break;
 
             case 'log':
-                $action->value =  $actionParams['action_log'];
+                $action->value = $actionParams['action_log'];
                 break;
 
             case 'alice':
                 $action->value = $actionParams['action_alice'];
                 $action->params = $actionParams['action_selected_stations'];
-                if($actionParams['action_type_alice_action'] == 'say')
+                if ($actionParams['action_type_alice_action'] == 'say') {
                     $action->relate = 1;
-                else
+                } else {
                     $action->relate = 2;
+                }
 
             default: break;
-
         }
 
         return $action;
-
     }
-
 
     public function delete($id_action)
     {
         $action = Action::findorfail($id_action);
 
-        if($action) {
+        if ($action) {
             $action->delete();
+
             return true;
         }
 
@@ -229,8 +224,6 @@ class ActionService
 
     /**
      * Создание
-     * @param $tempActions
-     * @param $idEvent
      */
     public function createActionsByTempActions($tempActions, $idEvent)
     {
@@ -238,9 +231,5 @@ class ActionService
         foreach ($tempActions as $tempAction) {
             $this->addAction($idEvent, $tempAction);
         }
-
     }
-
-
-
 }

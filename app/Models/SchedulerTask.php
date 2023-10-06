@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $object id объекта
  * @property int|null $method id метода объекта
  * @property int|null $script Если не null, то сначала выполняется этот скрипт
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask query()
@@ -20,7 +21,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereObject($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereScript($value)
+ *
  * @mixin \Eloquent
+ *
  * @property-read \App\Models\Method|null $emethod
  * @property-read \App\Models\HomeObject|null $eobject
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SchedulerPoint[] $not_system_points
@@ -31,17 +34,23 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Script|null $escript
  * @property-read mixed $has_method
  * @property-read mixed $has_script
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereIsHidden($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereIsSystem($value)
+ *
  * @property-read bool $is_point_editable
  * @property string|null $method_params
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereMethodParams($value)
+ *
  * @property int $active
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask hidden()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask notHidden()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask notSystem()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask system()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SchedulerTask whereActive($value)
+ *
  * @property-read int|null $not_system_points_count
  * @property-read int|null $points_count
  * @property-read int|null $system_points_count
@@ -49,24 +58,29 @@ use Illuminate\Database\Eloquent\Model;
 class SchedulerTask extends Model
 {
     const SYSTEM = 1;      // for tasks and for points
+
     const NOT_SYSTEM = 0;
+
     const HIDDEN = 1;
+
     const NOT_HIDDEN = 0;
 
     protected $table = 'scheduler_tasks';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     /* attributes */
 
     public function getHasMethodAttribute()
     {
-        return !is_null($this->method);
+        return ! is_null($this->method);
     }
 
     public function getHasScriptAttribute()
     {
-        return !is_null($this->script);
+        return ! is_null($this->script);
     }
 
     /**
@@ -77,13 +91,13 @@ class SchedulerTask extends Model
      */
     public function getIsPointEditableAttribute()
     {
-//        if (!optional($this->emethod)->is_system) {
-//            return true;
-//        }
-//
-//        return Termostat::whereHas('iobject', function ($query) {
-//            $query->where('is_system', 1)->where('id', $this->object);
-//        })->exists();
+        //        if (!optional($this->emethod)->is_system) {
+        //            return true;
+        //        }
+        //
+        //        return Termostat::whereHas('iobject', function ($query) {
+        //            $query->where('is_system', 1)->where('id', $this->object);
+        //        })->exists();
         return true; //закоротили временно
     }
 

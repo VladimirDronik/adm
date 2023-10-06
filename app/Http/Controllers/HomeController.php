@@ -25,7 +25,7 @@ class HomeController extends Controller
             'scenes' => Scene::count(),
             'termostats' => Termostat::count(),
             'scheduler' => SchedulerTask::count(),
-            'scripts' => Script::count()
+            'scripts' => Script::count(),
         ];
 
         return view('home', compact('counts'));

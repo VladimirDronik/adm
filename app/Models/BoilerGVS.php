@@ -6,29 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class BoilerGVS extends Model
 {
-
     protected $table = 'boiler_gvs';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
-
-
 
     public static function getTypes(bool $is_full = true)
     {
         $types = [
             'proterm' => 'Протерм',
-            'evan' => 'Эван'
+            'evan' => 'Эван',
         ];
 
         return $is_full ? $types : array_keys($types);
     }
 
-
     public function getRusTypeAttribute()
     {
         return self::getTypes(true)[$this->type] ?? '';
     }
-
 
     public function object()
     {
@@ -44,5 +41,4 @@ class BoilerGVS extends Model
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
     }
-
 }

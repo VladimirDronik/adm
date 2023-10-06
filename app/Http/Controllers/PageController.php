@@ -1,33 +1,25 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Repositories\PageRepository;
+
 use App\Models\Page;
 use App\Repositories\ElementRepository;
+use App\Repositories\PageRepository;
 use App\Services\ImageService;
-
 
 class PageController extends Controller
 {
-
-    private $pageRepository;
-    private $elementRepository;
-    private $pages;
-
-    public function __construct(PageRepository $pageRepository, Page $pages, ElementRepository $elementRepository)
-    {
-        $this->pageRepository = $pageRepository;
-        $this->elementRepository = $elementRepository;
-        $this->pages = $pages;
-
+    public function __construct(
+        private PageRepository $pageRepository,
+        private Page $pages,
+        private ElementRepository $elementRepository
+    ) {
     }
 
     public function index()
     {
-
         $pages = $this->pageRepository->getAll();
-        $types =  Page::getTypes(true);
-
+        $types = Page::getTypes(true);
 
         return view('pages.index', compact('pages', 'types'));
     }
@@ -40,8 +32,5 @@ class PageController extends Controller
         $tab = $idTab;
 
         return view('pages.edit', compact('page', 'elements', 'tab', 'images'));
-
     }
-
-
 }

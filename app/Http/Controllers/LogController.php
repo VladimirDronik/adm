@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class LogController extends Controller
 {
-    private $log_rep;
-
-    public function __construct(LogRepository $log_rep)
-    {
-        $this->log_rep = $log_rep;
+    public function __construct(
+        private LogRepository $log_rep
+    ) {
     }
 
     private function getFilter(Request $r)
@@ -35,22 +33,18 @@ class LogController extends Controller
 
     public function settings(Logging $logging)
     {
-
         $settings = $logging->orderBy('point')->get();
 
-        return view('logs.settings',  compact('settings', $settings));
-
+        return view('logs.settings', ['settings' => $settings]);
     }
 
     public function update(Request $r)
     {
 
-
     }
 
     public function active()
     {
-
 
     }
 }

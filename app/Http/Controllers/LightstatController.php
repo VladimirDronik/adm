@@ -3,42 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Lightstat\CreateRequest;
+use App\Http\Requests\Lightstat\UpdateRequest;
+use App\Models\HomeObject;
 use App\Models\Lightstat;
 use App\Repositories\DeviceRepository;
 use App\Repositories\LightstatRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
+use App\Repositories\ScriptRepository;
 use App\Repositories\UsensorRepository;
 use App\Services\LightstatService;
-use App\Models\HomeObject;
 use App\Services\MessageService;
 use App\Services\ObjectService;
-use App\Repositories\ScriptRepository;
 use App\Services\PortService;
-use App\Http\Requests\Lightstat\UpdateRequest;
 use App\Services\Service;
-
 
 class LightstatController extends Controller
 {
-    private $lightstat_rep;
-    private $object_rep;
-    private $device_rep;
-    private $usensors_rep;
-    private $room_rep;
-    private $service;
-
-
-    public function __construct(LightstatRepository $lighstat_rep, ObjectRepository $object_rep,
-                                DeviceRepository $device_rep, UsensorRepository $usensor_rep,
-                                RoomRepository $room_rep, LightstatService $service)
-    {
-        $this->lightstat_rep = $lighstat_rep;
-        $this->object_rep = $object_rep;
-        $this->device_rep = $device_rep;
-        $this->usensors_rep = $usensor_rep;
-        $this->room_rep = $room_rep;
-        $this->service = $service;
+    public function __construct(
+        private LightstatRepository $lightstat_rep,
+        private ObjectRepository $object_rep,
+        private DeviceRepository $device_rep,
+        private UsensorRepository $usensor_rep,
+        private RoomRepository $room_rep,
+        private LightstatService $service,
+        private ObjectService $object_service,
+        private ScriptRepository $script_rep,
+        private PortService $portsService,
+        private MessageService $messageService,
+    ) {
     }
 
     public function index()
@@ -48,7 +41,6 @@ class LightstatController extends Controller
 
         return view('lightstats.index', compact('lightstats'));
     }
-
 
     public function store(CreateRequest $r)
     {
@@ -71,31 +63,28 @@ class LightstatController extends Controller
         $rooms = $this->room_rep->getAllToArray();
         $types = Lightstat::getFullLigtstatIds();
         $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
-        $usensors = $this->usensors_rep->getAllToArray();
+        $usensors = $this->usensor_rep->getAllToArray();
 
         return [$objects, $rooms, $types, $devices, $usensors];
     }
 
-    public function edit(Lightstat $lightstat, ObjectService $object_service, ScriptRepository $script_rep,
-                         PortService $portsService, MessageService $messagesService, $tab = 1)
+    public function edit(Lightstat $lightstat, $tab = 1)
     {
-        list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
+        [$objects, $rooms, $types, $devices, $usensors] = $this->getLists();
 
-
-        $methods = $object_service->getMethodsByObjectIdToArray($lightstat->object);
+        $methods = $this->object_service->getMethodsByObjectIdToArray($lightstat->object);
         $can = gates('devices.show-object');
 
-        $deviceAndPort = $portsService->getIdDeviceAndPortId($lightstat->id_object);
+        $deviceAndPort = $this->portsService->getIdDeviceAndPortId($lightstat->id_object);
 
         $deviceId = $deviceAndPort['id_device'];
         $port_SCL = $lightstat->port_SCL;
         $port_SDA = $lightstat->port_SDA;
 
-        $portsSCL =  $portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
-        $portsSDA =  $portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
+        $portsSCL = $this->portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
+        $portsSDA = $this->portsService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
-
-        list($messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents) =
+        [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents] =
             Service::getListElements($lightstat->id_object);
 
         $messagePoint['first'] = 'При включении';
@@ -113,12 +102,12 @@ class LightstatController extends Controller
     public function create()
     {
 
-        list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
-        $object_types =  HomeObject::getFullTypeIds();
+        [$objects, $rooms, $types, $devices, $usensors] = $this->getLists();
+        $object_types = HomeObject::getFullTypeIds();
         $can = gates('devices.show-object');
         $tab = 1;
 
-        return view('lightstats.create', compact('objects','rooms', 'types', 'devices', 'usensors',
+        return view('lightstats.create', compact('objects', 'rooms', 'types', 'devices', 'usensors',
             'object_types', 'tab', 'can'));
     }
 
@@ -126,14 +115,12 @@ class LightstatController extends Controller
     {
         try {
             if ($this->service->update($lightstat, $r->except('_token'))) {
-                return redirect()->route('lightstats.edit', [$lightstat->id])->with('success','Светостат успешно изменен');
+                return redirect()->route('lightstats.edit', [$lightstat->id])->with('success', 'Светостат успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении светостата '.$lightstat->id.' ' .json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при изменении светостата '.$lightstat->id.' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении светостата');
     }
-
-
 }

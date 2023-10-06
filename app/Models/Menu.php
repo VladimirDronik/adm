@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $image
  * @property int $sort
  * @property int $active
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Menu newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Menu newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Menu query()
@@ -25,13 +26,17 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Menu whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Menu whereSort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Menu whereTitle($value)
+ *
  * @mixin \Eloquent
+ *
  * @property-read mixed $image_path
  */
 class Menu extends Model
 {
     protected $table = 'menu';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     public function getImagePathAttribute()

@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class Lock extends Model
 {
     const TYPE_ELECTROMECHANICAL = 'Electromechanical';
+
     const TYPE_MAGNETIC = 'Magnetic';
+
     const TYPE_LATCH = 'Latch';
 
-
     protected $table = 'locks';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     public static function getTypes(bool $is_full = false)
@@ -20,16 +23,15 @@ class Lock extends Model
         $types = [
             self::TYPE_ELECTROMECHANICAL => 'Электромеханический',
             self::TYPE_MAGNETIC => 'Магнитный',
-            self::TYPE_LATCH => 'Защелка'
+            self::TYPE_LATCH => 'Защелка',
         ];
 
         return $is_full ? $types : array_keys($types);
     }
 
-
-
     /**
      * Получение доступных событий для объекта
+     *
      * @return array
      */
     public static function getEvents()
@@ -40,11 +42,10 @@ class Lock extends Model
         ];
     }
 
-
-
     /**
      * Получение доступных свойств объекта.
      * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     *
      * @return array
      */
     public static function getProperties()

@@ -31,7 +31,7 @@ class UpdateRequest extends FormRequest
             'min_alarm' => 'required|integer',
             'max_alarm' => 'required|integer|max:54612',
             'room' => 'nullable|integer|min:0',
-            'id_object' => 'nullable|integer|min:1'
+            'id_object' => 'nullable|integer|min:1',
         ];
 
         $ids = ['object', 'method_on', 'method_off'];

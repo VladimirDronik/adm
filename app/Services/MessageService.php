@@ -8,38 +8,31 @@
 
 namespace App\Services;
 
-
 use App\Models\Notification;
 use App\Repositories\NotificationRepository;
 
-
 class MessageService
 {
-
-    private $notificationRep;
-
-    public function __construct(NotificationRepository $notificationRep) {
-
-        $this->notificationRep = $notificationRep;
-
+    public function __construct(
+        private NotificationRepository $notificationRep
+    ) {
     }
-
-
 
     public function store(array $data)
     {
         $idObject = Notification::getIdByIdObject($data['object_id']);
 
-        if ($idObject)
-        $notification = Notification::findOrFail($idObject);
-        else
+        if ($idObject) {
+            $notification = Notification::findOrFail($idObject);
+        } else {
             $notification = null;
+        }
 
+        if (! $notification) {
+            $notification = new Notification();
+        }
 
-        if(!$notification)
-        $notification = new Notification();
-
-        $notification->id_object = (int)$data['object_id'];
+        $notification->id_object = (int) $data['object_id'];
 
         if ($data['state'] == 'on') {
             $notification->message_1 = trim($data['message']);
@@ -51,29 +44,26 @@ class MessageService
 
         $notification->save();
 
-
         return $data['message'];
-
     }
 
-    public function getNotifications(int $idObject) {
-
+    public function getNotifications(int $idObject)
+    {
         return $this->notificationRep->getByObject($idObject);
     }
 
     public function delete(string $message, int $id_object)
     {
-
         if ($message === 'on') {
             $message = 'message_1';
             $priority = 'priority_1';
-        }
-        else {
+        } else {
             $message = 'message_2';
             $priority = 'priority_2';
         }
 
-        Notification::where('id_object', $id_object)->update([$message => null, $priority => null]);
+        Notification::where('id_object', $id_object)
+            ->update([$message => null, $priority => null]);
 
         return true;
     }

@@ -50,7 +50,7 @@ class GetImagesData extends Command
             'query' => [
                 'date' => Carbon::now()->subDay()->toIso8601String(),
                 'product' => 'adm',
-            ]
+            ],
         ]);
 
         $logs = json_decode($logResponse->getBody(), true);
@@ -66,7 +66,7 @@ class GetImagesData extends Command
                             if ($imageResponse->getStatusCode() == 200) {
                                 $imageData = json_decode($imageResponse->getBody(), true);
 
-                                if (!Image::where('id', $imageData['id'])->exists()) {
+                                if (! Image::where('id', $imageData['id'])->exists()) {
                                     Image::create([
                                         'id' => $imageData['id'],
                                         'name' => $imageData['name'],
@@ -124,7 +124,6 @@ class GetImagesData extends Command
     /**
      * Декодирует изображение из base64 и сохраняет в 'ela/images/views_items'
      *
-     * @param string $image
      * @return string
      */
     private function decodeAndSaveImage(string $image)
@@ -132,7 +131,7 @@ class GetImagesData extends Command
         $tempFile = new File(tempnam(sys_get_temp_dir(), 'temp'));
         file_put_contents($tempFile, base64_decode($image));
 
-        $path = Storage::disk('custom')->putFile("ela/images/views_items", $tempFile);
+        $path = Storage::disk('custom')->putFile('ela/images/views_items', $tempFile);
         unlink($tempFile);
 
         return $path;

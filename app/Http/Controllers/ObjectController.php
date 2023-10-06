@@ -12,13 +12,10 @@ use Illuminate\Http\Request;
 
 class ObjectController extends Controller
 {
-    private $object_rep;
-    private $service;
-
-    public function __construct(ObjectRepository $object_rep, ObjectService $service)
-    {
-        $this->object_rep = $object_rep;
-        $this->service = $service;
+    public function __construct(
+        private ObjectRepository $object_rep,
+        private ObjectService $service
+    ) {
     }
 
     public function index(Request $r)
@@ -26,7 +23,7 @@ class ObjectController extends Controller
         $filter_name = $r->input('name', '');
         $objects = $this->object_rep->getByName($filter_name);
 
-        return view('objects.index', compact('objects','filter_name'));
+        return view('objects.index', compact('objects', 'filter_name'));
     }
 
     public function create()
@@ -40,7 +37,7 @@ class ObjectController extends Controller
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('objects.edit',[$id])->with('success', 'Объект успешно добавлен. Теперь к объекту можно добавить методы');
+                return redirect()->route('objects.edit', [$id])->with('success', 'Объект успешно добавлен. Теперь к объекту можно добавить методы');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при добавлении объекта '
@@ -66,13 +63,13 @@ class ObjectController extends Controller
 
         try {
             if ($this->service->update($object, $r->except('_token'))) {
-                return redirect()->route('objects.edit',[$object->id])->with('success','Объект успешно изменен');
+                return redirect()->route('objects.edit', [$object->id])->with('success', 'Объект успешно изменен');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении объекта '.$object->id.' '
                 .json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении объекта');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении объекта');
     }
 }

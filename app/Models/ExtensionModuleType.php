@@ -33,8 +33,8 @@ class ExtensionModuleType extends Model
             }
 
             $status = $values[0];
-            $min = (int)$values[1];
-            $max = (int)$values[2];
+            $min = (int) $values[1];
+            $max = (int) $values[2];
 
             for ($num_port = $min; $num_port <= $max; $num_port++) {
                 $ports[] = [

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddColumnOffMethodViewItemsTable extends Migration
 {
@@ -19,14 +19,14 @@ class AddColumnOffMethodViewItemsTable extends Migration
                     $table->renameColumn('id_method', 'on_method');
                 }
 
-                if (!Schema::hasColumn('view_items', 'off_method')) {
+                if (! Schema::hasColumn('view_items', 'off_method')) {
                     $table->unsignedInteger('off_method')->nullable()->after('id_method');
 
                     $table->foreign('off_method')->references('id')->on('methods')
                         ->onUpdate('cascade')->onDelete('set null');
                 }
 
-                if (!Schema::hasColumn('view_items', 'off_method_params')) {
+                if (! Schema::hasColumn('view_items', 'off_method_params')) {
                     $table->string('off_method_params', 100)->nullable();
                 }
             });

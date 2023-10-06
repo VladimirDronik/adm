@@ -1,0 +1,48 @@
+<?php
+
+namespace Database\Seeders\Fakes;
+
+use Carbon\Carbon;
+use Faker\Factory;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class FakeLogsTableSeeder extends Seeder
+{
+    const COUNT = 50;
+
+    public function getLogs()
+    {
+        $date = Carbon::now()->subDays(self::COUNT);
+        $faker = Factory::create();
+
+        $types = ['system', 'socket', 'server', ''];
+
+        $logs = [];
+
+        for ($i = 0; $i < self::COUNT; $i++) {
+            $logs[] = [
+                'date' => $date->format('Y-m-d H:i:s'),
+                'type' => $types[rand(0, count($types) - 1)],
+                'message' => $faker->sentence,
+            ];
+
+            $date->addDay();
+            $date->hour = rand(0, 23);
+            $date->minute = rand(0, 59);
+            $date->second = rand(0, 59);
+        }
+
+        return $logs;
+    }
+
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        DB::table('logs')->insert($this->getLogs());
+    }
+}

@@ -4,11 +4,13 @@ namespace App\Repositories;
 
 use App\Models\SchedulerTask;
 
-class SchedulerRepository {
-
+class SchedulerRepository
+{
     public function getAll($pagination_count = 30)
     {
-        return SchedulerTask::with('points','emethod')->orderBy('name')->paginate($pagination_count);
+        return SchedulerTask::with('points', 'emethod')
+            ->orderBy('name')
+            ->paginate($pagination_count);
     }
 
     public function getByNameAndType(array $filter, bool $with_system = true, bool $with_hidden = true, $pagination_count = 30)
@@ -32,11 +34,11 @@ class SchedulerRepository {
             $q->where('system', SchedulerTask::SYSTEM);
         }]);
 
-        if (!$with_system) {
+        if (! $with_system) {
             $query->notSystem();
         }
 
-        if (!$with_hidden) {
+        if (! $with_hidden) {
             $query->notHidden();
         }
 

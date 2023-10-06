@@ -4,26 +4,26 @@ namespace App\Services;
 
 use App\Models\Boiler;
 use App\Models\Menu;
-use Illuminate\Support\Facades\DB;
-use App\Repositories\ObjectRepository;
 use App\Repositories\MenuRepository;
-use App\Services\PageService;
+use App\Repositories\ObjectRepository;
+use Illuminate\Support\Facades\DB;
 
-class MenuService {
-
+class MenuService
+{
     public function sort(array $data)
     {
         $menu = Menu::find($data['id']);
 
-        if (!$menu) {
+        if (! $menu) {
             return false;
         }
 
         $min = Menu::min('sort');
         $max = Menu::max('sort');
 
-        if (($menu->sort === $min && $data['direction'] === 'up')
-            || ($menu->sort === $max && $data['direction'] === 'down')) {
+        if (($menu->sort === $min && $data['direction'] === 'up') ||
+            ($menu->sort === $max && $data['direction'] === 'down')
+        ) {
             return true;
         }
 
@@ -47,7 +47,8 @@ class MenuService {
 
     public function updateImage(int $id, string $image)
     {
-        Menu::where('id', $id)->update(['image' => $this->setImageIfEmpty($image)]);
+        Menu::where('id', $id)
+            ->update(['image' => $this->setImageIfEmpty($image)]);
     }
 
     private function setImageIfEmpty($image)
@@ -61,7 +62,8 @@ class MenuService {
 
     public function updateName(int $id, string $name)
     {
-        Menu::where('id', $id)->update(['title' => $this->setNameIfEmpty($name)]);
+        Menu::where('id', $id)
+            ->update(['title' => $this->setNameIfEmpty($name)]);
     }
 
     private function setNameIfEmpty($name)
@@ -73,41 +75,31 @@ class MenuService {
         return $name;
     }
 
-
     /**
      * Получение максимального индекса сортировки, который есть в таблице
-     * @param $menu
-     * @return int
      */
     private function getSortMax($menu): int
     {
-        /*
-        if ($menu->parent == 0) {
-            return (int) Menu::group()
-                ->orWhere(function ($query) {
-                    $query->room()->whereNull('group_room');
-                })->max('sort');
-        }
-*/
+        // if ($menu->parent == 0) {
+        //     return (int) Menu::group()
+        //         ->orWhere(function ($query) {
+        //             $query->room()->whereNull('group_room');
+        //         })->max('sort');
+        // }
+
         return (int) Menu::where('parent', $menu->parent)->max('sort');
     }
 
-
     public function update(Menu $menu, array $data)
     {
-
-
         DB::transaction(function () use ($menu, $data) {
-
-
-           // if (is_null($menu->parent) && $data['parent'] !== '0') {
-                // из отдельных в конкретную
+            // if (is_null($menu->parent) && $data['parent'] !== '0') {
+            // из отдельных в конкретную
             unset($data['_method']);
 
             $menu->fill($data);
             //$menu->sort = $this->getSortMax($menu) + 1;
             $menu->save();
-
         });
 
         return $menu->id;
@@ -122,22 +114,21 @@ class MenuService {
         return $this->storeMenu($data);
     }
 
-
     private function storeGroup(array $data)
     {
         $menu = new Menu();
 
+        $menu->parent = 0;
         $menu->sort = $this->getSortMax($menu) + 1;
 
         array_walk($data, function (&$value) {
             $value = trim($value);
         });
 
-        $menu->name = $menu->title =$this->setNameIfEmpty($data['name']);
+        $menu->name = $menu->title = $this->setNameIfEmpty($data['name']);
         $menu->image = $this->setImageIfEmpty($data['image']);
         $menu->link = $data['link'];
         $menu->active = 1;
-        $menu->parent = 0;
 
         $menu->save();
 
@@ -146,15 +137,13 @@ class MenuService {
 
     private function storeMenu(array $data)
     {
-
         $menu = new Menu();
 
         $menu->parent = $data['parent'];
 
         $menu->sort = $this->getSortMax($menu) + 1;
 
-
-        $menu->name = $menu->title =$this->setNameIfEmpty($data['name']);
+        $menu->name = $menu->title = $this->setNameIfEmpty($data['name']);
         $menu->image = $this->setImageIfEmpty($data['image']);
         $menu->link = $data['link'];
         $menu->active = 1;
@@ -164,66 +153,59 @@ class MenuService {
         return $menu->id;
     }
 
-
-
-
-
     public function delete(int $id)
     {
         $menu = Menu::find($id);
 
-        if (!$menu) {
+        if (! $menu) {
             return false;
         }
 
-
         DB::transaction(function () use ($menu) {
-
             //Если выбран для удаления родительский пункт, то удаляем и дочерние
-        if($menu->parent == 0)
-            Menu::where('parent', $menu->id)->delete();
+            if ($menu->parent == 0) {
+                Menu::where('parent', $menu->id)->delete();
+            }
 
             $menu->delete();
         });
 
         return true;
     }
-    
+
     private function createEngeneeringMenuItem()
     {
-    	$menu = new Menu();
-    	$menu->name = 'Инженерное';
-    	$menu->title = 'Инженерное';
-    	$menu->link = 'ing';
-    	$menu->image = 'el-schetchik.svg';
-    	$menu->parent = 0; 
-    	$menu->sort = 1;
-    	$menu->active = 1;
-    	$menu->save();
+        $menu = new Menu();
+        $menu->name = 'Инженерное';
+        $menu->title = 'Инженерное';
+        $menu->link = 'ing';
+        $menu->image = 'el-schetchik.svg';
+        $menu->parent = 0;
+        $menu->sort = 1;
+        $menu->active = 1;
+        $menu->save();
 
-	return $menu;
+        return $menu;
     }
-    
+
     private function createMenuItem($name, $link, $image, $parent)
     {
-    	$menu = new Menu();
-    	$menu->name = $name;
-    	$menu->title = $name;
-    	$menu->link = $link;
-    	$menu->image = $image;
-    	$menu->parent = $parent; 
-    	$menu->sort = 1;
-    	$menu->active = 1;
-    	$menu->save();
+        $menu = new Menu();
+        $menu->name = $name;
+        $menu->title = $name;
+        $menu->link = $link;
+        $menu->image = $image;
+        $menu->parent = $parent;
+        $menu->sort = 1;
+        $menu->active = 1;
+        $menu->save();
 
-	return $menu->id;
+        return $menu->id;
     }
-    
-    
+
     //Добавление нового пункта меню, который соответсвует добавленному объекту
     public function addMenu(int $idObject)
     {
-
         $objectRep = new ObjectRepository();
         $menuRep = new MenuRepository();
         $pageServ = new PageService();
@@ -231,27 +213,31 @@ class MenuService {
         $boiler = new Boiler();
         $elementsArray = [];
 
-    	$selectedObject = $objectRep->getById($idObject);
-    	
-    	if($selectedObject->type == 'boiler') {
+        $selectedObject = $objectRep->getById($idObject);
+
+        if ($selectedObject->type == 'boiler') {
             $engeneeringParent = $menuRep->getByName('Инженерное');
-    		if (!isset($engeneeringParent->id))
-    			$engeneeringParent = $this->createEngeneeringMenuItem();
+            if (! isset($engeneeringParent->id)) {
+                $engeneeringParent = $this->createEngeneeringMenuItem();
+            }
 
             $boilerMenuPoint = $menuRep->getByName('Котёл');
-    		if (!isset($boilerMenuPoint->id))
+            if (! isset($boilerMenuPoint->id)) {
                 $this->createMenuItem('Котёл', 'boiler', 'boiler.svg', $engeneeringParent->id);
-    			
-    		$idPage = $pageServ->store(['name' => $selectedObject->name, 'link' => 'boiler', 'type' => '2field']);
+            }
+
+            $idPage = $pageServ->store([
+                'name' => $selectedObject->name,
+                'link' => 'boiler',
+                'type' => '2field',
+            ]);
             $elementsArray = $boiler::getElementsForPage($idPage);
-    	}
+        }
 
         //Сохранение элементов для страницы
-        foreach ($elementsArray AS $element) {
+        foreach ($elementsArray as $element) {
             $element['id_object'] = $selectedObject->id;
             $elementServ->store($element);
         }
-    			
     }
-    
 }

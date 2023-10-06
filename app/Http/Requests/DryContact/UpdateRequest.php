@@ -25,7 +25,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'id_object' => 'required|integer|min:1'
+            'id_object' => 'required|integer|min:1',
         ];
     }
 
@@ -33,7 +33,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name.required' => 'Не указано название',
-            'id_object.required' => 'Не указан объект'
+            'id_object.required' => 'Не указан объект',
         ];
     }
 }

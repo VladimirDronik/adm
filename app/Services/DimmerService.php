@@ -5,39 +5,38 @@ namespace App\Services;
 use App\Models\Dimmer;
 use App\Models\HomeObject;
 use App\Models\Port;
-use Illuminate\Support\Facades\DB;
 use App\Repositories\PortRepository;
+use Illuminate\Support\Facades\DB;
 
-class DimmerService {
-
-    private $dimmer_object_service;
-    private $port_repository;
-
-    public function __construct(DimmerObjectService $dimmer_object_service, PortRepository $portRepository)
-    {
-        $this->dimmer_object_service = $dimmer_object_service;
-        $this->port_repository = $portRepository;
+class DimmerService
+{
+    public function __construct(
+        private DimmerObjectService $dimmer_object_service,
+        private PortRepository $port_repository
+    ) {
     }
 
     /**
      * Удаление диммера. Если связанный объект системный, то еще удаление его объекта и методов,
      * созданных автоматически при создании диммера
      *
-     * @param int $id
-     * @return bool
      * @throws \Throwable
      */
     public function delete(int $id): bool
     {
         $dimmer = Dimmer::findOrFail($id);
 
-        Port::where('object', $dimmer->id_object)->update(['object' => null, 'method' => null,
-            'comment' => '', 'status' => 'OUT']);
-
+        Port::where('object', $dimmer->id_object)
+            ->update([
+                'object' => null,
+                'method' => null,
+                'comment' => '',
+                'status' => 'OUT',
+            ]);
 
         if ($dimmer->object && $dimmer->object->is_system) {
             DB::transaction(function () use (&$dimmer) {
-                if (!HomeObject::isObjectUsed($dimmer->id_object, $dimmer->id, 'dimmers')) {
+                if (! HomeObject::isObjectUsed($dimmer->id_object, $dimmer->id, 'dimmers')) {
                     HomeObject::deleteAutoObject($dimmer->id_object);
                 }
                 $dimmer->delete();
@@ -46,30 +45,26 @@ class DimmerService {
             $dimmer->delete();
         }
 
-
-
         return true;
     }
 
     public function prepareDimmer(Dimmer $dimmer, array $data)
     {
         $dimmer->name = trim($data['name']);
-        $dimmer->value = (int)$data['value'];
-        $dimmer->speed= (int)$data['speed'];
+        $dimmer->value = (int) $data['value'];
+        $dimmer->speed = (int) $data['speed'];
     }
 
     /**
      * Создание диммера. Если $data['type'] === 'auto',
      * то еще создается объект с методами
      *
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function store(array $data): int
     {
         $dimmer = new Dimmer();
-        $deviceID =  $data['device_id'];
+        $deviceID = $data['device_id'];
         $this->prepareDimmer($dimmer, $data);
 
         DB::transaction(function () use (&$dimmer, $data, $deviceID) {
@@ -80,10 +75,17 @@ class DimmerService {
             $dimmer->save();
 
             if ($data['port_id']) {
-                Port::where('id', $data['port_id'])->update(['object' => $object->id, 'comment' => $data['name']]);
+                Port::where('id', $data['port_id'])
+                    ->update([
+                        'object' => $object->id,
+                        'comment' => $data['name'],
+                    ]);
 
-                ConfigMegaService::setPortType($deviceID, $this->port_repository->getNumPortByID($data['port_id']), 'PWM');
-
+                ConfigMegaService::setPortType(
+                    $deviceID,
+                    $this->port_repository->getNumPortByID($data['port_id']),
+                    'PWM'
+                );
             }
         });
 
@@ -102,14 +104,11 @@ class DimmerService {
      * то добавляем число.
      *
      *
-     * @param Dimmer $dimmer
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function update(Dimmer $dimmer, array $data): int
     {
-        $deviceID =  $data['device_id'];
+        $deviceID = $data['device_id'];
 
         DB::transaction(function () use (&$dimmer, $data, $deviceID) {
             if ($this->isUpdateAutoObjectName($dimmer, $data['name'])) {
@@ -120,20 +119,37 @@ class DimmerService {
             $dimmer->save();
 
             //Сохраняем данные в таблицу Алисы или включаем запись если она есть уже
-            if(isset($data['alice_checkbox']))
-                AliceDevicesService::addOrReplaceDevice($dimmer->object->id, $data['alice_command'], $data['room']);
-            else
+            if (isset($data['alice_checkbox'])) {
+                AliceDevicesService::addOrReplaceDevice(
+                    $dimmer->object->id,
+                    $data['alice_command'],
+                    $data['room']
+                );
+            } else {
                 AliceDevicesService::setActive($dimmer->object->id, 0);
+            }
 
             if ($data['port_id']) {
-                Port::where('object', $dimmer->id_object)->update(['object' => null, 'method' => null, 'comment' => '']);
-                Port::where('id', $data['port_id'])->update(['object' => $dimmer->id_object, 'comment' =>  $data['name']]);
+                Port::where('object', $dimmer->id_object)
+                    ->update([
+                        'object' => null,
+                        'method' => null,
+                        'comment' => '',
+                    ]);
 
-                ConfigMegaService::setPortType($deviceID, $this->port_repository->getNumPortByID($data['port_id']), 'PWM');
+                Port::where('id', $data['port_id'])
+                    ->update([
+                        'object' => $dimmer->id_object,
+                        'comment' => $data['name'],
+                    ]);
+
+                ConfigMegaService::setPortType(
+                    $deviceID,
+                    $this->port_repository->getNumPortByID($data['port_id']),
+                    'PWM'
+                );
             }
         });
-
-
 
         return $dimmer->id;
     }

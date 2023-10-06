@@ -7,21 +7,17 @@
  */
 
 namespace App\Services;
-use App\Models\HomeObject;
-use App\Models\ObjType;
-use ScriptsTableSeeder;
-use App\Models\Script;
-use App\Models\Method;
 
+use App\Models\HomeObject;
+use App\Models\Method;
+use App\Models\ObjType;
+use App\Models\Script;
+use Database\Seeders\ScriptsTableSeeder;
 
 class MotionSensorObjectService
 {
-
     /**
      * Автосоздание объекта для сухого контакта
-     *
-     * @param string $name
-     * @return HomeObject
      */
     public function createMotionsensorObject(string $name): HomeObject
     {
@@ -39,16 +35,14 @@ class MotionSensorObjectService
 
     /**
      * Если скрипт не найден, то создаем
-     *
-     * @return int
      */
     private function getScriptId(array $scriptArray): int
     {
-
         $script = Script::where('name', $scriptArray['name'])
-            ->where('system', 1)->first();
+            ->where('system', 1)
+            ->first();
 
-        if (!$script) {
+        if (! $script) {
             $script = Script::forceCreate($scriptArray);
         }
 
@@ -59,16 +53,13 @@ class MotionSensorObjectService
      * Автосоздание методов для объекта, который был
      * создан автоматически
      *
-     * @param int $object_id
      * @return void
      */
     public function createMotionsensorObjectMethods(int $object_id)
     {
         $script = ScriptsTableSeeder::getMotionsensorScript();
 
-
         $script_id = $this->getScriptId($script);
-
 
         $method = new Method();
 
@@ -79,11 +70,8 @@ class MotionSensorObjectService
         $method->params = null;
         $method->is_system = 1;
 
-
         $method->save();
+
         return $method->id;
     }
-
-
-
 }

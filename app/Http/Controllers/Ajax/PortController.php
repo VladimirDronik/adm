@@ -2,25 +2,23 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use App\Http\Controllers\Controller;
 use App\Models\Method;
 use App\Models\Port;
 use App\Repositories\PortRepository;
 use App\Services\PortService;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class PortController extends Controller
 {
-    private $service;
-
-    public function __construct(PortService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private PortService $service
+    ) {
     }
 
     public function updateComment(Request $r)
     {
-        abort_if(!ajaxHas($r, ['device_id', 'port_id', 'comment']), 400);
+        abort_if(! ajaxHas($r, ['device_id', 'port_id', 'comment']), 400);
 
         $this->service->updateComment($r->all());
 
@@ -55,11 +53,11 @@ class PortController extends Controller
 
     public function getMethodAll(Request $r)
     {
-        $method_array = explode(',',$r->input('method'));
+        $method_array = explode(',', $r->input('method'));
         $method_name = $method_array[0] != 'empty' ? $method_array[1] : 'empty';
         $port = Port::find($r->input('id'));
-        $methods = Method::where('id_object',$port->object)->orderBy('name')->get();
-        $html = (String) view('ajax.port_methods', ['methods' => $methods, 'view' => $method_array[2]]);
+        $methods = Method::where('id_object', $port->object)->orderBy('name')->get();
+        $html = (string) view('ajax.port_methods', ['methods' => $methods, 'view' => $method_array[2]]);
 
         return response()->json(['success' => true] + compact('html', 'method_name'));
     }
@@ -73,9 +71,11 @@ class PortController extends Controller
     {
         try {
             $data = $this->service->getPortMethods($r->data);
+
             return response()->json(['result' => true] + $data);
         } catch (\Throwable $e) {
             \Log::error($e->getMessage());
+
             return response()->json(['result' => false]);
         }
     }
@@ -84,9 +84,11 @@ class PortController extends Controller
     {
         try {
             $this->service->deletePortMethod($r->except('_token'));
+
             return response()->json(['result' => true]);
         } catch (\Throwable $e) {
             \Log::error($e->getMessage());
+
             return response()->json(['result' => false]);
         }
     }
@@ -95,9 +97,11 @@ class PortController extends Controller
     {
         try {
             $methods = $this->service->getObjectMethods($r->object_id);
+
             return response()->json(['result' => true, 'methods' => $methods]);
         } catch (\Throwable $e) {
             \Log::error($e->getMessage());
+
             return response()->json(['result' => false]);
         }
     }
@@ -106,9 +110,11 @@ class PortController extends Controller
     {
         try {
             $data = $this->service->updatePortMethod($r->except('_token'));
+
             return response()->json(['result' => true] + $data);
         } catch (\Throwable $e) {
             \Log::error($e->getMessage());
+
             return response()->json(['result' => false]);
         }
     }

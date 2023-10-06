@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateCarbmonoxide extends Migration
 {
@@ -11,12 +11,11 @@ class CreateCarbmonoxide extends Migration
      *
      * @return void
      */
-
     public function up()
     {
         Schema::create('carbmonoxide', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name',100);
+            $table->string('name', 100);
             $table->unsignedInteger('id_object')->nullable();
             $table->unsignedInteger('cur_value');
             $table->unsignedInteger('low_value');

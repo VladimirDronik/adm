@@ -2,22 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\CreateRequest;
+use App\Http\Requests\User\UpdateRequest;
 use App\Models\User;
 use App\Repositories\DevuserRepository;
 use App\Services\UserService;
-use Illuminate\Http\Request;
-use App\Http\Requests\User\CreateRequest;
-use App\Http\Requests\User\UpdateRequest;
 
 class UserController extends Controller
 {
-    private $devuser_rep;
-    private $service;
-
-    public function __construct(DevuserRepository $devuser_rep, UserService $service)
-    {
-        $this->devuser_rep = $devuser_rep;
-        $this->service = $service;
+    public function __construct(
+        private DevuserRepository $devuser_rep,
+        private UserService $service
+    ) {
     }
 
     public function index()
@@ -29,7 +25,8 @@ class UserController extends Controller
 
     public function create()
     {
-        $priority = [1 => 'Важные', 2 => 'Обычные' ];
+        $priority = [1 => 'Важные', 2 => 'Обычные'];
+
         return view('users.create', compact('priority'));
     }
 
@@ -41,7 +38,7 @@ class UserController extends Controller
                     ->with('success', 'Пользователь успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении пользователя' .
+            \Log::error('Ошибка при добавлении пользователя'.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 
@@ -50,13 +47,13 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $priority = [1 => 'Важные', 2 => 'Обычные', 3 => 'Все', 0 => 'Не назначено' ];
+        $priority = [1 => 'Важные', 2 => 'Обычные', 3 => 'Все', 0 => 'Не назначено'];
+
         return view('users.edit', compact('user', 'priority'));
     }
 
     public function update(UpdateRequest $r, User $user)
     {
-
         try {
             if ($this->service->update($user, $r->except('_token'))) {
                 return redirect()->route('users.index')
@@ -64,10 +61,9 @@ class UserController extends Controller
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении пользователя '.$user->id
-                .' ' .json_encode($r->all()).' '.$e->getMessage());
+                .' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error','Ошибка при изменении пользователя');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении пользователя');
     }
-
 }

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class User extends Model
 {
     protected $table = 'devusers';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 }

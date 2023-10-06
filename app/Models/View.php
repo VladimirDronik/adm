@@ -35,6 +35,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read mixed $short_title
  * @property-read mixed $title_bottom
  * @property-read mixed $title_top
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View query()
@@ -52,12 +53,16 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereType($value)
+ *
  * @mixin \Eloquent
+ *
  * @property int|null $room_group
  * @property string|null $on_method_params
  * @property-read mixed $icon_image
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereIdMethodParams($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereRoomGroup($value)
+ *
  * @property int|null $on_method метод объекта из таблицы методов
  * @property int|null $off_method
  * @property string|null $off_method_params
@@ -65,6 +70,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read mixed $is_dimmer
  * @property-read mixed $off_method_name
  * @property-read \App\Models\Method|null $offmethod
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereOffMethod($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereOffMethodParams($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\View whereOnMethod($value)
@@ -72,21 +78,31 @@ use Illuminate\Database\Eloquent\Model;
 class View extends Model
 {
     protected $table = 'view_items';
+
     public $timestamps = false;
 
     const TYPE_SWITCH = 'switch';
+
     const TYPE_BUTTON = 'button';
+
     const TYPE_TEMP = 'termostat';
+
     const TYPE_HUMIDITY = 'humidity';
+
     const TYPE_LABEL = 'label';
+
     const TYPE_DIMMER = 'dimmer';
+
     const TYPE_LINK = 'link';
+
     const TYPE_CONDITIONER = 'conditioner';
 
     const PIN_SAFE_TYPE = 'pin';
+
     const CONFIRM_SAFE_TYPE = 'confirm';
 
     protected $casts = ['active' => 'boolean'];
+
     protected $guarded = ['id'];
 
     public static function getFullTypeIds()
@@ -117,7 +133,8 @@ class View extends Model
         return array_keys(self::getFullTypeIds());
     }
 
-    public static function getTypeById($id) {
+    public static function getTypeById($id)
+    {
         return self::getFullTypeIds()[$id] ?? '';
     }
 
@@ -171,7 +188,7 @@ class View extends Model
 
     public function getShortTitleAttribute()
     {
-        return str_replace('<br>',' | ', $this->title);
+        return str_replace('<br>', ' | ', $this->title);
     }
 
     public function getRusTypeAttribute()
@@ -213,7 +230,7 @@ class View extends Model
             return ImageService::NO_IMAGE_PATH;
         }
 
-        return ImageService::VIEW_PATH.'/'.$this->icon . '.svg';
+        return ImageService::VIEW_PATH.'/'.$this->icon.'.svg';
     }
 
     /* relations */

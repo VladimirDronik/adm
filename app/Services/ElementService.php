@@ -8,12 +8,10 @@
 
 namespace App\Services;
 
-
-use App\Models\Elements;
 use App\Models\Boiler;
+use App\Models\Elements;
 use App\Models\InternalPage;
 use Illuminate\Support\Facades\DB;
-
 
 class ElementService
 {
@@ -31,11 +29,11 @@ class ElementService
         $element->active = 1;
         $element->save();
 
-        if (array_key_exists('handle', $data )     &&
-            ($data['handle'] == Boiler::PROP_WATER_TEMP ||
-             $data['handle'] == Boiler::PROP_MANUALMODE ||
-             $data['handle'] == Boiler::PROP_AUTOMODE))
-        {
+        if (array_key_exists('handle', $data) && (
+            $data['handle'] == Boiler::PROP_WATER_TEMP ||
+            $data['handle'] == Boiler::PROP_MANUALMODE ||
+            $data['handle'] == Boiler::PROP_AUTOMODE
+        )) {
             InternalPage::create([
                 'idElement' => $element->id,
             ]);
@@ -49,15 +47,27 @@ class ElementService
         //unset($data['wh_color']);
         //unset($data['bl_color']);
 
-        if(!$data['parent'] || $data['type'] == 'accordeon')
-            $data['parent']  ='0';
+        if (! $data['parent'] || $data['type'] == 'accordeon') {
+            $data['parent'] = '0';
+        }
 
-        if(!$data['image'])
+        if (! $data['image']) {
             $data['image'] = 'noimage.png';
+        }
 
+        if ($data['type'] == 'label') {
+            $paramsArray = [['status' => $data['value']]];
 
-        if($data['type'] == 'label') {
-            $paramsArray = array(array('status'  => $data['value']));
+            if (array_key_exists('settings', $data)) {
+                $paramsArray[0]['settings'] = 'true';
+            }
+
+            $paramsArray[0]['wh_color'] = '#187306';
+            $paramsArray[0]['bl_color'] = '#00ffbb';
+
+            $data['value'] = json_encode($paramsArray, JSON_UNESCAPED_UNICODE);
+        } elseif ($data['type'] == 'switch') {
+            $paramsArray = [['status' => $data['value']]];
 
             if (array_key_exists('settings', $data)) {
                 $paramsArray[0]['settings'] = 'true';
@@ -68,24 +78,10 @@ class ElementService
 
             $data['value'] = json_encode($paramsArray, JSON_UNESCAPED_UNICODE);
         }
-        else if($data['type'] == 'switch') {
-            $paramsArray = array(array('status'  => $data['value']));
 
-            if (array_key_exists('settings', $data)) {
-                $paramsArray[0]['settings'] = 'true';
-            }
-
-            $paramsArray[0]['wh_color'] = '#187306';
-            $paramsArray[0]['bl_color'] = '#00ffbb';
-
-            $data['value'] = json_encode($paramsArray, JSON_UNESCAPED_UNICODE);
-        }
-
-
-        $data['sort'] = $this->getSortMax($data['page'], $data['parent'], $data['position'])+1;
+        $data['sort'] = $this->getSortMax($data['page'], $data['parent'], $data['position']) + 1;
 
         $element->fill($data);
-
     }
 
     private function getSortMax($page, $parent, $position): int
@@ -96,7 +92,6 @@ class ElementService
             ->max('sort');
     }
 
-
     private function setNameIfEmpty($name)
     {
         if (empty($name)) {
@@ -106,33 +101,25 @@ class ElementService
         return $name;
     }
 
-
-
-
     public function delete(int $id)
     {
         $element = Elements::find($id);
 
-        if (!$element) {
+        if (! $element) {
             return false;
         }
 
-
         DB::transaction(function () use ($element) {
-
             //Если выбран для удаления родительский пункт, то удаляем и дочерние
-            if($element->parent == 0)
+            if ($element->parent == 0) {
                 Elements::where('parent', $element->id)->delete();
+            }
 
             $element->delete();
-
         });
 
         return true;
-
     }
-
-
 
     public function changeActive(int $id, int $active)
     {
@@ -141,13 +128,11 @@ class ElementService
         return true;
     }
 
-
-
     public function sort(array $data)
     {
         $element = Elements::find($data['id']);
 
-        if (!$element) {
+        if (! $element) {
             return false;
         }
 
@@ -170,10 +155,10 @@ class ElementService
         return true;
     }
 
-
     public function updateImage(int $id, string $image)
     {
-        Elements::where('id', $id)->update(['image' => $this->setImageIfEmpty($image)]);
+        Elements::where('id', $id)
+            ->update(['image' => $this->setImageIfEmpty($image)]);
     }
 
     private function setImageIfEmpty($image)
@@ -187,25 +172,23 @@ class ElementService
 
     public function update(Elements $element, array $data)
     {
-
         DB::transaction(function () use ($element, $data) {
-            if (array_key_exists($data, 'handle') &&
+            if (array_key_exists('handle', $data) &&
                 $data['handle'] != Boiler::PROP_WATER_TEMP &&
-                $data['handle'] != Boiler::PROP_AUTOMODE   &&
-                $data['handle'] != Boiler::PROP_MANUALMODE)
-            {
+                $data['handle'] != Boiler::PROP_AUTOMODE &&
+                $data['handle'] != Boiler::PROP_MANUALMODE
+            ) {
                 if ($element->handle == Boiler::PROP_WATER_TEMP ||
-                    $element->handle == Boiler::PROP_AUTOMODE   ||
-                    $element->handle == Boiler::PROP_MANUALMODE)
-                {
+                    $element->handle == Boiler::PROP_AUTOMODE ||
+                    $element->handle == Boiler::PROP_MANUALMODE
+                ) {
                     InternalPage::where('idElement', $element->id)->delete();
                 }
-            }
-            else {
+            } else {
                 if ($element->handle != Boiler::PROP_WATER_TEMP &&
-                    $element->handle != Boiler::PROP_AUTOMODE   &&
-                    $element->handle != Boiler::PROP_MANUALMODE)
-                {
+                    $element->handle != Boiler::PROP_AUTOMODE &&
+                    $element->handle != Boiler::PROP_MANUALMODE
+                ) {
                     InternalPage::create([
                         'idElement' => $element->id,
                     ]);

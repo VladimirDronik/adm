@@ -28,7 +28,7 @@ class CreateRequest extends FormRequest
             'type' => 'required|string|max:10',
             'id_object' => 'nullable|integer|min:1',
             'impulse' => 'required|numeric|min:0',
-            'unit' => 'required|string|max:6'
+            'unit' => 'required|string|max:6',
         ];
     }
 
@@ -39,7 +39,7 @@ class CreateRequest extends FormRequest
             'type.required' => 'Не указан тип счетчика',
             'id_object.required' => 'Не указан объект',
             'impulse.required' => 'Не указано значение за один импульс',
-            'unit.required' => 'Не указана единица измерения'
+            'unit.required' => 'Не указана единица измерения',
         ];
     }
 }

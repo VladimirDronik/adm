@@ -10,17 +10,11 @@ use App\Services\YandexStationService;
 
 class YandexStationController extends Controller
 {
-
-    private $yandexstation_rep;
-    private $room_rep;
-    private $service;
-
-    public function __construct(YandexStationRepository $yandexstationRepository, RoomRepository $roomRepository,
-    YandexStationService $yandexStationService)
-    {
-        $this->yandexstation_rep = $yandexstationRepository;
-        $this->room_rep = $roomRepository;
-        $this->service = $yandexStationService;
+    public function __construct(
+        private YandexStationRepository $yandexstation_rep,
+        private RoomRepository $room_rep,
+        private YandexStationService $service
+    ) {
     }
 
     public function index()
@@ -34,19 +28,19 @@ class YandexStationController extends Controller
     {
         $rooms = $this->room_rep->getAllToArray();
 
-        return view('yandexstations.edit', compact( 'rooms', 'yandexstation' ));
+        return view('yandexstations.edit', compact('rooms', 'yandexstation'));
     }
 
     public function update(UpdateRequest $r, YandexStation $yandexstation)
     {
         try {
             if ($this->service->update($yandexstation, $r->except('_token'))) {
-                return redirect()->route('yandexstations.edit',[$yandexstation->id])
+                return redirect()->route('yandexstations.edit', [$yandexstation->id])
                     ->with('success', 'Станция успешно изменена');
             }
         } catch (\Throwable $e) {
             \Log::error('Ошибка при изменении станции '.$yandexstation->id
-                .' ' .json_encode($r->all()).' '.$e->getMessage());
+                .' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении станции');

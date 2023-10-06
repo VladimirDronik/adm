@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddFieldsIntoDevusersTable extends Migration
 {
@@ -20,8 +20,8 @@ class AddFieldsIntoDevusersTable extends Migration
 
                 $table->string('name', 50)->after('id');
                 $table->string('telegram_id', 30)->nullable();
-                $table->string('push_id',255)->nullable();
-                $table->string('phone_number',11)->nullable();
+                $table->string('push_id', 255)->nullable();
+                $table->string('phone_number', 11)->nullable();
                 $table->tinyInteger('telegram_send')->nullable();
                 $table->tinyInteger('push_send')->nullable();
                 $table->tinyInteger('sms_send')->nullable();

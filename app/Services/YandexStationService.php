@@ -13,11 +13,9 @@ use ScriptsTableSeeder;
 
 class YandexStationService
 {
-    private $roomRepository;
-
-    public function __construct(RoomRepository $roomRepository)
-    {
-        $this->roomRepository = $roomRepository;
+    public function __construct(
+        private RoomRepository $roomRepository
+    ) {
     }
 
     public function store(array $data): bool

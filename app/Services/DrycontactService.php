@@ -8,28 +8,19 @@
 
 namespace App\Services;
 
-
 use App\Models\Drycontact;
 use App\Models\HomeObject;
-use App\Services\DryContactObjectService;
 use App\Models\Port;
-use Illuminate\Support\Facades\DB;
 use App\Repositories\PortRepository;
+use Illuminate\Support\Facades\DB;
 
 class DrycontactService
 {
-
-    private $drycontact_object_service;
-    private $objectService;
-    private $portRepository;
-
-
-    public function __construct(DryContactObjectService $drycontact_object_service, ObjectService $objectService,
-                                PortRepository $portRepository)
-    {
-        $this->drycontact_object_service = $drycontact_object_service;
-        $this->objectService = $objectService;
-        $this->portRepository = $portRepository;
+    public function __construct(
+        private DryContactObjectService $drycontact_object_service,
+        private ObjectService $objectService,
+        private PortRepository $portRepository
+    ) {
     }
 
     public function prepareDrycontact(Drycontact $drycontact, array $data)
@@ -41,10 +32,8 @@ class DrycontactService
         $drycontact->param_method_off = $data['param_method_off'];
     }
 
-
     public function store(array $data): int
     {
-
         $deviceID = $data['device_id'];
 
         $drycontact = new Drycontact();
@@ -54,7 +43,7 @@ class DrycontactService
             $unique_name = HomeObject::getUniqueObjectName(0, $drycontact->name);
             $object = $this->drycontact_object_service->createDrycontactObject($unique_name);
             $drycontact->id_object = $object->id;
-           // $idNewMethod = $this->drycontact_object_service->createDryContactObjectMethods($object->id);
+            // $idNewMethod = $this->drycontact_object_service->createDryContactObjectMethods($object->id);
 
             $drycontact->save();
 
@@ -68,7 +57,6 @@ class DrycontactService
         return $drycontact->id;
     }
 
-
     private function isUpdateAutoObjectName(Drycontact $drycontact, string $name): bool
     {
         return $drycontact->name !== trim($name) && $drycontact->object && $drycontact->object->is_system;
@@ -79,14 +67,10 @@ class DrycontactService
      * то изменяем название объекта.
      * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
      *
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function update(Drycontact $drycontact, array $data): int
     {
-
-
         $deviceID = $data['device_id'];
 
         DB::transaction(function () use (&$drycontact, $data) {
@@ -100,13 +84,26 @@ class DrycontactService
         });
 
         if ($data['port_id']) {
+            Port::where('object', $drycontact->object->id)
+                ->update([
+                    'object' => null,
+                    'method' => null,
+                    'comment' => '',
+                ]);
 
-            Port::where('object', $drycontact->object->id)->update(['object' => null, 'method' => null, 'comment' => '']);
-            Port::where('id', $data['port_id'])->update(['object' => $drycontact->object->id,
-                'method' => null, 'status' => 'IN', 'comment' => $data['name']]);
+            Port::where('id', $data['port_id'])
+                ->update([
+                    'object' => $drycontact->object->id,
+                    'method' => null,
+                    'status' => 'IN',
+                    'comment' => $data['name'],
+                ]);
 
-            ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($data['port_id']), 'IN-P&R');
-
+            ConfigMegaService::setPortType(
+                $deviceID,
+                $this->portRepository->getNumPortByID($data['port_id']),
+                'IN-P&R'
+            );
         }
 
         return $drycontact->id;
@@ -116,15 +113,18 @@ class DrycontactService
      * Удаление сухого контакта. Если связанный объект системный, то удаление объекта,
      * созданного автоматически при создании сухого контакта
      *
-     * @param int $id
-     * @return bool
      * @throws \Throwable
      */
     public function delete(int $id): bool
     {
         $drycontact = Drycontact::findOrFail($id);
 
-        Port::where('object', $drycontact->id_object)->update(['object' => null, 'method' => null, 'comment' => '']);
+        Port::where('object', $drycontact->id_object)
+            ->update([
+                'object' => null,
+                'method' => null,
+                'comment' => '',
+            ]);
 
         if ($drycontact->object && $drycontact->object->is_system) {
             DB::transaction(function () use (&$drycontact) {
@@ -136,8 +136,6 @@ class DrycontactService
         } else {
             $drycontact->delete();
         }
-
-
 
         return true;
     }

@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $night
  * @property float $eco
  * @property int $sort
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Temperature newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Temperature newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Temperature query()
@@ -22,13 +23,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Temperature whereNight($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Temperature whereNormal($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Temperature whereSort($value)
+ *
  * @mixin \Eloquent
  */
 class Temperature extends Model
 {
     protected $table = 'temperatures';
+
     public $timestamps = false;
-
-
-
 }

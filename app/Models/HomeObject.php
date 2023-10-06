@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
  * @property-read mixed $rus_type
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Method[] $methods
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SchedulerTask[] $scheduler_tasks
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject query()
@@ -24,14 +25,19 @@ use Illuminate\Support\Facades\DB;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HomeObject whereType($value)
+ *
  * @mixin \Eloquent
+ *
  * @property-read int|null $methods_count
  * @property-read int|null $scheduler_tasks_count
  */
 class HomeObject extends Model
 {
     protected $table = 'objects';
+
     public $timestamps = false;
+
+    protected $guarded = ['id'];
 
     public static function getFullTypeIds()
     {
@@ -43,17 +49,14 @@ class HomeObject extends Model
         return array_keys(self::getFullTypeIds());
     }
 
-    public static function getTypeById($id) {
+    public static function getTypeById($id)
+    {
         return self::getFullTypeIds()[$id] ?? '';
     }
 
     /**
      * Проверяет, уникально ли название $name в таблице объектов.
      * Если нет, то добавляет в конец названия подходящее для уникальности число (2, 3 и т.д.)
-     *
-     * @param int $object_id
-     * @param string $name
-     * @return string
      */
     public static function getUniqueObjectName(int $object_id, string $name): string
     {
@@ -61,9 +64,10 @@ class HomeObject extends Model
         $unique_name = $name;
         while (HomeObject::where('id', '<>', $object_id)
             ->where('name', $unique_name)->exists()) {
-            $unique_name = $name . ' ' . $index;
+            $unique_name = $name.' '.$index;
             $index++;
         }
+
         return $unique_name;
     }
 
@@ -72,11 +76,6 @@ class HomeObject extends Model
      * Используется ли объект еще в какой-либо таблице,
      * кроме таблицы $except_table_name в записи с id = $except_id.
      * Methods и Scheduler_tasks не проверяются.
-     *
-     * @param int $object_id
-     * @param int $except_id
-     * @param string $except_table_name
-     * @return bool
      */
     public static function isObjectUsed(int $object_id, int $except_id, string $except_table_name): bool
     {
@@ -85,7 +84,7 @@ class HomeObject extends Model
             'ports' => 'object',
             'termostats' => ['id_object', 'object'],
             'view_items' => 'id_object',
-            'dimmers' => 'id_object'
+            'dimmers' => 'id_object',
             //'methods' => 'id_object', // не надо проверять, так как есть методы объекта
             //'scheduler_tasks' => 'object', // не надо проверять, так как есть события объекта
         ];
@@ -116,14 +115,13 @@ class HomeObject extends Model
      * Удаление событий для системных методов этого объекта.
      * Удаление методов происходит автоматически на уровне базы (по связям объекта).
      *
-     * @param int $object_id
      * @throws \Exception
      */
     public static function deleteAutoObject(int $object_id)
     {
-       // $methods = Method::where('is_system', 1)
-         //   ->where('id_object', $object_id)->get();
-       // SchedulerTask::whereIn('method', $methods->pluck('id')->toArray())->delete();
+        // $methods = Method::where('is_system', 1)
+        //   ->where('id_object', $object_id)->get();
+        // SchedulerTask::whereIn('method', $methods->pluck('id')->toArray())->delete();
         HomeObject::destroy($object_id);
     }
 

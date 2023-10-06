@@ -8,15 +8,12 @@ use App\Models\ObjType;
 use App\Models\SchedulerPoint;
 use App\Models\SchedulerTask;
 use App\Models\Script;
-use ScriptsTableSeeder;
+use Database\Seeders\ScriptsTableSeeder;
 
-class LightstatObjectService {
-
+class LightstatObjectService
+{
     /**
      * Автосоздание объекта для термостата
-     *
-     * @param string $name
-     * @return HomeObject
      */
     public function createLightstatObject(string $name): HomeObject
     {
@@ -35,19 +32,20 @@ class LightstatObjectService {
     public function getOrCreateCheckLightstatScriptId(): int
     {
         $script_id = Script::where('link', 'check_lightstat.php')
-            ->where('system', 1)->value('id');
+            ->where('system', 1)
+            ->value('id');
 
         if ($script_id) {
             return $script_id;
         }
 
-        return Script::forceCreate(ScriptsTableSeeder::getCheckLightstatScript())->id;
+        return Script::forceCreate(
+            ScriptsTableSeeder::getCheckLightstatScript()
+        )->id;
     }
 
     /**
      * Создание метода 'Проверка светостата' и задачи в расписании 'Проверка светостата' (каждые 5 мин)
-     *
-     * @param int $object_id
      */
     public function createCheckMethodWithEvent(int $object_id)
     {
@@ -58,7 +56,7 @@ class LightstatObjectService {
             'id_object' => $object_id,
             'comment' => 'Периодическая проверка текущих значений светостата',
             'is_system' => 1,
-            'script' => $script_id
+            'script' => $script_id,
         ])->id;
 
         $scheduler_task_id = SchedulerTask::forceCreate([
@@ -66,7 +64,7 @@ class LightstatObjectService {
             'is_system' => 1,
             'is_hidden' => 1,
             'object' => $object_id,
-            'method' => $method_id
+            'method' => $method_id,
         ])->id;
 
         // каждые 5 мин
@@ -76,7 +74,7 @@ class LightstatObjectService {
             'time' => '5',
             'days' => '',
             'close' => 1,
-            'system' => 1
+            'system' => 1,
         ]);
     }
 
@@ -84,7 +82,6 @@ class LightstatObjectService {
      * Автосоздание методов и их событий для объекта, который был
      * создан автоматически для светостата
      *
-     * @param int $object_id
      * @return void
      */
     public function createLightstatObjectMethodsWithEvents(int $object_id)

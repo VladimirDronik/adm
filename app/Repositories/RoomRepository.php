@@ -9,12 +9,16 @@ class RoomRepository
 {
     public function getSpecialRooms()
     {
-        return Room::room()->orderBy('group_room')->get();
+        return Room::room()
+            ->orderBy('group_room')
+            ->get();
     }
 
     public function getRoomGroups()
     {
-        return Room::group()->orderBy('name')->get();
+        return Room::group()
+            ->orderBy('name')
+            ->get();
     }
 
     public function getPaginationGroupsAndSeparateRooms(int $pagination_count = 30)
@@ -22,29 +26,39 @@ class RoomRepository
         return Room::group()
             ->orWhere(function ($query) {
                 $query->room()->whereNull('group_room');
-            })->orderBy('sort')->paginate($pagination_count);
+            })
+            ->orderBy('sort')
+            ->paginate($pagination_count);
     }
 
     public function getPaginationGroupRooms(int $groupId, int $pagination_count = 30)
     {
-        return Room::room()->where('group_room', $groupId)
-            ->orderBy('sort')->paginate($pagination_count);
+        return Room::room()
+            ->where('group_room', $groupId)
+            ->orderBy('sort')
+            ->paginate($pagination_count);
     }
 
     public function getGroup($id)
     {
-        return Room::group()->where('id', $id)->first();
+        return Room::group()
+            ->where('id', $id)
+            ->first();
     }
 
     public function getAllToArray(): array
     {
         return [0 => Room::COMMON_NAME] +
-            $this->getSpecialRooms()->pluck('name', 'id')->toArray();
+            $this->getSpecialRooms()
+                ->pluck('name', 'id')
+                ->toArray();
     }
 
     public function getAllWithoutCommonToArray(): array
     {
-        return $this->getSpecialRooms()->pluck('name', 'id')->toArray();
+        return $this->getSpecialRooms()
+            ->pluck('name', 'id')
+            ->toArray();
     }
 
     public function getRoomName($room_id, $rooms = null): string

@@ -10,20 +10,26 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room query()
+ *
  * @mixin \Eloquent
+ *
  * @property int $id
  * @property string $name
  * @property string $image
  * @property string $style
  * @property int $sort
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereImage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereSort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereStyle($value)
+ *
  * @property int $lighting
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Termostat[] $termostats
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereLighting($value)
+ *
  * @property-read mixed $color_style
  * @property-read \App\Models\Temperature $temperature
  * @property int|null $group_room
@@ -32,17 +38,22 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read mixed $prefix_name
  * @property-read \App\Models\Room|null $roomGroup
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Room[] $rooms
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room group()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room room()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereGroupRoom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Room whereIsGroup($value)
+ *
  * @property-read int|null $rooms_count
  * @property-read int|null $termostats_count
  */
 class Room extends Model
 {
     const COMMON_NAME = 'Общие';
+
     public $timestamps = false;
+
+    protected $guarded = ['id'];
 
     /* attributes */
 
@@ -53,12 +64,12 @@ class Room extends Model
 
     public function getPrefixNameAttribute()
     {
-        return ($this->is_group ? 'Группа' : 'Помещение') .' «'.$this->name.'»';
+        return ($this->is_group ? 'Группа' : 'Помещение').' «'.$this->name.'»';
     }
 
     public function getIsSeparateRoomAttribute()
     {
-        return !$this->is_group && is_null($this->group_room);
+        return ! $this->is_group && is_null($this->group_room);
     }
 
     /* scopes */

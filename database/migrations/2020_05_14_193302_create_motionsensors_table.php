@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateMotionsensorsTable extends Migration
 {
@@ -24,7 +24,7 @@ class CreateMotionsensorsTable extends Migration
             $table->unsignedInteger('method_evening')->nullable()->comment('Метод при вечернем режиме');
             $table->unsignedInteger('method_guard')->nullable()->comment('Метод при режиме охраны');
             $table->unsignedInteger('lightstat')->nullable()->comment('Светостат с которым сравнивается значение');
-            $table->string('equality',1)->nullable()->comment('Знак сравнения значения');
+            $table->string('equality', 1)->nullable()->comment('Знак сравнения значения');
             $table->unsignedInteger('lightvalue')->nullable()->comment('Значение с которым сравниваем значение светостата');
             $table->unsignedInteger('method_light')->nullable()->comment('Метод при пороговом значении освещенности');
 

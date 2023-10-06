@@ -24,14 +24,14 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'message' => 'required|string|max:255'
+            'message' => 'required|string|max:255',
         ];
     }
 
     public function messages()
     {
         return [
-            'message.required' => 'Не указано сообщение'
+            'message.required' => 'Не указано сообщение',
         ];
     }
 }

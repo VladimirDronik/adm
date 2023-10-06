@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-
 /**
  * App\Models\YandexStation
  *
@@ -14,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $volume громкость по умолчанию
  * @property \App\Models\Room|null $room
  * @property int $active
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|YandexStation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|YandexStation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|YandexStation query()
@@ -23,12 +23,15 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|YandexStation whereRoom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|YandexStation whereSpeakerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|YandexStation whereVolume($value)
+ *
  * @mixin \Eloquent
  */
 class YandexStation extends Model
 {
     protected $table = 'yandexstations';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     /* relations */

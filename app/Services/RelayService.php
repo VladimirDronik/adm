@@ -9,43 +9,41 @@ use App\Models\Relay;
 use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
 
-
-class RelayService {
-
-    private $relay_object_service;
-    private $portRepository;
-
-    public function __construct(RelayObjectService $relay_object_service, PortRepository $portRepository)
-    {
-        $this->relay_object_service = $relay_object_service;
-        $this->portRepository = $portRepository;
+class RelayService
+{
+    public function __construct(
+        private RelayObjectService $relay_object_service,
+        private PortRepository $portRepository
+    ) {
     }
 
     /**
      * Удаление реле. Если связанный объект системный, то удаление объекта и методов,
      * созданных автоматически при создании реле
      *
-     * @param int $id
-     * @return bool
      * @throws \Throwable
      */
     public function delete(int $id): bool
     {
         $relay = Relay::findOrFail($id);
 
-        Port::where('object', $relay->id_object)->update(['object' => null, 'method' => null, 'comment' => '']);
+        Port::where('object', $relay->id_object)
+            ->update([
+                'object' => null,
+                'method' => null,
+                'comment' => '',
+            ]);
 
         if ($relay->object && $relay->object->is_system) {
             DB::transaction(function () use (&$relay) {
                 //if (!HomeObject::isObjectUsed($relay->id_object, $relay->id, 'relays')) {
-                    HomeObject::deleteAutoObject($relay->id_object);
+                HomeObject::deleteAutoObject($relay->id_object);
                 //}
                 $relay->delete();
             });
         } else {
             $relay->delete();
         }
-
 
         return true;
     }
@@ -62,15 +60,12 @@ class RelayService {
      * Создание реле. Если $data['type'] === 'auto',
      * то еще создается объект с методами
      *
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function store(array $data): int
     {
-
         $relay = new Relay();
-        $deviceID =  $data['device_id'];
+        $deviceID = $data['device_id'];
         $this->prepareRelay($relay, $data);
 
         DB::transaction(function () use (&$relay, $data, $deviceID) {
@@ -80,17 +75,36 @@ class RelayService {
             $relay->save();
 
             if ($data['port_id'] && $data['place'] == 'port') {
-                $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $this->portRepository->getNumPortByID($data['port_id']));
-                Port::where('id', $data['port_id'])->update(['object' => $object->id, 'status' => 'OUT',
-                    'comment' => $data['name']]);
+                $this->relay_object_service
+                    ->createRelayObjectMethods(
+                        $object->id,
+                        $data['device_id'],
+                        $this->portRepository->getNumPortByID($data['port_id'])
+                    );
 
-                ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($data['port_id']), 'OUT');
+                Port::where('id', $data['port_id'])
+                    ->update([
+                        'object' => $object->id,
+                        'status' => 'OUT',
+                        'comment' => $data['name'],
+                    ]);
 
+                ConfigMegaService::setPortType(
+                    $deviceID,
+                    $this->portRepository->getNumPortByID($data['port_id']),
+                    'OUT'
+                );
             } elseif ($data['place'] == 'Hite-pro') {
-                $this->relay_object_service->createRelayObjectMethods($object->id, $data['device_id'], $data['hitepro_devices']);
-                HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
-                            ->update(['id_object' => $object->id]);
+                $this->relay_object_service
+                    ->createRelayObjectMethods(
+                        $object->id,
+                        $data['device_id'],
+                        $data['hitepro_devices']
+                    );
 
+                HiteproDev::where('id_controller', $data['device_id'])
+                    ->where('id', $data['hitepro_devices'])
+                    ->update(['id_object' => $object->id]);
             }
         });
 
@@ -107,52 +121,78 @@ class RelayService {
      * то изменяем название объекта.
      * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
      *
-     * @param Relay $relay
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function update(Relay $relay, array $data): int
     {
-
         DB::transaction(function () use (&$relay, $data) {
             if ($this->isUpdateAutoObjectName($relay, $data['name'])) {
-                $relay->object->name = HomeObject::getUniqueObjectName($relay->object->id, trim($data['name']));
+                $relay->object->name = HomeObject::getUniqueObjectName(
+                    $relay->object->id,
+                    trim($data['name'])
+                );
                 $relay->object->save();
             }
             $this->prepareRelay($relay, $data);
             $relay->save();
 
             //Сохраняем данные в таблицу Алисы или включаем запись если она есть уже
-            if(isset($data['alice_checkbox']))
-                AliceDevicesService::addOrReplaceDevice($relay->object->id, $data['alice_command'], $data['room']);
-            else
+            if (isset($data['alice_checkbox'])) {
+                AliceDevicesService::addOrReplaceDevice(
+                    $relay->object->id,
+                    $data['alice_command'],
+                    $data['room']
+                );
+            } else {
                 AliceDevicesService::setActive($relay->object->id, 0);
+            }
 
-            if (!is_null($data['port_id']) && $data['place'] == 'port') {
+            if (! is_null($data['port_id']) && $data['place'] == 'port') {
+                Port::where('object', $relay->object->id)
+                    ->update(['object' => null, 'method' => null, 'comment' => '']);
 
-                Port::where('object', $relay->object->id)->update(['object' => null, 'method' => null, 'comment' => '']);
-                Port::where('id', $data['port_id'])->update(['object' => $relay->object->id,
-                    'method' => null, 'status' => 'OUT', 'comment' => $data['name']]);
+                Port::where('id', $data['port_id'])
+                    ->update([
+                        'object' => $relay->object->id,
+                        'method' => null,
+                        'status' => 'OUT',
+                        'comment' => $data['name'],
+                    ]);
 
-                ConfigMegaService::setPortType($relay->device_id, $this->portRepository->getNumPortByID($data['port_id']), 'OUT');
+                ConfigMegaService::setPortType(
+                    $relay->device_id,
+                    $this->portRepository->getNumPortByID($data['port_id']),
+                    'OUT'
+                );
 
-                HiteproDev::where('id_object', $relay->object->id)->update(['id_object' => null]);
+                HiteproDev::where('id_object', $relay->object->id)
+                    ->update(['id_object' => null]);
 
                 //Меняем метод easy для всех трех системных методов лампы
-                $this->relay_object_service->updateRelayObjectMethods($relay->object->id, $data['device_id'], $this->portRepository->getNumPortByID($data['port_id']));
+                $this->relay_object_service
+                    ->updateRelayObjectMethods(
+                        $relay->object->id,
+                        $data['device_id'],
+                        $this->portRepository->getNumPortByID($data['port_id'])
+                    );
+            } elseif ($data['place'] == 'Hite-pro') {
+                HiteproDev::where('id_object', $relay->object->id)
+                    ->update(['id_object' => null]);
 
+                Port::where('object', $relay->object->id)
+                    ->update(['object' => null, 'method' => null]);
 
-            }elseif ($data['place'] == 'Hite-pro') {
-
-                HiteproDev::where('id_object', $relay->object->id)->update(['id_object' => null]);
-                Port::where('object', $relay->object->id)->update(['object' => null, 'method' => null]);
-                HiteproDev::where('id_controller', $data['device_id'])->where('id', $data['hitepro_devices'])
+                HiteproDev::where('id_controller', $data['device_id'])
+                    ->where('id', $data['hitepro_devices'])
                     ->update(['id_object' => $relay->object->id]);
 
                 //Меняем метод easy для всех трех системных методов реле
-                $this->relay_object_service->updateRelayObjectMethods($relay->object->id, $data['device_id'], $data['hitepro_devices']);
-
+                $this->relay_object_service
+                    ->updateRelayObjectMethods(
+                        $relay->object->id,
+                        $data['device_id'],
+                        $data['hitepro_devices']
+                    );
             }
         });
 

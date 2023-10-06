@@ -7,15 +7,13 @@
  */
 
 namespace App\Repositories;
+
 use App\Models\Boiler;
 
 class BoilerRepository
 {
-
     public function getBoiler($boilerIdObject)
     {
-      return  Boiler::where('id_object', $boilerIdObject)->first();
+        return Boiler::where('id_object', $boilerIdObject)->first();
     }
-
-
 }

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateSchedulerTasksTable extends Migration
 {
@@ -13,7 +13,7 @@ class CreateSchedulerTasksTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('scheduler_tasks')) {
+        if (! Schema::hasTable('scheduler_tasks')) {
             Schema::create('scheduler_tasks', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name', 100)->comment('Название задачи');

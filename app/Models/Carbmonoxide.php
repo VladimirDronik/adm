@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $hight_method_params
  * @property-read \App\Models\HomeObject $eobject
  * @property-read \App\Models\HomeObject|null $iobject
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Carbmonoxide newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Carbmonoxide newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Carbmonoxide query()
@@ -40,14 +41,18 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Carbmonoxide whereLowValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Carbmonoxide whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Carbmonoxide whereRoom($value)
+ *
  * @mixin \Eloquent
+ *
  * @property-read \App\Models\Method|null $emethod_low
  * @property-read \App\Models\Method|null $emethod_high
  */
 class Carbmonoxide extends Model
 {
     protected $table = 'carbmonoxide';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     public static function getEvents()
@@ -62,6 +67,7 @@ class Carbmonoxide extends Model
     /**
      * Получение доступных свойств объекта.
      * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     *
      * @return array
      */
     public static function getProperties()
@@ -91,4 +97,3 @@ class Carbmonoxide extends Model
         return $this->belongsTo(Method::class, 'high_method', 'id');
     }
 }
-

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateObjectsTable extends Migration
 {
@@ -13,7 +13,7 @@ class CreateObjectsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('objects')) {
+        if (! Schema::hasTable('objects')) {
             Schema::create('objects', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name', 100)->comment('название объекта');

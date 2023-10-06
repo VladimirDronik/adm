@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-
 /**
  * App\Models\Curtain
  *
@@ -14,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $id_object
  * @property-read mixed $rus_type
  * @property-read \App\Models\HomeObject|null $object
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Curtain newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Curtain newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Curtain query()
@@ -21,22 +21,31 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Curtain whereIdObject($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Curtain whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Curtain whereType($value)
+ *
  * @mixin \Eloquent
  */
 class Curtain extends Model
 {
     const TYPE_CURTAIN = 'curtain';
+
     const TYPE_ROMAN = 'roman';
+
     const TYPE_ROLLER = 'roller';
+
     const TYPE_VERTICAL = 'vertical';
+
     const TYPE_HORIZONTAL = 'horizontal';
 
     const PLACE_PORT = 'port';
+
     const PLACE_PHASE = 'phase';
+
     const PLACE_RS485 = 'rs485';
 
     protected $table = 'curtains';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     public static function getTypes(bool $is_full = false)
@@ -57,7 +66,7 @@ class Curtain extends Model
         $places = [
             self::PLACE_PORT => 'Сухой контакт',
             self::PLACE_PHASE => 'Фазное управление',
-            self::PLACE_RS485 => 'RS-485'
+            self::PLACE_RS485 => 'RS-485',
         ];
 
         return $is_full ? $places : array_keys($places);
@@ -65,6 +74,7 @@ class Curtain extends Model
 
     /**
      * Получение всех методов для объекта
+     *
      * @return array
      */
     public static function getEvents()
@@ -75,10 +85,10 @@ class Curtain extends Model
         ];
     }
 
-
     /**
      * Получение доступных свойств объекта.
      * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     *
      * @return array
      */
     public static function getProperties()

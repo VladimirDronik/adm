@@ -14,19 +14,15 @@ use Illuminate\Http\Request;
 
 class EngineeringController extends Controller
 {
-
-    private $service;
-
-    public function __construct(EngineeringService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private EngineeringService $service
+    ) {
     }
 
     public function delete(Request $r)
     {
-        abort_if(!ajaxHas($r, ['id']), 400);
+        abort_if(! ajaxHas($r, ['id']), 400);
 
-        return response()->json(['result' => $this->service->delete((int)$r->id, (bool)$r->del_checkbox)]);
+        return response()->json(['result' => $this->service->delete((int) $r->id, (bool) $r->del_checkbox)]);
     }
-
 }

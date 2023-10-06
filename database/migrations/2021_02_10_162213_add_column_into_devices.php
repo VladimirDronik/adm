@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddColumnIntoDevices extends Migration
 {
@@ -16,7 +16,7 @@ class AddColumnIntoDevices extends Migration
         if (Schema::hasTable('devices')) {
             Schema::table('devices', function (Blueprint $table) {
 
-                $table->string('username',100)->nullable();
+                $table->string('username', 100)->nullable();
                 $table->tinyInteger('changed')->nullable();
             });
         }

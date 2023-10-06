@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class DeleteGraphHumiditiesTable extends Migration
 {
@@ -23,7 +23,7 @@ class DeleteGraphHumiditiesTable extends Migration
      */
     public function down()
     {
-        if (!Schema::hasTable('graph_humidities')) {
+        if (! Schema::hasTable('graph_humidities')) {
             Schema::create('graph_humidities', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('id_count')->comment('id датчика влажности');

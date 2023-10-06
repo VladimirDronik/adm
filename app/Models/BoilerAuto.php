@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use \Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class BoilerAuto extends Model
 {
     public $timestamps = false;
 
-    protected $table   = 'boiler_auto';
+    protected $table = 'boiler_auto';
+
     protected $guarded = [];
 
     /* relations */

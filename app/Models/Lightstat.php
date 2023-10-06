@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class Lightstat
  *
- * @package App\Models
  *
  * @property int $id
  * @property string|null $name
@@ -31,6 +30,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $placetype
  * @property-read \App\Models\HomeObject|null $eobject
  * @property-read mixed $rus_lightstat
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Lightstat newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Lightstat newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Lightstat query()
@@ -53,17 +53,19 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Lightstat wherePlacetype($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Lightstat whereRoom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Lightstat whereUsensorId($value)
+ *
  * @mixin \Eloquent
+ *
  * @property-read \App\Models\Method|null $emethod_off
  * @property-read \App\Models\Method|null $emethod_on
  */
-
 class Lightstat extends Model
 {
     protected $table = 'lightstats';
-    public $timestamps = false;
-    protected $guarded = ['id'];
 
+    public $timestamps = false;
+
+    protected $guarded = ['id'];
 
     public static function getFullLigtstatIds()
     {
@@ -83,6 +85,7 @@ class Lightstat extends Model
     /**
      * Получение доступных свойств объекта.
      * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     *
      * @return array
      */
     public static function getProperties()
@@ -103,7 +106,8 @@ class Lightstat extends Model
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
     }
 
-    public static function getLightstatById($id) {
+    public static function getLightstatById($id)
+    {
         return self::getFullLigtstatIds()[$id] ?? '';
     }
 
@@ -124,7 +128,7 @@ class Lightstat extends Model
 
     public function last_graphs()
     {
-        return $this->hasMany(GraphLight::class, 'id_count', 'id')->where('datetime','>=', Carbon::now()->subDays(7))
+        return $this->hasMany(GraphLight::class, 'id_count', 'id')->where('datetime', '>=', Carbon::now()->subDays(7))
             ->orderBy('datetime');
     }
 }

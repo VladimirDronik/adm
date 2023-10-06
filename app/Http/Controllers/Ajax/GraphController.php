@@ -8,46 +8,44 @@ use Illuminate\Http\Request;
 
 class GraphController extends Controller
 {
-    private $service;
-
-    public function __construct(GraphService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        private GraphService $service
+    ) {
     }
 
     public function getTermostatsPeriodData(Request $r)
     {
-        abort_if(!ajaxHas($r, ['termostat_id','period']), 400);
+        abort_if(! ajaxHas($r, ['termostat_id', 'period']), 400);
 
-        list($result, $data) = $this->service->getGraphTermostatsPeriodData($r->termostat_id, $r->period);
+        [$result, $data] = $this->service->getGraphTermostatsPeriodData($r->termostat_id, $r->period);
 
-        return response()->json(compact('result','data'));
+        return response()->json(compact('result', 'data'));
     }
 
     public function getHumiditiesPeriodData(Request $r)
     {
-        abort_if(!ajaxHas($r, ['hygrostat_id','period']), 400);
+        abort_if(! ajaxHas($r, ['hygrostat_id', 'period']), 400);
 
-        list($result, $data) = $this->service->getGraphHumiditiesPeriodData($r->hygrostat_id, $r->period);
+        [$result, $data] = $this->service->getGraphHumiditiesPeriodData($r->hygrostat_id, $r->period);
 
-        return response()->json(compact('result','data'));
+        return response()->json(compact('result', 'data'));
     }
 
     public function getCountsPeriodData(Request $r)
     {
-        abort_if(!ajaxHas($r, ['count_id','period']), 400);
+        abort_if(! ajaxHas($r, ['count_id', 'period']), 400);
 
-        list($result, $data) = $this->service->getGraphCountsPeriodData($r->count_id, $r->period);
+        [$result, $data] = $this->service->getGraphCountsPeriodData($r->count_id, $r->period);
 
-        return response()->json(compact('result','data'));
+        return response()->json(compact('result', 'data'));
     }
 
     public function getLightsPeriodData(Request $r)
     {
-        abort_if(!ajaxHas($r, ['count_id','period']), 400);
+        abort_if(! ajaxHas($r, ['count_id', 'period']), 400);
 
-        list($result, $data) = $this->service->getGraphLightsPeriodData($r->count_id, $r->period);
+        [$result, $data] = $this->service->getGraphLightsPeriodData($r->count_id, $r->period);
 
-        return response()->json(compact('result','data'));
+        return response()->json(compact('result', 'data'));
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateHiteprodevTable extends Migration
 {
@@ -18,7 +18,7 @@ class CreateHiteprodevTable extends Migration
             $table->unsignedInteger('id_controller');
             $table->string('type', 20);
             $table->string('name', 100);
-            $table->string('status',200);
+            $table->string('status', 200);
 
             $table->unsignedInteger('id_object')->nullable();
 
@@ -40,4 +40,3 @@ class CreateHiteprodevTable extends Migration
         Schema::dropIfExists('hiteprodev');
     }
 }
-

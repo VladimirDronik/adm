@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device query()
+ *
  * @mixin \Eloquent
  *
  * @property int    $id
@@ -26,8 +27,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class InternalPage extends Model
 {
-    public    $timestamps = false;
-    protected $guarded    = ['id'];
+    public $timestamps = false;
+
+    protected $guarded = ['id'];
+
     protected $table = 'internalPages';
 
     /* relations */

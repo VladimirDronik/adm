@@ -46,11 +46,11 @@ class ConditionerRepository
             if ($offCode) {
                 $conditionerCode->update([
                     'status' => 'off',
-                    'code' => $code
+                    'code' => $code,
                 ]);
             } else {
                 $conditionerCode->update([
-                    'code' => $code
+                    'code' => $code,
                 ]);
             }
         } else {
@@ -58,7 +58,7 @@ class ConditionerRepository
                 $conditionerCode = ConditionerCode::create([
                     'kind' => $kind,
                     'status' => 'off',
-                    'code' => $code
+                    'code' => $code,
                 ]);
             } else {
                 $conditionerCode = ConditionerCode::create([
@@ -67,7 +67,7 @@ class ConditionerRepository
                     'temperature' => $temp,
                     'operationMode' => $operationMode,
                     'fanMode' => $fanMode,
-                    'code' => $code
+                    'code' => $code,
                 ]);
             }
         }

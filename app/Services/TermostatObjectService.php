@@ -8,15 +8,12 @@ use App\Models\ObjType;
 use App\Models\SchedulerPoint;
 use App\Models\SchedulerTask;
 use App\Models\Script;
-use ScriptsTableSeeder;
+use Database\Seeders\ScriptsTableSeeder;
 
-class TermostatObjectService {
-
+class TermostatObjectService
+{
     /**
      * Автосоздание объекта для термостата
-     *
-     * @param string $name
-     * @return HomeObject
      */
     public function createTermostatObject(string $name): HomeObject
     {
@@ -35,19 +32,20 @@ class TermostatObjectService {
     public function getOrCreateCheckTermostatScriptId(): int
     {
         $script_id = Script::where('link', 'check_termostat.php')
-            ->where('system', 1)->value('id');
+            ->where('system', 1)
+            ->value('id');
 
         if ($script_id) {
             return $script_id;
         }
 
-        return Script::forceCreate(ScriptsTableSeeder::getCheckTermostatScript())->id;
+        return Script::forceCreate(
+            ScriptsTableSeeder::getCheckTermostatScript()
+        )->id;
     }
 
     /**
      * Создание метода 'Проверка термостата' и элемента планировщика 'Проверка термостата' (каждые 5 мин)
-     *
-     * @param int $object_id
      */
     public function createCheckMethodWithEvent(int $object_id)
     {
@@ -58,7 +56,7 @@ class TermostatObjectService {
             'id_object' => $object_id,
             'comment' => 'Периодическая проверка текущих значений термостата',
             'is_system' => 1,
-            'script' => $script_id
+            'script' => $script_id,
         ])->id;
 
         $scheduler_task_id = SchedulerTask::forceCreate([
@@ -66,7 +64,7 @@ class TermostatObjectService {
             'is_system' => 1,
             'is_hidden' => 1,
             'object' => $object_id,
-            'method' => $method_id
+            'method' => $method_id,
         ])->id;
 
         // каждые 5 мин
@@ -76,7 +74,7 @@ class TermostatObjectService {
             'time' => '5',
             'days' => '',
             'close' => 1,
-            'system' => 1
+            'system' => 1,
         ]);
     }
 
@@ -84,7 +82,6 @@ class TermostatObjectService {
      * Автосоздание методов и их событий для объекта, который был
      * создан автоматически для термостата
      *
-     * @param int $object_id
      * @return void
      */
     public function createTermostatObjectMethodsWithEvents(int $object_id)

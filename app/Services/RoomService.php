@@ -9,12 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class RoomService
 {
-
     public function delete(int $id)
     {
         $room = Room::find($id);
 
-        if (!$room) {
+        if (! $room) {
             return false;
         }
 
@@ -23,19 +22,20 @@ class RoomService
                 if ($room->is_group) {
                     Room::room()->where('group_room', $room->id)->delete();
                 }
+
                 Room::where(function ($query) {
                     $query->group()
                         ->orWhere(function ($query) {
                             $query->room()->whereNull('group_room');
                         });
-                })->where('sort', '>', max($room->sort, 0))->update([
-                    'sort' => DB::raw('sort-1'),
-                ]);
+                })
+                    ->where('sort', '>', max($room->sort, 0))
+                    ->update(['sort' => DB::raw('sort-1')]);
             } else {
-                Room::room()->where('group_room', $room->group_room)
-                    ->where('sort', '>', max($room->sort, 0))->update([
-                    'sort' => DB::raw('sort-1'),
-                ]);
+                Room::room()
+                    ->where('group_room', $room->group_room)
+                    ->where('sort', '>', max($room->sort, 0))
+                    ->update(['sort' => DB::raw('sort-1')]);
             }
             $room->delete();
         });
@@ -52,7 +52,9 @@ class RoomService
                 })->min('sort');
         }
 
-        return (int) Room::room()->where('group_room', $room->group_room)->min('sort');
+        return (int) Room::room()
+            ->where('group_room', $room->group_room)
+            ->min('sort');
     }
 
     private function getSortMax($room): int
@@ -64,7 +66,9 @@ class RoomService
                 })->max('sort');
         }
 
-        return (int) Room::room()->where('group_room', $room->group_room)->max('sort');
+        return (int) Room::room()
+            ->where('group_room', $room->group_room)
+            ->max('sort');
     }
 
     private function updatePreviousSortRoom($room, $previous_sort)
@@ -77,8 +81,10 @@ class RoomService
                     });
             })->where('sort', $room->sort)->update(['sort' => $previous_sort]);
         } else {
-            Room::room()->where('group_room', $room->group_room)
-                ->where('sort', $room->sort)->update(['sort' => $previous_sort]);
+            Room::room()
+                ->where('group_room', $room->group_room)
+                ->where('sort', $room->sort)
+                ->update(['sort' => $previous_sort]);
         }
     }
 
@@ -86,15 +92,16 @@ class RoomService
     {
         $room = Room::find($data['id']);
 
-        if (!$room) {
+        if (! $room) {
             return false;
         }
 
         $min = $this->getSortMin($room);
         $max = $this->getSortMax($room);
 
-        if (($room->sort === $min && $data['direction'] === 'up')
-            || ($room->sort === $max && $data['direction'] === 'down')) {
+        if (($room->sort === $min && $data['direction'] === 'up') ||
+            ($room->sort === $max && $data['direction'] === 'down')
+        ) {
             return true;
         }
 
@@ -130,7 +137,13 @@ class RoomService
     private function setColorIfEmpty($color)
     {
         if (empty($color)) {
-            return optional(ColorService::getAll()[0])->name ?? 'red';
+            $colors = ColorService::getAll();
+
+            if ($colors->isEmpty()) {
+                return 'red';
+            }
+
+            return $colors->first()->name;
         }
 
         return $color;
@@ -162,7 +175,9 @@ class RoomService
     {
         $group = null;
         if ($data['group_id'] !== '0') {
-            $group = Room::group()->where('id', $data['group_id'])->first();
+            $group = Room::group()
+                ->where('id', $data['group_id'])
+                ->first();
         }
         $room = new Room();
 
@@ -180,7 +195,6 @@ class RoomService
         $room->style = $this->setColorIfEmpty($data['style']);
 
         $room->save();
-
 
         $temperature = new Temperature();
         $temperature->id_room = $room->id;
@@ -205,23 +219,25 @@ class RoomService
 
     public function updateName(int $id, string $name)
     {
-        Room::where('id', $id)->update(['name' => $this->setNameIfEmpty($name)]);
+        Room::where('id', $id)
+            ->update(['name' => $this->setNameIfEmpty($name)]);
     }
 
     public function updateImage(int $id, string $image)
     {
-        Room::where('id', $id)->update(['image' => $this->setImageIfEmpty($image)]);
+        Room::where('id', $id)
+            ->update(['image' => $this->setImageIfEmpty($image)]);
     }
 
     public function updateColor(int $id, string $color)
     {
-        Room::where('id', $id)->update(['style' => $this->setColorIfEmpty($color)]);
+        Room::where('id', $id)
+            ->update(['style' => $this->setColorIfEmpty($color)]);
     }
 
     public function update(Room $room, array $data)
     {
         DB::transaction(function () use ($room, $data) {
-
             if (is_null($room->group_room) && $data['group_room'] !== '0') {
                 // из отдельных в конкретную
                 Room::where(function ($query) {
@@ -229,25 +245,36 @@ class RoomService
                         ->orWhere(function ($query) {
                             $query->room()->whereNull('group_room');
                         });
-                })->where('sort', '>', $room->sort)->update([
-                    'sort' => DB::raw('sort-1'),
-                ]);
-                View::where('room', $room->id)->update(['room_group' => (int)$data['group_room']]);
+                })
+                    ->where('sort', '>', $room->sort)
+                    ->update(['sort' => DB::raw('sort-1')]);
+
+                View::where('room', $room->id)
+                    ->update(['room_group' => (int) $data['group_room']]);
+
                 $room->group_room = $data['group_room'];
-            } elseif (!is_null($room->group_room) && $data['group_room'] === '0') {
+            } elseif (! is_null($room->group_room) && $data['group_room'] === '0') {
                 // из конкретных в отдельную
-                Room::room()->where('group_room', $room->group_room)->where('sort', '>', $room->sort)->update([
-                    'sort' => DB::raw('sort-1'),
-                ]);
-                View::where('room', $room->id)->update(['room_group' => $room->id]);
+                Room::room()
+                    ->where('group_room', $room->group_room)
+                    ->where('sort', '>', $room->sort)
+                    ->update(['sort' => DB::raw('sort-1')]);
+
+                View::where('room', $room->id)
+                    ->update(['room_group' => $room->id]);
+
                 $room->group_room = null;
-            } elseif (!is_null($room->group_room) && $room->group_room !== (int)$data['group_room']) {
+            } elseif (! is_null($room->group_room) && $room->group_room !== (int) $data['group_room']) {
                 // из конкретной в конкретную
-                Room::room()->where('group_room', $room->group_room)->where('sort', '>', $room->sort)->update([
-                    'sort' => DB::raw('sort-1'),
-                ]);
-                View::where('room', $room->id)->update(['room_group' => (int)$data['group_room']]);
-                $room->group_room = (int)$data['group_room'];
+                Room::room()
+                    ->where('group_room', $room->group_room)
+                    ->where('sort', '>', $room->sort)
+                    ->update(['sort' => DB::raw('sort-1')]);
+
+                View::where('room', $room->id)
+                    ->update(['room_group' => (int) $data['group_room']]);
+
+                $room->group_room = (int) $data['group_room'];
             }
 
             $room->sort = $this->getSortMax($room) + 1;
@@ -255,15 +282,15 @@ class RoomService
 
             $temperature = Temperature::where('id_room', $room->id)->first();
 
-            if (!$temperature) {
+            if (! $temperature) {
                 $temperature = new Temperature();
                 $temperature->id_room = $room->id;
                 $temperature->sort = 1;
             }
 
-            $temperature->normal = (int)$data['temperature_normal'];
-            $temperature->night = (int)$data['temperature_night'];
-            $temperature->eco = (int)$data['temperature_eco'];
+            $temperature->normal = (int) $data['temperature_normal'];
+            $temperature->night = (int) $data['temperature_night'];
+            $temperature->eco = (int) $data['temperature_eco'];
 
             $temperature->save();
         });
@@ -274,48 +301,46 @@ class RoomService
     /**
      * Добавление термостата к комнате.
      */
-    static public function addTermostat($idRoom, $termostatValue)
+    public static function addTermostat($idRoom, $termostatValue)
     {
-
         $temperature = Temperature::where('id_room', $idRoom)->first();
 
         if ($temperature->id) {
-
-            if($temperature->normal == null)
+            if ($temperature->normal == null) {
                 $temperature->normal = $termostatValue;
+            }
 
-            if($temperature->night == null)
+            if ($temperature->night == null) {
                 $temperature->night = $termostatValue;
+            }
 
-            if($temperature->eco == null)
+            if ($temperature->eco == null) {
                 $temperature->eco = $termostatValue;
+            }
 
             $temperature->save();
         }
-
     }
 
     /**
      * Добавление гигростата к комнате.
      */
-    static public function addHygrostat($idRoom, $hygrostatValue)
+    public static function addHygrostat($idRoom, $hygrostatValue)
     {
-
-//        $temperature = Temperature::where('id_room', $idRoom)->first();
-//
-//        if ($temperature->id) {
-//
-//            if($temperature->normal == null)
-//                $temperature->normal = $termostatValue;
-//
-//            if($temperature->night == null)
-//                $temperature->night = $termostatValue;
-//
-//            if($temperature->eco == null)
-//                $temperature->eco = $termostatValue;
-//
-//            $temperature->save();
-//        }
-
+        //        $temperature = Temperature::where('id_room', $idRoom)->first();
+        //
+        //        if ($temperature->id) {
+        //
+        //            if($temperature->normal == null)
+        //                $temperature->normal = $termostatValue;
+        //
+        //            if($temperature->night == null)
+        //                $temperature->night = $termostatValue;
+        //
+        //            if($temperature->eco == null)
+        //                $temperature->eco = $termostatValue;
+        //
+        //            $temperature->save();
+        //        }
     }
 }

@@ -16,5 +16,4 @@ class NotificationServiceRepository
     {
         return NotificationSettings::orderBy('id', 'desc')->paginate($pagination_count);
     }
-
 }

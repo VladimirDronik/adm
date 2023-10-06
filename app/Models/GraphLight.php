@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id_count id датчика освещенности
  * @property string $datetime дата и время значения
  * @property float $value значение параметра
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphLight newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphLight newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphLight query()
@@ -18,10 +19,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphLight whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphLight whereIdCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphLight whereValue($value)
+ *
  * @mixin \Eloquent
  */
 class GraphLight extends Model
 {
     protected $table = 'graph_lights';
+
     public $timestamps = false;
 }

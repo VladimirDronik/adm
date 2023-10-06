@@ -6,15 +6,12 @@ use App\Models\HomeObject;
 use App\Models\Method;
 use App\Models\ObjType;
 use App\Models\Script;
-use ScriptsTableSeeder;
+use Database\Seeders\ScriptsTableSeeder;
 
-class DimmerObjectService {
-
+class DimmerObjectService
+{
     /**
      * Автосоздание объекта для диммера
-     *
-     * @param string $name
-     * @return HomeObject
      */
     public function createDimmerObject(string $name): HomeObject
     {
@@ -32,15 +29,14 @@ class DimmerObjectService {
 
     /**
      * Если скрипт не найден, то создаем
-     *
-     * @return int
      */
     private function getScriptId(array $scriptArray): int
     {
         $script = Script::where('name', $scriptArray['name'])
-            ->where('system', 1)->first();
+            ->where('system', 1)
+            ->first();
 
-        if (!$script) {
+        if (! $script) {
             $script = Script::forceCreate($scriptArray);
         }
 
@@ -51,7 +47,6 @@ class DimmerObjectService {
      * Автосоздание методов для объекта, который был
      * создан автоматически для диммера
      *
-     * @param int $object_id
      * @return void
      */
     public function createDimmerObjectMethods(int $object_id)
@@ -68,7 +63,7 @@ class DimmerObjectService {
                 'script' => $script_id,
                 'comment' => $script['name'],
                 'params' => mb_strpos($script['name'], 'Установить', 0, 'UTF-8') !== false ? 'Яркость (целое, 0-100)' : null,
-                'is_system' => 1
+                'is_system' => 1,
             ];
         }
 

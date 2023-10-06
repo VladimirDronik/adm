@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $room
  * @property-read \App\Models\HomeObject $eobject
  * @property-read \App\Models\HomeObject|null $iobject
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor query()
@@ -32,20 +33,29 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor wherePortSDA($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor whereRoom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor whereTemp($value)
+ *
  * @mixin \Eloquent
  */
 class Usensor extends Model
 {
     protected $table = 'usensors';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     const TYPE_HTU21D = 'htu21d';
+
     const TYPE_BH1750 = 'bh1750';
+
     const TYPE_BME280 = 'bme280';
+
     const TYPE_SCD40 = 'scd40';
+
     const TYPE_SCD41 = 'scd41';
+
     const TYPE_OUTDOORV2 = 'outdoorv2';
+
     const TYPE_OUTDOORV3 = 'outdoorv3';
 
     public static function getTypes(bool $is_full = false)

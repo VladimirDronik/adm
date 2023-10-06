@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $value
  * @property int $speed
  * @property-read \App\Models\HomeObject|null $object
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dimmer newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dimmer newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dimmer query()
@@ -21,14 +22,20 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dimmer whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dimmer whereSpeed($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dimmer whereValue($value)
+ *
  * @mixin \Eloquent
+ *
  * @property int|null $oldvalue
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dimmer whereOldvalue($value)
  */
 class Dimmer extends Model
 {
     protected $table = 'dimmers';
+
     public $timestamps = false;
+
+    protected $guarded = ['id'];
 
     /* relations */
 
@@ -44,6 +51,7 @@ class Dimmer extends Model
 
     /**
      * Получение всех методов для объекта
+     *
      * @return array
      */
     public static function getEvents()
@@ -58,6 +66,7 @@ class Dimmer extends Model
     /**
      * Получение доступных свойств объекта.
      * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
+     *
      * @return array
      */
     public static function getProperties()

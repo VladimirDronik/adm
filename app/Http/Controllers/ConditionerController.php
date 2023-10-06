@@ -12,25 +12,13 @@ use Illuminate\Http\Request;
 
 class ConditionerController extends Controller
 {
-    private $conditionersRep;
-    private $objectRep;
-    private $roomRep;
-    private $deviceRep;
-    private $service;
-
     public function __construct(
-        ConditionerRepository $conditionersRep,
-        ObjectRepository $objectRep,
-        RoomRepository $roomRep,
-        DeviceRepository $deviceRep,
-        ConditionerService $service
-    )
-    {
-        $this->conditionersRep = $conditionersRep;
-        $this->objectRep = $objectRep;
-        $this->roomRep = $roomRep;
-        $this->deviceRep = $deviceRep;
-        $this->service = $service;
+        private ConditionerRepository $conditionersRep,
+        private ObjectRepository $objectRep,
+        private RoomRepository $roomRep,
+        private DeviceRepository $deviceRep,
+        private ConditionerService $service
+    ) {
     }
 
     public function index()
@@ -72,7 +60,7 @@ class ConditionerController extends Controller
                     ->with('success', 'Кондиционер успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении кондиционера ' .
+            \Log::error('Ошибка при добавлении кондиционера '.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 
@@ -83,11 +71,11 @@ class ConditionerController extends Controller
     {
         try {
             if ($this->service->update($conditioner, $r->except('_token'))) {
-                return redirect()->route('conditioners.edit',[$conditioner->id])
+                return redirect()->route('conditioners.edit', [$conditioner->id])
                     ->with('success', 'Кондиционер успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении кондиционера ' .
+            \Log::error('Ошибка при изменении кондиционера '.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 

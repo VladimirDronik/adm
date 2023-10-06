@@ -27,7 +27,7 @@ class CreateRequest extends FormRequest
             'name' => 'required|string|max:100',
             'id_object' => 'nullable|integer|min:1',
             'value' => 'required|numeric|max:127',
-            'speed' => 'required|numeric|min:0|max:127'
+            'speed' => 'required|numeric|min:0|max:127',
         ];
     }
 

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddColumnsIntoBoiler extends Migration
 {
@@ -27,11 +27,9 @@ class AddColumnsIntoBoiler extends Migration
                 $table->tinyInteger('target_heat_temp')->nullable();
                 $table->tinyInteger('target_water_temp')->nullable();
 
-
                 $table->dropColumn('state');
                 $table->dropColumn('cooliant_supply');
                 $table->dropColumn('cooliant_return');
-
 
             });
         }

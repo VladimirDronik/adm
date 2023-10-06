@@ -2,29 +2,26 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use App\Repositories\ConditionerRepository;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Repositories\ConditionerRepository;
 use App\Services\ConditionerService;
+use Illuminate\Http\Request;
 
 class ConditionerController extends Controller
 {
-    private $conditionersRep;
-    private $service;
-
-    public function __construct(ConditionerRepository $conditionersRep, ConditionerService $service)
-    {
-        $this->conditionersRep = $conditionersRep;
-        $this->service = $service;
+    public function __construct(
+        private ConditionerRepository $conditionersRep,
+        private ConditionerService $service
+    ) {
     }
 
     public function modelsByVendor(Request $r)
     {
-        abort_if(!ajaxHas($r, ['vendor_id']), 400);
+        abort_if(! ajaxHas($r, ['vendor_id']), 400);
 
-        $models = $this->conditionersRep->getModelsByVendor((int)$r->vendor_id);
+        $models = $this->conditionersRep->getModelsByVendor((int) $r->vendor_id);
 
-        abort_if(!$models, 404);
+        abort_if(! $models, 404);
 
         $arrayModels = [];
 
@@ -37,14 +34,14 @@ class ConditionerController extends Controller
 
     public function getCode(Request $r)
     {
-        abort_if(!ajaxHas($r, ['kind', 'operationMode', 'fanMode', 'temp']), 400);
+        abort_if(! ajaxHas($r, ['kind', 'operationMode', 'fanMode', 'temp']), 400);
 
         if ($r->temp == 'off') {
             $conditionerCode = $this->conditionersRep
-                ->getOffCode((int)$r->kind, (string)$r->temp);
+                ->getOffCode((int) $r->kind, (string) $r->temp);
         } else {
             $conditionerCode = $this->conditionersRep
-                ->getCode((int)$r->kind, (string)$r->operationMode, (string)$r->fanMode, (float)$r->temp);
+                ->getCode((int) $r->kind, (string) $r->operationMode, (string) $r->fanMode, (float) $r->temp);
         }
 
         return response()->json(['result' => true, 'code' => $conditionerCode ? $conditionerCode->code : '']);
@@ -52,36 +49,36 @@ class ConditionerController extends Controller
 
     public function readCode(Request $r)
     {
-        abort_if(!ajaxHas($r, ['wbMir', 'ip']), 400);
+        abort_if(! ajaxHas($r, ['wbMir', 'ip']), 400);
 
         $cancelResponse = $this->service->cancelReadCommand($r->ip, $r->wbMir);
 
-        if (!$cancelResponse || $cancelResponse['error_code']) {
+        if (! $cancelResponse || $cancelResponse['error_code']) {
             return response()->json([
                 'result' => false,
-                'error' => $cancelResponse ? $cancelResponse['error_text'] : 'Неизвестная ошибка отмены считывания'
+                'error' => $cancelResponse ? $cancelResponse['error_text'] : 'Неизвестная ошибка отмены считывания',
             ]);
         }
 
         $response = $this->service->startReadCommand($r->ip, $r->wbMir);
 
-        if ($response && !$response['error_code']) {
+        if ($response && ! $response['error_code']) {
             return response()->json(['result' => true]);
         } else {
             return response()->json([
                 'result' => false,
-                'error' => $response ? $response['error_text'] : 'Неизвестная ошибка запуска считывания'
+                'error' => $response ? $response['error_text'] : 'Неизвестная ошибка запуска считывания',
             ]);
         }
     }
 
     public function reciveCode(Request $r)
     {
-        abort_if(!ajaxHas($r, ['wbMir', 'ip']), 400);
+        abort_if(! ajaxHas($r, ['wbMir', 'ip']), 400);
 
         $response = $this->service->reciveCodeCommand($r->ip, $r->wbMir);
 
-        if ($response && !$response['error_code']) {
+        if ($response && ! $response['error_code']) {
             return response()->json(['result' => true, 'code' => $response['signal']]);
         } else {
             return response()->json([
@@ -93,18 +90,18 @@ class ConditionerController extends Controller
 
     public function saveCode(Request $r)
     {
-        abort_if(!ajaxHas($r, ['kind', 'operationMode', 'fanMode', 'temp', 'code']), 400);
+        abort_if(! ajaxHas($r, ['kind', 'operationMode', 'fanMode', 'temp', 'code']), 400);
 
         try {
             if ($r->temp == 'off') {
-                $conditionerCode = $this->conditionersRep->getOffCode((int)$r->kind, (string)$r->temp);
+                $conditionerCode = $this->conditionersRep->getOffCode((int) $r->kind, (string) $r->temp);
                 $this->conditionersRep
-                    ->updateOrCreate($conditionerCode ?: null, (string)$r->code, (int)$r->kind, null, null, null, true);
+                    ->updateOrCreate($conditionerCode ?: null, (string) $r->code, (int) $r->kind, null, null, null, true);
             } else {
                 $conditionerCode = $this->conditionersRep
-                    ->getCode((int)$r->kind, (string)$r->operationMode, (string)$r->fanMode, (float)$r->temp);
+                    ->getCode((int) $r->kind, (string) $r->operationMode, (string) $r->fanMode, (float) $r->temp);
                 $this->conditionersRep
-                    ->updateOrCreate($conditionerCode ?: null, (string)$r->code, (int)$r->kind, (string)$r->operationMode, (string)$r->fanMode, (float)$r->temp);
+                    ->updateOrCreate($conditionerCode ?: null, (string) $r->code, (int) $r->kind, (string) $r->operationMode, (string) $r->fanMode, (float) $r->temp);
             }
 
             return response()->json(['result' => true]);
@@ -115,17 +112,29 @@ class ConditionerController extends Controller
 
     public function cancelReadingCode(Request $r)
     {
-        abort_if(!ajaxHas($r, ['wbMir', 'ip']), 400);
+        abort_if(! ajaxHas($r, ['wbMir', 'ip']), 400);
 
         $response = $this->service->cancelReadCommand($r->ip, $r->wbMir);
 
-        if ($response && !$response['error_code']) {
+        if ($response && ! $response['error_code']) {
             return response()->json(['result' => true]);
         } else {
             return response()->json([
                 'result' => false,
-                'error' => $response ? $response['error_text'] : 'Неизвестная ошибка отмены считывания'
+                'error' => $response ? $response['error_text'] : 'Неизвестная ошибка отмены считывания',
             ]);
         }
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Throwable
+     */
+    public function delete(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id']), 400);
+
+        return response()->json(['result' => $this->service->delete((int) $r->id)]);
     }
 }

@@ -13,8 +13,8 @@ use App\Models\Room;
 use App\Models\Termostat;
 use Carbon\Carbon;
 
-class GraphService {
-
+class GraphService
+{
     public function getTermostatsPeriods()
     {
         $periods = [];
@@ -52,11 +52,11 @@ class GraphService {
 
         if ($period === '7') {
             $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
-            $graphs = $query->where('datetime','>=',$week_ago_date)->get();
+            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
         } else {
-            $period_parts = explode("-", $period);
-            $month = (int)$period_parts[0];
-            $year = (int)$period_parts[1];
+            $period_parts = explode('-', $period);
+            $month = (int) $period_parts[0];
+            $year = (int) $period_parts[1];
             $graphs = $query->whereMonth('datetime', '=', $month)
                 ->whereYear('datetime', '=', $year)->get();
         }
@@ -88,13 +88,21 @@ class GraphService {
 
     public function getGraphHumiditiesData()
     {
-        $rooms_ids = Hygrostat::whereNotNull('room')->select('room')
-            ->distinct()->pluck('room')->toArray();
+        $rooms_ids = Hygrostat::whereNotNull('room')
+            ->select('room')
+            ->distinct()
+            ->pluck('room')
+            ->toArray();
 
         $data['rooms'] = Room::whereIn('id', $rooms_ids)
-            ->with('hygrostats', 'hygrostats.last_graphs')->orderBy('id')->get();
+            ->with('hygrostats', 'hygrostats.last_graphs')
+            ->orderBy('id')
+            ->get();
 
-        $data['other_hygrostats'] = Hygrostat::with('last_graphs')->whereNull('room')->orderBy('id')->get();
+        $data['other_hygrostats'] = Hygrostat::with('last_graphs')
+            ->whereNull('room')
+            ->orderBy('id')
+            ->get();
 
         return $data;
     }
@@ -102,17 +110,19 @@ class GraphService {
     public function getGraphHumiditiesPeriodData(int $hygrostat_id, string $period)
     {
         $query = GraphHumidity::where('id_hygrostat', $hygrostat_id)
-            ->select('value', 'datetime')->orderBy('datetime');
+            ->select('value', 'datetime')
+            ->orderBy('datetime');
 
         if ($period === '7') {
             $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
-            $graphs = $query->where('datetime','>=',$week_ago_date)->get();
+            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
         } else {
-            $period_parts = explode("-", $period);
-            $month = (int)$period_parts[0];
-            $year = (int)$period_parts[1];
+            $period_parts = explode('-', $period);
+            $month = (int) $period_parts[0];
+            $year = (int) $period_parts[1];
             $graphs = $query->whereMonth('datetime', '=', $month)
-                ->whereYear('datetime', '=', $year)->get();
+                ->whereYear('datetime', '=', $year)
+                ->get();
         }
 
         $data['values'] = $graphs->pluck('value')->toArray();
@@ -142,13 +152,21 @@ class GraphService {
 
     public function getGraphLightsData()
     {
-        $rooms_ids = Lightstat::whereNotNull('room')->select('room')
-            ->distinct()->pluck('room')->toArray();
+        $rooms_ids = Lightstat::whereNotNull('room')
+            ->select('room')
+            ->distinct()
+            ->pluck('room')
+            ->toArray();
 
         $data['rooms'] = Room::whereIn('id', $rooms_ids)
-            ->with('lightstats', 'lightstats.last_graphs')->orderBy('id')->get();
+            ->with('lightstats', 'lightstats.last_graphs')
+            ->orderBy('id')
+            ->get();
 
-        $data['other_lightstats'] = Lightstat::with('last_graphs')->whereNull('room')->orderBy('id')->get();
+        $data['other_lightstats'] = Lightstat::with('last_graphs')
+            ->whereNull('room')
+            ->orderBy('id')
+            ->get();
 
         return $data;
     }
@@ -156,17 +174,19 @@ class GraphService {
     public function getGraphLightsPeriodData(int $count_id, string $period)
     {
         $query = GraphLight::where('id_count', $count_id)
-            ->select('value', 'datetime')->orderBy('datetime');
+            ->select('value', 'datetime')
+            ->orderBy('datetime');
 
         if ($period === '7') {
             $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
-            $graphs = $query->where('datetime','>=',$week_ago_date)->get();
+            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
         } else {
-            $period_parts = explode("-", $period);
-            $month = (int)$period_parts[0];
-            $year = (int)$period_parts[1];
+            $period_parts = explode('-', $period);
+            $month = (int) $period_parts[0];
+            $year = (int) $period_parts[1];
             $graphs = $query->whereMonth('datetime', '=', $month)
-                ->whereYear('datetime', '=', $year)->get();
+                ->whereYear('datetime', '=', $year)
+                ->get();
         }
 
         $data['values'] = $graphs->pluck('value')->toArray();
@@ -197,9 +217,13 @@ class GraphService {
     public function getGraphCountsData()
     {
         $count_ids = GraphCount::select('id_count')
-            ->distinct()->pluck('id_count')->toArray();
+            ->distinct()
+            ->pluck('id_count')
+            ->toArray();
 
-        $data['counts'] = Count::whereIn('id', $count_ids)->orderBy('name')->get();
+        $data['counts'] = Count::whereIn('id', $count_ids)
+            ->orderBy('name')
+            ->get();
 
         return $data;
     }
@@ -207,17 +231,19 @@ class GraphService {
     public function getGraphCountsPeriodData(int $count_id, string $period)
     {
         $query = GraphCount::where('id_count', $count_id)
-            ->select('value', 'datetime')->orderBy('datetime');
+            ->select('value', 'datetime')
+            ->orderBy('datetime');
 
         if ($period === '7') {
             $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d');
-            $graphs = $query->where('datetime','>=',$week_ago_date)->get();
+            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
         } else {
-            $period_parts = explode("-", $period);
-            $month = (int)$period_parts[0];
-            $year = (int)$period_parts[1];
+            $period_parts = explode('-', $period);
+            $month = (int) $period_parts[0];
+            $year = (int) $period_parts[1];
             $graphs = $query->whereMonth('datetime', '=', $month)
-                ->whereYear('datetime', '=', $year)->get();
+                ->whereYear('datetime', '=', $year)
+                ->get();
         }
 
         $data['values'] = $graphs->pluck('value')->toArray();

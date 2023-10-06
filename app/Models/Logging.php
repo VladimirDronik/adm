@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $point
  * @property int $value
  * @property string $description
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Logging newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Logging newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Logging query()
@@ -18,12 +19,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Logging whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Logging wherePoint($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Logging whereValue($value)
+ *
  * @mixin \Eloquent
  */
 class Logging extends Model
 {
     protected $table = 'logging';
+
     public $timestamps = false;
-
-
 }

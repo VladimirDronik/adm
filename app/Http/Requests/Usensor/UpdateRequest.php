@@ -25,7 +25,7 @@ class UpdateRequest extends FormRequest
     {
         $rules = [
             'name' => 'required|string|max:250',
-            'room' => 'nullable|integer|min:0'
+            'room' => 'nullable|integer|min:0',
         ];
 
         return $rules;

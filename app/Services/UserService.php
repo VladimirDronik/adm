@@ -7,11 +7,11 @@
  */
 
 namespace App\Services;
+
 use App\Models\User;
 
 class UserService
 {
-
     private function prepareUser(User $user, $data)
     {
         $data['name'] = trim($data['name']);
@@ -23,10 +23,9 @@ class UserService
 
     public function store(array $data)
     {
-
         $user = new User();
 
-        $this->prepareUser($user,$data);
+        $this->prepareUser($user, $data);
         $user->save();
 
         return $user->id;
@@ -44,5 +43,4 @@ class UserService
     {
         return User::destroy($id);
     }
-
 }

@@ -3,8 +3,8 @@
 namespace App;
 
 use App\Models\UserPermission;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * App\User
@@ -21,6 +21,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property-read mixed $is_user
  * @property-read mixed $rus_type
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User query()
@@ -31,7 +32,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
+ *
  * @property-read int|null $notifications_count
  */
 class User extends Authenticatable
@@ -39,17 +42,12 @@ class User extends Authenticatable
     use Notifiable;
 
     const TYPE_USER = 'user';
+
     const TYPE_ADMIN = 'admin';
+
     const TYPE_SUPERADMIN = 'superadmin';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'password',
-    ];
+    protected $guarded = ['id'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -65,7 +63,7 @@ class User extends Authenticatable
         $types = [
             self::TYPE_USER => 'Пользователь',
             self::TYPE_ADMIN => 'Администратор',
-            self::TYPE_SUPERADMIN => 'Суперадминистратор'
+            self::TYPE_SUPERADMIN => 'Суперадминистратор',
         ];
 
         return $is_full ? $types : array_keys($types);
