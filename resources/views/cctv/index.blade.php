@@ -1,14 +1,14 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-    @includeIf('cameras.breadcrumbs', ['title' => 'Камеры'])
+    @includeIf('cameras.breadcrumbs', ['title' => 'Видеонаблюдение'])
 @endsection
 
 @section('content')
     <div class="container-fluid">
-        @include('cameras.header')
+        @include('cctv.header')
         <div class="card">
-            <div class="card-title"><h4>Камеры</h4></div>
+            <div class="card-title"><h4>Видеонаблюдение</h4></div>
             <div class="card-body">
                 @if(count($cameras))
                     <div class="table-responsive">
@@ -37,7 +37,7 @@
                                         {{ $camera->type }}
                                     </td>
                                     <td>
-                                        {{ $camera->relationRoom->name }}
+                                        {{ $camera->relationRoom ? $camera->relationRoom->name : 'Нет' }}
                                     </td>
                                     <td scope="row">
                                         <img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" width="140" height="80" loading="lazy">
@@ -105,11 +105,12 @@
     </div>
     @include('components.info_modal')
     @include('components.del_modal')
+    @include('cctv.create_modal')
 @endsection
 
 @section('scripts')
     <script>
-        const url = '{{ route('cameras.index') }}';
+        const url = '{{ route('cctv.index') }}';
         const sortUrl = '{{ route('ajax.cameras.sort') }}';
 
         function changeSort(id, direction) {
@@ -165,6 +166,10 @@
                         }
                     });
                 }
+            });
+
+            $('#addDeviceBtn').click(function() {
+                $('#modal_add_device_init_btn').click();
             });
         });
     </script>

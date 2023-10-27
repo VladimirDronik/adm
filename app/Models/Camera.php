@@ -12,4 +12,9 @@ class Camera extends Model
     {
         return $this->belongsTo(Room::class, 'room', 'id');
     }
+
+    public function recorder()
+    {
+        return $this->belongsTo(Recorder::class);
+    }
 }

@@ -11,9 +11,10 @@ class CameraService
     {
         $camera->name = $data['name'];
         $camera->link = $data['link'];
-        $camera->room = $data['room'];
-        $camera->image = $data['image'];
-        $camera->type = 'ivideon';
+        $camera->type = $data['type'];
+        $camera->recorder_id = array_key_exists('recorder_id', $data) ? $data['recorder_id'] : null;
+        $camera->room = array_key_exists('room', $data) ? $data['room'] : null;
+        $camera->room = array_key_exists('image', $data) ? $data['image'] : null;
         $camera->active = array_key_exists('active', $data);
     }
 
@@ -24,11 +25,13 @@ class CameraService
     {
         $camera = new Camera();
 
-        $imageUrl = $this->parseIdAndNumberFromUrl($data['link']);
-        $data['image'] = $imageUrl;
+        if ($data['type'] == 'ivideon') {
+            $imageUrl = $this->parseIdAndNumberFromUrl($data['link']);
+            $data['image'] = $imageUrl;
+        }
 
         $this->prepare($camera, $data);
-        $camera->sort = Camera::max('sort') + 1;
+        $camera->sort = array_key_exists('sort', $data) ? $data['sort'] : Camera::max('sort') + 1;
         $camera->save();
 
         return $camera->id;
@@ -69,7 +72,7 @@ class CameraService
         return true;
     }
 
-    private function updatePreviousSortRoom($camera, $previous_sort)
+    private function updatePreviousSortCamera($camera, $previous_sort)
     {
         Camera::where('sort', $camera->sort)
             ->update(['sort' => $previous_sort]);
@@ -91,7 +94,7 @@ class CameraService
         $camera->sort += $data['direction'] === 'up' ? -1 : 1;
 
         DB::transaction(function () use ($camera, $previous_sort) {
-            $this->updatePreviousSortRoom($camera, $previous_sort);
+            $this->updatePreviousSortCamera($camera, $previous_sort);
             $camera->save();
         });
 

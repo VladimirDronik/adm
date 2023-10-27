@@ -100,18 +100,9 @@
                 @endcan
                 @can('cameras')
                     <li>
-                        <a class="has-arrow" href="#" aria-expanded="false">
-                            <i class="fa fa-eye"></i>
-                            <span class="hide-menu">Видеонаблюдение</span>
+                        <a class="has-arrow" href="{{ route('cctv.index') }}" aria-expanded="false">
+                            <i class="fa fa-video-camera"></i><span class="hide-menu">Видеонаблюдение</span>
                         </a>
-                        <ul aria-expanded="false" class="collapse">
-                            <li>
-                                <a href="{{ route('cameras.index') }}">
-                                    <i class="fa fa-video-camera"></i>
-                                    Камеры
-                                </a>
-                            </li>
-                        </ul>
                     </li>
                 @endcan
                 @can('objects')

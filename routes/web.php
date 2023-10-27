@@ -41,7 +41,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('curtains', 'CurtainController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('locks', 'LockController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('conditioners', 'ConditionerController')->except('show', 'destroy')->middleware('can:devices');
-    Route::resource('cameras', 'CameraController')->except('show', 'destroy')->middleware('can:cameras');
+    Route::resource('cameras', 'CameraController')->except('show', 'destroy', 'index')->middleware('can:cameras');
+    Route::resource('recorders', 'RecorderController')->except('show', 'destroy', 'index')->middleware('can:cameras');
+    Route::get('cctv', 'CctvController@index')->name('cctv.index')->middleware('can:cameras');
 
     Route::resource('settings', 'SettingController')->except('show', 'destroy')->middleware('can:settings');
     Route::resource('time_zone', 'TimeZoneSettingController')->except('show', 'destroy', 'index')->middleware('can:settings');

@@ -7,7 +7,7 @@
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
         ['title' => 'Редактирование камеры № '. $camera->id . ' «' . $camera->name .'»',
-        'links' => [ route('cameras.index') => 'Камеры'],
+        'links' => [ route('cctv.index') => 'Видеонаблюдение'],
         'last_link' => 'Редактирование камеры'])
 @endsection
 
@@ -17,8 +17,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('cameras.index') }}" class="btn btn-success m-b-10 m-l-5">Список камер</a>
-                        <a href="{{ route('cameras.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить камеру</a>
+                        <a href="{{ route('cctv.index') }}" class="btn btn-success m-b-10 m-l-5">Видеонаблюдение</a>
+                        <button type="button" class="btn btn-success m-b-10 m-l-5" id="addDeviceBtn">Добавить устройство</button>
                     </div>
                 </div>
             </div>
@@ -63,6 +63,7 @@
         </div>
     </div>
     @include('components.info_modal')
+    @include('cctv.create_modal')
 @endsection
 
 @section('scripts')
@@ -70,6 +71,10 @@
     <script>
         $(document).ready(function () {
             $("#auto_sel_room").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            $('#addDeviceBtn').click(function() {
+                $('#modal_add_device_init_btn').click();
+            });
         });
     </script>
 @endsection
