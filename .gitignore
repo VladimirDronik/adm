@@ -5,6 +5,7 @@
 /public/ela/images/views_items
 /storage/*.key
 /storage/app/devices/*.cfg
+/storage/app/scripts
 .phpunit.result.cache
 /vendor
 /.idea
