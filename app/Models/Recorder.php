@@ -22,6 +22,6 @@ class Recorder extends Model
 
     public function cameras()
     {
-        return $this->hasMany(Camera::class);
+        return $this->hasMany(Camera::class)->orderBy('sort');
     }
 }

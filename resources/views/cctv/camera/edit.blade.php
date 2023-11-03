@@ -36,7 +36,7 @@
 
                         <div class="form-group row">
                             <label class="control-label text-right col-md-3 label-fix" style="display: flex; align-items: center; justify-content: right;">
-                                <strong>Изображение*:</strong>
+                                Изображение:
                             </label>
                             <img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" style="max-width: 126px; max-height: 80px;" loading="lazy">
                             <div class="col-md-7">
@@ -48,10 +48,14 @@
 
                         {{ Form::bs_text('link', 'Ссылка*:', old('link', $camera->link), ['required' => true]) }}
 
-                        {{ Form::bs_autoselect('room', 'Помещение*:', $rooms, old('room', $camera->room), false, false, ['required' => true], null) }}
+                        @if($camera->type == 'ivideon')
+                            {{ Form::bs_autoselect('room', 'Помещение*:', $rooms, old('room', $camera->room), false, false, ['required' => true], null) }}
+                        @endif
 
                         {{ Form::bs_checkbox('active', 'Активность*:', $camera->active) }}
 
+                        <input name="type" type="hidden" value="{{ $camera->type }}">
+                        <input name="recorder_id" type="hidden" value="{{ $camera->recorder ? $camera->recorder->id : null }}">
                     </div>
 
                     {{ Form::bs_submit_btn() }}

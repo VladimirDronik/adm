@@ -7,13 +7,18 @@ use App\Models\Recorder;
 
 class CctvRepository
 {
-    public function getAllCameras($pagination_count = 30)
+    public function getAllCamerasWithoutRecorder()
     {
-        return Camera::orderBy('sort')->paginate($pagination_count);
+        return Camera::whereNull('recorder_id')->orderBy('sort')->get();
     }
 
-    public function getAllRecorders($pagination_count = 30)
+    public function getAllRecorders()
     {
-        return Recorder::orderBy('sort')->paginate($pagination_count);
+        return Recorder::orderBy('sort')->get();
+    }
+
+    public function getAllRecordersCameras()
+    {
+        return Camera::whereNotNull('recorder_id')->get();
     }
 }

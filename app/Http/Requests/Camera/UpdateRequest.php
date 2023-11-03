@@ -23,12 +23,17 @@ class UpdateRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'name' => 'required|string|max:255',
             'image' => 'nullable|string',
             'link' => 'required|string|max:255',
-            'room' => 'required|integer',
             'active' => 'nullable|boolean',
         ];
+
+        if ($this->request->get('type') == 'ivideon') {
+            $rules['room'] = 'required|integer';
+        }
+
+        return $rules;
     }
 }

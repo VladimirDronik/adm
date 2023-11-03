@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Camera;
+use App\Models\Recorder;
 use Illuminate\Support\Facades\DB;
 
 class CameraService
@@ -11,10 +12,10 @@ class CameraService
     {
         $camera->name = $data['name'];
         $camera->link = $data['link'];
-        $camera->type = $data['type'];
         $camera->recorder_id = array_key_exists('recorder_id', $data) ? $data['recorder_id'] : null;
         $camera->room = array_key_exists('room', $data) ? $data['room'] : null;
-        $camera->room = array_key_exists('image', $data) ? $data['image'] : null;
+        $camera->image = array_key_exists('image', $data) ? $data['image'] : null;
+        $camera->type = array_key_exists('type', $data) ? $data['type'] : null;
         $camera->active = array_key_exists('active', $data);
     }
 
@@ -31,7 +32,7 @@ class CameraService
         }
 
         $this->prepare($camera, $data);
-        $camera->sort = array_key_exists('sort', $data) ? $data['sort'] : Camera::max('sort') + 1;
+        $camera->sort = array_key_exists('sort', $data) ? $data['sort'] : Camera::whereNull('recorder_id')->max('sort') + 1;
         $camera->save();
 
         return $camera->id;
@@ -72,33 +73,49 @@ class CameraService
         return true;
     }
 
-    private function updatePreviousSortCamera($camera, $previous_sort)
+    private function updatePreviousSortCamera(Camera $camera, int $previousSort, ?Recorder $cameraRecorder)
     {
-        Camera::where('sort', $camera->sort)
-            ->update(['sort' => $previous_sort]);
+        if ($cameraRecorder) {
+            $cameraRecorder->cameras()
+                ->where('sort', $camera->sort)
+                ->update(['sort' => $previousSort]);
+        } else {
+            Camera::whereNull('recorder_id')
+                ->where('sort', $camera->sort)
+                ->update(['sort' => $previousSort]);
+        }
     }
 
     public function sort(array $data)
     {
         $camera = Camera::findOrFail($data['id']);
 
-        $min = Camera::min('sort');
-        $max = Camera::max('sort');
+        if ($camera->recorder) {
+            $recorder = $camera->recorder;
+            $tab = 'recorder' . $recorder->id;
+            $min = $recorder->cameras->min('sort');
+            $max = $recorder->cameras->max('sort');
+        } else {
+            $tab = 'cameras';
+            $camerasWithoutRecorders = Camera::whereNull('recorder_id');
+            $min = $camerasWithoutRecorders->min('sort');
+            $max = $camerasWithoutRecorders->max('sort');
+        }
 
         if (($camera->sort === $min && $data['direction'] === 'up')
             || ($camera->sort === $max && $data['direction'] === 'down')) {
-            return true;
+            return ['result' => true, 'tab' => $tab];
         }
 
-        $previous_sort = $camera->sort;
+        $previousSort = $camera->sort;
         $camera->sort += $data['direction'] === 'up' ? -1 : 1;
 
-        DB::transaction(function () use ($camera, $previous_sort) {
-            $this->updatePreviousSortCamera($camera, $previous_sort);
+        DB::transaction(function () use ($camera, $previousSort) {
+            $this->updatePreviousSortCamera($camera, $previousSort, $camera->recorder);
             $camera->save();
         });
 
-        return true;
+        return ['result' => true, 'tab' => $tab];
     }
 
     /**

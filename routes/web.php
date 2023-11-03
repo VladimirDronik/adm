@@ -91,6 +91,11 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('active', 'CameraController@active')->name('active');
         });
 
+        Route::group(['prefix' => 'recorders', 'as' => 'recorders.'], function () {
+            Route::post('sort', 'RecorderController@sort')->name('sort');
+            Route::post('delete', 'RecorderController@delete')->name('delete');
+        });
+
         Route::group(['prefix' => 'conditioners', 'as' => 'conditioners.'], function () {
             Route::post('models', 'ConditionerController@modelsByVendor')->name('models');
             Route::post('code', 'ConditionerController@getCode')->name('code');

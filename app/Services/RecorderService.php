@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Camera;
 use App\Models\Recorder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -97,6 +96,35 @@ class RecorderService
     public function delete(int $id)
     {
         return Recorder::destroy($id);
+
+        return true;
+    }
+
+    private function updatePreviousSortRecorder(Recorder $recorder, int $previousSort)
+    {
+        Recorder::where('sort', $recorder->sort)
+            ->update(['sort' => $previousSort]);
+    }
+
+    public function sort(array $data)
+    {
+        $recorder = Recorder::findOrFail($data['id']);
+
+        $min = Recorder::min('sort');
+        $max = Recorder::max('sort');
+
+        if (($recorder->sort === $min && $data['direction'] === 'up')
+            || ($recorder->sort === $max && $data['direction'] === 'down')) {
+            return true;
+        }
+
+        $previousSort = $recorder->sort;
+        $recorder->sort += $data['direction'] === 'up' ? -1 : 1;
+
+        DB::transaction(function () use ($recorder, $previousSort) {
+            $this->updatePreviousSortRecorder($recorder, $previousSort);
+            $recorder->save();
+        });
 
         return true;
     }

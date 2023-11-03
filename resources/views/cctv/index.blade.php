@@ -9,96 +9,30 @@
         @include('cctv.header')
         <div class="card">
             <div class="card-title"><h4>Видеонаблюдение</h4></div>
-            <div class="card-body">
-                @if(count($cameras))
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th style="width: 60px;">ID</th>
-                                <th>Название</th>
-                                <th>Тип</th>
-                                <th>Размещение</th>
-                                <th>Изображение</th>
-                                <th class="text-center">Сортировка</th>
-                                <th class="text-center">Активно</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($cameras as $camera)
-                                <tr id="tr{{$camera->id}}">
-                                    <td scope="row">{{ $camera->id }}</td>
-                                    <td>
-                                        {{ $camera->name }}
-                                    </td>
-                                    <td>
-                                        {{ $camera->type }}
-                                    </td>
-                                    <td>
-                                        {{ $camera->relationRoom ? $camera->relationRoom->name : 'Нет' }}
-                                    </td>
-                                    <td scope="row">
-                                        <img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" width="140" height="80" loading="lazy">
-                                    </td>
-                                    <td style="width: 150px;">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <input type="text" class="form-control input-default" readonly
-                                                       value="{{ $camera->sort }}">
-                                            </div>
-                                            <div class="col-md-6 text-left">
-                                                <button type="button" class="btn btn-info btn-xs"
-                                                        id="sortBtn{{ $camera->id }}"
-                                                        onclick="changeSort({{ $camera->id }}, 'up');">выше
-                                                </button>
-                                                <button type="button" class="btn btn-info btn-xs"
-                                                        id="sortBtn{{ $camera->id }}"
-                                                        onclick="changeSort({{ $camera->id }}, 'down');">ниже
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td scope="row" align="center">
-                                        <input type="checkbox" class="active_checkbox" style="cursor: pointer;" data-id="{{$camera->id}}" value="1" @if($camera->active) checked @endif>
-                                    </td>
-                                    <td align="center">
-                                        <a href="{{ route('cameras.edit',[$camera->id]) }}"
-                                           class="btn btn-info btn-sm btn-rounded">
-                                            <i class="fa fa-cog fa-lg"></i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                data-id="{{ $camera->id }}" data-name="{{ $camera->name }}">
-                                            <i class="fa fa-trash fa-lg"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                            @if(count($cameras) > 10)
-                                <tfoot>
-                                    <tr>
-                                        <th style="width: 60px;">ID</th>
-                                        <th>Название</th>
-                                        <th>Тип</th>
-                                        <th>Размещение</th>
-                                        <th>Изображение</th>
-                                        <th class="text-center">Сортировка</th>
-                                        <th class="text-center">Активно</th>
-                                        <th></th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
-                            @endif
-                        </table>
+            <ul class="nav nav-tabs customtab" role="tablist">
+                <li class="nav-item"> <a class="nav-link @if($tab == 'cameras') active @endif"  data-toggle="tab" href="#cameras" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Камеры без видеорегистратора</span></a></li>
+                <li class="nav-item"> <a class="nav-link @if($tab == 'recorders') active @endif"  data-toggle="tab" href="#recorders" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Видеорегистраторы</span></a></li>
+                @if($recorders->isNotEmpty())
+                    @foreach($recorders as $recorder)
+                        <li class="nav-item"> <a class="nav-link @if($tab == 'recorder' . $recorder->id) active @endif"  data-toggle="tab" href="#recorder{{ $recorder->id }}" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">{{ $recorder->name }}</span></a></li>
+                    @endforeach
+                @endif
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane p-20 @if($tab == 'cameras') active @endif" id="cameras" role="tabpanel">
+                    <div class="card-body">
+                        @include('cctv.index_tabs.cameras_tab')
                     </div>
-                    {{ $cameras->appends(request()->input())->links() }}
-                    <p class="text-right">Найдено: {{ $cameras->total() }}</p>
-                @else
-                    <p>Данные не найдены</p>
+                </div>
+                <div class="tab-pane p-20 @if($tab == 'recorders') active @endif" id="recorders" role="tabpanel">
+                    @include('cctv.index_tabs.recorders_tab')
+                </div>
+                @if($recorders->isNotEmpty())
+                    @foreach($recorders as $recorder)
+                        <div class="tab-pane p-20 @if($tab == 'recorder' . $recorder->id) active @endif" id="recorder{{ $recorder->id }}" role="tabpanel">
+                            @include('cctv.index_tabs.recorder_cameras_tab', ['recorder' => $recorder])
+                        </div>
+                    @endforeach
                 @endif
             </div>
         </div>
@@ -111,15 +45,30 @@
 @section('scripts')
     <script>
         const url = '{{ route('cctv.index') }}';
-        const sortUrl = '{{ route('ajax.cameras.sort') }}';
+        const cameraSortUrl = '{{ route('ajax.cameras.sort') }}';
+        const recorderSortUrl = '{{ route('ajax.recorders.sort') }}';
 
-        function changeSort(id, direction) {
+        function changeCameraSort(id, direction) {
             $.ajax({
-                url: sortUrl,
+                url: cameraSortUrl,
                 data: {'_token': _token, 'id': id, 'direction': direction},
                 success: function (data) {
                     if (data.result) {
-                        window.location.href = url;
+                        window.location.href = url + '?tab=' + data.tab;
+                    } else {
+                        showErrorModal('Ошибка при сохранении изменений');
+                    }
+                }
+            });
+        }
+
+        function changeRecorderSort(id, direction) {
+            $.ajax({
+                url: recorderSortUrl,
+                data: {'_token': _token, 'id': id, 'direction': direction},
+                success: function (data) {
+                    if (data.result) {
+                        window.location.href = url + '?tab=recorders';
                     } else {
                         showErrorModal('Ошибка при сохранении изменений');
                     }
@@ -148,20 +97,24 @@
             $('.del_btn').click(function () {
                 del_id = $(this).attr('data-id');
                 del_name = $(this).attr('data-name');
-                $('#del_modal_body').text('Удалить камеру '+del_name+'?');
+                del_type = $(this).attr('data-type');
+                $('#del_modal_body').text('Удалить '+(del_type == 'camera' ? 'камеру ': 'видеорегистратор ')+del_name+'?');
                 $('#del_init_btn').click();
             });
 
             $('#del_modal_btn').click(function () {
                 if (del_id) {
                     $.ajax({
-                        url: '{{ route('ajax.cameras.delete') }}',
-                        data: {'_token': _token, 'id': del_id},
+                    url: del_type == 'camera' ? '{{ route('ajax.cameras.delete') }}' : '{{ route('ajax.recorders.delete') }}',
+                    data: {'_token': _token, 'id': del_id},
                         success: function (data) {
                             if (data.result) {
                                 $('#tr' + del_id).hide();
+                                if (del_type == 'recorder') {
+                                    window.location.href = url + '?tab=recorders';
+                                }
                             } else {
-                                showErrorModal('Ошибка при удалении отображения');
+                                showErrorModal('Ошибка при удалении');
                             }
                         }
                     });

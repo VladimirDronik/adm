@@ -17,7 +17,7 @@ class CameraController extends Controller
     {
         abort_if(! ajaxHas($r, ['id', 'direction']), 400);
 
-        return response()->json(['result' => $this->service->sort($r->all())]);
+        return response()->json($this->service->sort($r->all()));
     }
 
     public function delete(Request $r)
