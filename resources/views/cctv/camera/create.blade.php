@@ -30,9 +30,23 @@
 
                         {{ Form::bs_text('name', 'Название*:', old('name'), ['required' => true]) }}
 
-                        {{ Form::bs_text('link', 'Ссылка*:', old('link'), ['required' => true]) }}
+                        {{ Form::bs_radio('vendor', 'Производитель*:', $vendors, old('vendor', 'ivideon'), ['required' => true]) }}
 
-                        {{ Form::bs_autoselect('room', 'Помещение*:', $rooms, old('room'), false, false, ['required' => true], null) }}
+                        <div id='ivideon_div' hidden>
+                            {{ Form::bs_text('link', 'Ссылка*:', old('link'), ['required' => true]) }}
+                        </div>
+
+                        <div id='HikVision_HiWatch_div' hidden>
+                            {{ Form::bs_text('ip_address', 'IP адрес*:', old('ip_address'), ['required' => true]) }}
+
+                            {{ Form::bs_text('login', 'Логин*:', old('login'), ['required' => true]) }}
+
+                            {{ Form::bs_text('password', 'Пароль*:', old('password'), ['required' => true]) }}
+                        </div>
+
+                        <div id='other_div' hidden>
+                            {{ Form::bs_text('link_rtsp', 'Ссылка RTSP*:', old('link'), ['required' => true]) }}
+                        </div>
 
                         {{ Form::bs_checkbox('active', 'Активность*:', true) }}
 
@@ -53,8 +67,92 @@
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script>
+        var beginOptions = $('#camera_form input[name=vendor]');
+        for (var i = 0; i < beginOptions.length; i++) {
+            if (beginOptions[i].checked) {
+                var beginSelectedOption = beginOptions[i].value;
+            }
+        }
+
+        if (beginSelectedOption == 'ivideon') {
+            $('#ivideon_div').removeAttr("hidden");
+            $('#camera_form input[name=link]').removeAttr("disabled");
+
+            $('#other_div').attr("hidden", true);
+            $('#camera_form input[name=link_rtsp]').attr("disabled", true);
+
+            $('#HikVision_HiWatch_div').attr("hidden", true);
+            $('#camera_form input[name=ip_address]').attr("disabled", true);
+            $('#camera_form input[name=login]').attr("disabled", true);
+            $('#camera_form input[name=password]').attr("disabled", true);
+        } else if (beginSelectedOption == 'HikVision/HiWatch') {
+            $('#HikVision_HiWatch_div').removeAttr("hidden");
+            $('#camera_form input[name=ip_address]').removeAttr("disabled");
+            $('#camera_form input[name=login]').removeAttr("disabled");
+            $('#camera_form input[name=password]').removeAttr("disabled");
+
+            $('#other_div').attr("hidden", true);
+            $('#camera_form input[name=link_rtsp]').attr("disabled", true);
+
+            $('#ivideon_div').attr("hidden", true);
+            $('#camera_form input[name=link]').attr("disabled", true);
+        } else if (beginSelectedOption == 'other') {
+            $('#HikVision_HiWatch_div').removeAttr("hidden");
+            $('#camera_form input[name=ip_address]').removeAttr("disabled");
+            $('#camera_form input[name=login]').removeAttr("disabled");
+            $('#camera_form input[name=password]').removeAttr("disabled");
+
+            $('#other_div').removeAttr("hidden");
+            $('#camera_form input[name=link_rtsp]').removeAttr("disabled");
+
+            $('#ivideon_div').attr("hidden", true);
+            $('#camera_form input[name=link]').attr("disabled", true);
+        }
+
         $(document).ready(function () {
-            $("#auto_sel_room").chosen({width:"100%", no_results_text: "Не найдено"});
+            $('#camera_form input[name=vendor]').change(function() {
+                var options = $('#camera_form input[name=vendor]');
+                for (var i = 0; i < options.length; i++) {
+                    if (options[i].checked) {
+                        var selectedOption = options[i].value;
+                    }
+                }
+
+                if (selectedOption == 'ivideon') {
+                    $('#ivideon_div').removeAttr("hidden");
+                    $('#camera_form input[name=link]').removeAttr("disabled");
+
+                    $('#other_div').attr("hidden", true);
+                    $('#camera_form input[name=link_rtsp]').attr("disabled", true);
+
+                    $('#HikVision_HiWatch_div').attr("hidden", true);
+                    $('#camera_form input[name=ip_address]').attr("disabled", true);
+                    $('#camera_form input[name=login]').attr("disabled", true);
+                    $('#camera_form input[name=password]').attr("disabled", true);
+                } else if (selectedOption == 'HikVision/HiWatch') {
+                    $('#HikVision_HiWatch_div').removeAttr("hidden");
+                    $('#camera_form input[name=ip_address]').removeAttr("disabled");
+                    $('#camera_form input[name=login]').removeAttr("disabled");
+                    $('#camera_form input[name=password]').removeAttr("disabled");
+
+                    $('#other_div').attr("hidden", true);
+                    $('#camera_form input[name=link_rtsp]').attr("disabled", true);
+
+                    $('#ivideon_div').attr("hidden", true);
+                    $('#camera_form input[name=link]').attr("disabled", true);
+                } else if (selectedOption == 'other') {
+                    $('#HikVision_HiWatch_div').removeAttr("hidden");
+                    $('#camera_form input[name=ip_address]').removeAttr("disabled");
+                    $('#camera_form input[name=login]').removeAttr("disabled");
+                    $('#camera_form input[name=password]').removeAttr("disabled");
+
+                    $('#other_div').removeAttr("hidden");
+                    $('#camera_form input[name=link_rtsp]').removeAttr("disabled");
+
+                    $('#ivideon_div').attr("hidden", true);
+                    $('#camera_form input[name=link]').attr("disabled", true);
+                }
+            });
         });
     </script>
 @endsection

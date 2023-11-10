@@ -30,10 +30,6 @@ class UpdateRequest extends FormRequest
             'active' => 'nullable|boolean',
         ];
 
-        if ($this->request->get('type') == 'ivideon') {
-            $rules['room'] = 'required|integer';
-        }
-
         return $rules;
     }
 }

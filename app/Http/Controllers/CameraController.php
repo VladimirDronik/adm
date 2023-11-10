@@ -19,9 +19,8 @@ class CameraController extends Controller
     public function edit($id)
     {
         $camera = Camera::findOrFail($id);
-        $rooms = $this->roomRep->getAllWithoutCommonToArray();
 
-        return view('cctv.camera.edit', compact('camera', 'rooms'));
+        return view('cctv.camera.edit', compact('camera'));
     }
 
     public function update(UpdateRequest $r, Camera $camera)
@@ -41,9 +40,10 @@ class CameraController extends Controller
 
     public function create()
     {
-        $rooms = $this->roomRep->getAllWithoutCommonToArray();
+        $vendors = Camera::getVendors();
+        $types = Camera::getTypes();
 
-        return view('cctv.camera.create', compact('rooms'));
+        return view('cctv.camera.create', compact('vendors', 'types'));
     }
 
     public function store(CreateRequest $r)

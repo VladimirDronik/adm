@@ -34,28 +34,32 @@
 
                         {{ Form::bs_text('name', 'Название*:', old('name'), ['required' => true]) }}
 
+                        {{ Form::bs_simple_text('Производитель:', $camera->vendor_name) }}
+                        {{ Form::bs_simple_text('Тип:', $camera->type_name) }}
+
                         <div class="form-group row">
                             <label class="control-label text-right col-md-3 label-fix" style="display: flex; align-items: center; justify-content: right;">
                                 Изображение:
                             </label>
-                            <img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" style="max-width: 126px; max-height: 80px;" loading="lazy">
-                            <div class="col-md-7">
-                                <p class="p-t-6">
-                                    <input class="form-control" autocomplete="off" name="image" type="text" value="{{ $camera->image }}">
-                                </p>
-                            </div>
+                            @if($camera->vendor == 'ivideon')
+                                <img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" style="max-width: 126px; max-height: 80px;" loading="lazy">
+                                <div class="col-md-7">
+                                    <p class="p-t-6">
+                                        <input class="form-control" autocomplete="off" name="image" type="text" value="{{ $camera->image }}">
+                                    </p>
+                                </div>
+                            @else
+                                <a href="http://localhost:8888/camera{{ $camera->id }}?muted=1&controls=0&autoplay=1" target="_blank"><img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" style="max-width: 126px; max-height: 80px;" loading="lazy"></img></a>
+                            @endif
                         </div>
 
-                        {{ Form::bs_text('link', 'Ссылка*:', old('link', $camera->link), ['required' => true]) }}
-
-                        @if($camera->type == 'ivideon')
-                            {{ Form::bs_autoselect('room', 'Помещение*:', $rooms, old('room', $camera->room), false, false, ['required' => true], null) }}
+                        @if($camera->vendor == 'ivideon')
+                            {{ Form::bs_text('link', 'Ссылка*:', old('link', $camera->link), ['required' => true]) }}
+                        @else
+                            {{ Form::bs_text('link', 'Ссылка RTSP*:', old('link', $camera->link), ['required' => true]) }}
                         @endif
 
                         {{ Form::bs_checkbox('active', 'Активность*:', $camera->active) }}
-
-                        <input name="type" type="hidden" value="{{ $camera->type }}">
-                        <input name="recorder_id" type="hidden" value="{{ $camera->recorder ? $camera->recorder->id : null }}">
                     </div>
 
                     {{ Form::bs_submit_btn() }}

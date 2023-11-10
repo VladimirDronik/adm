@@ -2,17 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Camera;
 use App\Models\Recorder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class RecorderService
 {
-    public function __construct(
-        private CameraService $cameraService
-    ) {
-    }
-
     public function prepare(Recorder $recorder, array $data)
     {
         $recorder->name = $data['name'];
@@ -32,7 +27,7 @@ class RecorderService
         }
 
         if ($password) {
-            $recorder->password = Hash::make(strval($password));
+            $recorder->password = customEncrypt($password, config('secret.password_key'));
         }
     }
 
@@ -49,16 +44,29 @@ class RecorderService
             $recorder->save();
 
             $cameraData = [
-                'type' => $data['vendor'],
+                'vendor' => $data['vendor'],
+                'type' => Camera::TYPE_MEDIA_SERVER,
                 'recorder_id' => $recorder->id,
                 'active' => 1,
             ];
 
+            $appUrl = config('app.url');
+
             for ($i=1; $i <= $data['number_of_cameras']; $i++) {
-                $cameraData['sort'] = $i;
                 $cameraData['name'] = 'Камера ' . $i;
-                $cameraData['link'] = 'rtsp://'. $data['login'] .':'. $data['password'] .'@'. $data['ip_address'] .'/ISAPI/Streaming/channels/'. $i .'01';
-                $this->cameraService->store($cameraData);
+                $cameraData['sort'] = Camera::max('sort') + 1;
+
+                switch ($data['vendor']) {
+                    case Recorder::VENDOR_HIKVISION_HIWATCH:
+                        $cameraData['link'] = 'rtsp://$login:$password@$ip_address/ISAPI/Streaming/channels/'. $i .'01';
+                        break;
+                    case Recorder::VENDOR_OTHER:
+                        $cameraData['link'] = null;
+                        break;
+                }
+
+                $camera = Camera::create($cameraData);
+                $camera->update(['image' => $appUrl . '/ela/images/cameras_snapshots/camera' . $camera->id . '.jpeg']);
             }
         });
 
@@ -71,19 +79,7 @@ class RecorderService
     public function update(Recorder $recorder, array $data): int
     {
         $this->prepare($recorder, $data);
-        DB::transaction(function () use ($recorder, $data) {
-            $recorder->save();
-
-            foreach ($recorder->cameras as $camera) {
-                if (array_key_exists('new_password', $data) && $data['new_password']) {
-                    $newLink = preg_replace('/rtsp:\/\/(.*):(.*@)([^\/]+)(.*)/', 'rtsp://'. $data['login'] .':'. $data['new_password'] .'@'. $data['ip_address'] .'$4', $camera->link);
-                } else  {
-                    $newLink = preg_replace('/rtsp:\/\/(.*):(.*)@([^\/]+)(.*)/', 'rtsp://'. $data['login'] .':$2@'. $data['ip_address'] .'$4', $camera->link);
-                }
-                $camera->link = $newLink;
-                $camera->save();
-            }
-        });
+        $recorder->save();
 
         return $recorder->id;
     }

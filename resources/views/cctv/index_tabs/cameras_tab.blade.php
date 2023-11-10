@@ -1,4 +1,4 @@
-@if($camerasWithoutRecorders->isNotEmpty())
+@if($cameras->isNotEmpty())
     <div class="table-responsive">
         <table class="table">
             <thead>
@@ -6,29 +6,42 @@
                     <th style="width: 60px;">ID</th>
                     <th>Название</th>
                     <th>Тип</th>
-                    <th>Размещение</th>
+                    <th>Производитель</th>
+                    <th>Видеорегистратор</th>
                     <th>Изображение</th>
-                    <th class="text-center">Сортировка</th>
                     <th class="text-center">Активно</th>
+                    <th class="text-center">Сортировка</th>
                     <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($camerasWithoutRecorders as $camera)
+                @foreach($cameras as $camera)
                 <tr id="tr{{$camera->id}}">
                     <td scope="row">{{ $camera->id }}</td>
                     <td>
                         {{ $camera->name }}
                     </td>
                     <td>
-                        {{ $camera->type }}
+                        {{ $camera->type_name }}
                     </td>
                     <td>
-                        {{ $camera->relationRoom ? $camera->relationRoom->name : 'Нет' }}
+                        {{ $camera->vendor_name }}
+                    </td>
+                    <td>
+                        @if($camera->recorder)
+                            <a href="{{ route('recorders.edit',[$camera->recorder->id]) }}">{{ $camera->recorder->name }}</a>
+                        @endif
                     </td>
                     <td scope="row">
-                        <img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" width="120" height="80" loading="lazy">
+                        @if($camera->type == 'ivideon')
+                            <img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" width="120" height="80" loading="lazy"></img>
+                        @else
+                            <a href="http://localhost:8888/camera{{ $camera->id }}?muted=1&controls=0&autoplay=1" target="_blank"><img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" width="120" height="80" loading="lazy"></img></a>
+                        @endif
+                    </td>
+                    <td scope="row" align="center">
+                        <input type="checkbox" class="active_checkbox" style="cursor: pointer;" data-id="{{$camera->id}}" value="1" @if($camera->active) checked @endif>
                     </td>
                     <td style="width: 150px;">
                         <div class="row">
@@ -43,9 +56,6 @@
                             </div>
                         </div>
                     </td>
-                    <td scope="row" align="center">
-                        <input type="checkbox" class="active_checkbox" style="cursor: pointer;" data-id="{{$camera->id}}" value="1" @if($camera->active) checked @endif>
-                    </td>
                     <td align="center">
                         <a href="{{ route('cameras.edit',[$camera->id]) }}" class="btn btn-info btn-sm btn-rounded">
                             <i class="fa fa-cog fa-lg"></i>
@@ -59,16 +69,17 @@
                 </tr>
                 @endforeach
             </tbody>
-            @if(count($camerasWithoutRecorders) > 10)
+            @if(count($cameras) > 10)
             <tfoot>
                 <tr>
                     <th style="width: 60px;">ID</th>
                     <th>Название</th>
                     <th>Тип</th>
-                    <th>Размещение</th>
+                    <th>Производитель</th>
+                    <th>Видеорегистратор</th>
                     <th>Изображение</th>
-                    <th class="text-center">Сортировка</th>
                     <th class="text-center">Активно</th>
+                    <th class="text-center">Сортировка</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -76,7 +87,9 @@
             @endif
         </table>
     </div>
-    <p class="text-right">Найдено: {{ $camerasWithoutRecorders->count() }}</p>
+    <br>
+    {{ $cameras->appends(['tab' => 'cameras'])->links() }}
+    <p class="text-right">Найдено: {{ $cameras->total() }}</p>
 @else
     <p>Данные не найдены</p>
 @endif

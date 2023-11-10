@@ -10,13 +10,47 @@ class CameraService
 {
     public function prepare(Camera $camera, array $data)
     {
-        $camera->name = $data['name'];
-        $camera->link = $data['link'];
-        $camera->recorder_id = array_key_exists('recorder_id', $data) ? $data['recorder_id'] : null;
-        $camera->room = array_key_exists('room', $data) ? $data['room'] : null;
-        $camera->image = array_key_exists('image', $data) ? $data['image'] : null;
-        $camera->type = array_key_exists('type', $data) ? $data['type'] : null;
-        $camera->active = array_key_exists('active', $data);
+        switch ($data['vendor']) {
+            case Camera::VENDOR_IVIDEON:
+                $camera->name = $data['name'];
+                $camera->link = $data['link'];
+                $camera->vendor = $data['vendor'];
+                $camera->active = array_key_exists('active', $data);
+                $camera->type = Camera::TYPE_DIRECT_LINK;
+                break;
+            case Camera::VENDOR_HIKVISION_HIWATCH:
+                $camera->name = $data['name'];
+                $camera->vendor = $data['vendor'];
+                $camera->type = Camera::TYPE_MEDIA_SERVER;
+                $recorder = Recorder::create([
+                    'name' => 'Видеорегистратор камеры - ' . $data['name'],
+                    'vendor' => $data['vendor'],
+                    'sort' => Recorder::max('sort') + 1,
+                    'ip_address' => $data['ip_address'],
+                    'login' => $data['login'],
+                    'password' => customEncrypt($data['password'], config('secret.password_key')),
+                ]);
+                $camera->link = 'rtsp://$login:$password@$ip_address/ISAPI/Streaming/channels/101';
+                $camera->recorder_id = $recorder->id;
+                $camera->active = array_key_exists('active', $data);
+                break;
+            case Camera::VENDOR_OTHER:
+                $camera->name = $data['name'];
+                $camera->vendor = $data['vendor'];
+                $camera->type = Camera::TYPE_MEDIA_SERVER;
+                $recorder = Recorder::create([
+                    'name' => 'Видеорегистратор камеры - ' . $data['name'],
+                    'vendor' => $data['vendor'],
+                    'sort' => Recorder::max('sort') + 1,
+                    'ip_address' => $data['ip_address'],
+                    'login' => $data['login'],
+                    'password' => customEncrypt($data['password'], config('secret.password_key')),
+                ]);
+                $camera->link = $data['link_rtsp'];
+                $camera->recorder_id = $recorder->id;
+                $camera->active = array_key_exists('active', $data);
+                break;
+        }
     }
 
     /**
@@ -26,14 +60,19 @@ class CameraService
     {
         $camera = new Camera();
 
-        if ($data['type'] == 'ivideon') {
-            $imageUrl = $this->parseIdAndNumberFromUrl($data['link']);
-            $data['image'] = $imageUrl;
-        }
+        DB::transaction(function () use ($camera, $data) {
+            $this->prepare($camera, $data);
+            $camera->sort = Camera::max('sort') + 1;
+            $camera->save();
 
-        $this->prepare($camera, $data);
-        $camera->sort = array_key_exists('sort', $data) ? $data['sort'] : Camera::whereNull('recorder_id')->max('sort') + 1;
-        $camera->save();
+            if ($data['vendor'] == Camera::VENDOR_IVIDEON) {
+                $imageUrl = $this->parseIdAndNumberFromUrl($data['link']);
+            } else {
+                $imageUrl = config('app.url') . '/ela/images/cameras_snapshots/camera' . $camera->id . '.jpeg';
+            }
+
+            $camera->update(['image' => $imageUrl]);
+        });
 
         return $camera->id;
     }
@@ -43,9 +82,14 @@ class CameraService
      */
     public function update(Camera $camera, array $data): int
     {
-        $this->prepare($camera, $data);
-        $camera->save();
+        $camera->name = $data['name'];
+        $camera->link = $data['link'];
 
+        if (array_key_exists('image', $data)) {
+            $camera->image = $data['image'];
+        }
+
+        $camera->save();
         return $camera->id;
     }
 
@@ -73,49 +117,33 @@ class CameraService
         return true;
     }
 
-    private function updatePreviousSortCamera(Camera $camera, int $previousSort, ?Recorder $cameraRecorder)
+    private function updatePreviousSortCamera(Camera $camera, int $previousSort)
     {
-        if ($cameraRecorder) {
-            $cameraRecorder->cameras()
-                ->where('sort', $camera->sort)
-                ->update(['sort' => $previousSort]);
-        } else {
-            Camera::whereNull('recorder_id')
-                ->where('sort', $camera->sort)
-                ->update(['sort' => $previousSort]);
-        }
+        Camera::where('sort', $camera->sort)
+            ->update(['sort' => $previousSort]);
     }
 
     public function sort(array $data)
     {
         $camera = Camera::findOrFail($data['id']);
 
-        if ($camera->recorder) {
-            $recorder = $camera->recorder;
-            $tab = 'recorder' . $recorder->id;
-            $min = $recorder->cameras->min('sort');
-            $max = $recorder->cameras->max('sort');
-        } else {
-            $tab = 'cameras';
-            $camerasWithoutRecorders = Camera::whereNull('recorder_id');
-            $min = $camerasWithoutRecorders->min('sort');
-            $max = $camerasWithoutRecorders->max('sort');
-        }
+        $min = Camera::min('sort');
+        $max = Camera::max('sort');
 
         if (($camera->sort === $min && $data['direction'] === 'up')
             || ($camera->sort === $max && $data['direction'] === 'down')) {
-            return ['result' => true, 'tab' => $tab];
+            return true;
         }
 
         $previousSort = $camera->sort;
         $camera->sort += $data['direction'] === 'up' ? -1 : 1;
 
         DB::transaction(function () use ($camera, $previousSort) {
-            $this->updatePreviousSortCamera($camera, $previousSort, $camera->recorder);
+            $this->updatePreviousSortCamera($camera, $previousSort);
             $camera->save();
         });
 
-        return ['result' => true, 'tab' => $tab];
+        return true;
     }
 
     /**

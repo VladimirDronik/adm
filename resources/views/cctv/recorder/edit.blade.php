@@ -34,7 +34,7 @@
 
                         {{ Form::bs_text('name', 'Название*:', old('name', $recorder->name), ['required' => true]) }}
 
-                        {{ Form::bs_simple_text('Производитель:', $recorder->vendor) }}
+                        {{ Form::bs_simple_text('Производитель:', $recorder->vendor_name) }}
 
                         {{ Form::bs_text('ip_address', 'IP адрес*:', old('ip_address', $recorder->ip_address), ['required' => true]) }}
 

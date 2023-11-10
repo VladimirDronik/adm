@@ -21,7 +21,7 @@
                         {{ $recorder->name }}
                     </td>
                     <td>
-                        {{ $recorder->vendor }}
+                        {{ $recorder->vendor_name }}
                     </td>
                     <td>
                         {{ $recorder->ip_address }}
@@ -71,7 +71,9 @@
             @endif
         </table>
     </div>
-    <p class="text-right">Найдено: {{ $recorders->count() }}</p>
+    <br>
+    {{ $recorders->appends(['tab' => 'recorders'])->links() }}
+    <p class="text-right">Найдено: {{ $recorders->total() }}</p>
 @else
     <p>Данные не найдены</p>
 @endif

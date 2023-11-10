@@ -10,30 +10,16 @@
         <div class="card">
             <div class="card-title"><h4>Видеонаблюдение</h4></div>
             <ul class="nav nav-tabs customtab" role="tablist">
-                <li class="nav-item"> <a class="nav-link @if($tab == 'cameras') active @endif"  data-toggle="tab" href="#cameras" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Камеры без видеорегистратора</span></a></li>
+                <li class="nav-item"> <a class="nav-link @if($tab == 'cameras') active @endif"  data-toggle="tab" href="#cameras" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Камеры</span></a></li>
                 <li class="nav-item"> <a class="nav-link @if($tab == 'recorders') active @endif"  data-toggle="tab" href="#recorders" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Видеорегистраторы</span></a></li>
-                @if($recorders->isNotEmpty())
-                    @foreach($recorders as $recorder)
-                        <li class="nav-item"> <a class="nav-link @if($tab == 'recorder' . $recorder->id) active @endif"  data-toggle="tab" href="#recorder{{ $recorder->id }}" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">{{ $recorder->name }}</span></a></li>
-                    @endforeach
-                @endif
             </ul>
             <div class="tab-content">
                 <div class="tab-pane p-20 @if($tab == 'cameras') active @endif" id="cameras" role="tabpanel">
-                    <div class="card-body">
-                        @include('cctv.index_tabs.cameras_tab')
-                    </div>
+                    @include('cctv.index_tabs.cameras_tab')
                 </div>
                 <div class="tab-pane p-20 @if($tab == 'recorders') active @endif" id="recorders" role="tabpanel">
                     @include('cctv.index_tabs.recorders_tab')
                 </div>
-                @if($recorders->isNotEmpty())
-                    @foreach($recorders as $recorder)
-                        <div class="tab-pane p-20 @if($tab == 'recorder' . $recorder->id) active @endif" id="recorder{{ $recorder->id }}" role="tabpanel">
-                            @include('cctv.index_tabs.recorder_cameras_tab', ['recorder' => $recorder])
-                        </div>
-                    @endforeach
-                @endif
             </div>
         </div>
     </div>
@@ -54,7 +40,7 @@
                 data: {'_token': _token, 'id': id, 'direction': direction},
                 success: function (data) {
                     if (data.result) {
-                        window.location.href = url + '?tab=' + data.tab;
+                        window.location.href = url + '?tab=cameras';
                     } else {
                         showErrorModal('Ошибка при сохранении изменений');
                     }
