@@ -6,6 +6,7 @@
 /public/ela/images/cameras_snapshots
 /storage/*.key
 /storage/app/devices/*.cfg
+/storage/app/scripts
 .phpunit.result.cache
 /vendor
 /.idea
