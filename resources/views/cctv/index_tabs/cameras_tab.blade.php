@@ -34,10 +34,10 @@
                         @endif
                     </td>
                     <td scope="row">
-                        @if($camera->type == 'ivideon')
-                            <img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" width="120" height="80" loading="lazy"></img>
+                        @if($camera->type == \App\Models\Camera::TYPE_DIRECT_LINK)
+                            <a href="{{ $camera->link }}" target="_blank"><img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" width="120" height="80" loading="lazy"></img></a>
                         @else
-                            <a href="http://localhost:8888/camera{{ $camera->id }}?muted=1&controls=0&autoplay=1" target="_blank"><img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" width="120" height="80" loading="lazy"></img></a>
+                            <a href="{{ config('app.url') }}:8888/camera{{ $camera->id }}?muted=1&controls=0&autoplay=1" target="_blank"><img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" width="120" height="80" loading="lazy"></img></a>
                         @endif
                     </td>
                     <td scope="row" align="center">

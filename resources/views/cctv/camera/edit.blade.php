@@ -41,15 +41,15 @@
                             <label class="control-label text-right col-md-3 label-fix" style="display: flex; align-items: center; justify-content: right;">
                                 Изображение:
                             </label>
-                            @if($camera->vendor == 'ivideon')
-                                <img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" style="max-width: 126px; max-height: 80px;" loading="lazy">
+                            @if($camera->type == \App\Models\Camera::TYPE_DIRECT_LINK)
+                                <a href="{{ $camera->link }}" target="_blank"><img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" style="max-width: 126px; max-height: 80px;" loading="lazy"></img></a>
                                 <div class="col-md-7">
                                     <p class="p-t-6">
                                         <input class="form-control" autocomplete="off" name="image" type="text" value="{{ $camera->image }}">
                                     </p>
                                 </div>
                             @else
-                                <a href="http://localhost:8888/camera{{ $camera->id }}?muted=1&controls=0&autoplay=1" target="_blank"><img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" style="max-width: 126px; max-height: 80px;" loading="lazy"></img></a>
+                                <a href="{{ config('app.url') }}:8888/camera{{ $camera->id }}?muted=1&controls=0&autoplay=1" target="_blank"><img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" style="max-width: 126px; max-height: 80px;" loading="lazy"></img></a>
                             @endif
                         </div>
 
