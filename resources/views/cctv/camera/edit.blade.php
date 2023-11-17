@@ -49,7 +49,7 @@
                                     </p>
                                 </div>
                             @else
-                                <a href="{{ config('app.url') }}:8888/camera{{ $camera->id }}?muted=1&controls=0&autoplay=1" target="_blank"><img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" style="max-width: 126px; max-height: 80px;" loading="lazy"></img></a>
+                                <a href="http://{{ request()->host() }}:8888/camera{{ $camera->id }}?muted=1&controls=0&autoplay=1" target="_blank"><img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" style="max-width: 126px; max-height: 80px;" loading="lazy"></img></a>
                             @endif
                         </div>
 
