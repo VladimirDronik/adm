@@ -110,15 +110,6 @@ class UsensorService
                 'comment' => '',
             ]);
 
-        $deviceAndPort = $this->portService
-            ->getIdDeviceAndPortId($usensor->id_object);
-
-        ConfigMegaService::setPortType(
-            $deviceAndPort['id_device'],
-            $this->portRepository->getNumPortByID($deviceAndPort['id_port']),
-            'IN'
-        );
-
         if ($usensor->iobject && $usensor->iobject->is_system) {
             DB::transaction(function () use (&$usensor) {
                 //if (!HomeObject::isObjectUsed($termostat->id_object, $termostat->id, 'termostats')) {
