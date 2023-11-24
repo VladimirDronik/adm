@@ -123,10 +123,20 @@
                                 </div>
 
                                 <div id="labeldiv" style="display: none;" >
-                                    {{ Form::bs_radio('pushlabel', 'Фиксировать нажатие:', ['true' => 'дa', 'false' => 'нет'], 'false') }}
-                                    {{ Form::bs_radio('modallabel', 'Показывать модальное окно:', ['true' => 'дa', 'false' => 'нет'], 'false') }}
-                                    <div id="label_longclick_text_div" style="display: none">
+                                    {{ Form::bs_radio('pushlabel', 'Отображать нажатие:', ['true' => 'дa', 'false' => 'нет'], old('pushlabel', 'false')) }}
+                                    {{ Form::bs_radio('modallabel', 'Показывать модальное окно:', ['true' => 'дa', 'false' => 'нет'], old('modallabel', 'true')) }}
+                                    <div id="label_longclick_text_div">
                                         {{ Form::bs_text('label_longclick_text','Надпись при длительном нажатии:') }}
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3 label-fix">Связанный параметр:</label>
+                                        <div class="col-md-11">
+                                            {{ Form::bs_autoselect('related_parameter_object', 'Объект:', $relatedParameterObjects, old('related_parameter_object'), false, false) }}
+                                            <div id='related_parameter_div' style="display: none">
+                                                {{ Form::bs_autoselect('related_parameter', 'Параметр:', [], old('related_parameter'), false, false) }}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -170,6 +180,7 @@
 
         const url_methods = '{{ route('ajax.objects.methods') }}';
         const url_objects = '{{ route('ajax.objects.getObjects') }}';
+        const url_related_parameters = '{{ route('ajax.labels.related_parameters') }}';
 
 
         let methods = [];
@@ -192,6 +203,16 @@
                     s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
                 else
                     s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
+            }
+            sel.append(s);
+        }
+
+        function createRelatedParameterSelect(target, options) {
+            let sel = $(target);
+            sel.html('');
+            let s = '';
+            for (let i = 0; i < options.length; i++) {
+                s += '<option value="' + options[i].value + '">' + options[i].name + '</option>';
             }
             sel.append(s);
         }
@@ -228,6 +249,25 @@
             $("#auto_sel_id_method").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_off_method").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_link").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_related_parameter_object").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_related_parameter").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            $("#auto_sel_related_parameter_object").chosen().change(function() {
+                let object_id = $(this).val();
+                if (object_id) {
+                    $.ajax({
+                        url: url_related_parameters,
+                        data: {'_token': _token, 'object_id': object_id},
+                        success: function (data) {
+                            $('#related_parameter_div').show();
+                            createRelatedParameterSelect('#auto_sel_related_parameter', data.related_parameters);
+                            $('#auto_sel_related_parameter').trigger("chosen:updated");
+                        }
+                    });
+                } else {
+                    $('#related_parameter_div').hide();
+                }
+            });
 
             $("#auto_sel_id_object").chosen().change(function() {
                 let object_id = $(this).val();

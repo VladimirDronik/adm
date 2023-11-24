@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\View\CreateRequest;
 use App\Http\Requests\View\UpdateRequest;
+use App\Models\ObjType;
 use App\Models\View;
 use App\Repositories\ColorRepository;
 use App\Repositories\ObjectRepository;
@@ -38,8 +39,15 @@ class ViewController extends Controller
         $objects = $this->object_rep->getAllToArray();
         $links = $this->pages_rep->getAllToArray();
         $safeTypes = View::getFullSafeTypes();
+        $relatedParameterObjects = $this->object_rep->getAllByTypes([
+            ObjType::TYPE_TERMOSTAT,
+            ObjType::TYPE_LIGHTSTAT,
+            ObjType::TYPE_HYGROSTAT,
+            ObjType::TYPE_CARBMONOXIDE,
+            ObjType::TYPE_BOILER,
+        ]);
 
-        return [$types, $rooms, $objects, $scenes, $images, $links, $safeTypes];
+        return [$types, $rooms, $objects, $scenes, $images, $links, $safeTypes, $relatedParameterObjects];
     }
 
     public function index(Request $r)
@@ -55,11 +63,11 @@ class ViewController extends Controller
 
     public function create()
     {
-        [$types, $rooms, $objects, $scenes, $images, $links, $safeTypes] = $this->getLists();
+        [$types, $rooms, $objects, $scenes, $images, $links, $safeTypes, $relatedParameterObjects] = $this->getLists();
 
         $colors = ColorRepository::getColors();
 
-        return view('views.create', compact('types', 'rooms', 'objects', 'scenes', 'images', 'links', 'colors', 'safeTypes'));
+        return view('views.create', compact('types', 'rooms', 'objects', 'scenes', 'images', 'links', 'colors', 'safeTypes', 'relatedParameterObjects'));
     }
 
     public function store(CreateRequest $r)
@@ -77,7 +85,7 @@ class ViewController extends Controller
 
     public function edit(View $view)
     {
-        [$types, $rooms, $objects, $scenes, $images, $links, $safeTypes] = $this->getLists();
+        [$types, $rooms, $objects, $scenes, $images, $links, $safeTypes, $relatedParameterObjects] = $this->getLists();
         $methods = $this->object_service->getMethodsByObjectIdToArray($view->id_object);
 
         $colors = ColorRepository::getColors();
@@ -118,7 +126,7 @@ class ViewController extends Controller
         }
 
         return view('views.edit', compact('view', 'types', 'safeTypes', 'link',
-            'rooms', 'methods', 'objects', 'scenes', 'images', 'links', 'colors', 'safe_type',
+            'rooms', 'methods', 'objects', 'scenes', 'images', 'links', 'colors', 'safe_type', 'relatedParameterObjects',
             'enabletermostat', 'lowval_termostat', 'highval_termostat', 'pushlabel', 'modallabel', 'label_longclick_text'));
     }
 

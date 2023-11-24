@@ -128,10 +128,20 @@
                             </div>
 
                             <div id="labeldiv" @if($view->type == 'label') style="display: block;" @else style="display: none;" @endif >
-                                {{ Form::bs_radio('pushlabel', 'Фиксировать нажатие:', ['true' => 'дa', 'false' => 'нет'], old('type', $pushlabel)) }}
+                                {{ Form::bs_radio('pushlabel', 'Отображать нажатие:', ['true' => 'дa', 'false' => 'нет'], old('type', $pushlabel)) }}
                                 {{ Form::bs_radio('modallabel', 'Показывать модальное окно:', ['true' => 'дa', 'false' => 'нет'], old('type', $modallabel)) }}
                                 <div id="label_longclick_text_div" @if($pushlabel) style="display: block;" @else style="display: none;" @endif >
                                     {{ Form::bs_text('label_longclick_text','Надпись при длительном нажатии:',old('label_longclick_text', $label_longclick_text)) }}
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3 label-fix">Связанный параметр:</label>
+                                    <div class="col-md-11">
+                                        {{ Form::bs_autoselect('related_parameter_object', 'Объект:', $relatedParameterObjects, old('related_parameter_object', $view->label ? $view->label->id_object : null), false, false) }}
+                                        <div id='related_parameter_div' style="display: none;">
+                                            {{ Form::bs_autoselect('related_parameter', 'Параметр:', [], old('related_parameter'), false, false) }}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -171,6 +181,7 @@
         let image_id;
         let url = '{{ asset('/') }}';
         const url_methods = '{{ route('ajax.objects.methods') }}';
+        const url_related_parameters = '{{ route('ajax.labels.related_parameters') }}';
         let methods = [];
 
         function setViewImage(image) {
@@ -193,6 +204,31 @@
                     s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
             }
             sel.append(s);
+        }
+
+        function createRelatedParameterSelect(target, options) {
+            let sel = $(target);
+            sel.html('');
+            let s = '';
+            for (let i = 0; i < options.length; i++) {
+                if ('{{ $view->label ? $view->label->type_value : null }}' == options[i].value)
+                    s += '<option selected value="' + options[i].value + '">' + options[i].name + '</option>';
+                else
+                    s += '<option value="' + options[i].value + '">' + options[i].name + '</option>';
+            }
+            sel.append(s);
+        }
+
+        if ($("#auto_sel_related_parameter_object").val()) {
+            $.ajax({
+                url: url_related_parameters,
+                data: {'_token': _token, 'object_id': $("#auto_sel_related_parameter_object").val()},
+                success: function (data) {
+                    $('#related_parameter_div').show();
+                    createRelatedParameterSelect('#auto_sel_related_parameter', data.related_parameters);
+                    $('#auto_sel_related_parameter').trigger("chosen:updated");
+                }
+            });
         }
 
         function isEmptyInput(name) {
@@ -241,6 +277,25 @@
             $("#auto_sel_id_method").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_off_method").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_link").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_related_parameter_object").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_related_parameter").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            $("#auto_sel_related_parameter_object").chosen().change(function() {
+                let object_id = $(this).val();
+                if (object_id) {
+                    $.ajax({
+                        url: url_related_parameters,
+                        data: {'_token': _token, 'object_id': object_id},
+                        success: function (data) {
+                            $('#related_parameter_div').show();
+                            createRelatedParameterSelect('#auto_sel_related_parameter', data.related_parameters);
+                            $('#auto_sel_related_parameter').trigger("chosen:updated");
+                        }
+                    });
+                } else {
+                    $('#related_parameter_div').hide();
+                }
+            });
 
             $("#auto_sel_id_object").chosen().change(function() {
                 let object_id = $(this).val();

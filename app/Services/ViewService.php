@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Label;
 use App\Models\Room;
 use App\Models\View;
 use Illuminate\Support\Facades\DB;
@@ -95,7 +96,21 @@ class ViewService
     {
         $view = new View();
         $this->prepareView($view, $data);
-        $view->save();
+
+        DB::transaction(function () use ($view, $data) {
+            $view->save();
+
+            if ($view->type == 'label' &&
+                array_key_exists('related_parameter_object', $data) && $data['related_parameter_object'] &&
+                array_key_exists('related_parameter', $data) && $data['related_parameter']
+            ) {
+                Label::create([
+                    'id_item' => $view->id,
+                    'id_object' => $data['related_parameter_object'],
+                    'type_value' => $data['related_parameter'],
+                ]);
+            }
+        });
 
         return $view->id;
     }
@@ -103,7 +118,25 @@ class ViewService
     public function update(View $view, array $data)
     {
         $this->prepareView($view, $data);
-        $view->save();
+
+        DB::transaction(function () use ($view, $data) {
+            $view->save();
+
+            if ($view->type == 'label' &&
+                array_key_exists('related_parameter_object', $data) && $data['related_parameter_object'] &&
+                array_key_exists('related_parameter', $data) && $data['related_parameter']
+            ) {
+                Label::updateOrCreate(
+                    ['id_item' => $view->id],
+                    [
+                        'id_object' => $data['related_parameter_object'],
+                        'type_value' => $data['related_parameter'],
+                    ]
+                );
+            } elseif ($view->label) {
+                $view->label->delete();
+            }
+        });
 
         return $view->id;
     }

@@ -26,6 +26,21 @@ class ObjectRepository
             ->get();
     }
 
+    public static function getAllByTypes(string|array $types)
+    {
+        $objects = HomeObject::query()
+            ->select('id', 'name')
+            ->orderBy('name');
+
+        if (is_array($types)) {
+            $objects->whereIn('type', $types);
+        } else {
+            $objects->where('type', $types);
+        }
+
+        return $objects->pluck('name', 'id')->toArray();
+    }
+
     /**
      * Отдать всё инженерное оборудование
      */
