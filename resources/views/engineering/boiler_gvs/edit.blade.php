@@ -44,7 +44,7 @@
 
                         {{ Form::bs_simple_text('Cостояние:', $boiler->state ? $boiler->state : 'N/A') }}
                         {{ Form::bs_simple_text('Режим:', $boiler->mode ? $boiler->mode : 'N/A') }}
-                        {{ Form::bs_simple_text('Давление:', $boiler->pressue ? $boiler->pressue : 'N/A' ) }}
+                        {{ Form::bs_simple_text('Давление:', $boiler->pressure ? $boiler->pressure : 'N/A' ) }}
 
 
                     </div>

@@ -23,6 +23,6 @@
 {{ Form::bs_simple_text('Горелка ГВС:', $boiler->burner_GVS ? $boiler->burner_GVS : '0') }}
 {{ Form::bs_simple_text('Модуляция горелки:', $boiler->burner_modulation ? $boiler->burner_modulation.' %' : '0%') }}
 {{ Form::bs_simple_text('Состояние насоса:', $boiler->pump_status ? $boiler->pump_status : '0') }}
-{{ Form::bs_simple_text('Давление теплоносителя:', $boiler->pressue ? $boiler->pressue : '0' ) }}
+{{ Form::bs_simple_text('Давление теплоносителя:', $boiler->pressure ? $boiler->pressure : '0' ) }}
 {{ Form::bs_simple_text('Установленная температура отопления:', $boiler->target_heat_temp ? $boiler->target_heat_temp.' °C' : '0°C' ) }}
 {{ Form::bs_simple_text('Установленная температура ГВС:', $boiler->target_water_temp ? $boiler->target_water_temp.' °C' : '0°C' ) }}

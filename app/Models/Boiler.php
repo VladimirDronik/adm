@@ -35,7 +35,7 @@ class Boiler extends Model
 
     const PROP_PUMP = 'pump';
 
-    const PROP_PRESSURE = 'pressue';
+    const PROP_PRESSURE = 'pressure';
 
     const DEFAULT_GVS_TEMP = 45;
 
@@ -103,7 +103,7 @@ class Boiler extends Model
             ['name' => 'Состояние насоса', 'type' => 'label', 'image' => 'nasos.svg', 'value' => 'Включено',
                 'page' => $idPage,  'parent' => 0, 'position' => 2, 'sort' => 4, 'active' => 1, 'handle' => 'pump'],
             ['name' => 'Давление теплоносителя, бар', 'type' => 'label', 'image' => 'davlenie.svg', 'value' => '5',
-                'page' => $idPage,  'parent' => 0, 'position' => 2, 'sort' => 5, 'active' => 1, 'handle' => 'pressue'],
+                'page' => $idPage,  'parent' => 0, 'position' => 2, 'sort' => 5, 'active' => 1, 'handle' => 'pressure'],
         ];
     }
 
