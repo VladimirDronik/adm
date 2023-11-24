@@ -61,11 +61,13 @@
                             <i class="fa fa-cog fa-lg"></i>
                         </a>
                     </td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn" data-id="{{ $camera->id }}" data-name="{{ $camera->name }}" data-type="camera">
-                            <i class="fa fa-trash fa-lg"></i>
-                        </button>
-                    </td>
+                    @if(!$camera->recorder_id)
+                        <td>
+                            <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn" data-id="{{ $camera->id }}" data-name="{{ $camera->name }}" data-type="camera">
+                                <i class="fa fa-trash fa-lg"></i>
+                            </button>
+                        </td>
+                    @endif
                 </tr>
                 @endforeach
             </tbody>
