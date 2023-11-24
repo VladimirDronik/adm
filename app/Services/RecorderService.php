@@ -50,8 +50,6 @@ class RecorderService
                 'active' => 1,
             ];
 
-            $appUrl = config('app.url');
-
             for ($i=1; $i <= $data['number_of_cameras']; $i++) {
                 $cameraData['name'] = 'Камера ' . $i;
                 $cameraData['sort'] = Camera::max('sort') + 1;
@@ -66,7 +64,7 @@ class RecorderService
                 }
 
                 $camera = Camera::create($cameraData);
-                $camera->update(['image' => $appUrl . '/ela/images/cameras_snapshots/camera' . $camera->id . '.jpeg']);
+                $camera->update(['image' => 'ela/images/cameras_snapshots/camera' . $camera->id . '.jpeg']);
             }
         });
 

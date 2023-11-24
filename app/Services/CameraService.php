@@ -68,7 +68,7 @@ class CameraService
             if ($data['vendor'] == Camera::VENDOR_IVIDEON) {
                 $imageUrl = $this->parseIdAndNumberFromUrl($data['link']);
             } else {
-                $imageUrl = config('app.url') . '/ela/images/cameras_snapshots/camera' . $camera->id . '.jpeg';
+                $imageUrl = 'ela/images/cameras_snapshots/camera' . $camera->id . '.jpeg';
             }
 
             $camera->update(['image' => $imageUrl]);
