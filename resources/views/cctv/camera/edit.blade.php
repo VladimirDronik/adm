@@ -56,7 +56,17 @@
                         @if($camera->vendor == 'ivideon')
                             {{ Form::bs_text('link', 'Ссылка*:', old('link', $camera->link), ['required' => true]) }}
                         @else
-                            {{ Form::bs_text('link', 'Ссылка RTSP*:', old('link', $camera->link), ['required' => true]) }}
+                            <div class="form-group row ">
+                                <label class="control-label text-right col-md-3 label-fix" for="link">
+                                    <strong>Ссылка RTSP*:</strong>
+                                </label>
+                                <div class="col-md-9">
+                                    <input class="form-control" autocomplete="off" id="" required="" name="link" type="text" value="{{ old('link', $camera->link) }}">
+                                    @if($camera->vendor == 'other')
+                                        <small class="form-control-feedback">В ссылке на RTSP поток можно использовать данные уже добавленного видеорегистратора:<br>$login - имя пользователя видеорегистратора<br>$password - пароль видеорегистратора<br>$ip_address - ip адрес видеорегистратора<br><br>Например, rtsp://$login:$password@$ip_address/streaming/video0<br><br></small>
+                                    @endif
+                                </div>
+                            </div>
                         @endif
 
                         {{ Form::bs_checkbox('active', 'Активность*:', $camera->active) }}
