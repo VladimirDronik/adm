@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Camera;
 use App\Models\Recorder;
+use File;
 use Illuminate\Support\Facades\DB;
 
 class RecorderService
@@ -89,7 +90,17 @@ class RecorderService
      */
     public function delete(int $id)
     {
-        return Recorder::destroy($id);
+        $recorder = Recorder::findOrFail($id);
+
+        if ($recorder->cameras->isNotEmpty()) {
+            foreach ($recorder->cameras as $camera) {
+                if ($camera->image) {
+                    File::delete($camera->image);
+                }
+            }
+        }
+
+        $recorder->delete();
 
         return true;
     }
