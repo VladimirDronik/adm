@@ -116,10 +116,10 @@
                             <div id="additionallydiv" style="display: none;" >
                                 <br>
                             {{ Form::bs_title('Дополнительно') }}
-                                <div id="termostatdiv" style="display: none;" >
-                                    {{ Form::bs_radio('enabletermostat', 'Настройка из приложения:', ['true' => 'дa', 'false' => 'нет'], 'true') }}
-                                    {{ Form::bs_number('lowval_termostat','Нижний порог шкалы:', old('lowval_termostat', 10), ['min' => 0, 'max' => 30, 'required' => false] ) }}
-                                    {{ Form::bs_number('highval_termostat','Верхний порог шкалы:', old('highval_termostat', 26), ['min' => 0, 'max' => 50, 'required' => false] )  }}
+                                <div id="low_high_val_div" style="display: none;" >
+                                    {{ Form::bs_radio('setting_from_app', 'Настройка из приложения:', ['true' => 'дa', 'false' => 'нет'], 'true') }}
+                                    {{ Form::bs_number('lowval','Нижний порог шкалы:', old('lowval'), ['required' => false]) }}
+                                    {{ Form::bs_number('highval','Верхний порог шкалы:', old('highval'), ['required' => false])  }}
                                 </div>
 
                                 <div id="labeldiv" style="display: none;" >
@@ -315,7 +315,7 @@
             $('#view_form [name=type]').change(function(){
 
                 $('#additionallydiv').hide();
-                $('#termostatdiv').hide();
+                $('#low_high_val_div').hide();
                 $('#on_params_div').hide();
                 $('#view_form #id_object_div').show();
                 let type_obj = $(this).val();
@@ -329,8 +329,23 @@
                     $('#view_form #off_method_div').hide();
                     $('#view_form #on_method_div').hide();
                 } else if ($(this).val() === 'termostat') {
+                    $('#view_form [name=lowval]').val(10);
+                    $('#view_form [name=highval]').val(26);
+                    $('#view_form [name=lowval]').attr('min', 0);
+                    $('#view_form [name=highval]').attr('min', 0);
+                    $('#view_form [name=lowval]').attr('max', 30);
+                    $('#view_form [name=highval]').attr('max', 50);
                     $('#additionallydiv').show();
-                    $('#termostatdiv').show();
+                    $('#low_high_val_div').show();
+                } else if ($(this).val() === 'lightstat') {
+                    $('#view_form [name=lowval]').val(0);
+                    $('#view_form [name=highval]').val(30);
+                    $('#view_form [name=lowval]').attr('min', 0);
+                    $('#view_form [name=highval]').attr('min', 0);
+                    $('#view_form [name=lowval]').attr('max', 100);
+                    $('#view_form [name=highval]').attr('max', 100);
+                    $('#additionallydiv').show();
+                    $('#low_high_val_div').show();
                 } else if ($(this).val() === 'link') {
                     $('#view_form #id_object_div').hide();
                     $('#view_form #on_method_div').hide();

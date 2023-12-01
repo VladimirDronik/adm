@@ -118,13 +118,13 @@
                         {{ Form::bs_number('position_left','Левый отступ (%):', old('position_left', $view->position_left), ['min' => 0, 'max' => 100, 'required' => false] ) }}
                         {{ Form::bs_number('position_top','Верхний отступ (%):', old('position_top', $view->position_right), ['min' => 0, 'max' => 100, 'required' => false] ) }}
 
-                        <div id="additionallydiv"  @if(($view->type == 'termostat')||($view->type == 'label')) style="display: block;" @else style="display: none;" @endif >
+                        <div id="additionallydiv"  @if(($view->type == 'termostat')||($view->type == 'label')||($view->type == 'lightstat')) style="display: block;" @else style="display: none;" @endif >
                             <br>
                             {{ Form::bs_title('Дополнительно') }}
-                            <div id="termostatdiv" @if($view->type == 'termostat') style="display: block;" @else style="display: none;" @endif >
-                                {{ Form::bs_radio('enabletermostat', 'Настройка из приложения:', ['true' => 'да', 'false' => 'нет'], old('enabletermostat', $enabletermostat)) }}
-                                {{ Form::bs_number('lowval_termostat','Нижний порог шкалы:', old('lowval_termostat', $lowval_termostat), ['min' => 0, 'max' => 30, 'required' => false] ) }}
-                                {{ Form::bs_number('highval_termostat','Верхний порог шкалы:', old('highval_termostat', $highval_termostat), ['min' => 0, 'max' => 50, 'required' => false] )  }}
+                            <div id="low_high_val_div" @if($view->type == 'termostat' || $view->type == 'lightstat') style="display: block;" @else style="display: none;" @endif >
+                                {{ Form::bs_radio('setting_from_app', 'Настройка из приложения:', ['true' => 'да', 'false' => 'нет'], old('setting_from_app', $settingFromApp)) }}
+                                {{ Form::bs_number('lowval','Нижний порог шкалы:', old('lowval', $lowval), ['required' => false] ) }}
+                                {{ Form::bs_number('highval','Верхний порог шкалы:', old('highval', $highval), ['required' => false] )  }}
                             </div>
 
                             <div id="labeldiv" @if($view->type == 'label') style="display: block;" @else style="display: none;" @endif >
@@ -327,7 +327,7 @@
             $('#view_form [name=type]').change(function(){
 
                 $('#additionallydiv').hide();
-                $('#termostatdiv').hide();
+                $('#low_high_val_div').hide();
                 $('#on_params_div').hide();
                 $('#view_form #id_object_div').show();
                 let type_obj = $(this).val();
@@ -341,8 +341,19 @@
                     $('#view_form #off_method_div').hide();
                     $('#view_form #on_method_div').hide();
                 } else if ($(this).val() === 'termostat') {
+                    $('#view_form [name=lowval]').attr('min', 0);
+                    $('#view_form [name=highval]').attr('min', 0);
+                    $('#view_form [name=lowval]').attr('max', 30);
+                    $('#view_form [name=highval]').attr('max', 50);
                     $('#additionallydiv').show();
-                    $('#termostatdiv').show();
+                    $('#low_high_val_div').show();
+                } else if ($(this).val() === 'lightstat') {
+                    $('#view_form [name=lowval]').attr('min', 0);
+                    $('#view_form [name=highval]').attr('min', 0);
+                    $('#view_form [name=lowval]').attr('max', 100);
+                    $('#view_form [name=highval]').attr('max', 100);
+                    $('#additionallydiv').show();
+                    $('#low_high_val_div').show();
                 } else if ($(this).val() === 'link') {
                     $('#view_form #id_object_div').hide();
                     $('#view_form #on_method_div').hide();

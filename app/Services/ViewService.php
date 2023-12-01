@@ -28,23 +28,23 @@ class ViewService
             $safeType = 'auth='.$data['safe_type'];
         }
 
-        if (trim($data['type']) == 'termostat') {
-            $stringMethod = 'editable='.$data['enabletermostat'].';';
-            $stringMethod .= 'lowval='.$data['lowval_termostat'].';';
+        if (trim($data['type']) == View::TYPE_TEMP || trim($data['type']) == View::TYPE_LIGHTSTAT) {
+            $stringMethod = 'editable='.$data['setting_from_app'].';';
+            $stringMethod .= 'lowval='.$data['lowval'].';';
             if ($safeType) {
-                $stringMethod .= 'highval='.$data['highval_termostat'].';'.$safeType;
+                $stringMethod .= 'highval='.$data['highval'].';'.$safeType;
             } else {
-                $stringMethod .= 'highval='.$data['highval_termostat'];
+                $stringMethod .= 'highval='.$data['highval'];
             }
 
             $data['params'] = $stringMethod;
-        } elseif (trim($data['type']) == 'link') {
+        } elseif (trim($data['type']) == View::TYPE_LINK) {
             if ($safeType) {
                 $data['params'] = 'link='.$data['link'].';'.$safeType;
             } else {
                 $data['params'] = 'link='.$data['link'];
             }
-        } elseif (trim($data['type']) == 'label') {
+        } elseif (trim($data['type']) == View::TYPE_LABEL) {
             if ($safeType) {
                 $data['params'] = "push={$data['pushlabel']}&modal={$data['modallabel']}&message={$data['label_longclick_text']}&$safeType";
             } else {

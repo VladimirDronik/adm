@@ -82,24 +82,24 @@ class ViewController extends Controller
 
         $colors = ColorRepository::getColors();
 
-        $enabletermostat = null;
-        $lowval_termostat = null;
-        $highval_termostat = null;
+        $settingFromApp = null;
+        $lowval = null;
+        $highval = null;
         $pushlabel = null;
         $modallabel = null;
         $label_longclick_text = null;
         $link = null;
         $safe_type = null;
 
-        if ($view->type == 'termostat') {
+        if ($view->type == View::TYPE_TEMP || $view->type == View::TYPE_LIGHTSTAT) {
             $onmethodparams = explode(';', $view->params);
-            $enabletermostat = explode('=', $onmethodparams[0])[1];
-            $lowval_termostat = explode('=', $onmethodparams[1])[1];
-            $highval_termostat = explode('=', $onmethodparams[2])[1];
+            $settingFromApp = explode('=', $onmethodparams[0])[1];
+            $lowval = explode('=', $onmethodparams[1])[1];
+            $highval = explode('=', $onmethodparams[2])[1];
             if (array_key_exists(3, $onmethodparams)) {
                 $safe_type = explode('=', $onmethodparams[3])[1];
             }
-        } elseif ($view->type == 'label') {
+        } elseif ($view->type == View::TYPE_LABEL) {
             $onmethodparams = explode('&', $view->params);
             $pushlabel = explode('=', $onmethodparams[0])[1];
             $modallabel = explode('=', $onmethodparams[1])[1];
@@ -107,7 +107,7 @@ class ViewController extends Controller
             if (array_key_exists(3, $onmethodparams)) {
                 $safe_type = explode('=', $onmethodparams[3])[1];
             }
-        } elseif ($view->type == 'link') {
+        } elseif ($view->type == View::TYPE_LINK) {
             $params = explode(';', $view->params);
             $link = explode('=', $params[0])[1];
             if (array_key_exists(1, $params)) {
@@ -119,7 +119,7 @@ class ViewController extends Controller
 
         return view('views.edit', compact('view', 'types', 'safeTypes', 'link',
             'rooms', 'methods', 'objects', 'scenes', 'images', 'links', 'colors', 'safe_type',
-            'enabletermostat', 'lowval_termostat', 'highval_termostat', 'pushlabel', 'modallabel', 'label_longclick_text'));
+            'settingFromApp', 'lowval', 'highval', 'pushlabel', 'modallabel', 'label_longclick_text'));
     }
 
     public function update(UpdateRequest $r, View $view)

@@ -87,6 +87,8 @@ class View extends Model
 
     const TYPE_TEMP = 'termostat';
 
+    const TYPE_LIGHTSTAT = 'lightstat';
+
     const TYPE_HUMIDITY = 'humidity';
 
     const TYPE_LABEL = 'label';
@@ -111,6 +113,7 @@ class View extends Model
             self::TYPE_SWITCH => 'Переключатель',
             self::TYPE_BUTTON => 'Кнопка',
             self::TYPE_TEMP => 'Термометр',
+            self::TYPE_LIGHTSTAT => 'Датчик освещения',
             self::TYPE_HUMIDITY => 'Гигрометр',
             self::TYPE_LABEL => 'Индикатор',
             self::TYPE_DIMMER => 'Диммер',
