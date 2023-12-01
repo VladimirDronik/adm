@@ -278,6 +278,21 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
+    /**
+     * Скрипты для камер
+     *
+     * @return array
+     */
+    public static function getCameraScripts(): array
+    {
+        return [
+            'name' => 'Превью камер',
+            'link' => 'get_rtsp_snapshots.php',
+            'count' => 0,
+            'system' => 1
+        ];
+    }
+
     private function getScripts(): array
     {
         $scripts = self::getDimmerScripts();
@@ -296,6 +311,7 @@ class ScriptsTableSeeder extends Seeder
         $scripts[] = self::deleteLogsScript();
         $scripts[] = self::getCheckManometrScript();
         $scripts[] = self::getCheckBoilerScript();
+        $scripts[] = self::getCameraScripts();
 
         return $scripts;
     }

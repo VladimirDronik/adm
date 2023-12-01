@@ -29,14 +29,19 @@ class ShedullerTableSeeder extends Seeder
                 'is_system' => 1,
                 'active' => 1,
             ],
-
             [
                 'name' => 'Удаление старых данных из таблицы графиков',
                 'script' => ScriptRepository::getIdByLink('reset_graphs.php')['id'],
                 'is_hidden' => 1,
                 'is_system' => 1,
                 'active' => 1,
-
+            ],
+            [
+                'name' => 'Превью камер',
+                'script' => ScriptRepository::getIdByLink('get_rtsp_snapshots.php')['id'],
+                'is_hidden' => 1,
+                'is_system' => 1,
+                'active' => 1,
             ],
         ];
 
@@ -59,6 +64,14 @@ class ShedullerTableSeeder extends Seeder
                 'type' => 'w',
                 'time' => '00:00',
                 'days' => '0,1,2,3,4,5,6',
+                'close' => 1,
+                'system' => 1,
+            ],
+            [
+                'name' => 'Превью камер',
+                'type' => 'c',
+                'time' => '15',
+                'days' => '',
                 'close' => 1,
                 'system' => 1,
             ],
