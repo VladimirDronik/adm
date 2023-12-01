@@ -91,7 +91,7 @@ class ViewController extends Controller
         $link = null;
         $safe_type = null;
 
-        if ($view->type == View::TYPE_TEMP || $view->type == View::TYPE_LIGHTSTAT) {
+        if ($view->type == View::TYPE_TEMP || $view->type == View::TYPE_LIGHTSTAT || $view->type == View::TYPE_CARBMONOXIDE) {
             $onmethodparams = explode(';', $view->params);
             $settingFromApp = explode('=', $onmethodparams[0])[1];
             $lowval = explode('=', $onmethodparams[1])[1];
@@ -117,7 +117,26 @@ class ViewController extends Controller
             $safe_type = explode('=', $view->params)[1];
         }
 
-        return view('views.edit', compact('view', 'types', 'safeTypes', 'link',
+        switch ($view->type) {
+            case View::TYPE_TEMP:
+                $lowvalSet = ['min' => 0, 'max' => 30];
+                $highvalSet = ['min' => 0, 'max' => 50];
+                break;
+            case View::TYPE_LIGHTSTAT:
+                $lowvalSet = ['min' => 0, 'max' => 100];
+                $highvalSet = ['min' => 0, 'max' => 100];
+                break;
+            case View::TYPE_CARBMONOXIDE:
+                $lowvalSet = ['min' => 400, 'max' => 2000];
+                $highvalSet = ['min' => 400, 'max' => 2000];
+                break;
+            default:
+                $lowvalSet = ['min' => null, 'max' => null];
+                $highvalSet = ['min' => null, 'max' => null];
+                break;
+        }
+
+        return view('views.edit', compact('view', 'types', 'safeTypes', 'link', 'lowvalSet', 'highvalSet',
             'rooms', 'methods', 'objects', 'scenes', 'images', 'links', 'colors', 'safe_type',
             'settingFromApp', 'lowval', 'highval', 'pushlabel', 'modallabel', 'label_longclick_text'));
     }

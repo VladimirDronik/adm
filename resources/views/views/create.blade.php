@@ -346,6 +346,15 @@
                     $('#view_form [name=highval]').attr('max', 100);
                     $('#additionallydiv').show();
                     $('#low_high_val_div').show();
+                } else if ($(this).val() === 'carbsens') {
+                    $('#view_form [name=lowval]').val(400);
+                    $('#view_form [name=highval]').val(2000);
+                    $('#view_form [name=lowval]').attr('min', 400);
+                    $('#view_form [name=highval]').attr('min', 400);
+                    $('#view_form [name=lowval]').attr('max', 2000);
+                    $('#view_form [name=highval]').attr('max', 2000);
+                    $('#additionallydiv').show();
+                    $('#low_high_val_div').show();
                 } else if ($(this).val() === 'link') {
                     $('#view_form #id_object_div').hide();
                     $('#view_form #on_method_div').hide();

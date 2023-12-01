@@ -28,7 +28,7 @@ class ViewService
             $safeType = 'auth='.$data['safe_type'];
         }
 
-        if (trim($data['type']) == View::TYPE_TEMP || trim($data['type']) == View::TYPE_LIGHTSTAT) {
+        if (trim($data['type']) == View::TYPE_TEMP || trim($data['type']) == View::TYPE_LIGHTSTAT || trim($data['type']) == View::TYPE_CARBMONOXIDE) {
             $stringMethod = 'editable='.$data['setting_from_app'].';';
             $stringMethod .= 'lowval='.$data['lowval'].';';
             if ($safeType) {
