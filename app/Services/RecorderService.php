@@ -69,6 +69,9 @@ class RecorderService
             }
         });
 
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php get_rtsp_snapshots.php '.$recorder->id);
+
         return $recorder->id;
     }
 

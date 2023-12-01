@@ -33,6 +33,9 @@ class CameraService
                 $camera->link = 'rtsp://$login:$password@$ip_address/ISAPI/Streaming/channels/101';
                 $camera->recorder_id = $recorder->id;
                 $camera->active = array_key_exists('active', $data);
+
+                chdir(env('SERVER_FOLDER').'/scripts');
+                exec('php get_rtsp_snapshots.php '.$recorder->id);
                 break;
             case Camera::VENDOR_OTHER:
                 $camera->name = $data['name'];
@@ -49,6 +52,9 @@ class CameraService
                 $camera->link = $data['link_rtsp'];
                 $camera->recorder_id = $recorder->id;
                 $camera->active = array_key_exists('active', $data);
+
+                chdir(env('SERVER_FOLDER').'/scripts');
+                exec('php get_rtsp_snapshots.php '.$recorder->id);
                 break;
         }
     }
