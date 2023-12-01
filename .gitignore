@@ -3,7 +3,6 @@
 /public/phpmyadmin
 /public/img
 /public/ela/images/views_items
-/public/ela/images/cameras_snapshots
 /storage/*.key
 /storage/app/devices/*.cfg
 /storage/app/scripts
