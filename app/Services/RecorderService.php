@@ -6,6 +6,7 @@ use App\Models\Camera;
 use App\Models\Recorder;
 use File;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class RecorderService
 {
@@ -99,6 +100,11 @@ class RecorderService
             foreach ($recorder->cameras as $camera) {
                 if ($camera->image) {
                     File::delete($camera->image);
+                }
+
+                try {
+                    Http::delete('http://localhost:9997/v3/config/paths/delete/camera' . $camera->id);
+                } catch (\Throwable $th) {
                 }
             }
         }
