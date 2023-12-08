@@ -361,10 +361,6 @@
 
                 var type_obj = $(this).val();
 
-                if ($(this).val() === 'humidity') {
-                    var type_obj = 'hygrostat';
-                }
-
                 if ($(this).val() === 'switch') {
                     $('#view_form #off_method_div').show();
                 } else if ($(this).val() === 'dimmer') {

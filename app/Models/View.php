@@ -91,7 +91,7 @@ class View extends Model
 
     const TYPE_CARBMONOXIDE = 'carbsens';
 
-    const TYPE_HUMIDITY = 'humidity';
+    const TYPE_HYGROSTAT = 'hygrostat';
 
     const TYPE_LABEL = 'label';
 
@@ -117,7 +117,7 @@ class View extends Model
             self::TYPE_TEMP => 'Термометр',
             self::TYPE_LIGHTSTAT => 'Датчик освещения',
             self::TYPE_CARBMONOXIDE => 'Датчик CO',
-            self::TYPE_HUMIDITY => 'Гигрометр',
+            self::TYPE_HYGROSTAT => 'Гигрометр',
             self::TYPE_LABEL => 'Индикатор',
             self::TYPE_DIMMER => 'Диммер',
             self::TYPE_LINK => 'Ссылка',

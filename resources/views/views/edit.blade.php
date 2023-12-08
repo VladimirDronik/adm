@@ -310,11 +310,7 @@
                 }
             });
 
-            if ('{{ $view->type }}' === 'humidity') {
-                getObjectByType('hygrostat')
-            } else {
-                getObjectByType('{{ $view->type }}')
-            }
+            getObjectByType('{{ $view->type }}')
 
             $("#auto_sel_id_object").chosen().change(function() {
                 let object_id = $(this).val();
@@ -406,10 +402,6 @@
                 $('#view_form #id_object_div').show();
 
                 var type_obj = $(this).val();
-
-                if ($(this).val() === 'humidity') {
-                    var type_obj = 'hygrostat';
-                }
 
                 if ($(this).val() === 'switch') {
                     $('#view_form #off_method_div').show();
