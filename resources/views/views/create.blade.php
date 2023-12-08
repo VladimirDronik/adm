@@ -318,7 +318,12 @@
                 $('#low_high_val_div').hide();
                 $('#on_params_div').hide();
                 $('#view_form #id_object_div').show();
-                let type_obj = $(this).val();
+
+                var type_obj = $(this).val();
+
+                if ($(this).val() === 'humidity') {
+                    var type_obj = 'hygrostat';
+                }
 
                 if ($(this).val() === 'switch') {
                     $('#view_form #off_method_div').show();

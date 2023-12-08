@@ -171,6 +171,7 @@
         let image_id;
         let url = '{{ asset('/') }}';
         const url_methods = '{{ route('ajax.objects.methods') }}';
+        const url_objects = '{{ route('ajax.objects.getObjects') }}';
         let methods = [];
 
         function setViewImage(image) {
@@ -234,6 +235,18 @@
             }
         }
 
+        function getObjectByType(type_obj) {
+            $.ajax({
+                url: url_objects,
+                data: {'_token': _token, 'type_object': type_obj},
+                success: function (data) {
+                    objects = data.objects;
+                    createMethodSelect('#auto_sel_id_object', data.objects, -1);
+                    $('#auto_sel_id_object').trigger("chosen:updated");
+                }
+            });
+        }
+
         $(document).ready(function () {
             initMethodsVar({{ optional($view->eobject)->id }});
 
@@ -241,6 +254,12 @@
             $("#auto_sel_id_method").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_off_method").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_link").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            if ('{{ $view->type }}' === 'humidity') {
+                getObjectByType('hygrostat')
+            } else {
+                getObjectByType('{{ $view->type }}')
+            }
 
             $("#auto_sel_id_object").chosen().change(function() {
                 let object_id = $(this).val();
@@ -330,7 +349,12 @@
                 $('#low_high_val_div').hide();
                 $('#on_params_div').hide();
                 $('#view_form #id_object_div').show();
-                let type_obj = $(this).val();
+
+                var type_obj = $(this).val();
+
+                if ($(this).val() === 'humidity') {
+                    var type_obj = 'hygrostat';
+                }
 
                 if ($(this).val() === 'switch') {
                     $('#view_form #off_method_div').show();
@@ -376,6 +400,9 @@
                     $('#view_form #off_method_params_div').hide();
 
                 }
+
+                getObjectByType(type_obj)
+
                 return true;
             });
         });
