@@ -265,4 +265,9 @@ class View extends Model
     {
         return $this->belongsTo(Method::class, 'off_method', 'id');
     }
+
+    public function label()
+    {
+        return $this->hasOne(Label::class, 'id_item', 'id');
+    }
 }

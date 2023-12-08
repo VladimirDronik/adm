@@ -16,8 +16,8 @@
 
 
 
-{{ Form::bs_simple_text('Подача:', $boiler->feed_heat_temp ? $boiler->feed_heat_temp.' °C' : '0°C' ) }}
-{{ Form::bs_simple_text('Обратка:', $boiler->back_heat_temp ? $boiler->back_heat_temp.' °C' : '0°C') }}
+{{ Form::bs_simple_text('Подача:', $boiler->csupply ? $boiler->csupply.' °C' : '0°C' ) }}
+{{ Form::bs_simple_text('Обратка:', $boiler->creturn ? $boiler->creturn.' °C' : '0°C') }}
 {{ Form::bs_simple_text('Температура ГВС:', $boiler->water_temp ? $boiler->water_temp.' °C' : '0°C') }}
 {{ Form::bs_simple_text('Горелка:', $boiler->burner ? $boiler->burner : '0') }}
 {{ Form::bs_simple_text('Горелка ГВС:', $boiler->burner_GVS ? $boiler->burner_GVS : '0') }}

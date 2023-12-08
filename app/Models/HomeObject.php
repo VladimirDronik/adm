@@ -166,4 +166,9 @@ class HomeObject extends Model
     {
         return $this->hasMany(BoilerAuto::class, 'id_object', 'id');
     }
+
+    public function labels()
+    {
+        return $this->hasMany(Label::class, 'id_object', 'id');
+    }
 }
