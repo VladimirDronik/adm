@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Camera;
 
+use App\Models\Camera;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateRequest extends FormRequest
@@ -23,11 +24,29 @@ class CreateRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'name' => 'required|string|max:255',
-            'link' => 'required|string|max:255',
-            'room' => 'required|integer',
             'active' => 'nullable|boolean',
+            'vendor' => 'required|string|max:255',
         ];
+
+        switch ($this->request->get('vendor')) {
+            case Camera::VENDOR_IVIDEON:
+                $rules['link'] = 'required|string|max:255';
+                break;
+            case Camera::VENDOR_HIKVISION_HIWATCH:
+                $rules['ip_address'] = 'required|string|ip|max:15';
+                $rules['login'] = 'required|string|max:255';
+                $rules['password'] = 'required|string|max:255';
+                break;
+            case Camera::VENDOR_OTHER:
+                $rules['ip_address'] = 'required|string|ip|max:15';
+                $rules['login'] = 'required|string|max:255';
+                $rules['password'] = 'required|string|max:255';
+                $rules['link_rtsp'] = 'required|string|max:255';
+                break;
+        }
+
+        return $rules;
     }
 }

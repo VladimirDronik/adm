@@ -163,3 +163,30 @@ if (! function_exists('translitRussian')) {
         return strtr($text, $conv);
     }
 }
+
+if (! function_exists('customEncrypt')) {
+    function customEncrypt(string $data, string $key)
+    {
+        $method = 'aes-256-cbc';
+        $ivSize = openssl_cipher_iv_length($method);
+        $iv = openssl_random_pseudo_bytes($ivSize);
+
+        $encrypted = openssl_encrypt($data, $method, $key, 0, $iv);
+
+        return base64_encode($iv . $encrypted);
+    }
+}
+
+if (! function_exists('customDecrypt')) {
+    function customDecrypt(string $data, string $key)
+    {
+        $method = 'aes-256-cbc';
+        $ivSize = openssl_cipher_iv_length($method);
+
+        $data = base64_decode($data);
+        $iv = substr($data, 0, $ivSize);
+        $encrypted = substr($data, $ivSize);
+
+        return openssl_decrypt($encrypted, $method, $key, 0, $iv);
+    }
+}

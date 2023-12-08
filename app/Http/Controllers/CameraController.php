@@ -5,32 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Camera\CreateRequest;
 use App\Http\Requests\Camera\UpdateRequest;
 use App\Models\Camera;
-use App\Repositories\CameraRepository;
 use App\Repositories\RoomRepository;
 use App\Services\CameraService;
 
 class CameraController extends Controller
 {
     public function __construct(
-        private CameraRepository $cameraRep,
         private RoomRepository $roomRep,
         private CameraService $service
     ) {
     }
 
-    public function index()
-    {
-        $cameras = $this->cameraRep->getAll();
-
-        return view('cameras.index', compact('cameras'));
-    }
-
     public function edit($id)
     {
         $camera = Camera::findOrFail($id);
-        $rooms = $this->roomRep->getAllWithoutCommonToArray();
 
-        return view('cameras.edit', compact('camera', 'rooms'));
+        return view('cctv.camera.edit', compact('camera'));
     }
 
     public function update(UpdateRequest $r, Camera $camera)
@@ -50,9 +40,10 @@ class CameraController extends Controller
 
     public function create()
     {
-        $rooms = $this->roomRep->getAllWithoutCommonToArray();
+        $vendors = Camera::getVendors();
+        $types = Camera::getTypes();
 
-        return view('cameras.create', compact('rooms'));
+        return view('cctv.camera.create', compact('vendors', 'types'));
     }
 
     public function store(CreateRequest $r)

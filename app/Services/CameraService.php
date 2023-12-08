@@ -3,18 +3,60 @@
 namespace App\Services;
 
 use App\Models\Camera;
+use App\Models\Recorder;
 use Illuminate\Support\Facades\DB;
 
 class CameraService
 {
     public function prepare(Camera $camera, array $data)
     {
-        $camera->name = $data['name'];
-        $camera->link = $data['link'];
-        $camera->room = $data['room'];
-        $camera->image = $data['image'];
-        $camera->type = 'ivideon';
-        $camera->active = array_key_exists('active', $data);
+        switch ($data['vendor']) {
+            case Camera::VENDOR_IVIDEON:
+                $camera->name = $data['name'];
+                $camera->link = $data['link'];
+                $camera->vendor = $data['vendor'];
+                $camera->active = array_key_exists('active', $data);
+                $camera->type = Camera::TYPE_DIRECT_LINK;
+                break;
+            case Camera::VENDOR_HIKVISION_HIWATCH:
+                $camera->name = $data['name'];
+                $camera->vendor = $data['vendor'];
+                $camera->type = Camera::TYPE_MEDIA_SERVER;
+                $recorder = Recorder::create([
+                    'name' => 'Видеорегистратор камеры - ' . $data['name'],
+                    'vendor' => $data['vendor'],
+                    'sort' => Recorder::max('sort') + 1,
+                    'ip_address' => $data['ip_address'],
+                    'login' => $data['login'],
+                    'password' => customEncrypt($data['password'], config('secret.password_key')),
+                ]);
+                $camera->link = 'rtsp://$login:$password@$ip_address/ISAPI/Streaming/channels/101';
+                $camera->recorder_id = $recorder->id;
+                $camera->active = array_key_exists('active', $data);
+
+                chdir(env('SERVER_FOLDER').'/scripts');
+                exec('php get_rtsp_snapshots.php '.$recorder->id);
+                break;
+            case Camera::VENDOR_OTHER:
+                $camera->name = $data['name'];
+                $camera->vendor = $data['vendor'];
+                $camera->type = Camera::TYPE_MEDIA_SERVER;
+                $recorder = Recorder::create([
+                    'name' => 'Видеорегистратор камеры - ' . $data['name'],
+                    'vendor' => $data['vendor'],
+                    'sort' => Recorder::max('sort') + 1,
+                    'ip_address' => $data['ip_address'],
+                    'login' => $data['login'],
+                    'password' => customEncrypt($data['password'], config('secret.password_key')),
+                ]);
+                $camera->link = $data['link_rtsp'];
+                $camera->recorder_id = $recorder->id;
+                $camera->active = array_key_exists('active', $data);
+
+                chdir(env('SERVER_FOLDER').'/scripts');
+                exec('php get_rtsp_snapshots.php '.$recorder->id);
+                break;
+        }
     }
 
     /**
@@ -24,12 +66,19 @@ class CameraService
     {
         $camera = new Camera();
 
-        $imageUrl = $this->parseIdAndNumberFromUrl($data['link']);
-        $data['image'] = $imageUrl;
+        DB::transaction(function () use ($camera, $data) {
+            $this->prepare($camera, $data);
+            $camera->sort = Camera::max('sort') + 1;
+            $camera->save();
 
-        $this->prepare($camera, $data);
-        $camera->sort = Camera::max('sort') + 1;
-        $camera->save();
+            if ($data['vendor'] == Camera::VENDOR_IVIDEON) {
+                $imageUrl = $this->parseIdAndNumberFromUrl($data['link']);
+            } else {
+                $imageUrl = 'ela/images/cameras_snapshots/camera' . $camera->id . '.jpeg';
+            }
+
+            $camera->update(['image' => $imageUrl]);
+        });
 
         return $camera->id;
     }
@@ -39,9 +88,14 @@ class CameraService
      */
     public function update(Camera $camera, array $data): int
     {
-        $this->prepare($camera, $data);
-        $camera->save();
+        $camera->name = $data['name'];
+        $camera->link = $data['link'];
 
+        if (array_key_exists('image', $data)) {
+            $camera->image = $data['image'];
+        }
+
+        $camera->save();
         return $camera->id;
     }
 
@@ -69,10 +123,10 @@ class CameraService
         return true;
     }
 
-    private function updatePreviousSortRoom($camera, $previous_sort)
+    private function updatePreviousSortCamera(Camera $camera, int $previousSort)
     {
         Camera::where('sort', $camera->sort)
-            ->update(['sort' => $previous_sort]);
+            ->update(['sort' => $previousSort]);
     }
 
     public function sort(array $data)
@@ -87,11 +141,11 @@ class CameraService
             return true;
         }
 
-        $previous_sort = $camera->sort;
+        $previousSort = $camera->sort;
         $camera->sort += $data['direction'] === 'up' ? -1 : 1;
 
-        DB::transaction(function () use ($camera, $previous_sort) {
-            $this->updatePreviousSortRoom($camera, $previous_sort);
+        DB::transaction(function () use ($camera, $previousSort) {
+            $this->updatePreviousSortCamera($camera, $previousSort);
             $camera->save();
         });
 

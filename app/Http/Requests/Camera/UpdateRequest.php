@@ -23,12 +23,13 @@ class UpdateRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'name' => 'required|string|max:255',
             'image' => 'nullable|string',
             'link' => 'required|string|max:255',
-            'room' => 'required|integer',
             'active' => 'nullable|boolean',
         ];
+
+        return $rules;
     }
 }
