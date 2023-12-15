@@ -53,7 +53,7 @@
                                         <td scope="row">{{ $usensor->iobject['id'] }}</td>
                                         <td><a href="{{ route('usensors.edit',[$usensor->id]) }}">
                                                 {{ $usensor->name }}</a></td>
-                                        <td>{{ $usensor->temp ? $usensor->temp . ' &#176;С' : ''}}</td>
+                                        <td>{{ $usensor->temp ? $usensor->temp . ' °С' : ''}}</td>
                                         <td>{{ $usensor->hum ? $usensor->hum . ' %' : ''}}</td>
                                         <td>{{ $usensor->lux ? $usensor->lux . ' ед.' : ''}}</td>
                                         <td>{{ $usensor->atm_pressure ? $usensor->atm_pressure . ' мм рт.ст.' : ''}}</td>
