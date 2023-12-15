@@ -41,6 +41,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('curtains', 'CurtainController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('locks', 'LockController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('conditioners', 'ConditionerController')->except('show', 'destroy')->middleware('can:devices');
+
+    Route::group(['prefix' => 'mod_bus', 'as' => 'mod_bus.'], function () {
+        Route::resource('buses', 'ModbusBusController')->except('show', 'destroy')->middleware('can:mod_bus');
+    });
+
     Route::resource('cameras', 'CameraController')->except('show', 'destroy', 'index')->middleware('can:cameras');
     Route::resource('recorders', 'RecorderController')->except('show', 'destroy', 'index')->middleware('can:cameras');
     Route::get('cctv', 'CctvController@index')->name('cctv.index')->middleware('can:cameras');
@@ -89,6 +94,12 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('sort', 'CameraController@sort')->name('sort');
             Route::post('delete', 'CameraController@delete')->name('delete');
             Route::post('active', 'CameraController@active')->name('active');
+        });
+
+        Route::group(['prefix' => 'mod_bus', 'as' => 'mod_bus.'], function () {
+            Route::group(['prefix' => 'buses', 'as' => 'buses.'], function () {
+                Route::post('delete', 'ModbusBusController@delete')->name('delete');
+            });
         });
 
         Route::group(['prefix' => 'recorders', 'as' => 'recorders.'], function () {

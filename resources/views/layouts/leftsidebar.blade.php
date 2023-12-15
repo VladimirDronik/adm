@@ -98,6 +98,30 @@
                         </ul>
                     </li>
                 @endcan
+                @can('mod_bus')
+                    <li>
+                        <a class="has-arrow" href="#" aria-expanded="false">
+                            <i class="fa fa-sitemap"></i>
+                            <span class="hide-menu">Modbus</span>
+                        </a>
+                        <ul aria-expanded="false" class="collapse">
+                            <li>
+                                <a href="{{ route('mod_bus.buses.index') }}">
+                                    <i class="fa fa-exchange"></i>
+                                    Шины
+                                </a>
+                                <a href="#">
+                                    <i class="fa fa-microchip"></i>
+                                    Устройства
+                                </a>
+                                <a href="#">
+                                    <i class="fa fa-list"></i>
+                                    Регистры
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
                 @can('cameras')
                     <li>
                         <a class="has-arrow" href="{{ route('cctv.index') }}" aria-expanded="false">
