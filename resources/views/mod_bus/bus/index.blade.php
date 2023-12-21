@@ -1,7 +1,7 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-    @includeIf('mod_bus_buses.breadcrumbs', ['title' => 'Шины'])
+    @includeIf('components.breadcrumbs', ['title' => 'Шины'])
 @endsection
 
 @section('content')

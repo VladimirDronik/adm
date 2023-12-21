@@ -3,11 +3,49 @@
 namespace App\Repositories;
 
 use App\Models\ModbusBus;
+use App\Models\ModbusSlaver;
+use App\Models\ModbusSlaversType;
 
 class ModbusRepository
 {
     public function getAllBusesByType(string $type, $elementsPerPage = 30)
     {
         return ModbusBus::where('type', $type)->paginate($elementsPerPage);
+    }
+
+    public function getAllBusesToArray()
+    {
+        return ModbusBus::select('id', 'device')
+            ->orderBy('device')
+            ->pluck('device', 'id')
+            ->toArray();
+    }
+
+    public function getBusesWhereHasSlaversToArray()
+    {
+        return ModbusBus::whereHas('slavers')
+            ->select('id', 'device')
+            ->orderBy('device')
+            ->pluck('device', 'id')
+            ->toArray();
+    }
+
+    public function getAllSlavers(int $bus = null, $elementsPerPage = 30)
+    {
+        $slavers = ModbusSlaver::query();
+
+        if ($bus) {
+            $slavers->where('bus', $bus);
+        }
+
+        return $slavers->paginate($elementsPerPage);
+    }
+
+    public function getAllSlaversTypesToArray()
+    {
+        return ModbusSlaversType::select('id', 'name')
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray();
     }
 }

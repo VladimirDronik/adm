@@ -44,6 +44,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::group(['prefix' => 'mod_bus', 'as' => 'mod_bus.'], function () {
         Route::resource('buses', 'ModbusBusController')->except('show', 'destroy')->middleware('can:mod_bus');
+        Route::resource('slavers', 'ModbusSlaverController')->except('show', 'destroy')->middleware('can:mod_bus');
     });
 
     Route::resource('cameras', 'CameraController')->except('show', 'destroy', 'index')->middleware('can:cameras');
@@ -99,6 +100,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::group(['prefix' => 'mod_bus', 'as' => 'mod_bus.'], function () {
             Route::group(['prefix' => 'buses', 'as' => 'buses.'], function () {
                 Route::post('delete', 'ModbusBusController@delete')->name('delete');
+            });
+            Route::group(['prefix' => 'slavers', 'as' => 'slavers.'], function () {
+                Route::post('delete', 'ModbusSlaverController@delete')->name('delete');
             });
         });
 

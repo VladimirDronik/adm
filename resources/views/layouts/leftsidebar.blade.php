@@ -110,7 +110,7 @@
                                     <i class="fa fa-exchange"></i>
                                     Шины
                                 </a>
-                                <a href="#">
+                                <a href="{{ route('mod_bus.slavers.index') }}">
                                     <i class="fa fa-microchip"></i>
                                     Устройства
                                 </a>
