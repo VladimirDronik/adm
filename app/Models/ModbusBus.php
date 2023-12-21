@@ -72,7 +72,9 @@ class ModbusBus extends Model
 
         if (!empty($ttyUsbFiles)) {
             foreach ($ttyUsbFiles as $ttyUsbFile) {
-                $devices[$ttyUsbFile] = $ttyUsbFile;
+                if (!static::where('device', $ttyUsbFile)->exists()) {
+                    $devices[$ttyUsbFile] = $ttyUsbFile;
+                }
             }
         }
 
