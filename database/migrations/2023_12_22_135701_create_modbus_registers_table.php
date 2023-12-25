@@ -25,7 +25,7 @@ return new class extends Migration
             $table->boolean('polling');
             $table->unsignedTinyInteger('polling_cycle')->nullable();
             $table->string('last_value')->nullable();
-            $table->timestamp('timestamp')->useCurrentOnUpdate();
+            $table->timestamp('timestamp', 3)->default(DB::raw('CURRENT_TIMESTAMP'))->useCurrentOnUpdate();
 
             $table->foreign('slaver_id')
                 ->references('id')
