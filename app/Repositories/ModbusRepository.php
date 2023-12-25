@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\ModbusBus;
+use App\Models\ModbusRegister;
 use App\Models\ModbusSlaver;
 use App\Models\ModbusSlaversType;
 
@@ -41,11 +42,24 @@ class ModbusRepository
         return $slavers->paginate($elementsPerPage);
     }
 
+    public function getAllSlaversToArray()
+    {
+        return ModbusSlaver::select('id', 'name')
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray();
+    }
+
     public function getAllSlaversTypesToArray()
     {
         return ModbusSlaversType::select('id', 'name')
             ->orderBy('name')
             ->pluck('name', 'id')
             ->toArray();
+    }
+
+    public function getAllRegisters($elementsPerPage = 30)
+    {
+        return ModbusRegister::paginate($elementsPerPage);
     }
 }

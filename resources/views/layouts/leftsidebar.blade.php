@@ -114,7 +114,7 @@
                                     <i class="fa fa-microchip"></i>
                                     Устройства
                                 </a>
-                                <a href="#">
+                                <a href="{{ route('mod_bus.registers.index') }}">
                                     <i class="fa fa-list"></i>
                                     Регистры
                                 </a>
