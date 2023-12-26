@@ -11,6 +11,7 @@ namespace App\Services;
 use App\Models\HomeObject;
 use App\Models\Lamp;
 use App\Models\Method;
+use App\Models\Script;
 
 class LampObjectService
 {
@@ -47,6 +48,7 @@ class LampObjectService
 
         Method::forceCreate([
             'name' => 'Выключить лампу',
+            'alias' => 'lamp_off',
             'id_object' => $object_id,
             'script' => null,
             'easy' => $easyString,
@@ -71,6 +73,7 @@ class LampObjectService
 
         Method::forceCreate([
             'name' => 'Включить лампу',
+            'alias' => 'lamp_on',
             'id_object' => $object_id,
             'script' => null,
             'easy' => $easyString,
@@ -95,6 +98,7 @@ class LampObjectService
 
         Method::forceCreate([
             'name' => 'Смена состояния лампы',
+            'alias' => 'lamp_switch',
             'id_object' => $object_id,
             'script' => null,
             'easy' => $easyString,
@@ -164,6 +168,7 @@ class LampObjectService
         $this->createMethodOn($object_id, $device_id, $port_id);
         $this->createMethodOff($object_id, $device_id, $port_id);
         $this->createMethodOnOff($object_id, $device_id, $port_id);
+        $this->createLampDimmerMethods($object_id);
     }
 
     public function updateLampObjectMethods(int $object_id, $device_id, $port_id)
@@ -171,5 +176,115 @@ class LampObjectService
         $this->updateMethodOff($object_id, $device_id, $port_id);
         $this->updateMethodOn($object_id, $device_id, $port_id);
         $this->updateMethodOnOff($object_id, $device_id, $port_id);
+    }
+
+    /**
+     * Создание методов для лампы, которая диммируется
+     *
+     * @return void
+     */
+    private function createLampDimmerMethods(int $object_id)
+    {
+        $dataArrays = $this->getLampDimmerData();
+        $methods = [];
+
+        foreach ($dataArrays as $data) {
+            $methods[] = [
+                'name' => $data['method']['name'],
+                'alias' => $data['method']['alias'],
+                'id_object' => $object_id,
+                'script' => $this->getScriptId($data['script']),
+                'comment' => $data['method']['name'],
+                'params' => mb_strpos($data['method']['name'], 'Установить', 0, 'UTF-8') !== false ? 'Яркость (целое, 0-100)' : null,
+                'is_system' => 1,
+            ];
+        }
+
+        Method::insert($methods);
+    }
+
+    /**
+     * Если скрипт не найден, то создаем
+     */
+    private function getScriptId(array $scriptArray): int
+    {
+        $script = Script::where('name', $scriptArray['name'])
+            ->where('system', 1)
+            ->first();
+
+        if (! $script) {
+            $script = Script::create($scriptArray);
+        }
+
+        return $script->id;
+    }
+
+    /**
+     * Данные скриптов и методов для ламп, которые диммируются
+     */
+    private function getLampDimmerData(): array
+    {
+        return [
+            [
+                'script' => [
+                    'name' => 'Включить диммер',
+                    'link' => 'on_dimmer.php',
+                    'count' => 0,
+                    'system' => 1,
+                ],
+                'method' => [
+                    'name' => 'Включить лампу',
+                    'alias' => 'dimmer_on',
+                ],
+            ],
+            [
+                'script' => [
+                    'name' => 'Выключить диммер',
+                    'link' => 'off_dimmer.php',
+                    'count' => 0,
+                    'system' => 1,
+                ],
+                'method' => [
+                    'name' => 'Выключить лампу',
+                    'alias' => 'dimmer_off',
+                ],
+            ],
+            [
+                'script' => [
+                    'name' => 'Увеличить яркость диммера',
+                    'link' => 'up_dimmer.php',
+                    'count' => 0,
+                    'system' => 1,
+                ],
+                'method' => [
+                    'name' => 'Увеличить яркость лампы',
+                    'alias' => 'dimmer_up',
+                ],
+            ],
+            [
+                'script' => [
+                    'name' => 'Уменьшить яркость диммера',
+                    'link' => 'down_dimmer.php',
+                    'count' => 0,
+                    'system' => 1,
+                ],
+                'method' => [
+                    'name' => 'Уменьшить яркость лампы',
+                    'alias' => 'dimmer_down',
+                ],
+            ],
+            [
+                'script' => [
+                    'name' => 'Установить яркость диммера',
+                    'link' => 'set_dimmer.php',
+                    'count' => 0,
+                    'system' => 1,
+                ],
+                'method' => [
+                    'name' => 'Установить яркость лампы',
+                    'alias' => 'dimmer_set',
+                ],
+            ],
+        ];
     }
 }

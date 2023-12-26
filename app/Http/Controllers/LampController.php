@@ -75,7 +75,6 @@ class LampController extends Controller
 
     public function edit(Lamp $lamp, $tab = 1)
     {
-
         $can = gates('devices.show-object');
 
         [$idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices] =
@@ -90,9 +89,11 @@ class LampController extends Controller
         $availableEvents = Lamp::getEvents();
         $properties = Lamp::getProperties();
 
+        $systemMethods = $lamp->object->methods->whereIn('alias', $lamp->getMethodsAliasByType());
+
         return view('lamps.edit', compact('lamp',
             'idDevice', 'idPort', 'devices', 'ports', 'messagePoint', 'messages', 'properties', 'sounds', 'views', 'rooms',
             'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'can', 'tab', 'events',
-            'alice', 'availableEvents', 'allEvents'));
+            'alice', 'availableEvents', 'allEvents', 'systemMethods'));
     }
 }

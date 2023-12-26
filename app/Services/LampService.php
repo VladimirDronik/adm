@@ -20,7 +20,16 @@ class LampService
     public function prepareLamp(Lamp $lamp, array $data)
     {
         $lamp->name = trim($data['name']);
-        $lamp->type = 'lamp';
+
+        if (array_key_exists('is_dimer', $data)) {
+            $lamp->type = Lamp::TYPE_DIMER;
+            $lamp->value = $data['value'];
+            $lamp->speed = $data['speed'];
+        } else {
+            $lamp->type = Lamp::TYPE_LAMP;
+            $lamp->value = null;
+            $lamp->speed = null;
+        }
     }
 
     /**

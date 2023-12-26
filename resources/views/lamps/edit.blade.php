@@ -51,7 +51,7 @@
                                 @include('objects.events', ['object' => $lamp->object])
                             </div>
                             <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
-                                @include('objects.methods', ['object' => $lamp->object])
+                                @include('lamps.edit_tabs.methods', ['object' => $lamp->object, 'systemMethods' => $systemMethods])
                             </div>
                             <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
                                 @include('objects.sheduler', ['object' => $lamp->object])
@@ -106,6 +106,16 @@
         const url_device = '{{ route('ajax.devices.type_controller') }}';
         let del_id;
 
+        if ($('#lamp_form input[name=is_dimer]').is(':checked')) {
+            $('#dimer_fields_div').removeAttr("hidden");
+            $('#lamp_form input[name=value]').removeAttr("disabled");
+            $('#lamp_form input[name=speed]').removeAttr("disabled");
+        } else {
+            $('#dimer_fields_div').attr("hidden", true);
+            $('#lamp_form input[name=value]').attr("disabled", true);
+            $('#lamp_form input[name=speed]').attr("disabled", true);
+        }
+
         $(document).ready(function () {
 
             $('#del_modal_btn').click(clickDelBtn);
@@ -117,6 +127,18 @@
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_hitepro_devices").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            $('#lamp_form input[name=is_dimer]').change(function() {
+                if ($('#lamp_form input[name=is_dimer]').is(':checked')) {
+                    $('#dimer_fields_div').removeAttr("hidden");
+                    $('#lamp_form input[name=value]').removeAttr("disabled");
+                    $('#lamp_form input[name=speed]').removeAttr("disabled");
+                } else {
+                    $('#dimer_fields_div').attr("hidden", true);
+                    $('#lamp_form input[name=value]').attr("disabled", true);
+                    $('#lamp_form input[name=speed]').attr("disabled", true);
+                }
+            });
 
             $("#auto_sel_device_id").chosen().change(function() {
                 let object_id = $(this).val();
