@@ -41,6 +41,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('curtains', 'CurtainController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('locks', 'LockController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('conditioners', 'ConditionerController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('led_tapes', 'LedTapeController')->except('show','destroy')->middleware('can:devices');
 
     Route::group(['prefix' => 'mod_bus', 'as' => 'mod_bus.'], function () {
         Route::resource('buses', 'ModbusBusController')->except('show', 'destroy')->middleware('can:mod_bus');
@@ -119,6 +120,10 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('related_parameters', 'LabelController@relatedParameters')->name('related_parameters');
         });
 
+        Route::group(['prefix' => 'led_tapes', 'as' => 'led_tapes.'], function () {
+            Route::post('delete', 'LedTapeController@delete')->name('delete');
+        });
+
         Route::group(['prefix' => 'conditioners', 'as' => 'conditioners.'], function () {
             Route::post('models', 'ConditionerController@modelsByVendor')->name('models');
             Route::post('code', 'ConditionerController@getCode')->name('code');
@@ -136,6 +141,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('ports/update', 'DeviceController@updatePort')->name('ports.update');
             Route::post('check/server', 'DeviceController@checkServer')->name('check.server');
             Route::post('objects_ports', 'DeviceController@objectsPorts')->name('objects_ports');
+            Route::post('free_wb_led_ports_by_type', 'DeviceController@getFreeWbLedPortsByType')->name('free_wb_led_ports_by_type');
             Route::post('type_controller', 'DeviceController@typeController')->name('type_controller');
             Route::post('get', 'DeviceController@get')->name('get');
             Route::post('extension_module/delete', 'DeviceController@extensionModuleDelete')->name('extension_module.delete');

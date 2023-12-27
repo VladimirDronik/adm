@@ -95,6 +95,12 @@
                                     ЯндексСтанции
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('led_tapes.index') }}">
+                                    <i class="fa fa-lightbulb-o"></i>
+                                    Led ленты
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 @endcan

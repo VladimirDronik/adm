@@ -180,6 +180,26 @@
                         </div>
                     </div>
                 </div>
+            @elseif($device->devtype->name == 'WB-LED')
+                <div class="card-title"><h4>Порты контроллера</h4></div>
+                <div class="card-body">
+                    @if(count($device->ports))
+                        <ul class="nav nav-tabs customtab" role="tablist">
+                            <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Порты IN</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты OUT</span></a> </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
+                                @include('devices.in_ports')
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
+                                @include('devices.out_ports')
+                            </div>
+                        </div>
+                    @else
+                        <p>Порты не найдены</p>
+                    @endif
+                </div>
             @else
             <div class="card-title"><h4>Порты контроллера</h4></div>
             <div class="card-body">
@@ -846,9 +866,9 @@
                 return 'Не указано название контроллера';
             }
             if (ip_address === '') {
-                return 'Не указан ip адрес контроллера';
+                return 'Не указан адрес контроллера';
             }
-            if ('{{ $device->devtype->name }}' == 'ModbusTCP') {
+            if ('{{ $device->devtype->name }}' == 'ModbusTCP' || '{{ $device->devtype->name }}' == 'WB-LED') {
                 if (port === '') {
                     return 'Не указан порт контроллера';
                 }
@@ -858,10 +878,15 @@
                 }
             }
 
-            if (ip_address.length > 15) {
+            if ('{{ $device->devtype->name }}' != 'WB-LED' && ip_address.length > 15) {
                 return 'Длина ip адреса не может быть больше 15';
             }
-            if (!isValidIP(ip_address)) {
+
+            if ('{{ $device->devtype->name }}' == 'WB-LED' && ip_address.length > 3) {
+                return 'Длина адреса не может быть больше 3';
+            }
+
+            if ('{{ $device->devtype->name }}' != 'WB-LED' && !isValidIP(ip_address)) {
                 return 'Недопустимый ip адрес';
             }
             return '';
@@ -874,6 +899,9 @@
 
             if ('{{ $device->devtype->name }}' == 'ModbusTCP') {
                 var port = $("input[name=port]").val().trim();
+                var password = '';
+            } else if ('{{ $device->devtype->name }}' == 'WB-LED') {
+                var port = $('input[type="radio"][name="port"]:checked').val();
                 var password = '';
             } else {
                 var password = $("input[name=password]").val().trim();
@@ -906,7 +934,11 @@
                         'ip_address': ip_address, 'password': password, 'port': port, extension_modules: data},
                     success: function (data) {
                         if (!data.result) {
-                            showErrorModal('Ошибка при обновлении устройства');
+                            if (data.message) {
+                                showErrorModal(data.message);
+                            } else {
+                                showErrorModal('Ошибка при обновлении устройства');
+                            }
                         } else {
                             location.reload();
                         // $('#reloadDeviceBtn').click();

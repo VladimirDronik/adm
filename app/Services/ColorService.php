@@ -6,8 +6,8 @@ use App\Models\Color;
 
 class ColorService
 {
-    public static function getAll()
+    public static function getAllByType(string $type = Color::NAME_TYPE)
     {
-        return Color::orderBy('id')->get();
+        return Color::where('type', $type)->orderBy('id')->get();
     }
 }

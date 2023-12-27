@@ -58,6 +58,7 @@ class ObjType extends Model
 
     const TYPE_CONDITIONER = 'conditioner';
     const TYPE_YANDEX_STATION = 'yandex_station';
+    const TYPE_TAPE = 'tape';
 
     protected $table = 'objtypes';
 

@@ -40,7 +40,7 @@ class DeviceController extends Controller
     {
         abort_if(! ajaxHas($r, ['id', 'description', 'ip_address']), 400);
 
-        return response()->json(['result' => $this->service->update($r->all())]);
+        return response()->json($this->service->update($r->all()));
     }
 
     public function objectsPorts(Request $r)
@@ -59,6 +59,24 @@ class DeviceController extends Controller
             'result' => true, 'ports' => $ports,
             'type_device' => $typeDevice,
             'hiteProDevices' => [],
+        ]);
+    }
+
+    public function getFreeWbLedPortsByType(Request $r)
+    {
+        abort_if(!ajaxHas($r, ['device_id', 'types', 'led_type']), 400);
+
+        $portsData = $this->service->getAllPortsDataForWbLed(
+            $r->device_id,
+            $r->types,
+            $r->led_type,
+            $r->has('object_id') ? $r->object_id : null
+        );
+
+        return response()->json([
+            'result' => true,
+            'ports' => $portsData['ports'],
+            'ports_info' => $portsData['ports_info'],
         ]);
     }
 

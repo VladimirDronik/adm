@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Device;
 use App\Models\ExtensionModule;
+use App\Models\LedTape;
 use App\Models\Port;
 use App\Repositories\DeviceRepository;
 use App\Repositories\PortRepository;
@@ -111,6 +112,10 @@ class DeviceService
         $this->device->fill($data);
         //$this->device->active = 1;
 
+        if (array_key_exists('wb_led_port', $data)) {
+            $this->device->port = $data['wb_led_port'];
+        }
+
         $this->device->save();
 
         if ($is_notify) {
@@ -132,11 +137,16 @@ class DeviceService
         DB::beginTransaction();
 
         try {
-            exec("ping -c 1 {$data['ip_address']}", $output, $status);
-            if ($status == 0) {
-                $data['active'] = 1;
+            if ($typeDevice != 'WB-LED') {
+                exec("ping -c 1 {$data['ip_address']}",$output, $status);
+
+                if ($status == 0) {
+                    $data['active'] = 1;
+                } else {
+                    $data['active'] = 0;
+                }
             } else {
-                $data['active'] = 0;
+                $data['active'] = 1;
             }
 
             if (($data['active'] == 1) || ($forcedCreate)) {
@@ -222,22 +232,27 @@ class DeviceService
         trimArray($data);
 
         if ($this->isDoubleDescription($data)) {
-            return [false, 'Устройство с таким названием уже существует. Необходимо изменить название', '', ''];
-        }
-
-        if (! $this->isValidIpAddress($data)) {
-            return [false, 'Недопустимый ip адрес'.$this->isValidIpAddress($data), '', ''];
+            return ['result' => false, 'message' => 'Устройство с таким названием уже существует. Необходимо изменить название', '', ''];
         }
 
         $device = Device::find($data['id']);
 
         if (! $device) {
-            return [false, 'Устройство не найдено', '', ''];
+            return ['result' => false, 'message' => 'Устройство не найдено', '', ''];
+        }
+
+        if ($device->devtype->name != 'WB-LED' && !$this->isValidIpAddress($data)) {
+            return ['result' => false, 'message' => 'Недопустимый ip адрес', '', ''];
         }
 
         $device->description = $data['description'];
         $device->password = $data['password'] ?: null;
-        $device->port = $data['port'] ?: null;
+
+        if ($data['port'] === '0') {
+            $device->port = $data['port'];
+        } else {
+            $device->port = $data['port'] ?: null;
+        }
 
         // $configResult = ConfigMegaService::sendConfigToDevice($data['id']);
 
@@ -250,7 +265,9 @@ class DeviceService
                 $device->save();
 
                 //Меняем адрес устойства
-                $this->notifyDeviceIp($data);
+                if ($device->devtype->name != 'WB-LED') {
+                    $this->notifyDeviceIp($data);
+                }
 
                 if ($extensionModules) {
                     $this->storeExtensionModules($extensionModules, $device);
@@ -258,7 +275,7 @@ class DeviceService
 
                 DB::commit();
 
-                return true;
+                return ['result' => true];
             } catch (\Throwable $e) {
                 DB::rollback();
                 \Log::error('Ошибка при обновлении устройства', [$e->getMessage()]);
@@ -270,10 +287,10 @@ class DeviceService
                 $this->storeExtensionModules($extensionModules, $device);
             }
 
-            return true;
+            return ['result' => true];
         }
 
-        return [false, 'Не удалось изменить данные устройства: '.$e->getMessage(), '', ''];
+        return ['result' => false, 'message' => 'Не удалось изменить данные устройства: '.$e->getMessage(), '', ''];
     }
 
     public function updatePort(array $data)
@@ -328,6 +345,123 @@ class DeviceService
         }
 
         return $arrayPorts;
+    }
+
+    /**
+     * Вертнуть свободные и занятые порты устройства, которые соответсвуют указанным типам
+     *
+     * @param null|int $deviceId
+     * @param string $types
+     */
+    public function getAllDevicePortsByPortType(?int $deviceId, string $types = '')
+    {
+        if (!$deviceId) {
+            return [];
+        }
+
+        $ports = $this->portRepository->getPortsByTypes($deviceId, $types);
+        $arrayPorts = [];
+
+        foreach ($ports as $port) {
+            $arrayPorts[] = [
+                'name' => 'Порт '.$port->type.' ['.$port->num_port.']' . (
+                    $port->eobject ?
+                    ': <span style="color:red">занят</span> ' . $port->eobject->name.' '.$port->eobject->id :
+                    ': <span style="color:green">свободен</span>'
+                )
+            ];
+        }
+
+        return $arrayPorts;
+    }
+
+    /**
+     * Вертнуть свободные порты устройства, которые соответсвуют указанным типам
+     *
+     * @param null|int $deviceId
+     * @param string $types
+     * @param null|int $currentObjectId = null
+     */
+    public function getFreeDevicePortsByPortType(?int $deviceId, string $types, ?int $currentObjectId = null)
+    {
+        if (!$deviceId) {
+            return [];
+        }
+
+        $ports = $this->portRepository->getPortsByTypes($deviceId, $types);
+        $arrayPorts = [];
+
+        foreach ($ports as $port) {
+            if (($currentObjectId && $port->eobject && $port->eobject->id == $currentObjectId) || !$port->eobject) {
+                $arrayPorts[] = [
+                    'id' => $port->id,
+                    'num_port' => $port->num_port,
+                    'name' => 'Порт '.$port->type.' ['.$port->num_port.']'
+                ];
+            }
+        }
+
+        return $arrayPorts;
+    }
+
+    /**
+     * Вертнуть все данные по портам для контроллера WB-LED
+     *
+     * @param null|int $deviceId
+     * @param string $portTypes
+     * @param string $ledType
+     * @param null|int $objectId = null
+     */
+    public function getAllPortsDataForWbLed(?int $deviceId, string $portTypes, string $ledType, ?int $objectId = null)
+    {
+        if ($ledType == LedTape::TYPE_RGBW) {
+            $ports = $this->getFreeDevicePortsByPortType($deviceId, $portTypes, $objectId);
+            if (count($ports) >= 4) {
+                $combinedPorts = [
+                    'id' => [],
+                    'name' => '',
+                ];
+
+                foreach ($ports as $port) {
+                    $combinedPorts['id'][] = $port['id'];
+                }
+                $combinedPorts['name'] = $ports[0]['name'] . ' - ' . end($ports)['name'];
+
+                $ports = [$combinedPorts];
+            } else {
+                $ports = [];
+            }
+        } elseif ($ledType == LedTape::TYPE_RGB) {
+            $ports = $this->getFreeDevicePortsByPortType($deviceId, $portTypes, $objectId);
+            if (count($ports) >= 3) {
+                $requiredNumPorts = [1, 2, 3];
+
+                $filteredPorts = collect($ports)->filter(function ($item) use ($requiredNumPorts) {
+                    return in_array($item['num_port'], $requiredNumPorts);
+                });
+
+                if ($filteredPorts->count() === count($requiredNumPorts)) {
+                    $filteredPorts = $filteredPorts->toArray();
+
+                    foreach ($filteredPorts as $port) {
+                        $combinedPorts['id'][] = $port['id'];
+                    }
+                    $combinedPorts['name'] = $filteredPorts[0]['name'] . ' - ' . end($filteredPorts)['name'];
+
+                    $ports = [$combinedPorts];
+                } else {
+                    $ports = [];
+                }
+            } else {
+                $ports = [];
+            }
+        } else {
+            $ports = $this->getFreeDevicePortsByPortType($deviceId, $portTypes, $objectId);
+        }
+
+        $portsInfo = $this->getAllDevicePortsByPortType($deviceId, $portTypes);
+
+        return ['ports' => $ports, 'ports_info' => $portsInfo];
     }
 
     /**

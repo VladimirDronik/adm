@@ -73,6 +73,27 @@ class PortRepository
         return $sql->orderBy('num_port')->get();
     }
 
+    /**
+     * Вертнуть порты устройства, которые соответсвуют указанным типам
+     *
+     * @param null|int $deviceId
+     * @param string $types
+     */
+    public function getPortsByTypes(?int $deviceId, string $types)
+    {
+        $typesArr = explode(',', $types);
+
+        $sql = Port::where('id_device', $deviceId)->where(
+            function($sql) use ($typesArr) {
+                foreach ($typesArr AS $type) {
+                    $sql->orwhere('type', trim($type));
+                }
+            }
+        );
+
+        return $sql->orderBy('num_port')->get();
+    }
+
     public function updateEasy($port_id, $easy = '')
     {
         Port::where('id', $port_id)

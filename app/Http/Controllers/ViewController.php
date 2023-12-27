@@ -65,7 +65,7 @@ class ViewController extends Controller
     {
         [$types, $rooms, $objects, $scenes, $images, $links, $safeTypes, $relatedParameterObjects] = $this->getLists();
 
-        $colors = ColorRepository::getColors();
+        $colors = ColorRepository::getNameTypeColors();
 
         return view('views.create', compact('types', 'rooms', 'objects', 'scenes', 'images', 'links', 'colors', 'safeTypes', 'relatedParameterObjects'));
     }
@@ -88,7 +88,7 @@ class ViewController extends Controller
         [$types, $rooms, $objects, $scenes, $images, $links, $safeTypes, $relatedParameterObjects] = $this->getLists();
         $methods = $this->object_service->getMethodsByObjectIdToArray($view->id_object);
 
-        $colors = ColorRepository::getColors();
+        $colors = ColorRepository::getNameTypeColors();
 
         $settingFromApp = null;
         $lowval = null;
