@@ -120,6 +120,7 @@ class LampObjectService
 
         Method::where('id_object', $object_id)
             ->where('name', 'Выключить лампу')
+            ->where('alias', 'lamp_off')
             ->update(['easy' => $easyString]);
     }
 
@@ -136,6 +137,7 @@ class LampObjectService
 
         Method::where('id_object', $object_id)
             ->where('name', 'Включить лампу')
+            ->where('alias', 'lamp_on')
             ->update(['easy' => $easyString]);
     }
 
@@ -152,6 +154,7 @@ class LampObjectService
 
         Method::where('id_object', $object_id)
             ->where('name', 'Смена состояния лампы')
+            ->where('alias', 'lamp_switch')
             ->update(['easy' => $easyString]);
     }
 

@@ -9,7 +9,7 @@ class LampRepository
     public function getAll($pagination_count = 30)
     {
         return Lamp::with('object')
-            ->orderBy('id', 'desc')
+            ->orderBy('id', 'asc')
             ->paginate($pagination_count);
     }
 }
