@@ -14,6 +14,8 @@ class BoilerRepository
 {
     public function getBoiler($boilerIdObject)
     {
-        return Boiler::where('id_object', $boilerIdObject)->first();
+        return Boiler::where('id_object', $boilerIdObject)
+            ->with(['object', 'object.methods'])
+            ->first();
     }
 }

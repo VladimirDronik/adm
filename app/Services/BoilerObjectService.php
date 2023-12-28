@@ -10,6 +10,7 @@ namespace App\Services;
 
 use App\Models\HomeObject;
 use App\Models\Method;
+use App\Models\ModbusRegister;
 use App\Models\ObjType;
 use App\Models\SchedulerPoint;
 use App\Models\SchedulerTask;
@@ -52,63 +53,126 @@ class BoilerObjectService
         return $object;
     }
 
-    public function getOrCreateCheckBoilerScriptId(): int
+    /**
+     * Создание системных методов и элементов планировщика для котла
+     */
+    public function createMethodsAndEvents(int $objectId, ?int $modbusSlaverId = null)
     {
-        $script_id = Script::where('link', 'check_boiler.php')
-            ->where('system', 1)
-            ->value('id');
+        $checkBoilerScript = $this->getOrCreateCheckBoilerScript();
+        $slaverRegisters = collect();
+        $checkBoilerRegister = null;
 
-        if ($script_id) {
-            return $script_id;
+        if ($modbusSlaverId) {
+            $slaverRegisters = ModbusRegister::where('slaver_id', $modbusSlaverId)->get();
+            $checkBoilerRegister = $slaverRegisters->where('alias', 'check_boiler')->first();
         }
 
-        return Script::forceCreate(
-            ScriptsTableSeeder::getCheckBoilerScript()
-        )->id;
-    }
-
-    /**
-     * Создание метода 'Проверка термостата' и элемента планировщика 'Проверка котла' (каждую 1 мин)
-     */
-    public function createCheckMethodWithEvent(int $object_id)
-    {
-        $script_id = $this->getOrCreateCheckBoilerScriptId();
-
-        $method_id = Method::forceCreate([
+        $method = Method::create([
             'name' => 'Проверка котла отопления',
-            'id_object' => $object_id,
+            'alias' => 'check_boiler',
+            'id_object' => $objectId,
             'comment' => 'Периодическая проверка текущих значений котла отопления',
             'is_system' => 1,
-            'script' => $script_id,
-        ])->id;
+            'script' => $checkBoilerScript->id,
+            'easy' => $checkBoilerRegister ? 'm:' . $checkBoilerRegister->id : null,
+        ]);
 
-        $scheduler_task_id = SchedulerTask::forceCreate([
+        $schedulerTask = SchedulerTask::create([
             'name' => 'Проверка котла отопления',
             'is_system' => 1,
             'is_hidden' => 1,
-            'object' => $object_id,
-            'method' => $method_id,
-        ])->id;
+            'object' => $objectId,
+            'method' => $method->id,
+        ]);
 
         // каждую 1 мин
-        SchedulerPoint::forceCreate([
-            'id_task' => $scheduler_task_id,
+        SchedulerPoint::create([
+            'id_task' => $schedulerTask->id,
             'type' => 'c',
             'time' => '1',
             'days' => '',
             'close' => 1,
             'system' => 1,
         ]);
+
+        $systemMethods = $this->getBoilerSystemMethodsData();
+
+        if ($slaverRegisters->isNotEmpty()) {
+            foreach ($systemMethods as $systemMethod) {
+                $suitableRegister = $slaverRegisters->where('alias', $systemMethod['alias'])->first();
+
+                Method::create([
+                    'name' => $systemMethod['name'],
+                    'alias' => $systemMethod['alias'],
+                    'id_object' => $objectId,
+                    'comment' => $systemMethod['comment'],
+                    'is_system' => 1,
+                    'easy' => $suitableRegister ? 'm:' . $suitableRegister->id : null,
+                ]);
+            }
+        } else {
+            foreach ($systemMethods as $systemMethod) {
+                Method::create([
+                    'name' => $systemMethod['name'],
+                    'alias' => $systemMethod['alias'],
+                    'id_object' => $objectId,
+                    'comment' => $systemMethod['comment'],
+                    'is_system' => 1,
+                ]);
+            }
+        }
     }
 
     /**
-     * Автосоздание методов и их событий для объекта, который был
-     * создан автоматически для котла
-     *
-     * @return void
+     * Запись id выбранных для методово регистров, если тип подключения modbus
      */
-    public function createBoilerObjectMethodsWithEvents(int $object_id)
+    public function updateMethodsEasyFieldsMethodsForModbus(HomeObject $boilerObject, array $data)
     {
-        $this->createCheckMethodWithEvent($object_id);
+        if ($boilerObject->methods->isNotEmpty()) {
+            foreach ($boilerObject->methods as $method) {
+                $method->update([
+                    'easy' => array_key_exists('register_id_' . $method->id, $data) && $data['register_id_' . $method->id]
+                        ? 'm:' . $data['register_id_' . $method->id]
+                        : null,
+                ]);
+            }
+        }
+    }
+
+    public function getOrCreateCheckBoilerScript(): Script
+    {
+        $script = Script::where('link', 'check_boiler.php')->where('system', 1)->first();
+
+        if (!$script) {
+            $script = Script::create(ScriptsTableSeeder::getCheckBoilerScript());
+        }
+
+        return $script;
+    }
+
+    /**
+     * Данные системных методов для котла
+     */
+    private function getBoilerSystemMethodsData(): array
+    {
+        return [
+            ['name' => 'Значение подачи', 'alias' => 'feed_heat_temp', 'comment' => 'Получить значение подачи отопления'],
+            ['name' => 'Значение обратки', 'alias' => 'return_heat_temp', 'comment' => 'Получить значение обратки отопления'],
+            ['name' => 'Значение контура ГВС', 'alias' => 'water_temp', 'comment' => 'Получить значение контура ГВС'],
+            ['name' => 'Значение горелки', 'alias' => 'flame', 'comment' => 'Получить значение модуляции горелки'],
+            ['name' => 'Значение давления', 'alias' => 'pressure', 'comment' => 'Получить давление котла'],
+            ['name' => 'Скорость потока ГВС', 'alias' => 'flow_rate', 'comment' => 'Получить скорость потока ГВС'],
+            ['name' => 'Внешняя температура', 'alias' => 'outdoor_temp', 'comment' => 'Получить внешнюю температуру'],
+            ['name' => 'Внутренняя температура', 'alias' => 'indoor_temp', 'comment' => 'Получить внутреннюю температуру'],
+            ['name' => 'Признак ошибки', 'alias' => 'error_flag', 'comment' => 'Считывание признака ошибки'],
+            ['name' => 'Код ошибки', 'alias' => 'error_code', 'comment' => 'Считывание кода ошибки'],
+            ['name' => 'Признак описания ошибки', 'alias' => 'ext_err_flag', 'comment' => 'Считывание признака расширенного описания ошибки'],
+            ['name' => 'Ошибка воздушного давления', 'alias' => 'error_flow_press', 'comment' => 'Ошибка воздушного давления'],
+            ['name' => 'Ошибка по газу/пламени', 'alias' => 'error_flame', 'comment' => 'Ошибка по газу/пламени'],
+            ['name' => 'Ошибка внешнего управления', 'alias' => 'error_lock_control', 'comment' => 'Блокировка внешнего управления'],
+            ['name' => 'Ошибка давления теплоносителя', 'alias' => 'error_low_water', 'comment' => 'Низкое давления теплоносителя'],
+            ['name' => 'Ошибка по обслуживанию', 'alias' => 'error_need_service', 'comment' => 'Необходимо внешнее обслуживание'],
+            ['name' => 'Ошибка по температуре', 'alias' => 'error_max_temp', 'comment' => 'Превышение максимальной температуры теплоносителя'],
+        ];
     }
 }

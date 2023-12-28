@@ -26,31 +26,29 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::model($boiler, ['route' => ['boiler.update', $boiler->id_object], 'id' => 'boiler_form',
-                        'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
-                    {{ csrf_field() }}
-                    <div class="form-body">
-                        {{ Form::bs_alert() }}
-
-                        <ul class="nav nav-tabs customtab" role="tablist">
-                            <li class="nav-item"> <a class="nav-link active"  data-toggle="tab" href="#boilertab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
-                            <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#boilertab2"  role="tab"><span class="hidden-sm-up"><i class="ti-command"></i></span> <span class="hidden-xs-down">Режим управления</span></a> </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane p-20 active" id="boilertab1" role="tabpanel">
-                                @include('engineering/boiler/edit_tabs/main')
-                            </div>
-                            <div class="tab-pane p-20" id="boilertab2" role="tabpanel">
-                                @include('engineering/boiler/edit_tabs/control_mode')
+                    {!! Form::model($boiler, ['route' => ['boiler.update', $boiler->id_object], 'id' => 'boiler_form', 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
+                        {{ csrf_field() }}
+                        <div class="form-body">
+                            {{ Form::bs_alert() }}
+                            <ul class="nav nav-tabs customtab" role="tablist">
+                                <li class="nav-item"> <a class="nav-link active"  data-toggle="tab" href="#boilertab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
+                                <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#boilertab2"  role="tab"><span class="hidden-sm-up"><i class="ti-command"></i></span> <span class="hidden-xs-down">Режим управления</span></a> </li>
+                                <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#boilertab3"  role="tab"><span class="hidden-sm-up"><i class="ti-command"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane p-20 active" id="boilertab1" role="tabpanel">
+                                    @include('engineering/boiler/edit_tabs/main')
+                                </div>
+                                <div class="tab-pane p-20" id="boilertab2" role="tabpanel">
+                                    @include('engineering/boiler/edit_tabs/control_mode')
+                                </div>
+                                <div class="tab-pane p-20" id="boilertab3" role="tabpanel" style="width: 1000px;">
+                                    @include('engineering.boiler.edit_tabs.methods')
+                                </div>
                             </div>
                         </div>
 
-                    </div>
-
-
-                    {{ Form::bs_submit_btn() }}
-
-
+                        {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
                 </div>
                 <div style="height: 200px;">&nbsp;</div>
@@ -61,21 +59,20 @@
             </div>
         </div>
     </div>
-{{--
     @include('objects.message_modal')
-    @include('objects.method_modal')
 
     @include('components.info_modal')
     @include('components.del_modal')
-    @include('components.create_object_modal', compact('object_types'))
---}}
 @endsection
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script>
         const url_delete_boiler_auto = '{{ route('ajax.boiler.auto.delete') }}';
+        const url_mod_bus_slavers_registers = '{{ route('ajax.mod_bus.slavers.registers') }}';
         let is_added = 0;
+        let methodsIdWithRegisters = {!! json_encode($methodsIdWithRegisters) !!};
 
         function deleteBoilerAuto(boilerAutoId) {
             $.ajax({
@@ -89,6 +86,20 @@
                     }
                 }
             });
+        }
+
+        function createRegisterSelect(target, options, selected) {
+            let sel = $(target);
+            sel.html('');
+            let s = '<option value="">Не выбрано</option>';
+
+            $.each(options, function(key, value) {
+                if (selected == key)
+                    s += '<option selected value="' + key + '">' + value + '</option>';
+                else
+                    s += '<option value="' + key + '">' + value + '</option>';
+            });
+            sel.append(s);
         }
 
         if ('{{ $boiler->mode }}' == 'manual') {
@@ -116,6 +127,38 @@
 
         $(document).ready(function () {
             $("#auto_sel_id_outside_thermostat").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_gateway_id").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            if ('{{ $boiler->gateway_type ==  \App\Models\Boiler::GATEWAY_MODBUS }}') {
+                var promises = Object.entries(methodsIdWithRegisters).map(function ([methodId, registerId]) {
+                    $("#auto_sel_slaver_id_" + methodId).chosen({width:"100%", no_results_text: "Не найдено"});
+                    return $.ajax({
+                        url: url_mod_bus_slavers_registers,
+                        data: {'slaver_id': $("#auto_sel_slaver_id_" + methodId).chosen().val()},
+                        success: function (data) {
+                            createRegisterSelect('#auto_sel_register_id_' + methodId, data, registerId);
+                            $('#auto_sel_register_id_' + methodId).trigger("chosen:updated");
+                        }
+                    });
+                });
+
+                $.when.apply($, promises).then(function () {
+                    $.each(methodsIdWithRegisters, function(methodId, registerId) {
+                        $("#auto_sel_register_id_" + methodId).chosen({width:"100%", no_results_text: "Не найдено"});
+
+                        $("#auto_sel_slaver_id_" + methodId).chosen().change(function() {
+                            $.ajax({
+                                url: url_mod_bus_slavers_registers,
+                                data: {'slaver_id': $(this).val()},
+                                success: function (data) {
+                                    createRegisterSelect('#auto_sel_register_id_' + methodId, data, registerId);
+                                    $('#auto_sel_register_id_' + methodId).trigger("chosen:updated");
+                                }
+                            });
+                        });
+                    });
+                });
+            }
 
             $('#boiler_form input[name=mode]').change(function() {
                 var options = $('#boiler_form input[name=mode]');

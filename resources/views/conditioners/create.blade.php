@@ -112,7 +112,6 @@
                 }
                 sel.append(s);
             }
-
         });
     </script>
 @endsection

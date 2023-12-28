@@ -106,6 +106,18 @@ class Method extends Model
         return $this->is_need_param;
     }
 
+    public function getRegisterAttribute()
+    {
+        $easyParams = explode(':', $this->easy);
+        $register = null;
+
+        if (array_key_exists(0, $easyParams) && $easyParams[0] == 'm') {
+            $register = ModbusRegister::find(array_key_exists(1, $easyParams) ? $easyParams[1] : null);
+        }
+
+        return $register;
+    }
+
     /* relations */
 
     public function escript()

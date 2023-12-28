@@ -55,6 +55,8 @@ class SchedulerPoint extends Model
 
     public $timestamps = false;
 
+    protected $guarded = ['id'];
+
     protected $casts = ['close' => 'integer', 'system' => 'integer'];
 
     public static function isInCronPeriods(int $period)

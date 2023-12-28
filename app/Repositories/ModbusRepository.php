@@ -62,4 +62,12 @@ class ModbusRepository
     {
         return ModbusRegister::paginate($elementsPerPage);
     }
+
+    public function getRegistersBySlaverToArray(int $slaverId)
+    {
+        return ModbusRegister::where('slaver_id', $slaverId)
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray();
+    }
 }

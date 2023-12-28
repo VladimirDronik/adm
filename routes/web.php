@@ -105,6 +105,7 @@ Route::group(['middleware' => ['auth']], function () {
             });
             Route::group(['prefix' => 'slavers', 'as' => 'slavers.'], function () {
                 Route::post('delete', 'ModbusSlaverController@delete')->name('delete');
+                Route::post('registers', 'ModbusSlaverController@getRegisters')->name('registers');
             });
             Route::group(['prefix' => 'registers', 'as' => 'registers.'], function () {
                 Route::post('delete', 'ModbusRegisterController@delete')->name('delete');

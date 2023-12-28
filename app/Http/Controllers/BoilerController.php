@@ -12,6 +12,9 @@ use App\Http\Requests\Boiler\CreateRequest;
 use App\Http\Requests\Boiler\UpdateRequest;
 use App\Models\Boiler;
 use App\Repositories\BoilerRepository;
+use App\Repositories\DeviceRepository;
+use App\Repositories\ModbusRepository;
+use App\Repositories\ScriptRepository;
 use App\Repositories\TermostatRepository;
 use App\Services\BoilerService;
 
@@ -20,7 +23,10 @@ class BoilerController extends Controller
     public function __construct(
         private BoilerRepository $boilerRepository,
         private BoilerService $service,
-        private TermostatRepository $termostatRepository
+        private TermostatRepository $termostatRepository,
+        private ModbusRepository $modbusRepository,
+        private DeviceRepository $deviceRepository,
+        private ScriptRepository $scriptRepository,
     ) {
     }
 
@@ -28,8 +34,21 @@ class BoilerController extends Controller
     {
         $boiler = $this->boilerRepository->getBoiler($boilerIdObject);
         $termostats = $this->termostatRepository->getAllWithIdObjectToArray();
+        $modbusSlavers = null;
+        $devices = null;
+        $methodsIdWithRegisters = [];
 
-        return view('engineering.boiler.edit', compact('boiler', 'termostats'));
+        if ($boiler->gateway_type == Boiler::GATEWAY_MODBUS) {
+            $modbusSlavers = $this->modbusRepository->getAllSlaversToArray();
+
+            foreach ($boiler->object->methods as $method) {
+                $methodsIdWithRegisters[$method->id] = $method->register ? $method->register->id : 0;
+            }
+        } else {
+            $devices = $this->deviceRepository->getAllToArray();
+        }
+
+        return view('engineering.boiler.edit', compact('boiler', 'termostats', 'modbusSlavers', 'devices', 'methodsIdWithRegisters'));
     }
 
     public function update(UpdateRequest $r, int $idObject)
@@ -68,7 +87,10 @@ class BoilerController extends Controller
     {
         $typesBoiler = Boiler::getTypes();
         $termostats = $this->termostatRepository->getAllWithIdObjectToArray();
+        $modbusSlavers = $this->modbusRepository->getAllSlaversToArray();
+        $devices = $this->deviceRepository->getAllToArray();
+        $gatewayTypes = Boiler::getGatewayTypes();
 
-        return view('engineering.boiler.create', compact('typesBoiler', 'termostats'));
+        return view('engineering.boiler.create', compact('typesBoiler', 'termostats', 'modbusSlavers', 'devices', 'gatewayTypes'));
     }
 }

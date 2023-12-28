@@ -14,28 +14,20 @@ use Illuminate\Database\Eloquent\Model;
 class Boiler extends Model
 {
     const PROP_CSUPPLY = 'csupply';
-
     const PROP_CRETURN = 'creturn';
-
     const PROP_STATE = 'state';
-
     const PROP_AUTOMODE = 'auto';
-
     const PROP_MANUALMODE = 'manual';
-
     const PROP_HEAT_TEMP = 'heat_temp';
-
     const PROP_WATER_TEMP = 'water_temp';
-
     const PROP_BURNER = 'burner';
-
     const PROP_BURNER_GVS = 'burnerGVS';
-
     const PROP_MODULATION = 'modulation';
-
     const PROP_PUMP = 'pump';
-
     const PROP_PRESSURE = 'pressure';
+
+    const GATEWAY_HTTP = 'http';
+    const GATEWAY_MODBUS = 'modbus';
 
     const DEFAULT_GVS_TEMP = 45;
 
@@ -53,6 +45,14 @@ class Boiler extends Model
         ];
 
         return $is_full ? $types : array_keys($types);
+    }
+
+    public static function getGatewayTypes()
+    {
+        return [
+            static::GATEWAY_MODBUS => 'modbus',
+            static::GATEWAY_HTTP => 'http',
+        ];
     }
 
     public static function getProperties()
