@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Lamp extends Model
 {
     const TYPE_LAMP = 'lamp';
-
     const TYPE_DIMER = 'dimer';
 
     protected $table = 'lamps';

@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Boiler\CreateRequest;
 use App\Http\Requests\Boiler\UpdateRequest;
 use App\Models\Boiler;
+use App\Models\HomeObject;
 use App\Repositories\BoilerRepository;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ModbusRepository;
@@ -38,7 +39,7 @@ class BoilerController extends Controller
         $devices = null;
         $methodsIdWithRegisters = [];
 
-        if ($boiler->gateway_type == Boiler::GATEWAY_MODBUS) {
+        if ($boiler->gateway_type == HomeObject::GATEWAY_MODBUS) {
             $modbusSlavers = $this->modbusRepository->getAllSlaversToArray();
 
             foreach ($boiler->object->methods as $method) {
@@ -89,7 +90,7 @@ class BoilerController extends Controller
         $termostats = $this->termostatRepository->getAllWithIdObjectToArray();
         $modbusSlavers = $this->modbusRepository->getAllSlaversToArray();
         $devices = $this->deviceRepository->getAllToArray();
-        $gatewayTypes = Boiler::getGatewayTypes();
+        $gatewayTypes = HomeObject::getGatewayTypes();
 
         return view('engineering.boiler.create', compact('typesBoiler', 'termostats', 'modbusSlavers', 'devices', 'gatewayTypes'));
     }

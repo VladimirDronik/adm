@@ -129,7 +129,7 @@
             $("#auto_sel_id_outside_thermostat").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_gateway_id").chosen({width:"100%", no_results_text: "Не найдено"});
 
-            if ('{{ $boiler->gateway_type ==  \App\Models\Boiler::GATEWAY_MODBUS }}') {
+            if ('{{ $boiler->gateway_type ==  \App\Models\HomeObject::GATEWAY_MODBUS }}') {
                 var promises = Object.entries(methodsIdWithRegisters).map(function ([methodId, registerId]) {
                     $("#auto_sel_slaver_id_" + methodId).chosen({width:"100%", no_results_text: "Не найдено"});
                     return $.ajax({

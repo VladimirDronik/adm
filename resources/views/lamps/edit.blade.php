@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование реле № '. $lamp->object['id'] . ' «' . $lamp->name .'»',
+       ['title' => 'Редактирование лампы № '. $lamp->object['id'] . ' «' . $lamp->name .'»',
         'links' => [ route('lamps.index') => 'Лампы'],
         'last_link' => 'Редактирование лампы'])
 @endsection
@@ -17,7 +17,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('lamps.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок ламп</a>
+                        <a href="{{ route('lamps.index') }}" class="btn btn-success m-b-10 m-l-5">Список ламп</a>
                         <a href="{{ route('lamps.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить лампу</a>
                     </div>
                 </div>
@@ -50,8 +50,8 @@
                                 @include('lamps/edit_tabs/events')
                                 @include('objects.events', ['object' => $lamp->object])
                             </div>
-                            <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
-                                @include('lamps.edit_tabs.methods', ['object' => $lamp->object, 'systemMethods' => $systemMethods])
+                            <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel" style="width: 1000px;">
+                                @include('lamps.edit_tabs.methods', ['systemMethods' => $systemMethods])
                             </div>
                             <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
                                 @include('objects.sheduler', ['object' => $lamp->object])
@@ -59,13 +59,7 @@
                         </div>
                         <input type="hidden" id="tabs-sel" value="{{ $tab }}">
                         <input type="hidden" id="event_idobject" name="event_idobject" value="{{ $lamp->iobject['id'] }}">
-
-
-
-
                     {{ Form::bs_submit_btn() }}
-
-
                     {!! Form::close() !!}
                 </div>
                 <div style="height: 200px;">&nbsp;</div>
@@ -82,13 +76,11 @@
 
     @include('components.info_modal')
     @include('components.del_modal')
-    @include('components.create_object_modal', compact('object_types'))
 @endsection
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/lamp.js') }}"></script>
-    <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/events.js') }}"></script>
@@ -100,11 +92,41 @@
         const store_message_url = '{{ route('ajax.messages.store') }}';
         const del_url = '{{ route('ajax.methods.delete') }}';
         const del_message_url = '{{ route('ajax.messages.delete') }}';
-        const sub_data_url = '{{ route('ajax.load.data') }}';
         const object_id = '{{ optional($lamp->object)->id }}';
-        const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
-        const url_device = '{{ route('ajax.devices.type_controller') }}';
+        const url_mod_bus_slavers_registers = '{{ route('ajax.mod_bus.slavers.registers') }}';
+        let methodsIdWithRegisters = {!! json_encode($methodsIdWithRegisters) !!};
         let del_id;
+
+        $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
+        $("#auto_sel_register_id").chosen({width:"100%", no_results_text: "Не найдено"});
+        $("#auto_sel_gateway_id").chosen({width:"100%", no_results_text: "Не найдено"});
+
+        function createRegisterSelect(target, options, selected) {
+            let sel = $(target);
+            sel.html('');
+            let s = '<option value="">Не выбрано</option>';
+
+            $.each(options, function(key, value) {
+                if (selected == key)
+                    s += '<option selected value="' + key + '">' + value + '</option>';
+                else
+                    s += '<option value="' + key + '">' + value + '</option>';
+            });
+            sel.append(s);
+        }
+
+        function createPortSelect(target, options, selected) {
+            let sel = $(target);
+            sel.html('');
+            let s = '';
+            for (let i = 0; i < options.length; i++) {
+                if (selected == options[i].id)
+                    s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
+                else
+                    s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
+            }
+            sel.append(s);
+        }
 
         if ($('#lamp_form input[name=is_dimer]').is(':checked')) {
             $('#dimer_fields_div').removeAttr("hidden");
@@ -116,17 +138,88 @@
             $('#lamp_form input[name=speed]').attr("disabled", true);
         }
 
-        $(document).ready(function () {
+        if ('{{ $lamp->gateway_type ==  \App\Models\HomeObject::GATEWAY_MODBUS }}') {
+            let slaver_id = $("#auto_sel_gateway_id").chosen().val();
+            $.ajax({
+                url: url_mod_bus_slavers_registers,
+                data: {'slaver_id': slaver_id},
+                success: function (data) {
+                    createRegisterSelect('#auto_sel_register_id', data, 0);
+                    $('#auto_sel_register_id').trigger("chosen:updated");
+                }
+            });
+        } else {
+            let device_id = $("#auto_sel_gateway_id").chosen().val();
+            $.ajax({
+                url: url_ports,
+                data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'switch, socket'},
+                success: function (data) {
+                    createPortSelect('#auto_sel_port_id', data.ports, '{{ $currentPort ? $currentPort->id : 0 }}');
+                    $('#auto_sel_port_id').trigger("chosen:updated");
+                }
+            });
+        }
 
+        $(document).ready(function () {
             $('#del_modal_btn').click(clickDelBtn);
 
             initLampForm();
             initActionModal();
             serviceInit();
 
-            $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_hitepro_devices").chosen({width:"100%", no_results_text: "Не найдено"});
+            if ('{{ $lamp->gateway_type ==  \App\Models\HomeObject::GATEWAY_MODBUS }}') {
+                $("#auto_sel_gateway_id").chosen().change(function() {
+                    $.ajax({
+                        url: url_mod_bus_slavers_registers,
+                        data: {'slaver_id': $(this).val()},
+                        success: function (data) {
+                            createRegisterSelect('#auto_sel_register_id', data, 0);
+                            $('#auto_sel_register_id').trigger("chosen:updated");
+                        }
+                    });
+                });
+
+                var promises = Object.entries(methodsIdWithRegisters).map(function ([methodId, registerId]) {
+                    $("#auto_sel_slaver_id_" + methodId).chosen({width:"100%", no_results_text: "Не найдено"});
+                    return $.ajax({
+                        url: url_mod_bus_slavers_registers,
+                        data: {'slaver_id': $("#auto_sel_slaver_id_" + methodId).chosen().val()},
+                        success: function (data) {
+                            createRegisterSelect('#auto_sel_register_id_' + methodId, data, registerId);
+                            $('#auto_sel_register_id_' + methodId).trigger("chosen:updated");
+                        }
+                    });
+                });
+
+                $.when.apply($, promises).then(function () {
+                    $.each(methodsIdWithRegisters, function(methodId, registerId) {
+                        $("#auto_sel_register_id_" + methodId).chosen({width:"100%", no_results_text: "Не найдено"});
+
+                        $("#auto_sel_slaver_id_" + methodId).chosen().change(function() {
+                            $.ajax({
+                                url: url_mod_bus_slavers_registers,
+                                data: {'slaver_id': $(this).val()},
+                                success: function (data) {
+                                    createRegisterSelect('#auto_sel_register_id_' + methodId, data, registerId);
+                                    $('#auto_sel_register_id_' + methodId).trigger("chosen:updated");
+                                }
+                            });
+                        });
+                    });
+                });
+            } else {
+                $("#auto_sel_gateway_id").chosen().change(function() {
+                    let device_id = $(this).val();
+                    $.ajax({
+                        url: url_ports,
+                        data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'switch, socket'},
+                        success: function (data) {
+                            createPortSelect('#auto_sel_port_id', data.ports, 0);
+                            $('#auto_sel_port_id').trigger("chosen:updated");
+                        }
+                    });
+                });
+            }
 
             $('#lamp_form input[name=is_dimer]').change(function() {
                 if ($('#lamp_form input[name=is_dimer]').is(':checked')) {
@@ -139,79 +232,6 @@
                     $('#lamp_form input[name=speed]').attr("disabled", true);
                 }
             });
-
-            $("#auto_sel_device_id").chosen().change(function() {
-                let object_id = $(this).val();
-
-                $.ajax({
-                    url: url_ports,
-                    data: {'_token': _token, 'device_id': object_id, 'status': 'OUT', 'type': 'switch, socket'},
-                    success: function (data) {
-                        methods = data.ports;
-                        if (data.type_device == 'Hite-pro') {
-                            $('#port_id_div').hide();
-                            $('#hitepro_devices_div').show();
-                            createPortSelect('#auto_sel_hitepro_devices', data.hiteProDevices, -1);
-                            $('#auto_sel_hitepro_devices').trigger("chosen:updated");
-                            $('#place').val('Hite-pro');
-                        }
-                        else {
-                            $('#port_id_div').show();
-                            $('#hitepro_devices_div').hide();
-                            createPortSelect('#auto_sel_port_id', data.ports, -1);
-                            $('#auto_sel_port_id').trigger("chosen:updated");
-                            $('#place').val('port');
-                        }
-                    }
-                });
-            });
-
-            $('#auto_sel_btn_id_object').click(function() {
-                clearCreateObjectModal();
-                $('#create_object_modal_init_btn').click();
-                return false;
-            });
-
-            $('#create_object_modal_btn').click(function() {
-                let message = validateCreateObject();
-                if (message !== '') {
-                    showCreateObjectError(message);
-                    return false;
-                }
-
-                storeObject();
-            });
-
-
-            function storeObject() {
-                const name = $("#create_object_modal input[name=object_name]").val().trim();
-                const type = $("#create_object_modal input[name=object_type]:checked").val().trim();
-
-                $.ajax({
-                    url: storeObjectUrl,
-                    data: {'_token': _token, 'name': name, 'type': type},
-                    success: function (data) {
-                        if (data.result) {
-                            hideCreateObjectError();
-                            updateObjectSelects(data.objects, data.id);
-                            $('#create_object_cancel_btn').click();
-                        } else {
-                            showCreateObjectError(data.message);
-                        }
-                    },
-                    error: function () {
-                        showCreateObjectError('Сервер временно недоступен');
-                    }
-                });
-            }
-
-            function updateObjectSelects(objects, selected) {
-                const id = $('#auto_sel_id_object').val();
-                if (id) {
-                    selected = id;
-                }
-                createObjectSelect('#auto_sel_id_object', objects, selected);
-            }
 
             //messages
             $('#apply_message_btn').click(clickApplyMessageBtn);
@@ -250,18 +270,5 @@
 
 
         });
-
-        function createPortSelect(target, options, selected) {
-            let sel = $(target);
-            sel.html('');
-            let s = '<option value="null">Не выбрано</option>';
-            for (let i = 0; i < options.length; i++) {
-                if (selected == options[i].id)
-                    s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
-                else
-                    s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
-            }
-            sel.append(s);
-        }
     </script>
 @endsection

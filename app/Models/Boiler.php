@@ -26,9 +26,6 @@ class Boiler extends Model
     const PROP_PUMP = 'pump';
     const PROP_PRESSURE = 'pressure';
 
-    const GATEWAY_HTTP = 'http';
-    const GATEWAY_MODBUS = 'modbus';
-
     const DEFAULT_GVS_TEMP = 45;
 
     protected $table = 'boiler';
@@ -45,14 +42,6 @@ class Boiler extends Model
         ];
 
         return $is_full ? $types : array_keys($types);
-    }
-
-    public static function getGatewayTypes()
-    {
-        return [
-            static::GATEWAY_MODBUS => 'modbus',
-            static::GATEWAY_HTTP => 'http',
-        ];
     }
 
     public static function getProperties()

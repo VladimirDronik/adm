@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Boiler;
 
-use App\Models\Boiler;
+use App\Models\HomeObject;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateRequest extends FormRequest
@@ -27,10 +27,10 @@ class CreateRequest extends FormRequest
         ];
 
         switch ($this->request->get('gateway_type')) {
-            case Boiler::GATEWAY_HTTP:
+            case HomeObject::GATEWAY_HTTP:
                 $rules['http_gateway_id'] = 'required|integer|exists:App\Models\Device,id';
                 break;
-            case Boiler::GATEWAY_MODBUS:
+            case HomeObject::GATEWAY_MODBUS:
                 $rules['modbus_gateway_id'] = 'required|integer|exists:App\Models\ModbusSlaver,id';
                 break;
         }

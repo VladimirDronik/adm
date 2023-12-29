@@ -152,7 +152,7 @@ class PortRepository
      */
     public function getNumPortByID($idPort)
     {
-        if (! is_null($idPort) && $idPort != 'null') {
+        if ($idPort && $idPort != 'null') {
             return Port::where('id', $idPort)->first()->num_port;
         } else {
             return null;

@@ -25,7 +25,6 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'id_object' => 'nullable|integer|min:1',
             'value' => 'nullable|integer|max:127',
             'speed' => 'nullable|integer|min:0|max:127',
         ];

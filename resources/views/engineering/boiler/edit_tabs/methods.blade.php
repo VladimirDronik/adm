@@ -7,7 +7,7 @@
         @endcan
         <label class="col-md-3"><i>Название метода</i></label>
         <div class="col-md-4 text-left"><i>Комментарий</i></div>
-        @if($boiler->gateway_type == \App\Models\Boiler::GATEWAY_MODBUS)
+        @if($boiler->gateway_type == \App\Models\HomeObject::GATEWAY_MODBUS)
             <div class="col-md-2 text-left"><i>Устройство</i></div>
             <div class="col-md-2 text-left"><i>Значение</i></div>
         @endif
@@ -30,7 +30,7 @@
                     <div class="col-md-4">
                         {{ $method->comment }}
                     </div>
-                    @if($boiler->gateway_type == \App\Models\Boiler::GATEWAY_MODBUS)
+                    @if($boiler->gateway_type == \App\Models\HomeObject::GATEWAY_MODBUS)
                         <div class="col-md-2">
                             <select autocomplete="off" id="{{ 'auto_sel_slaver_id_'.$method->id }}" required data-placeholder="не выбрано" name="{{ 'slaver_id_'.$method->id }}" class="chosen-select form-control">
                                 @foreach ($modbusSlavers as $id => $name)

@@ -33,11 +33,20 @@ use Illuminate\Support\Facades\DB;
  */
 class HomeObject extends Model
 {
+    const GATEWAY_HTTP = 'http';
+    const GATEWAY_MODBUS = 'modbus';
+
     protected $table = 'objects';
-
     public $timestamps = false;
-
     protected $guarded = ['id'];
+
+    public static function getGatewayTypes(): array
+    {
+        return [
+            static::GATEWAY_MODBUS => 'modbus',
+            static::GATEWAY_HTTP => 'http',
+        ];
+    }
 
     public static function getFullTypeIds()
     {

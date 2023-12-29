@@ -43,7 +43,7 @@ class BoilerService
             $boiler->mode = $data['mode'];
             $boiler->gateway_id = $data['gateway_id'];
 
-            if ($boiler->gateway_type == Boiler::GATEWAY_MODBUS) {
+            if ($boiler->gateway_type == HomeObject::GATEWAY_MODBUS) {
                 $this->boilerObjectService
                     ->updateMethodsEasyFieldsMethodsForModbus($boiler->object, $data);
             }
@@ -103,10 +103,10 @@ class BoilerService
         $boiler->gateway_type = $data['gateway_type'];
 
         switch ($boiler->gateway_type) {
-            case Boiler::GATEWAY_MODBUS:
+            case HomeObject::GATEWAY_MODBUS:
                 $boiler->gateway_id = $data['modbus_gateway_id'];
                 break;
-            case Boiler::GATEWAY_HTTP:
+            case HomeObject::GATEWAY_HTTP:
                 $boiler->gateway_id = $data['http_gateway_id'];
                 break;
         }
@@ -120,7 +120,7 @@ class BoilerService
             $object = $this->boilerObjectService->createBoilerObject($uniqueName);
 
             $this->boilerObjectService
-                ->createMethodsAndEvents($object->id, $boiler->gateway_type == Boiler::GATEWAY_MODBUS ? $boiler->gateway_id : null);
+                ->createMethodsAndEvents($object->id, $boiler->gateway_type == HomeObject::GATEWAY_MODBUS ? $boiler->gateway_id : null);
 
             $boiler->id_object = $object->id;
 

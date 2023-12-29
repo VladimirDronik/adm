@@ -108,7 +108,7 @@ class Method extends Model
 
     public function getRegisterAttribute()
     {
-        $easyParams = explode(':', $this->easy);
+        $easyParams = explode(';', $this->easy);
         $register = null;
 
         if (array_key_exists(0, $easyParams) && $easyParams[0] == 'm') {

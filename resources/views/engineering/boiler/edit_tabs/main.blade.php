@@ -4,7 +4,7 @@
 
 {{ Form::bs_simple_text('Тип подключения:', $boiler->gateway_type) }}
 
-@if($boiler->gateway_type == \App\Models\Boiler::GATEWAY_HTTP)
+@if($boiler->gateway_type == \App\Models\HomeObject::GATEWAY_HTTP)
     {{ Form::bs_autoselect('gateway_id', 'Контроллер*:', $devices, old('gateway_id', $boiler->gateway_id), false, false, ['required' => true], null, null, 3, false, true) }}
 @else
     {{ Form::bs_autoselect('gateway_id', 'Устройство*:', $modbusSlavers, old('gateway_id', $boiler->gateway_id), false, false, ['required' => true], null, null, 3, false, true) }}

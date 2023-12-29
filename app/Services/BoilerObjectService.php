@@ -74,7 +74,7 @@ class BoilerObjectService
             'comment' => 'Периодическая проверка текущих значений котла отопления',
             'is_system' => 1,
             'script' => $checkBoilerScript->id,
-            'easy' => $checkBoilerRegister ? 'm:' . $checkBoilerRegister->id : null,
+            'easy' => $checkBoilerRegister ? 'm;' . $checkBoilerRegister->id : null,
         ]);
 
         $schedulerTask = SchedulerTask::create([
@@ -107,7 +107,7 @@ class BoilerObjectService
                     'id_object' => $objectId,
                     'comment' => $systemMethod['comment'],
                     'is_system' => 1,
-                    'easy' => $suitableRegister ? 'm:' . $suitableRegister->id : null,
+                    'easy' => $suitableRegister ? 'm;' . $suitableRegister->id : null,
                 ]);
             }
         } else {
@@ -132,7 +132,7 @@ class BoilerObjectService
             foreach ($boilerObject->methods as $method) {
                 $method->update([
                     'easy' => array_key_exists('register_id_' . $method->id, $data) && $data['register_id_' . $method->id]
-                        ? 'm:' . $data['register_id_' . $method->id]
+                        ? 'm;' . $data['register_id_' . $method->id]
                         : null,
                 ]);
             }
