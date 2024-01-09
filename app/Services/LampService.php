@@ -29,6 +29,7 @@ class LampService
 
         $lamp->name = trim($data['name']);
         $lamp->gateway_type = $data['gateway_type'];
+        $lamp->type = Lamp::TYPE_LAMP;
 
         DB::transaction(function () use (&$lamp, $data) {
             $uniqueName = HomeObject::getUniqueObjectName(0, $lamp->name);
