@@ -91,7 +91,7 @@
                         </table>
                     </div>
                     <br>
-                    {{ $registers->links() }}
+                    {{ $registers->appends(['slaver' => request()->input('slaver')])->links() }}
                     <p class="text-right">Найдено: {{ $registers->total() }}</p>
                 @else
                     <p>Данные не найдены</p>
