@@ -128,12 +128,12 @@
             sel.append(s);
         }
 
-        if ($('#lamp_form input[name=is_dimer]').is(':checked')) {
-            $('#dimer_fields_div').removeAttr("hidden");
+        if ($('#lamp_form input[name=is_dimmer]').is(':checked')) {
+            $('#dimmer_fields_div').removeAttr("hidden");
             $('#lamp_form input[name=value]').removeAttr("disabled");
             $('#lamp_form input[name=speed]').removeAttr("disabled");
         } else {
-            $('#dimer_fields_div').attr("hidden", true);
+            $('#dimmer_fields_div').attr("hidden", true);
             $('#lamp_form input[name=value]').attr("disabled", true);
             $('#lamp_form input[name=speed]').attr("disabled", true);
         }
@@ -221,13 +221,13 @@
                 });
             }
 
-            $('#lamp_form input[name=is_dimer]').change(function() {
-                if ($('#lamp_form input[name=is_dimer]').is(':checked')) {
-                    $('#dimer_fields_div').removeAttr("hidden");
+            $('#lamp_form input[name=is_dimmer]').change(function() {
+                if ($('#lamp_form input[name=is_dimmer]').is(':checked')) {
+                    $('#dimmer_fields_div').removeAttr("hidden");
                     $('#lamp_form input[name=value]').removeAttr("disabled");
                     $('#lamp_form input[name=speed]').removeAttr("disabled");
                 } else {
-                    $('#dimer_fields_div').attr("hidden", true);
+                    $('#dimmer_fields_div').attr("hidden", true);
                     $('#lamp_form input[name=value]').attr("disabled", true);
                     $('#lamp_form input[name=speed]').attr("disabled", true);
                 }

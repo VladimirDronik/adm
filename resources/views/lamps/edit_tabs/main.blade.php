@@ -19,11 +19,11 @@
             <strong>Диммируется:</strong>
         </label>
         <div class="col-md-9 pt-2">
-            <input type="checkbox" name="is_dimer" @if($lamp->type == \App\Models\Lamp::TYPE_DIMER) checked @endif >
+            <input type="checkbox" name="is_dimmer" @if($lamp->type == \App\Models\Lamp::TYPE_DIMMER) checked @endif >
         </div>
     </div>
 
-    <div id='dimer_fields_div' hidden>
+    <div id='dimmer_fields_div' hidden>
         {{ Form::bs_number('value', 'Значение*:', old('value',  $lamp->value), ['required' => true, 'max' => 127]) }}
 
         {{ Form::bs_number('speed', 'Скорость*:', old('speed', $lamp->speed), ['required' => true, 'min' => 0, 'max' => 127]) }}
@@ -39,7 +39,7 @@
             <strong>Диммируется:</strong>
         </label>
         <div class="col-md-9 pt-2">
-            <input type="checkbox" name="is_dimer" @if($lamp->type == \App\Models\Lamp::TYPE_DIMER) checked @endif >
+            <input type="checkbox" name="is_dimmer" @if($lamp->type == \App\Models\Lamp::TYPE_DIMMER) checked @endif >
         </div>
     </div>
 @endif

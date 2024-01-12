@@ -122,7 +122,6 @@ class LampService
                     $lamp->object->id,
                     trim($data['name'])
                 );
-                $lamp->object->save();
             }
 
             $lamp->name = trim($data['name']);
@@ -130,8 +129,9 @@ class LampService
 
             switch ($lamp->gateway_type) {
                 case HomeObject::GATEWAY_MODBUS:
-                    if (array_key_exists('is_dimer', $data)) {
-                        $lamp->type = Lamp::TYPE_DIMER;
+                    if (array_key_exists('is_dimmer', $data)) {
+                        $lamp->type = Lamp::TYPE_DIMMER;
+                        $lamp->object->type = Lamp::TYPE_DIMMER;
 
                         if ($data['register_id']) {
                             $this->lampObjectService
@@ -142,6 +142,7 @@ class LampService
                         }
                     } else {
                         $lamp->type = Lamp::TYPE_LAMP;
+                        $lamp->object->type = Lamp::TYPE_LAMP;
 
                         if ($data['register_id']) {
                             $this->lampObjectService
@@ -155,12 +156,14 @@ class LampService
                 case HomeObject::GATEWAY_HTTP:
                     $numPort = $this->port_repository->getNumPortByID($data['port_id']);
 
-                    if (array_key_exists('is_dimer', $data)) {
-                        $lamp->type = Lamp::TYPE_DIMER;
+                    if (array_key_exists('is_dimmer', $data)) {
+                        $lamp->type = Lamp::TYPE_DIMMER;
+                        $lamp->object->type = Lamp::TYPE_DIMMER;
                         $lamp->value = $data['value'];
                         $lamp->speed = $data['speed'];
                     } else {
                         $lamp->type = Lamp::TYPE_LAMP;
+                        $lamp->object->type = Lamp::TYPE_LAMP;
                         $lamp->value = null;
                         $lamp->speed = null;
 
@@ -188,6 +191,7 @@ class LampService
                     break;
             }
 
+            $lamp->object->save();
             $lamp->save();
         });
 
