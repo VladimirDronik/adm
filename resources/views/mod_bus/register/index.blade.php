@@ -12,6 +12,19 @@
                     <div class="card-body">
                         <a href="{{ route('mod_bus.registers.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить регистр</a>
                         <a href="{{ route('mod_bus.registers.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
+                        <div class="pull-right col-sm-5">
+                            <form class="form-inline" method="get">
+                                <label class="control-label text-right col-md-3 label-fix" for="slaver">Устройство:</label>
+                                <select class="form-control form-control-lg" autocomplete="off" name="slaver" style="font-size: 1rem;">
+                                    <option value="" @if(!$filterSlaver) selected @endif>Не выбрано</option>
+                                    @foreach($slavers as $id => $name)
+                                        <option value="{{ $id }}" @if($filterSlaver == $id) selected @endif>{{ $name }}</option>
+                                    @endforeach
+                                </select>
+                                <button class="form-control btn btn-primary m-l-4 p-l-11 p-r-11 my-2 my-sm-0" type="submit">Найти</button>
+                                <a href="{{ route('mod_bus.registers.index') }}" class="form-control btn btn-default m-l-6 my-2 my-sm-0">Сбросить</a>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

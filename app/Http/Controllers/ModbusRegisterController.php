@@ -7,6 +7,7 @@ use App\Http\Requests\Modbus\Register\UpdateRequest;
 use App\Models\ModbusRegister;
 use App\Repositories\ModbusRepository;
 use App\Services\Modbus\RegisterService;
+use Illuminate\Http\Request;
 
 class ModbusRegisterController extends Controller
 {
@@ -16,11 +17,14 @@ class ModbusRegisterController extends Controller
     ) {
     }
 
-    public function index()
+    public function index(Request $r)
     {
-        $registers = $this->modbusRep->getAllRegisters();
+        $filterSlaver = $r->input('slaver');
 
-        return view('mod_bus.register.index', compact('registers'));
+        $slavers = $this->modbusRep->getSlaversWhereHasRegistersToArray();
+        $registers = $this->modbusRep->getAllRegisters($filterSlaver);
+
+        return view('mod_bus.register.index', compact('registers', 'slavers', 'filterSlaver'));
     }
 
     public function edit($id)

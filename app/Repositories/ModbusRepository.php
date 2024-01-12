@@ -42,6 +42,15 @@ class ModbusRepository
         return $slavers->paginate($elementsPerPage);
     }
 
+    public function getSlaversWhereHasRegistersToArray()
+    {
+        return ModbusSlaver::whereHas('registers')
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray();
+    }
+
     public function getAllSlaversToArray()
     {
         return ModbusSlaver::select('id', 'name')
@@ -58,9 +67,15 @@ class ModbusRepository
             ->toArray();
     }
 
-    public function getAllRegisters($elementsPerPage = 30)
+    public function getAllRegisters(int $slaver = null, $elementsPerPage = 30)
     {
-        return ModbusRegister::paginate($elementsPerPage);
+        $registers = ModbusRegister::query();
+
+        if ($slaver) {
+            $registers->where('slaver_id', $slaver);
+        }
+
+        return $registers->paginate($elementsPerPage);
     }
 
     public function getRegistersBySlaverToArray(int $slaverId)
