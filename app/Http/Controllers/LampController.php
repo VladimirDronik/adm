@@ -8,7 +8,6 @@ use App\Models\HomeObject;
 use App\Models\Lamp;
 use App\Models\Port;
 use App\Repositories\DeviceRepository;
-use App\Repositories\LampRepository;
 use App\Repositories\ModbusRepository;
 use App\Repositories\ObjectRepository;
 use App\Services\LampService;
@@ -18,20 +17,12 @@ use App\Services\Service;
 class LampController extends Controller
 {
     public function __construct(
-        private LampRepository $lamp_rep,
         private ObjectRepository $object_rep,
         private DeviceRepository $deviceRepository,
         private LampService $service,
         private PortService $portService,
         private ModbusRepository $modbusRepository,
     ) {
-    }
-
-    public function index()
-    {
-        $lamps = $this->lamp_rep->getAll();
-
-        return view('lamps.index', compact('lamps'));
     }
 
     public function create()

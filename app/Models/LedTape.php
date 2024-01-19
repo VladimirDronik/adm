@@ -53,4 +53,11 @@ class LedTape extends Model
 
         return ['h' => $this->h, 's' => $s, 'l' => $l];
     }
+
+    public function getRelatedDeviceAttribute(): ?Device
+    {
+        $port = Port::where('object', $this->id_object)->first();
+
+        return $port->device;
+    }
 }

@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\Lamp;
+use App\Models\LedTape;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+class IlluminationRepository
+{
+    public function getAll($perPage = 30)
+    {
+        $lamps = Lamp::get();
+        $ledTapes = LedTape::get();
+
+        $illuminations = $lamps->concat($ledTapes)->sortBy('id_object');
+
+        $currentPage = request()->get('page') ?: 1;
+
+        return new LengthAwarePaginator(
+            $illuminations->forPage($currentPage, $perPage)->all(),
+            $illuminations->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'pageName' => 'page']
+        );
+    }
+}

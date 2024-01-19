@@ -48,9 +48,9 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('lamps.index') }}">
+                                <a href="{{ route('illumination.index') }}">
                                     <i class="fa fa-lightbulb-o"></i>
-                                    Лампы (освещение)
+                                    Освещение
                                 </a>
                             </li>
                             <li>
@@ -93,12 +93,6 @@
                                 <a href="{{ route('yandexstations.index') }}">
                                     <i class="fa fa-podcast"></i>
                                     ЯндексСтанции
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('led_tapes.index') }}">
-                                    <i class="fa fa-lightbulb-o"></i>
-                                    Led ленты
                                 </a>
                             </li>
                         </ul>

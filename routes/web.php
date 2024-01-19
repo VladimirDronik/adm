@@ -36,12 +36,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('counts', 'CountController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('switches', 'SwitchController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('relays', 'RelayController')->except('show', 'destroy')->middleware('can:devices');
-    Route::resource('lamps', 'LampController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('lamps', 'LampController')->except('show', 'destroy', 'index')->middleware('can:devices');
     Route::resource('dimmers', 'DimmerController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('curtains', 'CurtainController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('locks', 'LockController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('conditioners', 'ConditionerController')->except('show', 'destroy')->middleware('can:devices');
-    Route::resource('led_tapes', 'LedTapeController')->except('show','destroy')->middleware('can:devices');
+    Route::resource('led_tapes', 'LedTapeController')->except('show','destroy', 'index')->middleware('can:devices');
+    Route::get('illumination', 'IlluminationController@index')->name('illumination.index')->middleware('can:devices');
 
     Route::group(['prefix' => 'mod_bus', 'as' => 'mod_bus.'], function () {
         Route::resource('buses', 'ModbusBusController')->except('show', 'destroy')->middleware('can:mod_bus');

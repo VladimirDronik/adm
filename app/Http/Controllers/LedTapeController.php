@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\LedTape;
 use App\Repositories\DeviceRepository;
-use App\Repositories\LedTapeRepository;
 use App\Services\DeviceService;
 use App\Services\LedTapeService;
 use App\Services\PortService;
@@ -12,32 +11,12 @@ use Illuminate\Http\Request;
 
 class LedTapeController extends Controller
 {
-    private $ledTapeRep;
-    private $service;
-    private $deviceRep;
-    private $portService;
-    private $deviceService;
-
     public function __construct(
-        LedTapeRepository $ledTapeRep,
-        LedTapeService $service,
-        DeviceRepository $deviceRep,
-        PortService $portService,
-        DeviceService $deviceService
-    )
-    {
-        $this->ledTapeRep = $ledTapeRep;
-        $this->service = $service;
-        $this->deviceRep = $deviceRep;
-        $this->portService = $portService;
-        $this->deviceService = $deviceService;
-    }
-
-    public function index()
-    {
-        $ledTapes = $this->ledTapeRep->getAll();
-
-        return view('led_tapes.index', compact('ledTapes'));
+        private LedTapeService $service,
+        private DeviceRepository $deviceRep,
+        private PortService $portService,
+        private DeviceService $deviceService
+    ) {
     }
 
     public function edit($id)

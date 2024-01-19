@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-        ['title' => 'Добавление led ленты', 'links' => [ route('led_tapes.index') => 'Led ленты']])
+        ['title' => 'Добавление led ленты', 'links' => [ route('illumination.index') => 'Список устройств освещения']])
 @endsection
 
 @section('content')
@@ -15,7 +15,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('led_tapes.index') }}" class="btn btn-success m-b-10 m-l-5">Led ленты</a>
+                        <a href="{{ route('illumination.index') }}" class="btn btn-success m-b-10 m-l-5">Список устройств освещения</a>
                     </div>
                 </div>
             </div>

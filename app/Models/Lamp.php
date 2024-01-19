@@ -72,4 +72,25 @@ class Lamp extends Model
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
     }
+
+    public function getGatewayNameAttribute(): string
+    {
+        $name = '';
+
+        if ($this->gateway_type == HomeObject::GATEWAY_MODBUS) {
+            $slaver = ModbusSlaver::find($this->gateway_id);
+
+            if ($slaver) {
+                $name = $slaver->name;
+            }
+        } else {
+            $device = Device::find($this->gateway_id);
+
+            if ($device) {
+                $name = $device->description;
+            }
+        }
+
+        return $name;
+    }
 }

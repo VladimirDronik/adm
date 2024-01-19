@@ -7,7 +7,7 @@
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
        ['title' => 'Редактирование лампы № '. $lamp->object['id'] . ' «' . $lamp->name .'»',
-        'links' => [ route('lamps.index') => 'Лампы'],
+        'links' => [ route('illumination.index') => 'Список устройств освещения'],
         'last_link' => 'Редактирование лампы'])
 @endsection
 
@@ -17,7 +17,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('lamps.index') }}" class="btn btn-success m-b-10 m-l-5">Список ламп</a>
+                        <a href="{{ route('illumination.index') }}" class="btn btn-success m-b-10 m-l-5">Список устройств освещения</a>
                         <a href="{{ route('lamps.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить лампу</a>
                     </div>
                 </div>

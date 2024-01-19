@@ -7,7 +7,7 @@
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
         ['title' => 'Редактирование led ленты № '. $ledTape->object['id'] . ' «' . $ledTape->name .'»',
-        'links' => [ route('led_tapes.index') => 'Led ленты'],
+        'links' => [ route('illumination.index') => 'Список устройств освещения'],
         'last_link' => 'Редактирование led ленты'])
 @endsection
 
@@ -17,7 +17,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('led_tapes.index') }}" class="btn btn-success m-b-10 m-l-5">Список led лент</a>
+                        <a href="{{ route('illumination.index') }}" class="btn btn-success m-b-10 m-l-5">Список устройств освещения</a>
                         <a href="{{ route('led_tapes.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить led ленту</a>
                     </div>
                 </div>
