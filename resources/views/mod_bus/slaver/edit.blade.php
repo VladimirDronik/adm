@@ -39,6 +39,16 @@
                         {{ Form::bs_autoselect('bus', 'Шина*:', $buses, old('bus', $slaver->bus), false, false, ['required' => true], null, null, 3, false, true) }}
 
                         {{ Form::bs_number('address', 'Адрес*:', old('address', $slaver->address), ['min' => 1, 'max' => 247, 'required' => true]) }}
+
+                        @if($slaver->relatedType->type == 'ecodim-dali-gw2')
+                            <br><br>
+                            {{ Form::bs_title('Сеть DALI') }}
+
+                            <button type="button" class="btn btn-success m-b-10 m-l-5" @if(\App\Models\DaliDevice::exists()) id="networkAssemblyBtn" @else id="redirectToStartNetworkAssembly" @endif>Сборка сети</button>
+                            <button type="button" class="btn btn-success m-b-10 m-l-5" id="startNetworkExpansion">Расширение сети</button>
+
+                            <br><br><br><br>
+                        @endif
                     </div>
 
                     {{ Form::bs_submit_btn() }}
@@ -50,13 +60,54 @@
         </div>
     </div>
     @include('components.info_modal')
+    @include('mod_bus.slaver.modals.network_assembly')
 @endsection
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script>
+        let network_assembly_url = '{{ route('ajax.mod_bus.slavers.network_assembly') }}';
+        let network_expansion_url = '{{ route('ajax.mod_bus.slavers.network_expansion') }}';
+        let id = '{{ $slaver->id }}';
+
         $(document).ready(function () {
             $("#auto_sel_bus").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            $('#networkAssemblyBtn').click(function() {
+                $('#modal_network_assembly_init_btn').click();
+            });
+
+            $('#redirectToStartNetworkAssembly').click(function() {
+                $('#startNetworkAssembly').click();
+            });
+
+            $('#startNetworkAssembly').click(function() {
+                $.ajax({
+                    url: network_assembly_url,
+                    data: { '_token': _token, 'id': id },
+                    success: function (data) {
+                        if (data.result) {
+                            showSuccessModal('Сборка сети прошла успешно');
+                        } else {
+                            showErrorModal(data.message ?? 'Ошибка сборки сети');
+                        }
+                    }
+                });
+            });
+
+            $('#startNetworkExpansion').click(function() {
+                $.ajax({
+                    url: network_expansion_url,
+                    data: { '_token': _token, 'id': id },
+                    success: function (data) {
+                        if (data.result) {
+                            showSuccessModal('Расширение сети прошло успешно');
+                        } else {
+                            showErrorModal(data.message ?? 'Ошибка расширения сети');
+                        }
+                    }
+                });
+            });
         });
     </script>
 @endsection

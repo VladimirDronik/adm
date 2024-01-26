@@ -41,7 +41,7 @@
                                             {{ $illumination->id_object }}
                                         </td>
                                         <td>
-                                            {{ $illumination->object->type }}
+                                            {{ $illumination->object ? $illumination->object->type : '' }}
                                         </td>
                                         <td>
                                             {{ $illumination->name }}
@@ -84,12 +84,40 @@
                                                     <i class="fa fa-cog fa-lg"></i>
                                                 </a>
                                             </td>
+                                        @elseif($illumination instanceof \App\Models\DaliDevice)
+                                            <td>
+                                                {{ $illumination->name . ' (' . $illumination->address . ')' }}
+                                            </td>
+                                            <td>
+                                                {{ $illumination->relatedRoom->name }}
+                                            </td>
+                                            <td>
+                                                Неисправность: {{ $illumination->failure ? 'Да' : 'Нет' }}
+                                                <br>
+                                                Статус: {{ $illumination->object ? $illumination->object->status : '' }}
+                                                <br>
+                                                Яркость: {{ $illumination->brightness }}
+                                                @if($illumination->is_cct)
+                                                    <br>
+                                                    Цветовая температура: {{ $illumination->cct }}
+                                                @endif
+                                            </td>
+                                            <td align="center" class="text-center">
+                                                <a href="{{ route('mod_bus.dali_devices.edit', [$illumination->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                                    <i class="fa fa-cog fa-lg"></i>
+                                                </a>
+                                            </td>
                                         @endif
-                                        <td align="center" class="text-center">
-                                            <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn" data-id="{{ $illumination->id }}" data-id_object="{{ $illumination->id_object }}" data-name="{{ $illumination->name }}" data-type="{{ $illumination->object->type }}">
-                                                <i class="fa fa-trash fa-lg"></i>
-                                            </button>
-                                        </td>
+                                        @if(!($illumination instanceof \App\Models\DaliDevice))
+                                            <td align="center" class="text-center">
+                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn" data-id="{{ $illumination->id }}" data-id_object="{{ $illumination->id_object }}" data-name="{{ $illumination->name }}" data-type="{{ $illumination->object->type }}">
+                                                    <i class="fa fa-trash fa-lg"></i>
+                                                </button>
+                                            </td>
+                                        @else
+                                            <td align="center" class="text-center">
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::group(['prefix' => 'mod_bus', 'as' => 'mod_bus.'], function () {
         Route::resource('buses', 'ModbusBusController')->except('show', 'destroy')->middleware('can:mod_bus');
         Route::resource('slavers', 'ModbusSlaverController')->except('show', 'destroy')->middleware('can:mod_bus');
+        Route::resource('dali_devices', 'DaliDeviceController')->only('edit', 'update')->middleware('can:mod_bus');
         Route::resource('registers', 'ModbusRegisterController')->except('show', 'destroy')->middleware('can:mod_bus');
     });
 
@@ -107,6 +108,8 @@ Route::group(['middleware' => ['auth']], function () {
             Route::group(['prefix' => 'slavers', 'as' => 'slavers.'], function () {
                 Route::post('delete', 'ModbusSlaverController@delete')->name('delete');
                 Route::post('registers', 'ModbusSlaverController@getRegisters')->name('registers');
+                Route::post('network_assembly', 'ModbusSlaverController@networkAssembly')->name('network_assembly');
+                Route::post('network_expansion', 'ModbusSlaverController@networkExpansion')->name('network_expansion');
             });
             Route::group(['prefix' => 'registers', 'as' => 'registers.'], function () {
                 Route::post('delete', 'ModbusRegisterController@delete')->name('delete');

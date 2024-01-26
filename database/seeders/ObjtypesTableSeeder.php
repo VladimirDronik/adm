@@ -97,6 +97,10 @@ class ObjtypesTableSeeder extends Seeder
                 'name' => ObjType::TYPE_TAPE,
                 'label' => 'Led лента'
             ],
+            [
+                'name' => ObjType::TYPE_DALI,
+                'label' => 'Устройство DALI'
+            ],
         ];
     }
 

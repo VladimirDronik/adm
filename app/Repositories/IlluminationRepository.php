@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\DaliDevice;
 use App\Models\Lamp;
 use App\Models\LedTape;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -12,8 +13,9 @@ class IlluminationRepository
     {
         $lamps = Lamp::get();
         $ledTapes = LedTape::get();
+        $daliDevices = DaliDevice::get();
 
-        $illuminations = $lamps->concat($ledTapes)->sortBy('id_object');
+        $illuminations = $lamps->concat($ledTapes)->concat($daliDevices)->sortBy('id_object');
 
         $currentPage = request()->get('page') ?: 1;
 

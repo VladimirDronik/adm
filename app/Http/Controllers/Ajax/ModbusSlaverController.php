@@ -30,4 +30,28 @@ class ModbusSlaverController extends Controller
 
         return response()->json($registers);
     }
+
+    public function networkAssembly(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id']), 400);
+
+        $response = $this->service->networkAssembly((int)$r->id);
+
+        return response()->json([
+            'result' => $response['code'] == 0 ? true : false,
+            'message' => array_key_exists(0, $response['output']) ? $response['output'][0] : null,
+        ]);
+    }
+
+    public function networkExpansion(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id']), 400);
+
+        $response = $this->service->networkExpansion((int)$r->id);
+
+        return response()->json([
+            'result' => $response['code'] == 0 ? true : false,
+            'message' => array_key_exists(0, $response['output']) ? $response['output'][0] : null,
+        ]);
+    }
 }

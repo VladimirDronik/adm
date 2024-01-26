@@ -280,6 +280,35 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
+    /**
+     * Скрипты для устройств DALI
+     *
+     * @return array
+     */
+    public static function getDaliDeviceScripts(): array
+    {
+        return [
+            [
+                'name' => 'Выключить устройство DALI',
+                'link' => 'dali_off.php',
+                'count' => 0,
+                'system' => 1,
+            ],
+            [
+                'name' => 'Включить устройство DALI',
+                'link' => 'dali_on.php',
+                'count' => 0,
+                'system' => 1,
+            ],
+            [
+                'name' => 'Смена состояния устройства DALI',
+                'link' => 'dali_sw.php',
+                'count' => 0,
+                'system' => 1,
+            ],
+        ];
+    }
+
     private function getScripts(): array
     {
         $scripts = self::getDimmerScripts();
@@ -287,6 +316,7 @@ class ScriptsTableSeeder extends Seeder
         $scripts = array_merge($scripts, self::getCurtainScripts());
         $scripts = array_merge($scripts, self::getLockScripts());
         $scripts = array_merge($scripts, self::getYandexStationScripts());
+        $scripts = array_merge($scripts, self::getDaliDeviceScripts());
         $scripts[] = self::getResetGraphsScript();
         $scripts[] = self::getCheckCountScript();
         $scripts[] = self::getResetCountScript();
