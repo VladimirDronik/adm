@@ -60,11 +60,13 @@
         </div>
     </div>
     @include('components.info_modal')
+    @include('components.load_modal')
     @include('mod_bus.slaver.modals.network_assembly')
 @endsection
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('ela/js/jquery.bubble.text.js') }}"></script>
     <script>
         let network_assembly_url = '{{ route('ajax.mod_bus.slavers.network_assembly') }}';
         let network_expansion_url = '{{ route('ajax.mod_bus.slavers.network_expansion') }}';
@@ -72,6 +74,13 @@
 
         $(document).ready(function () {
             $("#auto_sel_bus").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            bubbleText({
+                element: $('#content1_modal_body'),
+                newText: 'Выполняется. Пожалуйста, подождите ...',
+                speed: 100,
+                repeat: Infinity,
+            });
 
             $('#networkAssemblyBtn').click(function() {
                 $('#modal_network_assembly_init_btn').click();
@@ -82,10 +91,14 @@
             });
 
             $('#startNetworkAssembly').click(function() {
+                $('#load_modal_body').text('Сборка сети');
+                $('#load_init_btn').click();
+
                 $.ajax({
                     url: network_assembly_url,
                     data: { '_token': _token, 'id': id },
                     success: function (data) {
+                        $('#dismiss_load_modal').click();
                         if (data.result) {
                             showSuccessModal('Сборка сети прошла успешно');
                         } else {
@@ -96,10 +109,14 @@
             });
 
             $('#startNetworkExpansion').click(function() {
+                $('#load_modal_body').text('Расширение сети');
+                $('#load_init_btn').click();
+
                 $.ajax({
                     url: network_expansion_url,
                     data: { '_token': _token, 'id': id },
                     success: function (data) {
+                        $('#dismiss_load_modal').click();
                         if (data.result) {
                             showSuccessModal('Расширение сети прошло успешно');
                         } else {

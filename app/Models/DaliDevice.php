@@ -22,4 +22,9 @@ class DaliDevice extends Model
     {
         return $this->belongsTo(Room::class, 'room', 'id');
     }
+
+    public function modbusSlaver()
+    {
+        return $this->belongsTo(ModbusSlaver::class, 'dali_gateway', 'id');
+    }
 }

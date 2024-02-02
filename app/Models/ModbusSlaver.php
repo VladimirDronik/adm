@@ -28,4 +28,9 @@ class ModbusSlaver extends Model
     {
         return $this->hasMany(ModbusRegister::class, 'slaver_id', 'id');
     }
+
+    public function daliDevices(): HasMany
+    {
+        return $this->hasMany(DaliDevice::class, 'dali_gateway', 'id');
+    }
 }

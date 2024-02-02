@@ -72,7 +72,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn" data-id="{{ $slaver->id }}" data-name="{{ $slaver->name }}">
+                                        <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn" data-id="{{ $slaver->id }}" data-name="{{ $slaver->name }}" data-type="{{ $slaver->relatedType->type }}">
                                             <i class="fa fa-trash fa-lg"></i>
                                         </button>
                                     </td>
@@ -114,8 +114,13 @@
             $('.del_btn').click(function () {
                 del_id = $(this).attr('data-id');
                 del_name = $(this).attr('data-name');
+
                 $('#del_modal_title').text('Вы точно хотите удалить устройство '+ del_name +' ?');
-                $('#del_modal_body').text('При удалении устройства, удалятся все связанные регистры !');
+                if ($(this).attr('data-type') == 'ecodim-dali-gw2') {
+                    $('#del_modal_body').text('При удалении устройства будут удалены все его регистры и связанные объекты !');
+                } else {
+                    $('#del_modal_body').text('При удалении устройства, удалятся все связанные регистры !');
+                }
                 $('#del_init_btn').click();
             });
 

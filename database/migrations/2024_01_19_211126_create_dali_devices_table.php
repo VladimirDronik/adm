@@ -16,13 +16,13 @@ return new class extends Migration
             $table->unsignedInteger('id_object')->nullable();
             $table->string('name', 100);
             $table->unsignedInteger('type');
-            $table->unsignedInteger('dali_gateway');
+            $table->unsignedBigInteger('dali_gateway');
             $table->unsignedTinyInteger('address');
             $table->unsignedTinyInteger('failure')->comment('0 - ок, 1 - неисправность');
             $table->unsignedTinyInteger('brightness');
             $table->unsignedTinyInteger('is_cct');
             $table->unsignedSmallInteger('cct')->nullable();
-            $table->unsignedInteger('room');
+            $table->unsignedInteger('room')->nullable();
 
             $table->foreign('id_object')
                 ->references('id')
@@ -33,6 +33,12 @@ return new class extends Migration
             $table->foreign('room')
                 ->references('id')
                 ->on('rooms')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('dali_gateway')
+                ->references('id')
+                ->on('modbus_slavers')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });

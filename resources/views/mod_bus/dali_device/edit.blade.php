@@ -32,6 +32,8 @@
 
                             {{ Form::bs_text('name', 'Название*:', old('name', $daliDevice->name), ['required' => true]) }}
 
+                            {{ Form::bs_autoselect('room', 'Размещение:', $rooms, old('room', $daliDevice->room), false, false, []) }}
+
                             {{ Form::bs_simple_text('Адрес:', $daliDevice->address) }}
 
                             {{ Form::bs_simple_text('Шлюз:', $daliDevice->dali_gateway) }}
@@ -54,4 +56,13 @@
                 <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $("#auto_sel_room").chosen({width:"100%", no_results_text: "Не найдено"});
+        });
+    </script>
 @endsection

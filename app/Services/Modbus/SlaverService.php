@@ -9,6 +9,7 @@ use App\Models\ObjType;
 use App\Models\Script;
 use App\Models\Method;
 use Database\Seeders\ScriptsTableSeeder;
+use Illuminate\Support\Facades\DB;
 
 class SlaverService
 {
@@ -53,7 +54,21 @@ class SlaverService
      */
     public function delete(int $id)
     {
-        return ModbusSlaver::destroy($id);
+        $modbusSlaver = ModbusSlaver::findOrFail($id);
+
+        DB::transaction(function () use ($modbusSlaver) {
+            if ($modbusSlaver->relatedType->type == 'ecodim-dali-gw2' && $modbusSlaver->daliDevices->isNotEmpty()) {
+                foreach ($modbusSlaver->daliDevices as $daliDevice) {
+                    if ($daliDevice->object) {
+                        $daliDevice->object->delete();
+                    } else {
+                        $daliDevice->delete();
+                    }
+                }
+            }
+
+            $modbusSlaver->delete();
+        });
 
         return true;
     }
@@ -64,6 +79,8 @@ class SlaverService
     public function updateDaliDevice(DaliDevice $daliDevice, array $data): int
     {
         $daliDevice->name = $data['name'];
+
+        $daliDevice->room = $data['room'];
 
         $daliDevice->save();
 

@@ -86,10 +86,10 @@
                                             </td>
                                         @elseif($illumination instanceof \App\Models\DaliDevice)
                                             <td>
-                                                {{ $illumination->name . ' (' . $illumination->address . ')' }}
+                                                {{ $illumination->modbusSlaver->name . ' (' . $illumination->address . ')' }}
                                             </td>
                                             <td>
-                                                {{ $illumination->relatedRoom->name }}
+                                                {{ $illumination->relatedRoom ? $illumination->relatedRoom->name : '' }}
                                             </td>
                                             <td>
                                                 Неисправность: {{ $illumination->failure ? 'Да' : 'Нет' }}
