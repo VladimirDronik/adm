@@ -67,12 +67,16 @@ class ModbusRepository
             ->toArray();
     }
 
-    public function getAllRegisters(int $slaver = null, $elementsPerPage = 30)
+    public function getAllRegisters(int $slaver = null, int $isSystem = null, $elementsPerPage = 30)
     {
         $registers = ModbusRegister::query();
 
         if ($slaver) {
             $registers->where('slaver_id', $slaver);
+        }
+
+        if (!$isSystem) {
+            $registers->where('is_system', 0);
         }
 
         return $registers->paginate($elementsPerPage);

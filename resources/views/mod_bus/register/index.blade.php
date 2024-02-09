@@ -12,16 +12,19 @@
                     <div class="card-body">
                         <a href="{{ route('mod_bus.registers.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить регистр</a>
                         <a href="{{ route('mod_bus.registers.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
-                        <div class="pull-right col-sm-5">
+                        <div class="pull-right">
                             <form class="form-inline" method="get">
-                                <label class="control-label text-right col-md-3 label-fix" for="slaver">Устройство:</label>
+                                <input style="cursor:pointer;" autocomplete="off" name="is_system" type="checkbox" @if($filterSystem) checked @endif value="1">
+                                &nbsp;Вывод системных&nbsp;&nbsp;|&nbsp;&nbsp;
+
+                                Устройство:&nbsp;&nbsp;
                                 <select class="form-control form-control-lg" autocomplete="off" name="slaver" style="font-size: 1rem;">
                                     <option value="" @if(!$filterSlaver) selected @endif>Не выбрано</option>
                                     @foreach($slavers as $id => $name)
                                         <option value="{{ $id }}" @if($filterSlaver == $id) selected @endif>{{ $name }}</option>
                                     @endforeach
                                 </select>
-                                <button class="form-control btn btn-primary m-l-4 p-l-11 p-r-11 my-2 my-sm-0" type="submit">Найти</button>
+                                <button class="form-control btn btn-primary m-l-4 p-l-11 p-r-11 my-2 my-sm-0" type="submit">Применить</button>
                                 <a href="{{ route('mod_bus.registers.index') }}" class="form-control btn btn-default m-l-6 my-2 my-sm-0">Сбросить</a>
                             </form>
                         </div>
@@ -44,6 +47,7 @@
                                     <th>Значение</th>
                                     <th></th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -61,6 +65,11 @@
                                     </td>
                                     <td>
                                         {{ $register->last_value ? $register->last_value . ' ' . $register->units : '' }}
+                                    </td>
+                                    <td>
+                                        @if($register->comment)
+                                            <img src="{{ asset('ela/images/info.png') }}" width="23" height="23" title="{{ $register->comment }}"></img>
+                                        @endif
                                     </td>
                                     <td align="center">
                                         <a href="{{ route('mod_bus.registers.edit', [$register->id]) }}" class="btn btn-info btn-sm btn-rounded">
@@ -85,13 +94,14 @@
                                     <th>Значение</th>
                                     <th></th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                             </tfoot>
                             @endif
                         </table>
                     </div>
                     <br>
-                    {{ $registers->appends(['slaver' => request()->input('slaver')])->links() }}
+                    {{ $registers->appends(request()->input())->links() }}
                     <p class="text-right">Найдено: {{ $registers->total() }}</p>
                 @else
                     <p>Данные не найдены</p>

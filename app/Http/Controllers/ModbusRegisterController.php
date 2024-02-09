@@ -20,11 +20,12 @@ class ModbusRegisterController extends Controller
     public function index(Request $r)
     {
         $filterSlaver = $r->input('slaver');
+        $filterSystem = $r->input('is_system');
 
         $slavers = $this->modbusRep->getSlaversWhereHasRegistersToArray();
-        $registers = $this->modbusRep->getAllRegisters($filterSlaver);
+        $registers = $this->modbusRep->getAllRegisters($filterSlaver, $filterSystem);
 
-        return view('mod_bus.register.index', compact('registers', 'slavers', 'filterSlaver'));
+        return view('mod_bus.register.index', compact('registers', 'slavers', 'filterSlaver', 'filterSystem'));
     }
 
     public function edit($id)

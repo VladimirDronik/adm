@@ -96,7 +96,7 @@
                         </table>
                     </div>
                     <br>
-                    {{ $slavers->appends(['bus' => request()->input('bus')])->links() }}
+                    {{ $slavers->appends(request()->input())->links() }}
                     <p class="text-right">Найдено: {{ $slavers->total() }}</p>
                 @else
                     <p>Данные не найдены</p>
