@@ -119,15 +119,19 @@ class ObjectService
         $query = HomeObject::query();
 
         if ($typeObject) {
-            $query->where('type', $typeObject);
+            if (is_array($typeObject)) {
+                $query->whereIn('type', $typeObject);
+            } else {
+                $query->where('type', $typeObject);
 
-            if (($typeObject == 'switch') || ($typeObject == 'button')) {
-                $query->orwhere('type', 'lamp')
-                    ->orwhere('type', 'relay')
-                    ->orwhere('type', 'socket')
-                    ->orwhere('type', 'curtain')
-                    ->orwhere('type', 'lock')
-                    ->orwhere('type', 'virtual');
+                if (($typeObject == 'switch') || ($typeObject == 'button')) {
+                    $query->orwhere('type', 'lamp')
+                        ->orwhere('type', 'relay')
+                        ->orwhere('type', 'socket')
+                        ->orwhere('type', 'curtain')
+                        ->orwhere('type', 'lock')
+                        ->orwhere('type', 'virtual');
+                }
             }
 
             return $query->orderBy('name')

@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 class BoilerService
 {
     public function __construct(
-        private BoilerObjectService $boiler_object_service
+        private BoilerObjectService $boilerObjectService
     ) {
     }
 
@@ -34,7 +34,6 @@ class BoilerService
             }
 
             $boiler->name = $data['name'];
-            $boiler->ip_address = $data['ip_address'];
             $boiler->thermostat = $data['thermostat'];
             $boiler->boiler = $data['boiler'];
             $boiler->target_water_temp = $data['target_water_temp'];
@@ -42,6 +41,12 @@ class BoilerService
                 $data['id_outside_thermostat'] :
                 null;
             $boiler->mode = $data['mode'];
+            $boiler->gateway_id = $data['gateway_id'];
+
+            if ($boiler->gateway_type == HomeObject::GATEWAY_MODBUS) {
+                $this->boilerObjectService
+                    ->updateMethodsEasyFieldsMethodsForModbus($boiler->object, $data);
+            }
 
             $boiler->save();
 
@@ -91,22 +96,32 @@ class BoilerService
     {
         $boiler = new Boiler();
         $boiler->name = $data['name'];
-        $boiler->ip_address = $data['ip_address_boiler'];
         $boiler->protocol = $data['type_boiler'];
-        $boiler->id_outside_thermostat = array_key_exists('id_outside_thermostat', $data) ?
-            $data['id_outside_thermostat'] :
-            null;
+        $boiler->id_outside_thermostat = array_key_exists('id_outside_thermostat', $data) ? $data['id_outside_thermostat'] : null;
         $boiler->target_water_temp = Boiler::DEFAULT_GVS_TEMP;
         $boiler->mode = Boiler::PROP_MANUALMODE;
+        $boiler->gateway_type = $data['gateway_type'];
+
+        switch ($boiler->gateway_type) {
+            case HomeObject::GATEWAY_MODBUS:
+                $boiler->gateway_id = $data['modbus_gateway_id'];
+                break;
+            case HomeObject::GATEWAY_HTTP:
+                $boiler->gateway_id = $data['http_gateway_id'];
+                break;
+        }
 
         $boiler->thermostat = 0;
         $boiler->boiler = 1;
         $boiler->lock = 0;
 
         DB::transaction(function () use (&$boiler) {
-            $unique_name = HomeObject::getUniqueObjectName(0, $boiler->name);
-            $object = $this->boiler_object_service->createBoilerObject($unique_name);
-            $this->boiler_object_service->createBoilerObjectMethodsWithEvents($object->id);
+            $uniqueName = HomeObject::getUniqueObjectName(0, $boiler->name);
+            $object = $this->boilerObjectService->createBoilerObject($uniqueName);
+
+            $this->boilerObjectService
+                ->createMethodsAndEvents($object->id, $boiler->gateway_type == HomeObject::GATEWAY_MODBUS ? $boiler->gateway_id : null);
+
             $boiler->id_object = $object->id;
 
             BoilerWater::create([

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Room\UpdateRequest;
+use App\Models\Color;
 use App\Models\Room;
 use App\Repositories\RoomRepository;
 use App\Services\ColorService;
@@ -21,7 +22,7 @@ class RoomController extends Controller
     {
         $rooms = $this->room_rep->getPaginationGroupsAndSeparateRooms();
         $groups = $this->room_rep->getRoomGroups();
-        $colors = ColorService::getAll();
+        $colors = ColorService::getAllByType(Color::NAME_TYPE);
         $images = ImageService::getRoomImages();
 
         return view('rooms.index', compact('rooms', 'groups', 'colors', 'images'));

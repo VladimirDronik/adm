@@ -361,12 +361,17 @@
 
                 var type_obj = $(this).val();
 
+                if ($(this).val() === 'humidity') {
+                    var type_obj = 'hygrostat';
+                }
+
+                if ($(this).val() === 'customizable_light') {
+                    var type_obj = ['tape', 'dali', 'dimmer'];
+                }
+
                 if ($(this).val() === 'switch') {
                     $('#view_form #off_method_div').show();
-                } else if ($(this).val() === 'dimmer') {
-                    $('#view_form #off_method_div').hide();
-                    $('#view_form #on_method_div').hide();
-                } else if ($(this).val() === 'conditioner') {
+                } else if ($(this).val() === 'conditioner' || $(this).val() === 'customizable_light' || $(this).val() === 'dimmer') {
                     $('#view_form #off_method_div').hide();
                     $('#view_form #on_method_div').hide();
                 } else if ($(this).val() === 'termostat') {
@@ -404,12 +409,10 @@
                 } else if ($(this).val() === 'label') {
                     $('#additionallydiv').show();
                     $('#labeldiv').show();
-                }
-                else {
+                } else {
                     $('#view_form #on_method_div').show();
                     $('#view_form #off_method_div').hide();
                     $('#view_form #off_method_params_div').hide();
-
                 }
 
                 $.ajax({

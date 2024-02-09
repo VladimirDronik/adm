@@ -1,0 +1,97 @@
+@extends('layouts._layout')
+
+@section('css')
+    <link href="{{ asset('ela/css/lib/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+@endsection
+
+@section('breadcrumbs')
+    @includeIf('components.breadcrumbs', [
+        'title' => 'Редактирование регистра № '. $register->id,
+        'links' => [ route('mod_bus.registers.index') => 'Регистры'],
+        'last_link' => 'Редактирование регистра'
+    ])
+@endsection
+
+@section('content')
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <a href="{{ route('mod_bus.registers.index') }}" class="btn btn-success m-b-10 m-l-5">Регистры</a>
+                        <a href="{{ route('mod_bus.registers.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить регистр</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="col-md-12 col-lg-8 col-xl-8">
+                    {!! Form::model($register, ['route' => ['mod_bus.registers.update', $register->id], 'id' => 'register_form',
+                        'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
+                    {{ csrf_field() }}
+                    <div class="form-body">
+                        {{ Form::bs_alert() }}
+
+                        {{ Form::bs_text('name', 'Название*:', old('name', $register->name), ['required' => true]) }}
+
+                        {{ Form::bs_autoselect('slaver_id', 'Устройство*:', $slavers, old('slaver_id', $register->slaver_id), false, false, ['required' => true], null, null, 3, false, true) }}
+
+                        {{ Form::bs_select('register_type', 'Тип*:', $types, old('register_type', $register->register_type), ['required' => true]) }}
+
+                        {{ Form::bs_number('starting_register', 'Начальный адрес*:', old('starting_register', $register->starting_register), ['min' => 0, 'max' => 65535, 'required' => true]) }}
+
+                        {{ Form::bs_number('registers_quantity', 'Кол-во регистров*:', old('registers_quantity', $register->registers_quantity), ['min' => 1, 'max' => 100, 'required' => true]) }}
+
+                        {{ Form::bs_select('data_format', 'Формат данных*:', $dataFormats, old('data_format', $register->data_format), ['required' => true]) }}
+
+                        {{ Form::bs_text('units', 'Единица измерения:', old('units', $register->units), []) }}
+
+                        {{ Form::bs_text('scale_unit', 'Множитель:', old('scale_unit', $register->scale_unit), []) }}
+
+                        {{ Form::bs_radio('access', 'Доступ*:', $accesses, old('access', $register->access), ['required' => true]) }}
+
+                        {{ Form::bs_checkbox('polling', 'Опрос:', old('polling', $register->polling), []) }}
+
+                        <div id='polling_cycle_div' hidden>
+                            {{ Form::bs_select('polling_cycle', 'Период опроса*:', $pollingCycles, old('polling_cycle', $register->polling_cycle), ['required' => true]) }}
+                        </div>
+                    </div>
+
+                    {{ Form::bs_submit_btn() }}
+
+                    {!! Form::close() !!}
+                </div>
+                <div style="height: 200px;">&nbsp;</div>
+                <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
+        </div>
+    </div>
+    @include('components.info_modal')
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
+    <script>
+        if ($('#register_form input[name=polling]').is(':checked')) {
+            $('#polling_cycle_div').removeAttr("hidden");
+            $('#register_form input[name=polling_cycle]').removeAttr("disabled");
+        } else {
+            $('#polling_cycle_div').attr("hidden", true);
+            $('#register_form input[name=polling_cycle]').attr("disabled", true);
+        }
+
+        $(document).ready(function () {
+            $("#auto_sel_slaver_id").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            $('#register_form input[name=polling]').change(function() {
+                if ($('#register_form input[name=polling]').is(':checked')) {
+                    $('#polling_cycle_div').removeAttr("hidden");
+                    $('#register_form input[name=polling_cycle]').removeAttr("disabled");
+                } else {
+                    $('#polling_cycle_div').attr("hidden", true);
+                    $('#register_form input[name=polling_cycle]').attr("disabled", true);
+                }
+            });
+        });
+    </script>
+@endsection

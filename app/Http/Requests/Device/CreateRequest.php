@@ -23,25 +23,42 @@ class CreateRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'type' => 'required',
             'description' => 'required|string|max:255|unique:devices,description',
-            'ip_address' => 'required|string|ip|max:15',
             'password' => 'nullable|string|max:100',
             'port' => 'nullable|integer|min:0|max:65535',
         ];
+
+        if ($this->request->get('type') == 'WB-LED') {
+            $rules['ip_address'] = 'required|string|max:3';
+            $rules['wb_led_port'] = 'required|integer';
+        } else {
+            $rules['ip_address'] = 'required|string|ip|max:15';
+        }
+
+        return $rules;
     }
 
     public function messages()
     {
-        return [
+        $messages = [
             'type.required' => 'Не указан тип контроллера',
             'description.required' => 'Не указано название',
             'description.max' => 'Название содержит более 255 символов',
-            'ip_address.required' => 'Не указан ip адрес',
-            'ip_address.max' => 'IP адрес содержит более 15 символов',
-            'ip_address.ip' => 'Недопустимый ip адрес',
             'description.unique' => 'Контроллер с таким названием уже существует. Необходимо изменить название',
         ];
+
+        if ($this->request->get('type') == 'WB-LED') {
+            $messages['ip_address.max'] = 'Адрес содержит более 3 символов';
+            $messages['ip_address.required'] = 'Не указан адрес';
+            $messages['wb_led_port.required'] = 'Не указан порт JetHome';
+        } else {
+            $messages['ip_address.ip'] = 'Недопустимый ip адрес';
+            $messages['ip_address.max'] = 'IP адрес содержит более 15 символов';
+            $messages['ip_address.required'] = 'Не указан ip адрес';
+        }
+
+        return $messages;
     }
 }

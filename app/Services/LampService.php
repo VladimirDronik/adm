@@ -12,15 +12,9 @@ use Illuminate\Support\Facades\DB;
 class LampService
 {
     public function __construct(
-        private LampObjectService $lamp_object_service,
+        private LampObjectService $lampObjectService,
         private PortRepository $port_repository
     ) {
-    }
-
-    public function prepareLamp(Lamp $lamp, array $data)
-    {
-        $lamp->name = trim($data['name']);
-        $lamp->type = 'lamp';
     }
 
     /**
@@ -33,43 +27,44 @@ class LampService
     {
         $lamp = new Lamp();
 
-        $deviceID = $data['device_id'];
+        $lamp->name = trim($data['name']);
+        $lamp->gateway_type = $data['gateway_type'];
+        $lamp->type = Lamp::TYPE_LAMP;
 
-        $this->prepareLamp($lamp, $data);
+        DB::transaction(function () use (&$lamp, $data) {
+            $uniqueName = HomeObject::getUniqueObjectName(0, $lamp->name);
 
-        DB::transaction(function () use (&$lamp, $data, $deviceID) {
-            $unique_name = HomeObject::getUniqueObjectName(0, $lamp->name);
+            $object = $this->lampObjectService
+                ->createLampObject($uniqueName, $lamp->type);
 
-            $object = $this->lamp_object_service
-                ->createLampObject($unique_name, $lamp->type);
+            switch ($lamp->gateway_type) {
+                case HomeObject::GATEWAY_MODBUS:
+                    $lamp->gateway_id = $data['modbus_gateway_id'];
 
-            $this->lamp_object_service
-                ->createLampObjectMethods(
-                    $object->id, $data['device_id'],
-                    $this->port_repository->getNumPortByID($data['port_id'])
-                );
+                    $this->lampObjectService
+                        ->createLampObjectMethods($object->id, null, null, $data['register_id']);
+                    break;
+                case HomeObject::GATEWAY_HTTP:
+                    $lamp->gateway_id = $data['http_gateway_id'];
+
+                    $numPort = $this->port_repository->getNumPortByID($data['port_id']);
+
+                    $this->lampObjectService
+                        ->createLampObjectMethods($object->id, $data['http_gateway_id'], $numPort);
+
+                    Port::where('id', $data['port_id'])
+                        ->update([
+                            'object' => $object->id,
+                            'comment' => $data['name'],
+                            'status' => 'OUT',
+                        ]);
+
+                    ConfigMegaService::setPortType($data['http_gateway_id'], $numPort, 'OUT');
+                    break;
+            }
 
             $lamp->id_object = $object->id;
             $lamp->save();
-
-            if ($data['port_id'] && $data['place'] == 'port') {
-                Port::where('id', $data['port_id'])
-                    ->update([
-                        'object' => $object->id,
-                        'comment' => $data['name'],
-                        'status' => 'OUT',
-                    ]);
-
-                ConfigMegaService::setPortType(
-                    $deviceID,
-                    $this->port_repository->getNumPortByID($data['port_id']),
-                    'OUT'
-                );
-            } elseif ($data['place'] == 'Hite-pro') {
-                HiteproDev::where('id_controller', $data['device_id'])
-                    ->where('id', $data['hitepro_devices'])
-                    ->update(['id_object' => $object->id]);
-            }
         });
 
         return $lamp->id;
@@ -121,19 +116,82 @@ class LampService
      */
     public function update(Lamp $lamp, array $data): int
     {
-        $deviceID = $data['device_id'];
-
         DB::transaction(function () use (&$lamp, $data) {
             if ($this->isUpdateAutoObjectName($lamp, $data['name'])) {
                 $lamp->object->name = HomeObject::getUniqueObjectName(
                     $lamp->object->id,
                     trim($data['name'])
                 );
-                $lamp->object->save();
             }
 
-            $this->prepareLamp($lamp, $data);
+            $lamp->name = trim($data['name']);
+            $lamp->gateway_id = $data['gateway_id'];
 
+            switch ($lamp->gateway_type) {
+                case HomeObject::GATEWAY_MODBUS:
+                    if (array_key_exists('is_dimmer', $data)) {
+                        $lamp->type = Lamp::TYPE_DIMMER;
+                        $lamp->object->type = Lamp::TYPE_DIMMER;
+
+                        if ($data['register_id']) {
+                            $this->lampObjectService
+                                ->updateAllLampDimmerMethods($lamp->object->id, $data['register_id']);
+                        } else {
+                            $this->lampObjectService
+                                ->updateLampMethodsWithCurrentRegisters($lamp->object, $data);
+                        }
+                    } else {
+                        $lamp->type = Lamp::TYPE_LAMP;
+                        $lamp->object->type = Lamp::TYPE_LAMP;
+
+                        if ($data['register_id']) {
+                            $this->lampObjectService
+                                ->updateAllLampMethods($lamp->object->id, null, null, $data['register_id']);
+                        } else {
+                            $this->lampObjectService
+                                ->updateLampMethodsWithCurrentRegisters($lamp->object, $data);
+                        }
+                    }
+                    break;
+                case HomeObject::GATEWAY_HTTP:
+                    $numPort = $this->port_repository->getNumPortByID($data['port_id']);
+
+                    if (array_key_exists('is_dimmer', $data)) {
+                        $lamp->type = Lamp::TYPE_DIMMER;
+                        $lamp->object->type = Lamp::TYPE_DIMMER;
+                        $lamp->value = $data['value'];
+                        $lamp->speed = $data['speed'];
+                    } else {
+                        $lamp->type = Lamp::TYPE_LAMP;
+                        $lamp->object->type = Lamp::TYPE_LAMP;
+                        $lamp->value = null;
+                        $lamp->speed = null;
+
+                        $this->lampObjectService
+                            ->updateAllLampMethods($lamp->object->id, $data['gateway_id'], $numPort);
+                    }
+
+                    Port::where('object', $lamp->object->id)
+                        ->update([
+                            'object' => null,
+                            'method' => null,
+                            'status' => 'OUT',
+                            'comment' => '',
+                        ]);
+
+                    Port::where('id', $data['port_id'])
+                        ->update([
+                            'object' => $lamp->object->id,
+                            'method' => null,
+                            'status' => 'OUT',
+                            'comment' => $data['name'],
+                        ]);
+
+                    ConfigMegaService::setPortType($data['gateway_id'], $numPort, 'OUT');
+                    break;
+            }
+
+            $lamp->object->save();
             $lamp->save();
         });
 
@@ -146,65 +204,6 @@ class LampService
             );
         } else {
             AliceDevicesService::setActive($lamp->object->id, 0);
-        }
-
-        //Делаем манипуляции с портами контроллера, если необходимо
-        if (! is_null($data['port_id']) && $data['place'] == 'port') {
-            Port::where('object', $lamp->object->id)
-                ->update([
-                    'object' => null,
-                    'method' => null,
-                    'status' => 'OUT',
-                    'comment' => '',
-                ]);
-
-            Port::where('id', $data['port_id'])
-                ->update([
-                    'object' => $lamp->object->id,
-                    'method' => null,
-                    'status' => 'OUT',
-                    'comment' => $data['name'],
-                ]);
-
-            HiteproDev::where('id_object', $lamp->object->id)
-                ->update(['id_object' => null]);
-
-            ConfigMegaService::setPortType(
-                $deviceID,
-                $this->port_repository->getNumPortByID($data['port_id']),
-                'OUT'
-            );
-
-            //Меняем метод easy для всех трех системных методов лампы
-            $this->lamp_object_service
-                ->updateLampObjectMethods(
-                    $lamp->object->id,
-                    $data['device_id'],
-                    $this->port_repository->getNumPortByID($data['port_id'])
-                );
-        } elseif ($data['place'] == 'Hite-pro') {
-            HiteproDev::where('id_object', $lamp->object->id)
-                ->update(['id_object' => null]);
-
-            Port::where('object', $lamp->object->id)
-                ->update([
-                    'object' => null,
-                    'method' => null,
-                    'status' => 'OUT',
-                    'comment' => '',
-                ]);
-
-            HiteproDev::where('id_controller', $data['device_id'])
-                ->where('id', $data['hitepro_devices'])
-                ->update(['id_object' => $lamp->object->id]);
-
-            //Меняем метод easy для всех трех системных методов лампы
-            $this->lamp_object_service
-                ->updateLampObjectMethods(
-                    $lamp->object->id,
-                    $data['device_id'],
-                    $data['hitepro_devices']
-                );
         }
 
         return $lamp->id;

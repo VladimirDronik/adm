@@ -2,35 +2,46 @@
 <br>
 {{ Form::bs_simple_text('ID объекта:', $lamp->object['id']) }}
 
-<div class="form-group row">
-    <label class="control-label text-right col-md-3 label-fix" for="">
-        Тип :     </label>
-    <div class="col-md-9">
-        <div class="mt-2">
-            {{ $lamp->rus_type }}
-        </div>
-    </div>
-</div>
+{{ Form::bs_simple_text('Тип:', $lamp->rus_type) }}
+
+{{ Form::bs_simple_text('Тип подключения:', $lamp->gateway_type) }}
 
 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-<input type="hidden" name="id_object" value="{{ $lamp->id_object }}">
+@if($lamp->gateway_type == \App\Models\HomeObject::GATEWAY_HTTP)
+    {{ Form::bs_autoselect('gateway_id', 'Контроллер*:', $devices, old('gateway_id', $lamp->gateway_id), false, false, ['required' => true], null, null, 3, false, true) }}
 
-    <div class="col-sm-12 pr-0 mt-4">
-        {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', $idDevice),
-           false, false, [], null) }}
+    {{ Form::bs_autoselect('port_id', 'Порт*:', [], old('port_id'), false, false, ['required' => true], null, null, 3, false, true) }}
 
-        <div id='port_id_div' @if ($ports==null) style="display: none" @endif>
-            {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
-                false, false, [], null) }}
+    <hr>
+    <div class="form-group row ">
+        <label class="control-label text-right col-md-3 label-fix" for="name">
+            <strong>Диммируется:</strong>
+        </label>
+        <div class="col-md-9 pt-2">
+            <input type="checkbox" name="is_dimmer" @if($lamp->type == \App\Models\Lamp::TYPE_DIMMER) checked @endif >
         </div>
-
-        <div id='hitepro_devices_div' @if ($hp_devices==null) style="display: none" @endif>
-            {{ Form::bs_autoselect('hitepro_devices', 'Устройство:', $hp_devices, old('hiteProDevices', $hp_device),
-                false, false, [], null) }}
-        </div>
-
-        <input type="hidden" name="place" id="place" value="@if ($ports==null) Hite-pro @else port @endif">
     </div>
 
-    @include('messages.two')
+    <div id='dimmer_fields_div' hidden>
+        {{ Form::bs_number('value', 'Значение*:', old('value',  $lamp->value), ['required' => true, 'max' => 127]) }}
+
+        {{ Form::bs_number('speed', 'Скорость*:', old('speed', $lamp->speed), ['required' => true, 'min' => 0, 'max' => 127]) }}
+    </div>
+@else
+    {{ Form::bs_autoselect('gateway_id', 'Устройство*:', $modbusSlavers, old('gateway_id', $lamp->gateway_id), false, false, ['required' => true], null, null, 3, false, true) }}
+
+    {{ Form::bs_autoselect('register_id', 'Регистр:', [], old('register_id'), false, false, [], null, 'Оставьте поле пустым, если не хотите менять регистр у методов', 3, false, false) }}
+
+    <hr>
+    <div class="form-group row ">
+        <label class="control-label text-right col-md-3 label-fix" for="name">
+            <strong>Диммируется:</strong>
+        </label>
+        <div class="col-md-9 pt-2">
+            <input type="checkbox" name="is_dimmer" @if($lamp->type == \App\Models\Lamp::TYPE_DIMMER) checked @endif >
+        </div>
+    </div>
+@endif
+
+@include('messages.two')

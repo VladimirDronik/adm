@@ -101,6 +101,8 @@ class View extends Model
 
     const TYPE_CONDITIONER = 'conditioner';
 
+    const TYPE_CUSTOMIZABLE_LIGHT = 'customizable_light';
+
     const PIN_SAFE_TYPE = 'pin';
 
     const CONFIRM_SAFE_TYPE = 'confirm';
@@ -122,6 +124,7 @@ class View extends Model
             self::TYPE_DIMMER => 'Диммер',
             self::TYPE_LINK => 'Ссылка',
             self::TYPE_CONDITIONER => 'Кондиционер',
+            self::TYPE_CUSTOMIZABLE_LIGHT => 'Настраиваемый источник света',
         ];
     }
 

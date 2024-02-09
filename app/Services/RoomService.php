@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Color;
 use App\Models\Room;
 use App\Models\Temperature;
 use App\Models\View;
@@ -137,13 +138,7 @@ class RoomService
     private function setColorIfEmpty($color)
     {
         if (empty($color)) {
-            $colors = ColorService::getAll();
-
-            if ($colors->isEmpty()) {
-                return 'red';
-            }
-
-            return $colors->first()->name;
+            return optional(ColorService::getAllByType(Color::NAME_TYPE)[0])->name ?? 'red';
         }
 
         return $color;

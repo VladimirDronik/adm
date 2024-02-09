@@ -22,6 +22,7 @@ class UserPermission
                     'show-object' => false,
                     'create-manual-object' => false,
                 ],
+                'mod_bus' => true,
                 'objects' => false,
                 'rooms' => true,
                 'cameras' => true,
@@ -56,6 +57,7 @@ class UserPermission
 
             User::TYPE_USER => [
                 'devices' => false,
+                'mod_bus' => true,
                 'cameras' => true,
                 'objects' => false,
                 'rooms' => false,

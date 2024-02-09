@@ -48,9 +48,9 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('lamps.index') }}">
+                                <a href="{{ route('illumination.index') }}">
                                     <i class="fa fa-lightbulb-o"></i>
-                                    Лампы (освещение)
+                                    Освещение
                                 </a>
                             </li>
                             <li>
@@ -93,6 +93,30 @@
                                 <a href="{{ route('yandexstations.index') }}">
                                     <i class="fa fa-podcast"></i>
                                     ЯндексСтанции
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
+                @can('mod_bus')
+                    <li>
+                        <a class="has-arrow" href="#" aria-expanded="false">
+                            <i class="fa fa-sitemap"></i>
+                            <span class="hide-menu">Modbus</span>
+                        </a>
+                        <ul aria-expanded="false" class="collapse">
+                            <li>
+                                <a href="{{ route('mod_bus.buses.index') }}">
+                                    <i class="fa fa-exchange"></i>
+                                    Шины
+                                </a>
+                                <a href="{{ route('mod_bus.slavers.index') }}">
+                                    <i class="fa fa-microchip"></i>
+                                    Устройства
+                                </a>
+                                <a href="{{ route('mod_bus.registers.index') }}">
+                                    <i class="fa fa-list"></i>
+                                    Регистры
                                 </a>
                             </li>
                         </ul>

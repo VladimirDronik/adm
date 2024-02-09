@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Http\Controllers\Ajax;
+
+use App\Http\Controllers\Controller;
+use App\Repositories\ModbusRepository;
+use App\Services\Modbus\SlaverService;
+use Illuminate\Http\Request;
+
+class ModbusSlaverController extends Controller
+{
+    public function __construct(
+        private SlaverService $service,
+        private ModbusRepository $modbusRep
+    ) {
+    }
+
+    public function delete(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id']), 400);
+
+        return response()->json(['result' => (bool) $this->service->delete((int) $r->id)]);
+    }
+
+    public function getRegisters(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['slaver_id']), 400);
+
+        $registers = $this->modbusRep->getRegistersBySlaverToArray((int) $r->slaver_id);
+
+        return response()->json($registers);
+    }
+
+    public function networkAssembly(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id']), 400);
+
+        $response = $this->service->networkAssembly((int)$r->id);
+
+        return response()->json([
+            'result' => $response['code'] == 0 ? true : false,
+            'message' => array_key_exists(0, $response['output']) ? $response['output'][0] : null,
+        ]);
+    }
+
+    public function networkExpansion(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id']), 400);
+
+        $response = $this->service->networkExpansion((int)$r->id);
+
+        return response()->json([
+            'result' => $response['code'] == 0 ? true : false,
+            'message' => array_key_exists(0, $response['output']) ? $response['output'][0] : null,
+        ]);
+    }
+}

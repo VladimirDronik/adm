@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Color;
 use App\Repositories\RoomRepository;
 use App\Services\ColorService;
 use App\Services\ImageService;
@@ -25,7 +26,7 @@ class RoomGroupController extends Controller
 
         $rooms = $this->room_rep->getPaginationGroupRooms($group->id);
         $groups = $this->room_rep->getRoomGroups();
-        $colors = ColorService::getAll();
+        $colors = ColorService::getAllByType(Color::NAME_TYPE);
         $images = ImageService::getRoomImages();
 
         return view('rooms.group_index', compact('group', 'rooms',
