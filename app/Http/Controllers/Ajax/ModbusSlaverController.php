@@ -38,7 +38,7 @@ class ModbusSlaverController extends Controller
         $response = $this->service->networkAssembly((int)$r->id);
 
         return response()->json([
-            'result' => $response['code'] == 0 ? true : false,
+            'result' => $response['code'] === 0 ? true : false,
             'message' => array_key_exists(0, $response['output']) ? $response['output'][0] : null,
         ]);
     }
@@ -50,7 +50,43 @@ class ModbusSlaverController extends Controller
         $response = $this->service->networkExpansion((int)$r->id);
 
         return response()->json([
-            'result' => $response['code'] == 0 ? true : false,
+            'result' => $response['code'] === 0 ? true : false,
+            'message' => array_key_exists(0, $response['output']) ? $response['output'][0] : null,
+        ]);
+    }
+
+    public function switchStatus(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id_object']), 400);
+
+        $response = $this->service->switchDaliStatus((int)$r->id_object);
+
+        return response()->json([
+            'result' => $response['code'] === 0 ? true : false,
+            'message' => array_key_exists(0, $response['output']) ? $response['output'][0] : null,
+        ]);
+    }
+
+    public function setBrightness(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id', 'brightness']), 400);
+
+        $response = $this->service->setDaliBrightness((int)$r->id, $r->brightness);
+
+        return response()->json([
+            'result' => $response['code'] === 0 ? true : false,
+            'message' => array_key_exists(0, $response['output']) ? $response['output'][0] : null,
+        ]);
+    }
+
+    public function setCct(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id', 'cct']), 400);
+
+        $response = $this->service->setDaliCct((int)$r->id, $r->cct);
+
+        return response()->json([
+            'result' => $response['code'] === 0 ? true : false,
             'message' => array_key_exists(0, $response['output']) ? $response['output'][0] : null,
         ]);
     }

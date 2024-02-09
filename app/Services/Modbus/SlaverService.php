@@ -155,6 +155,99 @@ class SlaverService
     }
 
     /**
+     * Запуск скриптов включения и отключения устройства DALI
+     *
+     * @param int $objectId
+     * @return array
+     */
+    public function switchDaliStatus(int $objectId): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        $object = HomeObject::find($objectId);
+
+        if ($object) {
+            chdir(env('SERVER_FOLDER').'/scripts');
+
+            if ($object->status == 'off') {
+                exec('php dali_on.php ' . $objectId, $output, $resultCode);
+                $newStatus = 'on';
+            } else {
+                exec('php dali_off.php ' . $objectId, $output, $resultCode);
+                $newStatus = 'off';
+            }
+
+            if ($resultCode === 0) {
+                $object->update(['status' => $newStatus]);
+            }
+        }
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
+
+    /**
+     * Запуск скрипта установки яркости устройства DALI
+     *
+     * @param int $daliId
+     * @param null|int $brightness
+     * @return array
+     */
+    public function setDaliBrightness(int $daliId, ?int $brightness): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        $daliDevice = DaliDevice::find($daliId);
+
+        if ($daliDevice && $daliDevice->id_object && $brightness) {
+            chdir(env('SERVER_FOLDER').'/scripts');
+            exec('php dali_set_brightness.php ' . $daliDevice->id_object . ' ' . $brightness, $output, $resultCode);
+
+            if ($resultCode === 0) {
+                $daliDevice->update(['brightness' => $brightness]);
+            }
+        }
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
+
+    /**
+     * Запуск скрипта установки цветовой температуры устройства DALI
+     *
+     * @param int $daliId
+     * @param null|int $cct
+     * @return array
+     */
+    public function setDaliCct(int $daliId, ?int $cct): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        $daliDevice = DaliDevice::find($daliId);
+
+        if ($daliDevice && $daliDevice->id_object && $cct) {
+            chdir(env('SERVER_FOLDER').'/scripts');
+            exec('php dali_set_cct.php ' . $daliDevice->id_object . ' ' . $cct, $output, $resultCode);
+
+            if ($resultCode === 0) {
+                $daliDevice->update(['cct' => $cct]);
+            }
+        }
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
+
+    /**
      * Создание объектов и методов для всех записей в таблице dali_devices
      *
      * @return void

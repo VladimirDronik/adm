@@ -110,6 +110,9 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::post('registers', 'ModbusSlaverController@getRegisters')->name('registers');
                 Route::post('network_assembly', 'ModbusSlaverController@networkAssembly')->name('network_assembly');
                 Route::post('network_expansion', 'ModbusSlaverController@networkExpansion')->name('network_expansion');
+                Route::post('switch_status', 'ModbusSlaverController@switchStatus')->name('switch_status');
+                Route::post('set_brightness', 'ModbusSlaverController@setBrightness')->name('set_brightness');
+                Route::post('set_cct', 'ModbusSlaverController@setCct')->name('set_cct');
             });
             Route::group(['prefix' => 'registers', 'as' => 'registers.'], function () {
                 Route::post('delete', 'ModbusRegisterController@delete')->name('delete');
