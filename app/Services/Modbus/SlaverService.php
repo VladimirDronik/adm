@@ -277,7 +277,7 @@ class SlaverService
                     $object = HomeObject::create([
                         'name' => $uniqueName,
                         'type' => ObjType::TYPE_DALI,
-                        'status' => 'off',
+                        'status' => 'on',
                         'is_system' => 1,
                     ]);
 
