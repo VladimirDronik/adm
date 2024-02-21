@@ -361,10 +361,6 @@
 
                 var type_obj = $(this).val();
 
-                if ($(this).val() === 'humidity') {
-                    var type_obj = 'hygrostat';
-                }
-
                 if ($(this).val() === 'customizable_light') {
                     var type_obj = ['tape', 'dali', 'dimmer'];
                 }

@@ -39,10 +39,10 @@
                         {{ Form::bs_radio('safe_type', 'Защита от случайного нажатия:', $safeTypes, old('safe_type', $safe_type)) }}
 
                         <div id="id_object_div"  @if($view->type != 'link') style="display: block;" @else style="display: none;" @endif>
-                        {{ Form::bs_autoselect('id_object', 'Объект:', $objects, old('id_object', $view->id_object), false, false) }}
+                        {{ Form::bs_autoselect('id_object', 'Объект:', [], old('id_object', $view->id_object), false, false) }}
                         </div>
 
-                        <div id="on_method_div" @if(($view->type == 'dimmer')||($view->type == 'link')||($view->type == 'conditioner')) style="display: none;" @endif>
+                        <div id="on_method_div" @if(in_array($view->type, ['dimmer', 'link', 'conditioner', 'customizable_light'])) style="display: none;" @endif>
                         {{ Form::bs_autoselect('id_method', 'Метод вкл:', $methods, old('id_method', $view->on_method), false, false) }}
                         </div>
 
@@ -272,12 +272,16 @@
         }
 
         function getObjectByType(type_obj) {
+            if (type_obj == 'customizable_light') {
+                type_obj = ['tape', 'dali', 'dimmer'];
+            }
+
             $.ajax({
                 url: url_objects,
                 data: {'_token': _token, 'type_object': type_obj},
                 success: function (data) {
                     objects = data.objects;
-                    createMethodSelect('#auto_sel_id_object', data.objects, -1);
+                    createMethodSelect('#auto_sel_id_object', data.objects, '{{ $view->id_object }}');
                     $('#auto_sel_id_object').trigger("chosen:updated");
                 }
             });
@@ -403,12 +407,13 @@
 
                 var type_obj = $(this).val();
 
+                if ($(this).val() === 'customizable_light') {
+                    var type_obj = ['tape', 'dali', 'dimmer'];
+                }
+
                 if ($(this).val() === 'switch') {
                     $('#view_form #off_method_div').show();
-                } else if ($(this).val() === 'dimmer') {
-                    $('#view_form #off_method_div').hide();
-                    $('#view_form #on_method_div').hide();
-                } else if ($(this).val() === 'conditioner') {
+                } else if ($(this).val() === 'conditioner' || $(this).val() === 'customizable_light' || $(this).val() === 'dimmer') {
                     $('#view_form #off_method_div').hide();
                     $('#view_form #on_method_div').hide();
                 } else if ($(this).val() === 'termostat') {

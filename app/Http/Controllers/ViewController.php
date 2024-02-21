@@ -85,7 +85,7 @@ class ViewController extends Controller
 
     public function edit(View $view)
     {
-        [$types, $rooms, $objects, $scenes, $images, $links, $safeTypes, $relatedParameterObjects] = $this->getLists();
+        [$types, $rooms, , $scenes, $images, $links, $safeTypes, $relatedParameterObjects] = $this->getLists();
         $methods = $this->object_service->getMethodsByObjectIdToArray($view->id_object);
 
         $colors = ColorRepository::getNameTypeColors();
@@ -145,7 +145,7 @@ class ViewController extends Controller
         }
 
         return view('views.edit', compact('view', 'types', 'safeTypes', 'link', 'lowvalSet', 'highvalSet',
-            'rooms', 'methods', 'objects', 'scenes', 'images', 'links', 'colors', 'safe_type', 'relatedParameterObjects',
+            'rooms', 'methods', 'scenes', 'images', 'links', 'colors', 'safe_type', 'relatedParameterObjects',
             'settingFromApp', 'lowval', 'highval', 'pushlabel', 'modallabel', 'label_longclick_text'));
     }
 
