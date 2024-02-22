@@ -66,15 +66,18 @@
                                             </td>
                                         @elseif($illumination instanceof \App\Models\LedTape)
                                             <td>
-                                                {{ $illumination->related_device ? $illumination->related_device->description : '' }}
+                                                {{ $illumination->modbusSlaver?->name }}
                                             </td>
                                             <td>
+                                                {{ $illumination->relatedRoom?->name }}
                                             </td>
                                             <td>
                                                 Статус: {{ $illumination->object->status }}
                                                 <br>
-                                                @if($illumination->type != 'W')
+                                                @if($illumination->type == \App\Models\LedTape::TYPE_RGB || $illumination->type == \App\Models\LedTape::TYPE_RGBW)
                                                     <div style="height: 30px; display: inline-flex;">Цвет: &nbsp;<div style="width: 30px; height: 30px; background-color: hsl({{ $illumination->h }}, {{ $illumination->hsvToHsl()['s'] }}%, {{ $illumination->hsvToHsl()['l'] }}%)"></div></div>
+                                                @elseif($illumination->type == \App\Models\LedTape::TYPE_CCT)
+                                                    Цветовая температура: {{ $illumination->cct }}
                                                 @else
                                                     Белый: {{ $illumination->w }}
                                                 @endif
@@ -89,7 +92,7 @@
                                                 {{ $illumination->modbusSlaver->name . ' (' . $illumination->address . ')' }}
                                             </td>
                                             <td>
-                                                {{ $illumination->relatedRoom ? $illumination->relatedRoom->name : '' }}
+                                                {{ $illumination->relatedRoom?->name }}
                                             </td>
                                             <td>
                                                 Неисправность: {{ $illumination->failure ? 'Да' : 'Нет' }}

@@ -116,6 +116,7 @@ Route::group(['middleware' => ['auth']], function () {
             });
             Route::group(['prefix' => 'registers', 'as' => 'registers.'], function () {
                 Route::post('delete', 'ModbusRegisterController@delete')->name('delete');
+                Route::post('read', 'ModbusRegisterController@read')->name('read');
             });
         });
 
@@ -149,7 +150,6 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('ports/update', 'DeviceController@updatePort')->name('ports.update');
             Route::post('check/server', 'DeviceController@checkServer')->name('check.server');
             Route::post('objects_ports', 'DeviceController@objectsPorts')->name('objects_ports');
-            Route::post('free_wb_led_ports_by_type', 'DeviceController@getFreeWbLedPortsByType')->name('free_wb_led_ports_by_type');
             Route::post('type_controller', 'DeviceController@typeController')->name('type_controller');
             Route::post('get', 'DeviceController@get')->name('get');
             Route::post('extension_module/delete', 'DeviceController@extensionModuleDelete')->name('extension_module.delete');

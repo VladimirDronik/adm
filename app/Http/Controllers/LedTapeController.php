@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\LedTape;
 use App\Repositories\DeviceRepository;
+use App\Repositories\RoomRepository;
 use App\Services\DeviceService;
 use App\Services\LedTapeService;
 use App\Services\PortService;
@@ -15,28 +16,25 @@ class LedTapeController extends Controller
         private LedTapeService $service,
         private DeviceRepository $deviceRep,
         private PortService $portService,
-        private DeviceService $deviceService
+        private DeviceService $deviceService,
+        private RoomRepository $roomRep
     ) {
     }
 
     public function edit($id)
     {
         $ledTape = LedTape::findOrFail($id);
-        $devices = $this->deviceRep->getAllByTypesToArray(['WB-LED']);
-        list($deviceId, $portIds) = $this->portService->getCurrentDeviceAndPortsForLedTape($ledTape);
+        $rooms = $this->roomRep->getAllWithoutCommonToArray();
 
-        $deviceData = $this->deviceService
-            ->getAllPortsDataForWbLed($deviceId, 'out', $ledTape->type, $ledTape->id_object);
-
-        return view('led_tapes.edit', compact('ledTape', 'devices', 'deviceId', 'portIds', 'deviceData'));
+        return view('led_tapes.edit', compact('ledTape', 'rooms'));
     }
 
     public function create()
     {
         $types = LedTape::getTypes(true);
-        $devices = $this->deviceRep->getAllByTypesToArray(['WB-LED']);
+        $rooms = $this->roomRep->getAllWithoutCommonToArray();
 
-        return view('led_tapes.create', compact('types', 'devices'));
+        return view('led_tapes.create', compact('types', 'rooms'));
     }
 
     public function store(Request $r)

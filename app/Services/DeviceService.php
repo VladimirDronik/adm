@@ -112,10 +112,6 @@ class DeviceService
         $this->device->fill($data);
         //$this->device->active = 1;
 
-        if (array_key_exists('wb_led_port', $data)) {
-            $this->device->port = $data['wb_led_port'];
-        }
-
         $this->device->save();
 
         if ($is_notify) {
@@ -137,16 +133,12 @@ class DeviceService
         DB::beginTransaction();
 
         try {
-            if ($typeDevice != 'WB-LED') {
-                exec("ping -c 1 {$data['ip_address']}",$output, $status);
+            exec("ping -c 1 {$data['ip_address']}",$output, $status);
 
-                if ($status == 0) {
-                    $data['active'] = 1;
-                } else {
-                    $data['active'] = 0;
-                }
-            } else {
+            if ($status == 0) {
                 $data['active'] = 1;
+            } else {
+                $data['active'] = 0;
             }
 
             if (($data['active'] == 1) || ($forcedCreate)) {
@@ -241,7 +233,7 @@ class DeviceService
             return ['result' => false, 'message' => 'Устройство не найдено', '', ''];
         }
 
-        if ($device->devtype->name != 'WB-LED' && !$this->isValidIpAddress($data)) {
+        if (!$this->isValidIpAddress($data)) {
             return ['result' => false, 'message' => 'Недопустимый ip адрес', '', ''];
         }
 
@@ -265,9 +257,7 @@ class DeviceService
                 $device->save();
 
                 //Меняем адрес устойства
-                if ($device->devtype->name != 'WB-LED') {
-                    $this->notifyDeviceIp($data);
-                }
+                $this->notifyDeviceIp($data);
 
                 if ($extensionModules) {
                     $this->storeExtensionModules($extensionModules, $device);
@@ -402,66 +392,6 @@ class DeviceService
         }
 
         return $arrayPorts;
-    }
-
-    /**
-     * Вертнуть все данные по портам для контроллера WB-LED
-     *
-     * @param null|int $deviceId
-     * @param string $portTypes
-     * @param string $ledType
-     * @param null|int $objectId = null
-     */
-    public function getAllPortsDataForWbLed(?int $deviceId, string $portTypes, string $ledType, ?int $objectId = null)
-    {
-        if ($ledType == LedTape::TYPE_RGBW) {
-            $ports = $this->getFreeDevicePortsByPortType($deviceId, $portTypes, $objectId);
-            if (count($ports) >= 4) {
-                $combinedPorts = [
-                    'id' => [],
-                    'name' => '',
-                ];
-
-                foreach ($ports as $port) {
-                    $combinedPorts['id'][] = $port['id'];
-                }
-                $combinedPorts['name'] = $ports[0]['name'] . ' - ' . end($ports)['name'];
-
-                $ports = [$combinedPorts];
-            } else {
-                $ports = [];
-            }
-        } elseif ($ledType == LedTape::TYPE_RGB) {
-            $ports = $this->getFreeDevicePortsByPortType($deviceId, $portTypes, $objectId);
-            if (count($ports) >= 3) {
-                $requiredNumPorts = [1, 2, 3];
-
-                $filteredPorts = collect($ports)->filter(function ($item) use ($requiredNumPorts) {
-                    return in_array($item['num_port'], $requiredNumPorts);
-                });
-
-                if ($filteredPorts->count() === count($requiredNumPorts)) {
-                    $filteredPorts = $filteredPorts->toArray();
-
-                    foreach ($filteredPorts as $port) {
-                        $combinedPorts['id'][] = $port['id'];
-                    }
-                    $combinedPorts['name'] = $filteredPorts[0]['name'] . ' - ' . end($filteredPorts)['name'];
-
-                    $ports = [$combinedPorts];
-                } else {
-                    $ports = [];
-                }
-            } else {
-                $ports = [];
-            }
-        } else {
-            $ports = $this->getFreeDevicePortsByPortType($deviceId, $portTypes, $objectId);
-        }
-
-        $portsInfo = $this->getAllDevicePortsByPortType($deviceId, $portTypes);
-
-        return ['ports' => $ports, 'ports_info' => $portsInfo];
     }
 
     /**

@@ -19,4 +19,16 @@ class ModbusRegisterController extends Controller
 
         return response()->json(['result' => (bool) $this->service->delete((int) $r->id)]);
     }
+
+    public function read(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id']), 400);
+
+        $data = $this->service->read((int)$r->id);
+
+        return response()->json([
+            'result' => $data['code'] === 0,
+            'response' => array_key_exists(0, $data['output']) ? $data['output'][0] : null,
+        ]);
+    }
 }

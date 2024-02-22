@@ -266,6 +266,34 @@ class ScriptsTableSeeder extends Seeder
     }
 
     /**
+     * Изменение скриптов в этой функции влияет на методы, которые
+     * автоматически создаются для объекта лед ленты
+     */
+    public static function getLedTapeScripts(): array
+    {
+        return [
+            [
+                'name' => 'Включить LED ленту',
+                'link' => 'led_on.php',
+                'count' => 0,
+                'system' => 1,
+            ],
+            [
+                'name' => 'Выключить LED ленту',
+                'link' => 'led_off.php',
+                'count' => 0,
+                'system' => 1,
+            ],
+            [
+                'name' => 'Переключить LED ленту',
+                'link' => 'led_sw.php',
+                'count' => 0,
+                'system' => 1,
+            ],
+        ];
+    }
+
+    /**
      * Скрипты для камер
      *
      * @return array
@@ -317,6 +345,7 @@ class ScriptsTableSeeder extends Seeder
         $scripts = array_merge($scripts, self::getLockScripts());
         $scripts = array_merge($scripts, self::getYandexStationScripts());
         $scripts = array_merge($scripts, self::getDaliDeviceScripts());
+        $scripts = array_merge($scripts, self::getLedTapeScripts());
         $scripts[] = self::getResetGraphsScript();
         $scripts[] = self::getCheckCountScript();
         $scripts[] = self::getResetCountScript();

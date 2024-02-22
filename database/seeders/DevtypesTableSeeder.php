@@ -38,10 +38,6 @@ class DevtypesTableSeeder extends Seeder
                 'name' => 'ModbusTCP',
                 'port_numbers' => '',
             ],
-            [
-                'name' => 'WB-LED',
-                'port_numbers' => 'in 1 4;out 1 4'
-            ],
         ];
 
         $result_devtypes = [];

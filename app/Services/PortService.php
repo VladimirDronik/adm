@@ -512,42 +512,6 @@ class PortService
     }
 
     /**
-     * Получить текущие контроллер и порты для led ленты
-     *
-     * @param LedTape $ledTape
-     * @return array
-     */
-    public function getCurrentDeviceAndPortsForLedTape(LedTape $ledTape): array
-    {
-        if ($ledTape->type == LedTape::TYPE_RGBW || $ledTape->type == LedTape::TYPE_RGB) {
-            $ports = Port::where('object', $ledTape->id_object)->get();
-            $deviceId = null;
-            $portsIds = null;
-
-            if ($ports->isNotEmpty()) {
-                $deviceId = $ports->first()->id_device;
-                $portsIds = [];
-                foreach ($ports as $port) {
-                    $portsIds[] = $port->id;
-                }
-            }
-
-            return [$deviceId, $portsIds];
-        } else {
-            $port = Port::where('object', $ledTape->id_object)->first();
-            $deviceId = null;
-            $portsId = null;
-
-            if ($port) {
-                $deviceId = $port->id_device;
-                $portsId = $port->id;
-            }
-
-            return [$deviceId, $portsId];
-        }
-    }
-
-    /**
      * Возвращает id контроллера hite-pro и устройства к которому привязан объект
      */
     private function getCurrentDevHitepro($idObject)

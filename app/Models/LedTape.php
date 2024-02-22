@@ -13,6 +13,7 @@ class LedTape extends Model
     const TYPE_RGB = 'RGB';
     const TYPE_RGBW = 'RGBW';
     const TYPE_W = 'W';
+    const TYPE_CCT = 'CCT';
 
     public static function getTypes(bool $is_full = false)
     {
@@ -20,6 +21,7 @@ class LedTape extends Model
             self::TYPE_RGB => 'RGB',
             self::TYPE_RGBW => 'RGBW',
             self::TYPE_W => 'W',
+            self::TYPE_CCT => 'CCT',
         ];
 
         return $is_full ? $types : array_keys($types);
@@ -28,6 +30,16 @@ class LedTape extends Model
     public function object()
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+    }
+
+    public function relatedRoom()
+    {
+        return $this->belongsTo(Room::class, 'room', 'id');
+    }
+
+    public function modbusSlaver()
+    {
+        return $this->belongsTo(ModbusSlaver::class, 'controller_id', 'id');
     }
 
     function hsvToHsl()
@@ -52,12 +64,5 @@ class LedTape extends Model
         $l = round($l * 100);
 
         return ['h' => $this->h, 's' => $s, 'l' => $l];
-    }
-
-    public function getRelatedDeviceAttribute(): ?Device
-    {
-        $port = Port::where('object', $this->id_object)->first();
-
-        return $port->device;
     }
 }

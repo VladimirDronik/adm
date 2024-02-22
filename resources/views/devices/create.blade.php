@@ -37,9 +37,6 @@
                             <div id="port" hidden>
                                 {{ Form::bs_text('port', 'Порт*:', null, ['required' => false, 'disabled' => true]) }}
                             </div>
-                            <div id="wb-led-port" hidden>
-                                {{ Form::bs_radio('wb_led_port', 'Порт JetHome*:', [0 => 'Serial0', 1 => 'Serial1'], old('wb_led_port'), ['required' => false, 'disabled' => true]) }}
-                            </div>
                         </div>
                         {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
@@ -68,23 +65,6 @@
                 $('#types_form input[name=username]').removeAttr('required');
                 $('#types_form input[name=port]').val('502')
                 $("strong:contains('Адрес*:')").text("IP адрес*:");
-                $('#types_form input[name=wb_led_port]').attr('disabled', true);
-                $('#wb-led-port').attr('hidden', true);
-                $('#types_form input[name=wb_led_port]').removeAttr('required');
-            } else if (type === 'WB-LED') {
-                $('#wb-led-port').removeAttr('hidden');
-                $('#types_form input[name=wb_led_port]').removeAttr('disabled');
-                $('#types_form input[name=wb_led_port]').attr('required', true);
-                $("strong:contains('IP адрес*:')").text("Адрес*:");
-                $('#types_form input[name=password]').attr('disabled', true);
-                $('#password').attr('hidden', true);
-                $('#types_form input[name=password]').removeAttr('required');
-                $('#types_form input[name=username]').attr('disabled', true);
-                $('#username').attr('hidden', true);
-                $('#types_form input[name=username]').removeAttr('required');
-                $('#types_form input[name=port]').attr('disabled', true);
-                $('#port').attr('hidden', true);
-                $('#types_form input[name=port]').removeAttr('required');
             } else {
                 $("strong:contains('Адрес*:')").text("IP адрес*:");
                 $('#types_form input[name=port]').attr('disabled', true);
@@ -96,10 +76,7 @@
                 $('#password').removeAttr('hidden');
                 $('#types_form input[name=password]').removeAttr('disabled');
                 $('#types_form input[name=password]').attr('required', true);
-                $('#types_form input[name=password]').val('sec')
-                $('#types_form input[name=wb_led_port]').attr('disabled', true);
-                $('#wb-led-port').attr('hidden', true);
-                $('#types_form input[name=wb_led_port]').removeAttr('required');
+                $('#types_form input[name=password]').val('sec');
             }
         }
 
