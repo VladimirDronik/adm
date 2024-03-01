@@ -7,13 +7,6 @@ use Illuminate\Database\Seeder;
 
 class ExtensionModuleTypeSeeder extends Seeder
 {
-    private $extensionModuleTypes;
-
-    public function __construct()
-    {
-        $this->extensionModuleTypes = ExtensionModuleType::pluck('name')->toArray();
-    }
-
     /**
      * Run the database seeds.
      *
@@ -26,23 +19,21 @@ class ExtensionModuleTypeSeeder extends Seeder
                 'name' => '0-10V',
                 'ports' => '0..10V 0 7;',
             ],
+            [
+                'name' => 'MegaD-16R-XT',
+                'ports' => 'out 0 15;',
+            ],
+            [
+                'name' => 'MegaD-16I-XT',
+                'ports' => 'in 0 15;',
+            ],
         ];
 
-        $result_extensionModuleTypes = [];
-
         foreach ($extensionModuleTypes as $extensionModuleType) {
-            if (! in_array($extensionModuleType['name'], $this->extensionModuleTypes, true)) {
-                $result_extensionModuleTypes[] = $extensionModuleType;
-            }
-        }
-
-        if (count($result_extensionModuleTypes)) {
-            foreach ($result_extensionModuleTypes as $result_extensionModuleType) {
-                ExtensionModuleType::create([
-                    'name' => $result_extensionModuleType['name'],
-                    'ports' => $result_extensionModuleType['ports'],
-                ]);
-            }
+            ExtensionModuleType::updateOrCreate(
+                ['name' => $extensionModuleType['name']],
+                ['ports' => $extensionModuleType['ports']]
+            );
         }
     }
 }
