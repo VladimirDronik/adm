@@ -26,15 +26,14 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::model($slaver, ['route' => ['mod_bus.slavers.update', $slaver->id], 'id' => 'slaver_form',
-                        'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::model($slaver, ['route' => ['mod_bus.slavers.update', $slaver->id], 'id' => 'slaver_form', 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
                         {{ Form::bs_text('name', 'Название*:', old('name', $slaver->name), ['required' => true]) }}
 
-                        {{ Form::bs_select('type', 'Тип*:', $types, old('type', $slaver->type), ['required' => true]) }}
+                        {{ Form::bs_simple_text('Тип:', $slaver->relatedType->name) }}
 
                         {{ Form::bs_autoselect('bus', 'Шина*:', $buses, old('bus', $slaver->bus), false, false, ['required' => true], null, null, 3, false, true) }}
 
@@ -48,6 +47,10 @@
                             <button type="button" class="btn btn-success m-b-10 m-l-5" id="startNetworkExpansion">Расширение сети</button>
 
                             <br><br><br><br>
+                        @elseif($slaver->relatedType->type == 'wb-led')
+                            {{ Form::bs_select('wb_led_oper_mode', 'Режим работы*:', $wbLedOperModes, old('wb_led_oper_mode'), ['required' => true]) }}
+
+                            <input type="hidden" name="old_wb_led_oper_mode" value="">
                         @endif
                     </div>
 
@@ -70,7 +73,24 @@
     <script>
         let network_assembly_url = '{{ route('ajax.mod_bus.slavers.network_assembly') }}';
         let network_expansion_url = '{{ route('ajax.mod_bus.slavers.network_expansion') }}';
+        let read_register_url = '{{ route('ajax.mod_bus.registers.read') }}';
         let id = '{{ $slaver->id }}';
+        let wbLedModeRegisterId = '{{ $wbLedModeRegisterId }}';
+
+        if (wbLedModeRegisterId) {
+            $.ajax({
+                url: read_register_url,
+                data: { '_token': _token, 'id': wbLedModeRegisterId },
+                success: function (data) {
+                    if (data.result) {
+                        $('#slaver_form [name=wb_led_oper_mode]').find('option[value="'+ data.response +'"]').prop('selected', true);
+                        $('#slaver_form [name=old_wb_led_oper_mode]').val(data.response);
+                    } else {
+                        showErrorModal(data.response ?? 'Ошибка чтения регистра wb_led_mode');
+                    }
+                }
+            });
+        }
 
         $(document).ready(function () {
             $("#auto_sel_bus").chosen({width:"100%", no_results_text: "Не найдено"});

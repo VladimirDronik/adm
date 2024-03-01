@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\HomeObject;
 use App\Models\LedTape;
 use App\Models\ObjType;
-use App\Models\Port;
 use Illuminate\Support\Facades\DB;
 
 class LedTapeService
@@ -22,16 +21,20 @@ class LedTapeService
         $ledTape = new LedTape();
         $ledTape->type = $data['type'];
         $ledTape->name = $data['name'];
-        $ledTape->status = 'off';
+        $ledTape->room = $data['room'];
 
-        if ($ledTape->type != LedTape::TYPE_W) {
+        if ($ledTape->type == LedTape::TYPE_W || $ledTape->type == LedTape::TYPE_RGBW) {
+            $ledTape->w = 50;
+        }
+
+        if ($ledTape->type == LedTape::TYPE_RGB || $ledTape->type == LedTape::TYPE_RGBW) {
             $ledTape->h = 125;
             $ledTape->s = 50;
             $ledTape->v = 70;
         }
 
-        if ($ledTape->type != LedTape::TYPE_RGB) {
-            $ledTape->w = 50;
+        if ($ledTape->type == LedTape::TYPE_CCT) {
+            $ledTape->cct = 50;
         }
 
         DB::transaction(function () use (&$ledTape, $data) {
@@ -52,25 +55,6 @@ class LedTapeService
             // $view->active = 1;
             // $view->id_object = $object->id;
             // $view->save();
-
-            if ($ledTape->type == LedTape::TYPE_RGBW || $ledTape->type == LedTape::TYPE_RGB) {
-                $portsIds = explode(',', $data['port_id']);
-                foreach ($portsIds as $portId) {
-                    Port::where('id', $portId)
-                        ->update([
-                            'object' => $object->id,
-                            'comment' => $data['name'],
-                            'status' => $ledTape->type,
-                        ]);
-                }
-            } else {
-                Port::where('id', $data['port_id'])
-                    ->update([
-                        'object' => $object->id,
-                        'comment' => $data['name'],
-                        'status' => LedTape::TYPE_W,
-                    ]);
-            }
 
             $ledTape->id_object = $object->id;
             $ledTape->save();
@@ -101,34 +85,8 @@ class LedTapeService
                 // ]);
             }
 
-            Port::where('object', $ledTape->object->id)
-                ->update([
-                    'object' => null,
-                    'method' => null,
-                    'status' => 'NC',
-                    'comment' => '',
-                ]);
-
-            if ($ledTape->type == LedTape::TYPE_RGBW || $ledTape->type == LedTape::TYPE_RGB) {
-                $portsIds = explode(',', $data['port_id']);
-                foreach ($portsIds as $portId) {
-                    Port::where('id', $portId)
-                        ->update([
-                            'object' => $ledTape->object->id,
-                            'comment' => $data['name'],
-                            'status' => $ledTape->type,
-                        ]);
-                }
-            } else {
-                Port::where('id', $data['port_id'])
-                    ->update([
-                        'object' => $ledTape->object->id,
-                        'comment' => $data['name'],
-                        'status' => LedTape::TYPE_W,
-                    ]);
-            }
-
             $ledTape->name = $newName;
+            $ledTape->room = $data['room'];
             $ledTape->save();
         });
 
@@ -146,19 +104,9 @@ class LedTapeService
     {
         $ledTape = LedTape::findOrFail($id);
 
-        DB::transaction(function () use (&$ledTape) {
-            Port::where('object', $ledTape->object->id)
-                ->update([
-                    'object' => null,
-                    'method' => null,
-                    'status' => 'NC',
-                    'comment' => ''
-                ]);
+        // View::where('id_object', $ledTape->object->id)->delete();
 
-            // View::where('id_object', $ledTape->object->id)->delete();
-
-            $ledTape->object()->delete();
-        });
+        $ledTape->object()->delete();
 
         return true;
     }

@@ -79,13 +79,6 @@
                             </button>
                         @endif
                     </td>
-                    @if($port->device->devtype->name != 'WB-LED')
-                        <td>
-                            <a href="{{ route('ports.edit', [$port->id,'tab=2']) }}" class="btn btn-info btn-sm btn-rounded">
-                                <i class="fa fa-cog fa-lg"></i>
-                            </a>
-                        </td>
-                    @endif
                 </tr>
             @endif
         @endforeach

@@ -60,4 +60,24 @@ class RegisterService
 
         return true;
     }
+
+    /**
+     * Запуск скрипта чтения данных регистра
+     *
+     * @param int $registerId
+     * @return array
+     */
+    public function read(int $registerId): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php modbus_read.php ' . $registerId, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
 }

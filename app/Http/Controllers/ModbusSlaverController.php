@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Modbus\Slaver\CreateRequest;
 use App\Http\Requests\Modbus\Slaver\UpdateRequest;
 use App\Models\ModbusSlaver;
+use App\Models\ModbusSlaversType;
 use App\Repositories\ModbusRepository;
 use App\Services\Modbus\SlaverService;
 use Illuminate\Http\Request;
@@ -32,8 +33,15 @@ class ModbusSlaverController extends Controller
         $slaver = ModbusSlaver::findOrFail($id);
         $types = $this->modbusRep->getAllSlaversTypesToArray();
         $buses = $this->modbusRep->getAllBusesToArray();
+        $wbLedOperModes = ModbusSlaver::getWbLedOperModes();
+        $wbLedModeRegisterId = null;
 
-        return view('mod_bus.slaver.edit', compact('slaver', 'types', 'buses'));
+        if ($slaver->relatedType->type == 'wb-led') {
+            $wbLedModeRegister = $slaver->registers()->where('alias', 'wb_led_mode')->first();
+            $wbLedModeRegisterId = $wbLedModeRegister ? $wbLedModeRegister->id : null;
+        }
+
+        return view('mod_bus.slaver.edit', compact('slaver', 'types', 'buses', 'wbLedOperModes', 'wbLedModeRegisterId'));
     }
 
     public function update(UpdateRequest $r, ModbusSlaver $slaver)
@@ -53,10 +61,11 @@ class ModbusSlaverController extends Controller
 
     public function create()
     {
-        $types = $this->modbusRep->getAllSlaversTypesToArray();
+        $types = ModbusSlaversType::get();
         $buses = $this->modbusRep->getAllBusesToArray();
+        $wbLedOperModes = ModbusSlaver::getWbLedOperModes();
 
-        return view('mod_bus.slaver.create', compact('types', 'buses'));
+        return view('mod_bus.slaver.create', compact('types', 'buses', 'wbLedOperModes'));
     }
 
     public function store(CreateRequest $r)

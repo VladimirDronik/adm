@@ -4,6 +4,7 @@ namespace App\Services\Modbus;
 
 use App\Models\DaliDevice;
 use App\Models\HomeObject;
+use App\Models\LedTape;
 use App\Models\ModbusSlaver;
 use App\Models\ObjType;
 use App\Models\Script;
@@ -14,24 +15,18 @@ use Illuminate\Support\Facades\DB;
 
 class SlaverService
 {
-    public function prepare(ModbusSlaver $slaver, array $data)
-    {
-        $slaver->name = $data['name'];
-        $slaver->type = $data['type'];
-        $slaver->bus = $data['bus'];
-        $slaver->address = $data['address'];
-    }
-
     /**
      * Создание устройства
      */
     public function store(array $data): int
     {
         $slaver = new ModbusSlaver();
+        $slaver->name = $data['name'];
+        $slaver->type = $data['type'];
+        $slaver->bus = $data['bus'];
+        $slaver->address = $data['address'];
 
-        $this->prepare($slaver, $data);
-
-        DB::transaction(function () use ($slaver) {
+        $dbWriting = DB::transaction(function () use ($slaver) {
             $slaver->save();
 
             $pathToJson = storage_path('app/modbus_registers/' . $slaver->relatedType->type . '.json');
@@ -50,10 +45,27 @@ class SlaverService
                 ModbusRegister::insert($registersData);
             }
 
-            if ($slaver->relatedType->type == 'ecodim-dali-gw2') {
-                $this->addAdditionalRegistersForEcodimDali($slaver->id);
-            }
+            return true;
         });
+
+        if ($dbWriting === true) {
+            switch ($slaver->relatedType->type) {
+                case 'ecodim-dali-gw2':
+                    $this->addAdditionalRegistersForEcodimDali($slaver->id);
+                    break;
+                case 'wb-led':
+                    $wbLedOperMode = $data['wb_led_oper_mode'];
+                    $wbLedModeRegister = $slaver->registers()->where('alias', 'wb_led_mode')->first();
+
+                    if ($wbLedModeRegister) {
+                        $result = $this->writeToRegister($wbLedModeRegister->id, $wbLedOperMode);
+                        if ($result['code'] === 0) {
+                            $this->addLedTapesWithObjectsAndMethods($slaver, $wbLedOperMode);
+                        }
+                    }
+                    break;
+            }
+        }
 
         return $slaver->id;
     }
@@ -63,8 +75,27 @@ class SlaverService
      */
     public function update(ModbusSlaver $slaver, array $data): int
     {
-        $this->prepare($slaver, $data);
+        if ($slaver->relatedType->type == 'wb-led' && $data['wb_led_oper_mode'] != $data['old_wb_led_oper_mode']) {
+            $wbLedOperMode = $data['wb_led_oper_mode'];
+            $wbLedModeRegister = $slaver->registers()->where('alias', 'wb_led_mode')->first();
 
+            if ($wbLedModeRegister) {
+                $result = $this->writeToRegister($wbLedModeRegister->id, $wbLedOperMode);
+                if ($result['code'] === 0) {
+                    if ($slaver->ledTapes->isNotEmpty()) {
+                        foreach ($slaver->ledTapes as $ledTape) {
+                            $ledTape->object->delete();
+                        }
+                    }
+
+                    $this->addLedTapesWithObjectsAndMethods($slaver, $wbLedOperMode);
+                }
+            }
+        }
+
+        $slaver->name = $data['name'];
+        $slaver->bus = $data['bus'];
+        $slaver->address = $data['address'];
         $slaver->save();
 
         return $slaver->id;
@@ -80,14 +111,25 @@ class SlaverService
         $modbusSlaver = ModbusSlaver::findOrFail($id);
 
         DB::transaction(function () use ($modbusSlaver) {
-            if ($modbusSlaver->relatedType->type == 'ecodim-dali-gw2' && $modbusSlaver->daliDevices->isNotEmpty()) {
-                foreach ($modbusSlaver->daliDevices as $daliDevice) {
-                    if ($daliDevice->object) {
-                        $daliDevice->object->delete();
-                    } else {
-                        $daliDevice->delete();
+            switch ($modbusSlaver->relatedType->type) {
+                case 'ecodim-dali-gw2':
+                    if ($modbusSlaver->daliDevices->isNotEmpty()) {
+                        foreach ($modbusSlaver->daliDevices as $daliDevice) {
+                            if ($daliDevice->object) {
+                                $daliDevice->object->delete();
+                            } else {
+                                $daliDevice->delete();
+                            }
+                        }
                     }
-                }
+                    break;
+                case 'wb-led':
+                    if ($modbusSlaver->ledTapes->isNotEmpty()) {
+                        foreach ($modbusSlaver->ledTapes as $ledTape) {
+                            $ledTape->object->delete();
+                        }
+                    }
+                    break;
             }
 
             $modbusSlaver->delete();
@@ -444,5 +486,69 @@ class SlaverService
         }
 
         ModbusRegister::insert($registersData);
+    }
+
+    /**
+     * Создание объектов и методов лед лент для устройства типа wb-led
+     *
+     * @return void
+     */
+    private function addLedTapesWithObjectsAndMethods(ModbusSlaver $slaver, int $operationMode): void
+    {
+        $ledTapesData = $slaver->getLedTapesDataByCode($operationMode);
+
+        if (!empty($ledTapesData)) {
+            $scripts = ScriptsTableSeeder::getLedTapeScripts();
+            $methods = [];
+
+            foreach ($scripts as $script) {
+                $scriptId = $this->getScriptId($script);
+                $methods[] = [
+                    'name' => $script['name'],
+                    'script' => $scriptId,
+                    'comment' => $script['name'],
+                    'is_system' => 1,
+                ];
+            }
+
+            foreach ($ledTapesData as $ledTapeData) {
+                $uniqueName = HomeObject::getUniqueObjectName(0, $ledTapeData['name']);
+                $object = HomeObject::create([
+                    'type' => ObjType::TYPE_TAPE,
+                    'name' => $uniqueName,
+                    'status' => 'off',
+                    'is_system' => 1,
+                ]);
+                $ledTapeData['id_object'] = $object->id;
+
+                foreach ($methods as $method) {
+                    $method['id_object'] = $object->id;
+                    Method::create($method);
+                }
+
+                LedTape::create($ledTapeData);
+            }
+        }
+    }
+
+    /**
+     * Запуск скрипта записи значения регистру устройства
+     *
+     * @param int $registerId
+     * @param int $value
+     * @return array
+     */
+    public function writeToRegister(int $registerId, string $value): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php modbus_write.php ' . $registerId . ' ' . $value, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
     }
 }

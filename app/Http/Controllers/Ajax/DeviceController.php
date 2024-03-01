@@ -62,24 +62,6 @@ class DeviceController extends Controller
         ]);
     }
 
-    public function getFreeWbLedPortsByType(Request $r)
-    {
-        abort_if(!ajaxHas($r, ['device_id', 'types', 'led_type']), 400);
-
-        $portsData = $this->service->getAllPortsDataForWbLed(
-            $r->device_id,
-            $r->types,
-            $r->led_type,
-            $r->has('object_id') ? $r->object_id : null
-        );
-
-        return response()->json([
-            'result' => true,
-            'ports' => $portsData['ports'],
-            'ports_info' => $portsData['ports_info'],
-        ]);
-    }
-
     // todo
     public function updatePort(Request $r)
     {
