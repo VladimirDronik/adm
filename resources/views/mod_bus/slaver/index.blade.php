@@ -64,7 +64,11 @@
                                         {{ $slaver->relatedBus->device }}
                                     </td>
                                     <td>
-                                        {{ $slaver->active ? 'Доступно' : 'Недоступно' }}
+                                        @if($slaver->active)
+                                            <span class="badge badge-success">Активно</span>
+                                        @else
+                                            <span class="badge badge-danger">Недоступно</span>
+                                        @endif
                                     </td>
                                     <td align="center">
                                         <a href="{{ route('mod_bus.slavers.edit', [$slaver->id]) }}" class="btn btn-info btn-sm btn-rounded">
