@@ -26,7 +26,7 @@ class SlaverService
         $slaver->bus = $data['bus'];
         $slaver->address = $data['address'];
 
-        DB::transaction(function () use ($slaver, $data) {
+        $dbWriting = DB::transaction(function () use ($slaver) {
             $slaver->save();
 
             $pathToJson = storage_path('app/modbus_registers/' . $slaver->relatedType->type . '.json');
@@ -45,7 +45,10 @@ class SlaverService
                 ModbusRegister::insert($registersData);
             }
 
+            return true;
+        });
 
+        if ($dbWriting === true) {
             switch ($slaver->relatedType->type) {
                 case 'ecodim-dali-gw2':
                     $this->addAdditionalRegistersForEcodimDali($slaver->id);
@@ -62,7 +65,7 @@ class SlaverService
                     }
                     break;
             }
-        });
+        }
 
         return $slaver->id;
     }
