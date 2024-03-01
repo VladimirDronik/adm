@@ -34,9 +34,9 @@
 
                             {{ Form::bs_autoselect('room', 'Размещение:', $rooms, old('room', $daliDevice->room), false, false, []) }}
 
-                            {{ Form::bs_simple_text('Адрес:', $daliDevice->address) }}
+                            {{ Form::bs_simple_text('Адрес:', 'A' . $daliDevice->address) }}
 
-                            {{ Form::bs_simple_text('Шлюз:', $daliDevice->dali_gateway) }}
+                            {{ Form::bs_simple_text('Шлюз:', $daliDevice->modbusSlaver->name) }}
 
                             {{ Form::bs_simple_text('Неисправность:', $daliDevice->failure ? 'Да' : 'Нет') }}
 
