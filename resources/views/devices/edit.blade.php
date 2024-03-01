@@ -68,7 +68,7 @@
             @elseif($device->devtype->name == 'Monoblock 14IN/14OUT')
                 <ul class="nav nav-tabs customtab" role="tablist">
                     <li class="nav-item"> <a class="nav-link active"  data-toggle="tab" href="#ports_settings" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты контроллера</span></a> </li>
-                    <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#main_settings" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Основные настройки</span></a> </li>
+                    <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#main_settings" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Настройки</span></a> </li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane p-20 active" id="ports_settings" role="tabpanel">
@@ -150,25 +150,25 @@
                                 @if($device->extensionModules)
                                     @foreach($device->extensionModules as $extensionModule)
                                     <div class="form-group row">
-                                        <label class="control-label text-right col-md-1 label-fix">
+                                        <label class="text-right col-md-2 label-fix">
                                             <strong>Тип:</strong>
                                         </label>
                                         <div class="col-sm-2" style="display: flex; align-items: center;">
                                             {{ $extensionModule->extensionModuleType->name }}
                                         </div>
-                                        <label class="control-label text-right col-md-1 label-fix">
+                                        <label class="text-right col-md-2 label-fix">
                                             <strong>SDA:</strong>
                                         </label>
                                         <div class="col-sm-1" style="display: flex; align-items: center;">
                                             {{ $extensionModule->sda_port }}
                                         </div>
-                                        <label class="control-label text-right col-md-1 label-fix">
+                                        <label class="text-right col-md-2 label-fix">
                                             <strong>SCL:</strong>
                                         </label>
                                         <div class="col-sm-1" style="display: flex; align-items: center;">
                                             {{ $extensionModule->scl_port }}
                                         </div>
-                                        <div class="col-sm-3"><button id="deleteExtensionModule{{ $extensionModule->id }}" onclick="deleteExtensionModule('{{ $extensionModule->id }}')" class="deleteExtensionModule btn btn-outline-danger">Удалить модуль</button></div>
+                                        <div class="col-sm-2"><button id="deleteExtensionModule{{ $extensionModule->id }}" onclick="deleteExtensionModule('{{ $extensionModule->id }}')" class="deleteExtensionModule btn btn-outline-danger">Удалить модуль</button></div>
                                     </div>
                                     @endforeach
                                 @endif
@@ -487,13 +487,13 @@
 
             function createNewFields() {
                 var newFields = $('<div class="moduleFields form-group row">' +
-                                    '<label class="control-label text-right col-md-1 label-fix">Тип:</label>' +
+                                    '<label class="text-right col-md-2 label-fix">Тип:</label>' +
                                     '<select class="chosen-select form-control col-sm-2" name="extension_module_type_id"></select>' +
-                                    '<label class="control-label text-right col-md-1 label-fix">SDA:</label>' +
+                                    '<label class="text-right col-md-2 label-fix">SDA:</label>' +
                                     '<select class="chosen-select form-control col-sm-1" name="sda_port"></select>' +
-                                    '<label class="control-label text-right col-md-1 label-fix">SCL:</label>' +
+                                    '<label class="text-right col-md-2 label-fix">SCL:</label>' +
                                     '<select class="chosen-select form-control col-sm-1" name="scl_port"></select>' +
-                                    '<div class="col-sm-3"><button class="deleteModuleBtn btn btn-outline-danger">Удалить модуль</button></div>' +
+                                    '<div class="col-sm-2"><button class="deleteModuleBtn btn btn-outline-danger">Удалить модуль</button></div>' +
                                 '</div>');
                 var selectModuleType = newFields.find('select[name="extension_module_type_id"]');
                 var selectSdaPort = newFields.find('select[name="sda_port"]');
