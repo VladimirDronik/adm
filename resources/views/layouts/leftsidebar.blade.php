@@ -9,8 +9,40 @@
                         <span class="hide-menu">Главная</span>
                     </a>
                 </li>
+                <li class="nav-label">Модель</li>
                 @can('devices')
-                    <li class="nav-label">Модель</li>
+                    <li>
+                        <a class="has-arrow" href="{{ route('devices.index') }}" aria-expanded="false">
+                            <i class="fa fa-building"></i>
+                            <span class="hide-menu">Контроллеры</span>
+                        </a>
+                    </li>
+                @endcan
+                @can('mod_bus')
+                    <li>
+                        <a class="has-arrow" href="#" aria-expanded="false">
+                            <i class="fa fa-sitemap"></i>
+                            <span class="hide-menu">Modbus</span>
+                        </a>
+                        <ul aria-expanded="false" class="collapse">
+                            <li>
+                                <a href="{{ route('mod_bus.buses.index') }}">
+                                    <i class="fa fa-exchange"></i>
+                                    Шины
+                                </a>
+                                <a href="{{ route('mod_bus.slavers.index') }}">
+                                    <i class="fa fa-microchip"></i>
+                                    Устройства
+                                </a>
+                                <a href="{{ route('mod_bus.registers.index') }}">
+                                    <i class="fa fa-list"></i>
+                                    Регистры
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
+                @can('devices')
                     <li>
                         <a class="has-arrow" href="#" aria-expanded="false">
                             <i class="fa fa-building"></i>
@@ -21,12 +53,6 @@
                                 <a href="{{ route('termostats.index') }}">
                                     <i class="fa fa-tasks"></i>
                                     Датчики
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('devices.index') }}">
-                                    <i class="fa fa-building"></i>
-                                    Контроллеры
                                 </a>
                             </li>
                             <li>
@@ -93,30 +119,6 @@
                                 <a href="{{ route('yandexstations.index') }}">
                                     <i class="fa fa-podcast"></i>
                                     ЯндексСтанции
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                @endcan
-                @can('mod_bus')
-                    <li>
-                        <a class="has-arrow" href="#" aria-expanded="false">
-                            <i class="fa fa-sitemap"></i>
-                            <span class="hide-menu">Modbus</span>
-                        </a>
-                        <ul aria-expanded="false" class="collapse">
-                            <li>
-                                <a href="{{ route('mod_bus.buses.index') }}">
-                                    <i class="fa fa-exchange"></i>
-                                    Шины
-                                </a>
-                                <a href="{{ route('mod_bus.slavers.index') }}">
-                                    <i class="fa fa-microchip"></i>
-                                    Устройства
-                                </a>
-                                <a href="{{ route('mod_bus.registers.index') }}">
-                                    <i class="fa fa-list"></i>
-                                    Регистры
                                 </a>
                             </li>
                         </ul>
