@@ -5,8 +5,7 @@
         @can('superadmin')
             <div class="col-md-2"><i>ID</i></div>
         @endcan
-        <label class="col-md-4"><i>Название метода</i></label>
-        <div class="col-md-6 text-left"><i>Комментарий</i></div>
+        <label class="col-md-5"><i>Название метода</i></label>
     </div>
     <div id="system_methods_div">
         @foreach($object->methods as $method)
@@ -23,9 +22,11 @@
                             <i class="fa fa-asterisk f-s-10 text-muted" title="Метод с параметром"></i>
                         @endif
                     </label>
-                    <div class="col-md-6" id="comment{{$method->id}}">
-                        {{ $method->comment }}
-                    </div>
+                    @if($method->comment)
+                        <div class="col-md-1" id="comment{{$method->id}}">
+                            <img src="{{ asset('ela/images/info.png') }}" width="23" height="23" title="{{ $method->comment }}"></img>
+                        </div>
+                    @endif
                 </div>
             @endif
         @endforeach
@@ -39,11 +40,10 @@
     @can('superadmin')
         <div class="col-md-1"><i>ID</i></div>
     @endcan
-    <label class="col-md-3"><i>Название метода</i></label>
+    <label class="col-md-4"><i>Название метода</i></label>
     <div class="col-md-3"><i>Простое действие</i></div>
     <div class="col-md-2"><i>Скрипт</i></div>
-    <div class="col-md-2"><i>Комментарий</i></div>
-    <div class="col-md-1 text-right"></div>
+    <div class="col-md-2 text-right"></div>
 </div>
 <div id="methods_div">
     @foreach($object->methods as $method)
@@ -57,16 +57,18 @@
                 <label class="col-md-3" id="name{{$method->id}}">
                     {{$method->name}}
                 </label>
+                @if($method->comment)
+                    <div class="col-md-1" id="comment{{$method->id}}">
+                        <img src="{{ asset('ela/images/info.png') }}" width="23" height="23" title="{{ $method->comment }}"></img>
+                    </div>
+                @endif
                 <div class="col-md-3" id="easy{{$method->id}}">
                     {{ $method->easy }}
                 </div>
                 <div class="col-md-2" id="script{{$method->id}}">
                     {{ optional($method->escript)->name }}
                 </div>
-                <div class="col-md-2" id="comment{{$method->id}}">
-                    {{ $method->comment }}
-                </div>
-                <div class="col-md-1 text-right">
+                <div class="col-md-2 text-right">
                     @if(!$method->is_system)
                         <button type="button" data-id="{{ $method->id }}"
                                 data-type="{{ $method->type }}"

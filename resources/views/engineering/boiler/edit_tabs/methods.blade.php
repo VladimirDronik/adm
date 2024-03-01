@@ -5,11 +5,10 @@
         @can('superadmin')
             <div class="col-md-1"><i>ID</i></div>
         @endcan
-        <label class="col-md-3"><i>Название метода</i></label>
-        <div class="col-md-4 text-left"><i>Комментарий</i></div>
+        <label class="col-md-4"><i>Название метода</i></label>
         @if($boiler->gateway_type == \App\Models\HomeObject::GATEWAY_MODBUS)
             <div class="col-md-2 text-left"><i>Устройство</i></div>
-            <div class="col-md-2 text-left"><i>Значение</i></div>
+            <div class="col-md-5 text-left"><i>Значение</i></div>
         @endif
     </div>
     <div>
@@ -27,9 +26,11 @@
                             <i class="fa fa-asterisk f-s-10 text-muted" title="Метод с параметром"></i>
                         @endif
                     </label>
-                    <div class="col-md-4">
-                        {{ $method->comment }}
-                    </div>
+                    @if($method->comment)
+                        <div class="col-md-1">
+                            <img src="{{ asset('ela/images/info.png') }}" width="23" height="23" title="{{ $method->comment }}"></img>
+                        </div>
+                    @endif
                     @if($boiler->gateway_type == \App\Models\HomeObject::GATEWAY_MODBUS)
                         <div class="col-md-2">
                             <select autocomplete="off" id="{{ 'auto_sel_slaver_id_'.$method->id }}" required data-placeholder="не выбрано" name="{{ 'slaver_id_'.$method->id }}" class="chosen-select form-control">
@@ -40,7 +41,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-5">
                             <select autocomplete="off" id="{{ 'auto_sel_register_id_'.$method->id }}" data-placeholder="не выбрано" name="{{ 'register_id_'.$method->id }}" class="chosen-select form-control"></select>
                         </div>
                     @endif
