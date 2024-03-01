@@ -28,23 +28,11 @@ class Relay extends Model
 {
     const TYPE_RELAY = 'relay';
 
-    const TYPE_SOCKET = 'socket';
-
     protected $table = 'relays';
 
     public $timestamps = false;
 
     protected $guarded = ['id'];
-
-    public static function getTypes(bool $is_full = false)
-    {
-        $types = [
-            self::TYPE_RELAY => 'Реле',
-            self::TYPE_SOCKET => 'Розетка',
-        ];
-
-        return $is_full ? $types : array_keys($types);
-    }
 
     /**
      * Получение доступных событий для объекта
@@ -70,11 +58,6 @@ class Relay extends Model
         return [
             'status' => ['Статус, on/off', true, true],
         ];
-    }
-
-    public function getRusTypeAttribute()
-    {
-        return self::getTypes(true)[$this->type] ?? '';
     }
 
     /* relations */

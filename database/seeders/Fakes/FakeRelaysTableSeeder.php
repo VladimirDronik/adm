@@ -28,7 +28,7 @@ class FakeRelaysTableSeeder extends Seeder
         $relays = [
             [
                 'name' => 'Реле 1',
-                'type' => Relay::TYPE_SOCKET,
+                'type' => Relay::TYPE_RELAY,
                 'id_object' => $objects[0]->id,
             ],
             [

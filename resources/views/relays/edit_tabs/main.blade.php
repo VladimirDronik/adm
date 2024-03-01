@@ -1,14 +1,5 @@
 <br>
 {{ Form::bs_simple_text('ID объекта:', $relay->object['id']) }}
-<div class="form-group row">
-    <label class="control-label text-right col-md-3 label-fix" for="">
-        Тип реле:     </label>
-    <div class="col-md-9">
-        <div class="mt-2">
-            {{ $relay->rus_type }}
-        </div>
-    </div>
-</div>
 
 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 

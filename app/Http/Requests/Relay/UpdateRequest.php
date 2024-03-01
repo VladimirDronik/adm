@@ -33,7 +33,6 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name.required' => 'Не указано название',
-            'id_object.required' => 'Не указан объект',
         ];
     }
 }

@@ -33,12 +33,11 @@ class RelayController extends Controller
 
     public function create()
     {
-        $types = Relay::getTypes(true);
         $objects = $this->object_rep->getAllToArray();
         $object_types = HomeObject::getFullTypeIds();
         $devices = $this->device_rep->getAllToArray();
 
-        return view('relays.create', compact('types', 'objects', 'object_types', 'devices'));
+        return view('relays.create', compact('objects', 'object_types', 'devices'));
     }
 
     public function store(CreateRequest $r)
@@ -58,8 +57,6 @@ class RelayController extends Controller
 
     public function edit(Relay $relay, $tab = 1)
     {
-        $types = Relay::getTypes(true);
-
         $can = gates('devices.show-object');
 
         [$idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices] = $this->portService->getCurrentDevPort($relay->id_object);
@@ -75,8 +72,8 @@ class RelayController extends Controller
 
         $allEvents = '';
 
-        return view('relays.edit', compact('relay', 'types', 'events', 'sounds', 'views', 'rooms',
-            'idDevice', 'idPort', 'devices', 'ports', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents', 'properties',
+        return view('relays.edit', compact('relay', 'properties', 'events', 'sounds', 'views', 'rooms',
+            'idDevice', 'idPort', 'devices', 'ports', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents',
             'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'allEvents', 'can'));
     }
 

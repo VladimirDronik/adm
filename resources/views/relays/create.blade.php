@@ -29,11 +29,9 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_radio('type', 'Тип реле*:', $types, old('type', -1), ['required' => true]) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-                        {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'),
-                                           false, false, [], null) }}
+                        {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'), false, false, [], null) }}
 
                         <div id='port_id_div' style="display: none">
                             {{ Form::bs_autoselect('port_id', 'Порт:', [], old('port_id'),

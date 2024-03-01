@@ -51,14 +51,11 @@ class RelayService
     public function prepareRelay(Relay $relay, array $data)
     {
         $relay->name = trim($data['name']);
-        if (isset($data['type'])) {
-            $relay->type = $data['type'];
-        }
+        $relay->type = Relay::TYPE_RELAY;
     }
 
     /**
-     * Создание реле. Если $data['type'] === 'auto',
-     * то еще создается объект с методами
+     * Создание реле
      *
      * @throws \Throwable
      */
@@ -70,7 +67,7 @@ class RelayService
 
         DB::transaction(function () use (&$relay, $data, $deviceID) {
             $unique_name = HomeObject::getUniqueObjectName(0, $relay->name);
-            $object = $this->relay_object_service->createRelayObject($unique_name, $relay->type);
+            $object = $this->relay_object_service->createRelayObject($unique_name);
             $relay->id_object = $object->id;
             $relay->save();
 

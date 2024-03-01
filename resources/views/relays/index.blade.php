@@ -35,7 +35,6 @@
                             <thead>
                             <tr>
                                 <th style="width: 60px;">ID</th>
-                                <th style="width: 200px;">Тип</th>
                                 <th style="width: 300px;">Название</th>
                                 <th>Статус</th>
                                 <th style="width: 60px;"></th>
@@ -46,9 +45,6 @@
                             @foreach($relays as $relay)
                                 <tr id="tr{{$relay->id}}">
                                     <td scope="row">{{ $relay->object['id'] }}</td>
-                                    <td>
-                                        {{ $relay->rus_type }}
-                                    </td>
                                     <td><a href="{{ route('relays.edit', [$relay->id]) }}">{{ $relay->name }}</a></td>
                                     <td>
                                         @if($relay->object->status == 'on')
@@ -74,7 +70,6 @@
                             <tfoot>
                             <tr>
                                 <th style="width: 60px;">ID</th>
-                                <th style="width: 200px;">Тип</th>
                                 <th style="width: 300px;">Название</th>
                                 <th>Статус</th>
                                 <th style="width: 60px;"></th>

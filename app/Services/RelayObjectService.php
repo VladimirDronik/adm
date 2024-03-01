@@ -12,11 +12,11 @@ class RelayObjectService
     /**
      * Автосоздание объекта для реле
      */
-    public function createRelayObject(string $name, string $type): HomeObject
+    public function createRelayObject(string $name): HomeObject
     {
         $object = new HomeObject();
 
-        $object->type = $type === Relay::TYPE_SOCKET ? ObjType::TYPE_SOCKET : ObjType::TYPE_RELAY;
+        $object->type = ObjType::TYPE_RELAY;
         $object->name = $name;
         $object->status = 'off';
         $object->is_system = 1;

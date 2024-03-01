@@ -25,7 +25,6 @@ class CreateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'type' => 'required|string|max:10',
             'id_object' => 'nullable|integer|min:1',
         ];
     }
@@ -34,8 +33,6 @@ class CreateRequest extends FormRequest
     {
         return [
             'name.required' => 'Не указано название',
-            'type.required' => 'Не указан тип реле',
-            'id_object.required' => 'Не указан объект',
         ];
     }
 }
