@@ -43,8 +43,8 @@ class HomeObject extends Model
     public static function getGatewayTypes(): array
     {
         return [
-            static::GATEWAY_MODBUS => 'modbus',
-            static::GATEWAY_HTTP => 'http',
+            static::GATEWAY_MODBUS => 'Modbus',
+            static::GATEWAY_HTTP => 'Контроллер',
         ];
     }
 
@@ -61,6 +61,11 @@ class HomeObject extends Model
     public static function getTypeById($id)
     {
         return self::getFullTypeIds()[$id] ?? '';
+    }
+
+    public static function getGatewayNameByType(string $type): string
+    {
+        return static::getGatewayTypes()[$type] ?? $type;
     }
 
     /**

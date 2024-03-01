@@ -4,7 +4,7 @@
 
 {{ Form::bs_simple_text('Тип:', $lamp->rus_type) }}
 
-{{ Form::bs_simple_text('Тип подключения:', $lamp->gateway_type) }}
+{{ Form::bs_simple_text('Тип подключения:', \App\Models\HomeObject::getGatewayNameByType($lamp->gateway_type)) }}
 
 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
