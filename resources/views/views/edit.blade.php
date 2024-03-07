@@ -42,7 +42,7 @@
                         {{ Form::bs_autoselect('id_object', 'Объект:', [], old('id_object', $view->id_object), false, false) }}
                         </div>
 
-                        <div id="on_method_div" @if(in_array($view->type, ['dimmer', 'link', 'conditioner', 'customizable_light'])) style="display: none;" @endif>
+                        <div id="on_method_div" @if(in_array($view->type, ['dimmer', 'link', 'conditioner', 'customizable_light', 'curtain'])) style="display: none;" @endif>
                         {{ Form::bs_autoselect('id_method', 'Метод вкл:', $methods, old('id_method', $view->on_method), false, false) }}
                         </div>
 
@@ -407,42 +407,42 @@
 
                 var type_obj = $(this).val();
 
-                if ($(this).val() === 'customizable_light') {
+                if ($(this).val() == 'customizable_light') {
                     var type_obj = ['tape', 'dali', 'dimmer'];
                 }
 
-                if ($(this).val() === 'switch') {
+                if ($(this).val() == 'switch') {
                     $('#view_form #off_method_div').show();
-                } else if ($(this).val() === 'conditioner' || $(this).val() === 'customizable_light' || $(this).val() === 'dimmer') {
+                } else if ($(this).val() == 'conditioner' || $(this).val() == 'customizable_light' || $(this).val() == 'dimmer' || $(this).val() == 'curtain') {
                     $('#view_form #off_method_div').hide();
                     $('#view_form #on_method_div').hide();
-                } else if ($(this).val() === 'termostat') {
+                } else if ($(this).val() == 'termostat') {
                     $('#view_form [name=lowval]').attr('min', 0);
                     $('#view_form [name=highval]').attr('min', 0);
                     $('#view_form [name=lowval]').attr('max', 30);
                     $('#view_form [name=highval]').attr('max', 50);
                     $('#additionallydiv').show();
                     $('#low_high_val_div').show();
-                } else if ($(this).val() === 'lightstat') {
+                } else if ($(this).val() == 'lightstat') {
                     $('#view_form [name=lowval]').attr('min', 0);
                     $('#view_form [name=highval]').attr('min', 0);
                     $('#view_form [name=lowval]').attr('max', 100);
                     $('#view_form [name=highval]').attr('max', 100);
                     $('#additionallydiv').show();
                     $('#low_high_val_div').show();
-                } else if ($(this).val() === 'carbsens') {
+                } else if ($(this).val() == 'carbsens') {
                     $('#view_form [name=lowval]').attr('min', 400);
                     $('#view_form [name=highval]').attr('min', 400);
                     $('#view_form [name=lowval]').attr('max', 2000);
                     $('#view_form [name=highval]').attr('max', 2000);
                     $('#additionallydiv').show();
                     $('#low_high_val_div').show();
-                } else if ($(this).val() === 'link') {
+                } else if ($(this).val() == 'link') {
                     $('#view_form #id_object_div').hide();
                     $('#view_form #on_method_div').hide();
                     $('#view_form #off_method_div').hide();
                     $('#on_params_div').show();
-                } else if ($(this).val() === 'label') {
+                } else if ($(this).val() == 'label') {
                     $('#additionallydiv').show();
                     $('#labeldiv').show();
                 }

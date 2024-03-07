@@ -103,6 +103,8 @@ class View extends Model
 
     const TYPE_CUSTOMIZABLE_LIGHT = 'customizable_light';
 
+    const TYPE_CURTAIN = 'curtain';
+
     const PIN_SAFE_TYPE = 'pin';
 
     const CONFIRM_SAFE_TYPE = 'confirm';
@@ -125,6 +127,7 @@ class View extends Model
             self::TYPE_LINK => 'Ссылка',
             self::TYPE_CONDITIONER => 'Кондиционер',
             self::TYPE_CUSTOMIZABLE_LIGHT => 'Настраиваемый источник света',
+            self::TYPE_CURTAIN => 'Штора',
         ];
     }
 
