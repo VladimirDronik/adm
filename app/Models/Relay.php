@@ -60,6 +60,27 @@ class Relay extends Model
         ];
     }
 
+    public function getGatewayNameAttribute(): string
+    {
+        $name = '';
+
+        if ($this->gateway_type == HomeObject::GATEWAY_MODBUS) {
+            $slaver = ModbusSlaver::find($this->gateway_id);
+
+            if ($slaver) {
+                $name = $slaver->name;
+            }
+        } else {
+            $device = Device::find($this->gateway_id);
+
+            if ($device) {
+                $name = $device->description;
+            }
+        }
+
+        return $name;
+    }
+
     /* relations */
 
     public function object()

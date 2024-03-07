@@ -1,25 +1,18 @@
 <br>
-{{ Form::bs_simple_text('ID объекта:', $relay->object['id']) }}
+{{ Form::bs_simple_text('ID объекта:', $relay->id_object) }}
+
+{{ Form::bs_simple_text('Тип подключения:', \App\Models\HomeObject::getGatewayNameByType($relay->gateway_type)) }}
 
 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-<input type="hidden" name="id_object" value="{{ $relay->id_object }}">
+@if($relay->gateway_type == \App\Models\HomeObject::GATEWAY_HTTP)
+    {{ Form::bs_autoselect('gateway_id', 'Контроллер*:', $devices, old('gateway_id', $relay->gateway_id), false, false, ['required' => true], null, null, 3, false, true) }}
 
-    <div class="col-sm-12 pr-0 mt-4">
-        {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id', $idDevice),
-           false, false, [], null) }}
+    {{ Form::bs_autoselect('port_id', 'Порт*:', [], old('port_id'), false, false, ['required' => true], null, null, 3, false, true) }}
+@else
+    {{ Form::bs_autoselect('gateway_id', 'Устройство*:', $modbusSlavers, old('gateway_id', $relay->gateway_id), false, false, ['required' => true], null, null, 3, false, true) }}
 
-        <div id='port_id_div' @if ($ports==null) style="display: none" @endif>
-            {{ Form::bs_autoselect('port_id', 'Порт:', $ports, old('port_id', $idPort),
-                false, false, [], null) }}
-        </div>
+    {{ Form::bs_autoselect('register_id', 'Регистр:', [], old('register_id'), false, false, [], null, 'Оставьте поле пустым, если не хотите менять регистр у методов', 3, false, false) }}
+@endif
 
-        <div id='hitepro_devices_div' @if ($hp_devices==null) style="display: none" @endif>
-            {{ Form::bs_autoselect('hitepro_devices', 'Устройство:', $hp_devices, old('hiteProDevices', $hp_device),
-                false, false, [], null) }}
-        </div>
-
-        <input type="hidden" name="place" id="place" value="@if ($ports==null) Hite-pro @else port @endif">
-    </div>
-
-    @include('messages.two')
+@include('messages.two')

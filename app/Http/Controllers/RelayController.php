@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Relay\CreateRequest;
 use App\Http\Requests\Relay\UpdateRequest;
 use App\Models\HomeObject;
+use App\Models\Port;
 use App\Models\Relay;
 use App\Repositories\DeviceRepository;
-use App\Repositories\ObjectRepository;
+use App\Repositories\ModbusRepository;
 use App\Repositories\RelayRepository;
 use App\Services\PortService;
 use App\Services\RelayService;
@@ -16,28 +17,28 @@ use App\Services\Service;
 class RelayController extends Controller
 {
     public function __construct(
-        private RelayRepository $relay_rep,
-        private ObjectRepository $object_rep,
-        private DeviceRepository $device_rep,
+        private RelayRepository $relayRepository,
+        private DeviceRepository $deviceRepository,
         private RelayService $service,
         private PortService $portService,
+        private ModbusRepository $modbusRepository
     ) {
     }
 
     public function index()
     {
-        $relays = $this->relay_rep->getAll();
+        $relays = $this->relayRepository->getAll();
 
         return view('relays.index', compact('relays'));
     }
 
     public function create()
     {
-        $objects = $this->object_rep->getAllToArray();
-        $object_types = HomeObject::getFullTypeIds();
-        $devices = $this->device_rep->getAllToArray();
+        $devices = $this->deviceRepository->getAllToArray();
+        $gatewayTypes = HomeObject::getGatewayTypes();
+        $modbusSlavers = $this->modbusRepository->getAllSlaversToArray();
 
-        return view('relays.create', compact('objects', 'object_types', 'devices'));
+        return view('relays.create', compact('devices', 'gatewayTypes', 'modbusSlavers'));
     }
 
     public function store(CreateRequest $r)
@@ -59,8 +60,6 @@ class RelayController extends Controller
     {
         $can = gates('devices.show-object');
 
-        [$idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices] = $this->portService->getCurrentDevPort($relay->id_object);
-
         [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice] =
             Service::getListElements($relay->id_object);
 
@@ -72,9 +71,27 @@ class RelayController extends Controller
 
         $allEvents = '';
 
+        $modbusSlavers = null;
+        $devices = null;
+        $currentPort = null;
+        $methodsIdWithRegisters = [];
+
+        if ($relay->gateway_type == HomeObject::GATEWAY_MODBUS) {
+            $modbusSlavers = $this->modbusRepository->getAllSlaversToArray();
+
+            if ($relay->object->methods->isNotEmpty()) {
+                foreach ($relay->object->methods as $method) {
+                    $methodsIdWithRegisters[$method->id] = $method->register ? $method->register->id : 0;
+                }
+            }
+        } else {
+            $devices = $this->deviceRepository->getAllToArray();
+            $currentPort = Port::where('object', $relay->object->id)->first();
+        }
+
         return view('relays.edit', compact('relay', 'properties', 'events', 'sounds', 'views', 'rooms',
-            'idDevice', 'idPort', 'devices', 'ports', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents',
-            'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'allEvents', 'can'));
+            'devices', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents', 'currentPort',
+            'objects', 'object_types', 'scripts', 'allEvents', 'can', 'modbusSlavers', 'methodsIdWithRegisters'));
     }
 
     public function update(UpdateRequest $r, Relay $relay)

@@ -43,7 +43,7 @@
                                     @include('engineering/boiler/edit_tabs/control_mode')
                                 </div>
                                 <div class="tab-pane p-20" id="boilertab3" role="tabpanel" style="width: 1000px;">
-                                    @include('engineering.boiler.edit_tabs.methods')
+                                    @include('objects.methods_with_modbus', ['systemMethods' => $boiler->object->methods, 'device' => $boiler])
                                 </div>
                             </div>
                         </div>

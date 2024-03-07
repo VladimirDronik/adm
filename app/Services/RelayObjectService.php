@@ -27,145 +27,114 @@ class RelayObjectService
     }
 
     /**
-     * Создание метода 'Выключить реле'
-     */
-    public function createMethodOff(int $object_id, $device_id, $port_id)
-    {
-        if ($device_id && ! is_null($port_id)) {
-            $easyString = $device_id.';'.$port_id.':0';
-        } else {
-            $easyString = null;
-        }
-
-        //Обнуляем все простые действия, которые были назначены для этого порта
-        Method::where('easy', $easyString)->update(['easy' => null]);
-
-        Method::forceCreate([
-            'name' => 'Выключить реле',
-            'id_object' => $object_id,
-            'script' => null,
-            'easy' => $easyString,
-            'comment' => 'Выключить реле',
-            'is_system' => 1,
-        ]);
-    }
-
-    /**
-     * Создание метода 'Включить реле'
-     */
-    public function createMethodOn(int $object_id, $device_id, $port_id)
-    {
-        if ($device_id && ! is_null($port_id)) {
-            $easyString = $device_id.';'.$port_id.':1';
-        } else {
-            $easyString = null;
-        }
-
-        //Обнуляем все простые действия, которые были назначены для этого порта
-        Method::where('easy', $easyString)->update(['easy' => null]);
-
-        Method::forceCreate([
-            'name' => 'Включить реле',
-            'id_object' => $object_id,
-            'script' => null,
-            'easy' => $easyString,
-            'comment' => 'Включить реле',
-            'is_system' => 1,
-        ]);
-    }
-
-    /**
-     * Создание метода 'Включить реле'
-     */
-    public function createMethodOnOff(int $object_id, $device_id, $port_id)
-    {
-        if ($device_id && ! is_null($port_id)) {
-            $easyString = $device_id.';'.$port_id.':2';
-        } else {
-            $easyString = null;
-        }
-
-        //Обнуляем все простые действия, которые были назначены для этого порта
-        Method::where('easy', $easyString)->update(['easy' => null]);
-
-        Method::forceCreate([
-            'name' => 'Переключить реле',
-            'id_object' => $object_id,
-            'script' => null,
-            'easy' => $easyString,
-            'comment' => 'Переключить реле',
-            'is_system' => 1,
-        ]);
-    }
-
-    private function updateMethodOn(int $object_id, $device_id, $port_id)
-    {
-        if ($device_id && ! is_null($port_id)) {
-            $easyString = $device_id.';'.$port_id.':1';
-        } else {
-            $easyString = null;
-        }
-
-        //Обнуляем все простые действия, которые были назначены для этого порта
-        Method::where('easy', $easyString)
-            ->update(['easy' => null]);
-
-        Method::where('id_object', $object_id)
-            ->where('name', 'Включить реле')
-            ->update(['easy' => $easyString]);
-    }
-
-    private function updateMethodOff(int $object_id, $device_id, $port_id)
-    {
-        if ($device_id && ! is_null($port_id)) {
-            $easyString = $device_id.';'.$port_id.':0';
-        } else {
-            $easyString = null;
-        }
-
-        //Обнуляем все простые действия, которые были назначены для этого порта
-        Method::where('easy', $easyString)
-            ->update(['easy' => null]);
-
-        Method::where('id_object', $object_id)
-            ->where('name', 'Выключить реле')
-            ->update(['easy' => $easyString]);
-    }
-
-    private function updateMethodOnOff(int $object_id, $device_id, $port_id)
-    {
-        if ($device_id && ! is_null($port_id)) {
-            $easyString = $device_id.';'.$port_id.':2';
-        } else {
-            $easyString = null;
-        }
-
-        //Обнуляем все простые действия, которые были назначены для этого порта
-        Method::where('easy', $easyString)
-            ->update(['easy' => null]);
-
-        Method::where('id_object', $object_id)
-            ->where('name', 'Переключить реле')
-            ->update(['easy' => $easyString]);
-    }
-
-    /**
-     * Автосоздание методов для объекта, который был
-     * создан автоматически для реле
+     * Создание методов реле
      *
      * @return void
      */
-    public function createRelayObjectMethods(int $object_id, $device_id, $port_id)
+    public function createRelayObjectMethods(int $objectId, ?int $deviceId = null, ?int $numPort = null, ?int $registerId = null)
     {
-        $this->createMethodOn($object_id, $device_id, $port_id);
-        $this->createMethodOff($object_id, $device_id, $port_id);
-        $this->createMethodOnOff($object_id, $device_id, $port_id);
+        $easyString = null;
+
+        if ($registerId) {
+            $easyString = 'm;' . $registerId;
+        } else {
+            $easyString = $deviceId.';'.$numPort;
+
+            //Обнуляем все простые действия, которые были назначены для этих портов
+            Method::where('easy', $easyString . ':0')
+                ->orWhere('easy', $easyString . ':1')
+                ->orWhere('easy', $easyString . ':2')
+                ->update(['easy' => null]);
+        }
+
+        $methods = [
+            [
+                'name' => 'Выключить реле',
+                'id_object' => $objectId,
+                'script' => null,
+                'easy' => $registerId ? $easyString : $easyString . ':0',
+                'comment' => 'Выключить реле',
+                'is_system' => 1,
+            ],
+            [
+                'name' => 'Включить реле',
+                'id_object' => $objectId,
+                'script' => null,
+                'easy' => $registerId ? $easyString : $easyString . ':1',
+                'comment' => 'Включить реле',
+                'is_system' => 1,
+            ],
+            [
+                'name' => 'Переключить реле',
+                'id_object' => $objectId,
+                'script' => null,
+                'easy' => $registerId ? $easyString : $easyString . ':2',
+                'comment' => 'Переключить реле',
+                'is_system' => 1,
+            ],
+        ];
+
+        foreach ($methods as $method) {
+            Method::create($method);
+        }
     }
 
-    public function updateRelayObjectMethods(int $object_id, $device_id, $port_id)
+    /**
+     * Обновление методов реле
+     */
+    public function updateRelayObjectMethods(int $objectId, ?int $deviceId = null, ?int $numPort = null, ?int $registerId = null)
     {
-        $this->updateMethodOff($object_id, $device_id, $port_id);
-        $this->updateMethodOn($object_id, $device_id, $port_id);
-        $this->updateMethodOnOff($object_id, $device_id, $port_id);
+        $easyString = null;
+
+        if ($registerId) {
+            $easyString = 'm;' . $registerId;
+        } else {
+            $easyString = $deviceId.';'.$numPort;
+
+            //Обнуляем все простые действия, которые были назначены для этих портов
+            Method::where('easy', $easyString . ':0')
+                ->orWhere('easy', $easyString . ':1')
+                ->orWhere('easy', $easyString . ':2')
+                ->update(['easy' => null]);
+        }
+
+        $methods = [
+            [
+                'name' => 'Выключить реле',
+                'easy' => $registerId ? $easyString : $easyString . ':0',
+            ],
+            [
+                'name' => 'Включить реле',
+                'easy' => $registerId ? $easyString : $easyString . ':1',
+            ],
+            [
+                'name' => 'Переключить реле',
+                'easy' => $registerId ? $easyString : $easyString . ':2',
+            ],
+        ];
+
+        foreach ($methods as $method) {
+            Method::where('id_object', $objectId)
+                ->where('name', $method['name'])
+                ->update(['easy' => $method['easy']]);
+        }
+    }
+
+    /**
+     * Обновление методов реле выбранными регистрами
+     *
+     * @return void
+     */
+    public function updateRelayMethodsWithCurrentRegisters(HomeObject $relayObject, array $data)
+    {
+        if ($relayObject->methods->isNotEmpty()) {
+            foreach ($relayObject->methods as $method) {
+                $method->update([
+                    'easy' => array_key_exists('register_id_' . $method->id, $data) && $data['register_id_' . $method->id]
+                        ? 'm;' . $data['register_id_' . $method->id]
+                        : null,
+                ]);
+            }
+        }
     }
 }

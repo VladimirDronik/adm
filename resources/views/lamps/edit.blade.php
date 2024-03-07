@@ -5,10 +5,11 @@
 @endsection
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование лампы № '. $lamp->object['id'] . ' «' . $lamp->name .'»',
+    @includeIf('components.breadcrumbs', [
+        'title' => 'Редактирование лампы № '. $lamp->object['id'] . ' «' . $lamp->name .'»',
         'links' => [ route('illumination.index') => 'Список устройств освещения'],
-        'last_link' => 'Редактирование лампы'])
+        'last_link' => 'Редактирование лампы',
+    ])
 @endsection
 
 @section('content')
@@ -26,8 +27,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::model($lamp, ['route' => ['lamps.update', $lamp->id], 'id' => 'lamp_form',
-                        'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::model($lamp, ['route' => ['lamps.update', $lamp->id], 'id' => 'lamp_form', 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
@@ -51,14 +51,12 @@
                                 @include('objects.events', ['object' => $lamp->object])
                             </div>
                             <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel" style="width: 1000px;">
-                                @include('lamps.edit_tabs.methods', ['systemMethods' => $systemMethods])
+                                @include('objects.methods_with_modbus', ['systemMethods' => $systemMethods, 'device' => $lamp])
                             </div>
                             <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
                                 @include('objects.sheduler', ['object' => $lamp->object])
                             </div>
                         </div>
-                        <input type="hidden" id="tabs-sel" value="{{ $tab }}">
-                        <input type="hidden" id="event_idobject" name="event_idobject" value="{{ $lamp->iobject['id'] }}">
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
                 </div>

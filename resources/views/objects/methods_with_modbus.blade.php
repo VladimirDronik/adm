@@ -1,4 +1,4 @@
-@if($lamp->object && $lamp->object->is_system && $systemMethods->isNotEmpty())
+@if($systemMethods->isNotEmpty())
     {{ Form::bs_title('Системные методы') }}
 
     <div class="form-group row">
@@ -6,7 +6,7 @@
             <div class="col-md-1"><i>ID</i></div>
         @endcan
         <label class="col-md-4"><i>Название метода</i></label>
-        @if($lamp->gateway_type == \App\Models\HomeObject::GATEWAY_MODBUS)
+        @if($device->gateway_type == \App\Models\HomeObject::GATEWAY_MODBUS)
             <div class="col-md-2 text-left"><i>Устройство</i></div>
             <div class="col-md-5 text-left"><i>Значение</i></div>
         @endif
@@ -31,11 +31,11 @@
                             <img src="{{ asset('ela/images/info.png') }}" width="23" height="23" title="{{ $method->comment }}"></img>
                         </div>
                     @endif
-                    @if($lamp->gateway_type == \App\Models\HomeObject::GATEWAY_MODBUS)
+                    @if($device->gateway_type == \App\Models\HomeObject::GATEWAY_MODBUS)
                         <div class="col-md-2">
                             <select autocomplete="off" id="{{ 'auto_sel_slaver_id_'.$method->id }}" required data-placeholder="не выбрано" name="{{ 'slaver_id_'.$method->id }}" class="chosen-select form-control">
                                 @foreach ($modbusSlavers as $id => $name)
-                                    <option value="{{ $id }}" @if($id == old('slaver_id_'.$method->id, $method->register ? $method->register->slaver->id : $lamp->gateway_id)) selected @endif>
+                                    <option value="{{ $id }}" @if($id == old('slaver_id_'.$method->id, $method->register ? $method->register->slaver->id : $device->gateway_id)) selected @endif>
                                         {{ $name }}
                                     </option>
                                 @endforeach

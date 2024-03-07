@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Relay;
 
+use App\Models\HomeObject;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateRequest extends FormRequest
@@ -23,16 +24,22 @@ class CreateRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'name' => 'required|string|max:255',
-            'id_object' => 'nullable|integer|min:1',
+            'gateway_type' => 'required|string',
         ];
-    }
 
-    public function messages()
-    {
-        return [
-            'name.required' => 'Не указано название',
-        ];
+        switch ($this->request->get('gateway_type')) {
+            case HomeObject::GATEWAY_HTTP:
+                $rules['http_gateway_id'] = 'required|integer|exists:App\Models\Device,id';
+                $rules['port_id'] = 'required|integer|exists:App\Models\Port,id';
+                break;
+            case HomeObject::GATEWAY_MODBUS:
+                $rules['modbus_gateway_id'] = 'required|integer|exists:App\Models\ModbusSlaver,id';
+                $rules['register_id'] = 'required|integer|exists:App\Models\ModbusRegister,id';
+                break;
+        }
+
+        return $rules;
     }
 }

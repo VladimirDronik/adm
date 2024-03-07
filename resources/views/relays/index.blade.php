@@ -36,6 +36,7 @@
                             <tr>
                                 <th style="width: 60px;">ID</th>
                                 <th style="width: 300px;">Название</th>
+                                <th>Подключение</th>
                                 <th>Статус</th>
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>
@@ -44,8 +45,11 @@
                             <tbody>
                             @foreach($relays as $relay)
                                 <tr id="tr{{$relay->id}}">
-                                    <td scope="row">{{ $relay->object['id'] }}</td>
+                                    <td scope="row">{{ $relay->id_object }}</td>
                                     <td><a href="{{ route('relays.edit', [$relay->id]) }}">{{ $relay->name }}</a></td>
+                                    <td>
+                                        {{ $relay->gateway_name }}
+                                    </td>
                                     <td>
                                         @if($relay->object->status == 'on')
                                             <span class="badge badge-success">{{ $relay->object->status }}</span>
@@ -71,6 +75,7 @@
                             <tr>
                                 <th style="width: 60px;">ID</th>
                                 <th style="width: 300px;">Название</th>
+                                <th>Подключение</th>
                                 <th>Статус</th>
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>
