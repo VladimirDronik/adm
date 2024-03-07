@@ -153,7 +153,7 @@
                                         <label class="text-right col-md-2 label-fix">
                                             <strong>Тип:</strong>
                                         </label>
-                                        <div class="col-sm-2" style="display: flex; align-items: center;">
+                                        <div class="col-sm-3" style="display: flex; align-items: center;">
                                             {{ $extensionModule->extensionModuleType->name }}
                                         </div>
                                         <label class="text-right col-md-2 label-fix">
@@ -168,7 +168,7 @@
                                         <div class="col-sm-1" style="display: flex; align-items: center;">
                                             {{ $extensionModule->scl_port }}
                                         </div>
-                                        <div class="col-sm-2"><button id="deleteExtensionModule{{ $extensionModule->id }}" onclick="deleteExtensionModule('{{ $extensionModule->id }}')" class="deleteExtensionModule btn btn-outline-danger">Удалить модуль</button></div>
+                                        <div class="col-sm-1"><button id="deleteExtensionModule{{ $extensionModule->id }}" onclick="deleteExtensionModule('{{ $extensionModule->id }}')" class="deleteExtensionModule btn btn-outline-danger">Удалить модуль</button></div>
                                     </div>
                                     @endforeach
                                 @endif
@@ -488,12 +488,12 @@
             function createNewFields() {
                 var newFields = $('<div class="moduleFields form-group row">' +
                                     '<label class="text-right col-md-2 label-fix">Тип:</label>' +
-                                    '<select class="chosen-select form-control col-sm-2" name="extension_module_type_id"></select>' +
+                                    '<select class="chosen-select form-control col-sm-3" name="extension_module_type_id"></select>' +
                                     '<label class="text-right col-md-2 label-fix">SDA:</label>' +
                                     '<select class="chosen-select form-control col-sm-1" name="sda_port"></select>' +
                                     '<label class="text-right col-md-2 label-fix">SCL:</label>' +
                                     '<select class="chosen-select form-control col-sm-1" name="scl_port"></select>' +
-                                    '<div class="col-sm-2"><button class="deleteModuleBtn btn btn-outline-danger">Удалить модуль</button></div>' +
+                                    '<div class="col-sm-1"><button class="deleteModuleBtn btn btn-outline-danger">Удалить модуль</button></div>' +
                                 '</div>');
                 var selectModuleType = newFields.find('select[name="extension_module_type_id"]');
                 var selectSdaPort = newFields.find('select[name="sda_port"]');
@@ -511,7 +511,7 @@
             $("#addExtensionModuleBtn").click(function() {
                 var newFields = createNewFields();
                 $("#extensionModulesContainer").append(newFields);
-                $(".col-sm-3 .deleteModuleBtn").click(function() {
+                $(".col-sm-1 .deleteModuleBtn").click(function() {
                     $(this).parent().parent().remove();
                 });
             });
