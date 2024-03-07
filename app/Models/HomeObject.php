@@ -148,7 +148,7 @@ class HomeObject extends Model
 
     public function methods()
     {
-        return $this->hasMany(Method::class, 'id_object', 'id')->orderBy('id');
+        return $this->hasMany(Method::class, 'id_object', 'id');
     }
 
     public function scheduler_tasks()
@@ -184,5 +184,10 @@ class HomeObject extends Model
     public function labels()
     {
         return $this->hasMany(Label::class, 'id_object', 'id');
+    }
+
+    public function lamp()
+    {
+        return $this->hasOne(Lamp::class, 'id_object', 'id');
     }
 }

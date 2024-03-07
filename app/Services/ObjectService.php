@@ -60,17 +60,24 @@ class ObjectService
         return $object->id;
     }
 
-    public function getMethodsByObjectId(int $object_id): array
+    public function getMethodsByObjectId(int $objectId): array
     {
-        if ($object_id) {
-            return Method::where('id_object', $object_id)
-                ->orderBy('name')
-                ->select('id', 'name', 'params')
-                ->get()
-                ->toArray();
+        $object = HomeObject::find($objectId);
+
+        if (!$object) {
+            return [];
         }
 
-        return [];
+        $methodsQuery = $object->methods();
+
+        if ($object->lamp) {
+            $methodsQuery->whereIn('alias', $object->lamp->getMethodsAliasByType());
+        }
+
+        return $methodsQuery->orderBy('name')
+            ->select('id', 'name', 'params')
+            ->get()
+            ->toArray();
     }
 
     /**
