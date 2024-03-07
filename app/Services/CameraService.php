@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Camera;
 use App\Models\Recorder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class CameraService
 {
@@ -106,7 +107,39 @@ class CameraService
      */
     public function changeActive(int $id, int $active)
     {
-        Camera::where('id', $id)->update(['active' => $active]);
+        $camera = Camera::find($id);
+
+        if (!$camera) {
+            return false;
+        }
+
+        if ($camera->type == Camera::TYPE_MEDIA_SERVER) {
+            if ($active == 0) {
+                try {
+                    Http::delete('http://localhost:9997/v3/config/paths/delete/camera' . $camera->id);
+                } catch (\Throwable $th) {
+                }
+            } else {
+                $recorder = $camera->recorder;
+
+                if ($recorder) {
+                    $link = str_replace(
+                        ['$login', '$password', '$ip_address'],
+                        [$recorder->login, customDecrypt($recorder->password, config('secret.password_key')), $recorder->ip_address],
+                        $camera->link
+                    );
+
+                    try {
+                        Http::post('http://localhost:9997/v3/config/paths/add/camera' . $camera->id, [
+                            'source' => $link,
+                        ]);
+                    } catch (\Throwable $th) {
+                    }
+                }
+            }
+        }
+
+        $camera->update(['active' => $active]);
 
         return true;
     }

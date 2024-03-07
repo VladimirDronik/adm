@@ -7,6 +7,7 @@
 @section('content')
     <div class="container-fluid">
         @include('cctv.header')
+        @include('components.form.error', ['name' => null])
         <div class="card">
             <div class="card-title"><h4>Видеонаблюдение</h4></div>
             <ul class="nav nav-tabs customtab" role="tablist">

@@ -52,6 +52,7 @@ Route::group(['middleware' => ['auth']], function () {
     });
 
     Route::resource('cameras', 'CameraController')->except('show', 'destroy', 'index')->middleware('can:cameras');
+    Route::get('cameras/{camera}/stream', 'CameraController@getStream')->middleware('can:cameras')->name('cameras.get_stream');
     Route::resource('recorders', 'RecorderController')->except('show', 'destroy', 'index')->middleware('can:cameras');
     Route::get('cctv', 'CctvController@index')->name('cctv.index')->middleware('can:cameras');
 

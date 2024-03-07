@@ -7,6 +7,7 @@ use App\Http\Requests\Camera\UpdateRequest;
 use App\Models\Camera;
 use App\Repositories\RoomRepository;
 use App\Services\CameraService;
+use Illuminate\Support\Facades\Http;
 
 class CameraController extends Controller
 {
@@ -59,5 +60,30 @@ class CameraController extends Controller
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении камеры');
+    }
+
+    public function getStream(Camera $camera)
+    {
+        $recorder = $camera->recorder;
+
+        if (!$recorder) {
+            return back()->with('error', 'Ошибка. Камера без видеорегистратора');
+        }
+
+        $link = str_replace(
+            ['$login', '$password', '$ip_address'],
+            [$recorder->login, customDecrypt($recorder->password, config('secret.password_key')), $recorder->ip_address],
+            $camera->link
+        );
+
+        try {
+            Http::post('http://localhost:9997/v3/config/paths/add/camera' . $camera->id, [
+                'source' => $link,
+            ]);
+        } catch (\Throwable $th) {
+            return back()->with('error', 'Ошибка при создании пути камеры');
+        }
+
+        return redirect('http://' .request()->host() . ':8888/camera' . $camera->id . '?muted=1&controls=0&autoplay=1');
     }
 }
