@@ -59,6 +59,27 @@ class ModbusRepository
             ->toArray();
     }
 
+    /**
+     * Получить список устройств отфильтрованных по полям типа устройства
+     *
+     * @param array $purpose
+     * @param null|bool $relay
+     * @return array
+     */
+    public function getFilteredSlaversToArray(array $purpose, ?bool $relay = null): array
+    {
+        return ModbusSlaver::select('id', 'name')->whereHas('relatedType', function($query) use ($purpose, $relay) {
+            $query->whereIn('purpose', $purpose);
+
+            if ($relay !== null) {
+                $query->orWhere('relay', $relay);
+            }
+        })
+        ->orderBy('name')
+        ->pluck('name', 'id')
+        ->toArray();
+    }
+
     public function getAllSlaversTypesToArray()
     {
         return ModbusSlaversType::select('id', 'name')

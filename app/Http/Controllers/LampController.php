@@ -31,7 +31,7 @@ class LampController extends Controller
         $object_types = HomeObject::getFullTypeIds();
         $devices = $this->deviceRepository->getAllToArray();
         $gatewayTypes = HomeObject::getGatewayTypes();
-        $modbusSlavers = $this->modbusRepository->getAllSlaversToArray();
+        $modbusSlavers = $this->modbusRepository->getFilteredSlaversToArray(['light', 'relay'], 1);
 
         return view('lamps.create', compact('objects', 'object_types', 'devices', 'gatewayTypes', 'modbusSlavers'));
     }
@@ -87,7 +87,7 @@ class LampController extends Controller
         $systemMethods = $lamp->object->methods->whereIn('alias', $lamp->getMethodsAliasByType());
 
         if ($lamp->gateway_type == HomeObject::GATEWAY_MODBUS) {
-            $modbusSlavers = $this->modbusRepository->getAllSlaversToArray();
+            $modbusSlavers = $this->modbusRepository->getFilteredSlaversToArray(['light', 'relay'], 1);
 
             if ($systemMethods->isNotEmpty()) {
                 foreach ($systemMethods as $method) {

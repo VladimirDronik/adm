@@ -40,7 +40,7 @@ class BoilerController extends Controller
         $methodsIdWithRegisters = [];
 
         if ($boiler->gateway_type == HomeObject::GATEWAY_MODBUS) {
-            $modbusSlavers = $this->modbusRepository->getAllSlaversToArray();
+            $modbusSlavers = $this->modbusRepository->getFilteredSlaversToArray(['heat']);
 
             foreach ($boiler->object->methods as $method) {
                 $methodsIdWithRegisters[$method->id] = $method->register ? $method->register->id : 0;
@@ -88,7 +88,7 @@ class BoilerController extends Controller
     {
         $typesBoiler = Boiler::getTypes();
         $termostats = $this->termostatRepository->getAllWithIdObjectToArray();
-        $modbusSlavers = $this->modbusRepository->getAllSlaversToArray();
+        $modbusSlavers = $this->modbusRepository->getFilteredSlaversToArray(['heat']);
         $devices = $this->deviceRepository->getAllToArray();
         $gatewayTypes = HomeObject::getGatewayTypes();
 
