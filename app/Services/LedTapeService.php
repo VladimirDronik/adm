@@ -77,7 +77,7 @@ class LedTapeService
             $newName = trim($data['name']);
 
             if ($ledTape->name != $newName) {
-                $ledTape->object->name = HomeObject::getUniqueObjectName($ledTape->object->id, $newName);
+                $ledTape->object->name = HomeObject::getUniqueObjectName($ledTape->id_object, $newName);
                 $ledTape->object->save();
 
                 // View::where('id_object', $ledTape->object->id)->update([

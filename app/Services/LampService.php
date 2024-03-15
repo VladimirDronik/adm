@@ -109,9 +109,9 @@ class LampService
     public function update(Lamp $lamp, array $data): int
     {
         DB::transaction(function () use (&$lamp, $data) {
-            if ($lamp->name !== trim($data['name'])) {
+            if ($lamp->name != trim($data['name'])) {
                 $lamp->object->name = HomeObject::getUniqueObjectName(
-                    $lamp->object->id,
+                    $lamp->id_object,
                     trim($data['name'])
                 );
             }

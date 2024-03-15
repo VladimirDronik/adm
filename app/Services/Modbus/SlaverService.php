@@ -143,11 +143,19 @@ class SlaverService
      */
     public function updateDaliDevice(DaliDevice $daliDevice, array $data): int
     {
-        $daliDevice->name = $data['name'];
+        DB::transaction(function () use (&$daliDevice, $data) {
+            $newName = trim($data['name']);
 
-        $daliDevice->room = $data['room'];
+            if ($daliDevice->id_object && $daliDevice->name != $newName) {
+                $daliDevice->object->name = HomeObject::getUniqueObjectName($daliDevice->id_object, $newName);
+                $daliDevice->object->save();
+            }
 
-        $daliDevice->save();
+            $daliDevice->name = $newName;
+            $daliDevice->room = $data['room'];
+
+            $daliDevice->save();
+        });
 
         return $daliDevice->id;
     }
