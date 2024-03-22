@@ -11,6 +11,7 @@ namespace App\Services;
 use App\Models\HomeObject;
 use App\Models\Lamp;
 use App\Models\Method;
+use App\Models\Port;
 use App\Models\Script;
 
 class LampObjectService
@@ -37,23 +38,29 @@ class LampObjectService
      *
      * @return void
      */
-    public function createLampObjectMethods(int $objectId, ?int $deviceId = null, ?int $numPort = null, ?int $registerId = null)
+    public function createLampObjectMethods(int $objectId, ?int $deviceId = null, ?Port $port = null, ?int $registerId = null)
     {
-        $this->createLampMethods($objectId, $deviceId, $numPort, $registerId);
+        $this->createLampMethods($objectId, $deviceId, $port, $registerId);
         $this->createLampDimmerMethods($objectId);
     }
 
     /**
      * Обновление методов лампы
      */
-    public function updateAllLampMethods(int $objectId, ?int $deviceId = null, ?int $numPort = null, ?int $registerId = null)
+    public function updateAllLampMethods(int $objectId, ?int $deviceId = null, ?Port $port = null, ?int $registerId = null)
     {
         $easyString = null;
 
         if ($registerId) {
             $easyString = 'm;' . $registerId;
         } else {
-            $easyString = $deviceId.';'.$numPort;
+            if ($port) {
+                if ($port->type == 'ext') {
+                    $easyString = $deviceId . ';' . $port->extensionModule->sda_port . 'e' . $port->num_port;
+                } else {
+                    $easyString = $deviceId . ';' . $port->num_port;
+                }
+            }
 
             //Обнуляем все простые действия, которые были назначены для этих портов
             Method::where('easy', $easyString . ':0')
@@ -122,14 +129,20 @@ class LampObjectService
     /**
      * Создание методов лампы
      */
-    private function createLampMethods(int $objectId, ?int $deviceId = null, ?int $numPort = null, ?int $registerId = null)
+    private function createLampMethods(int $objectId, ?int $deviceId = null, ?Port $port = null, ?int $registerId = null)
     {
         $easyString = null;
 
         if ($registerId) {
             $easyString = 'm;' . $registerId;
         } else {
-            $easyString = $deviceId.';'.$numPort;
+            if ($port) {
+                if ($port->type == 'ext') {
+                    $easyString = $deviceId . ';' . $port->extensionModule->sda_port . 'e' . $port->num_port;
+                } else {
+                    $easyString = $deviceId . ';' . $port->num_port;
+                }
+            }
 
             //Обнуляем все простые действия, которые были назначены для этих портов
             Method::where('easy', $easyString . ':0')

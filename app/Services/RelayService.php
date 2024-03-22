@@ -72,20 +72,18 @@ class RelayService
                     break;
                 case HomeObject::GATEWAY_HTTP:
                     $relay->gateway_id = $data['http_gateway_id'];
-
-                    $numPort = $this->portRepository->getNumPortByID($data['port_id']);
+                    $port = Port::find($data['port_id']);
 
                     $this->relayObjectService
-                        ->createRelayObjectMethods($object->id, $data['http_gateway_id'], $numPort);
+                        ->createRelayObjectMethods($object->id, $data['http_gateway_id'], $port);
 
-                    Port::where('id', $data['port_id'])
-                        ->update([
-                            'object' => $object->id,
-                            'comment' => $data['name'],
-                            'status' => 'OUT',
-                        ]);
+                    $port->update([
+                        'object' => $object->id,
+                        'comment' => $data['name'],
+                        'status' => 'OUT',
+                    ]);
 
-                    ConfigMegaService::setPortType($data['http_gateway_id'], $numPort, 'OUT');
+                    ConfigMegaService::setPortType($data['http_gateway_id'], $port->num_port, 'OUT');
                     break;
             }
 
@@ -125,10 +123,10 @@ class RelayService
                         }
                     break;
                 case HomeObject::GATEWAY_HTTP:
-                    $numPort = $this->portRepository->getNumPortByID($data['port_id']);
+                    $port = Port::find($data['port_id']);
 
                     $this->relayObjectService
-                        ->updateRelayObjectMethods($relay->object->id, $data['gateway_id'], $numPort);
+                        ->updateRelayObjectMethods($relay->object->id, $data['gateway_id'], $port);
 
                     Port::where('object', $relay->object->id)
                         ->update([
@@ -138,15 +136,14 @@ class RelayService
                             'comment' => '',
                         ]);
 
-                    Port::where('id', $data['port_id'])
-                        ->update([
-                            'object' => $relay->object->id,
-                            'method' => null,
-                            'status' => 'OUT',
-                            'comment' => $data['name'],
-                        ]);
+                    $port->update([
+                        'object' => $relay->object->id,
+                        'method' => null,
+                        'status' => 'OUT',
+                        'comment' => $data['name'],
+                    ]);
 
-                    ConfigMegaService::setPortType($data['gateway_id'], $numPort, 'OUT');
+                    ConfigMegaService::setPortType($data['gateway_id'], $port->num_port, 'OUT');
                     break;
             }
 

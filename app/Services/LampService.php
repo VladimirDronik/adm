@@ -45,20 +45,18 @@ class LampService
                     break;
                 case HomeObject::GATEWAY_HTTP:
                     $lamp->gateway_id = $data['http_gateway_id'];
-
-                    $numPort = $this->portRepository->getNumPortByID($data['port_id']);
+                    $port = Port::find($data['port_id']);
 
                     $this->lampObjectService
-                        ->createLampObjectMethods($object->id, $data['http_gateway_id'], $numPort);
+                        ->createLampObjectMethods($object->id, $data['http_gateway_id'], $port);
 
-                    Port::where('id', $data['port_id'])
-                        ->update([
-                            'object' => $object->id,
-                            'comment' => $data['name'],
-                            'status' => 'OUT',
-                        ]);
+                    $port->update([
+                        'object' => $object->id,
+                        'comment' => $data['name'],
+                        'status' => 'OUT',
+                    ]);
 
-                    ConfigMegaService::setPortType($data['http_gateway_id'], $numPort, 'OUT');
+                    ConfigMegaService::setPortType($data['http_gateway_id'], $port->num_port, 'OUT');
                     break;
             }
 
@@ -146,7 +144,7 @@ class LampService
                     }
                     break;
                 case HomeObject::GATEWAY_HTTP:
-                    $numPort = $this->portRepository->getNumPortByID($data['port_id']);
+                    $port = Port::find($data['port_id']);
 
                     if (array_key_exists('is_dimmer', $data)) {
                         $lamp->type = Lamp::TYPE_DIMMER;
@@ -160,7 +158,7 @@ class LampService
                         $lamp->speed = null;
 
                         $this->lampObjectService
-                            ->updateAllLampMethods($lamp->object->id, $data['gateway_id'], $numPort);
+                            ->updateAllLampMethods($lamp->object->id, $data['gateway_id'], $port);
                     }
 
                     Port::where('object', $lamp->object->id)
@@ -171,15 +169,14 @@ class LampService
                             'comment' => '',
                         ]);
 
-                    Port::where('id', $data['port_id'])
-                        ->update([
-                            'object' => $lamp->object->id,
-                            'method' => null,
-                            'status' => 'OUT',
-                            'comment' => $data['name'],
-                        ]);
+                    $port->update([
+                        'object' => $lamp->object->id,
+                        'method' => null,
+                        'status' => 'OUT',
+                        'comment' => $data['name'],
+                    ]);
 
-                    ConfigMegaService::setPortType($data['gateway_id'], $numPort, 'OUT');
+                    ConfigMegaService::setPortType($data['gateway_id'], $port->num_port, 'OUT');
                     break;
             }
 
