@@ -150,25 +150,31 @@
                                 @if($device->extensionModules)
                                     @foreach($device->extensionModules as $extensionModule)
                                     <div class="form-group row">
-                                        <label class="text-right col-md-2 label-fix">
+                                        <label class="text-right col-md-1 label-fix">
                                             <strong>Тип:</strong>
                                         </label>
                                         <div class="col-sm-3" style="display: flex; align-items: center;">
                                             {{ $extensionModule->extensionModuleType->name }}
                                         </div>
-                                        <label class="text-right col-md-2 label-fix">
+                                        <label class="text-right col-md-1 label-fix">
                                             <strong>SDA:</strong>
                                         </label>
                                         <div class="col-sm-1" style="display: flex; align-items: center;">
                                             {{ $extensionModule->sda_port }}
                                         </div>
-                                        <label class="text-right col-md-2 label-fix">
+                                        <label class="text-right col-md-1 label-fix">
                                             <strong>SCL:</strong>
                                         </label>
                                         <div class="col-sm-1" style="display: flex; align-items: center;">
                                             {{ $extensionModule->scl_port }}
                                         </div>
-                                        <div class="col-sm-1"><button id="deleteExtensionModule{{ $extensionModule->id }}" onclick="deleteExtensionModule('{{ $extensionModule->id }}')" class="deleteExtensionModule btn btn-outline-danger">Удалить модуль</button></div>
+                                        <label class="control-label text-right col-md-1 label-fix">
+                                            <strong>INT:</strong>
+                                        </label>
+                                        <div class="col-sm-1" style="display: flex; align-items: center;">
+                                            {{ $extensionModule->int_port }}
+                                        </div>
+                                        <div class="col-sm-1"><button id="deleteExtensionModule{{ $extensionModule->id }}" onclick="deleteExtensionModule('{{ $extensionModule->id }}')" class="deleteExtensionModule btn btn-outline-danger">Удалить</button></div>
                                     </div>
                                     @endforeach
                                 @endif
@@ -452,6 +458,7 @@
         let method_id = 0;
         let type = '';
         let sdaSclOptions = $.parseJSON('<?php echo $sdaSclOptionsJson; ?>');
+        let intOptions = $.parseJSON('<?php echo $intOptionsJson; ?>');
         let moduleTypeOptions = $.parseJSON('<?php echo $moduleTypeOptionsJson; ?>');
 
 
@@ -487,20 +494,26 @@
 
             function createNewFields() {
                 var newFields = $('<div class="moduleFields form-group row">' +
-                                    '<label class="text-right col-md-2 label-fix">Тип:</label>' +
+                                    '<label class="text-right col-md-1 label-fix">Тип:</label>' +
                                     '<select class="chosen-select form-control col-sm-3" name="extension_module_type_id"></select>' +
-                                    '<label class="text-right col-md-2 label-fix">SDA:</label>' +
+                                    '<label class="text-right col-md-1 label-fix">SDA:</label>' +
                                     '<select class="chosen-select form-control col-sm-1" name="sda_port"></select>' +
-                                    '<label class="text-right col-md-2 label-fix">SCL:</label>' +
+                                    '<label class="text-right col-md-1 label-fix">SCL:</label>' +
                                     '<select class="chosen-select form-control col-sm-1" name="scl_port"></select>' +
-                                    '<div class="col-sm-1"><button class="deleteModuleBtn btn btn-outline-danger">Удалить модуль</button></div>' +
+                                    '<label class="text-right col-md-1 label-fix">INT:</label>' +
+                                    '<select class="chosen-select form-control col-sm-1" name="int_port"></select>' +
+                                    '<div class="col-sm-1"><button class="deleteModuleBtn btn btn-outline-danger">Удалить</button></div>' +
                                 '</div>');
                 var selectModuleType = newFields.find('select[name="extension_module_type_id"]');
                 var selectSdaPort = newFields.find('select[name="sda_port"]');
                 var selectSclPort = newFields.find('select[name="scl_port"]');
+                var selectIntPort = newFields.find('select[name="int_port"]');
                 $.each(sdaSclOptions, function(index, option) {
                     selectSdaPort.append('<option value="' + option.value + '">' + option.label + '</option>');
                     selectSclPort.append('<option value="' + option.value + '">' + option.label + '</option>');
+                });
+                $.each(intOptions, function(index, option) {
+                    selectIntPort.append('<option value="' + option.value + '">' + option.label + '</option>');
                 });
                 $.each(moduleTypeOptions, function(index, option) {
                     selectModuleType.append('<option value="' + option.value + '">' + option.label + '</option>');
@@ -892,10 +905,12 @@
                         var extension_module_type_id = $(this).find('select[name="extension_module_type_id"]').val();
                         var sda_port = $(this).find('select[name="sda_port"]').val();
                         var scl_port = $(this).find('select[name="scl_port"]').val();
+                        var int_port = $(this).find('select[name="int_port"]').val();
                         var item = {
                             extension_module_type_id: extension_module_type_id,
                             sda_port: sda_port,
-                            scl_port: scl_port
+                            scl_port: scl_port,
+                            int_port: int_port
                         };
                         data.push(item);
                     });

@@ -71,6 +71,10 @@
                         <div class="blockwrn block-warning btn-sm">
                             <b>{{ $port->device->extensionModules->where('scl_port', $port->num_port)->first()->extensionModuleType->name }}({{ $port->device->extensionModules->where('scl_port', $port->num_port)->first()->sda_port }}) SCL</b>
                         </div>
+                    @elseif($port->status == 'IN' && $port->device->extensionModules->isNotEmpty() && $port->device->extensionModules->where('int_port', $port->num_port)->first())
+                        <div class="blockwrn block-warning btn-sm">
+                            <b>{{ $port->device->extensionModules->where('int_port', $port->num_port)->first()->extensionModuleType->name }}({{ $port->num_port }}) INT</b>
+                        </div>
                     @else
                         <button type="button" class="btn btn-default m-b-10 btn-sm"
                                 name="object" id="portobjempty_{{ $port->id }}"

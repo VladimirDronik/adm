@@ -194,6 +194,7 @@ class DeviceService
                     'device_id' => $device->id,
                     'sda_port' => $module['sda_port'],
                     'scl_port' => $module['scl_port'],
+                    'int_port' => $module['int_port'],
                 ]);
 
                 $this->storeExtensionModulePorts($extensionModule, $device->id);

@@ -13,23 +13,23 @@ use Illuminate\Http\Request;
 class DeviceController extends Controller
 {
     public function __construct(
-        private DeviceRepository $device_rep,
+        private DeviceRepository $deviceRep,
         private DeviceService $service,
         private ConfigMegaService $megaService,
-        private ExtensionModuleRepository $ext_module_rep
+        private ExtensionModuleRepository $extModuleRep
     ) {
     }
 
     public function index()
     {
-        $devices = $this->device_rep->getByName();
+        $devices = $this->deviceRep->getByName();
 
         return view('devices.index', compact('devices'));
     }
 
     public function create()
     {
-        $devtypes = $this->device_rep->getDevTypesToArray();
+        $devtypes = $this->deviceRep->getDevTypesToArray();
 
         return view('devices.create', compact('devtypes'));
     }
@@ -44,7 +44,7 @@ class DeviceController extends Controller
         $error = ConfigMegaService::sendConfigToDevice($id);
 
         if (! $error) {
-            $devices = $this->device_rep->getByName();
+            $devices = $this->deviceRep->getByName();
 
             return view('devices.index', compact('devices'));
         } else {
@@ -60,7 +60,7 @@ class DeviceController extends Controller
         $error = ConfigMegaService::sendAllConfig();
 
         if (! $error) {
-            $devices = $this->device_rep->getByName();
+            $devices = $this->deviceRep->getByName();
 
             return view('devices.index', compact('devices'));
         } else {
@@ -107,7 +107,7 @@ class DeviceController extends Controller
             $controller = DeviceRepository::getDevByIdDevice($id);
         }
 
-        $sdaSclPorts = $this->ext_module_rep->getPortsForModule($device);
+        $sdaSclPorts = $this->extModuleRep->getPortsForModuleByStatus($device, 'I2C');
         $sdaSclOptionsArray = [];
         if ($sdaSclPorts->isNotEmpty()) {
             foreach ($sdaSclPorts as $key => $value) {
@@ -116,8 +116,17 @@ class DeviceController extends Controller
         }
         $sdaSclOptionsJson = json_encode($sdaSclOptionsArray);
 
+        $inPorts = $this->extModuleRep->getPortsForModuleByStatus($device, 'IN');
+        $intOptionsArray = [];
+        if ($inPorts->isNotEmpty()) {
+            foreach ($inPorts as $key => $value) {
+                array_push($intOptionsArray, ['value' => $value, 'label' => $value]);
+            }
+        }
+        $intOptionsJson = json_encode($intOptionsArray);
+
         $moduleTypeOptionsArray = [];
-        $extensionModuleTypes = $this->ext_module_rep->getModuleTypes();
+        $extensionModuleTypes = $this->extModuleRep->getModuleTypes();
         if ($extensionModuleTypes->isNotEmpty()) {
             foreach ($extensionModuleTypes as $key => $value) {
                 array_push($moduleTypeOptionsArray, ['value' => $key, 'label' => $value]);
@@ -125,6 +134,6 @@ class DeviceController extends Controller
         }
         $moduleTypeOptionsJson = json_encode($moduleTypeOptionsArray);
 
-        return view('devices.edit', compact('device', 'tab', 'sdaSclOptionsJson', 'moduleTypeOptionsJson'));
+        return view('devices.edit', compact('device', 'tab', 'sdaSclOptionsJson', 'moduleTypeOptionsJson', 'intOptionsJson'));
     }
 }

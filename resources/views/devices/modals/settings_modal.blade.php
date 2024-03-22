@@ -1,6 +1,6 @@
 <!-- модальное окно настроек контроллера -->
 <div id="settings_modal" class="modal">
-    <div class="modal-dialog" style="max-width: 700px;">
+    <div class="modal-dialog" style="max-width: 1000px;">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="form-group row">
@@ -44,7 +44,7 @@
                         <label class="control-label text-right col-md-1 label-fix">
                             <strong>Тип:</strong>
                         </label>
-                        <div class="col-sm-2" style="display: flex; align-items: center;">
+                        <div class="col-sm-3" style="display: flex; align-items: center;">
                             {{ $extensionModule->extensionModuleType->name }}
                         </div>
                         <label class="control-label text-right col-md-1 label-fix">
@@ -59,7 +59,13 @@
                         <div class="col-sm-1" style="display: flex; align-items: center;">
                             {{ $extensionModule->scl_port }}
                         </div>
-                        <div class="col-sm-3"><button id="deleteExtensionModule{{ $extensionModule->id }}" onclick="deleteExtensionModule('{{ $extensionModule->id }}')" class="deleteExtensionModule btn btn-outline-danger">Удалить модуль</button></div>
+                        <label class="control-label text-right col-md-1 label-fix">
+                            <strong>INT:</strong>
+                        </label>
+                        <div class="col-sm-1" style="display: flex; align-items: center;">
+                            {{ $extensionModule->int_port }}
+                        </div>
+                        <div class="col-sm-1"><button id="deleteExtensionModule{{ $extensionModule->id }}" onclick="deleteExtensionModule('{{ $extensionModule->id }}')" class="deleteExtensionModule btn btn-outline-danger">Удалить</button></div>
                     </div>
                     @endforeach
                 @endif

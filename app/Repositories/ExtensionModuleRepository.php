@@ -7,9 +7,9 @@ use App\Models\ExtensionModuleType;
 
 class ExtensionModuleRepository
 {
-    public function getPortsForModule(Device $device)
+    public function getPortsForModuleByStatus(Device $device, string $status)
     {
-        return $device->ports()->where('status', 'I2C')->pluck('num_port');
+        return $device->ports()->where('status', $status)->pluck('num_port');
     }
 
     public function getModuleTypes()
