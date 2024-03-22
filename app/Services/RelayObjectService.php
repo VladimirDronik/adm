@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\HomeObject;
 use App\Models\Method;
 use App\Models\ObjType;
-use App\Models\Relay;
 
 class RelayObjectService
 {

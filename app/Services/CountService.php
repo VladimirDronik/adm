@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class CountService
 {
     public function __construct(
-        private CountObjectService $count_object_service,
+        private CountObjectService $countObjectService,
         private PortRepository $portRepository
     ) {
     }
@@ -26,13 +26,15 @@ class CountService
     {
         $count = Count::findOrFail($id);
 
-        Port::where('object', $count->id_object)
-            ->update([
-                'object' => null,
-                'method' => null,
-                'status' => 'IN',
-                'comment' => '',
-            ]);
+        if ($count->gateway_type == HomeObject::GATEWAY_HTTP) {
+            Port::where('object', $count->id_object)
+                ->update([
+                    'object' => null,
+                    'method' => null,
+                    'status' => 'IN',
+                    'comment' => '',
+                ]);
+        }
 
         if ($count->object && $count->object->is_system) {
             DB::transaction(function () use (&$count) {
@@ -75,38 +77,39 @@ class CountService
 
         DB::transaction(function () use (&$count, $data) {
             $unique_name = HomeObject::getUniqueObjectName(0, $count->name);
-
-            $object = $this->count_object_service
-                ->createCountObject($unique_name);
-
-            $this->count_object_service
-                ->createCountObjectMethodsWithEvents($object->id);
+            $object = $this->countObjectService->createCountObject($unique_name);
+            $this->countObjectService->createCountObjectMethodsWithEvents($object->id);
 
             $count->id_object = $object->id;
-            $count->save();
 
-            if ($data['port_id']) {
-                Port::where('id', $data['port_id'])
-                    ->update([
-                        'object' => $object->id,
-                        'status' => 'IN',
-                        'comment' => $data['name'],
-                    ]);
+            switch ($count->gateway_type) {
+                case HomeObject::GATEWAY_MODBUS:
+                    $count->gateway_id = $data['modbus_gateway_id'];
+                    break;
+                case HomeObject::GATEWAY_HTTP:
+                    $count->gateway_id = $data['http_gateway_id'];
 
-                ConfigMegaService::setPortType(
-                    $count->device_id,
-                    $this->portRepository->getNumPortByID($data['port_id']),
-                    'IN'
-                );
+                    if ($data['port_id']) {
+                        Port::where('id', $data['port_id'])
+                            ->update([
+                                'object' => $object->id,
+                                'status' => 'IN',
+                                'comment' => $data['name'],
+                            ]);
+
+                        ConfigMegaService::setPortType(
+                            $data['gateway_id'],
+                            $this->portRepository->getNumPortByID($data['port_id']),
+                            'IN'
+                        );
+                    }
+                    break;
             }
+
+            $count->save();
         });
 
         return $count->id;
-    }
-
-    private function isUpdateAutoObjectName(Count $count, string $name): bool
-    {
-        return $count->name !== trim($name) && $count->object && $count->object->is_system;
     }
 
     /**
@@ -119,17 +122,18 @@ class CountService
     public function update(Count $count, array $data): int
     {
         DB::transaction(function () use (&$count, $data) {
-            if ($this->isUpdateAutoObjectName($count, $data['name'])) {
+            if ($count->name !== trim($data['name'])) {
                 $count->object->name = HomeObject::getUniqueObjectName(
-                    $count->object->id,
+                    $count->id_object,
                     trim($data['name'])
                 );
                 $count->object->save();
             }
             $this->prepareCount($count, $data);
+            $count->gateway_id = $data['gateway_id'];
             $count->save();
 
-            if ($data['port_id']) {
+            if ($count->gateway_type == HomeObject::GATEWAY_HTTP) {
                 Port::where('object', $count->id_object)
                     ->update([
                         'object' => null,
@@ -146,7 +150,7 @@ class CountService
                     ]);
 
                 ConfigMegaService::setPortType(
-                    $count->device_id,
+                    $data['gateway_id'],
                     $this->portRepository->getNumPortByID($data['port_id']),
                     'IN',
                 );

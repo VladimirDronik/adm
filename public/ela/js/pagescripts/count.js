@@ -13,12 +13,6 @@ function validateCount() {
     if (isEmptyInput('name')) {
         return 'Не указано название';
     }
-
-    if ( $('#count_form input[name=object_type]').length && $('#count_form input[name=object_type]:checked').val() === 'manual'
-            && isEmptyAutoSelect('id_object')) {
-        return 'Не указан объект';
-    }
-
     if (isEmptyInput('impulse')) {
         return 'Не указано значение за один импульс';
     }
@@ -53,8 +47,6 @@ function replaceCommaToDot() {
 }
 
 function initCountForm() {
-    $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});
-
     $('#count_form button[type=submit]').click(function(){
 
         replaceCommaToDot();

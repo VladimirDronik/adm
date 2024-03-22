@@ -25,7 +25,6 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'id_object' => 'required|integer|min:1',
             'impulse' => 'required|numeric|min:0',
             'today_value' => 'required|numeric|min:0',
             'total_value' => 'required|numeric|min:0',
@@ -36,7 +35,6 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name.required' => 'Не указано название',
-            'id_object.required' => 'Не указан объект',
             'impulse.required' => 'Не указано значение за один импульс',
             'today_value.required' => 'Не указано значение за сегодня',
             'total_value.required' => 'Не указано общее значение',

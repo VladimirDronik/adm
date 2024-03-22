@@ -5,8 +5,10 @@
 @endsection
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление счетчика', 'links' => [ route('counts.index') => 'Счетчики']])
+    @includeIf('components.breadcrumbs', [
+        'title' => 'Добавление счетчика',
+        'links' => [ route('counts.index') => 'Счетчики']
+    ])
 @endsection
 
 @section('content')
@@ -31,14 +33,24 @@
                         {{ Form::bs_radio('type', 'Тип счетчика*:', $types, old('type', -1), ['required' => true]) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-                        {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'), false, false, [], null) }}
-
-                        {{ Form::bs_autoselect('port_id', 'Порт:', [], old('port_id'), false, false, [], null) }}
-
                         {{ Form::bs_text('unit', 'Единица измерения*:', null, ['required' => true, 'maxlength' => 6], 'Например, КВт/ч, м³ или л.') }}
                         {{ Form::bs_text('impulse', 'Значение за один импульс*:', old('impulse'), ['required' => true]) }}
                         {{ Form::bs_text('today_value', 'Значение за сегодня*:', old('today_value', 0), ['required' => true]) }}
                         {{ Form::bs_text('total_value', 'Общее значение*:', old('total_value', 0), ['required' => true]) }}
+
+                        {{ Form::bs_radio('gateway_type', 'Тип подключения*:', $gatewayTypes, old('gateway_type', 'modbus'), ['required' => true]) }}
+
+                        <div id='http_div' hidden>
+                            {{ Form::bs_autoselect('http_gateway_id', 'Контроллер*:', $devices, old('http_gateway_id'), false, false, ['required' => true], null, null, 3, false, true) }}
+
+                            {{ Form::bs_autoselect('port_id', 'Порт*:', [], old('port_id'), false, false, ['required' => true], null, null, 3, false, true) }}
+                        </div>
+
+                        <div id='modbus_div' hidden>
+                            {{ Form::bs_autoselect('modbus_gateway_id', 'Устройство*:', $modbusSlavers, old('modbus_gateway_id'), false, false, ['required' => true], null, null, 3, false, true) }}
+
+                            {{ Form::bs_autoselect('register_id', 'Регистр*:', [], old('register_id'), false, false, ['required' => true], null, null, 3, false, true) }}
+                        </div>
                     </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
@@ -49,55 +61,145 @@
         </div>
     </div>
     @include('components.info_modal')
-    @include('components.create_object_modal', compact('object_types'))
 @endsection
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/count.js') }}"></script>
-    <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script>
-        const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
+        const url_mod_bus_slavers_registers = '{{ route('ajax.mod_bus.slavers.registers') }}';
+
+        $("#auto_sel_modbus_gateway_id").chosen({width:"100%", no_results_text: "Не найдено"});
+        $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
+        $("#auto_sel_register_id").chosen({width:"100%", no_results_text: "Не найдено"});
+        $("#auto_sel_http_gateway_id").chosen({width:"100%", no_results_text: "Не найдено"});
+
+        if ($('#count_form input[name=gateway_type]:checked').val() == 'modbus') {
+            $('#modbus_div').removeAttr("hidden");
+            $('#auto_sel_modbus_gateway_id').removeAttr("disabled");
+            $('#auto_sel_register_id').removeAttr("disabled");
+
+            $('#http_div').attr("hidden", true);
+            $('#auto_sel_http_gateway_id').attr("disabled", true);
+            $('#auto_sel_port_id').attr("disabled", true);
+
+            if ($("#auto_sel_modbus_gateway_id").chosen().val()) {
+                let slaver_id = $("#auto_sel_modbus_gateway_id").chosen().val();
+                $.ajax({
+                    url: url_mod_bus_slavers_registers,
+                    data: {'slaver_id': slaver_id},
+                    success: function (data) {
+                        createRegisterSelect('#auto_sel_register_id', data, 0);
+                        $('#auto_sel_register_id').trigger("chosen:updated");
+                    }
+                });
+            }
+        } else {
+            $('#http_div').removeAttr("hidden");
+            $('#auto_sel_http_gateway_id').removeAttr("disabled");
+            $('#auto_sel_port_id').removeAttr("disabled");
+
+            $('#modbus_div').attr("hidden", true);
+            $('#auto_sel_modbus_gateway_id').attr("disabled", true);
+            $('#auto_sel_register_id').attr("disabled", true);
+        }
+
+        function createRegisterSelect(target, options, selected) {
+            let sel = $(target);
+            sel.html('');
+            let s = '';
+
+            $.each(options, function(key, value) {
+                if (selected == key)
+                    s += '<option selected value="' + key + '">' + value + '</option>';
+                else
+                    s += '<option value="' + key + '">' + value + '</option>';
+            });
+            sel.append(s);
+        }
 
         $(document).ready(function () {
             initCountForm();
 
-            $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
-            $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $('#count_form input[name=gateway_type]').change(function() {
+                var options = $('#count_form input[name=gateway_type]');
+                for (var i = 0; i < options.length; i++) {
+                    if (options[i].checked) {
+                        var selectedOption = options[i].value;
+                    }
+                }
 
-            $("#auto_sel_device_id").chosen().change(function() {
+                if (selectedOption == 'modbus') {
+                    $('#modbus_div').removeAttr("hidden");
+                    $('#auto_sel_modbus_gateway_id').removeAttr("disabled");
+                    $('#auto_sel_register_id').removeAttr("disabled");
+
+                    $('#http_div').attr("hidden", true);
+                    $('#auto_sel_http_gateway_id').attr("disabled", true);
+                    $('#auto_sel_port_id').attr("disabled", true);
+
+                    if ($("#auto_sel_modbus_gateway_id").chosen().val()) {
+                        let slaver_id = $("#auto_sel_modbus_gateway_id").chosen().val();
+                        $.ajax({
+                            url: url_mod_bus_slavers_registers,
+                            data: {'slaver_id': slaver_id},
+                            success: function (data) {
+                                createRegisterSelect('#auto_sel_register_id', data, 0);
+                                $('#auto_sel_register_id').trigger("chosen:updated");
+                            }
+                        });
+                    }
+                } else {
+                    $('#http_div').removeAttr("hidden");
+                    $('#auto_sel_http_gateway_id').removeAttr("disabled");
+                    $('#auto_sel_port_id').removeAttr("disabled");
+
+                    $('#modbus_div').attr("hidden", true);
+                    $('#auto_sel_modbus_gateway_id').attr("disabled", true);
+                    $('#auto_sel_register_id').attr("disabled", true);
+
+                    if ($("#auto_sel_http_gateway_id").chosen().val()) {
+                        let device_id = $("#auto_sel_http_gateway_id").chosen().val();
+                        $.ajax({
+                            url: url_ports,
+                            data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'switch, socket'},
+                            success: function (data) {
+                                createPortSelect('#auto_sel_port_id', data.ports, -1);
+                                $('#auto_sel_port_id').trigger("chosen:updated");
+                            }
+                        });
+                    }
+                }
+            });
+
+            $("#auto_sel_http_gateway_id").chosen().change(function() {
                 let device_id = $(this).val();
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': device_id,  'status': 'IN,I2C,1WIRE,1W-BUS,ADC'},
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'switch, socket'},
                     success: function (data) {
-                        createMethodSelect('#auto_sel_port_id', data.ports, -1);
+                        createPortSelect('#auto_sel_port_id', data.ports, 0);
                         $('#auto_sel_port_id').trigger("chosen:updated");
                     }
                 });
             });
 
-            $('#auto_sel_btn_id_object').click(function() {
-                clearCreateObjectModal();
-                $('#create_object_modal_init_btn').click();
-                return false;
+            $("#auto_sel_modbus_gateway_id").chosen().change(function() {
+                $.ajax({
+                    url: url_mod_bus_slavers_registers,
+                    data: {'slaver_id': $(this).val()},
+                    success: function (data) {
+                        createRegisterSelect('#auto_sel_register_id', data, 0);
+                        $('#auto_sel_register_id').trigger("chosen:updated");
+                    }
+                });
             });
 
-            $('#create_object_modal_btn').click(function() {
-                let message = validateCreateObject();
-                if (message !== '') {
-                    showCreateObjectError(message);
-                    return false;
-                }
-
-                storeObject();
-            });
-
-            function createMethodSelect(target, options, selected) {
+            function createPortSelect(target, options, selected) {
                 let sel = $(target);
                 sel.html('');
-                let s = '<option value="">Не выбрано</option>';
+                let s = '';
                 for (let i = 0; i < options.length; i++) {
                     if (selected == options[i].id)
                         s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
@@ -107,50 +209,7 @@
                 sel.append(s);
             }
 
-            function storeObject() {
-                const name = $("#create_object_modal input[name=object_name]").val().trim();
-                const type = $("#create_object_modal input[name=object_type]:checked").val().trim();
-
-                $.ajax({
-                    url: storeObjectUrl,
-                    data: {'_token': _token, 'name': name, 'type': type},
-                    success: function (data) {
-                        if (data.result) {
-                            hideCreateObjectError();
-                            updateObjectSelects(data.objects, data.id);
-                            $('#create_object_cancel_btn').click();
-                        } else {
-                            showCreateObjectError(data.message);
-                        }
-                    },
-                    error: function () {
-                        showCreateObjectError('Сервер временно недоступен');
-                    }
-                });
-            }
-
-            function updateObjectSelects(objects, selected) {
-                const id = $('#auto_sel_id_object').val();
-                if (id) {
-                    selected = id;
-                }
-                createObjectSelect('#auto_sel_id_object', objects, selected);
-            }
-
-            $('#count_form [name=object_type]').change(function(){
-                if ($(this).val() === 'manual') {
-                    $('#auto_object_div').hide();
-                    $('#manual_object_div').show();
-                } else {
-                    $('#manual_object_div').hide();
-                    $('#auto_object_div').show();
-                }
-                return true;
-            });
-
-
             $('#count_form [name=type]').change(function(){
-
                 if ($(this).val() === 'electro') {
                     $('#count_form [name=unit]').val('КВт/ч');
                 } else {

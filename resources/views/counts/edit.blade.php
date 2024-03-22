@@ -47,7 +47,6 @@
                             </div>
                             <div class="tab-pane p-20 @if($tab==4) active @endif" id="portstab4" role="tabpanel">
                                 @include('counts/edit_tabs/events')
-                                @include('objects.events', ['object' => $count->object])
                             </div>
                             <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
                                 @include('objects.methods', ['object' => $count->object])
@@ -76,17 +75,13 @@
         </div>
     </div>
 
-    @include('objects.method_modal')
-
     @include('components.info_modal')
     @include('components.del_modal')
-    @include('components.create_object_modal', compact('object_types'))
 @endsection
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/count.js') }}"></script>
-    <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/events.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/service.js') }}"></script>
@@ -104,8 +99,6 @@
         $(document).ready(function () {
             initCountForm();
             serviceInit();
-            initActionModal();
-
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
@@ -124,58 +117,10 @@
                 });
             });
 
-            $('#auto_sel_btn_id_object').click(function() {
-                clearCreateObjectModal();
-                $('#create_object_modal_init_btn').click();
-                return false;
-            });
-
-            $('#create_object_modal_btn').click(function() {
-                let message = validateCreateObject();
-                if (message !== '') {
-                    showCreateObjectError(message);
-                    return false;
-                }
-
-                storeObject();
-            });
-
-            function storeObject() {
-                const name = $("#create_object_modal input[name=object_name]").val().trim();
-                const type = $("#create_object_modal input[name=object_type]:checked").val().trim();
-
-                $.ajax({
-                    url: storeObjectUrl,
-                    data: {'_token': _token, 'name': name, 'type': type},
-                    success: function (data) {
-                        if (data.result) {
-                            hideCreateObjectError();
-                            updateObjectSelects(data.objects, data.id);
-                            $('#create_object_cancel_btn').click();
-                        } else {
-                            showCreateObjectError(data.message);
-                        }
-                    },
-                    error: function () {
-                        showCreateObjectError('Сервер временно недоступен');
-                    }
-                });
-            }
-
-            function updateObjectSelects(objects, selected) {
-                const id = $('#auto_sel_id_object').val();
-                if (id) {
-                    selected = id;
-                }
-                createObjectSelect('#auto_sel_id_object', objects, selected);
-            }
-
             // methods
-
             const cancel_btn = $('#cancel_btn');
 
             $('#add_btn').click(showAddModal);
-
             $('#apply_btn').click(clickApplyBtn);
 
             // edit method
