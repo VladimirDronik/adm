@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Device;
 use App\Models\ExtensionModule;
-use App\Models\LedTape;
+use App\Models\ExtensionModuleType;
 use App\Models\Port;
 use App\Repositories\DeviceRepository;
 use App\Repositories\PortRepository;
@@ -189,12 +189,19 @@ class DeviceService
 
         try {
             foreach ($modules as $module) {
+                $moduleType = ExtensionModuleType::find($module['extension_module_type_id']);
+                $intPort = null;
+
+                if ($moduleType->name == 'MegaD-16I-XT') {
+                    $intPort = $module['int_port'];
+                }
+
                 $extensionModule = ExtensionModule::create([
                     'extension_module_type_id' => $module['extension_module_type_id'],
                     'device_id' => $device->id,
                     'sda_port' => $module['sda_port'],
                     'scl_port' => $module['scl_port'],
-                    'int_port' => $module['int_port'],
+                    'int_port' => $intPort,
                 ]);
 
                 $this->storeExtensionModulePorts($extensionModule, $device->id);

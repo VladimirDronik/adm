@@ -1,6 +1,6 @@
 <!-- модальное окно настроек контроллера -->
 <div id="settings_modal" class="modal">
-    <div class="modal-dialog" style="max-width: 1000px;">
+    <div class="modal-dialog" style="max-width: 1150px;">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="form-group row">
@@ -59,12 +59,17 @@
                         <div class="col-sm-1" style="display: flex; align-items: center;">
                             {{ $extensionModule->scl_port }}
                         </div>
-                        <label class="control-label text-right col-md-1 label-fix">
-                            <strong>INT:</strong>
-                        </label>
-                        <div class="col-sm-1" style="display: flex; align-items: center;">
-                            {{ $extensionModule->int_port }}
-                        </div>
+                        @if($extensionModule->extensionModuleType->name == 'MegaD-16I-XT')
+                            <label class="control-label text-right col-md-1 label-fix">
+                                <strong>INT:</strong>
+                            </label>
+                            <div class="col-sm-1" style="display: flex; align-items: center;">
+                                {{ $extensionModule->int_port }}
+                            </div>
+                        @else
+                            <div class="col-sm-2">
+                            </div>
+                        @endif
                         <div class="col-sm-1"><button id="deleteExtensionModule{{ $extensionModule->id }}" onclick="deleteExtensionModule('{{ $extensionModule->id }}')" class="deleteExtensionModule btn btn-outline-danger">Удалить</button></div>
                     </div>
                     @endforeach

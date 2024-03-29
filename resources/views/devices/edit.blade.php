@@ -147,6 +147,8 @@
                                 <hr>
                                 <h4>Модули расширения:</h4>
                                 <br>
+                            </div>
+                            <div class="col-md-12 col-lg-8 col-xl-12">
                                 @if($device->extensionModules)
                                     @foreach($device->extensionModules as $extensionModule)
                                     <div class="form-group row">
@@ -168,12 +170,17 @@
                                         <div class="col-sm-1" style="display: flex; align-items: center;">
                                             {{ $extensionModule->scl_port }}
                                         </div>
-                                        <label class="control-label text-right col-md-1 label-fix">
-                                            <strong>INT:</strong>
-                                        </label>
-                                        <div class="col-sm-1" style="display: flex; align-items: center;">
-                                            {{ $extensionModule->int_port }}
-                                        </div>
+                                        @if($extensionModule->extensionModuleType->name == 'MegaD-16I-XT')
+                                            <label class="control-label text-right col-md-1 label-fix">
+                                                <strong>INT:</strong>
+                                            </label>
+                                            <div class="col-sm-1" style="display: flex; align-items: center;">
+                                                {{ $extensionModule->int_port }}
+                                            </div>
+                                        @else
+                                            <div class="col-sm-2">
+                                            </div>
+                                        @endif
                                         <div class="col-sm-1"><button id="deleteExtensionModule{{ $extensionModule->id }}" onclick="deleteExtensionModule('{{ $extensionModule->id }}')" class="deleteExtensionModule btn btn-outline-danger">Удалить</button></div>
                                     </div>
                                     @endforeach
@@ -512,6 +519,7 @@
                     selectSdaPort.append('<option value="' + option.value + '">' + option.label + '</option>');
                     selectSclPort.append('<option value="' + option.value + '">' + option.label + '</option>');
                 });
+                selectIntPort.append('<option value="">Нет</option>');
                 $.each(intOptions, function(index, option) {
                     selectIntPort.append('<option value="' + option.value + '">' + option.label + '</option>');
                 });
