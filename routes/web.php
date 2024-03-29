@@ -118,6 +118,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::group(['prefix' => 'registers', 'as' => 'registers.'], function () {
                 Route::post('delete', 'ModbusRegisterController@delete')->name('delete');
                 Route::post('read', 'ModbusRegisterController@read')->name('read');
+                Route::post('write', 'ModbusRegisterController@write')->name('write');
             });
         });
 

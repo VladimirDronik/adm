@@ -31,4 +31,16 @@ class ModbusRegisterController extends Controller
             'response' => array_key_exists(0, $data['output']) ? $data['output'][0] : null,
         ]);
     }
+
+    public function write(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id', 'value']), 400);
+
+        $data = $this->service->write((int)$r->id, (string)$r->value);
+
+        return response()->json([
+            'result' => $data['code'] === 0,
+            'response' => array_key_exists(0, $data['output']) ? $data['output'][0] : null,
+        ]);
+    }
 }

@@ -80,4 +80,31 @@ class RegisterService
             'output' => $output,
         ];
     }
+
+    /**
+     * Запуск скрипта записи данных регистра
+     *
+     * @param int $registerId
+     * @param string $value
+     * @return array
+     */
+    public function write(int $registerId, string $value): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        $register = ModbusRegister::find($registerId);
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php modbus_write.php ' . $registerId . ' ' . $value, $output, $resultCode);
+
+        if ($resultCode === 0) {
+            $register->update(['last_value' => $value]);
+        }
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
 }

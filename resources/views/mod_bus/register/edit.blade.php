@@ -51,6 +51,23 @@
 
                         {{ Form::bs_radio('access', 'Доступ*:', $accesses, old('access', $register->access), ['required' => true]) }}
 
+                        <div class="form-group row">
+                            <label class="control-label text-right col-md-3 label-fix" for="access">Значение регистра:</label>
+                            <div class="col-md-9">
+                                <label class="col-md-2" id="last_value">{{ $register->last_value ?: 'Нет' }}</label>
+                                <button type="button" class="btn btn-success m-b-10 m-l-5" id="modbusRead">Обновить</button>
+                            </div>
+                        </div>
+                        <div id='modbus_write_div'>
+                            <div class="form-group row">
+                                <label class="control-label text-right col-md-3 label-fix" for="access">Записать значение:</label>
+                                <div class="col-md-9">
+                                    <input class="form-control col-md-2" style="display: inline;" autocomplete="off" id="" name="modbus_write" type="text" value="">
+                                    <button type="button" class="btn btn-success m-b-10 m-l-5" id="modbusWrite">Записать</button>
+                                </div>
+                            </div>
+                        </div>
+
                         {{ Form::bs_checkbox('polling', 'Опрос:', old('polling', $register->polling), []) }}
 
                         <div id='polling_cycle_div' hidden>
@@ -72,12 +89,23 @@
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script>
+        let modbus_read_url = '{{ route('ajax.mod_bus.registers.read') }}';
+        let modbus_write_url = '{{ route('ajax.mod_bus.registers.write') }}';
+        let id = '{{ $register->id }}';
+
         if ($('#register_form input[name=polling]').is(':checked')) {
             $('#polling_cycle_div').removeAttr("hidden");
             $('#register_form input[name=polling_cycle]').removeAttr("disabled");
         } else {
             $('#polling_cycle_div').attr("hidden", true);
             $('#register_form input[name=polling_cycle]').attr("disabled", true);
+        }
+
+        var access = $('#register_form input[name=access]:checked').val();
+        if (access == 'ro') {
+            $('#modbus_write_div').attr("hidden", true);
+        } else {
+            $('#modbus_write_div').removeAttr("hidden");
         }
 
         $(document).ready(function () {
@@ -91,6 +119,42 @@
                     $('#polling_cycle_div').attr("hidden", true);
                     $('#register_form input[name=polling_cycle]').attr("disabled", true);
                 }
+            });
+
+            $('#register_form input[name=access]').change(function() {
+                var options = $('#register_form input[name=access]');
+                for (var i = 0; i < options.length; i++) {
+                    if (options[i].checked) {
+                        var selectedOption = options[i].value;
+                    }
+                }
+
+                if (selectedOption == 'ro') {
+                    $('#modbus_write_div').attr("hidden", true);
+                } else {
+                    $('#modbus_write_div').removeAttr("hidden");
+                }
+            });
+
+            $('#modbusRead').click(function() {
+                $.ajax({
+                    url: modbus_read_url,
+                    data: { '_token': _token, 'id': id },
+                    success: function (data) {
+                        if (data.result) {
+                            $('#last_value').text(data.response);
+                        } else {
+                            showErrorModal(data.response ?? 'Нет ответа от устройства');
+                        }
+                    }
+                });
+            });
+
+            $('#modbusWrite').click(function() {
+                $.ajax({
+                    url: modbus_write_url,
+                    data: { '_token': _token, 'id': id, 'value': $('#register_form input[name=modbus_write]').val() },
+                });
             });
         });
     </script>
