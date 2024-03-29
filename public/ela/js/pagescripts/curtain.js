@@ -36,11 +36,15 @@ function initCurtainForm() {
 
 function portFields() {
     $('#port_id_div').removeAttr("hidden");
+    $('#device_id_div').removeAttr("hidden");
     $('#auto_sel_port_id_open').removeAttr("disabled");
     $('#auto_sel_port_id_close').removeAttr("disabled");
+    $('#auto_sel_device_id').removeAttr("disabled");
 
+    $('#bus_id_div').attr("hidden", true);
     $('#rs_485_div').attr("hidden", true);
     $('#phase_time_div').attr("hidden", true);
+    $('#auto_sel_bus_id').attr("disabled", true);
     $('#curtain_form input[name=address]').attr("disabled", true);
     $('#curtain_form input[name=group]').attr("disabled", true);
     $('#curtain_form input[name=time]').attr("disabled", true);
@@ -48,24 +52,31 @@ function portFields() {
 
 function phaseFields() {
     $('#port_id_div').removeAttr("hidden");
+    $('#device_id_div').removeAttr("hidden");
     $('#auto_sel_port_id_open').removeAttr("disabled");
     $('#auto_sel_port_id_close').removeAttr("disabled");
+    $('#auto_sel_device_id').removeAttr("disabled");
     $('#phase_time_div').removeAttr("hidden");
     $('#curtain_form input[name=time]').removeAttr("disabled");
 
+    $('#bus_id_div').attr("hidden", true);
     $('#rs_485_div').attr("hidden", true);
+    $('#auto_sel_bus_id').attr("disabled", true);
     $('#curtain_form input[name=address]').attr("disabled", true);
     $('#curtain_form input[name=group]').attr("disabled", true);
 }
 
 function rs485Fields() {
     $('#rs_485_div').removeAttr("hidden");
+    $('#bus_id_div').removeAttr("hidden");
     $('#curtain_form input[name=address]').removeAttr("disabled");
     $('#curtain_form input[name=group]').removeAttr("disabled");
 
     $('#port_id_div').attr("hidden", true);
     $('#phase_time_div').attr("hidden", true);
+    $('#device_id_div').attr("hidden", true);
     $('#auto_sel_port_id_open').attr("disabled", true);
     $('#auto_sel_port_id_close').attr("disabled", true);
+    $('#auto_sel_device_id').attr("disabled", true);
     $('#curtain_form input[name=time]').attr("disabled", true);
 }

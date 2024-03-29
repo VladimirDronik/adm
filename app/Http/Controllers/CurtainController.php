@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Curtain\CurtainFormRequest;
 use App\Models\Curtain;
-use App\Models\HomeObject;
 use App\Repositories\CurtainRepository;
 use App\Repositories\DeviceRepository;
-use App\Repositories\ObjectRepository;
+use App\Repositories\ModbusRepository;
 use App\Services\CurtainService;
 use App\Services\PortService;
 use App\Services\Service;
@@ -18,8 +17,8 @@ class CurtainController extends Controller
         private CurtainRepository $curtainRepository,
         private PortService $portService,
         private CurtainService $curtainService,
-        private ObjectRepository $objectRepository,
         private DeviceRepository $deviceRepository,
+        private ModbusRepository $modbusRepository,
     ) {
     }
 
@@ -33,17 +32,14 @@ class CurtainController extends Controller
     public function edit(Curtain $curtain, $tab = 1)
     {
         $can = gates('devices.show-object');
-        $ports = '';
+        $ports = [];
+        $idDevice = null;
 
         if ($curtain->place == Curtain::PLACE_PORT || $curtain->place == Curtain::PLACE_PHASE) {
-            [$idDevice, , , $ports] =
-                $this->portService->getCurrentDevPort($curtain->id_object, 'OUT');
-        } else {
-            $idDevice = $curtain->device_id;
+            [$idDevice, , , $ports] = $this->portService->getCurrentDevPort($curtain->id_object, 'OUT');
         }
 
-        [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice] =
-            Service::getListElements($curtain->id_object);
+        [$messages, $events, $sounds, $views, $rooms, $scripts, , , $alice] = Service::getListElements($curtain->id_object);
 
         $types = Curtain::getTypes(true);
         $messagePoint['first'] = 'При включении';
@@ -51,11 +47,12 @@ class CurtainController extends Controller
         $availableEvents = Curtain::getEvents();
         $properties = Curtain::getProperties();
         $devices = $this->deviceRepository->getAllToArray();
+        $buses = $this->modbusRepository->getAllBusesToArray();
         $allEvents = '';
 
         return view('curtains.edit', compact('types', 'curtain', 'events', 'sounds', 'views', 'rooms',
             'idDevice', 'devices', 'ports', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents',
-            'properties', 'objects', 'object_types', 'scripts', 'allEvents', 'can'));
+            'properties', 'scripts', 'allEvents', 'can', 'buses'));
     }
 
     public function update(CurtainFormRequest $r, int $id)
@@ -79,12 +76,11 @@ class CurtainController extends Controller
     {
         $types = Curtain::getTypes(true);
         $places = Curtain::getPlaces(true);
-        $objects = $this->objectRepository->getAllToArray();
-        $object_types = HomeObject::getFullTypeIds();
         $devices = $this->deviceRepository->getAllToArray();
+        $buses = $this->modbusRepository->getAllBusesToArray();
         $tab = 1;
 
-        return view('curtains.create', compact('types', 'places', 'tab', 'objects', 'object_types', 'devices'));
+        return view('curtains.create', compact('types', 'places', 'tab', 'devices', 'buses'));
     }
 
     public function store(CurtainFormRequest $r)

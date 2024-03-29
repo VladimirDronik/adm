@@ -5,10 +5,11 @@
 @endsection
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование: '.$curtain->rus_type.' № '. $curtain->object['id'] . ' «' . $curtain->name .'»',
+    @includeIf('components.breadcrumbs', [
+        'title' => 'Редактирование: '.$curtain->rus_type.' № '. $curtain->id_object . ' «' . $curtain->name .'»',
         'links' => [ route('curtains.index') => 'Шторы, жалюзи, рольставни'],
-        'last_link' => 'Редактирование: '.$curtain->rus_type])
+        'last_link' => 'Редактирование: '.$curtain->rus_type
+    ])
 @endsection
 
 @section('content')
@@ -17,7 +18,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('curtains.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок штор</a>
+                        <a href="{{ route('curtains.index') }}" class="btn btn-success m-b-10 m-l-5">Список штор</a>
                         <a href="{{ route('curtains.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить штору</a>
                     </div>
                 </div>
@@ -26,8 +27,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::model($curtain, ['route' => ['curtains.update', $curtain->id], 'id' => 'curtain_form',
-                        'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::model($curtain, ['route' => ['curtains.update', $curtain->id], 'id' => 'curtain_form', 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                     {{ csrf_field() }}
                     <div class="form-body">
                         {{ Form::bs_alert() }}
@@ -48,7 +48,6 @@
                             </div>
                             <div class="tab-pane p-20 @if($tab==4) active @endif" id="portstab4" role="tabpanel">
                                 @include('curtains/edit_tabs/events')
-                                @include('objects.events', ['object' => $curtain->object])
                             </div>
                             <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
                                 @include('objects.methods', ['object' => $curtain->object])
@@ -58,7 +57,7 @@
                             </div>
                         </div>
                         <input type="hidden" id="tabs-sel" value="{{ $tab }}">
-                        <input type="hidden" id="event_idobject" name="event_idobject" value="{{ $curtain->object['id'] }}">
+                        <input type="hidden" id="event_idobject" name="event_idobject" value="{{ $curtain->id_object }}">
 
                     {{ Form::bs_submit_btn() }}
 
@@ -73,50 +72,43 @@
             </div>
         </div>
     </div>
-
     @include('objects.message_modal')
     @include('objects.method_modal')
 
     @include('components.info_modal')
     @include('components.del_modal')
-    @include('components.create_object_modal', compact('object_types'))
 @endsection
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
-    <script src="{{ asset('ela/js/pagescripts/relay.js') }}"></script>
-    <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/messages.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/events.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/service.js') }}"></script>
     <script>
-        const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
         const store_url = '{{ route('ajax.methods.store') }}';
         const store_message_url = '{{ route('ajax.messages.store') }}';
         const del_url = '{{ route('ajax.methods.delete') }}';
         const del_message_url = '{{ route('ajax.messages.delete') }}';
         const sub_data_url = '{{ route('ajax.load.data') }}';
-        const object_id = '{{ optional($curtain->object)->id }}';
         const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
         let del_id;
         $(document).ready(function () {
 
             $('#del_modal_btn').click(clickDelBtn);
-            initRelayForm();
             serviceInit();
             initActionModal();
 
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_bus_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id_open").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id_close").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_device_id").chosen().change(function() {
-                let object_id = $(this).val();
                 $.ajax({
                     url: url_ports,
-                    data: {'_token': _token, 'device_id': object_id, 'status': 'OUT', 'type': 'switch, socket'},
+                    data: {'_token': _token, 'device_id': $(this).val(), 'status': 'OUT', 'type': 'switch, socket'},
                     success: function (data) {
                         methods = data.ports;
                         createPortSelect('#auto_sel_port_id_open', data.ports, -1);
@@ -126,46 +118,7 @@
                     }
                 });
             });
-            $('#auto_sel_btn_id_object').click(function() {
-                clearCreateObjectModal();
-                $('#create_object_modal_init_btn').click();
-                return false;
-            });
-            $('#create_object_modal_btn').click(function() {
-                let message = validateCreateObject();
-                if (message !== '') {
-                    showCreateObjectError(message);
-                    return false;
-                }
-                storeObject();
-            });
-            function storeObject() {
-                const name = $("#create_object_modal input[name=object_name]").val().trim();
-                const type = $("#create_object_modal input[name=object_type]:checked").val().trim();
-                $.ajax({
-                    url: storeObjectUrl,
-                    data: {'_token': _token, 'name': name, 'type': type},
-                    success: function (data) {
-                        if (data.result) {
-                            hideCreateObjectError();
-                            updateObjectSelects(data.objects, data.id);
-                            $('#create_object_cancel_btn').click();
-                        } else {
-                            showCreateObjectError(data.message);
-                        }
-                    },
-                    error: function () {
-                        showCreateObjectError('Сервер временно недоступен');
-                    }
-                });
-            }
-            function updateObjectSelects(objects, selected) {
-                const id = $('#auto_sel_id_object').val();
-                if (id) {
-                    selected = id;
-                }
-                createObjectSelect('#auto_sel_id_object', objects, selected);
-            }
+
             //messages
             $('#apply_message_btn').click(clickApplyMessageBtn);
             // edit messages method

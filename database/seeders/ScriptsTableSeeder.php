@@ -200,23 +200,28 @@ class ScriptsTableSeeder extends Seeder
         return [
             [
                 'name' => 'Открыть штору',
-                'link' => 'open_curtain.php',
+                'link' => 'curtain_open.php',
                 'count' => 0,
                 'system' => 1,
             ],
             [
                 'name' => 'Закрыть штору',
-                'link' => 'close_curtain.php',
+                'link' => 'curtain_close.php',
                 'count' => 0,
                 'system' => 1,
             ],
             [
                 'name' => 'Открыть штору на %',
-                'link' => 'open_half_curtain.php',
+                'link' => 'curtain_set_percent.php',
                 'count' => 0,
                 'system' => 1,
             ],
-
+            [
+                'name' => 'Сменить направление вращения',
+                'link' => 'curtain_change_direction.php',
+                'count' => 0,
+                'system' => 1,
+            ],
         ];
     }
 
