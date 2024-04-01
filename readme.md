@@ -1,4 +1,4 @@
-# CORE for TouchOn project
+# ADMIN PANEL for TouchOn project
 ver 1.16
 
 Что нового:
