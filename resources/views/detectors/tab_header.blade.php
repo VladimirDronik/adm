@@ -5,7 +5,7 @@
             <div class="card-body">
                 <ul class="nav nav-pills">
                     <li class="nav-item">
-                        <a class="nav-link @if($active === 'termostats') active show @endif" href="{{ route('termostats.index') }}">
+                        <a class="nav-link @if($active == 'termostats') active show @endif" href="{{ route('termostats.index') }}">
                             <span>
                                 <img width="22" height="20" title="" src="{{ asset('ela/images/objects/termostat.png') }}">
                                 Термостаты ({{ $detectorsService->getTermostatsCount() }})
@@ -13,7 +13,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @if($active === 'hygrostats') active show @endif" href="{{ route('hygrostats.index') }}">
+                        <a class="nav-link @if($active == 'hygrostats') active show @endif" href="{{ route('hygrostats.index') }}">
                             <span>
                                 <img width="18" height="20" title="" src="{{ asset('ela/images/objects/hygrometer.png') }}">
                                 Гигростаты ({{ $detectorsService->getHygrostatCount() }})
@@ -21,7 +21,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @if($active === '') active show @endif" href="{{ route('lightstats.index') }}">
+                        <a class="nav-link @if($active == 'lightstats') active show @endif" href="{{ route('lightstats.index') }}">
                             <span>
                                 <img width="18" height="20" title="" src="{{ asset('ela/images/objects/lightstat.png') }}">
                                 Светостаты ({{ $detectorsService->getLightstatsCount() }})
@@ -29,7 +29,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @if($active === '') active show @endif" href="{{ route('motionsensors.index') }}">
+                        <a class="nav-link @if($active == 'motionsensors') active show @endif" href="{{ route('motionsensors.index') }}">
                             <span>
                                 <img width="18" height="20" title="" src="{{ asset('ela/images/objects/motionsensor.png') }}">
                                 Датчики движения ({{ $detectorsService->getMotionsensorsCount() }})
@@ -37,14 +37,14 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @if($active === 'usensors') active show @endif" href="{{ route('usensors.index') }}">
+                        <a class="nav-link @if($active == 'usensors') active show @endif" href="{{ route('usensors.index') }}">
                             <span>
                                 <i class="ti-home"></i> Универсальные датчики ({{ $detectorsService->getUsensorsCount() }})
                             </span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @if($active === 'drycontacts') active show @endif" href="{{ route('drycontacts.index') }}">
+                        <a class="nav-link @if($active == 'drycontacts') active show @endif" href="{{ route('drycontacts.index') }}">
                             <span>
                                 <img width="18" height="20" title="" src="{{ asset('ela/images/objects/drycontact.png') }}">
                                 Сухие контакты ({{ $detectorsService->getDrycontactsCount() }})
@@ -52,7 +52,7 @@
                         </a>
                     </li>
                     <!-- <li class="nav-item">
-                        <a class="nav-link @if($active === '') active show @endif" href="#">
+                        <a class="nav-link @if($active == '') active show @endif" href="#">
                             <span>
                                 <img width="18" height="20" title="" src="{{ asset('ela/images/objects/pass_sensor.png') }}">
                                 Датчики прохода (0)
@@ -60,21 +60,28 @@
                         </a>
                     </li> -->
                     <li class="nav-item">
-                        <a class="nav-link @if($active === '') active show @endif" href="{{ route('carbmonoxide.index') }}">
+                        <a class="nav-link @if($active == 'carbmonoxide') active show @endif" href="{{ route('carbmonoxide.index') }}">
                             <span>
-                                 <img width="28" height="20" title="" src="{{ asset('ela/images/objects/carbsens.png') }}">
+                                <img width="28" height="20" title="" src="{{ asset('ela/images/objects/carbsens.png') }}">
                                 Датчики УГ ({{ $detectorsService->getCarbMonoxideCount() }})
                             </span>
                         </a>
                     </li>
                     <!-- <li class="nav-item">
-                        <a class="nav-link @if($active === '') active show @endif" href="{{ route('manometr.index') }}">
+                        <a class="nav-link @if($active == '') active show @endif" href="{{ route('manometr.index') }}">
                             <span>
-                                 <img width="20" height="20" title="" src="{{ asset('ela/images/objects/manometr.png') }}">
+                                <img width="20" height="20" title="" src="{{ asset('ela/images/objects/manometr.png') }}">
                                 Манометры ({{ $detectorsService->getManometrCount() }})
                             </span>
                         </a>
                     </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link @if($active == 'pressurestats') active show @endif" href="{{ route('pressurestats.index') }}">
+                            <span>
+                                Датчики давления ({{ $detectorsService->getPressurestatsCount() }})
+                            </span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

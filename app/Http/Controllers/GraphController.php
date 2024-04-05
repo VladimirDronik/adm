@@ -42,4 +42,12 @@ class GraphController extends Controller
 
         return view('graphs.counts.index', compact('data', 'periods'));
     }
+
+    public function pressures()
+    {
+        $data = $this->service->getGraphPressuresData();
+        $periods = $this->service->getPressuresPeriods();
+
+        return view('graphs.pressures.index', compact('data', 'periods'));
+    }
 }

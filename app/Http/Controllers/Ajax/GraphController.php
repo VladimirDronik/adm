@@ -48,4 +48,13 @@ class GraphController extends Controller
 
         return response()->json(compact('result', 'data'));
     }
+
+    public function getPressuresPeriodData(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['count_id', 'period']), 400);
+
+        [$result, $data] = $this->service->getGraphPressuresPeriodData($r->count_id, $r->period);
+
+        return response()->json(compact('result', 'data'));
+    }
 }

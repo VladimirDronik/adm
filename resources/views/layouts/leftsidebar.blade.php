@@ -226,6 +226,12 @@
                                     Счетчики
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('graphs.pressures.index') }}">
+                                    <i class="fa fa-bar-chart"></i>
+                                    Давление
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 @endcan

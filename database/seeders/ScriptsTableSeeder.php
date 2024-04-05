@@ -72,7 +72,16 @@ class ScriptsTableSeeder extends Seeder
             'count' => 0,
             'system' => 1,
         ];
+    }
 
+    public static function getCheckPressurestatScript(): array
+    {
+        return [
+            'name' => 'Проверка датчика давления',
+            'link' => 'check_pressure.php', // используется в PressurestatObjectService
+            'count' => 0,
+            'system' => 1,
+        ];
     }
 
     public static function getCheckUsensorScript(): array

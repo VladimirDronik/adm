@@ -6,9 +6,11 @@ use App\Models\Count;
 use App\Models\GraphCount;
 use App\Models\GraphHumidity;
 use App\Models\GraphLight;
+use App\Models\GraphPressure;
 use App\Models\GraphTermostat;
 use App\Models\Hygrostat;
 use App\Models\Lightstat;
+use App\Models\Pressurestat;
 use App\Models\Room;
 use App\Models\Termostat;
 use Carbon\Carbon;
@@ -174,6 +176,68 @@ class GraphService
     public function getGraphLightsPeriodData(int $count_id, string $period)
     {
         $query = GraphLight::where('id_count', $count_id)
+            ->select('value', 'datetime')
+            ->orderBy('datetime');
+
+        if ($period === '7') {
+            $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
+            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
+        } else {
+            $period_parts = explode('-', $period);
+            $month = (int) $period_parts[0];
+            $year = (int) $period_parts[1];
+            $graphs = $query->whereMonth('datetime', '=', $month)
+                ->whereYear('datetime', '=', $year)
+                ->get();
+        }
+
+        $data['values'] = $graphs->pluck('value')->toArray();
+        $data['dates'] = $graphs->pluck('datetime')->toArray();
+
+        return [true, $data];
+    }
+
+    public function getPressuresPeriods()
+    {
+        $periods = [];
+        $min_date = GraphPressure::min('datetime');
+        if (empty($min_date)) {
+            return $periods;
+        }
+        $min_date = Carbon::createFromFormat('Y-m-d H:i:s', $min_date);
+        $cur_date = Carbon::now();
+        while ($min_date->lte($cur_date)) {
+            $periods[$min_date->month.'-'.$min_date->year] = 'за '.getRusMonth($min_date->month).' '.$min_date->year;
+            $min_date->addMonth();
+        }
+
+        return array_reverse($periods);
+    }
+
+    public function getGraphPressuresData()
+    {
+        $rooms_ids = Pressurestat::whereNotNull('room')
+            ->select('room')
+            ->distinct()
+            ->pluck('room')
+            ->toArray();
+
+        $data['rooms'] = Room::whereIn('id', $rooms_ids)
+            ->with('pressurestats', 'pressurestats.lastGraphs')
+            ->orderBy('id')
+            ->get();
+
+        $data['other_pressurestats'] = Pressurestat::with('lastGraphs')
+            ->whereNull('room')
+            ->orderBy('id')
+            ->get();
+
+        return $data;
+    }
+
+    public function getGraphPressuresPeriodData(int $count_id, string $period)
+    {
+        $query = GraphPressure::where('id_count', $count_id)
             ->select('value', 'datetime')
             ->orderBy('datetime');
 
