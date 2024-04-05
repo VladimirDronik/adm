@@ -370,7 +370,7 @@
                 } else if ($(this).val() == 'conditioner' || $(this).val() == 'customizable_light' || $(this).val() == 'dimmer' || $(this).val() == 'curtain') {
                     $('#view_form #off_method_div').hide();
                     $('#view_form #on_method_div').hide();
-                } else if ($(this).val() == 'termostat') {
+                } else if ($(this).val() == 'termostat' || $(this).val() == 'pressurestat') {
                     $('#view_form [name=lowval]').val(10);
                     $('#view_form [name=highval]').val(26);
                     $('#view_form [name=lowval]').attr('min', 0);

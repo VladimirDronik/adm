@@ -51,9 +51,7 @@
                         </div>
 
                         <div class="form-group row" id="on_method_params_div"
-                             @if((is_null($view->on_method_params)  && !old('id_method'))
-                              || ($view->type =='termostat')
-                              || ($view->type =='link'))
+                             @if((is_null($view->on_method_params)  && !old('id_method')) || ($view->type =='termostat') || ($view->type =='link') || ($view->type =='pressurestat'))
                              style="display: none;" @endif>
                             <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="on_method_params"></label>
                             <div class="col-md-9 pr-0">
@@ -118,10 +116,10 @@
                         {{ Form::bs_number('position_left','Левый отступ (%):', old('position_left', $view->position_left), ['min' => 0, 'max' => 100, 'required' => false] ) }}
                         {{ Form::bs_number('position_top','Верхний отступ (%):', old('position_top', $view->position_right), ['min' => 0, 'max' => 100, 'required' => false] ) }}
 
-                        <div id="additionallydiv"  @if(($view->type == 'termostat')||($view->type == 'label')||($view->type == 'lightstat')||($view->type == 'carbsens')) style="display: block;" @else style="display: none;" @endif >
+                        <div id="additionallydiv"  @if(($view->type == 'termostat')||($view->type == 'label')||($view->type == 'lightstat')||($view->type == 'carbsens')||($view->type == 'pressurestat')) style="display: block;" @else style="display: none;" @endif >
                             <br>
                             {{ Form::bs_title('Дополнительно') }}
-                            <div id="low_high_val_div" @if($view->type == 'termostat' || $view->type == 'lightstat' || $view->type == 'carbsens') style="display: block;" @else style="display: none;" @endif >
+                            <div id="low_high_val_div" @if($view->type == 'termostat' || $view->type == 'lightstat' || $view->type == 'carbsens' || $view->type == 'pressurestat') style="display: block;" @else style="display: none;" @endif >
                                 {{ Form::bs_radio('setting_from_app', 'Настройка из приложения:', ['true' => 'да', 'false' => 'нет'], old('setting_from_app', $settingFromApp)) }}
                                 {{ Form::bs_number('lowval','Нижний порог шкалы:', old('lowval', $lowval), ['min' => $lowvalSet['min'], 'max' => $lowvalSet['max'], 'required' => false] ) }}
                                 {{ Form::bs_number('highval','Верхний порог шкалы:', old('highval', $highval), ['min' => $highvalSet['min'], 'max' => $highvalSet['max'], 'required' => false] )  }}
@@ -416,7 +414,7 @@
                 } else if ($(this).val() == 'conditioner' || $(this).val() == 'customizable_light' || $(this).val() == 'dimmer' || $(this).val() == 'curtain') {
                     $('#view_form #off_method_div').hide();
                     $('#view_form #on_method_div').hide();
-                } else if ($(this).val() == 'termostat') {
+                } else if ($(this).val() == 'termostat' || $(this).val() == 'pressurestat') {
                     $('#view_form [name=lowval]').attr('min', 0);
                     $('#view_form [name=highval]').attr('min', 0);
                     $('#view_form [name=lowval]').attr('max', 30);

@@ -89,6 +89,8 @@ class View extends Model
 
     const TYPE_LIGHTSTAT = 'lightstat';
 
+    const TYPE_PRESSURESTAT = 'pressurestat';
+
     const TYPE_CARBMONOXIDE = 'carbsens';
 
     const TYPE_HYGROSTAT = 'hygrostat';
@@ -120,6 +122,7 @@ class View extends Model
             self::TYPE_BUTTON => 'Кнопка',
             self::TYPE_TEMP => 'Термометр',
             self::TYPE_LIGHTSTAT => 'Датчик освещения',
+            self::TYPE_PRESSURESTAT => 'Датчик давления',
             self::TYPE_CARBMONOXIDE => 'Датчик CO',
             self::TYPE_HYGROSTAT => 'Гигрометр',
             self::TYPE_LABEL => 'Индикатор',
