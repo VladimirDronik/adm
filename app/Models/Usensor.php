@@ -58,6 +58,8 @@ class Usensor extends Model
 
     const TYPE_OUTDOORV3 = 'outdoorv3';
 
+    const TYPE_PTSENSOR = 'ptsensor';
+
     public static function getTypes(bool $is_full = false)
     {
         $types = [
@@ -68,6 +70,7 @@ class Usensor extends Model
             self::TYPE_SCD41 => 'SCD41',
             self::TYPE_OUTDOORV2 => 'Outdoor v2',
             self::TYPE_OUTDOORV3 => 'Outdoor v3',
+            self::TYPE_PTSENSOR => 'PTsensor',
         ];
 
         return $is_full ? $types : array_keys($types);
