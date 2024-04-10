@@ -42,6 +42,7 @@
                                     <th>Влажность</th>
                                     <th>Освещение</th>
                                     <th style="width: 195px;">Атмосферное давление</th>
+                                    <th style="width: 150px;">Давление</th>
                                     <th style="width: 150px;">CO2</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
@@ -57,6 +58,7 @@
                                         <td>{{ $usensor->hum ? $usensor->hum . ' %' : ''}}</td>
                                         <td>{{ $usensor->lux ? $usensor->lux . ' ед.' : ''}}</td>
                                         <td>{{ $usensor->atm_pressure ? $usensor->atm_pressure . ' мм рт.ст.' : ''}}</td>
+                                        <td>{{ $usensor->pressure ? $usensor->pressure . ' мм рт.ст.' : ''}}</td>
                                         <td>{{ $usensor->co2 ? $usensor->co2 . ' ppm' : ''}}</td>
                                         <td align="center" class="text-center">
                                             <a href="{{ route('usensors.edit',[$usensor->id]) }}" class="btn btn-info btn-sm btn-rounded">
@@ -80,6 +82,7 @@
                                     <th>Влажность</th>
                                     <th>Освещение</th>
                                     <th style="width: 195px;">Атмосферное давление</th>
+                                    <th style="width: 150px;">Давление</th>
                                     <th style="width: 150px;">CO2</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
