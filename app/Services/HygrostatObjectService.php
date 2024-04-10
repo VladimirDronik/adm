@@ -13,7 +13,7 @@ use Database\Seeders\ScriptsTableSeeder;
 class HygrostatObjectService
 {
     /**
-     * Автосоздание объекта для гигростата
+     * Автосоздание объекта для датчика влажности
      */
     public function createHygrostatObject(string $name): HomeObject
     {
@@ -45,22 +45,22 @@ class HygrostatObjectService
     }
 
     /**
-     * Создание метода 'Проверка гигростата' и элемента планировщика 'Проверка гигростата' (каждые 5 мин)
+     * Создание метода 'Проверка датчика влажности' и элемента планировщика 'Проверка датчика влажности' (каждые 5 мин)
      */
     public function createCheckMethodWithEvent(int $object_id)
     {
         $script_id = $this->getOrCreateCheckHygrostatScriptId();
 
         $method_id = Method::forceCreate([
-            'name' => 'Проверка гигростата',
+            'name' => 'Проверка датчика влажности',
             'id_object' => $object_id,
-            'comment' => 'Периодическая проверка текущих значений гигростата',
+            'comment' => 'Периодическая проверка текущих значений датчика влажности',
             'is_system' => 1,
             'script' => $script_id,
         ])->id;
 
         $scheduler_task_id = SchedulerTask::forceCreate([
-            'name' => 'Проверка гигростата',
+            'name' => 'Проверка датчика влажности',
             'is_system' => 1,
             'is_hidden' => 1,
             'object' => $object_id,
@@ -80,7 +80,7 @@ class HygrostatObjectService
 
     /**
      * Автосоздание методов и их событий для объекта, который был
-     * создан автоматически для гигростата
+     * создан автоматически для датчика влажности
      *
      * @return void
      */

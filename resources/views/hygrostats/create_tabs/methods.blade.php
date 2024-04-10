@@ -4,7 +4,7 @@
                               false, false, [], '', '', null, 'Объект, у которого меняем состояние', 3, $can['devices.show-object']) }}
 
 {{ Form::bs_autoselect('method_on', 'Метод при включении:', [], old('method_on'),
-    false, false, [], null, 'Метод объекта влияния при срабатывании гигростатат на включение') }}
+    false, false, [], null, 'Метод объекта влияния при срабатывании датчика влажностит на включение') }}
 
 <div class="form-group row" id="method_on_params_div"
      @if(!old('method_on')) style="display: none;" @endif>
@@ -21,7 +21,7 @@
 </div>
 
 {{ Form::bs_autoselect('method_off', 'Метод при выключении:', [], old('method_off'),
-    false, false, [], null, 'Метод объекта влияния при срабатывании гигростата на выключение') }}
+    false, false, [], null, 'Метод объекта влияния при срабатывании датчика влажности на выключение') }}
 
 <div class="form-group row" id="method_off_params_div"
      @if(!old('method_off')) style="display: none;" @endif>

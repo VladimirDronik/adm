@@ -30,7 +30,7 @@
 
                         {{ Form::bs_select('group_room', 'Группа:', ["0" => "Без группы"] + $groups) }}
 
-                        {{ Form::bs_title('Термостаты') }}
+                        {{ Form::bs_title('Датчики температуры') }}
 
                         @forelse($room->termostats as $termostat)
                             <div class="form-group row ">

@@ -3,13 +3,13 @@
 @section('breadcrumbs')
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Датчики: гигростаты</h3></div>
+            <h3 class="text-primary">Датчики влажности</h3></div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
                 <li class="breadcrumb-item breadcrumb-item-no-link">Устройства</li>
                 <li class="breadcrumb-item breadcrumb-item-no-link">Датчики</li>
-                <li class="breadcrumb-item active">Гигростаты</li>
+                <li class="breadcrumb-item active">Датчики влажности</li>
             </ol>
         </div>
     </div>
@@ -22,14 +22,14 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('hygrostats.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить гигростат</a>
+                        <a href="{{ route('hygrostats.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить датчик влажности</a>
                         <a href="{{ route('hygrostats.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card">
-            <div class="card-title"><h4>Гигростаты</h4></div>
+            <div class="card-title"><h4>Датчики влажности</h4></div>
             <div class="card-body">
                 @if(count($hygrostats))
                     <div class="table-responsive">
@@ -100,7 +100,7 @@
                     {{ $hygrostats->appends(request()->input())->links() }}
                     <p class="text-right">Найдено: {{ $hygrostats->total() }}</p>
                 @else
-                    <p>Гигростаты не найдены</p>
+                    <p>Датчики влажности не найдены</p>
                 @endif
             </div>
         </div>
@@ -115,7 +115,7 @@
 
             $('.del_btn').click(function() {
                 del_id = $(this).data('id');
-                $('#del_modal_body').text('Удалить гигростат № '+del_id+' «'+$(this).data('name')+'»?');
+                $('#del_modal_body').text('Удалить датчик влажности № '+del_id+' «'+$(this).data('name')+'»?');
                 $('#del_init_btn').click();
             });
 
@@ -128,7 +128,7 @@
                             if (data.result) {
                                 $('#tr'+del_id).hide();
                             } else {
-                                showErrorModal('Ошибка при удалении гигростата');
+                                showErrorModal('Ошибка при удалении датчика влажности');
                             }
                         }
                     });

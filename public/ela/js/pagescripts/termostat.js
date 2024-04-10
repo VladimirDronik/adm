@@ -48,7 +48,7 @@ function validateTermostat() {
     if ($('#termostat_form input[name=object_type]').length
         && $('#termostat_form input[name=object_type]:checked').val() === 'manual'
         && isEmptyAutoSelect('id_object')) {
-        return 'Не указан объект термостата';
+        return 'Не указан объект датчика температуры';
     }
 
     // if (isEmptyAutoSelect('object')) {

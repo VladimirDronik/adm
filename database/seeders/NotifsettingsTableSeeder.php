@@ -35,10 +35,10 @@ class NotifsettingsTableSeeder extends Seeder
                 'message' => 'Устройство {$device->name} ({$device->ip}) снова доступно',
             ],
             [
-                'name' => 'Оповещения об аварии термостата',
+                'name' => 'Оповещения об аварии датчика температуры',
                 'type' => 'termostat_alarm',
                 'priority' => 1,
-                'message' => 'Термостат {$termostat->name} вышел за границы диапазона.T={$termostat->temp}',
+                'message' => 'Датчик температуры {$termostat->name} вышел за границы диапазона.T={$termostat->temp}',
             ],
         ];
 

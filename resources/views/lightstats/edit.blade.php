@@ -6,9 +6,9 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование светостата № '. $lightstat->iobject['id'],
-        'links' => [ route('lightstats.index') => 'Светостаты'],
-        'last_link' => 'Редактирование светостата'])
+       ['title' => 'Редактирование датчика освещенности № '. $lightstat->iobject['id'],
+        'links' => [ route('lightstats.index') => 'Датчики освещенности'],
+        'last_link' => 'Редактирование датчика освещенности'])
 @endsection
 
 @section('content')
@@ -17,8 +17,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('lightstats.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок светостатов</a>
-                        <a href="{{ route('lightstats.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить светостат</a>
+                        <a href="{{ route('lightstats.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок датчиков освещенности</a>
+                        <a href="{{ route('lightstats.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить датчик освещенности</a>
                     </div>
                 </div>
             </div>

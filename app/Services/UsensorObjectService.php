@@ -11,7 +11,7 @@ use Database\Seeders\ScriptsTableSeeder;
 class UsensorObjectService
 {
     /**
-     * Автосоздание объекта для термостата
+     * Автосоздание объекта для датчика температуры
      */
     public function createUsensorObject(string $name): HomeObject
     {

@@ -49,12 +49,12 @@
                                 </div>
                             @endforeach
                         @else
-                            <p>Нет гигростатов</p>
+                            <p>Нет датчиков влажности</p>
                         @endif
                         <hr>
                     @endforeach
                     @if(count($data['other_hygrostats']))
-                        <h3>Остальные Гигростаты</h3>
+                        <h3>Остальные Датчики влажности</h3>
                         @foreach($data['other_hygrostats'] as $hygrostat)
                             @include('graphs.humidities.period',compact('hygrostat'))
                             <div class="row">

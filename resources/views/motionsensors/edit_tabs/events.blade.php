@@ -228,16 +228,16 @@
     <div class="col-sm-11 pr-0">
         <div style="height: 10px;">&nbsp;</div>
         <hr>
-        <h4>Действие при пороговом значении светостата</h4>
+        <h4>Действие при пороговом значении датчика освещенности</h4>
         <div style="height: 20px;">&nbsp;</div>
     </div>
 
     <div class="col-sm-12 pr-0 mt-4">
 
-        {{ Form::bs_autoselect('lightstat', 'Светостат:', $lightstats, old('lightstat', is_null($motionsensor->lightstat) ? 0 : $motionsensor->lightstat),
-  false, false, [],  null, 'Светостат, значение которого будем проверять') }}
+        {{ Form::bs_autoselect('lightstat', 'Датчик освещенности:', $lightstats, old('lightstat', is_null($motionsensor->lightstat) ? 0 : $motionsensor->lightstat),
+  false, false, [],  null, 'Датчик освещенности, значение которого будем проверять') }}
 
-        {{ Form::bs_radio('equality', 'Если значение светостата:', $equality, old('equality', $motionsensor->equality), ['required' => true]) }}
+        {{ Form::bs_radio('equality', 'Если значение датчика освещенности:', $equality, old('equality', $motionsensor->equality), ['required' => true]) }}
 
         {{ Form::bs_text('lightvalue', 'Значение освещенности:', old('lightvalue', $motionsensor->lightvalue)) }}
 
@@ -245,7 +245,7 @@
   false, false, [],  null, 'Объект, методы которого интересуют') }}
 
         {{ Form::bs_autoselect('method_light', 'Метод:', $methods_light, old('method_guard', is_null($motionsensor->method_light) ? 0 : $motionsensor->method_light),
-   false, false, [], null, 'Метод, который вызывается при пороговом значнии светостата') }}
+   false, false, [], null, 'Метод, который вызывается при пороговом значнии датчика освещенности') }}
 
     </div>
 

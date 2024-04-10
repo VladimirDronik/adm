@@ -48,12 +48,12 @@
                                 </div>
                             @endforeach
                         @else
-                            <p>Нет термостатов</p>
+                            <p>Нет датчиков температуры</p>
                         @endif
                         <hr>
                     @endforeach
                     @if(count($data['other_termostats']))
-                        <h3>Остальные термостаты</h3>
+                        <h3>Остальные датчики температуры</h3>
                         @foreach($data['other_termostats'] as $termostat)
                             @include('graphs.termostats.period',compact('termostat'))
                             <div class="row">

@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление гигростата', 'links' => [ route('hygrostats.index') => 'Гигростаты']])
+       ['title' => 'Добавление датчика влажности', 'links' => [ route('hygrostats.index') => 'Датчики влажности']])
 @endsection
 
 @section('content')
@@ -15,7 +15,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('hygrostats.index') }}" class="btn btn-success m-b-10 m-l-5">Список гигростатов</a>
+                        <a href="{{ route('hygrostats.index') }}" class="btn btn-success m-b-10 m-l-5">Список датчиков влажности</a>
                     </div>
                 </div>
             </div>
@@ -47,10 +47,10 @@
                                     @include('hygrostats/create_tabs/methods')
                                 </div>
                                 <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
-                                    <br> Методы будут доступны после сохранения гигростата.
+                                    <br> Методы будут доступны после сохранения датчика влажности.
                                 </div>
                                 <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
-                                    <br> Задачи планировщика будут доступны после сохранения гигростата.
+                                    <br> Задачи планировщика будут доступны после сохранения датчика влажности.
                                 </div>
                             </div>
                             <input type="hidden" id="tabs-sel" value="{{ $tab }}">

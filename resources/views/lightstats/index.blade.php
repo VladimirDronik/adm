@@ -3,13 +3,13 @@
 @section('breadcrumbs')
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Датчики: светостат</h3></div>
+            <h3 class="text-primary">Датчики: датчик освещенности</h3></div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
                 <li class="breadcrumb-item breadcrumb-item-no-link">Устройства</li>
                 <li class="breadcrumb-item breadcrumb-item-no-link"><a href="{{ route('lightstats.index') }}">Датчики</a></li>
-                <li class="breadcrumb-item active">Светостаты</li>
+                <li class="breadcrumb-item active">Датчики освещенности</li>
             </ol>
         </div>
     </div>
@@ -22,14 +22,14 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('lightstats.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить светостат</a>
+                        <a href="{{ route('lightstats.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить датчик освещенности</a>
                         <a href="{{ route('lightstats.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card">
-            <div class="card-title"><h4>Светостаты</h4></div>
+            <div class="card-title"><h4>Датчики освещенности</h4></div>
             <div class="card-body">
                 @if(count($lightstats))
                     <div class="table-responsive">
@@ -102,7 +102,7 @@
                     {{ $lightstats->appends(request()->input())->links() }}
                     <p class="text-right">Найдено: {{ $lightstats->total() }}</p>
                 @else
-                    <p>Светостаты не найдены</p>
+                    <p>Датчики освещенности не найдены</p>
                 @endif
             </div>
         </div>
@@ -117,7 +117,7 @@
 
             $('.del_btn').click(function() {
                 del_id = $(this).data('id');
-                $('#del_modal_body').text('Удалить светостат № '+del_id+' «'+$(this).data('name')+'»?');
+                $('#del_modal_body').text('Удалить датчик освещенности № '+del_id+' «'+$(this).data('name')+'»?');
                 $('#del_init_btn').click();
             });
 
@@ -130,7 +130,7 @@
                             if (data.result) {
                                 $('#tr'+del_id).hide();
                             } else {
-                                showErrorModal('Ошибка при удалении светостата');
+                                showErrorModal('Ошибка при удалении датчика освещенности');
                             }
                         }
                     });

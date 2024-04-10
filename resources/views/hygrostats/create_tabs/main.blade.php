@@ -26,5 +26,5 @@
 <div class="col-sm-12 pr-0 mt-4" id="device_div" style="display: none" ;>
     {{ Form::bs_autoselect('HPController_id', 'Контроллер:', $HPControllers, old('HPController_id'), false, false, [], null) }}
 
-    {{ Form::bs_autoselect('subdev_id', 'Гигростат:', [], old('subdev_id'), false, false, [], null) }}
+    {{ Form::bs_autoselect('subdev_id', 'Датчик влажности:', [], old('subdev_id'), false, false, [], null) }}
 </div>

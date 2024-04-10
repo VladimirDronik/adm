@@ -5,10 +5,11 @@
 @endsection
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование термостата № '. $termostat->iobject['id'],
-        'links' => [ route('termostats.index') => 'Термостаты'],
-        'last_link' => 'Редактирование термостата'])
+    @includeIf('components.breadcrumbs', [
+        'title' => 'Редактирование датчика температуры № '. $termostat->iobject['id'],
+        'links' => [ route('termostats.index') => 'Датчики температуры'],
+        'last_link' => 'Редактирование датчика температуры',
+    ])
 @endsection
 
 @section('content')
@@ -17,8 +18,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('termostats.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок термостатов</a>
-                        <a href="{{ route('termostats.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить термостат</a>
+                        <a href="{{ route('termostats.index') }}" class="btn btn-success m-b-10 m-l-5">Список датчиков температуры</a>
+                        <a href="{{ route('termostats.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить датчик температуры</a>
                     </div>
                 </div>
             </div>

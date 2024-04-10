@@ -11,14 +11,14 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string|null $name
- * @property int|null $id_object id светостата из таблицы объектов
+ * @property int|null $id_object id датчика освещенности из таблицы объектов
  * @property float $current текущая освещенность
  * @property float $optimal значение, которое должно быть в помещении
  * @property float $gisteresis гистерезис
  * @property int $mode 0 - реакция на потемнение, 1 - реакция на посветление
  * @property int|null $object Объект, у которого будем менять состояние
- * @property int|null $method_on Метод объекта при срабатывании светостата на включение
- * @property int|null $method_off Метод объекта при срабатывании светостата на выключение
+ * @property int|null $method_on Метод объекта при срабатывании датчика освещенности на включение
+ * @property int|null $method_off Метод объекта при срабатывании датчика освещенности на выключение
  * @property string|null $method_on_params
  * @property string|null $method_off_params
  * @property int $min_threshold минимальное значение, которое возможно в помещении
@@ -78,7 +78,7 @@ class Lightstat extends Model
     public static function getEvents()
     {
         return [
-            'onCheck' => 'Проверка светостата',
+            'onCheck' => 'Проверка датчика освещенности',
         ];
     }
 

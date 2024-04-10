@@ -35,7 +35,7 @@ class ObjtypesTableSeeder extends Seeder
             ],
             [
                 'name' => ObjType::TYPE_TERMOSTAT,
-                'label' => 'Термостат',
+                'label' => 'Датчик температуры',
             ],
             [
                 'name' => ObjType::TYPE_USENSOR,

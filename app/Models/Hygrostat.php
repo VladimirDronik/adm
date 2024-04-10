@@ -9,16 +9,16 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Hygrostat
  *
  * @property int $id
- * @property int|null $id_object id термостата из таблицы объектов
+ * @property int|null $id_object id датчика температуры из таблицы объектов
  * @property float $current текущая температура
  * @property float $optimal значение, которое должно быть в помещении
  * @property float $gisteresis гистерезис
  * @property int $thermostat 0 - охлаждение, 1 - нагрев.
  * @property int|null $object Объект, у которого будем менять состояние
- * @property int|null $method_on Метод объекта при срабатывании термостата на включение
- * @property int|null $method_off Метод объекта при срабатывании термостата на выключение
+ * @property int|null $method_on Метод объекта при срабатывании датчика температуры на включение
+ * @property int|null $method_off Метод объекта при срабатывании датчика температуры на выключение
  * @property int|null $id_device id девайса из таблицы devices на котором висит термометр
- * @property int|null $port номер порта мега, на котором висит термостат
+ * @property int|null $port номер порта мега, на котором висит датчик температуры
  * @property int $min_threshold минимальное значение, которое возможно в помещении
  * @property int $max_threshold максимальное значение, которое возможно в помещении
  * @property int $min_alarm минимальное значение аварии
@@ -97,8 +97,8 @@ class Hygrostat extends Model
     public static function getEvents()
     {
         return [
-            'onCheck' => 'Проверка значения гигростата',
-            'onError' => 'Недоступность гигростата',
+            'onCheck' => 'Проверка значения датчика влажности',
+            'onError' => 'Недоступность датчика влажности',
             'onThreshold' => 'Выход за пороговое значение',
             'onStatus' => 'Смена статуса',
             'onBattery' => 'Получение статуса батареи',
@@ -117,7 +117,7 @@ class Hygrostat extends Model
             'current' => ['Текущая влажность, %', true, false],
             'optimal' => ['Установленная влажность, %', true, true],
             'gisteresis' => ['Гистерезис [0-10]', true, true],
-            'type' => ['Тип гигростата [осушение|увлажнение]', true, true],
+            'type' => ['Тип датчика влажности [осушение|увлажнение]', true, true],
             //'min_threshold' => ['Мин. порог, °C', true, true], //Отключено в отображении
             //'max_threshold' => ['Макс. порог, °C', true, true], //Отключено в отображении
             'min_alarm' => ['Мин. аварийное знач., °C', true, true],

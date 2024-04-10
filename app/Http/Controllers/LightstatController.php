@@ -47,13 +47,13 @@ class LightstatController extends Controller
         try {
             if ($id = $this->service->store($r->except('_token'))) {
                 return redirect()->route('lightstats.edit', [$id])
-                    ->with('success', 'Светостат успешно добавлен');
+                    ->with('success', 'Датчик освещенности успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении светостата '.json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при добавлении датчика освещенности '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении светостата');
+        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении датчика освещенности');
 
     }
 
@@ -115,12 +115,12 @@ class LightstatController extends Controller
     {
         try {
             if ($this->service->update($lightstat, $r->except('_token'))) {
-                return redirect()->route('lightstats.edit', [$lightstat->id])->with('success', 'Светостат успешно изменен');
+                return redirect()->route('lightstats.edit', [$lightstat->id])->with('success', 'Датчик освещенности успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении светостата '.$lightstat->id.' '.json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при изменении датчика освещенности '.$lightstat->id.' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении светостата');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении датчика освещенности');
     }
 }

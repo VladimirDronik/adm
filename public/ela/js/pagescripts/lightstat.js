@@ -48,7 +48,7 @@ function validateLightstat() {
     if ($('#lightstat_form input[name=object_type]').length
         && $('#lightstat_form input[name=object_type]:checked').val() === 'manual'
         && isEmptyAutoSelect('id_object')) {
-        return 'Не указан объект светостата';
+        return 'Не указан объект датчика освещенности';
     }
 
     // if (isEmptyAutoSelect('object')) {

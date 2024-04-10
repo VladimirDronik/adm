@@ -5,8 +5,10 @@
 @endsection
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление термостата', 'links' => [ route('termostats.index') => 'Термостаты']])
+    @includeIf('components.breadcrumbs', [
+        'title' => 'Добавление датчика температуры',
+        'links' => [ route('termostats.index') => 'Датчики температуры'],
+    ])
 @endsection
 
 @section('content')
@@ -15,7 +17,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('termostats.index') }}" class="btn btn-success m-b-10 m-l-5">Список термостатов</a>
+                        <a href="{{ route('termostats.index') }}" class="btn btn-success m-b-10 m-l-5">Список датчиков температуры</a>
                     </div>
                 </div>
             </div>
@@ -47,10 +49,10 @@
                                     @include('termostats/create_tabs/methods')
                                 </div>
                                 <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
-                                    <br> Методы будут доступны после сохранения термостата.
+                                    <br> Методы будут доступны после сохранения датчика температуры.
                                 </div>
                                 <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
-                                    <br> Задачи планировщика будут доступны после сохранения термостата.
+                                    <br> Задачи планировщика будут доступны после сохранения датчика температуры.
                                 </div>
                             </div>
                             <input type="hidden" id="tabs-sel" value="{{ $tab }}">

@@ -6,9 +6,9 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs', [
-        'title' => 'Редактирование светостата № '. $pressurestat->id_object,
-        'links' => [ route('pressurestats.index') => 'Светостаты'],
-        'last_link' => 'Редактирование светостата'
+        'title' => 'Редактирование датчика освещенности № '. $pressurestat->id_object,
+        'links' => [ route('pressurestats.index') => 'Датчики освещенности'],
+        'last_link' => 'Редактирование датчика освещенности'
     ])
 @endsection
 

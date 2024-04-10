@@ -261,16 +261,16 @@
                                 <div class="col-sm-11 pr-0">
                                     <div style="height: 10px;">&nbsp;</div>
                                     <hr>
-                                    <h4>Действие при пороговом значении светостата</h4>
+                                    <h4>Действие при пороговом значении датчика освещенности</h4>
                                     <div style="height: 20px;">&nbsp;</div>
                                 </div>
 
                                 <div class="col-sm-12 pr-0 mt-4">
 
-                                    {{ Form::bs_autoselect('lightstat', 'Светостат:', $lightstats, old('object'),
-                              false, false, [],  null, 'Светостат, значение которого будем проверять') }}
+                                    {{ Form::bs_autoselect('lightstat', 'Датчик освещенности:', $lightstats, old('object'),
+                              false, false, [],  null, 'Датчик освещенности, значение которого будем проверять') }}
 
-                                    {{ Form::bs_radio('equality', 'Если значение светостата:', $equality, old('equality', -1)) }}
+                                    {{ Form::bs_radio('equality', 'Если значение датчика освещенности:', $equality, old('equality', -1)) }}
 
                                     {{ Form::bs_text('lightvalue', 'Значение освещенности:', null) }}
 
@@ -278,7 +278,7 @@
                               false, false, [],  null, 'Объект, методы которого интересуют') }}
 
                                     {{ Form::bs_autoselect('method_light', 'Метод:', [], old('method_evening'),
-                               false, false, [], null, 'Метод, который вызывается при пороговом значнии светостата') }}
+                               false, false, [], null, 'Метод, который вызывается при пороговом значнии датчика освещенности') }}
 
                                 </div>
                             </div>

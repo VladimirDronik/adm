@@ -16,9 +16,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $method_morning Метод при утреннем режиме
  * @property int|null $method_evening Метод при вечернем режиме
  * @property int|null $method_guard Метод при режиме охраны
- * @property int|null $lightstat Светостат с которым сравнивается значение
+ * @property int|null $lightstat Датчик освещенности с которым сравнивается значение
  * @property string|null $equality Знак сравнения значения
- * @property int|null $lightvalue Значение с которым сравниваем значение светостата
+ * @property int|null $lightvalue Значение с которым сравниваем значение датчика освещенности
  * @property int|null $method_light Метод при пороговом значении освещенности
  * @property-read \App\Models\HomeObject|null $iobject
  * @property-read \App\Models\HomeObject|null $object
@@ -80,7 +80,7 @@ class Motionsensor extends Model
     public static function getProperties()
     {
         return [
-            'relateLight' => ['Значение связанного светостата', true, true],
+            'relateLight' => ['Значение связанного датчика освещенности', true, true],
             'mode' => ['Текущий режим', true, true],
         ];
     }

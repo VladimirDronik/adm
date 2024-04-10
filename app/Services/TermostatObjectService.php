@@ -13,7 +13,7 @@ use Database\Seeders\ScriptsTableSeeder;
 class TermostatObjectService
 {
     /**
-     * Автосоздание объекта для термостата
+     * Автосоздание объекта для датчика температуры
      */
     public function createTermostatObject(string $name): HomeObject
     {
@@ -45,22 +45,22 @@ class TermostatObjectService
     }
 
     /**
-     * Создание метода 'Проверка термостата' и элемента планировщика 'Проверка термостата' (каждые 5 мин)
+     * Создание метода 'Проверка датчика температуры' и элемента планировщика 'Проверка датчика температуры' (каждые 5 мин)
      */
     public function createCheckMethodWithEvent(int $object_id)
     {
         $script_id = $this->getOrCreateCheckTermostatScriptId();
 
         $method_id = Method::forceCreate([
-            'name' => 'Проверка термостата',
+            'name' => 'Проверка датчика температуры',
             'id_object' => $object_id,
-            'comment' => 'Периодическая проверка текущих значений термостата',
+            'comment' => 'Периодическая проверка текущих значений датчика температуры',
             'is_system' => 1,
             'script' => $script_id,
         ])->id;
 
         $scheduler_task_id = SchedulerTask::forceCreate([
-            'name' => 'Проверка термостата',
+            'name' => 'Проверка датчика температуры',
             'is_system' => 1,
             'is_hidden' => 1,
             'object' => $object_id,
@@ -80,7 +80,7 @@ class TermostatObjectService
 
     /**
      * Автосоздание методов и их событий для объекта, который был
-     * создан автоматически для термостата
+     * создан автоматически для датчика температуры
      *
      * @return void
      */

@@ -47,7 +47,7 @@ class ScriptsTableSeeder extends Seeder
     public static function getCheckTermostatScript(): array
     {
         return [
-            'name' => 'Проверка термостата',
+            'name' => 'Проверка датчика температуры',
             'link' => 'check_termostat.php', // используется в TermostatObjectService
             'count' => 0,
             'system' => 1,
@@ -57,7 +57,7 @@ class ScriptsTableSeeder extends Seeder
     public static function getCheckHygrostatScript(): array
     {
         return [
-            'name' => 'Проверка гигростата',
+            'name' => 'Проверка датчика влажности',
             'link' => 'check_hygrostat.php', // используется в HygrostatObjectService
             'count' => 0,
             'system' => 1,
@@ -67,7 +67,7 @@ class ScriptsTableSeeder extends Seeder
     public static function getCheckLightstatScript(): array
     {
         return [
-            'name' => 'Проверка светостата',
+            'name' => 'Проверка датчика освещенности',
             'link' => 'check_lightstat.php', // используется в LightstatObjectService
             'count' => 0,
             'system' => 1,

@@ -1,11 +1,11 @@
 <br>
-{{ Form::bs_title('События при проверке термостата') }}
+{{ Form::bs_title('События при проверке датчика температуры') }}
 
 {{ Form::bs_autoselect_and_btn('object', 'Объект воздействия:', $objects, old('object', $termostat->object),
                         false, false, [], '', '', null, 'Объект, у которого меняем состояние', 3, $can['devices.show-object']) }}
 
 {{ Form::bs_autoselect('method_on', 'Действие при включении:', $methods, old('method_on', $termostat->method_on),
-    false, false, [], null, 'Метод объекта воздействия при срабатывании термостата на включение') }}
+    false, false, [], null, 'Метод объекта воздействия при срабатывании датчика температуры на включение') }}
 
 <div class="form-group row" id="method_on_params_div"
      @if(is_null($termostat->method_on_params) && !old('method_on')) style="display: none;" @endif>
@@ -23,7 +23,7 @@
 </div>
 
 {{ Form::bs_autoselect('method_off', 'Действие при выключении:', $methods, old('method_off', $termostat->method_off),
-    false, false, [], null, 'Метод объекта воздействия при срабатывании термостата на выключение') }}
+    false, false, [], null, 'Метод объекта воздействия при срабатывании датчика температуры на выключение') }}
 
 <div class="form-group row" id="method_off_params_div"
      @if(is_null($termostat->method_off_params) && !old('method_off')) style="display: none;" @endif>

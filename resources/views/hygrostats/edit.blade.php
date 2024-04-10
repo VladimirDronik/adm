@@ -6,9 +6,9 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование гигростата № '. $hygrostat->iobject['id'],
-        'links' => [ route('hygrostats.index') => 'Гигростаты'],
-        'last_link' => 'Редактирование термостата'])
+       ['title' => 'Редактирование датчика влажности № '. $hygrostat->iobject['id'],
+        'links' => [ route('hygrostats.index') => 'Датчики влажности'],
+        'last_link' => 'Редактирование датчика температуры'])
 @endsection
 
 @section('content')
@@ -17,8 +17,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('hygrostats.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок гигростатов</a>
-                        <a href="{{ route('hygrostats.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить гигростат</a>
+                        <a href="{{ route('hygrostats.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок датчиков влажности</a>
+                        <a href="{{ route('hygrostats.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить датчик влажности</a>
                     </div>
                 </div>
             </div>

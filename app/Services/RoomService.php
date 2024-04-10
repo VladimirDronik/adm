@@ -294,7 +294,7 @@ class RoomService
     }
 
     /**
-     * Добавление термостата к комнате.
+     * Добавление датчика температуры к комнате.
      */
     public static function addTermostat($idRoom, $termostatValue)
     {
@@ -318,7 +318,7 @@ class RoomService
     }
 
     /**
-     * Добавление гигростата к комнате.
+     * Добавление датчика влажности к комнате.
      */
     public static function addHygrostat($idRoom, $hygrostatValue)
     {

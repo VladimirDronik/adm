@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление универсального датчика', 'links' => [ route('usensors.index') => 'Термостаты']])
+       ['title' => 'Добавление универсального датчика', 'links' => [ route('usensors.index') => 'Универсальные датчики']])
 @endsection
 
 @section('content')

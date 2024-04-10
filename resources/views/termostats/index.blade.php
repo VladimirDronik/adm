@@ -3,13 +3,13 @@
 @section('breadcrumbs')
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Датчики: термостаты</h3></div>
+            <h3 class="text-primary">Датчики температуры</h3></div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
                 <li class="breadcrumb-item breadcrumb-item-no-link">Устройства</li>
                 <li class="breadcrumb-item breadcrumb-item-no-link">Датчики</li>
-                <li class="breadcrumb-item active">Термостаты</li>
+                <li class="breadcrumb-item active">Датчики температуры</li>
             </ol>
         </div>
     </div>
@@ -22,14 +22,14 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('termostats.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить термостат</a>
+                        <a href="{{ route('termostats.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить датчик температуры</a>
                         <a href="{{ route('termostats.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card">
-            <div class="card-title"><h4>Термостаты</h4></div>
+            <div class="card-title"><h4>Датчики температуры</h4></div>
             <div class="card-body">
                 @if(count($termostats))
                     <div class="table-responsive">
@@ -104,7 +104,7 @@
                     {{ $termostats->appends(request()->input())->links() }}
                     <p class="text-right">Найдено: {{ $termostats->total() }}</p>
                 @else
-                    <p>Термостаты не найдены</p>
+                    <p>Датчики температуры не найдены</p>
                 @endif
             </div>
         </div>
@@ -119,7 +119,7 @@
 
             $('.del_btn').click(function() {
                 del_id = $(this).data('id');
-                $('#del_modal_body').text('Удалить термостат № '+del_id+' «'+$(this).data('name')+'»?');
+                $('#del_modal_body').text('Удалить датчик температуры № '+del_id+' «'+$(this).data('name')+'»?');
                 $('#del_init_btn').click();
             });
 
@@ -132,7 +132,7 @@
                             if (data.result) {
                                 $('#tr'+del_id).hide();
                             } else {
-                                showErrorModal('Ошибка при удалении термостата');
+                                showErrorModal('Ошибка при удалении датчика температуры');
                             }
                         }
                     });

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Graph
  *
  * @property int $id
- * @property int $id_termostat id термостата из таблицы термостатов
+ * @property int $id_termostat id датчика температуры из таблицы датчиков температуры
  * @property string $datetime дата и время значения
  * @property float $value значение параметра
  *

@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление светостата', 'links' => [ route('lightstats.index') => 'Светостаты']])
+       ['title' => 'Добавление датчика освещенности', 'links' => [ route('lightstats.index') => 'Датчики освещенности']])
 @endsection
 
 @section('content')
@@ -15,7 +15,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('lightstats.index') }}" class="btn btn-success m-b-10 m-l-5">Список светостатов</a>
+                        <a href="{{ route('lightstats.index') }}" class="btn btn-success m-b-10 m-l-5">Список датчиков освещенности</a>
                     </div>
                 </div>
             </div>
@@ -47,10 +47,10 @@
                                     @include('lightstats/create_tabs/methods')
                                 </div>
                                 <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
-                                    <br> Методы будут доступны после сохранения светостата.
+                                    <br> Методы будут доступны после сохранения датчика освещенности.
                                 </div>
                                 <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
-                                    <br> Задачи планировщика будут доступны после сохранения светостата.
+                                    <br> Задачи планировщика будут доступны после сохранения датчика освещенности.
                                 </div>
                             </div>
                             <input type="hidden" id="tabs-sel" value="{{ $tab }}">

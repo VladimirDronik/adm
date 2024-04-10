@@ -73,13 +73,13 @@ class TermostatController extends Controller
         try {
             if ($id = $this->service->store($r->except('_token'))) {
                 return redirect()->route('termostats.edit', [$id])
-                    ->with('success', 'Термостат успешно добавлен');
+                    ->with('success', 'Датчик температуры успешно добавлен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при добавлении термостата '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error('Ошибка при добавлении датчика температуры '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении термостата');
+        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении датчика температуры');
     }
 
     public function edit(Termostat $termostat, $tab = 1)
@@ -123,12 +123,12 @@ class TermostatController extends Controller
     {
         try {
             if ($this->service->update($termostat, $r->except('_token'))) {
-                return redirect()->route('termostats.edit', [$termostat->id])->with('success', 'Термостат успешно изменен');
+                return redirect()->route('termostats.edit', [$termostat->id])->with('success', 'Датчик температуры успешно изменен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при изменении термостата '.$termostat->id.' '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error('Ошибка при изменении датчика температуры '.$termostat->id.' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении термостата');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении датчика температуры');
     }
 }

@@ -8,7 +8,7 @@
                         <a class="nav-link @if($active == 'termostats') active show @endif" href="{{ route('termostats.index') }}">
                             <span>
                                 <img width="22" height="20" title="" src="{{ asset('ela/images/objects/termostat.png') }}">
-                                Термостаты ({{ $detectorsService->getTermostatsCount() }})
+                                Датчики температуры ({{ $detectorsService->getTermostatsCount() }})
                             </span>
                         </a>
                     </li>
@@ -16,7 +16,7 @@
                         <a class="nav-link @if($active == 'hygrostats') active show @endif" href="{{ route('hygrostats.index') }}">
                             <span>
                                 <img width="18" height="20" title="" src="{{ asset('ela/images/objects/hygrometer.png') }}">
-                                Гигростаты ({{ $detectorsService->getHygrostatCount() }})
+                                Датчики влажности ({{ $detectorsService->getHygrostatCount() }})
                             </span>
                         </a>
                     </li>
@@ -24,7 +24,7 @@
                         <a class="nav-link @if($active == 'lightstats') active show @endif" href="{{ route('lightstats.index') }}">
                             <span>
                                 <img width="18" height="20" title="" src="{{ asset('ela/images/objects/lightstat.png') }}">
-                                Светостаты ({{ $detectorsService->getLightstatsCount() }})
+                                Датчики освещенности ({{ $detectorsService->getLightstatsCount() }})
                             </span>
                         </a>
                     </li>

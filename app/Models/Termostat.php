@@ -9,16 +9,16 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Termostat
  *
  * @property int $id
- * @property int|null $id_object id термостата из таблицы объектов
+ * @property int|null $id_object id датчика температуры из таблицы объектов
  * @property float $current текущая температура
  * @property float $optimal значение, которое должно быть в помещении
  * @property float $gisteresis гистерезис
  * @property int $thermostat 0 - охлаждение, 1 - нагрев.
  * @property int|null $object Объект, у которого будем менять состояние
- * @property int|null $method_on Метод объекта при срабатывании термостата на включение
- * @property int|null $method_off Метод объекта при срабатывании термостата на выключение
+ * @property int|null $method_on Метод объекта при срабатывании датчика температуры на включение
+ * @property int|null $method_off Метод объекта при срабатывании датчика температуры на выключение
  * @property int|null $id_device id девайса из таблицы devices на котором висит термометр
- * @property int|null $port номер порта мега, на котором висит термостат
+ * @property int|null $port номер порта мега, на котором висит датчик температуры
  * @property string $id_termometr id термометра для идентификации его по коду
  * @property int $min_threshold минимальное значение, которое возможно в помещении
  * @property int $max_threshold максимальное значение, которое возможно в помещении
@@ -99,8 +99,8 @@ class Termostat extends Model
     public static function getEvents()
     {
         return [
-            'onCheck' => 'Проверка значения термостата',
-            'onError' => 'Недоступность термостата',
+            'onCheck' => 'Проверка значения датчика температуры',
+            'onError' => 'Недоступность датчика температуры',
             'onThreshold' => 'Выход за пороговое значение',
             'onStatus' => 'Смена статуса',
             'onBattery' => 'Получение статуса батареи',
@@ -119,7 +119,7 @@ class Termostat extends Model
             'current' => ['Текущая температура, °C', true, false],
             'optimal' => ['Установленная температура, °C', true, true],
             'gisteresis' => ['Гистерезис [0-10]', true, true],
-            'type' => ['Тип термостата [нагрев|охлажение]', true, true],
+            'type' => ['Тип датчика температуры [нагрев|охлажение]', true, true],
             //'min_threshold' => ['Мин. порог, °C', true, true], //Отключено в отображении
             //'max_threshold' => ['Макс. порог, °C', true, true], //Отключено в отображении
             'min_alarm' => ['Мин. аварийное знач., °C', true, true],
