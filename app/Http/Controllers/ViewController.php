@@ -44,6 +44,7 @@ class ViewController extends Controller
             ObjType::TYPE_LIGHTSTAT,
             ObjType::TYPE_HYGROSTAT,
             ObjType::TYPE_CARBMONOXIDE,
+            ObjType::TYPE_PRESSURESTAT,
             ObjType::TYPE_BOILER,
         ]);
 

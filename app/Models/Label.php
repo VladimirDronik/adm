@@ -35,6 +35,7 @@ class Label extends Model
             ObjType::TYPE_TERMOSTAT => [['value' => self::CURRENT_PARAM, 'name' => 'Текущее значение']],
             ObjType::TYPE_LIGHTSTAT => [['value' => self::CURRENT_PARAM, 'name' => 'Текущее значение']],
             ObjType::TYPE_HYGROSTAT => [['value' => self::CURRENT_PARAM, 'name' => 'Текущее значение']],
+            ObjType::TYPE_PRESSURESTAT => [['value' => self::CURRENT_PARAM, 'name' => 'Текущее значение']],
             ObjType::TYPE_CARBMONOXIDE => [['value' => self::CUR_VALUE_PARAM, 'name' => 'Текущее значение']],
             ObjType::TYPE_BOILER => [
                 ['value' => self::CSUPPLY_PARAM, 'name' => 'Температура подачи'],
