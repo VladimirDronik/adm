@@ -50,4 +50,12 @@ class GraphController extends Controller
 
         return view('graphs.pressures.index', compact('data', 'periods'));
     }
+
+    public function carbdioxides()
+    {
+        $data = $this->service->getGraphCarbdioxidesData();
+        $periods = $this->service->getCarbdioxidesPeriods();
+
+        return view('graphs.carbdioxides.index', compact('data', 'periods'));
+    }
 }

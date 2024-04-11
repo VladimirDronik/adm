@@ -64,6 +64,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('motionsensors', 'MotionsensorsController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('lightstats', 'LightstatController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('pressurestats', 'PressurestatController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('carbdioxides', 'CarbdioxideController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('carbmonoxide', 'CarbmonoxideController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('manometr', 'ManometrController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('usensors', 'UsensorController')->except('show', 'destroy')->middleware('can:devices');
@@ -90,6 +91,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('graphs/hygrostats', 'GraphController@hygrostats')->name('graphs.hygrostats.index')->middleware('can:graphs');
     Route::get('graphs/lights', 'GraphController@lights')->name('graphs.lights.index')->middleware('can:graphs');
     Route::get('graphs/pressures', 'GraphController@pressures')->name('graphs.pressures.index')->middleware('can:graphs');
+    Route::get('graphs/carbdioxides', 'GraphController@carbdioxides')->name('graphs.carbdioxides.index')->middleware('can:graphs');
     Route::get('graphs/humidities', 'GraphController@humidities')->name('graphs.humidities.index')->middleware('can:graphs');
     Route::get('graphs/counts', 'GraphController@counts')->name('graphs.counts.index')->middleware('can:graphs');
     Route::get('logs/settings', 'LogController@settings')->name('logs.settings')->middleware('can:logs');
@@ -174,6 +176,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('hygrostats/delete', 'HygrostatController@delete')->name('hygrostats.delete');
         Route::post('lightstats/delete', 'LightstatController@delete')->name('lightstats.delete');
         Route::post('pressurestats/delete', 'PressurestatController@delete')->name('pressurestats.delete');
+        Route::post('carbdioxides/delete', 'CarbdioxideController@delete')->name('carbdioxides.delete');
         Route::post('usensors/delete', 'UsensorController@delete')->name('usensors.delete');
         Route::post('drycontacts/delete', 'DrycontactController@delete')->name('drycontacts.delete');
         Route::post('motionsensors/delete', 'MotionsensorController@delete')->name('motionsensors.delete');
@@ -337,6 +340,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('graphs/humidities/period/data', 'GraphController@getHumiditiesPeriodData')->name('graphs.humidities.period.data');
         Route::post('graphs/lights/period/data', 'GraphController@getLightsPeriodData')->name('graphs.lights.period.data');
         Route::post('graphs/pressures/period/data', 'GraphController@getPressuresPeriodData')->name('graphs.pressures.period.data');
+        Route::post('graphs/carbdioxides/period/data', 'GraphController@getCarbdioxidesPeriodData')->name('graphs.carbdioxides.period.data');
         Route::post('graphs/counts/period/data', 'GraphController@getCountsPeriodData')->name('graphs.counts.period.data');
 
         Route::group(['prefix' => 'scripts', 'as' => 'scripts.'], function () {

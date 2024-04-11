@@ -668,7 +668,7 @@ class SensorsTest extends TestCase
         $user = User::where('login', 'TestAdmin')->first();
 
         $response = $this->actingAs($user)->post('/carbmonoxide', [
-            'name' => 'Создание тестового датчика УГ',
+            'name' => 'Создание тестового датчика угарного газа',
             'device_id' => null,
             'cur_value' => 0,
             'low_value' => 50,
@@ -676,12 +676,12 @@ class SensorsTest extends TestCase
             'calibration' => 2,
         ]);
 
-        $carbmonoxide = Carbmonoxide::where('name', 'Создание тестового датчика УГ')->first();
+        $carbmonoxide = Carbmonoxide::where('name', 'Создание тестового датчика угарного газа')->first();
 
         $response->assertRedirect('/carbmonoxide/'.($carbmonoxide ? $carbmonoxide->id : 1).'/edit');
 
         $this->assertDatabaseHas('carbmonoxide', [
-            'name' => 'Создание тестового датчика УГ',
+            'name' => 'Создание тестового датчика угарного газа',
         ]);
     }
 
@@ -695,7 +695,7 @@ class SensorsTest extends TestCase
 
         $response = $this->actingAs($user)->post('carbmonoxide/'.$data['carbmonoxide']->id, [
             '_method' => 'PUT',
-            'name' => 'Обновление тестового датчика УГ',
+            'name' => 'Обновление тестового датчика угарного газа',
             'id_object' => $data['carbmonoxide']->id_object,
             'port' => null,
             'cur_value' => 0,
@@ -707,7 +707,7 @@ class SensorsTest extends TestCase
         $response->assertRedirect('/carbmonoxide/'.$data['carbmonoxide']->id.'/edit');
 
         $this->assertDatabaseHas('carbmonoxide', [
-            'name' => 'Обновление тестового датчика УГ',
+            'name' => 'Обновление тестового датчика угарного газа',
         ]);
     }
 
@@ -726,7 +726,7 @@ class SensorsTest extends TestCase
             ->assertJson(['result' => true]);
 
         $this->assertDatabaseMissing('carbmonoxide', [
-            'name' => 'Тестовый датчик УГ',
+            'name' => 'Тестовый датчик угарного газа',
         ]);
     }
 }

@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление датчика УГ', 'links' => [ route('manometr.index') => 'Манометр']])
+       ['title' => 'Добавление датчика угарного газа', 'links' => [ route('manometr.index') => 'Манометр']])
 @endsection
 
 @section('content')

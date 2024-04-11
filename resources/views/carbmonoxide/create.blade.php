@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление датчика УГ', 'links' => [ route('carbmonoxide.index') => 'Датчик УГ']])
+       ['title' => 'Добавление датчика угарного газа', 'links' => [ route('carbmonoxide.index') => 'Датчик угарного газа']])
 @endsection
 
 @section('content')
@@ -15,7 +15,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('carbmonoxide.index') }}" class="btn btn-success m-b-10 m-l-5">Список датчиков УГ</a>
+                        <a href="{{ route('carbmonoxide.index') }}" class="btn btn-success m-b-10 m-l-5">Список датчиков угарного газа</a>
                     </div>
                 </div>
             </div>
@@ -34,7 +34,7 @@
 
                             <div class="form-group row ">
                                 <label class="control-label text-right col-md-3 label-fix" for="id_object">
-                                    <strong>Размещение датчика УГ:</strong>
+                                    <strong>Размещение датчика угарного газа:</strong>
                                 </label>
 
 

@@ -2,15 +2,16 @@
 
 namespace App\Services;
 
-use App\Models\Carbmonoxide;
-use App\Models\Drycontact;
-use App\Models\Hygrostat;
-use App\Models\Lightstat;
+use App\Models\Usensor;
 use App\Models\Manometr;
+use App\Models\Hygrostat;
+use App\Models\Termostat;
+use App\Models\Lightstat;
+use App\Models\Drycontact;
+use App\Models\Carbdioxide;
+use App\Models\Carbmonoxide;
 use App\Models\Motionsensor;
 use App\Models\Pressurestat;
-use App\Models\Termostat;
-use App\Models\Usensor;
 
 class DetectorsService
 {
@@ -57,5 +58,10 @@ class DetectorsService
     public function getPressurestatsCount(): int
     {
         return Pressurestat::count();
+    }
+
+    public function getCarbdioxidesCount(): int
+    {
+        return Carbdioxide::count();
     }
 }

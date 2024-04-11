@@ -5,10 +5,11 @@
 @endsection
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование датчика УГ № '. $carbmonoxide->iobject['id'],
-        'links' => [ route('carbmonoxide.index') => 'Датчики УГ'],
-        'last_link' => 'Редактирование датчика УГ'])
+    @includeIf('components.breadcrumbs', [
+        'title' => 'Редактирование датчика угарного газа № '. $carbmonoxide->iobject['id'],
+        'links' => [ route('carbmonoxide.index') => 'Датчики угарного газа'],
+        'last_link' => 'Редактирование датчика угарного газа',
+    ])
 @endsection
 
 @section('content')
@@ -17,8 +18,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('carbmonoxide.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок датчиков УГ</a>
-                        <a href="{{ route('carbmonoxide.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить датчик УГ</a>
+                        <a href="{{ route('carbmonoxide.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок датчиков угарного газа</a>
+                        <a href="{{ route('carbmonoxide.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить датчик угарного газа</a>
                     </div>
                 </div>
             </div>

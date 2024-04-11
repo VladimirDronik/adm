@@ -119,12 +119,21 @@ class ScriptsTableSeeder extends Seeder
     public static function getCheckCarbmonoxideScript(): array
     {
         return [
-            'name' => 'Проверка датчика УГ',
+            'name' => 'Проверка датчика угарного газа',
             'link' => 'check_carbmonoxide.php',
             'count' => 0,
             'system' => 1,
         ];
+    }
 
+    public static function getCheckCarbdioxideScript(): array
+    {
+        return [
+            'name' => 'Проверка датчика углекислого газа',
+            'link' => 'check_carbdioxide.php', // используется в CarbdioxideObjectService
+            'count' => 0,
+            'system' => 1,
+        ];
     }
 
     public static function getCheckManometrScript(): array

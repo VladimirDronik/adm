@@ -131,4 +131,9 @@ class Room extends Model
     {
         return $this->hasMany(Conditioner::class, 'id_room', 'id');
     }
+
+    public function carbdioxides()
+    {
+        return $this->hasMany(Carbdioxide::class, 'room', 'id')->orderBy('id');
+    }
 }

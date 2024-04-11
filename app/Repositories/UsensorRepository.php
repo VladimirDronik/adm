@@ -20,4 +20,13 @@ class UsensorRepository
             ->pluck('name', 'id_object')
             ->toArray();
     }
+
+    public function getByTypesToArray(array $types)
+    {
+        return Usensor::whereIn('type', $types)
+            ->select('id_object', 'name')
+            ->orderBy('name')
+            ->pluck('name', 'id_object')
+            ->toArray();
+    }
 }

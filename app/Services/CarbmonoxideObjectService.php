@@ -45,22 +45,22 @@ class CarbmonoxideObjectService
     }
 
     /**
-     * Создание метода 'Проверка датчика УГ' и элемента планировщика 'Проверка датчика УГ' (каждые 5 мин)
+     * Создание метода 'Проверка датчика угарного газа' и элемента планировщика 'Проверка датчика угарного газа' (каждые 5 мин)
      */
     public function createCheckMethodWithEvent(int $object_id)
     {
         $script_id = $this->getOrCreateChecScriptId();
 
         $method_id = Method::forceCreate([
-            'name' => 'Проверка датчика УГ',
+            'name' => 'Проверка датчика угарного газа',
             'id_object' => $object_id,
-            'comment' => 'Периодическая проверка текущих значений датчика УГ',
+            'comment' => 'Периодическая проверка текущих значений датчика угарного газа',
             'is_system' => 1,
             'script' => $script_id,
         ])->id;
 
         $scheduler_task_id = SchedulerTask::forceCreate([
-            'name' => 'Проверка датчика УГ',
+            'name' => 'Проверка датчика угарного газа',
             'is_system' => 1,
             'is_hidden' => 1,
             'object' => $object_id,

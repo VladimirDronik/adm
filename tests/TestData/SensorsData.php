@@ -199,19 +199,19 @@ class SensorsData
     }
 
     /**
-     * Генератор сущностей для датчика УГ
+     * Генератор сущностей для датчика угарного газа
      */
     public function generateCarbmonoxide(): array
     {
         $object = HomeObject::create([
-            'name' => 'Тестовый датчик УГ',
+            'name' => 'Тестовый датчик угарного газа',
             'type' => 'carbsens',
             'status' => 'on',
         ]);
 
         $carbmonoxide = Carbmonoxide::create([
             'id_object' => $object->id,
-            'name' => 'Тестовый датчик УГ',
+            'name' => 'Тестовый датчик угарного газа',
             'cur_value' => 0,
             'low_value' => 50,
             'high_value' => 100,

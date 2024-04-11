@@ -2,18 +2,20 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
+use App\Models\Room;
 use App\Models\Count;
-use App\Models\GraphCount;
-use App\Models\GraphHumidity;
-use App\Models\GraphLight;
-use App\Models\GraphPressure;
-use App\Models\GraphTermostat;
 use App\Models\Hygrostat;
 use App\Models\Lightstat;
-use App\Models\Pressurestat;
-use App\Models\Room;
 use App\Models\Termostat;
-use Carbon\Carbon;
+use App\Models\GraphLight;
+use App\Models\GraphCount;
+use App\Models\Carbdioxide;
+use App\Models\Pressurestat;
+use App\Models\GraphHumidity;
+use App\Models\GraphPressure;
+use App\Models\GraphTermostat;
+use App\Models\GraphCarbdioxide;
 
 class GraphService
 {
@@ -300,6 +302,68 @@ class GraphService
 
         if ($period === '7') {
             $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d');
+            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
+        } else {
+            $period_parts = explode('-', $period);
+            $month = (int) $period_parts[0];
+            $year = (int) $period_parts[1];
+            $graphs = $query->whereMonth('datetime', '=', $month)
+                ->whereYear('datetime', '=', $year)
+                ->get();
+        }
+
+        $data['values'] = $graphs->pluck('value')->toArray();
+        $data['dates'] = $graphs->pluck('datetime')->toArray();
+
+        return [true, $data];
+    }
+
+    public function getCarbdioxidesPeriods()
+    {
+        $periods = [];
+        $min_date = GraphCarbdioxide::min('datetime');
+        if (empty($min_date)) {
+            return $periods;
+        }
+        $min_date = Carbon::createFromFormat('Y-m-d H:i:s', $min_date);
+        $cur_date = Carbon::now();
+        while ($min_date->lte($cur_date)) {
+            $periods[$min_date->month.'-'.$min_date->year] = 'за '.getRusMonth($min_date->month).' '.$min_date->year;
+            $min_date->addMonth();
+        }
+
+        return array_reverse($periods);
+    }
+
+    public function getGraphCarbdioxidesData()
+    {
+        $rooms_ids = Carbdioxide::whereNotNull('room')
+            ->select('room')
+            ->distinct()
+            ->pluck('room')
+            ->toArray();
+
+        $data['rooms'] = Room::whereIn('id', $rooms_ids)
+            ->with('carbdioxides', 'carbdioxides.lastGraphs')
+            ->orderBy('id')
+            ->get();
+
+        $data['other_carbdioxides'] = Carbdioxide::with('lastGraphs')
+            ->whereNull('room')
+            ->orderBy('id')
+            ->get();
+
+        return $data;
+    }
+
+    public function getGraphCarbdioxidesPeriodData(int $carbdioxideId, string $period)
+    {
+        $query = GraphCarbdioxide::where('id_carbdioxide', $carbdioxideId)
+            ->select('value', 'datetime')
+            ->orderBy('datetime');
+
+        if ($period === '7') {
+            $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
             $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
         } else {
             $period_parts = explode('-', $period);
