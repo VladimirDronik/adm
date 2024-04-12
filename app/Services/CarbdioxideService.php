@@ -28,7 +28,6 @@ class CarbdioxideService
                 break;
         }
 
-        $carbdioxide->current = 0;
         $carbdioxide->name = $data['name'];
         $carbdioxide->mode = $data['mode'];
         $carbdioxide->optimal = $data['optimal'];
@@ -54,6 +53,7 @@ class CarbdioxideService
         $carbdioxide = new Carbdioxide();
 
         $this->prepare($carbdioxide, $data);
+        $carbdioxide->current = 0;
 
         DB::transaction(function () use ($carbdioxide) {
             $uniqueName = HomeObject::getUniqueObjectName(0, $carbdioxide->name);
