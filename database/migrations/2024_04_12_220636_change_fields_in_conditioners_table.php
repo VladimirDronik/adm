@@ -21,6 +21,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('type')->after('id_object');
             $table->unsignedBigInteger('modbus_slaver_id')->after('type');
             $table->unsignedTinyInteger('temperature')->after('id_room');
+            $table->unsignedInteger('id_room')->nullable()->change();
             $table->string('mode', 15)->after('temperature');
             $table->string('fan', 15)->nullable(false)->change();
             $table->string('vdir', 15)->nullable()->after('mode');
