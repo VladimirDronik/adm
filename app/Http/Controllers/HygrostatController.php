@@ -2,73 +2,59 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Hygrostat\CreateRequest;
-use App\Http\Requests\Hygrostat\UpdateRequest;
-use App\Models\HomeObject;
 use App\Models\Hygrostat;
-use App\Repositories\DeviceRepository;
-use App\Repositories\EventRepository;
-use App\Repositories\HygrostatRepository;
-use App\Repositories\ObjectRepository;
-use App\Repositories\RoomRepository;
-use App\Repositories\ScriptRepository;
-use App\Repositories\SoundRepository;
-use App\Repositories\UsensorRepository;
-use App\Repositories\ViewRepository;
-use App\Services\HygrostatService;
-use App\Services\MessageService;
 use App\Services\ObjectService;
-use App\Services\PortService;
+use App\Services\MessageService;
+use App\Services\HygrostatService;
+use App\Repositories\RoomRepository;
+use App\Repositories\ObjectRepository;
+use App\Repositories\ScriptRepository;
+use App\Repositories\UsensorRepository;
+use App\Repositories\HygrostatRepository;
+use App\Http\Requests\Hygrostat\HygrostatRequest;
 
 class HygrostatController extends Controller
 {
     public function __construct(
-        private HygrostatRepository $hygrostat_rep,
-        private ObjectRepository $object_rep,
-        private DeviceRepository $device_rep,
-        private UsensorRepository $usensor_rep,
-        private RoomRepository $room_rep,
+        private HygrostatRepository $hygrostatRep,
+        private ObjectRepository $objectRep,
+        private UsensorRepository $usensorRep,
+        private RoomRepository $roomRep,
         private HygrostatService $service,
-        private EventRepository $event_rep,
-        private ViewRepository $view_rep,
-        private ObjectService $object_service,
-        private ScriptRepository $script_rep,
-        private PortService $portsService,
-        private MessageService $messagesService,
+        private ObjectService $objectService,
+        private ScriptRepository $scriptRep,
+        private MessageService $messageService,
     ) {
     }
 
     public function index()
     {
-        $hygrostats = $this->hygrostat_rep->getAll();
+        $hygrostats = $this->hygrostatRep->getAll();
 
         return view('hygrostats.index', compact('hygrostats'));
     }
 
     private function getLists()
     {
-        $objects = $this->object_rep->getAllToArray();
-        $rooms = $this->room_rep->getAllToArray();
+        $objects = $this->objectRep->getAllToArray();
+        $rooms = $this->roomRep->getAllToArray();
         $types = Hygrostat::getFullHygrostatIds();
-        $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
-        $usensors = $this->usensor_rep->getAllToArray();
-        $HPControllers = $this->device_rep->getAllByTypesToArray(['Hite-pro']);
+        $usensors = $this->usensorRep->getAllToArray();
 
-        return [$objects, $rooms, $types, $devices, $usensors, $HPControllers];
+        return [$objects, $rooms, $types, $usensors];
     }
 
     public function create()
     {
-        [$objects, $rooms, $types, $devices, $usensors, $HPControllers] = $this->getLists();
-        $object_types = HomeObject::getFullTypeIds();
-        $can = gates('devices.show-object');
+        [$objects, $rooms, $types, $usensors] = $this->getLists();
         $tab = 1;
 
-        return view('hygrostats.create', compact('objects', 'rooms', 'types', 'devices',
-            'usensors', 'object_types', 'HPControllers', 'can', 'tab'));
+        return view('hygrostats.create', compact(
+            'objects', 'rooms', 'types', 'usensors', 'tab'
+        ));
     }
 
-    public function store(CreateRequest $r)
+    public function store(HygrostatRequest $r)
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
@@ -84,40 +70,22 @@ class HygrostatController extends Controller
 
     public function edit(Hygrostat $hygrostat, $tab = 1)
     {
+        [$objects, $rooms, $types, $usensors] = $this->getLists();
 
-        [$objects, $rooms, $types, $devices, $usensors, $HPControllers] = $this->getLists();
+        $methods = $this->objectService->getMethodsByObjectIdToArray($hygrostat->object);
+        $scripts = $this->scriptRep->getAllToArray();
 
-        $methods = $this->object_service->getMethodsByObjectIdToArray($hygrostat->object);
-        $object_types = HomeObject::getFullTypeIds();
-        $scripts = $this->script_rep->getAllToArray();
-        $can = gates('devices.show-object');
-
-        $deviceAndPort = $this->portsService->getIdDeviceAndPortId($hygrostat->id_object);
-
-        $deviceId = $deviceAndPort['id_device'];
-
-        $messages = $this->messagesService->getNotifications($hygrostat->id_object);
-
-        $id_controller = $this->portsService->getIdControllerBySubdevice($hygrostat->subdev_id, 'Hite-pro');
-        $subdevs = $this->portsService->getSubdevsForController($id_controller, 'Hite-pro', 'temperature');
-
+        $messages = $this->messageService->getNotifications($hygrostat->id_object);
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
 
-        $events = $this->event_rep->getAllById($hygrostat->id_object);
-        $availableEvents = Hygrostat::getEvents();
-        $properties = Hygrostat::getProperties();
-        $sounds = SoundRepository::getAllToArray();
-        $views = $this->view_rep->getAllToArray();
-        $allEvents = '';
-
-        return view('hygrostats.edit', compact('hygrostat', 'objects', 'rooms',
-            'types', 'devices', 'methods', 'object_types', 'scripts', 'HPControllers', 'id_controller',
-            'subdevs', 'usensors', 'deviceId', 'messages', 'messagePoint', 'can', 'tab', 'events',
-            'availableEvents', 'properties', 'sounds', 'views', 'allEvents'));
+        return view('hygrostats.edit', compact(
+            'hygrostat', 'objects', 'rooms', 'types', 'methods',
+            'scripts', 'usensors', 'messages', 'messagePoint', 'tab'
+        ));
     }
 
-    public function update(UpdateRequest $r, Hygrostat $hygrostat)
+    public function update(HygrostatRequest $r, Hygrostat $hygrostat)
     {
         try {
             if ($this->service->update($hygrostat, $r->except('_token'))) {

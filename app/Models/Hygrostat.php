@@ -94,39 +94,6 @@ class Hygrostat extends Model
         ];
     }
 
-    public static function getEvents()
-    {
-        return [
-            'onCheck' => 'Проверка значения датчика влажности',
-            'onError' => 'Недоступность датчика влажности',
-            'onThreshold' => 'Выход за пороговое значение',
-            'onStatus' => 'Смена статуса',
-            'onBattery' => 'Получение статуса батареи',
-        ];
-    }
-
-    /**
-     * Получение доступных свойств объекта.
-     * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
-     *
-     * @return array
-     */
-    public static function getProperties()
-    {
-        return [
-            'current' => ['Текущая влажность, %', true, false],
-            'optimal' => ['Установленная влажность, %', true, true],
-            'gisteresis' => ['Гистерезис [0-10]', true, true],
-            'type' => ['Тип датчика влажности [осушение|увлажнение]', true, true],
-            //'min_threshold' => ['Мин. порог, °C', true, true], //Отключено в отображении
-            //'max_threshold' => ['Макс. порог, °C', true, true], //Отключено в отображении
-            'min_alarm' => ['Мин. аварийное знач., °C', true, true],
-            'max_alarm' => ['Макс. аварийное знач., °C', true, true],
-            'room' => ['Помещение', true, true],
-            'battery' => ['Заряд батареи, %', true, false],
-        ];
-    }
-
     public static function getHygrostatIds()
     {
         return array_keys(self::getFullHygrostatIds());
@@ -167,11 +134,6 @@ class Hygrostat extends Model
     public function emethod_off()
     {
         return $this->belongsTo(Method::class, 'method_off', 'id');
-    }
-
-    public function graphs()
-    {
-        return $this->hasMany(GraphHygrostat::class, 'id_hygrostat', 'id')->orderBy('datetime');
     }
 
     public function last_graphs()

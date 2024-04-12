@@ -62,7 +62,7 @@
                                         @can('devices.show-object')
                                             <td>
                                                 @if($hygrostat->object)
-                                                    <a href="{{ route('objects.edit',[$hygrostat->object]) }}" target="_blank">{{ optional($hygrostat->eobject)->name }}</a>
+                                                    <a href="{{ route('objects.edit',[$hygrostat->object]) }}" target="_blank">{{ $hygrostat->eobject?->name }}</a>
                                                 @endif
                                             </td>
                                         @endcan
@@ -80,21 +80,23 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th style="width: 60px;">ID</th>
-                                    <th>Название</th>
-                                    <th>Текущая влажн.</th>
-                                    <th>Оптим. влажн.</th>
-                                    <th>Гистерезис</th>
-                                    <th>Режим</th>
-                                    @can('devices.show-object')
-                                        <th>Объект влияния</th>
-                                    @endcan
-                                    <th style="width: 60px;"></th>
-                                    <th style="width: 60px;"></th>
-                                </tr>
-                            </tfoot>
+                            @if(count($hygrostats) > 10)
+                                <tfoot>
+                                    <tr>
+                                        <th style="width: 60px;">ID</th>
+                                        <th>Название</th>
+                                        <th>Текущая влажн.</th>
+                                        <th>Оптим. влажн.</th>
+                                        <th>Гистерезис</th>
+                                        <th>Режим</th>
+                                        @can('devices.show-object')
+                                            <th>Объект влияния</th>
+                                        @endcan
+                                        <th style="width: 60px;"></th>
+                                        <th style="width: 60px;"></th>
+                                    </tr>
+                                </tfoot>
+                            @endif
                         </table>
                     </div>
                     {{ $hygrostats->appends(request()->input())->links() }}

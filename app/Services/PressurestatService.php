@@ -29,7 +29,6 @@ class PressurestatService
                 break;
         }
 
-        $pressurestat->current = 0;
         $pressurestat->name = $data['name'];
         $pressurestat->mode = $data['mode'];
         $pressurestat->type_sensor = $data['type_sensor'];
@@ -56,6 +55,7 @@ class PressurestatService
         $pressurestat = new Pressurestat();
 
         $this->prepare($pressurestat, $data);
+        $pressurestat->current = 0;
 
         DB::transaction(function () use ($pressurestat) {
             $uniqueName = HomeObject::getUniqueObjectName(0, $pressurestat->name);

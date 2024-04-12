@@ -4,7 +4,7 @@ namespace App\Http\Requests\Lightstat;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRequest extends FormRequest
+class LightstatRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,23 +23,19 @@ class UpdateRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = [
+        return [
             'name' => 'required|string|max:250',
-            'optimal' => 'required|integer|min:0|max:54612',
+            'mode' => 'required|integer|in:0,1',
+            'room' => 'nullable|integer',
+            'object' => 'nullable|integer|exists:App\Models\HomeObject,id',
+            'method_on' => 'nullable|integer|exists:App\Models\Method,id',
+            'method_off' => 'nullable|integer|exists:App\Models\Method,id',
+            'usensor_id' => 'required|integer|exists:App\Models\Usensor,id_object',
             'gisteresis' => 'required|integer|min:0|max:5000',
-            'mode' => 'required|integer|min:0|max:1',
-            'min_alarm' => 'required|integer',
-            'max_alarm' => 'required|integer|max:54612',
-            'room' => 'nullable|integer|min:0',
-            'id_object' => 'nullable|integer|min:1',
+            'optimal' => 'required|integer|min:0|max:54612',
+            'min_alarm' => 'required|integer|min:0|max:54612',
+            'max_alarm' => 'required|integer|min:0|max:54612',
         ];
-
-        $ids = ['object', 'method_on', 'method_off'];
-        foreach ($ids as $id) {
-            $rules[$id] = 'nullable|integer|min:0';
-        }
-
-        return $rules;
     }
 
     public function messages()
@@ -47,11 +43,9 @@ class UpdateRequest extends FormRequest
         return [
             'name.required' => 'Не указано название',
             'name.max' => 'Название содержит более 250 символов',
-            'name.unique' => 'Датчик освещенности с таким названием уже существует. Укажите другое название',
             'optimal.required' => 'Не указана оптимальная освещенность',
             'gisteresis.required' => 'Не указан гистерезис',
             'mode.required' => 'Не указан режим',
-            'id_object.required' => 'Не указан объект датчика освещенности',
             'object.required' => 'Не указан объект влияния',
         ];
     }

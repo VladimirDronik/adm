@@ -1,34 +1,3 @@
 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-<br>
-
-<div class="form-group row">
-    <label class="control-label text-right col-md-3 label-fix"></label>
-
-    <div class="col-sm-9">
-        <div class="btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-success btn-sm  active ">
-                <input type="radio" name="placetype_radio" autocomplete="off" value="port"> На отдельном порту
-            </label>
-
-            <label class="btn btn-success btn-sm">
-                <input type="radio" name="placetype_radio" autocomplete="off" value="usensor"> В составе унив. датчика
-            </label>
-
-            <input type="hidden" id="placetype" name="placetype" value="port">
-        </div>
-    </div>
-</div>
-
-<div class="col-sm-12 pr-0 mt-4" id="single_port_div">
-    {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'), false, false, [], null) }}
-
-    {{ Form::bs_autoselect('port_SCL', 'Порт SCL:', [], old('port_SCL'), false, false, [], null) }}
-
-    {{ Form::bs_autoselect('port_SDA', 'Порт SDA:', [], old('port_SDA'), false, false, [], null) }}
-</div>
-
-
-<div class="col-sm-12 pr-0 mt-4" id="usensor_div" style="display: none;">
-    {{ Form::bs_autoselect('usensor_id', 'Универсальный датчик:', $usensors, old('usensor_id'), false, false, [], null) }}
-</div>
+{{ Form::bs_autoselect('usensor_id', 'Универсальный датчик:', $usensors, old('usensor_id'), false, false, [], null) }}

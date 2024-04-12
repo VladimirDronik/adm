@@ -75,27 +75,6 @@ class Lightstat extends Model
         ];
     }
 
-    public static function getEvents()
-    {
-        return [
-            'onCheck' => 'Проверка датчика освещенности',
-        ];
-    }
-
-    /**
-     * Получение доступных свойств объекта.
-     * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
-     *
-     * @return array
-     */
-    public static function getProperties()
-    {
-        return [
-            'currentLight' => ['Текущая освещенность', true, true],
-            'optimalLight' => ['Установленная освещенность', true, true],
-        ];
-    }
-
     public function eobject()
     {
         return $this->belongsTo(HomeObject::class, 'object', 'id');

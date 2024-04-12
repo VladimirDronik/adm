@@ -52,9 +52,10 @@
                             <tbody>
                                 @foreach($lightstats as $lightstat)
                                     <tr id="tr{{$lightstat->id}}">
-                                        <td scope="row">{{ $lightstat->iobject['id'] }}</td>
-                                        <td><a href="{{ route('lightstats.edit',[$lightstat->id]) }}">
-                                                {{ $lightstat->name }}</a></td>
+                                        <td scope="row">{{ $lightstat->id_object }}</td>
+                                        <td>
+                                            <a href="{{ route('lightstats.edit',[$lightstat->id]) }}">{{ $lightstat->name }}</a>
+                                        </td>
                                         <td>{{ $lightstat->current }}</td>
                                         <td>{{ $lightstat->optimal }}</td>
                                         <td>{{ $lightstat->gisteresis }}</td>
@@ -62,12 +63,12 @@
                                         @can('devices.show-object')
                                             <td>
                                                 @if($lightstat->object)
-                                                    <a href="{{ route('objects.edit',[$lightstat->object]) }}" target="_blank">{{ optional($lightstat->eobject)->name }}</a>
+                                                    <a href="{{ route('objects.edit',[$lightstat->object]) }}" target="_blank">{{ $lightstat->eobject?->name }}</a>
                                                 @endif
                                             </td>
                                         @endcan
                                         <td align="center" class="text-center">
-                                            <a href="{{ route('lightstats.edit',[$lightstat->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                            <a href="{{ route('lightstats.edit', [$lightstat->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>
                                             </a>
                                         </td>
@@ -80,25 +81,25 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th style="width: 60px;">ID</th>
-                                    <th>Название</th>
-                                    <th>Текущая темп.</th>
-                                    <th>Оптим. темп.</th>
-                                    <th>Гистерезис</th>
-                                    <th>Режим</th>
-                                    @can('devices.show-object')
-                                        <th>Объект влияния</th>
-                                    @endcan
-                                    <th style="width: 60px;"></th>
-                                    <th style="width: 60px;"></th>
-                                </tr>
-                            </tfoot>
+                            @if(count($lightstats) > 10)
+                                <tfoot>
+                                    <tr>
+                                        <th style="width: 60px;">ID</th>
+                                        <th>Название</th>
+                                        <th>Текущая темп.</th>
+                                        <th>Оптим. темп.</th>
+                                        <th>Гистерезис</th>
+                                        <th>Режим</th>
+                                        @can('devices.show-object')
+                                            <th>Объект влияния</th>
+                                        @endcan
+                                        <th style="width: 60px;"></th>
+                                        <th style="width: 60px;"></th>
+                                    </tr>
+                                </tfoot>
+                            @endif
                         </table>
                     </div>
-
-
                     {{ $lightstats->appends(request()->input())->links() }}
                     <p class="text-right">Найдено: {{ $lightstats->total() }}</p>
                 @else
