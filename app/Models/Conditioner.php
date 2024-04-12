@@ -15,6 +15,8 @@ class Conditioner extends Model
 {
     protected $guarded = ['id'];
 
+    public $timestamps = false;
+
     public function object()
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
