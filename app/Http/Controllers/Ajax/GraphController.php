@@ -57,4 +57,13 @@ class GraphController extends Controller
 
         return response()->json(compact('result', 'data'));
     }
+
+    public function getCarbdioxidesPeriodData(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['count_id', 'period']), 400);
+
+        [$result, $data] = $this->service->getGraphCarbdioxidesPeriodData($r->count_id, $r->period);
+
+        return response()->json(compact('result', 'data'));
+    }
 }

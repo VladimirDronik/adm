@@ -64,13 +64,13 @@ class CarbmonoxideController extends Controller
         try {
             if ($id = $this->service->store($r->except('_token'))) {
                 return redirect()->route('carbmonoxide.edit', [$id])
-                    ->with('success', 'Датчик УГ успешно добавлен');
+                    ->with('success', 'Датчик угарного газа успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении датчика УГ '.json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при добавлении датчика угарного газа '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении датчика УГ');
+        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении датчика угарного газа');
 
     }
 
@@ -109,12 +109,12 @@ class CarbmonoxideController extends Controller
     {
         try {
             if ($this->service->update($carbmonoxide, $r->except('_token'))) {
-                return redirect()->route('carbmonoxide.edit', [$carbmonoxide->id])->with('success', 'Датчик УГ успешно изменен');
+                return redirect()->route('carbmonoxide.edit', [$carbmonoxide->id])->with('success', 'Датчик угарного газа успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении датчика УГ '.$carbmonoxide->id.' '.json_encode($r->all()).' '.$e->getMessage());
+            \Log::error('Ошибка при изменении датчика угарного газа '.$carbmonoxide->id.' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении датчика УГ');
+        return back()->withInput($r->all())->with('error', 'Ошибка при изменении датчика угарного газа');
     }
 }

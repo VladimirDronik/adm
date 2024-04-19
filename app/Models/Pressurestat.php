@@ -31,27 +31,6 @@ class Pressurestat extends Model
         ];
     }
 
-    public static function getEvents()
-    {
-        return [
-            'onCheck' => 'Проверка датчика давления',
-        ];
-    }
-
-    /**
-     * Получение доступных свойств объекта.
-     * Формат: 'название_свойтсва' => ['Описание на русском', 'доступно для чтения', 'доступно для записи']
-     *
-     * @return array
-     */
-    public static function getProperties()
-    {
-        return [
-            'currentPressure' => ['Текущее давление', true, true],
-            'optimalPressure' => ['Установленное давление', true, true],
-        ];
-    }
-
     public function relatedObject()
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');

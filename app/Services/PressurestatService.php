@@ -5,14 +5,11 @@ namespace App\Services;
 use App\Models\HomeObject;
 use App\Models\Pressurestat;
 use Illuminate\Support\Facades\DB;
-use App\Repositories\PortRepository;
 
 class PressurestatService
 {
     public function __construct(
         private PressurestatObjectService $pressurestatObjectService,
-        private PortRepository $portRepository,
-        private PortService $portService
     ) {
     }
 

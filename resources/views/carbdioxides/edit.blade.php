@@ -6,9 +6,9 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs', [
-        'title' => 'Редактирование датчика давления № '. $pressurestat->id_object,
-        'links' => [ route('pressurestats.index') => 'Датчики давления'],
-        'last_link' => 'Редактирование датчика давления'
+        'title' => 'Редактирование датчика углекислого газа № '. $carbdioxide->id_object,
+        'links' => [ route('carbdioxides.index') => 'Датчики углекислого газа'],
+        'last_link' => 'Редактирование датчика углекислого газа'
     ])
 @endsection
 
@@ -18,8 +18,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('pressurestats.index') }}" class="btn btn-success m-b-10 m-l-5">Список датчиков давления</a>
-                        <a href="{{ route('pressurestats.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить датчик давления</a>
+                        <a href="{{ route('carbdioxides.index') }}" class="btn btn-success m-b-10 m-l-5">Список датчиков углекислого газа</a>
+                        <a href="{{ route('carbdioxides.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить датчик углекислого газа</a>
                     </div>
                 </div>
             </div>
@@ -27,7 +27,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::model($pressurestat, ['route' => ['pressurestats.update', $pressurestat->id], 'id' => 'pressurestat_form', 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::model($carbdioxide, ['route' => ['carbdioxides.update', $carbdioxide->id], 'id' => 'carbdioxide_form', 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                         {{ csrf_field() }}
                         <div class="form-body">
                             {{ Form::bs_alert() }}
@@ -41,19 +41,19 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
-                                    @include('pressurestats/edit_tabs/main')
+                                    @include('carbdioxides/edit_tabs/main')
                                 </div>
                                 <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
-                                    @include('pressurestats/edit_tabs/prop')
+                                    @include('carbdioxides/edit_tabs/prop')
                                 </div>
                                 <div class="tab-pane p-20 @if($tab==4) active @endif" id="portstab4" role="tabpanel">
-                                    @include('pressurestats/edit_tabs/events')
+                                    @include('carbdioxides/edit_tabs/events')
                                 </div>
                                 <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
-                                    @include('objects.methods', ['object' => $pressurestat->relatedObject])
+                                    @include('objects.methods', ['object' => $carbdioxide->relatedObject])
                                 </div>
                                 <div class="tab-pane p-20 @if($tab==5) active @endif" id="portstab5" role="tabpanel">
-                                    @include('objects.sheduler', ['object' => $pressurestat->relatedObject])
+                                    @include('objects.sheduler', ['object' => $carbdioxide->relatedObject])
                                 </div>
                             </div>
                         </div>
@@ -88,7 +88,7 @@
         const url_device = '{{ route('ajax.devices.type_controller') }}';
         let del_id;
         let methods = [];
-        let object_id = "{{ $pressurestat->id_object }}";
+        let object_id = "{{ $carbdioxide->id_object }}";
         const is_super_admin = "{{ user()->is_super_admin ? 1 : 0 }}";
         let del_message;
 
@@ -106,14 +106,14 @@
         }
 
         function hideParamsFields(id) {
-            $('#pressurestat_form #'+id+'_div').hide();
-            $('#pressurestat_form #'+id).val('');
+            $('#carbdioxide_form #'+id+'_div').hide();
+            $('#carbdioxide_form #'+id).val('');
         }
 
         function showParamsFields(id, params) {
-            $('#pressurestat_form #'+id+'_label').text(params+'*:');
-            $('#pressurestat_form #'+id).val('');
-            $('#pressurestat_form #'+id+'_div').show();
+            $('#carbdioxide_form #'+id+'_label').text(params+'*:');
+            $('#carbdioxide_form #'+id).val('');
+            $('#carbdioxide_form #'+id+'_div').show();
         }
 
         function getMethodParams(methodId) {
@@ -141,7 +141,7 @@
         $(document).ready(function () {
             $('#del_modal_btn').click(clickDelBtn);
             initActionModal();
-            initMethodsVar("{{ $pressurestat->object }}");
+            initMethodsVar("{{ $carbdioxide->object }}");
 
             $("#auto_sel_usensor_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_object").chosen({width:"100%", no_results_text: "Не найдено"});
@@ -183,27 +183,6 @@
                     hideParamsFields('method_off_params');
                 } else {
                     showParamsFields('method_off_params', params);
-                }
-            });
-
-            $('#pressurestat_form input[name=type_sensor]').change(function() {
-                var options = $('#pressurestat_form input[name=type_sensor]');
-                for (var i = 0; i < options.length; i++) {
-                    if (options[i].checked) {
-                        var selectedOption = options[i].value;
-                    }
-                }
-
-                if (selectedOption == 'bmx280') {
-                    $('#pressurestat_form input[name=optimal]').val(760);
-                    $('#pressurestat_form input[name=gisteresis]').val(5);
-                    $('#pressurestat_form input[name=min_alarm]').val(600);
-                    $('#pressurestat_form input[name=max_alarm]').val(820);
-                } else {
-                    $('#pressurestat_form input[name=optimal]').val(2000);
-                    $('#pressurestat_form input[name=gisteresis]').val(100);
-                    $('#pressurestat_form input[name=min_alarm]').val(0);
-                    $('#pressurestat_form input[name=max_alarm]').val(10000);
                 }
             });
 

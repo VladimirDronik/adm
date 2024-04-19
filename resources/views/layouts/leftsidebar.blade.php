@@ -232,6 +232,12 @@
                                     Давление
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('graphs.carbdioxides.index') }}">
+                                    <i class="fa fa-bar-chart"></i>
+                                    Углекислый газ
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 @endcan

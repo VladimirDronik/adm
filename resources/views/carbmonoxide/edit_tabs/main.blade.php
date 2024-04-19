@@ -8,7 +8,7 @@
 
 <div class="form-group row ">
     <label class="control-label text-right col-md-3 label-fix" for="id_object">
-        <strong>Размещение датчика УГ:</strong>
+        <strong>Размещение датчика угарного газа:</strong>
     </label>
 
     <div class="col-md-6 pr-0 mt-4" id="single_port_div">

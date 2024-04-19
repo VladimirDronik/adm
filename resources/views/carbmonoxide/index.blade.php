@@ -3,13 +3,13 @@
 @section('breadcrumbs')
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Датчики: углекислого газа</h3></div>
+            <h3 class="text-primary">Датчики: угарного газа</h3></div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
                 <li class="breadcrumb-item breadcrumb-item-no-link">Устройства</li>
                 <li class="breadcrumb-item breadcrumb-item-no-link"><a href="{{ route('carbmonoxide.index') }}">Датчики</a></li>
-                <li class="breadcrumb-item active">Датчики углекислого газа</li>
+                <li class="breadcrumb-item active">Датчики угарного газа</li>
             </ol>
         </div>
     </div>
@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="card">
-            <div class="card-title"><h4>Датчики углекислого газа</h4></div>
+            <div class="card-title"><h4>Датчики угарного газа</h4></div>
             <div class="card-body">
                 @if(count($carbmonoxides))
                     <div class="table-responsive">

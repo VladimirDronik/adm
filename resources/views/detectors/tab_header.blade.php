@@ -63,7 +63,7 @@
                         <a class="nav-link @if($active == 'carbmonoxide') active show @endif" href="{{ route('carbmonoxide.index') }}">
                             <span>
                                 <img width="28" height="20" title="" src="{{ asset('ela/images/objects/carbsens.png') }}">
-                                Датчики УГ ({{ $detectorsService->getCarbMonoxideCount() }})
+                                Датчики угарного газа ({{ $detectorsService->getCarbMonoxideCount() }})
                             </span>
                         </a>
                     </li>
@@ -79,6 +79,13 @@
                         <a class="nav-link @if($active == 'pressurestats') active show @endif" href="{{ route('pressurestats.index') }}">
                             <span>
                                 Датчики давления ({{ $detectorsService->getPressurestatsCount() }})
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if($active == 'carbdioxides') active show @endif" href="{{ route('carbdioxides.index') }}">
+                            <span>
+                                Датчики углекислого газа ({{ $detectorsService->getCarbdioxidesCount() }})
                             </span>
                         </a>
                     </li>

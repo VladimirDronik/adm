@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Service;
 use App\Models\Pressurestat;
 use App\Services\PortService;
 use App\Services\ObjectService;
@@ -10,11 +9,12 @@ use App\Services\MessageService;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\RoomRepository;
 use App\Services\PressurestatService;
+use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\UsensorRepository;
 use App\Repositories\PressurestatRepository;
 use App\Http\Requests\Pressurestat\PressurestatRequest;
-use App\Repositories\ObjectRepository;
+use App\Services\Service;
 
 class PressurestatController extends Controller
 {
@@ -69,20 +69,15 @@ class PressurestatController extends Controller
         [$rooms, $modes, $usensors, $objects, $sensorTypes] = $this->getLists();
 
         $methods = $this->objectService->getMethodsByObjectIdToArray($pressurestat->object);
+        $scripts = $this->scriptRep->getAllToArray();
 
-        [$messages, $events, $sounds, $views, $rooms, $scripts, , , , $allEvents] =
-            Service::getListElements($pressurestat->id_object);
-
+        $messages = $this->messageService->getNotifications($pressurestat->id_object);
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
 
-        $availableEvents = Pressurestat::getEvents();
-        $properties = Pressurestat::getProperties();
-
         return view('pressurestats.edit', compact(
-            'pressurestat', 'rooms', 'tab', 'views', 'messagePoint', 'sensorTypes',
-            'modes', 'methods', 'messages', 'events', 'allEvents', 'sounds',
-            'availableEvents', 'properties','scripts', 'usensors', 'objects'
+            'pressurestat', 'rooms', 'tab', 'messagePoint', 'usensors',
+            'modes', 'methods', 'scripts', 'sensorTypes', 'objects', 'messages'
         ));
     }
 

@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('graph_pressures', function (Blueprint $table) {
+        Schema::create('graph_carbdioxides', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_count')->comment('id датчика давления');
+            $table->unsignedBigInteger('id_carbdioxide')->comment('id датчика углекислого газа из таблицы carbdioxides');
             $table->dateTime('datetime')->comment('дата и время значения');
             $table->double('value')->comment('значение параметра');
 
-            $table->foreign('id_count')->references('id')->on('pressurestats')
+            $table->foreign('id_carbdioxide')->references('id')->on('carbdioxides')
                 ->onUpdate('cascade')->onDelete('cascade');
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('graph_pressures');
+        Schema::dropIfExists('graph_carbdioxides');
     }
 };
