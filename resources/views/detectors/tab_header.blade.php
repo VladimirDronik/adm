@@ -59,14 +59,14 @@
                             </span>
                         </a>
                     </li> -->
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link @if($active == 'carbmonoxide') active show @endif" href="{{ route('carbmonoxide.index') }}">
                             <span>
                                 <img width="28" height="20" title="" src="{{ asset('ela/images/objects/carbsens.png') }}">
                                 Датчики угарного газа ({{ $detectorsService->getCarbMonoxideCount() }})
                             </span>
                         </a>
-                    </li>
+                    </li> -->
                     <!-- <li class="nav-item">
                         <a class="nav-link @if($active == '') active show @endif" href="{{ route('manometr.index') }}">
                             <span>
