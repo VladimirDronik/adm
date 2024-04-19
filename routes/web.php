@@ -138,12 +138,6 @@ Route::group(['middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'conditioners', 'as' => 'conditioners.'], function () {
-            Route::post('models', 'ConditionerController@modelsByVendor')->name('models');
-            Route::post('code', 'ConditionerController@getCode')->name('code');
-            Route::post('read_code', 'ConditionerController@readCode')->name('read_code');
-            Route::post('recive_code', 'ConditionerController@reciveCode')->name('recive_code');
-            Route::post('save_code', 'ConditionerController@saveCode')->name('save_code');
-            Route::post('read_code/cancel', 'ConditionerController@cancelReadingCode')->name('cancel_reading_code');
             Route::post('delete', 'ConditionerController@delete')->name('delete');
         });
 

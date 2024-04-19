@@ -6,38 +6,20 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CreateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
         return [
-            'vendor_id' => 'required|integer',
-            'model_id' => 'required|integer',
-            'id_object' => 'required|integer',
-            'room_id' => 'required|integer',
+            'name' => 'required|string',
+            'modbus_slaver_id' => 'required|integer|exists:App\Models\ModbusSlaver,id',
+            'room_id' => 'nullable|integer|exists:App\Models\Room,id',
         ];
     }
 
     public function messages()
     {
         return [
-            'vendor_id.required' => 'Не указан производитель',
-            'model_id.required' => 'Не указана модель',
-            'id_object.required' => 'Не указан объект',
-            'room_id.required' => 'Не указано помещение',
+            'name.required' => 'Не указано название',
+            'modbus_slaver_id.required' => 'Не указан модбас шлюз',
         ];
     }
 }

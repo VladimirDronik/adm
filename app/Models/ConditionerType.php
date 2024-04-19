@@ -9,4 +9,9 @@ class ConditionerType extends Model
     public $timestamps = false;
 
     protected $guarded = ['id'];
+
+    public function conditioners()
+    {
+        return $this->hasMany(Conditioner::class, 'type', 'id');
+    }
 }

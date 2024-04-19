@@ -3,21 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Conditioner;
-use App\Repositories\ConditionerRepository;
-use App\Repositories\DeviceRepository;
-use App\Repositories\ObjectRepository;
+use Illuminate\Support\Facades\Log;
 use App\Repositories\RoomRepository;
 use App\Services\ConditionerService;
-use Illuminate\Http\Request;
+use App\Repositories\ModbusRepository;
+use App\Repositories\ConditionerRepository;
+use App\Http\Requests\Conditioner\CreateRequest;
+use App\Http\Requests\Conditioner\UpdateRequest;
 
 class ConditionerController extends Controller
 {
     public function __construct(
-        private ConditionerRepository $conditionersRep,
-        private ObjectRepository $objectRep,
         private RoomRepository $roomRep,
-        private DeviceRepository $deviceRep,
-        private ConditionerService $service
+        private ModbusRepository $modbusRep,
+        private ConditionerService $service,
+        private ConditionerRepository $conditionersRep
     ) {
     }
 
@@ -31,28 +31,21 @@ class ConditionerController extends Controller
     public function edit($id)
     {
         $conditioner = Conditioner::findOrFail($id);
-        $objects = $this->objectRep->getAllToArray();
-        $devices = $this->deviceRep->getAllWithoutTypesToArray();
+        $modbusSlavers = $this->modbusRep->getFilteredSlaversToArray(['ac']);
         $rooms = $this->roomRep->getAllWithoutCommonToArray();
-        $conditionerKind = $conditioner->conditionerModel->conditionerKind;
-        $operationModes = json_decode($conditionerKind->operationModes, true)['modes'];
-        $fanModes = json_decode($conditionerKind->fanModes, true)['modes'];
-        $temp = range($conditionerKind->min, $conditionerKind->max, $conditionerKind->precision);
-        array_push($temp, 'off');
 
-        return view('conditioners.edit', compact('conditioner', 'objects', 'rooms', 'operationModes', 'fanModes', 'temp', 'conditionerKind', 'devices'));
+        return view('conditioners.edit', compact('conditioner', 'rooms', 'modbusSlavers'));
     }
 
     public function create()
     {
-        $vendors = $this->conditionersRep->getAllVendorsToArray();
+        $modbusSlavers = $this->modbusRep->getFilteredSlaversToArray(['ac']);
         $rooms = $this->roomRep->getAllWithoutCommonToArray();
-        $devices = $this->deviceRep->getAllWithoutTypesToArray();
 
-        return view('conditioners.create', compact('vendors', 'rooms', 'devices'));
+        return view('conditioners.create', compact('rooms', 'modbusSlavers'));
     }
 
-    public function store(Request $r)
+    public function store(CreateRequest $r)
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
@@ -60,14 +53,13 @@ class ConditionerController extends Controller
                     ->with('success', 'Кондиционер успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении кондиционера '.
-                json_encode($r->all()).' '.$e->getMessage());
+            Log::error('Ошибка при добавлении кондиционера ' . json_encode($r->all()) . ' ' . $e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении кондиционера');
     }
 
-    public function update(Request $r, Conditioner $conditioner)
+    public function update(UpdateRequest $r, Conditioner $conditioner)
     {
         try {
             if ($this->service->update($conditioner, $r->except('_token'))) {
@@ -75,8 +67,7 @@ class ConditionerController extends Controller
                     ->with('success', 'Кондиционер успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении кондиционера '.
-                json_encode($r->all()).' '.$e->getMessage());
+            Log::error('Ошибка при изменении кондиционера ' . json_encode($r->all()) . ' ' . $e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении кондиционера');

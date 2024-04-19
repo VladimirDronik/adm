@@ -2,42 +2,66 @@
 
 namespace App\Services;
 
-use App\Models\Conditioner;
-use App\Models\HomeObject;
+use Exception;
 use App\Models\ObjType;
-use App\Repositories\ConditionerRepository;
+use App\Models\HomeObject;
+use App\Models\Conditioner;
+use App\Models\ModbusSlaver;
+use App\Models\ConditionerType;
 use Illuminate\Support\Facades\DB;
+use App\Services\Modbus\RegisterService;
+use App\Repositories\ConditionerRepository;
 
 class ConditionerService
 {
     public function __construct(
+        private RegisterService $registerService,
         private ConditionerRepository $conditionersRep
     ) {
     }
 
+    private function prepare(Conditioner $conditioner, array $data): void
+    {
+        $conditioner->name = trim($data['name']);
+        $conditioner->modbus_slaver_id = $data['modbus_slaver_id'];
+        $conditioner->id_room = $data['id_room'] ?? null;
+
+        $modbusSlaver = ModbusSlaver::find($data['modbus_slaver_id']);
+        $conditionerType = ConditionerType::where('device', $modbusSlaver->relatedType->type)->first();
+
+        $registers = $modbusSlaver->registers()
+            ->whereIn('alias', ['ac_mode', 'ac_temp', 'ac_fan', 'ac_vdir', 'ac_hdir'])
+            ->get();
+
+        foreach ($registers as $register) {
+            $result = $this->registerService->read($register->id);
+            $conditioner[substr($register->alias, 3)] = array_key_exists(0, $result['output']) ? $result['output'][0] : null;
+        }
+
+        if (!$conditionerType) {
+            throw new Exception('Запись в таблице conditioner_types с полем device = ' . $modbusSlaver->relatedType->type . ' не найдена');
+        }
+
+        $conditioner->type = $conditionerType->id;
+    }
+
     /**
      * Создание кондиционера и объекта кондиционера
-     *
-     * @throws \Throwable
      */
     public function store(array $data): int
     {
         $conditioner = new Conditioner();
-        $conditioner->model = $data['model_id'];
-        $conditioner->id_room = $data['room_id'];
-        $conditioner->device_id = $data['device_id'];
-        $conditioner->wb_mir = $data['wb_mir'];
+
+        $this->prepare($conditioner, $data);
 
         DB::transaction(function () use (&$conditioner) {
-            $unique_name = HomeObject::getUniqueObjectName(
-                0,
-                $conditioner->conditionerModel->conditionerVendor->name.' '.$conditioner->conditionerModel->name
-            );
+            $uniqueName = HomeObject::getUniqueObjectName(0, $conditioner->name);
+
             $object = new HomeObject();
             $object->type = ObjType::TYPE_CONDITIONER;
-            $object->name = $unique_name;
+            $object->name = $uniqueName;
             $object->status = 'off';
-            $object->is_system = 0;
+            $object->is_system = 1;
             $object->save();
 
             $conditioner->id_object = $object->id;
@@ -49,96 +73,23 @@ class ConditionerService
 
     /**
      * Изменение кондиционера
-     *
-     * @throws \Throwable
      */
     public function update(Conditioner $conditioner, array $data): int
     {
-        $kind = $conditioner->conditionerModel->conditionerKind->id;
+        $this->prepare($conditioner, $data);
 
-        if (array_key_exists('code', $data)) {
-            if ($data['temp'] == 'off') {
-                $conditionerCode = $this->conditionersRep
-                    ->getOffCode((int) $kind, (string) $data['temp']);
+        DB::transaction(function () use (&$conditioner, $data) {
+            $name = trim($data['name']);
 
-                $this->conditionersRep
-                    ->updateOrCreate(
-                        $conditionerCode ?: null,
-                        (string) $data['code'],
-                        (int) $kind,
-                        null, null, null, true
-                    );
-            } else {
-                $conditionerCode = $this->conditionersRep
-                    ->getCode(
-                        (int) $kind,
-                        (string) $data['operationMode'],
-                        (string) $data['fanMode'],
-                        (float) $data['temp']
-                    );
-
-                $this->conditionersRep
-                    ->updateOrCreate(
-                        $conditionerCode ?: null,
-                        (string) $data['code'],
-                        (int) $kind,
-                        (string) $data['operationMode'],
-                        (string) $data['fanMode'],
-                        (float) $data['temp']
-                    );
+            if ($conditioner->name != $name) {
+                $conditioner->object->name = HomeObject::getUniqueObjectName($conditioner->id_object, $name);
+                $conditioner->object->save();
             }
-        }
 
-        $conditioner->id_object = $data['id_object'];
-        $conditioner->id_room = $data['id_room'];
-        $conditioner->device_id = $data['device_id'];
-        $conditioner->wb_mir = $data['wb_mir'];
-
-        $conditioner->save();
+            $conditioner->save();
+        });
 
         return $conditioner->id;
-    }
-
-    /**
-     * Команда перевода устройства в режим считывания кода с пульта
-     */
-    public function startReadCommand(string $ip, string $wbMir): ?array
-    {
-        $command = 'rs_control ir_scan -r -d wb-mir --ip '.$ip.' -u '.$wbMir;
-
-        $output = null;
-
-        exec($command, $output);
-
-        return $output ? json_decode($output[0], true) : null;
-    }
-
-    /**
-     * Команда получения считанного кода с пульта
-     */
-    public function reciveCodeCommand(string $ip, string $wbMir): ?array
-    {
-        $command = 'rs_control ir_scan -g -d wb-mir --ip '.$ip.' -u '.$wbMir;
-
-        $output = null;
-
-        exec($command, $output);
-
-        return $output ? json_decode($output[0], true) : null;
-    }
-
-    /**
-     * Команда отмены считывания кода с пульта
-     */
-    public function cancelReadCommand(string $ip, string $wbMir): ?array
-    {
-        $command = 'rs_control ir_scan --cancel_scan -d wb-mir --ip '.$ip.' -u '.$wbMir;
-
-        $output = null;
-
-        exec($command, $output);
-
-        return $output ? json_decode($output[0], true) : null;
     }
 
     /**
@@ -148,10 +99,7 @@ class ConditionerService
     {
         $conditioner = Conditioner::findOrFail($id);
 
-        DB::transaction(function () use (&$conditioner) {
-            $conditioner->object->delete();
-            $conditioner->delete();
-        });
+        $conditioner->object->delete();
 
         return true;
     }
