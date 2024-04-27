@@ -37,13 +37,6 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @if($active == 'usensors') active show @endif" href="{{ route('usensors.index') }}">
-                            <span>
-                                <i class="ti-home"></i> Универсальные датчики ({{ $detectorsService->getUsensorsCount() }})
-                            </span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link @if($active == 'drycontacts') active show @endif" href="{{ route('drycontacts.index') }}">
                             <span>
                                 <img width="18" height="20" title="" src="{{ asset('ela/images/objects/drycontact.png') }}">

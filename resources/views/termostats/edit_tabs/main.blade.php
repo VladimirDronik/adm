@@ -36,7 +36,7 @@
 </div>
 
 <div class="col-sm-12 pr-0 mt-4" id="usensor_div" @if($termostat->placetype != 'usensor') style="display: none;" @endif>
-    {{ Form::bs_autoselect('usensor_id', 'Универсальный датчик:', $usensors, old('usensor_id', is_null($termostat->usensor_id) ? 0 : $termostat->usensor_id), false, false, [], null) }}
+    {{ Form::bs_autoselect('usensor_id', 'I2C датчик:', $usensors, old('usensor_id', is_null($termostat->usensor_id) ? 0 : $termostat->usensor_id), false, false, [], null) }}
 </div>
 
 @include('messages.two')

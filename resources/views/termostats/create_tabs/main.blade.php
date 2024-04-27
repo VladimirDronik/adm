@@ -35,5 +35,5 @@
 </div>
 
 <div class="col-sm-12 pr-0 mt-4" id="usensor_div" style="display: none;">
-    {{ Form::bs_autoselect('usensor_id', 'Универсальный датчик:', $usensors, old('usensor_id'), false, false, [], null) }}
+    {{ Form::bs_autoselect('usensor_id', 'I2C датчик:', $usensors, old('usensor_id'), false, false, [], null) }}
 </div>

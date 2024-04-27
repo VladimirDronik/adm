@@ -1,100 +1,84 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 20.03.20
- * Time: 10:40
- */
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Port;
 use App\Models\Usensor;
-use App\Repositories\PortRepository;
+use App\Models\ObjType;
+use App\Models\HomeObject;
+use App\Models\Pressurestat;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
 
 class UsensorService
 {
     public function __construct(
-        private UsensorObjectService $usensor_object_service,
         private PortRepository $portRepository,
-        private PortService $portService
+        private LightstatService $lightstatService,
+        private HygrostatService $hygrostatService,
+        private TermostatService $termostatService,
+        private CarbdioxideService $carbdioxideService,
+        private PressurestatService $pressurestatService
     ) {
     }
 
-    public function prepare(Usensor $usensor, array $data)
-    {
-        unset($data['object_type']);
-        if (($data['room'] ?? 0) == 0) {
-            $data['room'] = null;
-        }
-        $usensor->fill($data);
-    }
-
     /**
-     * Создание универсального датчка. Если $data['type'] === 'auto',
-     * то еще создается объект с методом.
+     * Создание I2C датчика.
      *
      * @throws \Throwable
      */
     public function store(array $data): int
     {
         $usensor = new Usensor();
+        $usensor->fill($data);
 
-        $port_SDA = $data['port_SDA'] ?? null;
-        $port_SCL = $data['port_SCL'] ?? null;
-        $deviceID = $data['device_id'];
+        DB::transaction(function () use (&$usensor, $data) {
+            $portSDA = $data['port_SDA'];
+            $portSCL = $data['port_SCL'];
+            $deviceId = $data['device_id'];
 
-        $this->prepare($usensor, $data);
-
-        DB::transaction(function () use (&$usensor, $port_SDA, $port_SCL, $data, $deviceID) {
-            $unique_name = HomeObject::getUniqueObjectName(0, $usensor->name);
-
-            $object = $this->usensor_object_service
-                ->createUsensorObject($unique_name);
-
-            $this->usensor_object_service
-                ->createUsensorObjectMethodsWithEvents($object->id);
+            $object = HomeObject::create([
+                'type' => ObjType::TYPE_USENSOR,
+                'name' => HomeObject::getUniqueObjectName(0, $usensor->name),
+                'status' => 'off',
+                'is_system' => 1,
+            ]);
 
             $usensor->id_object = $object->id;
             $usensor->save();
 
-            if ($port_SDA) {
-                Port::where('id', $port_SDA)->update([
-                    'object' => $object->id,
-                    'status' => 'I2C',
-                    'comment' => $data['name'],
-                ]);
+            $this->createDetectorsByType($usensor);
 
-                ConfigMegaService::setPortType(
-                    $deviceID,
-                    $this->portRepository->getNumPortByID($port_SDA),
-                    'SDA'
-                );
-            }
+            Port::find($portSDA)->update([
+                'object' => $object->id,
+                'status' => 'I2C',
+                'comment' => $data['name'],
+            ]);
 
-            if ($port_SCL) {
-                Port::where('id', $port_SCL)->update([
-                    'object' => $object->id,
-                    'status' => 'I2C',
-                    'comment' => $data['name'],
-                ]);
+            ConfigMegaService::setPortType(
+                $deviceId,
+                $this->portRepository->getNumPortByID($portSDA),
+                'SDA'
+            );
 
-                ConfigMegaService::setPortType(
-                    $deviceID,
-                    $this->portRepository->getNumPortByID($port_SCL),
-                    'SCL'
-                );
-            }
+            Port::find($portSCL)->update([
+                'object' => $object->id,
+                'status' => 'I2C',
+                'comment' => $data['name'],
+            ]);
+
+            ConfigMegaService::setPortType(
+                $deviceId,
+                $this->portRepository->getNumPortByID($portSCL),
+                'SCL'
+            );
         });
 
         return $usensor->id;
     }
 
     /**
-     * Удаление универсального датчика. Если связанный объект системный, то удаление объекта, метода, задачи планировщика,
-     * созданных автоматически при создании датчика температуры
+     * Удаление I2C датчика.
      *
      * @throws \Throwable
      */
@@ -102,104 +86,186 @@ class UsensorService
     {
         $usensor = Usensor::findOrFail($id);
 
-        //Убираем все данные на порту
-        Port::where('object', $usensor->id_object)
-            ->update([
-                'object' => null,
-                'status' => 'IN',
-                'comment' => '',
-            ]);
+        Port::where('object', $usensor->id_object)->update([
+            'object' => null,
+            'status' => 'IN',
+            'comment' => '',
+        ]);
 
-        if ($usensor->iobject && $usensor->iobject->is_system) {
-            DB::transaction(function () use (&$usensor) {
-                //if (!HomeObject::isObjectUsed($termostat->id_object, $termostat->id, 'termostats')) {
-                HomeObject::deleteAutoObject($usensor->id_object);
-                //}
-                $usensor->delete();
-            });
-        } else {
+        DB::transaction(function () use ($usensor) {
+            if ($usensor->id_object) {
+                $usensor->iobject->delete();
+            }
             $usensor->delete();
-        }
+        });
 
         return true;
     }
 
-    private function isUpdateAutoObjectName(Usensor $usensor, string $name): bool
-    {
-        return $usensor->name !== trim($name) && $usensor->iobject && $usensor->iobject->is_system;
-    }
-
     /**
-     * Обновление Универсального датчика. Если изменилось название и у датчика системный объект, то
-     * изменяем название объекта.
-     * При этом проверяем на уникальность название объекта. Если неуникально, то добавляем число.
+     * Обновление I2C датчика.
      *
      * @throws \Throwable
      */
     public function update(Usensor $usensor, array $data): int
     {
         DB::transaction(function () use (&$usensor, $data) {
-            if ($this->isUpdateAutoObjectName($usensor, $data['name'])) {
-                $usensor->iobject->name = HomeObject::getUniqueObjectName(
-                    $usensor->iobject->id,
-                    trim($data['name'])
-                );
+            $name = trim($data['name']);
+            if ($usensor->name != $name) {
+                $usensor->iobject->name = HomeObject::getUniqueObjectName($usensor->id_object, $name);
                 $usensor->iobject->save();
             }
 
-            //Убираем все данные на порту
-            Port::where('object', $usensor->id_object)
-                ->update([
-                    'object' => null,
-                    'status' => 'IN',
-                    'comment' => '',
-                ]);
+            $sdaPortNum = $this->portRepository->getNumPortByID($data['port_SDA']);
+            $sclPortNum = $this->portRepository->getNumPortByID($data['port_SCL']);
 
-            ConfigMegaService::setPortType(
-                $data['device_id'],
-                $this->portRepository->getNumPortByID($data['port_SDA']),
-                'IN'
-            );
+            Port::where('object', $usensor->id_object)->update([
+                'object' => null,
+                'status' => 'IN',
+                'comment' => '',
+            ]);
 
-            ConfigMegaService::setPortType(
-                $data['device_id'],
-                $this->portRepository->getNumPortByID($data['port_SCL']),
-                'IN'
-            );
+            ConfigMegaService::setPortType($data['device_id'], $sdaPortNum, 'IN');
+            ConfigMegaService::setPortType($data['device_id'], $sclPortNum, 'IN');
 
-            if ($data['port_SDA']) {
-                Port::where('id', $data['port_SDA'])
-                    ->update([
-                        'object' => $data['id_object'],
-                        'status' => 'I2C',
-                        'comment' => $data['name'],
-                    ]);
+            Port::find($data['port_SDA'])->update([
+                'object' => $usensor->id_object,
+                'status' => 'I2C',
+                'comment' => $data['name'],
+            ]);
 
-                ConfigMegaService::setPortType(
-                    $data['device_id'],
-                    $this->portRepository->getNumPortByID($data['port_SDA']),
-                    'SDA'
-                );
-            }
+            ConfigMegaService::setPortType($data['device_id'], $sdaPortNum, 'SDA');
 
-            if ($data['port_SCL']) {
-                Port::where('id', $data['port_SCL'])
-                    ->update([
-                        'object' => $data['id_object'],
-                        'status' => 'I2C',
-                        'comment' => $data['name'],
-                    ]);
+            Port::find($data['port_SCL'])->update([
+                'object' => $usensor->id_object,
+                'status' => 'I2C',
+                'comment' => $data['name'],
+            ]);
 
-                ConfigMegaService::setPortType(
-                    $data['device_id'],
-                    $this->portRepository->getNumPortByID($data['port_SCL']),
-                    'SCL'
-                );
-            }
-            $this->prepare($usensor, $data);
+            ConfigMegaService::setPortType($data['device_id'], $sclPortNum, 'SCL');
+
+            $usensor->fill($data);
             $usensor->save();
         });
 
         return $usensor->id;
+    }
+
+    /**
+     * Автоматическое создание статов по выбранному типу I2C датчика
+     */
+    private function createDetectorsByType(Usensor $usensor): void
+    {
+        switch ($usensor->type) {
+            case Usensor::TYPE_BH1750:
+                $this->createLightstat($usensor);
+                break;
+            case Usensor::TYPE_HTU21D:
+                $this->createHygrostat($usensor);
+                $this->createTermostat($usensor);
+                break;
+            case Usensor::TYPE_BME280:
+                $this->createHygrostat($usensor);
+                $this->createTermostat($usensor);
+                $this->createPressurestat($usensor, Pressurestat::TYPE_BMX280);
+                break;
+            case Usensor::TYPE_OUTDOORV2:
+                $this->createHygrostat($usensor);
+                $this->createTermostat($usensor);
+                $this->createLightstat($usensor);
+                break;
+            case Usensor::TYPE_OUTDOORV3:
+                $this->createHygrostat($usensor);
+                $this->createTermostat($usensor);
+                $this->createLightstat($usensor);
+                $this->createPressurestat($usensor, Pressurestat::TYPE_BMX280);
+                break;
+            case Usensor::TYPE_SCD40:
+                $this->createCarbdioxide($usensor);
+                $this->createHygrostat($usensor);
+                $this->createTermostat($usensor);
+                break;
+            case Usensor::TYPE_SCD41:
+                $this->createCarbdioxide($usensor);
+                $this->createHygrostat($usensor);
+                $this->createTermostat($usensor);
+                break;
+            case Usensor::TYPE_PTSENSOR:
+                $this->createPressurestat($usensor, Pressurestat::TYPE_PTSENSOR);
+                break;
+        }
+    }
+
+    private function createLightstat(Usensor $usensor): void
+    {
+        $this->lightstatService->store([
+            'name' => 'Датчик освещенности. ' . $usensor->relatedRoom->name,
+            'room' => $usensor->room,
+            'usensor_id' => $usensor->id_object,
+            'mode' => 0,
+            'optimal' => 10,
+            'gisteresis' => 10,
+            'min_alarm' => 0,
+            'max_alarm' => 54612,
+        ]);
+    }
+
+    private function createTermostat(Usensor $usensor): void
+    {
+        $this->termostatService->store([
+            'name' => 'Датчик температуры. ' . $usensor->relatedRoom->name,
+            'room' => $usensor->room,
+            'usensor_id' => $usensor->id_object,
+            'placetype' => 'usensor',
+            'device_id' => null,
+            'thermostat' => 1,
+            'optimal' => 22,
+            'gisteresis' => 1,
+            'min_alarm' => 0,
+            'max_alarm' => 40,
+        ]);
+    }
+
+    private function createHygrostat(Usensor $usensor): void
+    {
+        $this->hygrostatService->store([
+            'name' => 'Датчик влажности. ' . $usensor->relatedRoom->name,
+            'room' => $usensor->room,
+            'usensor_id' => $usensor->id_object,
+            'type' => 0,
+            'optimal' => 50,
+            'gisteresis' => 5,
+            'min_alarm' => 0,
+            'max_alarm' => 80,
+        ]);
+    }
+
+    private function createPressurestat(Usensor $usensor, string $sensorType): void
+    {
+        $this->pressurestatService->store([
+            'name' => 'Датчик давления. ' . $usensor->relatedRoom->name,
+            'room' => $usensor->room,
+            'usensor_id' => $usensor->id_object,
+            'mode' => 0,
+            'type_sensor' => $sensorType,
+            'optimal' => 760,
+            'gisteresis' => 5,
+            'min_alarm' => 600,
+            'max_alarm' => 820,
+        ]);
+    }
+
+    private function createCarbdioxide(Usensor $usensor): void
+    {
+        $this->carbdioxideService->store([
+            'name' => 'Датчик углекислого газа. ' . $usensor->relatedRoom->name,
+            'room' => $usensor->room,
+            'usensor_id' => $usensor->id_object,
+            'mode' => 0,
+            'optimal' => 900,
+            'gisteresis' => 50,
+            'min_alarm' => 400,
+            'max_alarm' => 1400,
+        ]);
     }
 }

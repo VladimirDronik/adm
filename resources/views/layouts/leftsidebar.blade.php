@@ -56,6 +56,12 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="{{ route('usensors.index') }}">
+                                    <i class="fa fa-microchip"></i>
+                                    I2C датчики
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('engineering.index') }}">
                                     <i class="fa fa-tachometer"></i>
                                     Инженерные

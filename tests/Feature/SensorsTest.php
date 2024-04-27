@@ -474,7 +474,7 @@ class SensorsTest extends TestCase
         $data = $generator->generateUsensor();
 
         $response = $this->actingAs($user)->post('/usensors', [
-            'name' => 'Создание тестового универсального датчика',
+            'name' => 'Создание тестового I2C датчика',
             'type' => 'htu21d',
             'device_id' => $data['device']->id,
             'port_SCL' => $data['port']->id,
@@ -485,7 +485,7 @@ class SensorsTest extends TestCase
         $response->assertRedirect('/usensors');
 
         $this->assertDatabaseHas('usensors', [
-            'name' => 'Создание тестового универсального датчика',
+            'name' => 'Создание тестового I2C датчика',
         ]);
     }
 
@@ -499,7 +499,7 @@ class SensorsTest extends TestCase
 
         $response = $this->actingAs($user)->post('usensors/'.$data['usensor']->id, [
             '_method' => 'PUT',
-            'name' => 'Обновление тестового универсального датчика',
+            'name' => 'Обновление тестового I2C датчика',
             'id_object' => $data['usensor']->id_object,
             'device_id' => $data['usensor']->device_id,
             'port_SCL' => $data['usensor']->port_SCL,
@@ -509,7 +509,7 @@ class SensorsTest extends TestCase
         $response->assertRedirect('/usensors/'.$data['usensor']->id.'/edit');
 
         $this->assertDatabaseHas('usensors', [
-            'name' => 'Обновление тестового универсального датчика',
+            'name' => 'Обновление тестового I2C датчика',
         ]);
     }
 
@@ -528,7 +528,7 @@ class SensorsTest extends TestCase
             ->assertJson(['result' => true]);
 
         $this->assertDatabaseMissing('usensors', [
-            'name' => 'Тестовый универсальный датчик',
+            'name' => 'Тестовый I2C датчик',
         ]);
     }
 

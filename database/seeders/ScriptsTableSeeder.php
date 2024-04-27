@@ -87,7 +87,7 @@ class ScriptsTableSeeder extends Seeder
     public static function getCheckUsensorScript(): array
     {
         return [
-            'name' => 'Проверка универсального датчика',
+            'name' => 'Проверка I2C датчика',
             'link' => 'check_usensor.php', // используется в UsensorObjectService
             'count' => 0,
             'system' => 1,

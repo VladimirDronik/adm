@@ -5,8 +5,10 @@
 @endsection
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление универсального датчика', 'links' => [ route('usensors.index') => 'Универсальные датчики']])
+    @includeIf('components.breadcrumbs', [
+        'title' => 'Добавление I2C датчика',
+        'links' => [ route('usensors.index') => 'I2C датчики']
+    ])
 @endsection
 
 @section('content')
@@ -15,7 +17,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('usensors.index') }}" class="btn btn-success m-b-10 m-l-5">Список универсальных датчиков</a>
+                        <a href="{{ route('usensors.index') }}" class="btn btn-success m-b-10 m-l-5">Список I2C датчиков</a>
                     </div>
                 </div>
             </div>
@@ -23,8 +25,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::open(['route' => 'usensors.store', 'method' => 'post',
-                            'id' => 'usensor_form', 'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::open(['route' => 'usensors.store', 'method' => 'post', 'id' => 'usensor_form', 'class' => 'form-horizontal form-bordered']) !!}
                         {{ csrf_field() }}
                         <div class="form-body">
                             {{ Form::bs_alert() }}
@@ -39,8 +40,7 @@
 
                             {{ Form::bs_autoselect('port_SDA', 'Порт SDA*:', [], old('SDA'), false, false, [], null) }}
 
-                            {{ Form::bs_autoselect('room', 'Помещение:', $rooms, old('room', -1), false, false) }}
-
+                            {{ Form::bs_autoselect('room', 'Помещение*:', $rooms, old('room'), false, false, [], null) }}
                         </div>
                         {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
@@ -51,27 +51,32 @@
         </div>
     </div>
     @include('components.info_modal')
-    @include('components.create_object_modal', compact('object_types'))
 @endsection
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
-    <script src="{{ asset('ela/js/pagescripts/termostat.js') }}"></script>
-    <script src="{{ asset('ela/js/pagescripts/express_create_object.js') }}"></script>
     <script>
-        const url_methods = '{{ route('ajax.objects.methods') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
-        const storeObjectUrl = '{{ route('ajax.objects.store') }}';
-        let modal_btn_index = -1;
-        let methods = [];
+
+        function createPortSelect(target, options, selected) {
+            let sel = $(target);
+            sel.html('');
+            let s = '<option value="">Не выбрано</option>';
+            for (let i = 0; i < options.length; i++) {
+                if (selected == options[i].id) {
+                    s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
+                } else {
+                    s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
+                }
+            }
+            sel.append(s);
+        }
 
         $(document).ready(function () {
-            initTermostatForm();
-
             $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_SCL").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_SDA").chosen({width:"100%", no_results_text: "Не найдено"});
-
+            $("#auto_sel_room").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $('#usensor_form').submit(function(e) {
                 if ($("#usensor_form input[name=type]").length && !$("#usensor_form input[name=type]:checked").val()) {
@@ -81,110 +86,19 @@
                 }
             });
 
-            $("#auto_sel_object").chosen().change(function() {
-                let object_id = $(this).val();
-                hideParamsFields('method_on_params');
-                hideParamsFields('method_off_params');
-                $.ajax({
-                    url: url_methods,
-                    data: {'_token': _token, 'object_id': object_id},
-                    success: function (data) {
-                        methods = data.methods;
-                        createMethodSelect('#auto_sel_method_on', data.methods, -1);
-                        $('#auto_sel_method_on').trigger("chosen:updated");
-                        createMethodSelect('#auto_sel_method_off', data.methods, -1);
-                        $('#auto_sel_method_off').trigger("chosen:updated");
-                    }
-                });
-            });
-
             $("#auto_sel_device_id").chosen().change(function() {
                 let device_id = $(this).val();
                 $.ajax({
                     url: url_ports,
                     data: {'_token': _token, 'device_id': device_id, 'status': 'IN,I2C,1WIRE,1W-BUS,ADC'},
                     success: function (data) {
-                        createMethodSelect('#auto_sel_port_SCL', data.ports, -1);
+                        createPortSelect('#auto_sel_port_SCL', data.ports, -1);
                         $('#auto_sel_port_SCL').trigger("chosen:updated");
 
-                        createMethodSelect('#auto_sel_port_SDA', data.ports, -1);
+                        createPortSelect('#auto_sel_port_SDA', data.ports, -1);
                         $('#auto_sel_port_SDA').trigger("chosen:updated");
                     }
                 });
-            });
-
-            $('#auto_sel_btn_id_object').click(function() {
-                modal_btn_index = 1;
-                clearCreateObjectModal();
-                $('#create_object_modal_init_btn').click();
-                return false;
-            });
-
-            $('#auto_sel_btn_object').click(function() {
-                modal_btn_index = 2;
-                clearCreateObjectModal();
-                $('#create_object_modal_init_btn').click();
-                return false;
-            });
-
-            $('#create_object_modal_btn').click(function() {
-                let message = validateCreateObject();
-                if (message !== '') {
-                    showCreateObjectError(message);
-                    return false;
-                }
-
-                storeObject();
-            });
-
-            function storeObject() {
-                const name = $("#create_object_modal input[name=object_name]").val().trim();
-                const type = $("#create_object_modal input[name=object_type]:checked").val().trim();
-
-                $.ajax({
-                    url: storeObjectUrl,
-                    data: {'_token': _token, 'name': name, 'type': type},
-                    success: function (data) {
-                        if (data.result) {
-                            hideCreateObjectError();
-                            updateObjectSelects(data.objects, data.id);
-                            $('#create_object_cancel_btn').click();
-                        } else {
-                            showCreateObjectError(data.message);
-                        }
-                    },
-                    error: function () {
-                        showCreateObjectError('Сервер временно недоступен');
-                    }
-                });
-            }
-
-            function updateObjectSelects(objects, selected) {
-                let id = false;
-
-                if (modal_btn_index === 1) {
-                    id = $('#auto_sel_id_object').val();
-                } else if (modal_btn_index === 2) {
-                    id = $('#auto_sel_object').val();
-                }
-
-                if (id) {
-                    selected = id;
-                }
-
-                createObjectSelect('#auto_sel_id_object', objects, modal_btn_index === 1 ? selected : $('#auto_sel_id_object').val());
-                createObjectSelect('#auto_sel_object', objects, modal_btn_index === 2 ? selected : $('#auto_sel_object').val());
-            }
-
-            $('#termostat_form [name=object_type]').change(function(){
-                if ($(this).val() === 'manual') {
-                    $('#auto_object_div').hide();
-                    $('#manual_object_div').show();
-                } else {
-                    $('#manual_object_div').hide();
-                    $('#auto_object_div').show();
-                }
-                return true;
             });
         });
     </script>

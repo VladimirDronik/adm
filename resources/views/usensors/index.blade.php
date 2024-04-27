@@ -3,13 +3,12 @@
 @section('breadcrumbs')
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">Датчики: универсальные</h3></div>
+            <h3 class="text-primary">I2C датчики</h3></div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
                 <li class="breadcrumb-item breadcrumb-item-no-link">Устройства</li>
-                <li class="breadcrumb-item breadcrumb-item-no-link">Датчики</li>
-                <li class="breadcrumb-item active">Универсальные</li>
+                <li class="breadcrumb-item active">I2C датчики</li>
             </ol>
         </div>
     </div>
@@ -17,19 +16,18 @@
 
 @section('content')
     <div class="container-fluid">
-        @include('detectors.tab_header', ['active' => 'usensors'])
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('usensors.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить универсальный датчик</a>
+                        <a href="{{ route('usensors.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить I2C датчик</a>
                         <a href="{{ route('usensors.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card">
-            <div class="card-title"><h4>Универсальные датчики</h4></div>
+            <div class="card-title"><h4>I2C датчики</h4></div>
             <div class="card-body">
                 @if(count($usensors))
                     <div class="table-responsive">
@@ -38,12 +36,11 @@
                                 <tr>
                                     <th style="width: 60px;">ID</th>
                                     <th>Название</th>
-                                    <th>Температура</th>
-                                    <th>Влажность</th>
-                                    <th>Освещение</th>
-                                    <th style="width: 195px;">Атмосферное давление</th>
-                                    <th style="width: 150px;">Давление</th>
-                                    <th style="width: 150px;">CO2</th>
+                                    <th>Тип датчика</th>
+                                    <th>Контроллер</th>
+                                    <th>SDA</th>
+                                    <th>SCL</th>
+                                    <th>Помещение</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
@@ -51,15 +48,15 @@
                             <tbody>
                                 @foreach($usensors as $usensor)
                                     <tr id="tr{{$usensor->id}}">
-                                        <td scope="row">{{ $usensor->iobject['id'] }}</td>
-                                        <td><a href="{{ route('usensors.edit',[$usensor->id]) }}">
-                                                {{ $usensor->name }}</a></td>
-                                        <td>{{ $usensor->temp ? $usensor->temp . ' °С' : ''}}</td>
-                                        <td>{{ $usensor->hum ? $usensor->hum . ' %' : ''}}</td>
-                                        <td>{{ $usensor->lux ? $usensor->lux . ' ед.' : ''}}</td>
-                                        <td>{{ $usensor->atm_pressure ? $usensor->atm_pressure . ' мм рт.ст.' : ''}}</td>
-                                        <td>{{ $usensor->pressure ? $usensor->pressure . ' мм рт.ст.' : ''}}</td>
-                                        <td>{{ $usensor->co2 ? $usensor->co2 . ' ppm' : ''}}</td>
+                                        <td scope="row">{{ $usensor->id_object }}</td>
+                                        <td>
+                                            <a href="{{ route('usensors.edit', [$usensor->id]) }}">{{ $usensor->name }}</a>
+                                        </td>
+                                        <td>{{ $usensor->type_name }}</td>
+                                        <td>{{ $usensor->device?->description }}</td>
+                                        <td>{{ $usensor->port_SDA }}</td>
+                                        <td>{{ $usensor->port_SCL }}</td>
+                                        <td>{{ $usensor->relatedRoom?->name }}</td>
                                         <td align="center" class="text-center">
                                             <a href="{{ route('usensors.edit',[$usensor->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>
@@ -74,26 +71,27 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th style="width: 60px;">ID</th>
-                                    <th>Название</th>
-                                    <th>Температура</th>
-                                    <th>Влажность</th>
-                                    <th>Освещение</th>
-                                    <th style="width: 195px;">Атмосферное давление</th>
-                                    <th style="width: 150px;">Давление</th>
-                                    <th style="width: 150px;">CO2</th>
-                                    <th style="width: 60px;"></th>
-                                    <th style="width: 60px;"></th>
-                                </tr>
-                            </tfoot>
+                            @if(count($usensors) > 10)
+                                <tfoot>
+                                    <tr>
+                                        <th style="width: 60px;">ID</th>
+                                        <th>Название</th>
+                                        <th>Тип датчика</th>
+                                        <th>Контроллер</th>
+                                        <th>SDA</th>
+                                        <th>SCL</th>
+                                        <th>Помещение</th>
+                                        <th style="width: 60px;"></th>
+                                        <th style="width: 60px;"></th>
+                                    </tr>
+                                </tfoot>
+                            @endif
                         </table>
                     </div>
                     {{ $usensors->appends(request()->input())->links() }}
                     <p class="text-right">Найдено: {{ $usensors->total() }}</p>
                 @else
-                    <p>Унивесальные датчики не найдены</p>
+                    <p>I2C датчики не найдены</p>
                 @endif
             </div>
         </div>
@@ -108,11 +106,11 @@
 
             $('.del_btn').click(function() {
                 del_id = $(this).data('id');
-                $('#del_modal_body').text('Удалить универсальный датчик № '+del_id+' «'+$(this).data('name')+'»?');
+                $('#del_modal_body').text('Удалить I2C датчик № '+del_id+' «'+$(this).data('name')+'»?');
                 $('#del_init_btn').click();
             });
 
-            $('#del_modal_btn').click(function(){
+            $('#del_modal_btn').click(function() {
                 if (del_id) {
                     $.ajax({
                         url: '{{ route('ajax.usensors.delete') }}',

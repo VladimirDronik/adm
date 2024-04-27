@@ -300,7 +300,7 @@ class RoomService
     {
         $temperature = Temperature::where('id_room', $idRoom)->first();
 
-        if ($temperature->id) {
+        if ($temperature) {
             if ($temperature->normal == null) {
                 $temperature->normal = $termostatValue;
             }

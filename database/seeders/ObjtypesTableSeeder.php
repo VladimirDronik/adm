@@ -39,7 +39,7 @@ class ObjtypesTableSeeder extends Seeder
             ],
             [
                 'name' => ObjType::TYPE_USENSOR,
-                'label' => 'Универсальный датчик',
+                'label' => 'I2C датчик',
             ],
             [
                 'name' => 'hygrometer',

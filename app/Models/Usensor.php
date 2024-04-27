@@ -76,13 +76,23 @@ class Usensor extends Model
         return $is_full ? $types : array_keys($types);
     }
 
+    public function getTypeNameAttribute()
+    {
+        return static::getTypes(true)[$this->type] ?? '';
+    }
+
     public function iobject()
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
     }
 
-    public function eobject()
+    public function device()
     {
-        return $this->belongsTo(HomeObject::class, 'object', 'id');
+        return $this->belongsTo(Device::class, 'device_id', 'id');
+    }
+
+    public function relatedRoom()
+    {
+        return $this->belongsTo(Room::class, 'room', 'id');
     }
 }

@@ -127,7 +127,7 @@ class SensorsData
     }
 
     /**
-     * Генератор сущностей для универсального датчика
+     * Генератор сущностей для I2C датчика
      */
     public function generateUsensor(): array
     {
@@ -152,7 +152,7 @@ class SensorsData
         ]);
 
         $object = HomeObject::create([
-            'name' => 'Тестовый универсальный датчик',
+            'name' => 'Тестовый I2C датчик',
             'type' => 'usensor',
             'status' => 'on',
         ]);
@@ -160,7 +160,7 @@ class SensorsData
         $usensor = Usensor::create([
             'id_object' => $object->id,
             'device_id' => $device->id,
-            'name' => 'Тестовый универсальный датчик',
+            'name' => 'Тестовый I2C датчик',
             'type' => 'htu21d',
             'device_id' => $device->id,
             'port_SCL' => $port->id,
