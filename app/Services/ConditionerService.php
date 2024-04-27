@@ -9,13 +9,11 @@ use App\Models\Conditioner;
 use App\Models\ModbusSlaver;
 use App\Models\ConditionerType;
 use Illuminate\Support\Facades\DB;
-use App\Services\Modbus\RegisterService;
 use App\Repositories\ConditionerRepository;
 
 class ConditionerService
 {
     public function __construct(
-        private RegisterService $registerService,
         private ConditionerRepository $conditionersRep
     ) {
     }
@@ -34,8 +32,7 @@ class ConditionerService
             ->get();
 
         foreach ($registers as $register) {
-            $result = $this->registerService->read($register->id);
-            $conditioner[substr($register->alias, 3)] = array_key_exists(0, $result['output']) ? $result['output'][0] : null;
+            $conditioner[substr($register->alias, 3)] = $register->last_value;
         }
 
         if (!$conditionerType) {
