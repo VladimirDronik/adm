@@ -38,6 +38,7 @@
                                 <th>Тип</th>
                                 <th>Тип управления</th>
                                 <th>Название</th>
+                                <th>Статус</th>
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>
                             </tr>
@@ -53,6 +54,15 @@
                                         {{ $curtain->rus_place }}
                                     </td>
                                     <td><a href="{{ route('curtains.edit', [$curtain->id]) }}">{{ $curtain->name }}</a></td>
+                                    <td>
+                                        @if($curtain->place == \App\Models\Curtain::PLACE_RS485)
+                                            @if($curtain->active == 1)
+                                                <span class="badge badge-success">Активно</span>
+                                            @else
+                                                <span class="badge badge-danger">Недоступно</span>
+                                            @endif
+                                        @endif
+                                    </td>
                                     <td align="center" class="text-center">
                                         <a href="{{ route('curtains.edit', [$curtain->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                             <i class="fa fa-cog fa-lg"></i>
@@ -73,6 +83,7 @@
                                 <th>Тип</th>
                                 <th>Тип управления</th>
                                 <th>Название</th>
+                                <th>Статус</th>
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>
                             </tr>

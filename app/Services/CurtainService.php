@@ -121,6 +121,10 @@ class CurtainService
         $curtain = new Curtain();
         $this->prepare($curtain, $data);
 
+        if ($data['place'] == Curtain::PLACE_RS485) {
+            $curtain->active = 1;
+        }
+
         DB::transaction(function () use (&$curtain, $data) {
             $unique_name = HomeObject::getUniqueObjectName(0, $curtain->name);
 
