@@ -72,10 +72,12 @@
                                             </a>
                                         </td>
                                         <td align="center" class="text-center">
-                                            <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                    data-id="{{ $hygrostat->id }}" data-name="{{ $hygrostat->name }}">
-                                                <i class="fa fa-trash fa-lg"></i>
-                                            </button>
+                                            @if(!$hygrostat->is_system)
+                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                                        data-id="{{ $hygrostat->id }}" data-name="{{ $hygrostat->name }}">
+                                                    <i class="fa fa-trash fa-lg"></i>
+                                                </button>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

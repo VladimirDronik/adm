@@ -75,10 +75,12 @@
                                             </a>
                                         </td>
                                         <td align="center" class="text-center">
-                                            <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                    data-id="{{ $termostat->id }}" data-name="{{ $termostat->name }}">
-                                                <i class="fa fa-trash fa-lg"></i>
-                                            </button>
+                                            @if(!$termostat->is_system)
+                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                                        data-id="{{ $termostat->id }}" data-name="{{ $termostat->name }}">
+                                                    <i class="fa fa-trash fa-lg"></i>
+                                                </button>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

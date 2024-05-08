@@ -53,6 +53,7 @@ class PressurestatService
 
         $this->prepare($pressurestat, $data);
         $pressurestat->current = 0;
+        $pressurestat->is_system = $data['is_system'] ?? 0;
 
         DB::transaction(function () use ($pressurestat) {
             $uniqueName = HomeObject::getUniqueObjectName(0, $pressurestat->name);

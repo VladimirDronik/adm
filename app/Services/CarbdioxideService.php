@@ -54,6 +54,7 @@ class CarbdioxideService
 
         $this->prepare($carbdioxide, $data);
         $carbdioxide->current = 0;
+        $carbdioxide->is_system = $data['is_system'] ?? 0;
 
         DB::transaction(function () use ($carbdioxide) {
             $uniqueName = HomeObject::getUniqueObjectName(0, $carbdioxide->name);

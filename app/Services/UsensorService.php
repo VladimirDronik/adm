@@ -32,7 +32,7 @@ class UsensorService
         $usensor = new Usensor();
         $usensor->fill($data);
 
-        DB::transaction(function () use (&$usensor, $data) {
+        $dbWriting = DB::transaction(function () use (&$usensor, $data) {
             $portSDA = $data['port_SDA'];
             $portSCL = $data['port_SCL'];
             $deviceId = $data['device_id'];
@@ -46,8 +46,6 @@ class UsensorService
 
             $usensor->id_object = $object->id;
             $usensor->save();
-
-            $this->createDetectorsByType($usensor);
 
             Port::find($portSDA)->update([
                 'object' => $object->id,
@@ -72,7 +70,13 @@ class UsensorService
                 $this->portRepository->getNumPortByID($portSCL),
                 'SCL'
             );
+
+            return true;
         });
+
+        if ($dbWriting === true) {
+            $this->createDetectorsByType($usensor);
+        }
 
         return $usensor->id;
     }
@@ -93,6 +97,14 @@ class UsensorService
         ]);
 
         DB::transaction(function () use ($usensor) {
+            if ($usensor->sensors()->isNotEmpty()) {
+                foreach ($usensor->sensors() as $sensor) {
+                    if ($sensor->is_system) {
+                        $sensor->delete();
+                    }
+                }
+            }
+
             if ($usensor->id_object) {
                 $usensor->iobject->delete();
             }
@@ -199,7 +211,7 @@ class UsensorService
     private function createLightstat(Usensor $usensor): void
     {
         $this->lightstatService->store([
-            'name' => 'Датчик освещенности. ' . $usensor->relatedRoom->name,
+            'name' => 'Датчик освещенности (' . $usensor->type . '). ' . $usensor->relatedRoom->name,
             'room' => $usensor->room,
             'usensor_id' => $usensor->id_object,
             'mode' => 0,
@@ -207,13 +219,14 @@ class UsensorService
             'gisteresis' => 10,
             'min_alarm' => 0,
             'max_alarm' => 54612,
+            'is_system' => 1,
         ]);
     }
 
     private function createTermostat(Usensor $usensor): void
     {
         $this->termostatService->store([
-            'name' => 'Датчик температуры. ' . $usensor->relatedRoom->name,
+            'name' => 'Датчик температуры (' . $usensor->type . '). ' . $usensor->relatedRoom->name,
             'room' => $usensor->room,
             'usensor_id' => $usensor->id_object,
             'placetype' => 'usensor',
@@ -223,13 +236,14 @@ class UsensorService
             'gisteresis' => 1,
             'min_alarm' => 0,
             'max_alarm' => 40,
+            'is_system' => 1,
         ]);
     }
 
     private function createHygrostat(Usensor $usensor): void
     {
         $this->hygrostatService->store([
-            'name' => 'Датчик влажности. ' . $usensor->relatedRoom->name,
+            'name' => 'Датчик влажности (' . $usensor->type . '). ' . $usensor->relatedRoom->name,
             'room' => $usensor->room,
             'usensor_id' => $usensor->id_object,
             'type' => 0,
@@ -237,13 +251,14 @@ class UsensorService
             'gisteresis' => 5,
             'min_alarm' => 0,
             'max_alarm' => 80,
+            'is_system' => 1,
         ]);
     }
 
     private function createPressurestat(Usensor $usensor, string $sensorType): void
     {
         $this->pressurestatService->store([
-            'name' => 'Датчик давления. ' . $usensor->relatedRoom->name,
+            'name' => 'Датчик давления (' . $usensor->type . '). ' . $usensor->relatedRoom->name,
             'room' => $usensor->room,
             'usensor_id' => $usensor->id_object,
             'mode' => 0,
@@ -252,13 +267,14 @@ class UsensorService
             'gisteresis' => 5,
             'min_alarm' => 600,
             'max_alarm' => 820,
+            'is_system' => 1,
         ]);
     }
 
     private function createCarbdioxide(Usensor $usensor): void
     {
         $this->carbdioxideService->store([
-            'name' => 'Датчик углекислого газа. ' . $usensor->relatedRoom->name,
+            'name' => 'Датчик углекислого газа (' . $usensor->type . '). ' . $usensor->relatedRoom->name,
             'room' => $usensor->room,
             'usensor_id' => $usensor->id_object,
             'mode' => 0,
@@ -266,6 +282,7 @@ class UsensorService
             'gisteresis' => 50,
             'min_alarm' => 400,
             'max_alarm' => 1400,
+            'is_system' => 1,
         ]);
     }
 }

@@ -2,40 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * App\Models\Usensor
- *
- * @property int $id
- * @property int|null $id_object id датчика из таблицы объектов
- * @property string $name название датчика
- * @property float|null $temp текущая температура
- * @property float|null $hum текущая влажность
- * @property float|null $lux текущий уровень освещенности
- * @property int $device_id id устройства (контроллера), на котором висит датчик
- * @property int $port_SCL порт SCL контроллера на котором висит датчик
- * @property int $port_SDA порт SDA контроллера на котором висит датчик
- * @property int|null $room
- * @property-read \App\Models\HomeObject $eobject
- * @property-read \App\Models\HomeObject|null $iobject
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor whereDeviceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor whereHum($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor whereIdObject($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor whereLux($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor wherePortSCL($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor wherePortSDA($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor whereRoom($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Usensor whereTemp($value)
- *
- * @mixin \Eloquent
- */
 class Usensor extends Model
 {
     protected $table = 'usensors';
@@ -94,5 +63,40 @@ class Usensor extends Model
     public function relatedRoom()
     {
         return $this->belongsTo(Room::class, 'room', 'id');
+    }
+
+    public function lightstats()
+    {
+        return $this->hasMany(Lightstat::class, 'usensor_id', 'id_object');
+    }
+
+    public function termostats()
+    {
+        return $this->hasMany(Termostat::class, 'usensor_id', 'id_object');
+    }
+
+    public function hygrostats()
+    {
+        return $this->hasMany(Hygrostat::class, 'usensor_id', 'id_object');
+    }
+
+    public function pressurestats()
+    {
+        return $this->hasMany(Pressurestat::class, 'usensor_id', 'id_object');
+    }
+
+    public function carbdioxides()
+    {
+        return $this->hasMany(Carbdioxide::class, 'usensor_id', 'id_object');
+    }
+
+    public function sensors(): Collection
+    {
+        $sensors = $this->lightstats->concat($this->termostats)
+            ->concat($this->hygrostats)
+            ->concat($this->pressurestats)
+            ->concat($this->carbdioxides);
+
+        return $sensors;
     }
 }
