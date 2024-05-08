@@ -90,6 +90,9 @@
         const store_message_url = '{{ route('ajax.messages.store') }}';
         const del_url = '{{ route('ajax.methods.delete') }}';
         const del_message_url = '{{ route('ajax.messages.delete') }}';
+        const url_device = '{{ route('ajax.devices.type_controller') }}';
+        const sub_data_url = '{{ route('ajax.load.data') }}';
+        const is_super_admin = "{{ user()->is_super_admin }}";
         const object_id = '{{ optional($relay->object)->id }}';
         const url_mod_bus_slavers_registers = '{{ route('ajax.mod_bus.slavers.registers') }}';
         let methodsIdWithRegisters = {!! json_encode($methodsIdWithRegisters) !!};

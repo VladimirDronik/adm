@@ -91,8 +91,11 @@
         const del_url = '{{ route('ajax.methods.delete') }}';
         const del_message_url = '{{ route('ajax.messages.delete') }}';
         const object_id = '{{ optional($lamp->object)->id }}';
+        const url_device = '{{ route('ajax.devices.type_controller') }}';
+        const sub_data_url = '{{ route('ajax.load.data') }}';
         const url_mod_bus_slavers_registers = '{{ route('ajax.mod_bus.slavers.registers') }}';
         let methodsIdWithRegisters = {!! json_encode($methodsIdWithRegisters) !!};
+        const is_super_admin = "{{ user()->is_super_admin }}";
         let del_id;
 
         $("#auto_sel_port_id").chosen({width:"100%", no_results_text: "Не найдено"});
