@@ -17,7 +17,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('views.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок отображений</a>
+                        <a href="{{ route('views.index') }}" class="btn btn-success m-b-10 m-l-5">Список отображений</a>
                         <a href="{{ route('views.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить отображение</a>
                     </div>
                 </div>
@@ -116,10 +116,10 @@
                         {{ Form::bs_number('position_left','Левый отступ (%):', old('position_left', $view->position_left), ['min' => 0, 'max' => 100, 'required' => false] ) }}
                         {{ Form::bs_number('position_top','Верхний отступ (%):', old('position_top', $view->position_right), ['min' => 0, 'max' => 100, 'required' => false] ) }}
 
-                        <div id="additionallydiv"  @if(($view->type == 'termostat')||($view->type == 'label')||($view->type == 'lightstat')||($view->type == 'carbsens')||($view->type == 'pressurestat')) style="display: block;" @else style="display: none;" @endif >
+                        <div id="additionallydiv"  @if(($view->type == 'termostat')||($view->type == 'label')||($view->type == 'lightstat')||($view->type == 'carbsens')||($view->type == 'pressurestat')||($view->type == 'hygrostat')) style="display: block;" @else style="display: none;" @endif >
                             <br>
                             {{ Form::bs_title('Дополнительно') }}
-                            <div id="low_high_val_div" @if($view->type == 'termostat' || $view->type == 'lightstat' || $view->type == 'carbsens' || $view->type == 'pressurestat') style="display: block;" @else style="display: none;" @endif >
+                            <div id="low_high_val_div" @if($view->type == 'termostat' || $view->type == 'lightstat' || $view->type == 'carbsens' || $view->type == 'pressurestat' || $view->type == 'hygrostat') style="display: block;" @else style="display: none;" @endif >
                                 {{ Form::bs_radio('setting_from_app', 'Настройка из приложения:', ['true' => 'да', 'false' => 'нет'], old('setting_from_app', $settingFromApp)) }}
                                 {{ Form::bs_number('lowval','Нижний порог шкалы:', old('lowval', $lowval), ['min' => $lowvalSet['min'], 'max' => $lowvalSet['max'], 'required' => false] ) }}
                                 {{ Form::bs_number('highval','Верхний порог шкалы:', old('highval', $highval), ['min' => $highvalSet['min'], 'max' => $highvalSet['max'], 'required' => false] )  }}
@@ -433,6 +433,15 @@
                     $('#view_form [name=highval]').attr('min', 400);
                     $('#view_form [name=lowval]').attr('max', 2000);
                     $('#view_form [name=highval]').attr('max', 2000);
+                    $('#additionallydiv').show();
+                    $('#low_high_val_div').show();
+                } else if ($(this).val() == 'hygrostat') {
+                    $('#view_form [name=lowval]').val(0);
+                    $('#view_form [name=highval]').val(100);
+                    $('#view_form [name=lowval]').attr('min', 0);
+                    $('#view_form [name=highval]').attr('min', 0);
+                    $('#view_form [name=lowval]').attr('max', 100);
+                    $('#view_form [name=highval]').attr('max', 100);
                     $('#additionallydiv').show();
                     $('#low_high_val_div').show();
                 } else if ($(this).val() == 'link') {

@@ -402,6 +402,15 @@
                     $('#view_form #on_method_div').hide();
                     $('#view_form #off_method_div').hide();
                     $('#on_params_div').show();
+                } else if ($(this).val() == 'hygrostat') {
+                    $('#view_form [name=lowval]').val(0);
+                    $('#view_form [name=highval]').val(100);
+                    $('#view_form [name=lowval]').attr('min', 0);
+                    $('#view_form [name=highval]').attr('min', 0);
+                    $('#view_form [name=lowval]').attr('max', 100);
+                    $('#view_form [name=highval]').attr('max', 100);
+                    $('#additionallydiv').show();
+                    $('#low_high_val_div').show();
                 } else if ($(this).val() == 'label') {
                     $('#additionallydiv').show();
                     $('#labeldiv').show();

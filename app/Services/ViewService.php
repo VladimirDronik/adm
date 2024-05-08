@@ -11,8 +11,9 @@ class ViewService
 {
     public function prepareView(View $view, array $data)
     {
+        $type = trim($data['type']);
         $view->title = trim($data['title']);
-        $view->type = trim($data['type']);
+        $view->type = $type;
         $view->scene = $data['scene'] ?? null;
         $view->position_top = (int) $data['position_top'];
         $view->position_left = (int) $data['position_left'];
@@ -29,7 +30,7 @@ class ViewService
             $safeType = 'auth='.$data['safe_type'];
         }
 
-        if (trim($data['type']) == View::TYPE_TEMP || trim($data['type']) == View::TYPE_LIGHTSTAT || trim($data['type']) == View::TYPE_CARBMONOXIDE) {
+        if ($type == View::TYPE_TEMP || $type == View::TYPE_LIGHTSTAT || $type == View::TYPE_CARBMONOXIDE || $type == View::TYPE_HYGROSTAT) {
             $stringMethod = 'editable='.$data['setting_from_app'].';';
             $stringMethod .= 'lowval='.$data['lowval'].';';
             if ($safeType) {
@@ -39,13 +40,13 @@ class ViewService
             }
 
             $data['params'] = $stringMethod;
-        } elseif (trim($data['type']) == View::TYPE_LINK) {
+        } elseif ($type == View::TYPE_LINK) {
             if ($safeType) {
                 $data['params'] = 'link='.$data['link'].';'.$safeType;
             } else {
                 $data['params'] = 'link='.$data['link'];
             }
-        } elseif (trim($data['type']) == View::TYPE_LABEL) {
+        } elseif ($type == View::TYPE_LABEL) {
             if ($safeType) {
                 $data['params'] = "push={$data['pushlabel']}&modal={$data['modallabel']}&message={$data['label_longclick_text']}&$safeType";
             } else {

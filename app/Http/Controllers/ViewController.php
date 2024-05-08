@@ -100,7 +100,7 @@ class ViewController extends Controller
         $link = null;
         $safe_type = null;
 
-        if ($view->type == View::TYPE_TEMP || $view->type == View::TYPE_LIGHTSTAT || $view->type == View::TYPE_CARBMONOXIDE) {
+        if ($view->type == View::TYPE_TEMP || $view->type == View::TYPE_LIGHTSTAT || $view->type == View::TYPE_CARBMONOXIDE || $view->type == View::TYPE_HYGROSTAT) {
             $onmethodparams = explode(';', $view->params);
             $settingFromApp = explode('=', $onmethodparams[0])[1];
             $lowval = explode('=', $onmethodparams[1])[1];
