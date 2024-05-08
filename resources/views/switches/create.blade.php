@@ -31,8 +31,7 @@
                         {{ Form::bs_radio('type', 'Тип выключателя*:', $types, old('type', -1), ['required' => true]) }}
                         {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-                        {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'),
-                                           false, false, [], null) }}
+                        {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'), false, false, [], null) }}
 
                         <div id='port_id_div' style="display: none">
                             {{ Form::bs_autoselect('port_id', 'Порт:', [], old('port_id'),
@@ -143,7 +142,6 @@
     <script>
         const storeObjectUrl = '{{ route('ajax.objects.store') }}';
         const url_ports = '{{ route('ajax.devices.objects_ports') }}';
-        const url_devices = '{{ route('ajax.devices.get') }}';
         const url_methods = '{{ route('ajax.objects.methods') }}';
 
         $(document).ready(function () {
@@ -311,27 +309,6 @@
                 }
                 createObjectSelect('#auto_sel_id_object', objects, selected);
             }
-
-            //При выборе кнопки подгружаем устройства хитпро
-            $('#switch_form [name=type]').change(function(){
-                if ($(this).val() === 'button') {
-                    types = ['Hite-pro', 'Monoblock 14IN/14OUT'];
-                } else {
-                    types = ['Monoblock 14IN/14OUT'];
-                }
-
-                $.ajax({
-                    url: url_devices,
-                    data: {'_token': _token, 'types': types},
-                    success: function (data) {
-                        createDevicesSelect('#auto_sel_device_id', data.devices, -1);
-                        $('#auto_sel_device_id').trigger("chosen:updated");
-                    }
-                });
-
-                return true;
-            });
-
 
             $('#switch_form [name=object_type]').change(function(){
                 if ($(this).val() === 'manual') {
