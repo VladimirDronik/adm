@@ -76,7 +76,7 @@
                             <li>
                                 <a href="{{ route('switches.index') }}">
                                     <i class="fa fa-bullseye"></i>
-                                    Выключатели (кнопки)
+                                    Выключатели
                                 </a>
                             </li>
                             <li>
@@ -94,7 +94,7 @@
                             <li>
                                 <a href="{{ route('relays.index') }}">
                                     <i class="fa fa-bullseye"></i>
-                                    Реле (розетки)
+                                    Реле
                                 </a>
                             </li>
                             <li>
