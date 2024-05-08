@@ -15,8 +15,8 @@ class LightstatService
 
     public function prepare(Lightstat $lightstat, array $data)
     {
-        $data['min_threshold'] = 0;
-        $data['max_threshold'] = 54612;
+        $data['min_threshold'] = $data['min_threshold'] ?? 0;
+        $data['max_threshold'] = $data['max_threshold'] ?? 54612;
 
         $data['room'] = array_key_exists('room', $data) && $data['room'] != 0 ? $data['room'] : null;
 

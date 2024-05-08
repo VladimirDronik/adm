@@ -170,7 +170,10 @@ class UsensorService
     {
         switch ($usensor->type) {
             case Usensor::TYPE_BH1750:
-                $this->createLightstat($usensor);
+                $this->createLightstat($usensor, 0, 54612, 0, 54612);
+                break;
+            case Usensor::TYPE_MAX44009:
+                $this->createLightstat($usensor, 0, 188000, 0, 188000);
                 break;
             case Usensor::TYPE_HTU21D:
                 $this->createHygrostat($usensor);
@@ -184,12 +187,12 @@ class UsensorService
             case Usensor::TYPE_OUTDOORV2:
                 $this->createHygrostat($usensor);
                 $this->createTermostat($usensor);
-                $this->createLightstat($usensor);
+                $this->createLightstat($usensor, 0, 54612, 0, 54612);
                 break;
             case Usensor::TYPE_OUTDOORV3:
                 $this->createHygrostat($usensor);
                 $this->createTermostat($usensor);
-                $this->createLightstat($usensor);
+                $this->createLightstat($usensor, 0, 54612, 0, 54612);
                 $this->createPressurestat($usensor, Pressurestat::TYPE_BMX280);
                 break;
             case Usensor::TYPE_SCD40:
@@ -208,7 +211,7 @@ class UsensorService
         }
     }
 
-    private function createLightstat(Usensor $usensor): void
+    private function createLightstat(Usensor $usensor, int $minAlarm, int $maxAlarm, int $minThreshold, int $maxThreshold): void
     {
         $this->lightstatService->store([
             'name' => 'Датчик освещенности (' . $usensor->type . '). ' . $usensor->relatedRoom->name,
@@ -217,8 +220,10 @@ class UsensorService
             'mode' => 0,
             'optimal' => 10,
             'gisteresis' => 10,
-            'min_alarm' => 0,
-            'max_alarm' => 54612,
+            'min_alarm' => $minAlarm,
+            'max_alarm' => $maxAlarm,
+            'min_threshold' => $minThreshold,
+            'max_threshold' => $maxThreshold,
             'is_system' => 1,
         ]);
     }

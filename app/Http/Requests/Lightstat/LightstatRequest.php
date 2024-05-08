@@ -32,9 +32,9 @@ class LightstatRequest extends FormRequest
             'method_off' => 'nullable|integer|exists:App\Models\Method,id',
             'usensor_id' => 'required|integer|exists:App\Models\Usensor,id_object',
             'gisteresis' => 'required|integer|min:0|max:5000',
-            'optimal' => 'required|integer|min:0|max:54612',
-            'min_alarm' => 'required|integer|min:0|max:54612',
-            'max_alarm' => 'required|integer|min:0|max:54612',
+            'optimal' => 'required|integer|min:0|max:188000',
+            'min_alarm' => 'required|integer|min:0|max:188000',
+            'max_alarm' => 'required|integer|min:0|max:188000',
         ];
     }
 
