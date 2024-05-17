@@ -73,10 +73,7 @@ class SlaverService
                     break;
             }
 
-            if (
-                in_array($slaver->relatedType->type, ModbusSlaver::getTypesForConditioners()) &&
-                ConditionerType::where('device', $slaver->relatedType->type)->exists()
-            ) {
+            if ($slaver->relatedType->purpose == 'ac' && ConditionerType::where('device', $slaver->relatedType->type)->exists()) {
                 $this->conditionerService->store([
                     'name' => 'Кондиционер устройства - ' . $slaver->name,
                     'modbus_slaver_id' => $slaver->id,

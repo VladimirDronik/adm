@@ -57,27 +57,6 @@ class ModbusSlaver extends Model
     }
 
     /**
-     * Получить типы модбас устройства для управления кондиционером
-     *
-     * @return array
-     */
-    public static function getTypesForConditioners(): array
-    {
-        return [
-            'onokom-gr-1-mb-b',
-            'onokom-gr-3-mb-b',
-            'onokom-tcl-1-mb-b',
-            'onokom-dk-1-mb-b',
-            'onokom-aux-1-mb-b',
-            'onokom-me-1-mb-b',
-            'onokom-hs-3-mb-b',
-            'onokom-hr-1-mb-b',
-            'onokom-hs-6-mb-b',
-            'onokom-mh-8-mb-b',
-        ];
-    }
-
-    /**
      * Получить данные набора лед лент по коду выбранного режима
      *
      * @return array
