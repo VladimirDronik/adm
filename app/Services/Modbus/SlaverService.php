@@ -2,16 +2,16 @@
 
 namespace App\Services\Modbus;
 
-use App\Models\DaliDevice;
-use App\Models\HomeObject;
-use App\Models\LedTape;
-use App\Models\ModbusSlaver;
-use App\Models\ObjType;
 use App\Models\Script;
 use App\Models\Method;
+use App\Models\LedTape;
+use App\Models\ObjType;
+use App\Models\DaliDevice;
+use App\Models\HomeObject;
+use App\Models\ModbusSlaver;
 use App\Models\ModbusRegister;
-use Database\Seeders\ScriptsTableSeeder;
 use Illuminate\Support\Facades\DB;
+use Database\Seeders\ScriptsTableSeeder;
 
 class SlaverService
 {
@@ -558,5 +558,35 @@ class SlaverService
             'code' => $resultCode,
             'output' => $output,
         ];
+    }
+
+    /**
+     * Запуск чтения данных всех регистров устройства с polling = 1
+     *
+     * @param int $slaverId
+     * @return bool
+     */
+    public function readPollingRegisters(int $slaverId): bool
+    {
+        $slaver = ModbusSlaver::find($slaverId);
+        $pollingRegisters = $slaver->registers()->where('polling', 1)->get();
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+
+        if ($pollingRegisters->isNotEmpty()) {
+            foreach ($pollingRegisters as $pollingRegister) {
+                $output = [];
+                exec('php modbus_read.php ' . $pollingRegister->id, $output);
+
+                $result = $output[0] ?? false;
+                if ($result === false) {
+                    return false;
+                }
+            }
+        } else {
+            exec('php modbus_check_availability.php ' . $slaver->id);
+        }
+
+        return true;
     }
 }

@@ -74,6 +74,8 @@
         let network_assembly_url = '{{ route('ajax.mod_bus.slavers.network_assembly') }}';
         let network_expansion_url = '{{ route('ajax.mod_bus.slavers.network_expansion') }}';
         let read_register_url = '{{ route('ajax.mod_bus.registers.read') }}';
+        let slavers_create_url = "{{ route('mod_bus.slavers.create') }}";
+        let read_polling_registers_url = "{{ route('ajax.mod_bus.slavers.read_polling_registers') }}";
         let id = '{{ $slaver->id }}';
         let wbLedModeRegisterId = '{{ $wbLedModeRegisterId }}';
 
@@ -101,6 +103,23 @@
                 speed: 100,
                 repeat: Infinity,
             });
+
+            if (document.referrer == slavers_create_url) {
+                $('#load_modal_body').text('Добавление modbus устройства');
+                $('#load_init_btn').click();
+
+                $.ajax({
+                    url: read_polling_registers_url,
+                    data: { '_token': _token, 'id': id },
+                    success: function (data) {
+                        $('#dismiss_load_modal').click();
+                    },
+                    error: function () {
+                        $('#dismiss_load_modal').click();
+                        showErrorModal('Сервер временно недоступен');
+                    }
+                });
+            }
 
             $('#networkAssemblyBtn').click(function() {
                 $('#modal_network_assembly_init_btn').click();
