@@ -2,19 +2,26 @@
 
 namespace App\Services\Modbus;
 
-use App\Models\DaliDevice;
-use App\Models\HomeObject;
-use App\Models\LedTape;
-use App\Models\ModbusSlaver;
-use App\Models\ObjType;
 use App\Models\Script;
 use App\Models\Method;
+use App\Models\LedTape;
+use App\Models\ObjType;
+use App\Models\DaliDevice;
+use App\Models\HomeObject;
+use App\Models\ModbusSlaver;
 use App\Models\ModbusRegister;
-use Database\Seeders\ScriptsTableSeeder;
+use App\Models\ConditionerType;
 use Illuminate\Support\Facades\DB;
+use App\Services\ConditionerService;
+use Database\Seeders\ScriptsTableSeeder;
 
 class SlaverService
 {
+    public function __construct(
+        private ConditionerService $conditionerService
+    ) {
+    }
+
     /**
      * Создание устройства
      */
@@ -64,6 +71,16 @@ class SlaverService
                         }
                     }
                     break;
+            }
+
+            if (
+                in_array($slaver->relatedType->type, ModbusSlaver::getTypesForConditioners()) &&
+                ConditionerType::where('device', $slaver->relatedType->type)->exists()
+            ) {
+                $this->conditionerService->store([
+                    'name' => 'Кондиционер устройства - ' . $slaver->name,
+                    'modbus_slaver_id' => $slaver->id,
+                ]);
             }
         }
 
