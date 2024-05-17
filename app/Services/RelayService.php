@@ -123,11 +123,6 @@ class RelayService
                         }
                     break;
                 case HomeObject::GATEWAY_HTTP:
-                    $port = Port::find($data['port_id']);
-
-                    $this->relayObjectService
-                        ->updateRelayObjectMethods($relay->object->id, $data['gateway_id'], $port);
-
                     Port::where('object', $relay->object->id)
                         ->update([
                             'object' => null,
@@ -135,6 +130,11 @@ class RelayService
                             'status' => 'OUT',
                             'comment' => '',
                         ]);
+
+                    $port = Port::find($data['port_id']);
+
+                    $this->relayObjectService
+                        ->updateRelayObjectMethods($relay->object->id, $data['gateway_id'], $port);
 
                     $port->update([
                         'object' => $relay->object->id,

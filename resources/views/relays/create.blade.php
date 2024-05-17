@@ -35,15 +35,15 @@
                         {{ Form::bs_radio('gateway_type', 'Тип подключения*:', $gatewayTypes, old('gateway_type', 'modbus'), ['required' => true]) }}
 
                         <div id='http_div' hidden>
-                            {{ Form::bs_autoselect('http_gateway_id', 'Контроллер*:', $devices, old('http_gateway_id'), false, false, ['required' => true], null, null, 3, false, true) }}
+                            {{ Form::bs_autoselect('http_gateway_id', 'Контроллер*:', $devices, old('http_gateway_id'), false, false, [], null, null, 3, false, true) }}
 
-                            {{ Form::bs_autoselect('port_id', 'Порт*:', [], old('port_id'), false, false, ['required' => true], null, null, 3, false, true) }}
+                            {{ Form::bs_autoselect('port_id', 'Порт*:', [], old('port_id'), false, false, [], null, null, 3, false, true) }}
                         </div>
 
                         <div id='modbus_div' hidden>
-                            {{ Form::bs_autoselect('modbus_gateway_id', 'Устройство*:', $modbusSlavers, old('modbus_gateway_id'), false, false, ['required' => true], null, null, 3, false, true) }}
+                            {{ Form::bs_autoselect('modbus_gateway_id', 'Устройство*:', $modbusSlavers, old('modbus_gateway_id'), false, false, [], null, null, 3, false, true) }}
 
-                            {{ Form::bs_autoselect('register_id', 'Регистр*:', [], old('register_id'), false, false, ['required' => true], null, null, 3, false, true) }}
+                            {{ Form::bs_autoselect('register_id', 'Регистр*:', [], old('register_id'), false, false, [], null, null, 3, false, true) }}
                         </div>
                     </div>
                     {{ Form::bs_submit_btn() }}
@@ -96,12 +96,24 @@
             $('#modbus_div').attr("hidden", true);
             $('#auto_sel_modbus_gateway_id').attr("disabled", true);
             $('#auto_sel_register_id').attr("disabled", true);
+
+            if ($("#auto_sel_http_gateway_id").chosen().val()) {
+                let device_id = $("#auto_sel_http_gateway_id").chosen().val();
+                $.ajax({
+                    url: url_ports,
+                    data: {'_token': _token, 'device_id': device_id, 'status': 'out', 'type': 'switch, socket'},
+                    success: function (data) {
+                        createPortSelect('#auto_sel_port_id', data.ports, -1);
+                        $('#auto_sel_port_id').trigger("chosen:updated");
+                    }
+                });
+            }
         }
 
         function createRegisterSelect(target, options, selected) {
             let sel = $(target);
             sel.html('');
-            let s = '';
+            let s = '<option value="">Не выбрано</option>';
 
             $.each(options, function(key, value) {
                 if (selected == key)
@@ -109,6 +121,19 @@
                 else
                     s += '<option value="' + key + '">' + value + '</option>';
             });
+            sel.append(s);
+        }
+
+        function createPortSelect(target, options, selected) {
+            let sel = $(target);
+            sel.html('');
+            let s = '<option value="">Не выбрано</option>';
+            for (let i = 0; i < options.length; i++) {
+                if (selected == options[i].id)
+                    s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
+                else
+                    s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
+            }
             sel.append(s);
         }
 
@@ -186,19 +211,6 @@
                     }
                 });
             });
-
-            function createPortSelect(target, options, selected) {
-                let sel = $(target);
-                sel.html('');
-                let s = '';
-                for (let i = 0; i < options.length; i++) {
-                    if (selected == options[i].id)
-                        s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
-                    else
-                        s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
-                }
-                sel.append(s);
-            }
         });
     </script>
 @endsection

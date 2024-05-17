@@ -144,6 +144,14 @@ class LampService
                     }
                     break;
                 case HomeObject::GATEWAY_HTTP:
+                    Port::where('object', $lamp->object->id)
+                        ->update([
+                            'object' => null,
+                            'method' => null,
+                            'status' => 'OUT',
+                            'comment' => '',
+                        ]);
+
                     $port = Port::find($data['port_id']);
 
                     if (array_key_exists('is_dimmer', $data)) {
@@ -160,14 +168,6 @@ class LampService
                         $this->lampObjectService
                             ->updateAllLampMethods($lamp->object->id, $data['gateway_id'], $port);
                     }
-
-                    Port::where('object', $lamp->object->id)
-                        ->update([
-                            'object' => null,
-                            'method' => null,
-                            'status' => 'OUT',
-                            'comment' => '',
-                        ]);
 
                     $port->update([
                         'object' => $lamp->object->id,
