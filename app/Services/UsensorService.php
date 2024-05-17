@@ -100,6 +100,9 @@ class UsensorService
             if ($usensor->sensors()->isNotEmpty()) {
                 foreach ($usensor->sensors() as $sensor) {
                     if ($sensor->is_system) {
+                        if ($sensor->id_object) {
+                            $sensor->iobject->delete();
+                        }
                         $sensor->delete();
                     }
                 }
