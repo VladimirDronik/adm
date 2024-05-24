@@ -100,4 +100,135 @@ class ConditionerService
 
         return true;
     }
+
+    /**
+     * Запуск скрипта смены состояния кондиционера
+     *
+     * @param int $condObjId
+     * @param string $newStatus Доступные значения 'on' или 'off'
+     * @return array
+     */
+    public function setStatus(int $condObjId, string $newStatus): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        $scripts = [
+            'on' => 'ac_on.php',
+            'off' => 'ac_off.php',
+        ];
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php ' . $scripts[$newStatus] . ' ' . $condObjId, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
+
+    /**
+     * Запуск скрипта установки температуры кондиционера
+     *
+     * @param int $condObjId
+     * @param int $newTemp
+     * @return array
+     */
+    public function setTemp(int $condObjId, int $newTemp): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php ac_set_temperature.php ' . $condObjId . ' ' . $newTemp, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
+
+    /**
+     * Запуск скрипта установки режима работы кондиционера
+     *
+     * @param int $condObjId
+     * @param string $newMode
+     * @return array
+     */
+    public function setMode(int $condObjId, string $newMode): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php ac_set_mode.php ' . $condObjId . ' ' . $newMode, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
+
+    /**
+     * Запуск скрипта установки скорости вентилятора кондиционера
+     *
+     * @param int $condObjId
+     * @param string $newFan
+     * @return array
+     */
+    public function setFan(int $condObjId, string $newFan): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php ac_set_fan.php ' . $condObjId . ' ' . $newFan, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
+
+    /**
+     * Запуск скрипта установки вертикального направления воздуха кондиционера
+     *
+     * @param int $condObjId
+     * @param string $newVdir
+     * @return array
+     */
+    public function setVdir(int $condObjId, string $newVdir): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php ac_set_vdir.php ' . $condObjId . ' ' . $newVdir, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
+
+    /**
+     * Запуск скрипта установки горизонтального направления воздуха кондиционера
+     *
+     * @param int $condObjId
+     * @param string $newHdir
+     * @return array
+     */
+    public function setHdir(int $condObjId, string $newHdir): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php ac_set_hdir.php ' . $condObjId . ' ' . $newHdir, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
 }

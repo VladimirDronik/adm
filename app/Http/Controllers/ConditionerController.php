@@ -31,10 +31,42 @@ class ConditionerController extends Controller
     public function edit($id)
     {
         $conditioner = Conditioner::findOrFail($id);
+        $conditionerType = $conditioner->relatedType;
+
         $modbusSlavers = $this->modbusRep->getFilteredSlaversToArray(['ac']);
         $rooms = $this->roomRep->getAllWithoutCommonToArray();
+        $tab = request()->input('tab') ?? 'main';
 
-        return view('conditioners.edit', compact('conditioner', 'rooms', 'modbusSlavers'));
+        $tempSettings = json_decode($conditionerType->temperature, true);
+        $modeSettings = [];
+        $fanSettings = [];
+        $vdirSettings = [];
+        $hdirSettings = [];
+
+        foreach (json_decode($conditionerType->mode, true) as $key => $value) {
+            $modeSettings[$key] = $key;
+        }
+
+        foreach (json_decode($conditionerType->fan, true) as $key => $value) {
+            $fanSettings[$key] = $key;
+        }
+
+        if ($conditionerType->vdir) {
+            foreach (json_decode($conditionerType->vdir, true) as $key => $value) {
+                $vdirSettings[$key] = $key;
+            }
+        }
+
+        if ($conditionerType->hdir) {
+            foreach (json_decode($conditionerType->hdir, true) as $key => $value) {
+                $hdirSettings[$key] = $key;
+            }
+        }
+
+        return view('conditioners.edit', compact(
+            'conditioner', 'rooms', 'modbusSlavers', 'tab', 'tempSettings',
+            'modeSettings', 'fanSettings', 'vdirSettings', 'hdirSettings',
+        ));
     }
 
     public function create()
