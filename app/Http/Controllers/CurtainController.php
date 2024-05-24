@@ -29,9 +29,10 @@ class CurtainController extends Controller
         return view('curtains.index', compact('curtains'));
     }
 
-    public function edit(Curtain $curtain, $tab = 1)
+    public function edit(Curtain $curtain)
     {
         $can = gates('devices.show-object');
+        $tab = request()->input('tab') ?? 1;
         $ports = [];
         $idDevice = null;
 

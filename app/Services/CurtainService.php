@@ -209,4 +209,51 @@ class CurtainService
 
         return true;
     }
+
+    /**
+     * Запуск скрипта открытия/закрытия шторы
+     *
+     * @param int $curtainObjId
+     * @param string $newState Доступные значения 'open' или 'close'
+     * @return array
+     */
+    public function setStatus(int $curtainObjId, string $newStatus): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        $scripts = [
+            'open' => 'curtain_open.php',
+            'close' => 'curtain_close.php',
+        ];
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php ' . $scripts[$newStatus] . ' ' . $curtainObjId, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
+
+    /**
+     * Запуск скрипта установки процента открытия шторы
+     *
+     * @param int $curtainObjId
+     * @param int $newPercent
+     * @return array
+     */
+    public function setPercent(int $curtainObjId, int $newPercent): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php curtain_set_percent.php ' . $curtainObjId . ' ' . $newPercent, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
 }

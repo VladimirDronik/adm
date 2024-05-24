@@ -184,8 +184,15 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('carbmonoxide/delete', 'CarbmonoxideController@delete')->name('carbmonoxide.delete');
         Route::post('virtuals/delete', 'VirtualsController@delete')->name('virtuals.delete');
         Route::post('engineering/delete', 'EngineeringController@delete')->name('engineering.delete');
-        Route::post('curtains/delete', 'CurtainsController@delete')->name('curtains.delete');
         Route::post('locks/delete', 'LockController@delete')->name('locks.delete');
+
+        Route::group(['prefix' => 'curtains', 'as' => 'curtains.'], function () {
+            Route::post('delete', 'CurtainsController@delete')->name('delete');
+            Route::group(['prefix' => 'set', 'as' => 'set.'], function () {
+                Route::post('status', 'CurtainsController@setStatus')->name('status');
+                Route::post('percent', 'CurtainsController@setPercent')->name('percent');
+            });
+        });
 
         Route::group(['prefix' => 'yandexstations', 'as' => 'yandexstations.'], function () {
             Route::post('delete', 'YandexStationController@delete')->name('delete');
