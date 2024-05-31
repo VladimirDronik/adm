@@ -20,7 +20,6 @@
                                     <th>Тип</th>
                                     <th>Устройство</th>
                                     <th>Размещение</th>
-                                    <th>Доступность</th>
                                     <th></th>
                                     <th></th>
                                 </tr>
@@ -33,13 +32,6 @@
                                         <td>{{ $conditioner->relatedType->name }}</td>
                                         <td>{{ $conditioner->modbusSlaver->name }}</td>
                                         <td>{{ $conditioner->room?->name }}</td>
-                                        <td>
-                                            @if($conditioner->object->status == 'on')
-                                                <span class="badge badge-success">Активно</span>
-                                            @else
-                                                <span class="badge badge-danger">Недоступно</span>
-                                            @endif
-                                        </td>
                                         <td class="text-center">
                                             <a href="{{ route('conditioners.edit',[$conditioner->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>
@@ -61,7 +53,6 @@
                                         <th>Тип</th>
                                         <th>Устройство</th>
                                         <th>Размещение</th>
-                                        <th>Доступность</th>
                                         <th></th>
                                         <th></th>
                                     </tr>
