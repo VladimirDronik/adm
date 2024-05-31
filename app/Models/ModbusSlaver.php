@@ -39,6 +39,11 @@ class ModbusSlaver extends Model
         return $this->hasMany(LedTape::class, 'controller_id', 'id');
     }
 
+    public function conditioners(): HasMany
+    {
+        return $this->hasMany(Conditioner::class, 'modbus_slaver_id', 'id');
+    }
+
     public static function getWbLedOperModes(): array
     {
         return [

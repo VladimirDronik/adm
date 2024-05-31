@@ -146,6 +146,12 @@ class SlaverService
                     break;
             }
 
+            if ($modbusSlaver->relatedType->purpose == 'ac') {
+                foreach ($modbusSlaver->conditioners as $conditioner) {
+                    $conditioner->object->delete();
+                }
+            }
+
             $modbusSlaver->delete();
         });
 
