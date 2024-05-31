@@ -10,11 +10,18 @@ use App\Models\DaliDevice;
 use App\Models\HomeObject;
 use App\Models\ModbusSlaver;
 use App\Models\ModbusRegister;
+use App\Models\ConditionerType;
 use Illuminate\Support\Facades\DB;
+use App\Services\ConditionerService;
 use Database\Seeders\ScriptsTableSeeder;
 
 class SlaverService
 {
+    public function __construct(
+        private ConditionerService $conditionerService
+    ) {
+    }
+
     /**
      * Создание устройства
      */
@@ -64,6 +71,13 @@ class SlaverService
                         }
                     }
                     break;
+            }
+
+            if ($slaver->relatedType->purpose == 'ac' && ConditionerType::where('device', $slaver->relatedType->type)->exists()) {
+                $this->conditionerService->store([
+                    'name' => 'Кондиционер устройства - ' . $slaver->name,
+                    'modbus_slaver_id' => $slaver->id,
+                ]);
             }
         }
 

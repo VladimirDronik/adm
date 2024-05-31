@@ -14,63 +14,50 @@
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
-                            <tr>
-                                <th style="width: 60px;">ID</th>
-                                <th>Размещение</th>
-                                <th>Производитель</th>
-                                <th>Модель</th>
-                                <th>Доступность</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
+                                <tr>
+                                    <th style="width: 60px;">ID</th>
+                                    <th>Название</th>
+                                    <th>Тип</th>
+                                    <th>Устройство</th>
+                                    <th>Размещение</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
                             </thead>
                             <tbody>
-                            @foreach($conditioners as $conditioner)
-                                <tr id="tr{{$conditioner->id}}">
-                                    <td scope="row">{{ $conditioner->id }}</td>
-                                    <td> {{ $conditioner->room->name }} </td>
-                                    <td>
-                                        {{ $conditioner->conditionerModel->conditionerVendor->name }}</a>
-                                    </td>
-                                    <td>
-                                        {{ $conditioner->conditionerModel->name }}
-                                    </td>
-
-                                    <td>
-                                        @if( $conditioner->status  === '1')
-                                            <span class="badge badge-success">Активно</span>
-                                        @else
-                                            <span class="badge badge-danger">Недоступно</span>
-                                        @endif
-                                    </td>
-
-                                    <td class="text-center">
-                                        <a href="{{ route('conditioners.edit',[$conditioner->id]) }}"
-                                           class="btn btn-info btn-sm btn-rounded">
-                                            <i class="fa fa-cog fa-lg"></i>
-                                        </a>
-                                    </td>
-                                    <td class="text-center">
-                                        <button type="button"
-                                                class="btn btn-danger btn-sm btn-rounded m-b-10 m-l-5 del_btn"
-                                                data-id="{{ $conditioner->id }}">
-                                            <i class="fa fa-trash fa-lg"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endforeach
+                                @foreach($conditioners as $conditioner)
+                                    <tr id="tr{{$conditioner->id}}">
+                                        <td scope="row">{{ $conditioner->id }}</td>
+                                        <td>{{ $conditioner->name }}</td>
+                                        <td>{{ $conditioner->relatedType->name }}</td>
+                                        <td>{{ $conditioner->modbusSlaver->name }}</td>
+                                        <td>{{ $conditioner->room?->name }}</td>
+                                        <td class="text-center">
+                                            <a href="{{ route('conditioners.edit',[$conditioner->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                                <i class="fa fa-cog fa-lg"></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-danger btn-sm btn-rounded m-b-10 m-l-5 del_btn" data-id="{{ $conditioner->id }}">
+                                                <i class="fa fa-trash fa-lg"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
-                            <tfoot>
-                            <tr>
-                                <th style="width: 60px;">ID</th>
-                                <th>Размещение</th>
-                                <th>Производитель</th>
-                                <th>Модель</th>
-                                <th>Доступность</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                            </tfoot>
+                            @if(count($conditioners) > 10)
+                                <tfoot>
+                                    <tr>
+                                        <th style="width: 60px;">ID</th>
+                                        <th>Название</th>
+                                        <th>Тип</th>
+                                        <th>Устройство</th>
+                                        <th>Размещение</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            @endif
                         </table>
                     </div>
                     {{ $conditioners->appends(request()->input())->links() }}
@@ -96,7 +83,8 @@
                 $('#del_modal_body').text('Удалить кондиционер № ' + $(this).data('id') + ' ?');
                 $('#del_init_btn').click();
             });
-            $('#del_modal_btn').click(function(){
+
+            $('#del_modal_btn').click(function() {
                 if (del_id) {
                     $.ajax({
                         url: deleteUrl,

@@ -45,7 +45,67 @@ class ModbusSlaversTypesSeeder extends Seeder
                 'name' => 'Ecodim DALI GW2',
                 'purpose' => 'light',
                 'relay' => 1,
-            ]
+            ],
+            [
+                'type' => 'onokom-gr-1-mb-b',
+                'name' => 'ONOKOM GR-1-MB-B',
+                'purpose' => 'ac',
+                'relay' => 0,
+            ],
+            [
+                'type' => 'onokom-gr-3-mb-b',
+                'name' => 'ONOKOM GR-3-MB-B',
+                'purpose' => 'ac',
+                'relay' => 0,
+            ],
+            [
+                'type' => 'onokom-tcl-1-mb-b',
+                'name' => 'ONOKOM TCL-1-MB-B',
+                'purpose' => 'ac',
+                'relay' => 0,
+            ],
+            [
+                'type' => 'onokom-dk-1-mb-b',
+                'name' => 'ONOKOM DK-1-MB-B',
+                'purpose' => 'ac',
+                'relay' => 0,
+            ],
+            [
+                'type' => 'onokom-aux-1-mb-b',
+                'name' => 'ONOKOM AUX-1-MB-B',
+                'purpose' => 'ac',
+                'relay' => 0,
+            ],
+            [
+                'type' => 'onokom-me-1-mb-b',
+                'name' => 'ONOKOM ME-1-MB-B',
+                'purpose' => 'ac',
+                'relay' => 0,
+            ],
+            [
+                'type' => 'onokom-hs-3-mb-b',
+                'name' => 'ONOKOM HS-3-MB-B',
+                'purpose' => 'ac',
+                'relay' => 0,
+            ],
+            [
+                'type' => 'onokom-hr-1-mb-b',
+                'name' => 'ONOKOM HR-1-MB-B',
+                'purpose' => 'ac',
+                'relay' => 0,
+            ],
+            [
+                'type' => 'onokom-hs-6-mb-b',
+                'name' => 'ONOKOM HS-6-MB-B',
+                'purpose' => 'ac',
+                'relay' => 0,
+            ],
+            [
+                'type' => 'onokom-mh-8-mb-b',
+                'name' => 'ONOKOM MH-8-MB-B',
+                'purpose' => 'ac',
+                'relay' => 0,
+            ],
         ];
     }
 

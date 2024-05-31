@@ -25,5 +25,6 @@ class DatabaseSeeder extends Seeder
         //$this->call(PagesTableSeeder::class); //убрано создание дефолтных страниц
         //$this->call(ElementsTableSeeder::class);
         $this->call(ModbusSlaversTypesSeeder::class);
+        $this->call(ConditionerTypeSeeder::class);
     }
 }
