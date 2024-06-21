@@ -8,4 +8,9 @@
         </div>
         <button type="button" class="btn btn-success m-b-10 m-l-5" id="setPercentBtn">Задать</button>
     </div>
+
+    <div class="form-group row">
+        <label class="control-label text-right col-md-5 label-fix"></label>
+        <button type="button" class="btn btn-danger m-b-10 m-l-5" id="stopBtn">Стоп</button>
+    </div>
 @endif

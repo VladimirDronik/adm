@@ -257,4 +257,24 @@ class CurtainService
             'output' => $output,
         ];
     }
+
+    /**
+     * Запуск скрипта для остановки шторы
+     *
+     * @param int $curtainObjId
+     * @return array
+     */
+    public function stop(int $curtainObjId): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php curtain_stop.php ' . $curtainObjId, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
 }

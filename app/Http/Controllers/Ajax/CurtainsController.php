@@ -48,4 +48,16 @@ class CurtainsController extends Controller
             'response' => array_key_exists(0, $data['output']) ? $data['output'][0] : null,
         ]);
     }
+
+    public function stop(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id_object']), 400);
+
+        $data = $this->service->stop((int)$r->id_object);
+
+        return response()->json([
+            'result' => $data['code'] === 0,
+            'response' => array_key_exists(0, $data['output']) ? $data['output'][0] : null,
+        ]);
+    }
 }

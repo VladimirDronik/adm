@@ -129,6 +129,7 @@
         const is_super_admin = {{ user()->is_super_admin ? 1 : 0 }};
         const set_status_url = "{{ route('ajax.curtains.set.status') }}";
         const set_percent_url = "{{ route('ajax.curtains.set.percent') }}";
+        const stop_url = "{{ route('ajax.curtains.stop') }}";
         const id_object = '{{ $curtain->id_object }}';
         let del_id;
         $(document).ready(function () {
@@ -228,6 +229,16 @@
                     },
                 });
             }
+        });
+
+        $('#stopBtn').click(function() {
+            $.ajax({
+                url: stop_url,
+                data: {
+                    '_token': _token,
+                    'id_object': id_object
+                },
+            });
         });
     </script>
 @endsection

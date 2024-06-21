@@ -190,6 +190,7 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'curtains', 'as' => 'curtains.'], function () {
             Route::post('delete', 'CurtainsController@delete')->name('delete');
+            Route::post('stop', 'CurtainsController@stop')->name('stop');
             Route::group(['prefix' => 'set', 'as' => 'set.'], function () {
                 Route::post('status', 'CurtainsController@setStatus')->name('status');
                 Route::post('percent', 'CurtainsController@setPercent')->name('percent');
