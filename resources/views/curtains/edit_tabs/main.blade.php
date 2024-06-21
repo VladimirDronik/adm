@@ -24,6 +24,8 @@
 
         {{ Form::bs_text('address', 'Адрес:', old('address', $curtain->address), [], 'От 0 до 255') }}
         {{ Form::bs_text('group', 'Группа:', old('group', $curtain->group), [], 'От 0 до 255') }}
+
+        {{ Form::bs_checkbox('is_inverse', 'Инвертировать проценты:', old('is_inverse', $curtain->is_inverse)) }}
     @endif
     <input type="hidden" name="place" value="{{ $curtain->place }}">
 

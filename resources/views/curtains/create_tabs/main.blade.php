@@ -24,6 +24,8 @@
             {{ Form::bs_text('address', 'Адрес:', old('address'), [], 'От 0 до 255') }}
 
             {{ Form::bs_text('group', 'Группа:', old('group'), [], 'От 0 до 255') }}
+
+            {{ Form::bs_checkbox('is_inverse', 'Инвертировать проценты:', old('is_inverse')) }}
         </div>
 
         <div id='phase_time_div' hidden>

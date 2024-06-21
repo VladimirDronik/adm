@@ -34,6 +34,7 @@ class CurtainService
             $curtain->address = $data['address'];
             $curtain->group = $data['group'];
             $curtain->bus_id = $data['bus_id'];
+            $curtain->is_inverse = array_key_exists('is_inverse', $data);
         }
 
         $curtain->place = $data['place'];

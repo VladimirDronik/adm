@@ -49,6 +49,7 @@ function portFields() {
     $('#curtain_form input[name=group]').attr("disabled", true);
     $('#curtain_form input[name=time]').attr("disabled", true);
     $('#curtain_form input[name=type]').attr("disabled", true);
+    $('#curtain_form input[name=is_inverse]').attr("disabled", true);
 }
 
 function phaseFields() {
@@ -66,6 +67,7 @@ function phaseFields() {
     $('#curtain_form input[name=address]').attr("disabled", true);
     $('#curtain_form input[name=group]').attr("disabled", true);
     $('#curtain_form input[name=type]').attr("disabled", true);
+    $('#curtain_form input[name=is_inverse]').attr("disabled", true);
 }
 
 function rs485Fields() {
@@ -74,6 +76,7 @@ function rs485Fields() {
     $('#curtain_form input[name=address]').removeAttr("disabled");
     $('#curtain_form input[name=group]').removeAttr("disabled");
     $('#curtain_form input[name=type]').removeAttr("disabled");
+    $('#curtain_form input[name=is_inverse]').removeAttr("disabled");
 
     $('#port_id_div').attr("hidden", true);
     $('#phase_time_div').attr("hidden", true);
