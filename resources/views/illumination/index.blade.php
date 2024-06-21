@@ -43,10 +43,12 @@
                                         <td>
                                             {{ $illumination->object ? $illumination->object->type : '' }}
                                         </td>
-                                        <td>
-                                            {{ $illumination->name }}
-                                        </td>
                                         @if($illumination instanceof \App\Models\Lamp)
+                                            <td>
+                                                <a href="{{ route('lamps.edit', [$illumination->id]) }}">
+                                                    {{ $illumination->name }}
+                                                </a>
+                                            </td>
                                             <td>
                                                 {{ $illumination->gateway_name }}
                                             </td>
@@ -65,6 +67,11 @@
                                                 </a>
                                             </td>
                                         @elseif($illumination instanceof \App\Models\LedTape)
+                                            <td>
+                                                <a href="{{ route('led_tapes.edit', [$illumination->id]) }}">
+                                                    {{ $illumination->name }}
+                                                </a>
+                                            </td>
                                             <td>
                                                 {{ $illumination->modbusSlaver?->name }}
                                             </td>
@@ -88,6 +95,11 @@
                                                 </a>
                                             </td>
                                         @elseif($illumination instanceof \App\Models\DaliDevice)
+                                            <td>
+                                                <a href="{{ route('mod_bus.dali_devices.edit', [$illumination->id]) }}">
+                                                    {{ $illumination->name }}
+                                                </a>
+                                            </td>
                                             <td>
                                                 {{ $illumination->modbusSlaver->name . ' (' . $illumination->address . ')' }}
                                             </td>
