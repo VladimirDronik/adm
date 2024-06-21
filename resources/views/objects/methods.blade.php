@@ -59,7 +59,7 @@
                 </label>
                 @if($method->comment)
                     <div class="col-md-1" id="comment{{$method->id}}">
-                        <img src="{{ asset('ela/images/info.png') }}" width="23" height="23" title="{{ $method->comment }}"></img>
+                        <img id="commentI{{$method->id}}" src="{{ asset('ela/images/info.png') }}" width="23" height="23" title="{{ $method->comment }}"></img>
                     </div>
                 @endif
                 <div class="col-md-3" id="easy{{$method->id}}">
