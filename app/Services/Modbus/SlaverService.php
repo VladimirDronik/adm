@@ -72,13 +72,6 @@ class SlaverService
                     }
                     break;
             }
-
-            if ($slaver->relatedType->purpose == 'ac' && ConditionerType::where('device', $slaver->relatedType->type)->exists()) {
-                $this->conditionerService->store([
-                    'name' => 'Кондиционер устройства - ' . $slaver->name,
-                    'modbus_slaver_id' => $slaver->id,
-                ]);
-            }
         }
 
         return $slaver->id;
@@ -605,6 +598,13 @@ class SlaverService
             }
         } else {
             exec('php modbus_check_availability.php ' . $slaver->id);
+        }
+
+        if ($slaver->relatedType->purpose == 'ac' && ConditionerType::where('device', $slaver->relatedType->type)->exists()) {
+            $this->conditionerService->store([
+                'name' => 'Кондиционер устройства - ' . $slaver->name,
+                'modbus_slaver_id' => $slaver->id,
+            ]);
         }
 
         return true;
