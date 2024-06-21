@@ -3,12 +3,17 @@
 namespace App\Services;
 
 use Exception;
+use App\Models\Method;
+use App\Models\Script;
 use App\Models\ObjType;
 use App\Models\HomeObject;
 use App\Models\Conditioner;
 use App\Models\ModbusSlaver;
+use App\Models\SchedulerTask;
+use App\Models\SchedulerPoint;
 use App\Models\ConditionerType;
 use Illuminate\Support\Facades\DB;
+use Database\Seeders\ScriptsTableSeeder;
 use App\Repositories\ConditionerRepository;
 
 class ConditionerService
@@ -60,6 +65,8 @@ class ConditionerService
             $object->status = 'off';
             $object->is_system = 1;
             $object->save();
+
+            $this->createCheckMethodWithEvent($object->id);
 
             $conditioner->id_object = $object->id;
             $conditioner->save();
@@ -230,5 +237,44 @@ class ConditionerService
             'code' => $resultCode,
             'output' => $output,
         ];
+    }
+
+    /**
+     * Создание метода 'Опрос кондиционера' и элемента планировщика 'Опрос кондиционера' (каждую 1 мин)
+     */
+    private function createCheckMethodWithEvent(int $objectId): void
+    {
+        $script = Script::where('link', 'ac_polling.php')
+            ->where('system', 1)
+            ->first();
+
+        if (!$script) {
+            $script = Script::create(ScriptsTableSeeder::getCheckConditionerScript());
+        }
+
+        $method = Method::create([
+            'name' => 'Опрос кондиционера',
+            'id_object' => $objectId,
+            'comment' => 'Периодический опрос кондиционера',
+            'is_system' => 1,
+            'script' => $script->id,
+        ]);
+
+        $schedulerTask = SchedulerTask::create([
+            'name' => 'Опрос кондиционера',
+            'is_system' => 1,
+            'is_hidden' => 1,
+            'object' => $objectId,
+            'method' => $method->id,
+        ]);
+
+        SchedulerPoint::create([
+            'id_task' => $schedulerTask->id,
+            'type' => 'c',
+            'time' => '1',
+            'days' => '',
+            'close' => 1,
+            'system' => 1,
+        ]);
     }
 }

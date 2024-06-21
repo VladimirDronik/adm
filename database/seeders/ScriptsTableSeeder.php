@@ -54,6 +54,16 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
+    public static function getCheckConditionerScript(): array
+    {
+        return [
+            'name' => 'Опрос кондиционера',
+            'link' => 'ac_polling.php',
+            'count' => 0,
+            'system' => 1,
+        ];
+    }
+
     public static function getCheckHygrostatScript(): array
     {
         return [
@@ -373,6 +383,7 @@ class ScriptsTableSeeder extends Seeder
         $scripts[] = self::getCheckCountScript();
         $scripts[] = self::getResetCountScript();
         $scripts[] = self::getCheckTermostatScript();
+        $scripts[] = self::getCheckConditionerScript();
         $scripts[] = self::getCheckUsensorScript();
         $scripts[] = self::getDrycontactsScript();
         $scripts[] = self::getMotionsensorScript();
