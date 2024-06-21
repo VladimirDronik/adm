@@ -49,7 +49,7 @@
                                     </p>
                                 </div>
                             @else
-                                <a href="{{ route('cameras.get_stream', ['camera' => $camera->id]) }}" target="_blank"><img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" style="max-width: 126px; max-height: 80px;" loading="lazy"></img></a>
+                                <a href="{{ route('cameras.get_stream', ['camera' => $camera->id]) }}" target="_blank"><img src="{{ asset($camera->image) }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" style="max-width: 126px; max-height: 80px;" loading="lazy"></img></a>
                             @endif
                         </div>
 

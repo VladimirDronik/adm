@@ -37,7 +37,7 @@
                         @if($camera->type == \App\Models\Camera::TYPE_DIRECT_LINK)
                             <a href="{{ $camera->link }}" target="_blank"><img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" width="120" height="80" loading="lazy"></img></a>
                         @else
-                            <a href="{{ route('cameras.get_stream', ['camera' => $camera->id]) }}" target="_blank"><img src="{{ $camera->image }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" width="120" height="80" loading="lazy"></img></a>
+                            <a href="{{ route('cameras.get_stream', ['camera' => $camera->id]) }}" target="_blank"><img src="{{ asset($camera->image) }}" onerror="this.src='{{ asset('ela/images/no-cam-image.jpg') }}'" width="120" height="80" loading="lazy"></img></a>
                         @endif
                     </td>
                     <td scope="row" align="center">
