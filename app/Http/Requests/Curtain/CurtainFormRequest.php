@@ -38,6 +38,7 @@ class CurtainFormRequest extends FormRequest
                 $rules['time'] = 'required|integer';
             }
         } else {
+            $rules['type'] = 'required|string';
             $rules['bus_id'] = 'required|integer';
             $rules['address'] = 'required|integer|between:0,255';
             $rules['group'] = 'required|integer|between:0,255';

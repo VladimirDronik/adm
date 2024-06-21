@@ -35,9 +35,8 @@
                             <thead>
                             <tr>
                                 <th style="width: 60px;">ID</th>
-                                <th>Тип</th>
-                                <th>Тип управления</th>
                                 <th>Название</th>
+                                <th>Тип управления</th>
                                 <th>Статус</th>
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>
@@ -48,12 +47,11 @@
                                 <tr id="tr{{$curtain->id}}">
                                     <td scope="row">{{ $curtain->object['id'] }}</td>
                                     <td>
-                                        {{ $curtain->rus_type }}
+                                        <a href="{{ route('curtains.edit', [$curtain->id]) }}">{{ $curtain->name }}</a>
                                     </td>
                                     <td>
                                         {{ $curtain->rus_place }}
                                     </td>
-                                    <td><a href="{{ route('curtains.edit', [$curtain->id]) }}">{{ $curtain->name }}</a></td>
                                     <td>
                                         @if($curtain->place == \App\Models\Curtain::PLACE_RS485)
                                             @if($curtain->active == 1)
@@ -80,9 +78,8 @@
                             <tfoot>
                             <tr>
                                 <th style="width: 60px;">ID</th>
-                                <th>Тип</th>
-                                <th>Тип управления</th>
                                 <th>Название</th>
+                                <th>Тип управления</th>
                                 <th>Статус</th>
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>

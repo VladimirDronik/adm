@@ -28,13 +28,7 @@ class Curtain extends Model
 {
     const TYPE_CURTAIN = 'curtain';
 
-    const TYPE_ROMAN = 'roman';
-
     const TYPE_ROLLER = 'roller';
-
-    const TYPE_VERTICAL = 'vertical';
-
-    const TYPE_HORIZONTAL = 'horizontal';
 
     const PLACE_PORT = 'port';
 
@@ -51,11 +45,8 @@ class Curtain extends Model
     public static function getTypes(bool $is_full = false)
     {
         $types = [
-            self::TYPE_CURTAIN => 'Раздвижные шторы',
-            self::TYPE_ROMAN => 'Римская штора',
-            self::TYPE_ROLLER => 'Рулонная штора',
-            self::TYPE_VERTICAL => 'Вертикальные жалюзи',
-            self::TYPE_HORIZONTAL => 'Горизонтальные жалюзи',
+            self::TYPE_CURTAIN => 'Раздвижной',
+            self::TYPE_ROLLER => 'Рулонный',
         ];
 
         return $is_full ? $types : array_keys($types);

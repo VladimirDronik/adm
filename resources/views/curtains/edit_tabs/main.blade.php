@@ -1,6 +1,5 @@
 <br>
 {{ Form::bs_simple_text('ID объекта:', $curtain->id_object) }}
-{{ Form::bs_radio('type', 'Тип:', $types, old('type', $curtain->type), []) }}
 <div class="form-group row">
     <label class="control-label text-right col-md-3 label-fix" for="">Тип управления:</label>
     <div class="col-md-9">
@@ -19,6 +18,8 @@
         {{ Form::bs_autoselect('port_id_open', 'Порт на открытие:', $ports, old('port_id_open', $curtain->port_open), false, false, [], null) }}
         {{ Form::bs_autoselect('port_id_close', 'Порт на закрытие:', $ports, old('port_id_close', $curtain->port_close), false, false, [], null) }}
     @else
+        {{ Form::bs_radio('type', 'Тип привода:', $types, old('type', $curtain->type), []) }}
+
         {{ Form::bs_autoselect('bus_id', 'Шина:', $buses, old('bus_id', $curtain->bus_id), false, false, [], null) }}
 
         {{ Form::bs_text('address', 'Адрес:', old('address', $curtain->address), [], 'От 0 до 255') }}

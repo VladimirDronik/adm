@@ -1,5 +1,4 @@
 <br>
-{{ Form::bs_radio('type', 'Тип:', $types, old('type'), []) }}
 {{ Form::bs_radio('place', 'Тип управления*:', $places, old('place'), ['required' => true]) }}
 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
@@ -9,14 +8,16 @@
             {{ Form::bs_autoselect('device_id', 'Контроллер:', $devices, old('device_id'), false, false, [], null) }}
         </div>
 
-        <div id='bus_id_div' hidden>
-            {{ Form::bs_autoselect('bus_id', 'Шина:', $buses, old('bus_id'), false, false, [], null) }}
-        </div>
-
         <div id='port_id_div' hidden>
             {{ Form::bs_autoselect('port_id_open', 'Порт на открытие:', [], old('port_id_open'), false, false, [], null) }}
 
             {{ Form::bs_autoselect('port_id_close', 'Порт на закрытие:', [], old('port_id_close'), false, false, [], null) }}
+        </div>
+
+        <div id='bus_id_div' hidden>
+            {{ Form::bs_radio('type', 'Тип привода:', $types, old('type'), []) }}
+
+            {{ Form::bs_autoselect('bus_id', 'Шина:', $buses, old('bus_id'), false, false, [], null) }}
         </div>
 
         <div id='rs_485_div' hidden>

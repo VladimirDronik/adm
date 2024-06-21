@@ -24,15 +24,13 @@ class CurtainService
     public function prepare(Curtain $curtain, array $data)
     {
         $curtain->name = trim($data['name']);
-        if (isset($data['type'])) {
-            $curtain->type = $data['type'];
-        }
 
         if ($data['place'] == Curtain::PLACE_PORT || $data['place'] == Curtain::PLACE_PHASE) {
             $curtain->port_open = $data['port_id_open'];
             $curtain->port_close = $data['port_id_close'];
             $curtain->device_id = $data['device_id'];
         } else {
+            $curtain->type = $data['type'];
             $curtain->address = $data['address'];
             $curtain->group = $data['group'];
             $curtain->bus_id = $data['bus_id'];
