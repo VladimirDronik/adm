@@ -33,7 +33,6 @@ class ConditionerController extends Controller
         $conditioner = Conditioner::findOrFail($id);
         $conditionerType = $conditioner->relatedType;
 
-        $modbusSlavers = $this->modbusRep->getFilteredSlaversToArray(['ac']);
         $rooms = $this->roomRep->getAllWithoutCommonToArray();
         $tab = request()->input('tab') ?? 'main';
 
@@ -64,7 +63,7 @@ class ConditionerController extends Controller
         }
 
         return view('conditioners.edit', compact(
-            'conditioner', 'rooms', 'modbusSlavers', 'tab', 'tempSettings',
+            'conditioner', 'rooms', 'tab', 'tempSettings',
             'modeSettings', 'fanSettings', 'vdirSettings', 'hdirSettings',
         ));
     }

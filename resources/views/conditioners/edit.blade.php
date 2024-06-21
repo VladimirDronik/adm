@@ -79,7 +79,6 @@
         const tempMax = "{{ $tempSettings['max'] ?? 30 }}";
 
         $(document).ready(function () {
-            $("#auto_sel_modbus_slaver_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_id_room").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $('#conditioner_form input[name=status]').change(function() {

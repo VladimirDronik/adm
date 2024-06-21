@@ -10,7 +10,6 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'modbus_slaver_id' => 'required|integer|exists:App\Models\ModbusSlaver,id',
             'room_id' => 'nullable|integer|exists:App\Models\Room,id',
         ];
     }
@@ -19,7 +18,6 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name.required' => 'Не указано название',
-            'modbus_slaver_id.required' => 'Не указан модбас шлюз',
         ];
     }
 }

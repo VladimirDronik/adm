@@ -26,8 +26,21 @@ class ConditionerService
     private function prepare(Conditioner $conditioner, array $data): void
     {
         $conditioner->name = trim($data['name']);
-        $conditioner->modbus_slaver_id = $data['modbus_slaver_id'];
         $conditioner->id_room = $data['id_room'] ?? null;
+
+        if (array_key_exists('modbus_slaver_id', $data)) {
+            $conditioner->modbus_slaver_id = $data['modbus_slaver_id'];
+        }
+    }
+
+    /**
+     * Создание кондиционера и объекта кондиционера
+     */
+    public function store(array $data): int
+    {
+        $conditioner = new Conditioner();
+
+        $this->prepare($conditioner, $data);
 
         $modbusSlaver = ModbusSlaver::find($data['modbus_slaver_id']);
         $conditionerType = ConditionerType::where('device', $modbusSlaver->relatedType->type)->first();
@@ -45,16 +58,6 @@ class ConditionerService
         }
 
         $conditioner->type = $conditionerType->id;
-    }
-
-    /**
-     * Создание кондиционера и объекта кондиционера
-     */
-    public function store(array $data): int
-    {
-        $conditioner = new Conditioner();
-
-        $this->prepare($conditioner, $data);
 
         DB::transaction(function () use (&$conditioner) {
             $uniqueName = HomeObject::getUniqueObjectName(0, $conditioner->name);
