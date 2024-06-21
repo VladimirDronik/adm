@@ -62,7 +62,7 @@
                                         @can('devices.show-object')
                                             <td>
                                                 @if($hygrostat->object)
-                                                    <a href="{{ route('objects.edit',[$hygrostat->object]) }}" target="_blank">{{ $hygrostat->eobject?->name }}</a>
+                                                    {{ $hygrostat->eobject?->name }}
                                                 @endif
                                             </td>
                                         @endcan

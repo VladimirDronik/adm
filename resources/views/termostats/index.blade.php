@@ -65,7 +65,7 @@
                                         @can('devices.show-object')
                                             <td>
                                                 @if($termostat->object)
-                                                    <a href="{{ route('objects.edit',[$termostat->object]) }}" target="_blank">{{ optional($termostat->eobject)->name }}</a>
+                                                    {{ $termostat->eobject?->name }}
                                                 @endif
                                             </td>
                                         @endcan

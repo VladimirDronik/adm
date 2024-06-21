@@ -63,7 +63,7 @@
                                         @can('devices.show-object')
                                             <td>
                                                 @if($lightstat->object)
-                                                    <a href="{{ route('objects.edit',[$lightstat->object]) }}" target="_blank">{{ $lightstat->eobject?->name }}</a>
+                                                    {{ $lightstat->eobject?->name }}
                                                 @endif
                                             </td>
                                         @endcan
