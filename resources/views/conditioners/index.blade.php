@@ -27,7 +27,7 @@
                             <tbody>
                                 @foreach($conditioners as $conditioner)
                                     <tr id="tr{{$conditioner->id}}">
-                                        <td scope="row">{{ $conditioner->id }}</td>
+                                        <td scope="row">{{ $conditioner->id_object }}</td>
                                         <td>{{ $conditioner->name }}</td>
                                         <td>{{ $conditioner->relatedType->name }}</td>
                                         <td>{{ $conditioner->modbusSlaver->name }}</td>
