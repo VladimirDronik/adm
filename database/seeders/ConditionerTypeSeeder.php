@@ -100,6 +100,14 @@ class ConditionerTypeSeeder extends Seeder
                 'vdir' => '{"swing":1,"down":2,"mdown":3,"mup":4,"up":5}',
                 'hdir' => null,
             ],
+            [
+                'name' => 'mu-1-01',
+                'device' => 'lessar-mu-1-01',
+                'temperature' => '{"min":17,"max":30}',
+                'mode' => '{"heat":4,"cool":2,"auto":1,"dry":3,"fan":5}',
+                'fan' => '{"auto":0,"silent":1,"1":2,"2":3,"3":4,"turbo":5}',
+                'vdir' => '{"stop":0,"hdir":1,"vdir":2,"hdir+vdir":3}',
+            ],
         ];
 
         foreach ($conditionerTypes as $conditionerType) {
