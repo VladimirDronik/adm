@@ -45,14 +45,6 @@ class ConditionerService
         $modbusSlaver = ModbusSlaver::find($data['modbus_slaver_id']);
         $conditionerType = ConditionerType::where('device', $modbusSlaver->relatedType->type)->first();
 
-        $registers = $modbusSlaver->registers()
-            ->whereIn('alias', ['ac_mode', 'ac_temp', 'ac_fan', 'ac_vdir', 'ac_hdir'])
-            ->get();
-
-        foreach ($registers as $register) {
-            $conditioner[substr($register->alias, 3)] = $register->last_value;
-        }
-
         if (!$conditionerType) {
             throw new Exception('Запись в таблице conditioner_types с полем device = ' . $modbusSlaver->relatedType->type . ' не найдена');
         }
@@ -74,6 +66,9 @@ class ConditionerService
             $conditioner->id_object = $object->id;
             $conditioner->save();
         });
+
+        chdir(env('SERVER_FOLDER') . '/scripts');
+        exec('php ac_polling.php ' . $conditioner->id_object);
 
         return $conditioner->id;
     }
