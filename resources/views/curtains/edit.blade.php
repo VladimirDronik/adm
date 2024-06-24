@@ -195,22 +195,27 @@
             sel.append(s);
         }
 
-        $('#curtain_form input[name=status]').change(function() {
-                var options = $('#curtain_form input[name=status]');
-                for (var i = 0; i < options.length; i++) {
-                    if (options[i].checked) {
-                        var selectedOption = options[i].value;
-                    }
-                }
-                $.ajax({
-                    url: set_status_url,
-                    data: {
-                        '_token': _token,
-                        'id_object': id_object,
-                        'status': selectedOption
-                    },
-                });
+        $('#openBtn').click(function() {
+            $.ajax({
+                url: set_status_url,
+                data: {
+                    '_token': _token,
+                    'id_object': id_object,
+                    'status': 'open'
+                },
             });
+        });
+
+        $('#closeBtn').click(function() {
+            $.ajax({
+                url: set_status_url,
+                data: {
+                    '_token': _token,
+                    'id_object': id_object,
+                    'status': 'close'
+                },
+            });
+        });
 
         $('#setPercentBtn').click(function() {
             var selectedOption = $('#curtain_form input[name=percent]').val();

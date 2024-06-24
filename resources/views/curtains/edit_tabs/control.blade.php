@@ -1,4 +1,10 @@
-{{ Form::bs_radio('status', 'Смена состояния:', ['open' => 'Открыть', 'close' => 'Закрыть'], old('status', $curtain->object?->status)) }}
+<div class="form-group row">
+    <label class="control-label text-right col-md-3 label-fix" for="percent">Смена состояния:</label>
+    <div class="col-md-4">
+        <button type="button" class="btn btn-success m-b-10 m-l-5" id="openBtn">Открыть</button>
+        <button type="button" class="btn btn-success m-b-10 m-l-5" id="closeBtn">Закрыть</button>
+    </div>
+</div>
 
 @if($curtain->place == \App\Models\Curtain::PLACE_RS485)
     <div class="form-group row">
