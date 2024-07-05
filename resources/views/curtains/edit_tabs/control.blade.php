@@ -1,8 +1,11 @@
 <div class="form-group row">
     <label class="control-label text-right col-md-3 label-fix" for="percent">Смена состояния:</label>
-    <div class="col-md-4">
+    <div class="col-md-6">
         <button type="button" class="btn btn-success m-b-10 m-l-5" id="openBtn">Открыть</button>
         <button type="button" class="btn btn-success m-b-10 m-l-5" id="closeBtn">Закрыть</button>
+        @if($curtain->place == \App\Models\Curtain::PLACE_RS485)
+            <button type="button" class="btn btn-danger m-b-10 m-l-5" id="stopBtn">Стоп</button>
+        @endif
     </div>
 </div>
 
@@ -13,10 +16,5 @@
             <input class="form-control" autocomplete="off" min="0" max="100" name="percent" type="number" value="{{ old('percent', $curtain->percent) }}">
         </div>
         <button type="button" class="btn btn-success m-b-10 m-l-5" id="setPercentBtn">Задать</button>
-    </div>
-
-    <div class="form-group row">
-        <label class="control-label text-right col-md-5 label-fix"></label>
-        <button type="button" class="btn btn-danger m-b-10 m-l-5" id="stopBtn">Стоп</button>
     </div>
 @endif
