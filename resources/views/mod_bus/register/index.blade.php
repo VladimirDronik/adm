@@ -14,11 +14,6 @@
                         <a href="{{ route('mod_bus.registers.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                         <div class="pull-right">
                             <form class="form-inline" method="get">
-                                @if(auth()->user()->is_super_admin || auth()->user()->is_admin)
-                                    <input style="cursor:pointer;" autocomplete="off" name="is_system" type="checkbox" @if($filterSystem) checked @endif value="1">
-                                    &nbsp;Вывод системных&nbsp;&nbsp;|&nbsp;&nbsp;
-                                @endif
-
                                 Устройство:&nbsp;&nbsp;
                                 <select class="form-control form-control-lg" autocomplete="off" name="slaver" style="font-size: 1rem;">
                                     <option value="" @if(!$filterSlaver) selected @endif>Не выбрано</option>
