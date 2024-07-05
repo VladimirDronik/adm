@@ -90,15 +90,4 @@ class ModbusSlaverController extends Controller
             'message' => array_key_exists(0, $response['output']) ? $response['output'][0] : null,
         ]);
     }
-
-    public function readPollingRegisters(Request $r)
-    {
-        abort_if(! ajaxHas($r, ['id']), 400);
-
-        $result = $this->service->readPollingRegisters((int)$r->id);
-
-        return response()->json([
-            'result' => $result,
-        ]);
-    }
 }
