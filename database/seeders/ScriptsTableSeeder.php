@@ -64,16 +64,6 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
-    public static function getCheckCurtainScript(): array
-    {
-        return [
-            'name' => 'Опрос привода штор',
-            'link' => 'curtain_polling.php',
-            'count' => 0,
-            'system' => 1,
-        ];
-    }
-
     public static function getCheckHygrostatScript(): array
     {
         return [
@@ -394,7 +384,6 @@ class ScriptsTableSeeder extends Seeder
         $scripts[] = self::getResetCountScript();
         $scripts[] = self::getCheckTermostatScript();
         $scripts[] = self::getCheckConditionerScript();
-        $scripts[] = self::getCheckCurtainScript();
         $scripts[] = self::getCheckUsensorScript();
         $scripts[] = self::getDrycontactsScript();
         $scripts[] = self::getMotionsensorScript();

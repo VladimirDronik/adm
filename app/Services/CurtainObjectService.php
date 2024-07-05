@@ -6,8 +6,6 @@ use App\Models\Method;
 use App\Models\Script;
 use App\Models\Curtain;
 use App\Models\HomeObject;
-use App\Models\SchedulerTask;
-use App\Models\SchedulerPoint;
 use Database\Seeders\ScriptsTableSeeder;
 
 class CurtainObjectService
@@ -81,45 +79,6 @@ class CurtainObjectService
         }
 
         Method::insert($methods);
-    }
-
-    /**
-     * Создание метода 'Опрос привода штор' и элемента планировщика 'Опрос привода штор' (каждую 1 мин)
-     */
-    public function createCheckMethodWithEvent(int $objectId): void
-    {
-        $script = Script::where('link', 'curtain_polling.php')
-            ->where('system', 1)
-            ->first();
-
-        if (!$script) {
-            $script = Script::create(ScriptsTableSeeder::getCheckCurtainScript());
-        }
-
-        $method = Method::create([
-            'name' => 'Опрос привода штор',
-            'id_object' => $objectId,
-            'comment' => 'Периодический опрос привода штор',
-            'is_system' => 1,
-            'script' => $script->id,
-        ]);
-
-        $schedulerTask = SchedulerTask::create([
-            'name' => 'Опрос привода штор',
-            'is_system' => 1,
-            'is_hidden' => 1,
-            'object' => $objectId,
-            'method' => $method->id,
-        ]);
-
-        SchedulerPoint::create([
-            'id_task' => $schedulerTask->id,
-            'type' => 'c',
-            'time' => '1',
-            'days' => '',
-            'close' => 1,
-            'system' => 1,
-        ]);
     }
 
     /**
