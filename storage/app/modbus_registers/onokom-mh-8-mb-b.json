@@ -8,8 +8,6 @@
     "data_format": "bool",
     "units": null,
     "scale_unit": null,
-    "polling": true,
-    "polling_cycle": 1,
     "comment": "0 - Отключен, 1 - Включен",
     "is_system": 1,
     "alias": "ac_power"
@@ -23,8 +21,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": true,
-    "polling_cycle": 1,
     "comment": "1 – Нагрев, 2 – Охлаждение, 3 – Автоматический, 4 – Осушение, 5 - Вентиляция",
     "is_system": 1,
     "alias": "ac_mode"
@@ -38,8 +34,6 @@
     "data_format": "s16",
     "units": "°C",
     "scale_unit": 0.01,
-    "polling": true,
-    "polling_cycle": 1,
     "comment": null,
     "is_system": 1,
     "alias": "ac_temp"
@@ -53,8 +47,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": true,
-    "polling_cycle": 1,
     "comment": "0 – Режим Авто, 1 - 1 скорость, 2 - 2 скорость, 3 - 3 скорость",
     "is_system": 1,
     "alias": "ac_fan"
@@ -68,8 +60,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": true,
-    "polling_cycle": 1,
     "comment": "0 - Остановлены, 1 - Качание, 2 - Нижнее положение, 3 - Нижнее среднее положение, 4 - Верхнее среднее положение, 5 - Верхнее положение",
     "is_system": 1,
     "alias": "ac_vdir"

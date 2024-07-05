@@ -8,8 +8,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -23,8 +21,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -38,8 +34,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -53,8 +47,6 @@
     "data_format": "u32",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -68,8 +60,6 @@
     "data_format": "u32",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -83,8 +73,6 @@
     "data_format": "u32",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -98,8 +86,6 @@
     "data_format": "u32",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -113,8 +99,6 @@
     "data_format": "u32",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -128,8 +112,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -143,8 +125,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -158,8 +138,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -173,8 +151,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -188,8 +164,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -203,8 +177,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -218,8 +190,6 @@
     "data_format": "u16",
     "units": "бит/с",
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -233,8 +203,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -248,8 +216,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -263,8 +229,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -278,8 +242,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -293,8 +255,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -308,8 +268,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -323,8 +281,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "0 – реле разомкнуто; 1 – реле замкнуто",
     "is_system": 1,
     "alias": "dali_relay1_status"
@@ -338,8 +294,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "0 – реле разомкнуто; 1 – реле замкнуто",
     "is_system": 1,
     "alias": "dali_relay2_status"
@@ -353,8 +307,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "0 – линия в рабочем состоянии; 1 – короткое замыкание / нет питания (линия неработоспособна)",
     "is_system": 1,
     "alias": "dali_bus_status"
@@ -368,8 +320,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "Запись: 0x01 – запуск сбора сети; 0x02 – запуск расширения сети; 0x03 – остановка сбора; Чтение: 0x00 – Сбор сети завершен; 0x06 – Сбор сети прерван; 0x11 – Идет сбор сети; 0x12 – Идет расширение сети",
     "is_system": 1,
     "alias": "dali_bus_assembling"
@@ -383,8 +333,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "0-63 – Обновляется во время сбора/расширения сети",
     "is_system": 1,
     "alias": "dali_devices_quantity"
@@ -398,8 +346,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -413,8 +359,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -428,8 +372,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -443,8 +385,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -458,8 +398,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -473,8 +411,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -488,8 +424,6 @@
     "data_format": "u16",
     "units": "с",
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -503,8 +437,6 @@
     "data_format": "u32",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -518,8 +450,6 @@
     "data_format": "u32",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -533,8 +463,6 @@
     "data_format": "u32",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -548,8 +476,6 @@
     "data_format": "u32",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -563,8 +489,6 @@
     "data_format": "u32",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -578,8 +502,6 @@
     "data_format": "u32",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -593,8 +515,6 @@
     "data_format": "u32",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -608,8 +528,6 @@
     "data_format": "u32",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "",
     "is_system": 1,
     "alias": ""
@@ -623,8 +541,6 @@
     "data_format": "u16",
     "units": "%",
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "Текущая загрузка шины DALI в процентах",
     "is_system": 1,
     "alias": "dali_bus_load"
@@ -638,8 +554,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": true,
-    "polling_cycle": null,
     "comment": "Чтение – счетчик изменений с момента сброса счетчика; Запись любого значения – сброс счетчика и флагов изменений во всех регистров",
     "is_system": 1,
     "alias": "dali_bus_changes"
@@ -653,8 +567,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "При получении команды в адрес определенной группы в соответствующем разряде устанавливается флаг изменений (1)",
     "is_system": 1,
     "alias": "dali_groups_changes"
@@ -668,8 +580,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "При получении команды в адрес определенного светильника в соответствующем разряде устанавливается флаг изменений (1)",
     "is_system": 1,
     "alias": "dali_63_48_changes"
@@ -683,8 +593,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "При получении команды в адрес определенного светильника в соответствующем разряде устанавливается флаг изменений (1)",
     "is_system": 1,
     "alias": "dali_47_32_changes"
@@ -698,8 +606,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "При получении команды в адрес определенного светильника в соответствующем разряде устанавливается флаг изменений (1)",
     "is_system": 1,
     "alias": "dali_31_16_changes"
@@ -713,8 +619,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "При получении команды в адрес определенного светильника в соответствующем разряде устанавливается флаг изменений (1)",
     "is_system": 1,
     "alias": "dali_15_0_changes"
@@ -728,8 +632,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "Диапазон значений: 0 – 255",
     "is_system": 1,
     "alias": "dali_broadcast_brightness"
@@ -743,8 +645,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "Диапазон значений: 0 – 31. Значение соответствует номеру команды из таблицы «Форматы команд»",
     "is_system": 1,
     "alias": "dali_broadcast_cmd"
@@ -758,8 +658,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "2 – на шине присутствует хотя бы одно устройство; 0 – на шине нет ни одного устройства",
     "is_system": 1,
     "alias": "dali_broadcast_devices_presence"
@@ -773,8 +671,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "0 – все светильники на шине исправны; 2 – один или несколько светильников на шине не исправны",
     "is_system": 1,
     "alias": "dali_broadcast_devices_fault"
@@ -788,8 +684,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "0 – все светильники на шине выключены; 2 – на шине есть включенные светильники",
     "is_system": 1,
     "alias": "dali_broadcast_devices_status"
@@ -803,8 +697,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "Допустимый диапазон 1000 - 10000",
     "is_system": 1,
     "alias": "dali_broadcast_set_temperature"
@@ -818,8 +710,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "При записи 0 в линии устанавливается цветовая температура на один шаг холоднее, при записи 1 - на один шаг теплее. Остальные значения недействительны",
     "is_system": 1,
     "alias": "dali_broadcast_step_temperature"
@@ -833,8 +723,6 @@
     "data_format": "u16",
     "units": null,
     "scale_unit": null,
-    "polling": false,
-    "polling_cycle": null,
     "comment": "0 - ни линии нет светильников с управляемой цветовой температурой; 2 - на линии присутствует хотя бы один светильник с управляемой цветовой температурой",
     "is_system": 1,
     "alias": "dali_broadcast_temperature_presence"

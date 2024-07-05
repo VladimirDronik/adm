@@ -17,10 +17,6 @@ class RegisterService
         $register->units = array_key_exists('units', $data) ? $data['units'] : null;
         $register->scale_unit = array_key_exists('scale_unit', $data) ? $data['scale_unit'] : null;
         $register->access = $data['access'];
-
-        $polling = array_key_exists('polling', $data);
-        $register->polling = $polling;
-        $register->polling_cycle = $polling ? $data['polling_cycle'] : null;
     }
 
     /**

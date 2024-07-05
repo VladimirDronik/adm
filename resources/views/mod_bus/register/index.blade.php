@@ -40,7 +40,6 @@
                                     <th style="width: 60px;">ID</th>
                                     <th>Устройство</th>
                                     <th>Название</th>
-                                    <th>Опрос</th>
                                     <th>Значение</th>
                                     <th></th>
                                     <th></th>
@@ -56,9 +55,6 @@
                                     </td>
                                     <td>
                                         {{ $register->name }}
-                                    </td>
-                                    <td>
-                                        {{ $register->polling ? $register->polling_cycle_name : 'Нет' }}
                                     </td>
                                     <td>
                                         {{ $register->last_value ? $register->last_value . ' ' . $register->units : '' }}
@@ -87,7 +83,6 @@
                                     <th style="width: 60px;">ID</th>
                                     <th>Устройство</th>
                                     <th>Название</th>
-                                    <th>Опрос</th>
                                     <th>Значение</th>
                                     <th></th>
                                     <th></th>

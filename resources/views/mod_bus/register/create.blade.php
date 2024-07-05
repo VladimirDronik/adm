@@ -47,12 +47,6 @@
                         {{ Form::bs_text('scale_unit', 'Множитель:', old('scale_unit'), []) }}
 
                         {{ Form::bs_radio('access', 'Доступ*:', $accesses, old('access'), ['required' => true]) }}
-
-                        {{ Form::bs_checkbox('polling', 'Опрос:', old('polling', false), []) }}
-
-                        <div id='polling_cycle_div' hidden>
-                            {{ Form::bs_select('polling_cycle', 'Период опроса*:', $pollingCycles, old('polling_cycle'), ['required' => true]) }}
-                        </div>
                     </div>
 
                     {{ Form::bs_submit_btn() }}
@@ -69,26 +63,8 @@
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script>
-        if ($('#register_form input[name=polling]').is(':checked')) {
-            $('#polling_cycle_div').removeAttr("hidden");
-            $('#register_form input[name=polling_cycle]').removeAttr("disabled");
-        } else {
-            $('#polling_cycle_div').attr("hidden", true);
-            $('#register_form input[name=polling_cycle]').attr("disabled", true);
-        }
-
         $(document).ready(function () {
             $("#auto_sel_slaver_id").chosen({width:"100%", no_results_text: "Не найдено"});
-
-            $('#register_form input[name=polling]').change(function() {
-                if ($('#register_form input[name=polling]').is(':checked')) {
-                    $('#polling_cycle_div').removeAttr("hidden");
-                    $('#register_form input[name=polling_cycle]').removeAttr("disabled");
-                } else {
-                    $('#polling_cycle_div').attr("hidden", true);
-                    $('#register_form input[name=polling_cycle]').attr("disabled", true);
-                }
-            });
         });
     </script>
 @endsection
