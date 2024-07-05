@@ -42,6 +42,8 @@
                                     <th>Название</th>
                                     <th>Значение</th>
                                     <th></th>
+                                    <th>Записать</th>
+                                    <th></th>
                                     <th></th>
                                     <th></th>
                                 </tr>
@@ -56,8 +58,17 @@
                                     <td>
                                         {{ $register->name }}
                                     </td>
-                                    <td>
+                                    <td id="last_value_{{$register->id}}">
                                         {{ $register->last_value ? $register->last_value . ' ' . $register->units : '' }}
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-sm btn-rounded read_btn" data-id="{{ $register->id }}"><i class="fa fa-refresh" title="Обновить значение"></i></button>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </td>
+                                    <td>
+                                        <input class="form-control col-md-4" style="display: inline;" autocomplete="off" id="modbus_write_{{ $register->id }}" name="modbus_write_{{ $register->id }}" type="text" value="">
+                                        &nbsp;&nbsp;
+                                        <button type="button" class="btn btn-info btn-sm btn-rounded write_btn" data-id="{{ $register->id }}"><i class="fa fa-plus" title="Записать значение"></i></button>
                                     </td>
                                     <td>
                                         @if($register->comment)
@@ -85,6 +96,8 @@
                                     <th>Название</th>
                                     <th>Значение</th>
                                     <th></th>
+                                    <th>Записать</th>
+                                    <th></th>
                                     <th></th>
                                     <th></th>
                                 </tr>
@@ -107,6 +120,9 @@
 
 @section('scripts')
     <script>
+        let modbus_read_url = '{{ route('ajax.mod_bus.registers.read') }}';
+        let modbus_write_url = '{{ route('ajax.mod_bus.registers.write') }}';
+
         $(document).ready(function () {
             $('.del_btn').click(function () {
                 del_id = $(this).attr('data-id');
@@ -130,6 +146,30 @@
                         }
                     });
                 }
+            });
+
+            $('.read_btn').click(function() {
+                var id = $(this).attr('data-id');
+
+                $.ajax({
+                    url: modbus_read_url,
+                    data: { '_token': _token, 'id': id },
+                    success: function (data) {
+                        if (data.result) {
+                            $('#last_value_' + id).text(data.response);
+                        } else {
+                            showErrorModal(data.response ?? 'Нет ответа от устройства');
+                        }
+                    }
+                });
+            });
+
+            $('.write_btn').click(function() {
+                var id = $(this).attr('data-id');
+                $.ajax({
+                    url: modbus_write_url,
+                    data: { '_token': _token, 'id': id, 'value': $('#modbus_write_' + id).val() },
+                });
             });
         });
     </script>
