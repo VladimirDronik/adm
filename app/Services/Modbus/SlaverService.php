@@ -399,7 +399,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -411,7 +410,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -423,7 +421,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -435,7 +432,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -459,7 +455,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -471,7 +466,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -483,7 +477,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -495,7 +488,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -507,7 +499,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
             ];
