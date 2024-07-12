@@ -51,6 +51,8 @@ class BusService
 
         $bus->save();
 
+        exec('supervisorctl restart ' . $bus->id);
+
         return $bus->id;
     }
 
