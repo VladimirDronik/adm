@@ -74,6 +74,15 @@ class SlaverService
             }
         }
 
+        $this->checkAvailability($slaver->id);
+
+        if ($slaver->relatedType->purpose == 'ac' && ConditionerType::where('device', $slaver->relatedType->type)->exists()) {
+            $this->conditionerService->store([
+                'name' => 'Кондиционер устройства - ' . $slaver->name,
+                'modbus_slaver_id' => $slaver->id,
+            ]);
+        }
+
         return $slaver->id;
     }
 
@@ -390,7 +399,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -402,7 +410,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -414,7 +421,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -426,7 +432,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -450,7 +455,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -462,7 +466,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -474,7 +477,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -486,7 +488,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
                 [
@@ -498,7 +499,6 @@ class SlaverService
                     'register_type' => 'holding',
                     'registers_quantity' => 1,
                     'data_format' => 'u16',
-                    'polling' => 0,
                     'is_system' => 1,
                 ],
             ];
@@ -574,39 +574,22 @@ class SlaverService
     }
 
     /**
-     * Запуск чтения данных всех регистров устройства с polling = 1
+     * Запуск скрипта проверки доступности устройства
      *
      * @param int $slaverId
-     * @return bool
+     * @return array
      */
-    public function readPollingRegisters(int $slaverId): bool
+    public function checkAvailability(int $slaverId): array
     {
-        $slaver = ModbusSlaver::find($slaverId);
-        $pollingRegisters = $slaver->registers()->where('polling', 1)->get();
+        $output = [];
+        $resultCode = null;
 
         chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php modbus_check_availability.php ' . $slaverId, $output, $resultCode);
 
-        if ($pollingRegisters->isNotEmpty()) {
-            foreach ($pollingRegisters as $pollingRegister) {
-                $output = [];
-                exec('php modbus_read.php ' . $pollingRegister->id, $output);
-
-                $result = $output[0] ?? false;
-                if ($result === false) {
-                    return false;
-                }
-            }
-        } else {
-            exec('php modbus_check_availability.php ' . $slaver->id);
-        }
-
-        if ($slaver->relatedType->purpose == 'ac' && ConditionerType::where('device', $slaver->relatedType->type)->exists()) {
-            $this->conditionerService->store([
-                'name' => 'Кондиционер устройства - ' . $slaver->name,
-                'modbus_slaver_id' => $slaver->id,
-            ]);
-        }
-
-        return true;
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
     }
 }

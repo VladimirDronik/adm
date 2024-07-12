@@ -67,12 +67,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        {{ Form::bs_checkbox('polling', 'Опрос:', old('polling', $register->polling), []) }}
-
-                        <div id='polling_cycle_div' hidden>
-                            {{ Form::bs_select('polling_cycle', 'Период опроса*:', $pollingCycles, old('polling_cycle', $register->polling_cycle), ['required' => true]) }}
-                        </div>
                     </div>
 
                     {{ Form::bs_submit_btn() }}
@@ -93,14 +87,6 @@
         let modbus_write_url = '{{ route('ajax.mod_bus.registers.write') }}';
         let id = '{{ $register->id }}';
 
-        if ($('#register_form input[name=polling]').is(':checked')) {
-            $('#polling_cycle_div').removeAttr("hidden");
-            $('#register_form input[name=polling_cycle]').removeAttr("disabled");
-        } else {
-            $('#polling_cycle_div').attr("hidden", true);
-            $('#register_form input[name=polling_cycle]').attr("disabled", true);
-        }
-
         var access = $('#register_form input[name=access]:checked').val();
         if (access == 'ro') {
             $('#modbus_write_div').attr("hidden", true);
@@ -110,16 +96,6 @@
 
         $(document).ready(function () {
             $("#auto_sel_slaver_id").chosen({width:"100%", no_results_text: "Не найдено"});
-
-            $('#register_form input[name=polling]').change(function() {
-                if ($('#register_form input[name=polling]').is(':checked')) {
-                    $('#polling_cycle_div').removeAttr("hidden");
-                    $('#register_form input[name=polling_cycle]').removeAttr("disabled");
-                } else {
-                    $('#polling_cycle_div').attr("hidden", true);
-                    $('#register_form input[name=polling_cycle]').attr("disabled", true);
-                }
-            });
 
             $('#register_form input[name=access]').change(function() {
                 var options = $('#register_form input[name=access]');
