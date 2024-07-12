@@ -40,6 +40,8 @@
                                     <th style="width: 60px;">ID</th>
                                     <th>Устройство</th>
                                     <th>Название</th>
+                                    <th>Тип</th>
+                                    <th>Формат данных</th>
                                     <th>Значение</th>
                                     <th></th>
                                     <th>Записать</th>
@@ -58,17 +60,23 @@
                                     <td>
                                         {{ $register->name }}
                                     </td>
-                                    <td id="last_value_{{$register->id}}">
-                                        {{ $register->last_value ? $register->last_value . ' ' . $register->units : '' }}
+                                    <td>
+                                        {{ $register->register_type }}
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-info btn-sm btn-rounded read_btn" data-id="{{ $register->id }}"><i class="fa fa-refresh" title="Обновить значение"></i></button>
+                                        {{ $register->data_format }}
+                                    </td>
+                                    <td id="last_value_{{$register->id}}">
+                                        {{ $register->last_value !== null ? $register->last_value . ' ' . $register->units : '' }}
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-sm btn-rounded read_btn" data-id="{{ $register->id }}" data-units="{{ $register->units }}"><i class="fa fa-arrow-down" title="Обновить значение"></i></button>
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     </td>
                                     <td>
                                         <input class="form-control col-md-4" style="display: inline;" autocomplete="off" id="modbus_write_{{ $register->id }}" name="modbus_write_{{ $register->id }}" type="text" value="">
                                         &nbsp;&nbsp;
-                                        <button type="button" class="btn btn-info btn-sm btn-rounded write_btn" data-id="{{ $register->id }}"><i class="fa fa-plus" title="Записать значение"></i></button>
+                                        <button type="button" class="btn btn-info btn-sm btn-rounded write_btn" data-id="{{ $register->id }}" data-units="{{ $register->units }}"><i class="fa fa-arrow-up" title="Записать значение"></i></button>
                                     </td>
                                     <td>
                                         @if($register->comment)
@@ -94,6 +102,8 @@
                                     <th style="width: 60px;">ID</th>
                                     <th>Устройство</th>
                                     <th>Название</th>
+                                    <th>Тип</th>
+                                    <th>Формат данных</th>
                                     <th>Значение</th>
                                     <th></th>
                                     <th>Записать</th>
@@ -150,13 +160,14 @@
 
             $('.read_btn').click(function() {
                 var id = $(this).attr('data-id');
+                var units = $(this).attr('data-units');
 
                 $.ajax({
                     url: modbus_read_url,
                     data: { '_token': _token, 'id': id },
                     success: function (data) {
                         if (data.result) {
-                            $('#last_value_' + id).text(data.response);
+                            $('#last_value_' + id).text(data.response + ' ' + units);
                         } else {
                             showErrorModal(data.response ?? 'Нет ответа от устройства');
                         }
@@ -166,9 +177,25 @@
 
             $('.write_btn').click(function() {
                 var id = $(this).attr('data-id');
+                var value = $('#modbus_write_' + id).val();
+                var units = $(this).attr('data-units');
+
                 $.ajax({
                     url: modbus_write_url,
-                    data: { '_token': _token, 'id': id, 'value': $('#modbus_write_' + id).val() },
+                    data: { '_token': _token, 'id': id, 'value': value },
+                    success: function (data) {
+                        $('#modbus_write_' + id).val('');
+
+                        if (data.result) {
+                            $('#last_value_' + id).text(value + ' ' + units);
+                        } else {
+                            showErrorModal(data.response ?? 'Нет ответа от устройства');
+                        }
+                    },
+                    error: function (error) {
+                        $('#modbus_write_' + id).val('');
+                        showErrorModal('Сервер временно недоступен');
+                    }
                 });
             });
         });
