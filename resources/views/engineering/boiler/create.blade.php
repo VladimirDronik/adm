@@ -31,19 +31,22 @@
 
                                 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
 
-                                {{ Form::bs_radio('gateway_type', 'Тип подключения*:', $gatewayTypes, old('gateway_type', 'modbus'), ['required' => true]) }}
+                                <!-- {{ Form::bs_radio('gateway_type', 'Тип подключения*:', $gatewayTypes, old('gateway_type', 'modbus'), ['required' => true]) }} -->
+                                <input hidden name="gateway_type" value="modbus"/>
 
-                                <div id='http_div' hidden>
+                                <!-- <div id='http_div' hidden>
                                     {{ Form::bs_autoselect('http_gateway_id', 'Контроллер*:', $devices, old('http_gateway_id'), false, false, ['required' => true], null, null, 3, false, true) }}
-                                </div>
+                                </div> -->
 
-                                <div id='modbus_div' hidden>
+                                <!-- <div id='modbus_div' hidden> -->
                                     {{ Form::bs_autoselect('modbus_gateway_id', 'Устройство*:', $modbusSlavers, old('modbus_gateway_id'), false, false, ['required' => true], null, null, 3, false, true) }}
-                                </div>
+                                <!-- </div> -->
 
-                                {{ Form::bs_autoselect('type_boiler', 'Протокол обмена*:', $typesBoiler, old('type'), false, false, ['required' => true], null) }}
+                                <!-- {{ Form::bs_autoselect('type_boiler', 'Протокол обмена*:', $typesBoiler, old('type_boiler'), false, false, ['required' => true], null) }} -->
+                                {{ Form::bs_radio('type', 'Тип котла*:', $types, old('type'), ['required' => true]) }}
+                                {{ Form::bs_radio('mode', 'Режим работы*:', $modes, old('mode', 'ch_dhw'), ['required' => true]) }}
 
-                                {{ Form::bs_autoselect('id_outside_thermostat', 'Уличный датчик температуры:', $termostats, old('id_outside_thermostat'), false, false, [], null) }}
+                                {{ Form::bs_autoselect('outdoor_sensor', 'Уличный датчик температуры:', $termostats, old('outdoor_sensor'), false, false, [], null) }}
                             </div>
 
                         {{ Form::bs_submit_btn() }}
@@ -58,22 +61,22 @@
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script>
-        if ($('#engineering_form input[name=gateway_type]:checked').val() == 'modbus') {
-            $('#modbus_div').removeAttr("hidden");
-            $('#engineering_form input[name=modbus_gateway_id]').removeAttr("disabled");
+        // if ($('#engineering_form input[name=gateway_type]:checked').val() == 'modbus') {
+        //     $('#modbus_div').removeAttr("hidden");
+        //     $('#engineering_form input[name=modbus_gateway_id]').removeAttr("disabled");
 
-            $('#http_div').attr("hidden", true);
-            $('#engineering_form input[name=http_gateway_id]').attr("disabled", true);
-        } else {
-            $('#http_div').removeAttr("hidden");
-            $('#engineering_form input[name=http_gateway_id]').removeAttr("disabled");
+        //     $('#http_div').attr("hidden", true);
+        //     $('#engineering_form input[name=http_gateway_id]').attr("disabled", true);
+        // } else {
+        //     $('#http_div').removeAttr("hidden");
+        //     $('#engineering_form input[name=http_gateway_id]').removeAttr("disabled");
 
-            $('#modbus_div').attr("hidden", true);
-            $('#engineering_form input[name=modbus_gateway_id]').attr("disabled", true);
-        }
+        //     $('#modbus_div').attr("hidden", true);
+        //     $('#engineering_form input[name=modbus_gateway_id]').attr("disabled", true);
+        // }
 
         $(document).ready(function(){
-            $("#auto_sel_id_outside_thermostat").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_outdoor_sensor").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_http_gateway_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_modbus_gateway_id").chosen({width:"100%", no_results_text: "Не найдено"});
 

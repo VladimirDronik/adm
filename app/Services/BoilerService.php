@@ -1,16 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 11.04.21
- * Time: 16:27
- */
 
 namespace App\Services;
 
 use App\Models\Boiler;
 use App\Models\BoilerAuto;
 use App\Models\BoilerManual;
+use App\Models\BoilersParam;
+use App\Models\BoilersParamsFlag;
 use App\Models\BoilerWater;
 use App\Models\HomeObject;
 use Illuminate\Support\Facades\DB;
@@ -34,13 +30,9 @@ class BoilerService
             }
 
             $boiler->name = $data['name'];
-            $boiler->thermostat = $data['thermostat'];
-            $boiler->boiler = $data['boiler'];
-            $boiler->target_water_temp = $data['target_water_temp'];
-            $boiler->id_outside_thermostat = array_key_exists('id_outside_thermostat', $data) ?
-                $data['id_outside_thermostat'] :
-                null;
+            $boiler->outdoor_sensor = array_key_exists('outdoor_sensor', $data) ? $data['outdoor_sensor'] : null;
             $boiler->mode = $data['mode'];
+            $boiler->heating_mode = $data['heating_mode'];
             $boiler->gateway_id = $data['gateway_id'];
 
             if ($boiler->gateway_type == HomeObject::GATEWAY_MODBUS) {
@@ -50,38 +42,38 @@ class BoilerService
 
             $boiler->save();
 
-            if ($boiler->mode == Boiler::PROP_MANUALMODE) {
-                $boilerManual = $boiler->object->boilerManual;
-                $boilerManual->set_value = $data['set_value'];
-                $boilerManual->save();
-            }
+            // if ($boiler->mode == Boiler::PROP_MANUALMODE) {
+            //     $boilerManual = $boiler->object->boilerManual;
+            //     $boilerManual->set_value = $data['set_value'];
+            //     $boilerManual->save();
+            // }
 
-            if ($boiler->mode == Boiler::PROP_AUTOMODE) {
-                if (array_key_exists('boiler_auto', $data)) {
-                    foreach ($data['boiler_auto'] as $id => $boilerAutoData) {
-                        BoilerAuto::where('id', $id)->update($boilerAutoData);
-                    }
-                }
+            // if ($boiler->mode == Boiler::PROP_AUTOMODE) {
+            //     if (array_key_exists('boiler_auto', $data)) {
+            //         foreach ($data['boiler_auto'] as $id => $boilerAutoData) {
+            //             BoilerAuto::where('id', $id)->update($boilerAutoData);
+            //         }
+            //     }
 
-                if (array_key_exists('t_out', $data) && array_key_exists('t_water', $data)) {
-                    $idObject = $boiler->object->id;
-                    $tOut = $data['t_out'];
-                    $tWater = $data['t_water'];
-                    $fieldsSet = [];
+            //     if (array_key_exists('t_out', $data) && array_key_exists('t_water', $data)) {
+            //         $idObject = $boiler->object->id;
+            //         $tOut = $data['t_out'];
+            //         $tWater = $data['t_water'];
+            //         $fieldsSet = [];
 
-                    for ($i = 0; $i < count($tOut); $i++) {
-                        $fieldsSet[] = [
-                            't_out' => $tOut[$i],
-                            't_water' => $tWater[$i],
-                            'id_object' => $idObject,
-                        ];
-                    }
+            //         for ($i = 0; $i < count($tOut); $i++) {
+            //             $fieldsSet[] = [
+            //                 't_out' => $tOut[$i],
+            //                 't_water' => $tWater[$i],
+            //                 'id_object' => $idObject,
+            //             ];
+            //         }
 
-                    foreach ($fieldsSet as $fields) {
-                        BoilerAuto::create($fields);
-                    }
-                }
-            }
+            //         foreach ($fieldsSet as $fields) {
+            //             BoilerAuto::create($fields);
+            //         }
+            //     }
+            // }
         });
 
         return true;
@@ -96,24 +88,22 @@ class BoilerService
     {
         $boiler = new Boiler();
         $boiler->name = $data['name'];
-        $boiler->protocol = $data['type_boiler'];
-        $boiler->id_outside_thermostat = array_key_exists('id_outside_thermostat', $data) ? $data['id_outside_thermostat'] : null;
-        $boiler->target_water_temp = Boiler::DEFAULT_GVS_TEMP;
-        $boiler->mode = Boiler::PROP_MANUALMODE;
+        $boiler->type = $data['type'];
+        $boiler->mode = $data['mode'];
+        $boiler->heating_mode = Boiler::HEATING_MODE_MANUAL;
+        $boiler->outdoor_sensor = array_key_exists('outdoor_sensor', $data) ? $data['outdoor_sensor'] : null;
         $boiler->gateway_type = $data['gateway_type'];
 
         switch ($boiler->gateway_type) {
             case HomeObject::GATEWAY_MODBUS:
                 $boiler->gateway_id = $data['modbus_gateway_id'];
+                $boiler->protocol = $boiler->protocol_by_slaver;
                 break;
             case HomeObject::GATEWAY_HTTP:
                 $boiler->gateway_id = $data['http_gateway_id'];
+                $boiler->protocol = $data['type_boiler'];
                 break;
         }
-
-        $boiler->thermostat = 0;
-        $boiler->boiler = 1;
-        $boiler->lock = 0;
 
         DB::transaction(function () use (&$boiler) {
             $uniqueName = HomeObject::getUniqueObjectName(0, $boiler->name);
@@ -124,20 +114,23 @@ class BoilerService
 
             $boiler->id_object = $object->id;
 
-            BoilerWater::create([
-                'id_object' => $boiler->id_object,
-                'min_value' => BoilerWater::MIN_VALUE,
-                'max_value' => BoilerWater::MAX_VALUE,
-            ]);
+            // BoilerWater::create([
+            //     'id_object' => $boiler->id_object,
+            //     'min_value' => BoilerWater::MIN_VALUE,
+            //     'max_value' => BoilerWater::MAX_VALUE,
+            // ]);
 
-            BoilerManual::create([
-                'id_object' => $boiler->id_object,
-                'min_value' => BoilerManual::MIN_VALUE,
-                'max_value' => BoilerManual::MAX_VALUE,
-                'set_value' => BoilerManual::DEFAULT_SET_VALUE,
-            ]);
+            // BoilerManual::create([
+            //     'id_object' => $boiler->id_object,
+            //     'min_value' => BoilerManual::MIN_VALUE,
+            //     'max_value' => BoilerManual::MAX_VALUE,
+            //     'set_value' => BoilerManual::DEFAULT_SET_VALUE,
+            // ]);
 
             $boiler->save();
+
+            $this->createBoilersParam($boiler);
+            $this->createBoilersParamsFlag($boiler);
         });
 
         return $boiler->id_object;
@@ -153,5 +146,53 @@ class BoilerService
         BoilerAuto::where('id', $boilerAutoId)->delete();
 
         return true;
+    }
+
+    public function createBoilersParam(Boiler $boiler): BoilersParam
+    {
+        return BoilersParam::create([
+            'boiler_id' => $boiler->id,
+        ]);
+    }
+
+    public function createBoilersParamsFlag(Boiler $boiler): BoilersParamsFlag
+    {
+        switch ($boiler->type) {
+            case Boiler::TYPE_GAS:
+                $modulation = 1;
+                break;
+            case Boiler::TYPE_ELECTRO:
+                $modulation = 0;
+                break;
+            default:
+                $modulation = 0;
+                break;
+        }
+
+        switch ($boiler->modbusSlaver?->relatedType->type) {
+            case 'bcg-301-w':
+                $pressure = 1;
+                break;
+            case 'beg-311-w':
+                $pressure = 0;
+                break;
+            default:
+                $pressure = 0;
+                break;
+        }
+
+        return BoilersParamsFlag::create([
+            'boiler_id' => $boiler->id,
+            'modulation' => $modulation,
+            'pressure' => $pressure,
+            'ch_current_temp' => 1,
+            'ch_setpoint_temp' => 1,
+            'dhw_current_temp' => 1,
+            'dhw_setpoint_temp' => 1,
+            'return_temp' => 1,
+            'error_code' => 1,
+            'outdoor_temp' => $boiler->outdoor_sensor ? 1 : 0,
+            'indoor_temp' => 0,
+        ]);
     }
 }

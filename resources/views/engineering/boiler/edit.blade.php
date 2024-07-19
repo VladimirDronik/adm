@@ -32,16 +32,16 @@
                             {{ Form::bs_alert() }}
                             <ul class="nav nav-tabs customtab" role="tablist">
                                 <li class="nav-item"> <a class="nav-link active"  data-toggle="tab" href="#boilertab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
-                                <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#boilertab2"  role="tab"><span class="hidden-sm-up"><i class="ti-command"></i></span> <span class="hidden-xs-down">Режим управления</span></a> </li>
+                                <!-- <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#boilertab2"  role="tab"><span class="hidden-sm-up"><i class="ti-command"></i></span> <span class="hidden-xs-down">Режим управления</span></a> </li> -->
                                 <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#boilertab3"  role="tab"><span class="hidden-sm-up"><i class="ti-command"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane p-20 active" id="boilertab1" role="tabpanel">
                                     @include('engineering/boiler/edit_tabs/main')
                                 </div>
-                                <div class="tab-pane p-20" id="boilertab2" role="tabpanel">
-                                    @include('engineering/boiler/edit_tabs/control_mode')
-                                </div>
+                                <!-- <div class="tab-pane p-20" id="boilertab2" role="tabpanel"> -->
+                                    {{-- @include('engineering/boiler/edit_tabs/control_mode') --}}
+                                <!-- </div> -->
                                 <div class="tab-pane p-20" id="boilertab3" role="tabpanel" style="width: 1000px;">
                                     @include('objects.methods_with_modbus', ['systemMethods' => $boiler->object->methods, 'device' => $boiler])
                                 </div>
@@ -126,7 +126,7 @@
         }
 
         $(document).ready(function () {
-            $("#auto_sel_id_outside_thermostat").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_outdoor_sensor").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_gateway_id").chosen({width:"100%", no_results_text: "Не найдено"});
 
             if ('{{ $boiler->gateway_type ==  \App\Models\HomeObject::GATEWAY_MODBUS }}') {

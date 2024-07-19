@@ -22,7 +22,9 @@ class CreateRequest extends FormRequest
         $rules = [
             'name' => 'required|string|max:100',
             'gateway_type' => 'required|string',
-            'type_boiler' => 'required|string',
+            'type' => 'required|string',
+            'mode' => 'required|string',
+            // 'type_boiler' => 'required|string',
             'id_outside_thermostat' => 'nullable|integer|exists:App\Models\Termostat,id_object',
         ];
 

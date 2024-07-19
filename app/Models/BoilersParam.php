@@ -12,6 +12,8 @@ class BoilersParam extends Model
 
     public $timestamps = false;
 
+    protected $guarded = ['id'];
+
     public function boiler(): BelongsTo
     {
         return $this->belongsTo(Boiler::class);

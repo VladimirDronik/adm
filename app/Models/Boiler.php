@@ -27,6 +27,16 @@ class Boiler extends Model
     const PROP_PUMP = 'pump';
     const PROP_PRESSURE = 'pressure';
 
+    const TYPE_ELECTRO = 'electro';
+    const TYPE_GAS = 'gas';
+
+    const MODE_CH_DHW = 'ch_dhw';
+    const MODE_CH = 'ch';
+    const MODE_DHW = 'dhw';
+
+    const HEATING_MODE_MANUAL = 'manual';
+    const HEATING_MODE_WC = 'wc';
+
     const DEFAULT_GVS_TEMP = 45;
 
     public $timestamps = false;
@@ -36,11 +46,42 @@ class Boiler extends Model
     public static function getTypes(bool $is_full = true)
     {
         $types = [
+            static::TYPE_ELECTRO => 'Электрический',
+            static::TYPE_GAS => 'Газовый',
+        ];
+
+        return $is_full ? $types : array_keys($types);
+    }
+
+    public static function getModes(bool $is_full = true)
+    {
+        $modes = [
+            static::MODE_CH_DHW => 'Отопление и ГВС',
+            static::MODE_CH => 'Отопление',
+            static::MODE_DHW => 'ГВС',
+        ];
+
+        return $is_full ? $modes : array_keys($modes);
+    }
+
+    public static function getHeatingModes(bool $is_full = true)
+    {
+        $modes = [
+            static::HEATING_MODE_MANUAL => 'Ручной',
+            static::HEATING_MODE_WC => 'Погодозависимый',
+        ];
+
+        return $is_full ? $modes : array_keys($modes);
+    }
+
+    public static function getExchangeProtocols(bool $is_full = true)
+    {
+        $protocols = [
             'ebus' => 'ebus',
             'openterm' => 'openterm',
         ];
 
-        return $is_full ? $types : array_keys($types);
+        return $is_full ? $protocols : array_keys($protocols);
     }
 
     public static function getProperties()
@@ -58,16 +99,6 @@ class Boiler extends Model
             //          self::PROP_MODULATION => 'Модуляция',
             //          self::PROP_PUMP       => 'Состояние насоса',
             self::PROP_PRESSURE => 'Давление',
-        ];
-
-        return $properties;
-    }
-
-    public static function getModes()
-    {
-        $properties = [
-            self::PROP_AUTOMODE => 'Автоматический режим',
-            self::PROP_MANUALMODE => 'Ручной режим',
         ];
 
         return $properties;
@@ -97,7 +128,26 @@ class Boiler extends Model
 
     public function getRusTypeAttribute()
     {
-        return self::getTypes(true)[$this->type] ?? '';
+        return static::getTypes(true)[$this->type] ?? '';
+    }
+
+    public function getProtocolBySlaverAttribute()
+    {
+        $protocol = '';
+
+        switch ($this->modbusSlaver?->relatedType->type) {
+            case 'bcg-301-w':
+                $protocol = 'opentherm';
+                break;
+            case 'beg-311-w':
+                $protocol = 'ebus';
+                break;
+            default:
+                $protocol = '';
+                break;
+        }
+
+        return $protocol;
     }
 
     public function object(): BelongsTo
@@ -113,5 +163,10 @@ class Boiler extends Model
     public function indoorSensor(): BelongsTo
     {
         return $this->belongsTo(Termostat::class, 'indoor_sensor', 'id_object');
+    }
+
+    public function modbusSlaver(): BelongsTo
+    {
+        return $this->belongsTo(ModbusSlaver::class, 'gateway_id', 'id');
     }
 }
