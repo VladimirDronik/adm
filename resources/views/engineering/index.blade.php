@@ -95,19 +95,18 @@
     <script>
         const deleteUrl = '{{ route('ajax.engineering.delete') }}';
         const addMenuUrl = '{{ route('ajax.menu.add') }}';
-        //const storeUrl = '{{ route('ajax.page.store') }}';
-  
+
         let url = '{{ route('engineering.index') }}';
         let del_id;
         let del_checkbox;
 
- @if(!empty(Session::get('success')) && Session::get('success') == 'Котёл успешно добавлен')
-	let idObject = '{{ Session::get('idObject') }}';
+        @if(!empty(Session::get('success')) && Session::get('success') == 'Котёл успешно добавлен')
+	    let idObject = '{{ Session::get('idObject') }}';
 
 
-              $('#modalNewMenu').show();
-              $('#modal_newmenu_init_btn').click();
-	@endif
+        $('#modalNewMenu').show();
+        $('#modal_newmenu_init_btn').click();
+	    @endif
 
         $(document).ready(function(){
 
@@ -133,23 +132,15 @@
 
             $('#del_menu_modal_btn').click(delWithCheckbox);
 
-            $('#addPageBtn').click(function() {
-                $('#modalPage #modal_groups_div').show();
-                $('#modalPage #namePage').val('');
-                $('#modal_page_init_btn').click();
-            });
-            
-           
-            
+            // $('#addPageBtn').click(function() {
+            //     $('#modalPage #modal_groups_div').show();
+            //     $('#modalPage #namePage').val('');
+            //     $('#modal_page_init_btn').click();
+            // });
+
             $('#newmenu_success_btn').click(function() {
             addMenu(idObject);
             });
-            
-
         });
-        
-       
-
-        
     </script>
 @endsection
