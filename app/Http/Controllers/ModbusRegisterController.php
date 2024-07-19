@@ -34,9 +34,8 @@ class ModbusRegisterController extends Controller
         $types = ModbusRegister::getTypes();
         $dataFormats = ModbusRegister::getSelectableDataFormat();
         $accesses = ModbusRegister::getSelectableAccess();
-        $pollingCycles = ModbusRegister::getSelectablePollingCycle();
 
-        return view('mod_bus.register.edit', compact('register', 'slavers', 'types', 'dataFormats', 'accesses', 'pollingCycles'));
+        return view('mod_bus.register.edit', compact('register', 'slavers', 'types', 'dataFormats', 'accesses'));
     }
 
     public function update(UpdateRequest $r, ModbusRegister $register)
@@ -60,9 +59,8 @@ class ModbusRegisterController extends Controller
         $types = ModbusRegister::getTypes();
         $dataFormats = ModbusRegister::getSelectableDataFormat();
         $accesses = ModbusRegister::getSelectableAccess();
-        $pollingCycles = ModbusRegister::getSelectablePollingCycle();
 
-        return view('mod_bus.register.create', compact('slavers', 'types', 'dataFormats', 'accesses', 'pollingCycles'));
+        return view('mod_bus.register.create', compact('slavers', 'types', 'dataFormats', 'accesses'));
     }
 
     public function store(CreateRequest $r)

@@ -33,8 +33,6 @@ class CreateRequest extends FormRequest
             'units' => 'nullable|string',
             'scale_unit' => 'nullable|numeric',
             'access' => 'required|string',
-            'polling' => 'nullable|boolean',
-            'polling_cycle' => 'nullable|integer',
         ];
     }
 }

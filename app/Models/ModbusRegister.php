@@ -50,31 +50,12 @@ class ModbusRegister extends Model
         ];
     }
 
-    public static function getSelectablePollingCycle(): array
-    {
-        return [
-            0 => 'Непрерывно',
-            1 => '1 мин',
-            5 => '5 мин',
-            15 => '15 мин',
-            30 => '30 мин',
-            60 => '60 мин',
-        ];
-    }
-
     public static function getSelectableAccess(): array
     {
         return [
             'ro' => 'ro',
             'rw' => 'rw',
         ];
-    }
-
-    public function getPollingCycleNameAttribute()
-    {
-        $pollingCycle = static::getSelectablePollingCycle();
-
-        return array_key_exists($this->polling_cycle, $pollingCycle) ? $pollingCycle[$this->polling_cycle] : $this->polling_cycle;
     }
 
     public function slaver(): BelongsTo
