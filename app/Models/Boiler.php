@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class Boiler
@@ -27,8 +28,6 @@ class Boiler extends Model
     const PROP_PRESSURE = 'pressure';
 
     const DEFAULT_GVS_TEMP = 45;
-
-    protected $table = 'boiler';
 
     public $timestamps = false;
 
@@ -101,18 +100,18 @@ class Boiler extends Model
         return self::getTypes(true)[$this->type] ?? '';
     }
 
-    public function object()
+    public function object(): BelongsTo
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
     }
 
-    public function eobject()
+    public function outdoorSensor(): BelongsTo
     {
-        return $this->belongsTo(HomeObject::class, 'object', 'id');
+        return $this->belongsTo(Termostat::class, 'outdoor_sensor', 'id_object');
     }
 
-    public function iobject()
+    public function indoorSensor(): BelongsTo
     {
-        return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+        return $this->belongsTo(Termostat::class, 'indoor_sensor', 'id_object');
     }
 }
