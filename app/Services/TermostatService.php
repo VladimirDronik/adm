@@ -75,6 +75,9 @@ class TermostatService
             } elseif ($usensor->type == Usensor::TYPE_BME280 || $usensor->type == Usensor::TYPE_OUTDOORV3) {
                 $data['min_threshold'] = -40;
                 $data['max_threshold'] = 85;
+            } elseif ($usensor->type == Usensor::TYPE_SCD40 || $usensor->type == Usensor::TYPE_SCD41) {
+                $data['min_threshold'] = -10;
+                $data['max_threshold'] = 60;
             } else {
                 $data['min_threshold'] = 0;
                 $data['max_threshold'] = 0;
