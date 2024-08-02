@@ -26,6 +26,7 @@ class CurtainFormRequest extends FormRequest
     {
         $rules = [
             'name' => 'required|string|max:255',
+            'vendor' => 'required|string',
         ];
 
         $place = $this->request->get('place');

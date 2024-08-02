@@ -74,6 +74,7 @@
 
         $("#auto_sel_device_id").chosen({width:"100%", no_results_text: "Не найдено"});
         $("#auto_sel_bus_id").chosen({width:"100%", no_results_text: "Не найдено"});
+        $("#auto_sel_vendor").chosen({width:"100%", no_results_text: "Не найдено"});
 
         var place = $('#curtain_form input[name=place]:checked').val();
         if (place == 'rs485') {

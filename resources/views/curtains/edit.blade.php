@@ -141,6 +141,7 @@
             $("#auto_sel_bus_id").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id_open").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_port_id_close").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_vendor").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_device_id").chosen().change(function() {
                 $.ajax({

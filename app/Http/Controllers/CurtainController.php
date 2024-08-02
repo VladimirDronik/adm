@@ -43,6 +43,7 @@ class CurtainController extends Controller
         [$messages, $events, $sounds, $views, $rooms, $scripts, , , $alice] = Service::getListElements($curtain->id_object);
 
         $types = Curtain::getTypes(true);
+        $vendors = Curtain::getVendors(true);
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
         $availableEvents = Curtain::getEvents();
@@ -53,7 +54,7 @@ class CurtainController extends Controller
 
         return view('curtains.edit', compact('types', 'curtain', 'events', 'sounds', 'views', 'rooms',
             'idDevice', 'devices', 'ports', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents',
-            'properties', 'scripts', 'allEvents', 'can', 'buses'));
+            'properties', 'scripts', 'allEvents', 'can', 'buses', 'vendors'));
     }
 
     public function update(CurtainFormRequest $r, int $id)
@@ -77,11 +78,12 @@ class CurtainController extends Controller
     {
         $types = Curtain::getTypes(true);
         $places = Curtain::getPlaces(true);
+        $vendors = Curtain::getVendors(true);
         $devices = $this->deviceRepository->getAllToArray();
         $buses = $this->modbusRepository->getAllBusesToArray();
         $tab = 1;
 
-        return view('curtains.create', compact('types', 'places', 'tab', 'devices', 'buses'));
+        return view('curtains.create', compact('types', 'places', 'tab', 'devices', 'buses', 'vendors'));
     }
 
     public function store(CurtainFormRequest $r)

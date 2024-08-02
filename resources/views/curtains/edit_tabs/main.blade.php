@@ -10,6 +10,7 @@
 </div>
 
 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
+{{ Form::bs_autoselect('vendor', 'Производитель привода*:', $vendors, old('vendor', $curtain->vendor), false, false, [], null) }}
 
 <div class="col-sm-12 pr-0 mt-4">
     @if ($curtain->place == \App\Models\Curtain::PLACE_PORT || $curtain->place == \App\Models\Curtain::PLACE_PHASE)

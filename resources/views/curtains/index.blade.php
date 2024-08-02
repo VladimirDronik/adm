@@ -37,6 +37,7 @@
                                 <th style="width: 60px;">ID</th>
                                 <th>Название</th>
                                 <th>Тип управления</th>
+                                <th>Производитель привода</th>
                                 <th>Статус</th>
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>
@@ -51,6 +52,9 @@
                                     </td>
                                     <td>
                                         {{ $curtain->rus_place }}
+                                    </td>
+                                    <td>
+                                        {{ $curtain->vendor_name }}
                                     </td>
                                     <td>
                                         @if($curtain->place == \App\Models\Curtain::PLACE_RS485)
@@ -80,6 +84,7 @@
                                 <th style="width: 60px;">ID</th>
                                 <th>Название</th>
                                 <th>Тип управления</th>
+                                <th>Производитель привода</th>
                                 <th>Статус</th>
                                 <th style="width: 60px;"></th>
                                 <th style="width: 60px;"></th>

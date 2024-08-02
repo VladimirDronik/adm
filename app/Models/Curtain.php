@@ -36,6 +36,10 @@ class Curtain extends Model
 
     const PLACE_RS485 = 'rs485';
 
+    const VENDOR_ONVIZ = 'onviz';
+
+    const VENDOR_AOK = 'aok';
+
     protected $table = 'curtains';
 
     public $timestamps = false;
@@ -61,6 +65,16 @@ class Curtain extends Model
         ];
 
         return $is_full ? $places : array_keys($places);
+    }
+
+    public static function getVendors(bool $is_full = false)
+    {
+        $vendors = [
+            static::VENDOR_ONVIZ => 'Onviz',
+            static::VENDOR_AOK => 'A-OK',
+        ];
+
+        return $is_full ? $vendors : array_keys($vendors);
     }
 
     /**
@@ -97,6 +111,11 @@ class Curtain extends Model
     public function getRusPlaceAttribute()
     {
         return self::getPlaces(true)[$this->place] ?? '';
+    }
+
+    public function getVendorNameAttribute()
+    {
+        return static::getVendors(true)[$this->vendor] ?? '';
     }
 
     /* relations */

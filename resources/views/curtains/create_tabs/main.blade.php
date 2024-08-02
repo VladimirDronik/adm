@@ -1,6 +1,7 @@
 <br>
 {{ Form::bs_radio('place', 'Тип управления*:', $places, old('place'), ['required' => true]) }}
 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
+{{ Form::bs_autoselect('vendor', 'Производитель привода*:', $vendors, old('vendor'), false, false, [], null) }}
 
 <div class="form-group row ">
     <div class="col-sm-11 pr-0 mt-4">
