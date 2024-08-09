@@ -86,32 +86,28 @@
     </div>
     @include('components.info_modal')
     @include('engineering.create_modal')
-    @include('engineering.create_page_modal')
     @include('engineering.delete_modal')
 @endsection
 
 @section('scripts')
     <script src="{{ asset('ela/js/pagescripts/page.js') }}"></script>
     <script>
-        const deleteUrl = '{{ route('ajax.engineering.delete') }}';
-        const addMenuUrl = '{{ route('ajax.menu.add') }}';
+        const deleteUrl = "{{ route('ajax.engineering.delete') }}";
+        const addMenuUrl = "{{ route('ajax.menu.add') }}";
 
-        let url = '{{ route('engineering.index') }}';
+        let url = "{{ route('engineering.index') }}";
         let del_id;
         let del_checkbox;
 
-        @if(!empty(Session::get('success')) && Session::get('success') == 'Котёл успешно добавлен')
-	    let idObject = '{{ Session::get('idObject') }}';
+        if (document.referrer == "{{ route('boiler.create') }}") {
+            let idObject = "{{ Session::get('idObject') }}";
 
-
-        $('#modalNewMenu').show();
-        $('#modal_newmenu_init_btn').click();
-	    @endif
+            addMenu(idObject);
+        }
 
         $(document).ready(function(){
 
             $('.del_btn').click(function () {
-
                 del_id = $(this).data('id');
 
                 if ($(this).data('type') == 'boiler') {
@@ -137,10 +133,6 @@
             //     $('#modalPage #namePage').val('');
             //     $('#modal_page_init_btn').click();
             // });
-
-            $('#newmenu_success_btn').click(function() {
-            addMenu(idObject);
-            });
         });
     </script>
 @endsection

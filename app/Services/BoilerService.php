@@ -2,13 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Page;
 use App\Models\Boiler;
 use App\Models\BoilerAuto;
-use App\Models\BoilerManual;
+use App\Models\HomeObject;
 use App\Models\BoilersParam;
 use App\Models\BoilersParamsFlag;
-use App\Models\BoilerWater;
-use App\Models\HomeObject;
 use Illuminate\Support\Facades\DB;
 
 class BoilerService
@@ -41,6 +40,15 @@ class BoilerService
             }
 
             $boiler->save();
+
+            $boiler->boilersParamsFlag->update([
+                'outdoor_temp' => $boiler->outdoor_sensor ? 1 : 0,
+            ]);
+
+            $page = Page::where('name', $boiler->object->name)->first();
+            if ($page) {
+                $boiler->updatePageElements($page->id);
+            }
 
             // if ($boiler->mode == Boiler::PROP_MANUALMODE) {
             //     $boilerManual = $boiler->object->boilerManual;

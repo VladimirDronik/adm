@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -104,26 +105,168 @@ class Boiler extends Model
         return $properties;
     }
 
-    public static function getElementsForPage($idPage)
+    public function updatePageElements(int $pageId): void
     {
-        return [
-            ['name' => 'Подача', 'type' => 'label', 'image' => '', 'value' => '60℃',
-                'page' => $idPage,  'parent' => 0, 'position' => 1, 'sort' => 1, 'active' => 1, 'handle' => 'csupply'],
-            ['name' => 'Обратка', 'type' => 'label', 'image' => '', 'value' => '45℃',
-                'page' => $idPage,  'parent' => 0, 'position' => 1, 'sort' => 2, 'active' => 1, 'handle' => 'creturn'],
-            ['name' => 'Улица', 'type' => 'label', 'image' => '', 'value' => '5℃',
-                'page' => $idPage,  'parent' => 0, 'position' => 1, 'sort' => 3, 'active' => 1, 'handle' => 'temperature'],
-            ['name' => 'Состояние', 'type' => 'switch', 'image' => 'boiler.svg', 'value' => 'on',
-                'page' => $idPage,  'parent' => 0, 'position' => 2, 'sort' => 1, 'active' => 1, 'handle' => 'state'],
-            ['name' => 'Автоматический режим', 'type' => 'switch', 'image' => 'settings.svg', 'value' => 'on', 'settings' => 'false',
-                'page' => $idPage,  'parent' => 0, 'position' => 2, 'sort' => 2, 'active' => 1, 'handle' => 'automode'],
-            ['name' => 'Ручной режим', 'type' => 'switch', 'image' => 'settings.svg', 'value' => 'off', 'settings' => 'true',
-                'page' => $idPage,  'parent' => 0, 'position' => 2, 'sort' => 3, 'active' => 1, 'handle' => 'manualmode'],
-            ['name' => 'Состояние насоса', 'type' => 'label', 'image' => 'nasos.svg', 'value' => 'Включено',
-                'page' => $idPage,  'parent' => 0, 'position' => 2, 'sort' => 4, 'active' => 1, 'handle' => 'pump'],
-            ['name' => 'Давление теплоносителя, бар', 'type' => 'label', 'image' => 'davlenie.svg', 'value' => '5',
-                'page' => $idPage,  'parent' => 0, 'position' => 2, 'sort' => 5, 'active' => 1, 'handle' => 'pressure'],
-        ];
+        $paramsFlag = $this->boilersParamsFlag;
+        $page = Page::find($pageId);
+        $sort = 1;
+
+        if ($paramsFlag->ch_current_temp) {
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'ch_current_temp',
+                ],
+                [
+                    'name' => 'ЦО', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 0, 'units' => '℃',
+                ]
+            );
+
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'ch_current_temp')->delete();
+        }
+
+        if ($paramsFlag->ch_setpoint_temp) {
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'ch_setpoint_temp',
+                ],
+                [
+                    'name' => 'Уставка ЦО', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 1, 'units' => '℃',
+                ]
+            );
+
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'ch_setpoint_temp')->delete();
+        }
+
+        if ($paramsFlag->return_temp) {
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'return_temp',
+                ],
+                [
+                    'name' => 'Обратка', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 0, 'units' => '℃',
+                ]
+            );
+
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'return_temp')->delete();
+        }
+
+        if ($paramsFlag->dhw_current_temp) {
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'dhw_current_temp',
+                ],
+                [
+                    'name' => 'ГВС', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 0, 'units' => '℃',
+                ]
+            );
+
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'dhw_current_temp')->delete();
+        }
+
+        if ($paramsFlag->dhw_setpoint_temp) {
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'dhw_setpoint_temp',
+                ],
+                [
+                    'name' => 'Уставка ГВС', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 1, 'units' => '℃',
+                ]
+            );
+
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'dhw_setpoint_temp')->delete();
+        }
+
+        if ($paramsFlag->outdoor_temp) {
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'outdoor_temp',
+                ],
+                [
+                    'name' => 'Уличная температура', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 0, 'units' => '℃',
+                ]
+            );
+
+            $sort++;
+
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'wc',
+                ],
+                [
+                    'name' => 'ПЗА', 'type' => 'switch',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 0,
+                ]
+            );
+
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'outdoor_temp')->delete();
+            $page->elements()->where('handle', 'wc')->delete();
+        }
+
+        if ($paramsFlag->error_code) {
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'error_code',
+                ],
+                [
+                    'name' => 'Ошибка', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 0,
+                ]
+            );
+
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'error_code')->delete();
+        }
     }
 
     public function getRusTypeAttribute()
@@ -168,5 +311,10 @@ class Boiler extends Model
     public function modbusSlaver(): BelongsTo
     {
         return $this->belongsTo(ModbusSlaver::class, 'gateway_id', 'id');
+    }
+
+    public function boilersParamsFlag(): HasOne
+    {
+        return $this->hasOne(BoilersParamsFlag::class);
     }
 }
