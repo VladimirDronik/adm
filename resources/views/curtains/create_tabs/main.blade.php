@@ -1,7 +1,6 @@
 <br>
 {{ Form::bs_radio('place', 'Тип управления*:', $places, old('place'), ['required' => true]) }}
 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-{{ Form::bs_autoselect('vendor', 'Производитель привода*:', $vendors, old('vendor'), false, false, [], null) }}
 
 <div class="form-group row ">
     <div class="col-sm-11 pr-0 mt-4">
@@ -22,9 +21,11 @@
         </div>
 
         <div id='rs_485_div' hidden>
-            {{ Form::bs_text('address', 'Адрес:', old('address'), [], 'От 0 до 255') }}
+            {{ Form::bs_autoselect('vendor', 'Производитель привода*:', $vendors, old('vendor'), false, false, [], null) }}
 
-            {{ Form::bs_text('group', 'Группа:', old('group'), [], 'От 0 до 255') }}
+            {{ Form::bs_number('address', 'Адрес:', old('address'), ['min' => 0, 'max' => 255]) }}
+
+            {{ Form::bs_number('group', 'Группа:', old('group'), ['min' => 0, 'max' => 255]) }}
 
             {{ Form::bs_checkbox('is_inverse', 'Инвертировать проценты:', old('is_inverse')) }}
         </div>

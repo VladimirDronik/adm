@@ -157,6 +157,22 @@
                 });
             });
 
+            $("#auto_sel_vendor").chosen().change(function() {
+                var vendor = $(this).val();
+
+                if (vendor == 'aok') {
+                    $('#curtain_form [name=address]').attr('min', 1);
+                    $('#curtain_form [name=address]').attr('max', 99);
+                    $('#curtain_form [name=group]').attr('min', 1);
+                    $('#curtain_form [name=group]').attr('max', 16);
+                } else if (vendor == 'onviz') {
+                    $('#curtain_form [name=address]').attr('min', 1);
+                    $('#curtain_form [name=address]').attr('max', 253);
+                    $('#curtain_form [name=group]').attr('min', 1);
+                    $('#curtain_form [name=group]').attr('max', 253);
+                }
+            });
+
             //messages
             $('#apply_message_btn').click(clickApplyMessageBtn);
             // edit messages method

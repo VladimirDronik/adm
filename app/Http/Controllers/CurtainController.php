@@ -51,10 +51,31 @@ class CurtainController extends Controller
         $devices = $this->deviceRepository->getAllToArray();
         $buses = $this->modbusRepository->getAllBusesToArray();
         $allEvents = '';
+        $addressAttributes = [];
+        $groupAttributes = [];
 
-        return view('curtains.edit', compact('types', 'curtain', 'events', 'sounds', 'views', 'rooms',
+        if ($curtain->place == Curtain::PLACE_RS485) {
+            switch ($curtain->vendor) {
+                case 'aok':
+                    $addressAttributes = ['min' => 1, 'max' => 99];
+                    $groupAttributes = ['min' => 1, 'max' => 16];
+                    break;
+                case 'onviz':
+                    $addressAttributes = ['min' => 1, 'max' => 253];
+                    $groupAttributes = ['min' => 1, 'max' => 253];
+                    break;
+                default:
+                    $addressAttributes = ['min' => 0, 'max' => 255];
+                    $groupAttributes = ['min' => 0, 'max' => 255];
+                    break;
+            }
+        }
+
+        return view('curtains.edit', compact(
+            'types', 'curtain', 'events', 'sounds', 'views', 'rooms', 'addressAttributes',
             'idDevice', 'devices', 'ports', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents',
-            'properties', 'scripts', 'allEvents', 'can', 'buses', 'vendors'));
+            'properties', 'scripts', 'allEvents', 'can', 'buses', 'vendors', 'groupAttributes'
+        ));
     }
 
     public function update(CurtainFormRequest $r, int $id)

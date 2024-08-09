@@ -10,7 +10,6 @@
 </div>
 
 {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-{{ Form::bs_autoselect('vendor', 'Производитель привода*:', $vendors, old('vendor', $curtain->vendor), false, false, [], null) }}
 
 <div class="col-sm-12 pr-0 mt-4">
     @if ($curtain->place == \App\Models\Curtain::PLACE_PORT || $curtain->place == \App\Models\Curtain::PLACE_PHASE)
@@ -23,8 +22,10 @@
 
         {{ Form::bs_autoselect('bus_id', 'Шина:', $buses, old('bus_id', $curtain->bus_id), false, false, [], null) }}
 
-        {{ Form::bs_text('address', 'Адрес:', old('address', $curtain->address), [], 'От 0 до 255') }}
-        {{ Form::bs_text('group', 'Группа:', old('group', $curtain->group), [], 'От 0 до 255') }}
+        {{ Form::bs_autoselect('vendor', 'Производитель привода*:', $vendors, old('vendor', $curtain->vendor), false, false, [], null) }}
+
+        {{ Form::bs_number('address', 'Адрес:', old('address', $curtain->address), $addressAttributes) }}
+        {{ Form::bs_number('group', 'Группа:', old('group', $curtain->group), $groupAttributes) }}
 
         {{ Form::bs_checkbox('is_inverse', 'Инвертировать проценты:', old('is_inverse', $curtain->is_inverse)) }}
     @endif

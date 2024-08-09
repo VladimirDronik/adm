@@ -26,7 +26,6 @@ class CurtainFormRequest extends FormRequest
     {
         $rules = [
             'name' => 'required|string|max:255',
-            'vendor' => 'required|string',
         ];
 
         $place = $this->request->get('place');
@@ -40,6 +39,7 @@ class CurtainFormRequest extends FormRequest
             }
         } else {
             $rules['type'] = 'required|string';
+            $rules['vendor'] = 'required|string';
             $rules['bus_id'] = 'required|integer';
             $rules['address'] = 'required|integer|between:0,255';
             $rules['group'] = 'required|integer|between:0,255';
