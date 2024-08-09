@@ -156,12 +156,6 @@
                             <i class="fa fa-object-group"></i><span class="hide-menu">Отображения</span></a>
                     </li>
                 @endcan
-                @can('views')
-                    <li>
-                        <a class="has-arrow" href="{{ route('pages.index') }}" aria-expanded="false">
-                            <i class="fa fa-bars"></i><span class="hide-menu">Страницы</span></a>
-                    </li>
-                @endcan
                 @can('scenes')
                     <li>
                         <a class="has-arrow" href="{{ route('scenes.index') }}" aria-expanded="false">
@@ -182,8 +176,28 @@
                             <i class="fa fa-bell-o"></i><span class="hide-menu">Оповещения</span></a></li>
                 @endcan
                 @can('menu')
-                    <li> <a class="has-arrow" href="{{ route('menu.index') }}" aria-expanded="false">
-                            <i class="fa fa-th-list"></i><span class="hide-menu">Меню</span></a></li>
+                    <li>
+                        <a class="has-arrow" href="{{ route('menu.index') }}" aria-expanded="false">
+                            <i class="fa fa-th-list"></i>
+                            <span class="hide-menu">Меню</span>
+                        </a>
+                        <ul aria-expanded="false" class="collapse">
+                            <li>
+                                <a href="{{ route('menu.index') }}">
+                                    <i class="fa fa-bars"></i>
+                                    Пункты меню
+                                </a>
+                            </li>
+                            @can('views')
+                                <li>
+                                    <a href="{{ route('pages.index') }}">
+                                        <i class="fa fa-file-text"></i>
+                                        Страницы
+                                    </a>
+                                </li>
+                            @endcan
+                        </ul>
+                    </li>
                 @endcan
                 @can('scripts')
                     <li> <a class="has-arrow" href="{{ route('scripts.index') }}" aria-expanded="false">
