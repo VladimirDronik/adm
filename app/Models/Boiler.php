@@ -132,7 +132,7 @@ class Boiler extends Model
         }
 
         if ($paramsFlag->ch_setpoint_temp) {
-            Elements::updateOrCreate(
+            $element = Elements::updateOrCreate(
                 [
                     'id_object' => $this->id_object,
                     'handle' => 'ch_setpoint_temp',
@@ -145,6 +145,8 @@ class Boiler extends Model
                     'settings' => 1, 'units' => '℃',
                 ]
             );
+
+            $element->internalPages()->create();
 
             $sort++;
         } else {
@@ -192,7 +194,7 @@ class Boiler extends Model
         }
 
         if ($paramsFlag->dhw_setpoint_temp) {
-            Elements::updateOrCreate(
+            $element = Elements::updateOrCreate(
                 [
                     'id_object' => $this->id_object,
                     'handle' => 'dhw_setpoint_temp',
@@ -205,6 +207,8 @@ class Boiler extends Model
                     'settings' => 1, 'units' => '℃',
                 ]
             );
+
+            $element->internalPages()->create();
 
             $sort++;
         } else {
