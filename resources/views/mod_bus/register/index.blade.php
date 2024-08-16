@@ -74,9 +74,11 @@
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     </td>
                                     <td>
-                                        <input class="form-control col-md-4" style="display: inline;" autocomplete="off" id="modbus_write_{{ $register->id }}" name="modbus_write_{{ $register->id }}" type="text" value="">
-                                        &nbsp;&nbsp;
-                                        <button type="button" class="btn btn-info btn-sm btn-rounded write_btn" data-id="{{ $register->id }}" data-units="{{ $register->units }}"><i class="fa fa-arrow-up" title="Записать значение"></i></button>
+                                        @if($register->access == 'rw')
+                                            <input class="form-control col-md-4" style="display: inline;" autocomplete="off" id="modbus_write_{{ $register->id }}" name="modbus_write_{{ $register->id }}" type="text" value="">
+                                            &nbsp;&nbsp;
+                                            <button type="button" class="btn btn-info btn-sm btn-rounded write_btn" data-id="{{ $register->id }}" data-units="{{ $register->units }}"><i class="fa fa-arrow-up" title="Записать значение"></i></button>
+                                        @endif
                                     </td>
                                     <td>
                                         @if($register->comment)
