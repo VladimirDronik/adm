@@ -235,7 +235,7 @@ class Boiler extends Model
             Elements::updateOrCreate(
                 [
                     'id_object' => $this->id_object,
-                    'handle' => 'wc',
+                    'handle' => 'weather_compensation',
                 ],
                 [
                     'name' => 'ПЗА', 'type' => 'switch',
@@ -249,7 +249,7 @@ class Boiler extends Model
             $sort++;
         } else {
             $page->elements()->where('handle', 'outdoor_temp')->delete();
-            $page->elements()->where('handle', 'wc')->delete();
+            $page->elements()->where('handle', 'weather_compensation')->delete();
         }
 
         if ($paramsFlag->error_code) {
