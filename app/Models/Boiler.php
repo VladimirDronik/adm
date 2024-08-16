@@ -232,6 +232,17 @@ class Boiler extends Model
 
             $sort++;
 
+            $status = null;
+
+            switch ($this->heating_mode) {
+                case static::HEATING_MODE_MANUAL:
+                    $status = 'off';
+                    break;
+                case static::HEATING_MODE_WC:
+                    $status = 'on';
+                    break;
+            }
+
             Elements::updateOrCreate(
                 [
                     'id_object' => $this->id_object,
@@ -240,7 +251,7 @@ class Boiler extends Model
                 [
                     'name' => 'ПЗА', 'type' => 'switch',
                     'page' => $pageId, 'parent' => 0,
-                    'sort' => $sort,
+                    'sort' => $sort, 'status' => $status,
                     'position' => 2, 'active' => 1,
                     'settings' => 0,
                 ]
