@@ -13,13 +13,11 @@
             @endif
         </td>
         <td>{{ $element->type }}</td>
-        <td><img src="{{ asset('ela/images/views_items/'.$element->image) }}"
-                 id="imageElement_{{ $element->id }}" class="imageElement"
-                 data-toggle="modal" data-target="#selectImageCategory"
-                 onclick="updateImage({{ $element->id }}, true);"
-                 width="50px" height="50px" style="cursor: pointer">
+        <td>
+            @if($element->status)
+                {{ $element->status . ($element->units ? ' ' . $element->units : '') }}
+            @endif
         </td>
-        <td>{{ $element->value }}</td>
         <td class="text-center">
             <input type="checkbox" class="active_checkbox" style="cursor: pointer;" data-id="{{$element->id}}" value="1" @if($element->active) checked @endif>
         </td>

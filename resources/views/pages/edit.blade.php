@@ -35,8 +35,7 @@
     </div>
     @include('components.info_modal')
     @include('components.del_modal')
-
-    @include('elements.index_modals')
+    @include('elements.name_modal')
 @endsection
 
 @section('scripts')

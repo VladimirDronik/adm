@@ -6,7 +6,6 @@
                 <th style="width: 50px;">ID</th>
                 <th style="width: 300px;">Название</th>
                 <th>Тип</th>
-                <th>Изображение</th>
                 <th>Значение</th>
                 <th>Активно</th>
                 <th class="text-center">Сортировка</th>
@@ -27,7 +26,6 @@
                     <th>ID</th>
                     <th>Название</th>
                     <th>Тип</th>
-                    <th>Изображение</th>
                     <th>Значение</th>
                     <th>Активно</th>
                     <th>Сортировка</th>

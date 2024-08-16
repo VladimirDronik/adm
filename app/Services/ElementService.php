@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 07.04.21
- * Time: 15:50
- */
 
 namespace App\Services;
 
@@ -44,39 +38,8 @@ class ElementService
 
     private function prepare($data, Elements $element)
     {
-        //unset($data['wh_color']);
-        //unset($data['bl_color']);
-
         if (! $data['parent'] || $data['type'] == 'accordeon') {
             $data['parent'] = '0';
-        }
-
-        if (! $data['image']) {
-            $data['image'] = 'noimage.png';
-        }
-
-        if ($data['type'] == 'label') {
-            $paramsArray = [['status' => $data['value']]];
-
-            if (array_key_exists('settings', $data)) {
-                $paramsArray[0]['settings'] = 'true';
-            }
-
-            $paramsArray[0]['wh_color'] = '#187306';
-            $paramsArray[0]['bl_color'] = '#00ffbb';
-
-            $data['value'] = json_encode($paramsArray, JSON_UNESCAPED_UNICODE);
-        } elseif ($data['type'] == 'switch') {
-            $paramsArray = [['status' => $data['value']]];
-
-            if (array_key_exists('settings', $data)) {
-                $paramsArray[0]['settings'] = 'true';
-            }
-
-            $paramsArray[0]['wh_color'] = '#187306';
-            $paramsArray[0]['bl_color'] = '#00ffbb';
-
-            $data['value'] = json_encode($paramsArray, JSON_UNESCAPED_UNICODE);
         }
 
         $data['sort'] = $this->getSortMax($data['page'], $data['parent'], $data['position']) + 1;
@@ -173,27 +136,27 @@ class ElementService
     public function update(Elements $element, array $data)
     {
         DB::transaction(function () use ($element, $data) {
-            if (array_key_exists('handle', $data) &&
-                $data['handle'] != Boiler::PROP_WATER_TEMP &&
-                $data['handle'] != Boiler::PROP_AUTOMODE &&
-                $data['handle'] != Boiler::PROP_MANUALMODE
-            ) {
-                if ($element->handle == Boiler::PROP_WATER_TEMP ||
-                    $element->handle == Boiler::PROP_AUTOMODE ||
-                    $element->handle == Boiler::PROP_MANUALMODE
-                ) {
-                    InternalPage::where('idElement', $element->id)->delete();
-                }
-            } else {
-                if ($element->handle != Boiler::PROP_WATER_TEMP &&
-                    $element->handle != Boiler::PROP_AUTOMODE &&
-                    $element->handle != Boiler::PROP_MANUALMODE
-                ) {
-                    InternalPage::create([
-                        'idElement' => $element->id,
-                    ]);
-                }
-            }
+            // if (array_key_exists('handle', $data) &&
+            //     $data['handle'] != Boiler::PROP_WATER_TEMP &&
+            //     $data['handle'] != Boiler::PROP_AUTOMODE &&
+            //     $data['handle'] != Boiler::PROP_MANUALMODE
+            // ) {
+            //     if ($element->handle == Boiler::PROP_WATER_TEMP ||
+            //         $element->handle == Boiler::PROP_AUTOMODE ||
+            //         $element->handle == Boiler::PROP_MANUALMODE
+            //     ) {
+            //         InternalPage::where('idElement', $element->id)->delete();
+            //     }
+            // } else {
+            //     if ($element->handle != Boiler::PROP_WATER_TEMP &&
+            //         $element->handle != Boiler::PROP_AUTOMODE &&
+            //         $element->handle != Boiler::PROP_MANUALMODE
+            //     ) {
+            //         InternalPage::create([
+            //             'idElement' => $element->id,
+            //         ]);
+            //     }
+            // }
 
             $this->prepare($data, $element);
 

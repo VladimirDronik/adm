@@ -1,21 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 07.04.21
- * Time: 16:35
- */
 
 namespace App\Http\Controllers;
 
+use App\Models\Elements;
+use App\Services\ObjectService;
+use App\Services\ElementService;
+use App\Repositories\ObjectRepository;
+use App\Repositories\ElementRepository;
 use App\Http\Requests\Element\CreateRequest;
 use App\Http\Requests\Element\UpdateRequest;
-use App\Models\Elements;
-use App\Repositories\ElementRepository;
-use App\Repositories\ObjectRepository;
-use App\Services\ElementService;
-use App\Services\ImageService;
-use App\Services\ObjectService;
 
 class ElementController extends Controller
 {
@@ -31,12 +24,10 @@ class ElementController extends Controller
     {
         $types = Elements::getTypes(true);
         $parents = $this->elementRepository->getParentsToArray($pageId);
-        $images = ImageService::getMainImages();
         $objects = $objects = $this->objectRepository->getAllToArray();
         $settings = false;
 
-        return view('elements.create', compact('types', 'parents', 'pageId',
-            'images', 'objects', 'settings'));
+        return view('elements.create', compact('types', 'parents', 'pageId', 'objects', 'settings'));
     }
 
     public function store(CreateRequest $r)
@@ -57,15 +48,13 @@ class ElementController extends Controller
     {
         $types = Elements::getTypes(true);
         $parents = $this->elementRepository->getParentsToArray($element->page);
-        $images = ImageService::getMainImages();
         $objects = $this->objectRepository->getAllToArray();
         $settings = $this->elementRepository->parser($element->value, 'settings');
         $settings = filter_var($settings, FILTER_VALIDATE_BOOLEAN);
         $element->value = $this->elementRepository->parser($element->value, 'status');
         $handles = $this->objectService->getPropertiesByObjectId($element->id_object, false);
 
-        return view('elements.edit', compact('element', 'types', 'parents',
-            'objects', 'images', 'handles', 'settings'));
+        return view('elements.edit', compact('element', 'types', 'parents', 'objects', 'handles', 'settings'));
     }
 
     public function update(UpdateRequest $r, Elements $element)
