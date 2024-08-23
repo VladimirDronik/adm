@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class Boiler
@@ -26,9 +28,17 @@ class Boiler extends Model
     const PROP_PUMP = 'pump';
     const PROP_PRESSURE = 'pressure';
 
-    const DEFAULT_GVS_TEMP = 45;
+    const TYPE_ELECTRO = 'electro';
+    const TYPE_GAS = 'gas';
 
-    protected $table = 'boiler';
+    const MODE_CH_DHW = 'ch_dhw';
+    const MODE_CH = 'ch';
+    const MODE_DHW = 'dhw';
+
+    const HEATING_MODE_MANUAL = 'manual';
+    const HEATING_MODE_WC = 'wc';
+
+    const DEFAULT_GVS_TEMP = 45;
 
     public $timestamps = false;
 
@@ -37,11 +47,42 @@ class Boiler extends Model
     public static function getTypes(bool $is_full = true)
     {
         $types = [
+            static::TYPE_ELECTRO => 'Электрический',
+            static::TYPE_GAS => 'Газовый',
+        ];
+
+        return $is_full ? $types : array_keys($types);
+    }
+
+    public static function getModes(bool $is_full = true)
+    {
+        $modes = [
+            static::MODE_CH_DHW => 'Отопление и ГВС',
+            static::MODE_CH => 'Отопление',
+            static::MODE_DHW => 'ГВС',
+        ];
+
+        return $is_full ? $modes : array_keys($modes);
+    }
+
+    public static function getHeatingModes(bool $is_full = true)
+    {
+        $modes = [
+            static::HEATING_MODE_MANUAL => 'Ручной',
+            static::HEATING_MODE_WC => 'Погодозависимый',
+        ];
+
+        return $is_full ? $modes : array_keys($modes);
+    }
+
+    public static function getExchangeProtocols(bool $is_full = true)
+    {
+        $protocols = [
             'ebus' => 'ebus',
             'openterm' => 'openterm',
         ];
 
-        return $is_full ? $types : array_keys($types);
+        return $is_full ? $protocols : array_keys($protocols);
     }
 
     public static function getProperties()
@@ -64,55 +105,231 @@ class Boiler extends Model
         return $properties;
     }
 
-    public static function getModes()
+    public function updatePageElements(int $pageId): void
     {
-        $properties = [
-            self::PROP_AUTOMODE => 'Автоматический режим',
-            self::PROP_MANUALMODE => 'Ручной режим',
-        ];
+        $paramsFlag = $this->boilersParamsFlag;
+        $page = Page::find($pageId);
+        $sort = 1;
 
-        return $properties;
-    }
+        if ($paramsFlag->ch_current_temp) {
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'ch_current_temp',
+                ],
+                [
+                    'name' => 'ЦО', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 0, 'units' => '℃',
+                ]
+            );
 
-    public static function getElementsForPage($idPage)
-    {
-        return [
-            ['name' => 'Подача', 'type' => 'label', 'image' => '', 'value' => '60℃',
-                'page' => $idPage,  'parent' => 0, 'position' => 1, 'sort' => 1, 'active' => 1, 'handle' => 'csupply'],
-            ['name' => 'Обратка', 'type' => 'label', 'image' => '', 'value' => '45℃',
-                'page' => $idPage,  'parent' => 0, 'position' => 1, 'sort' => 2, 'active' => 1, 'handle' => 'creturn'],
-            ['name' => 'Улица', 'type' => 'label', 'image' => '', 'value' => '5℃',
-                'page' => $idPage,  'parent' => 0, 'position' => 1, 'sort' => 3, 'active' => 1, 'handle' => 'temperature'],
-            ['name' => 'Состояние', 'type' => 'switch', 'image' => 'boiler.svg', 'value' => 'on',
-                'page' => $idPage,  'parent' => 0, 'position' => 2, 'sort' => 1, 'active' => 1, 'handle' => 'state'],
-            ['name' => 'Автоматический режим', 'type' => 'switch', 'image' => 'settings.svg', 'value' => 'on', 'settings' => 'false',
-                'page' => $idPage,  'parent' => 0, 'position' => 2, 'sort' => 2, 'active' => 1, 'handle' => 'automode'],
-            ['name' => 'Ручной режим', 'type' => 'switch', 'image' => 'settings.svg', 'value' => 'off', 'settings' => 'true',
-                'page' => $idPage,  'parent' => 0, 'position' => 2, 'sort' => 3, 'active' => 1, 'handle' => 'manualmode'],
-            ['name' => 'Состояние насоса', 'type' => 'label', 'image' => 'nasos.svg', 'value' => 'Включено',
-                'page' => $idPage,  'parent' => 0, 'position' => 2, 'sort' => 4, 'active' => 1, 'handle' => 'pump'],
-            ['name' => 'Давление теплоносителя, бар', 'type' => 'label', 'image' => 'davlenie.svg', 'value' => '5',
-                'page' => $idPage,  'parent' => 0, 'position' => 2, 'sort' => 5, 'active' => 1, 'handle' => 'pressure'],
-        ];
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'ch_current_temp')->delete();
+        }
+
+        if ($paramsFlag->ch_setpoint_temp) {
+            $element = Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'ch_setpoint_temp',
+                ],
+                [
+                    'name' => 'Уставка ЦО', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 1, 'units' => '℃',
+                ]
+            );
+
+            $element->internalPages()->create();
+
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'ch_setpoint_temp')->delete();
+        }
+
+        if ($paramsFlag->return_temp) {
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'return_temp',
+                ],
+                [
+                    'name' => 'Обратка', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 0, 'units' => '℃',
+                ]
+            );
+
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'return_temp')->delete();
+        }
+
+        if ($paramsFlag->dhw_current_temp) {
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'dhw_current_temp',
+                ],
+                [
+                    'name' => 'ГВС', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 0, 'units' => '℃',
+                ]
+            );
+
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'dhw_current_temp')->delete();
+        }
+
+        if ($paramsFlag->dhw_setpoint_temp) {
+            $element = Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'dhw_setpoint_temp',
+                ],
+                [
+                    'name' => 'Уставка ГВС', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 1, 'units' => '℃',
+                ]
+            );
+
+            $element->internalPages()->create();
+
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'dhw_setpoint_temp')->delete();
+        }
+
+        if ($paramsFlag->outdoor_temp) {
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'outdoor_temp',
+                ],
+                [
+                    'name' => 'Уличная температура', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 0, 'units' => '℃',
+                ]
+            );
+
+            $sort++;
+
+            $status = null;
+
+            switch ($this->heating_mode) {
+                case static::HEATING_MODE_MANUAL:
+                    $status = 'off';
+                    break;
+                case static::HEATING_MODE_WC:
+                    $status = 'on';
+                    break;
+            }
+
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'weather_compensation',
+                ],
+                [
+                    'name' => 'ПЗА', 'type' => 'switch',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort, 'status' => $status,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 0,
+                ]
+            );
+
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'outdoor_temp')->delete();
+            $page->elements()->where('handle', 'weather_compensation')->delete();
+        }
+
+        if ($paramsFlag->error_code) {
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'error_code',
+                ],
+                [
+                    'name' => 'Ошибка', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 0,
+                ]
+            );
+
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'error_code')->delete();
+        }
     }
 
     public function getRusTypeAttribute()
     {
-        return self::getTypes(true)[$this->type] ?? '';
+        return static::getTypes(true)[$this->type] ?? '';
     }
 
-    public function object()
+    public function getProtocolBySlaverAttribute()
+    {
+        $protocol = '';
+
+        switch ($this->modbusSlaver?->relatedType->type) {
+            case 'bcg-301-w':
+                $protocol = 'opentherm';
+                break;
+            case 'beg-311-w':
+                $protocol = 'ebus';
+                break;
+            default:
+                $protocol = '';
+                break;
+        }
+
+        return $protocol;
+    }
+
+    public function object(): BelongsTo
     {
         return $this->belongsTo(HomeObject::class, 'id_object', 'id');
     }
 
-    public function eobject()
+    public function outdoorSensor(): BelongsTo
     {
-        return $this->belongsTo(HomeObject::class, 'object', 'id');
+        return $this->belongsTo(Termostat::class, 'outdoor_sensor', 'id_object');
     }
 
-    public function iobject()
+    public function indoorSensor(): BelongsTo
     {
-        return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+        return $this->belongsTo(Termostat::class, 'indoor_sensor', 'id_object');
+    }
+
+    public function modbusSlaver(): BelongsTo
+    {
+        return $this->belongsTo(ModbusSlaver::class, 'gateway_id', 'id');
+    }
+
+    public function boilersParamsFlag(): HasOne
+    {
+        return $this->hasOne(BoilersParamsFlag::class);
     }
 }

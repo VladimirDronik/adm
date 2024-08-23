@@ -20,7 +20,9 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'id_outside_thermostat' => 'nullable|integer|exists:App\Models\Termostat,id_object',
+            'mode' => 'required|string',
+            'heating_mode' => 'required|string',
+            'outdoor_sensor' => 'nullable|integer|exists:App\Models\Termostat,id_object',
         ];
     }
 }

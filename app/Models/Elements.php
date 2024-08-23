@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Elements extends Model
 {
@@ -27,5 +28,10 @@ class Elements extends Model
         ];
 
         return $is_full ? $types : array_keys($types);
+    }
+
+    public function internalPages(): HasMany
+    {
+        return $this->hasMany(InternalPage::class, 'idElement');
     }
 }

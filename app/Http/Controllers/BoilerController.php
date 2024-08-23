@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 11.04.21
- * Time: 11:32
- */
 
 namespace App\Http\Controllers;
 
@@ -35,9 +29,12 @@ class BoilerController extends Controller
     {
         $boiler = $this->boilerRepository->getBoiler($boilerIdObject);
         $termostats = $this->termostatRepository->getAllWithIdObjectToArray();
+        $scripts = $this->scriptRepository->getAllToArray();
         $modbusSlavers = null;
         $devices = null;
         $methodsIdWithRegisters = [];
+        $modes = Boiler::getModes();
+        $heatingModes = Boiler::getHeatingModes();
 
         if ($boiler->gateway_type == HomeObject::GATEWAY_MODBUS) {
             $modbusSlavers = $this->modbusRepository->getFilteredSlaversToArray(['heat']);
@@ -49,7 +46,10 @@ class BoilerController extends Controller
             $devices = $this->deviceRepository->getAllToArray();
         }
 
-        return view('engineering.boiler.edit', compact('boiler', 'termostats', 'modbusSlavers', 'devices', 'methodsIdWithRegisters'));
+        return view('engineering.boiler.edit', compact(
+            'modes', 'heatingModes', 'boiler', 'termostats',
+            'modbusSlavers', 'devices', 'methodsIdWithRegisters', 'scripts'
+        ));
     }
 
     public function update(UpdateRequest $r, int $idObject)
@@ -86,12 +86,14 @@ class BoilerController extends Controller
 
     public function create()
     {
-        $typesBoiler = Boiler::getTypes();
+        $typesBoiler = Boiler::getExchangeProtocols();
+        $types = Boiler::getTypes();
+        $modes = Boiler::getModes();
         $termostats = $this->termostatRepository->getAllWithIdObjectToArray();
         $modbusSlavers = $this->modbusRepository->getFilteredSlaversToArray(['heat']);
         $devices = $this->deviceRepository->getAllToArray();
         $gatewayTypes = HomeObject::getGatewayTypes();
 
-        return view('engineering.boiler.create', compact('typesBoiler', 'termostats', 'modbusSlavers', 'devices', 'gatewayTypes'));
+        return view('engineering.boiler.create', compact('typesBoiler', 'types', 'modes', 'termostats', 'modbusSlavers', 'devices', 'gatewayTypes'));
     }
 }

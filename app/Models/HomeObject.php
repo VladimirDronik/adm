@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\HomeObject
@@ -189,5 +190,10 @@ class HomeObject extends Model
     public function lamp()
     {
         return $this->hasOne(Lamp::class, 'id_object', 'id');
+    }
+
+    public function boiler(): HasOne
+    {
+        return $this->hasOne(Boiler::class, 'id_object', 'id');
     }
 }

@@ -2,14 +2,21 @@
 
 namespace App\Services;
 
-use App\Models\Boiler;
 use App\Models\Menu;
+use App\Models\ObjType;
+use Illuminate\Support\Facades\DB;
 use App\Repositories\MenuRepository;
 use App\Repositories\ObjectRepository;
-use Illuminate\Support\Facades\DB;
 
 class MenuService
 {
+    public function __construct(
+        private readonly ObjectRepository $objectRepository,
+        private readonly MenuRepository $menuRepository,
+        private readonly PageService $pageService,
+    ) {
+    }
+
     public function sort(array $data)
     {
         $menu = Menu::find($data['id']);
@@ -173,71 +180,64 @@ class MenuService
         return true;
     }
 
-    private function createEngeneeringMenuItem()
+    private function createEngeneeringMenuItem(): Menu
     {
-        $menu = new Menu();
-        $menu->name = 'Инженерное';
-        $menu->title = 'Инженерное';
-        $menu->link = 'ing';
-        $menu->image = 'el-schetchik.svg';
-        $menu->parent = 0;
-        $menu->sort = 1;
-        $menu->active = 1;
-        $menu->save();
+        $menu = Menu::create([
+            'name' => 'Инженерное',
+            'title' => 'Инженерное',
+            'link' => 'ing',
+            'image' => 'el-schetchik.svg',
+            'parent' => 0,
+            'sort' => 1,
+            'active' => 1,
+        ]);
 
         return $menu;
     }
 
-    private function createMenuItem($name, $link, $image, $parent)
+    private function createMenuItem(string $name, string $title, string $link, string $image, int $parent): Menu
     {
-        $menu = new Menu();
-        $menu->name = $name;
-        $menu->title = $name;
-        $menu->link = $link;
-        $menu->image = $image;
-        $menu->parent = $parent;
-        $menu->sort = 1;
-        $menu->active = 1;
-        $menu->save();
+        $menu = Menu::create([
+            'name' => $name,
+            'title' => $title,
+            'image' => $image,
+            'parent' => $parent,
+            'sort' => 1,
+            'active' => 1,
+        ]);
 
-        return $menu->id;
+        $menu->update([
+            'link' => $link . $menu->id,
+        ]);
+
+        return $menu;
     }
 
-    //Добавление нового пункта меню, который соответсвует добавленному объекту
+    /**
+     * Добавление нового пункта меню, который соответсвует добавленному объекту
+     */
     public function addMenu(int $idObject)
     {
-        $objectRep = new ObjectRepository();
-        $menuRep = new MenuRepository();
-        $pageServ = new PageService();
-        $elementServ = new ElementService();
-        $boiler = new Boiler();
-        $elementsArray = [];
+        $selectedObject = $this->objectRepository->getById($idObject);
 
-        $selectedObject = $objectRep->getById($idObject);
+        if ($selectedObject->type == ObjType::TYPE_BOILER) {
+            $engeneeringParent = $this->menuRepository->getByName('Инженерное');
 
-        if ($selectedObject->type == 'boiler') {
-            $engeneeringParent = $menuRep->getByName('Инженерное');
-            if (! isset($engeneeringParent->id)) {
+            if (!$engeneeringParent) {
                 $engeneeringParent = $this->createEngeneeringMenuItem();
             }
 
-            $boilerMenuPoint = $menuRep->getByName('Котёл');
-            if (! isset($boilerMenuPoint->id)) {
-                $this->createMenuItem('Котёл', 'boiler', 'boiler.svg', $engeneeringParent->id);
-            }
+            $menu = $this->createMenuItem(
+                'Котёл', $selectedObject->name, 'boiler', 'boiler.svg', $engeneeringParent->id
+            );
 
-            $idPage = $pageServ->store([
+            $pageId = $this->pageService->store([
                 'name' => $selectedObject->name,
-                'link' => 'boiler',
-                'type' => '2field',
+                'link' => $menu->link,
+                'type' => 'boiler',
             ]);
-            $elementsArray = $boiler::getElementsForPage($idPage);
-        }
 
-        //Сохранение элементов для страницы
-        foreach ($elementsArray as $element) {
-            $element['id_object'] = $selectedObject->id;
-            $elementServ->store($element);
+            $selectedObject->boiler->updatePageElements($pageId);
         }
     }
 }
