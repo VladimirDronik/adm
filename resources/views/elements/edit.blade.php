@@ -43,7 +43,7 @@
 
                             <input name="value" type="hidden" value="12">
 
-                            {{ Form::bs_simple_text('Значение:', $element->status ? ($element->status . ($element->units ? ' ' . $element->units : '')) : '') }}
+                            {{ Form::bs_simple_text('Значение:', $element->value ? ($element->value . ($element->units ? ' ' . $element->units : '')) : '') }}
 
                             <div id="handle_div">
                                 <div style="height: 10px;">&nbsp;</div>
@@ -56,7 +56,7 @@
                                     {{ Form::bs_autoselect('method', 'Метод:', [], old('method'), false, false, [], null, 'Метод объекта при нажатии на элемент') }}
                                 </div>
 
-                                {{--{{ Form::bs_autoselect('handle', 'Идентификатор:', $handles, $element->handle, false, false, [], null, 'Идентификатор свойства объекта') }}--}}
+                                {{ Form::bs_autoselect('handle', 'Идентификатор:', $handles, $element->handle, false, false, [], null, 'Идентификатор свойства объекта') }}
                             </div>
 
                             <div id="settings_div">
@@ -82,7 +82,7 @@
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/element.js') }}"></script>
     <script>
-        const url_methods_and_handle = '{{ route('ajax.objects.methodsAndHandles') }}';
+        const url_methods_and_handle = "{{ route('ajax.objects.methodsAndHandles') }}";
 
         $(document).ready(function () {
             $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});

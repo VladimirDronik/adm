@@ -24,13 +24,10 @@ class ElementService
         $element->save();
 
         if (array_key_exists('handle', $data) && (
-            $data['handle'] == Boiler::PROP_WATER_TEMP ||
-            $data['handle'] == Boiler::PROP_MANUALMODE ||
-            $data['handle'] == Boiler::PROP_AUTOMODE
+            $data['handle'] == Boiler::PROP_CH_SETPOINT_TEMP ||
+            $data['handle'] == Boiler::PROP_DHW_SETPOINT_TEMP
         )) {
-            InternalPage::create([
-                'idElement' => $element->id,
-            ]);
+            $element->internalPages()->create();
         }
 
         return $element->page;
@@ -136,27 +133,22 @@ class ElementService
     public function update(Elements $element, array $data)
     {
         DB::transaction(function () use ($element, $data) {
-            // if (array_key_exists('handle', $data) &&
-            //     $data['handle'] != Boiler::PROP_WATER_TEMP &&
-            //     $data['handle'] != Boiler::PROP_AUTOMODE &&
-            //     $data['handle'] != Boiler::PROP_MANUALMODE
-            // ) {
-            //     if ($element->handle == Boiler::PROP_WATER_TEMP ||
-            //         $element->handle == Boiler::PROP_AUTOMODE ||
-            //         $element->handle == Boiler::PROP_MANUALMODE
-            //     ) {
-            //         InternalPage::where('idElement', $element->id)->delete();
-            //     }
-            // } else {
-            //     if ($element->handle != Boiler::PROP_WATER_TEMP &&
-            //         $element->handle != Boiler::PROP_AUTOMODE &&
-            //         $element->handle != Boiler::PROP_MANUALMODE
-            //     ) {
-            //         InternalPage::create([
-            //             'idElement' => $element->id,
-            //         ]);
-            //     }
-            // }
+            if (array_key_exists('handle', $data) &&
+                $data['handle'] != Boiler::PROP_CH_SETPOINT_TEMP &&
+                $data['handle'] != Boiler::PROP_DHW_SETPOINT_TEMP
+            ) {
+                if ($element->handle == Boiler::PROP_CH_SETPOINT_TEMP ||
+                    $element->handle == Boiler::PROP_DHW_SETPOINT_TEMP
+                ) {
+                    InternalPage::where('idElement', $element->id)->delete();
+                }
+            } else {
+                if ($element->handle != Boiler::PROP_CH_SETPOINT_TEMP &&
+                    $element->handle != Boiler::PROP_DHW_SETPOINT_TEMP
+                ) {
+                    $element->internalPages()->create();
+                }
+            }
 
             $this->prepare($data, $element);
 

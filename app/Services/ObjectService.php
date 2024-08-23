@@ -96,7 +96,7 @@ class ObjectService
             $object = HomeObject::find($object_id);
 
             switch ($object->type) {
-                case 'boiler': $properties = Boiler::getProperties();
+                case 'boiler': $properties = $object->boiler->getProperties();
                     break;
 
                 case 'termostat': $properties = Termostat::getProperties();

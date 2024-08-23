@@ -14,8 +14,8 @@
         </td>
         <td>{{ $element->type }}</td>
         <td>
-            @if($element->status)
-                {{ $element->status . ($element->units ? ' ' . $element->units : '') }}
+            @if($element->value)
+                {{ $element->value . ($element->units ? ' ' . $element->units : '') }}
             @endif
         </td>
         <td class="text-center">

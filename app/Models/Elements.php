@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Elements extends Model
 {
@@ -33,5 +34,27 @@ class Elements extends Model
     public function internalPages(): HasMany
     {
         return $this->hasMany(InternalPage::class, 'idElement');
+    }
+
+    public function object(): BelongsTo
+    {
+        return $this->belongsTo(HomeObject::class, 'id_object', 'id');
+    }
+
+    public function getValueAttribute()
+    {
+        $value = $this->status;
+
+        if ($this->object && $this->object->type == ObjType::TYPE_BOILER) {
+            $boiler = $this->object->boiler;
+
+            if ($this->handle == Boiler::PROP_OUTDOOR_TEMP) {
+                $value = $boiler->outdoorSensor?->current;
+            } else {
+                $value = $boiler->boilersParam ? $boiler->boilersParam[$this->handle]  : null;
+            }
+        }
+
+        return $value;
     }
 }

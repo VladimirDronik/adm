@@ -15,17 +15,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Boiler extends Model
 {
-    const PROP_CSUPPLY = 'csupply';
-    const PROP_CRETURN = 'creturn';
-    const PROP_STATE = 'state';
-    const PROP_AUTOMODE = 'auto';
-    const PROP_MANUALMODE = 'manual';
-    const PROP_HEAT_TEMP = 'heat_temp';
-    const PROP_WATER_TEMP = 'water_temp';
-    const PROP_BURNER = 'burner';
-    const PROP_BURNER_GVS = 'burnerGVS';
+    const PROP_CH_CURRENT_TEMP = 'ch_current_temp';
+    const PROP_CH_SETPOINT_TEMP = 'ch_setpoint_temp';
+    const PROP_DHW_CURRENT_TEMP = 'dhw_current_temp';
+    const PROP_DHW_SETPOINT_TEMP = 'dhw_setpoint_temp';
+    const PROP_RETURN_TEMP = 'return_temp';
+    const PROP_ERROR_CODE = 'error_code';
+    const PROP_OUTDOOR_TEMP = 'outdoor_temp';
     const PROP_MODULATION = 'modulation';
-    const PROP_PUMP = 'pump';
     const PROP_PRESSURE = 'pressure';
 
     const TYPE_ELECTRO = 'electro';
@@ -85,22 +82,46 @@ class Boiler extends Model
         return $is_full ? $protocols : array_keys($protocols);
     }
 
-    public static function getProperties()
+    public function getProperties()
     {
-        $properties = [
-            self::PROP_CSUPPLY => 'Температура подачи',
-            self::PROP_CRETURN => 'Температура обратки',
-            self::PROP_STATE => 'Состояние котла',
-            self::PROP_AUTOMODE => 'Автоматический режим',
-            self::PROP_MANUALMODE => 'Ручной режим',
-            self::PROP_HEAT_TEMP => 'Установленная температура котла',
-            self::PROP_WATER_TEMP => 'Установленная температура воды',
-            //          self::PROP_BURNER     => 'Состояние горелки',
-            //          self::PROP_BURNER_GVS => 'Состояние горелки ГВС',
-            //          self::PROP_MODULATION => 'Модуляция',
-            //          self::PROP_PUMP       => 'Состояние насоса',
-            self::PROP_PRESSURE => 'Давление',
-        ];
+        $paramsFlag = $this->boilersParamsFlag;
+        $properties = [];
+
+        if ($paramsFlag->ch_current_temp) {
+            $properties[static::PROP_CH_CURRENT_TEMP] = 'Текущая температура ЦО';
+        }
+
+        if ($paramsFlag->ch_setpoint_temp) {
+            $properties[static::PROP_CH_SETPOINT_TEMP] = 'Уставка ЦО';
+        }
+
+        if ($paramsFlag->dhw_current_temp) {
+            $properties[static::PROP_DHW_CURRENT_TEMP] = 'Текущая температура ГВС';
+        }
+
+        if ($paramsFlag->dhw_setpoint_temp) {
+            $properties[static::PROP_DHW_SETPOINT_TEMP] = 'Уставка ГВС';
+        }
+
+        if ($paramsFlag->return_temp) {
+            $properties[static::PROP_RETURN_TEMP] = 'Температура обратки';
+        }
+
+        if ($paramsFlag->modulation) {
+            $properties[static::PROP_MODULATION] = 'Модуляция пламени';
+        }
+
+        if ($paramsFlag->pressure) {
+            $properties[static::PROP_PRESSURE] = 'Давление';
+        }
+
+        if ($paramsFlag->error_code) {
+            $properties[static::PROP_ERROR_CODE] = 'Наличие ошибки';
+        }
+
+        if ($paramsFlag->outdoor_temp) {
+            $properties[static::PROP_OUTDOOR_TEMP] = 'Уличная температура';
+        }
 
         return $properties;
     }
@@ -326,6 +347,11 @@ class Boiler extends Model
     public function modbusSlaver(): BelongsTo
     {
         return $this->belongsTo(ModbusSlaver::class, 'gateway_id', 'id');
+    }
+
+    public function boilersParam(): HasOne
+    {
+        return $this->hasOne(BoilersParam::class);
     }
 
     public function boilersParamsFlag(): HasOne
