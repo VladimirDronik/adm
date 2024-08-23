@@ -47,6 +47,7 @@ class ModbusRegister extends Model
             'u32' => 'u32',
             's32' => 's32',
             'string' => 'string',
+            'f8.8' => 'f8.8',
         ];
     }
 
