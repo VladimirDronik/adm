@@ -34,11 +34,6 @@ class BoilerService
             $boiler->heating_mode = $data['heating_mode'];
             $boiler->gateway_id = $data['gateway_id'];
 
-            if ($boiler->gateway_type == HomeObject::GATEWAY_MODBUS) {
-                $this->boilerObjectService
-                    ->updateMethodsEasyFieldsMethodsForModbus($boiler->object, $data);
-            }
-
             $boiler->save();
 
             $boiler->boilersParamsFlag->update([

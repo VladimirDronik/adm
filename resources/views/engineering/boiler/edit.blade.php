@@ -42,8 +42,8 @@
                                 <!-- <div class="tab-pane p-20" id="boilertab2" role="tabpanel"> -->
                                     {{-- @include('engineering/boiler/edit_tabs/control_mode') --}}
                                 <!-- </div> -->
-                                <div class="tab-pane p-20" id="boilertab3" role="tabpanel" style="width: 1000px;">
-                                    @include('objects.methods_with_modbus', ['systemMethods' => $boiler->object->methods, 'device' => $boiler])
+                                <div class="tab-pane p-20" id="boilertab3" role="tabpanel">
+                                    @include('objects.methods', ['object' => $boiler->object])
                                 </div>
                             </div>
                         </div>
@@ -60,19 +60,25 @@
         </div>
     </div>
     @include('objects.message_modal')
-
     @include('components.info_modal')
     @include('components.del_modal')
+    @include('objects.method_modal')
 @endsection
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
     <script>
-        const url_delete_boiler_auto = '{{ route('ajax.boiler.auto.delete') }}';
-        const url_mod_bus_slavers_registers = '{{ route('ajax.mod_bus.slavers.registers') }}';
+        const url_delete_boiler_auto = "{{ route('ajax.boiler.auto.delete') }}";
+        const url_methods = "{{ route('ajax.objects.methods') }}";
+        const sub_data_url = "{{ route('ajax.load.data') }}";
+        const object_id = "{{ $boiler->id_object }}";
+        const store_url = "{{ route('ajax.methods.store') }}";
+        const del_url = "{{ route('ajax.methods.delete') }}";
+        const url_device = "{{ route('ajax.devices.type_controller') }}";
+        const is_super_admin = "{{ auth()->user()->is_super_admin }}";
         let is_added = 0;
-        let methodsIdWithRegisters = {!! json_encode($methodsIdWithRegisters) !!};
+        let del_message;
 
         function deleteBoilerAuto(boilerAutoId) {
             $.ajax({
@@ -88,18 +94,16 @@
             });
         }
 
-        function createRegisterSelect(target, options, selected) {
-            let sel = $(target);
-            sel.html('');
-            let s = '<option value="">Не выбрано</option>';
-
-            $.each(options, function(key, value) {
-                if (selected == key)
-                    s += '<option selected value="' + key + '">' + value + '</option>';
-                else
-                    s += '<option value="' + key + '">' + value + '</option>';
-            });
-            sel.append(s);
+        function initMethodsVar(object_id) {
+            if (object_id) {
+                $.ajax({
+                    url: url_methods,
+                    data: {'_token': _token, 'object_id': object_id},
+                    success: function (data) {
+                        methods = data.methods;
+                    }
+                });
+            }
         }
 
         if ('{{ $boiler->mode }}' == 'manual') {
@@ -126,39 +130,9 @@
         }
 
         $(document).ready(function () {
+            initMethodsVar("{{ $boiler->id_object }}");
             $("#auto_sel_outdoor_sensor").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_gateway_id").chosen({width:"100%", no_results_text: "Не найдено"});
-
-            if ('{{ $boiler->gateway_type ==  \App\Models\HomeObject::GATEWAY_MODBUS }}') {
-                var promises = Object.entries(methodsIdWithRegisters).map(function ([methodId, registerId]) {
-                    $("#auto_sel_slaver_id_" + methodId).chosen({width:"100%", no_results_text: "Не найдено"});
-                    return $.ajax({
-                        url: url_mod_bus_slavers_registers,
-                        data: {'slaver_id': $("#auto_sel_slaver_id_" + methodId).chosen().val()},
-                        success: function (data) {
-                            createRegisterSelect('#auto_sel_register_id_' + methodId, data, registerId);
-                            $('#auto_sel_register_id_' + methodId).trigger("chosen:updated");
-                        }
-                    });
-                });
-
-                $.when.apply($, promises).then(function () {
-                    $.each(methodsIdWithRegisters, function(methodId, registerId) {
-                        $("#auto_sel_register_id_" + methodId).chosen({width:"100%", no_results_text: "Не найдено"});
-
-                        $("#auto_sel_slaver_id_" + methodId).chosen().change(function() {
-                            $.ajax({
-                                url: url_mod_bus_slavers_registers,
-                                data: {'slaver_id': $(this).val()},
-                                success: function (data) {
-                                    createRegisterSelect('#auto_sel_register_id_' + methodId, data, registerId);
-                                    $('#auto_sel_register_id_' + methodId).trigger("chosen:updated");
-                                }
-                            });
-                        });
-                    });
-                });
-            }
 
             $('#boiler_form input[name=mode]').change(function() {
                 var options = $('#boiler_form input[name=mode]');
@@ -210,6 +184,27 @@
                     $(this).parent().parent().remove();
                 });
             });
+
+            // methods
+            const cancel_btn = $('#cancel_btn');
+
+            $('#add_btn').click(showAddModal);
+            $('#apply_btn').click(clickApplyBtn);
+
+            // edit method
+            $('body').on('click', '.edit_btn', clickEditBtn);
+
+            // change easy/script/none in modal
+            $('input[type=radio][name=actions]').change(changeRadioActions);
+
+            // delete method
+            $('body').on('click', '.del_btn', function() {
+                del_id = $(this).attr('data-id');
+                $('#del_modal_body').text('Удалить метод «'+$(this).attr('data-name')+'»?');
+                $('#del_init_btn').click();
+            });
+
+            $('#del_modal_btn').click(clickDelBtn);
         });
     </script>
 @endsection
