@@ -1,14 +1,14 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs', ['title' => 'Инженерные устройства'])
+    @includeIf('components.breadcrumbs', ['title' => 'Котлы'])
 @endsection
 
 @section('content')
     <div class="container-fluid">
         @include('engineering.header')
         <div class="card">
-            <div class="card-title"><h4>Инженерные устройства</h4></div>
+            <div class="card-title"><h4>Котлы</h4></div>
             <div class="card-body">
                 @if(count($equipments))
                     <div class="table-responsive">

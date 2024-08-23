@@ -63,8 +63,8 @@
                             </li>
                             <li>
                                 <a href="{{ route('engineering.index') }}">
-                                    <i class="fa fa-tachometer"></i>
-                                    Инженерные
+                                    <i class="fa fa-fire"></i>
+                                    Котлы
                                 </a>
                             </li>
                             <li>

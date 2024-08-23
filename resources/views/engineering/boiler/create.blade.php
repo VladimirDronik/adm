@@ -5,7 +5,7 @@
 @endsection
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs', ['title' => 'Инженерное оборудование'])
+    @includeIf('components.breadcrumbs', ['title' => 'Котел'])
 @endsection
 
 @section('content')

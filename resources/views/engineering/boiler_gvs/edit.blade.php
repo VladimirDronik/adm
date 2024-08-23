@@ -5,10 +5,11 @@
 @endsection
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование бойлера ГВС № '. $boiler->id_object . ' «' . $boiler->name .'»',
-        'links' => [ route('engineering.index') => 'инженерное оборудование'],
-        'last_link' => 'Редактирование '])
+    @includeIf('components.breadcrumbs', [
+        'title' => 'Редактирование бойлера ГВС № '. $boiler->id_object . ' «' . $boiler->name .'»',
+        'links' => [ route('engineering.index') => 'Котлы'],
+        'last_link' => 'Редактирование ',
+    ])
 @endsection
 
 @section('content')
