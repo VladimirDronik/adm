@@ -14,7 +14,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('engineering.index') }}" class="btn btn-success m-b-10 m-l-5"> <i class="fa fa-reply-all" aria-hidden="true"></i> Все устройства</a>
+                        <a href="{{ route('engineering.index') }}" class="btn btn-success m-b-10 m-l-5"> <i class="fa fa-reply-all" aria-hidden="true"></i>Все котлы</a>
                     </div>
                 </div>
             </div>
