@@ -20,15 +20,27 @@ class BoilerService
     public function update(Boiler $boiler, array $data): int
     {
         DB::transaction(function () use (&$boiler, $data) {
-            if ($this->isUpdateAutoObjectName($boiler, $data['name'])) {
-                $boiler->object->name = HomeObject::getUniqueObjectName(
+            $name = trim($data['name']);
+            $page = Page::where('name', $boiler->object->name)->first();
+
+            if ($boiler->name != $name) {
+                $objectName = HomeObject::getUniqueObjectName(
                     $boiler->id_object,
                     trim($data['name'])
                 );
-                $boiler->object->save();
+
+                $boiler->object->update([
+                    'name' => $objectName,
+                ]);;
+
+                if ($page) {
+                    $page->update([
+                        'name' => $objectName,
+                    ]);
+                }
             }
 
-            $boiler->name = $data['name'];
+            $boiler->name = $name;
             $boiler->outdoor_sensor = array_key_exists('outdoor_sensor', $data) ? $data['outdoor_sensor'] : null;
             $boiler->mode = $data['mode'];
             $boiler->heating_mode = $data['heating_mode'];
@@ -37,10 +49,17 @@ class BoilerService
             $boiler->save();
 
             $boiler->boilersParamsFlag->update([
+                'ch_current_temp' => $data['ch_current_temp'] ?? 0,
+                'ch_setpoint_temp' => $data['ch_setpoint_temp'] ?? 0,
+                'dhw_current_temp' => $data['dhw_current_temp'] ?? 0,
+                'dhw_setpoint_temp' => $data['dhw_setpoint_temp'] ?? 0,
+                'return_temp' => $data['return_temp'] ?? 0,
+                'modulation' => $data['modulation'] ?? 0,
+                'pressure' => $data['pressure'] ?? 0,
+                'error_code' => $data['error_code'] ?? 0,
                 'outdoor_temp' => $boiler->outdoor_sensor ? 1 : 0,
             ]);
 
-            $page = Page::where('name', $boiler->object->name)->first();
             if ($page) {
                 $boiler->updatePageElements($page->id);
             }
@@ -80,11 +99,6 @@ class BoilerService
         });
 
         return true;
-    }
-
-    private function isUpdateAutoObjectName(Boiler $boiler, string $name): bool
-    {
-        return $boiler->name !== trim($name) && $boiler->object && $boiler->object->is_system;
     }
 
     public function store(array $data): int

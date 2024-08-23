@@ -32,12 +32,16 @@
                             {{ Form::bs_alert() }}
                             <ul class="nav nav-tabs customtab" role="tablist">
                                 <li class="nav-item"> <a class="nav-link active"  data-toggle="tab" href="#boilertab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
+                                <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#boilertab2"  role="tab"><span class="hidden-sm-up"><i class="ti-command"></i></span> <span class="hidden-xs-down">Параметры</span></a> </li>
                                 <!-- <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#boilertab2"  role="tab"><span class="hidden-sm-up"><i class="ti-command"></i></span> <span class="hidden-xs-down">Режим управления</span></a> </li> -->
                                 <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#boilertab3"  role="tab"><span class="hidden-sm-up"><i class="ti-command"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane p-20 active" id="boilertab1" role="tabpanel">
                                     @include('engineering/boiler/edit_tabs/main')
+                                </div>
+                                <div class="tab-pane p-20" id="boilertab2" role="tabpanel">
+                                    @include('engineering/boiler/edit_tabs/options')
                                 </div>
                                 <!-- <div class="tab-pane p-20" id="boilertab2" role="tabpanel"> -->
                                     {{-- @include('engineering/boiler/edit_tabs/control_mode') --}}
