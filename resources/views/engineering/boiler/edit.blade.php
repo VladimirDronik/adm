@@ -34,7 +34,7 @@
                             <ul class="nav nav-tabs customtab" role="tablist">
                                 <li class="nav-item"> <a class="nav-link active"  data-toggle="tab" href="#boilertab1"  role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Основное</span></a> </li>
                                 <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#boilertab2"  role="tab"><span class="hidden-sm-up"><i class="ti-command"></i></span> <span class="hidden-xs-down">Параметры</span></a> </li>
-                                <!-- <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#boilertab2"  role="tab"><span class="hidden-sm-up"><i class="ti-command"></i></span> <span class="hidden-xs-down">Режим управления</span></a> </li> -->
+                                <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#boilertab4"  role="tab"><span class="hidden-sm-up"><i class="ti-command"></i></span> <span class="hidden-xs-down">Управление</span></a> </li>
                                 <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#boilertab3"  role="tab"><span class="hidden-sm-up"><i class="ti-command"></i></span> <span class="hidden-xs-down">Методы</span></a> </li>
                             </ul>
                             <div class="tab-content">
@@ -44,9 +44,9 @@
                                 <div class="tab-pane p-20" id="boilertab2" role="tabpanel">
                                     @include('engineering/boiler/edit_tabs/options')
                                 </div>
-                                <!-- <div class="tab-pane p-20" id="boilertab2" role="tabpanel"> -->
-                                    {{-- @include('engineering/boiler/edit_tabs/control_mode') --}}
-                                <!-- </div> -->
+                                <div class="tab-pane p-20" id="boilertab4" role="tabpanel">
+                                    @include('engineering/boiler/edit_tabs/control_mode')
+                                </div>
                                 <div class="tab-pane p-20" id="boilertab3" role="tabpanel">
                                     @include('objects.methods', ['object' => $boiler->object])
                                 </div>
@@ -111,18 +111,19 @@
             }
         }
 
-        if ('{{ $boiler->mode }}' == 'manual') {
-            $('#manual_set_value').removeAttr('hidden');
-            $('#boiler_form input[name=set_value]').removeAttr('disabled');
-            $('#boiler_form input[name=set_value]').attr('required', true);
+        if ('{{ $boiler->heating_mode }}' == '{{ \App\Models\Boiler::HEATING_MODE_MANUAL }}') {
+            $('#ch_setpoint_temp_div').removeAttr('hidden');
+            $('#boiler_form input[name=ch_setpoint_temp_value]').removeAttr('disabled');
+            $('#boiler_form input[name=ch_setpoint_temp_value]').attr('required', true);
             $('#AutoFieldsContainer').attr('hidden', true);
             $('#addAutoFieldsBtn').attr('hidden', true);
             $('#AutoFieldsContainer input').removeAttr('required');
-        } else {
+        } else if ('{{ $boiler->heating_mode }}' == '{{ \App\Models\Boiler::HEATING_MODE_WC }}') {
             $('#addAutoFieldsBtn').removeAttr('hidden');
             $('#AutoFieldsContainer').removeAttr('hidden');
-            $('#boiler_form input[name=set_value]').removeAttr('required');
-            $('#manual_set_value').attr('hidden', true);
+            $('#boiler_form input[name=ch_setpoint_temp_value]').removeAttr('required');
+            $('#boiler_form input[name=ch_setpoint_temp_value]').attr('disabled', true);
+            $('#ch_setpoint_temp_div').attr('hidden', true);
             if ('{{ $boiler->object->boilerAuto->isEmpty() }}' && !is_added) {
                 $("#AutoFieldsContainer").append($('<div class="moduleFields form-group row">' +
                             '<label class="control-label text-right col-md-3 label-fix"><strong>Уличная температура:</strong></label>' +
@@ -134,31 +135,109 @@
             }
         }
 
+        if ('{{ $boiler->mode }}' == '{{ \App\Models\Boiler::MODE_CH_DHW }}') {
+            $('#heating_mode').removeAttr('hidden');
+            if ('{{ $boiler->heating_mode }}' == '{{ \App\Models\Boiler::HEATING_MODE_MANUAL }}') {
+                $('#ch_setpoint_temp_div').removeAttr('hidden');
+                $('#boiler_form input[name=ch_setpoint_temp_value]').removeAttr('disabled');
+                $('#boiler_form input[name=ch_setpoint_temp_value]').attr('required', true);
+                $('#AutoFieldsContainer').attr('hidden', true);
+                $('#addAutoFieldsBtn').attr('hidden', true);
+                $('#AutoFieldsContainer input').removeAttr('required');
+            } else if ('{{ $boiler->heating_mode }}' == '{{ \App\Models\Boiler::HEATING_MODE_WC }}') {
+                $('#addAutoFieldsBtn').removeAttr('hidden');
+                $('#AutoFieldsContainer').removeAttr('hidden');
+                $('#boiler_form input[name=ch_setpoint_temp_value]').removeAttr('required');
+                $('#boiler_form input[name=ch_setpoint_temp_value]').attr('disabled', true);
+                $('#ch_setpoint_temp_div').attr('hidden', true);
+                if ('{{ $boiler->object->boilerAuto->isEmpty() }}' && !is_added) {
+                    $("#AutoFieldsContainer").append($('<div class="moduleFields form-group row">' +
+                                '<label class="control-label text-right col-md-3 label-fix"><strong>Уличная температура:</strong></label>' +
+                                '<div class="col-md-2"><input class="form-control" name="t_out[]" autocomplete="off" required></div>' +
+                                '<label class="control-label text-right col-md-3 label-fix"><strong>Температура теплоносителя:</strong></label>' +
+                                '<div class="col-md-2"><input class="form-control" name="t_water[]" autocomplete="off" required></div>' +
+                            '</div>'));
+                    is_added = 1;
+                }
+            }
+            $('#dhw_setpoint_temp_div').removeAttr('hidden');
+            $('#boiler_form input[name=dhw_setpoint_temp_value]').removeAttr('disabled');
+            $('#boiler_form input[name=dhw_setpoint_temp_value]').attr('required', true);
+        } else if ('{{ $boiler->mode }}' == '{{ \App\Models\Boiler::MODE_CH }}') {
+            $('#heating_mode').removeAttr('hidden');
+            if ('{{ $boiler->heating_mode }}' == '{{ \App\Models\Boiler::HEATING_MODE_MANUAL }}') {
+                $('#ch_setpoint_temp_div').removeAttr('hidden');
+                $('#boiler_form input[name=ch_setpoint_temp_value]').removeAttr('disabled');
+                $('#boiler_form input[name=ch_setpoint_temp_value]').attr('required', true);
+                $('#AutoFieldsContainer').attr('hidden', true);
+                $('#addAutoFieldsBtn').attr('hidden', true);
+                $('#AutoFieldsContainer input').removeAttr('required');
+            } else if ('{{ $boiler->heating_mode }}' == '{{ \App\Models\Boiler::HEATING_MODE_WC }}') {
+                $('#addAutoFieldsBtn').removeAttr('hidden');
+                $('#AutoFieldsContainer').removeAttr('hidden');
+                $('#boiler_form input[name=ch_setpoint_temp_value]').removeAttr('required');
+                $('#boiler_form input[name=ch_setpoint_temp_value]').attr('disabled', true);
+                $('#ch_setpoint_temp_div').attr('hidden', true);
+                if ('{{ $boiler->object->boilerAuto->isEmpty() }}' && !is_added) {
+                    $("#AutoFieldsContainer").append($('<div class="moduleFields form-group row">' +
+                                '<label class="control-label text-right col-md-3 label-fix"><strong>Уличная температура:</strong></label>' +
+                                '<div class="col-md-2"><input class="form-control" name="t_out[]" autocomplete="off" required></div>' +
+                                '<label class="control-label text-right col-md-3 label-fix"><strong>Температура теплоносителя:</strong></label>' +
+                                '<div class="col-md-2"><input class="form-control" name="t_water[]" autocomplete="off" required></div>' +
+                            '</div>'));
+                    is_added = 1;
+                }
+            }
+            $('#dhw_setpoint_temp_div').attr('hidden', true);
+            $('#boiler_form input[name=dhw_setpoint_temp_value]').attr('disabled', true);
+            $('#boiler_form input[name=dhw_setpoint_temp_value]').removeAttr('required');
+        } else if ('{{ $boiler->mode }}' == '{{ \App\Models\Boiler::MODE_DHW }}') {
+            $('#heating_mode').attr('hidden', true);
+            $('#dhw_setpoint_temp_div').removeAttr('hidden');
+            $('#boiler_form input[name=dhw_setpoint_temp_value]').removeAttr('disabled');
+            $('#boiler_form input[name=dhw_setpoint_temp_value]').attr('required', true);
+            $('#ch_setpoint_temp_div').attr('hidden', true);
+            $('#boiler_form input[name=ch_setpoint_temp_value]').attr('disabled', true);
+            $('#boiler_form input[name=ch_setpoint_temp_value]').removeAttr('required');
+            $('#AutoFieldsContainer').attr('hidden', true);
+            $('#addAutoFieldsBtn').attr('hidden', true);
+            $('#AutoFieldsContainer input').removeAttr('required');
+        }
+
         $(document).ready(function () {
             initMethodsVar("{{ $boiler->id_object }}");
             $("#auto_sel_outdoor_sensor").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_gateway_id").chosen({width:"100%", no_results_text: "Не найдено"});
 
-            $('#boiler_form input[name=mode]').change(function() {
-                var options = $('#boiler_form input[name=mode]');
+            $('#boiler_form input[name=heating_mode]').change(function() {
+                var options = $('#boiler_form input[name=heating_mode]');
+                var modeOptions = $('#boiler_form input[name=mode]');
+
                 for (var i = 0; i < options.length; i++) {
                     if (options[i].checked) {
                         var selectedOption = options[i].value;
                     }
                 }
 
-                if (selectedOption == 'manual') {
-                    $('#manual_set_value').removeAttr('hidden');
-                    $('#boiler_form input[name=set_value]').removeAttr('disabled');
-                    $('#boiler_form input[name=set_value]').attr('required', true);
+                for (var i = 0; i < modeOptions.length; i++) {
+                    if (modeOptions[i].checked) {
+                        var selectedMode = modeOptions[i].value;
+                    }
+                }
+
+                if (selectedOption == '{{ \App\Models\Boiler::HEATING_MODE_MANUAL }}') {
+                    $('#ch_setpoint_temp_div').removeAttr('hidden');
+                    $('#boiler_form input[name=ch_setpoint_temp_value]').removeAttr('disabled');
+                    $('#boiler_form input[name=ch_setpoint_temp_value]').attr('required', true);
                     $('#AutoFieldsContainer').attr('hidden', true);
                     $('#addAutoFieldsBtn').attr('hidden', true);
                     $('#AutoFieldsContainer input').removeAttr('required');
-                } else {
+                } else if (selectedOption == '{{ \App\Models\Boiler::HEATING_MODE_WC }}') {
                     $('#addAutoFieldsBtn').removeAttr('hidden');
                     $('#AutoFieldsContainer').removeAttr('hidden');
-                    $('#boiler_form input[name=set_value]').removeAttr('required');
-                    $('#manual_set_value').attr('hidden', true);
+                    $('#boiler_form input[name=ch_setpoint_temp_value]').removeAttr('required');
+                    $('#boiler_form input[name=ch_setpoint_temp_value]').attr('disabled', true);
+                    $('#ch_setpoint_temp_div').attr('hidden', true);
                     if ('{{ $boiler->object->boilerAuto->isEmpty() }}' && !is_added) {
                         $("#AutoFieldsContainer").append($('<div class="moduleFields form-group row">' +
                                     '<label class="control-label text-right col-md-3 label-fix"><strong>Уличная температура:</strong></label>' +
@@ -168,6 +247,92 @@
                                 '</div>'));
                         is_added = 1;
                     }
+                }
+            });
+
+            $('#boiler_form input[name=mode]').change(function() {
+                var options = $('#boiler_form input[name=mode]');
+                var heatingModeOptions = $('#boiler_form input[name=heating_mode]');
+
+                for (var i = 0; i < options.length; i++) {
+                    if (options[i].checked) {
+                        var selectedOption = options[i].value;
+                    }
+                }
+
+                for (var i = 0; i < heatingModeOptions.length; i++) {
+                    if (heatingModeOptions[i].checked) {
+                        var selectedHeatingMode = heatingModeOptions[i].value;
+                    }
+                }
+
+                if (selectedOption == '{{ \App\Models\Boiler::MODE_CH_DHW }}') {
+                    $('#heating_mode').removeAttr('hidden');
+                    if (selectedHeatingMode == '{{ \App\Models\Boiler::HEATING_MODE_MANUAL }}') {
+                        $('#ch_setpoint_temp_div').removeAttr('hidden');
+                        $('#boiler_form input[name=ch_setpoint_temp_value]').removeAttr('disabled');
+                        $('#boiler_form input[name=ch_setpoint_temp_value]').attr('required', true);
+                        $('#AutoFieldsContainer').attr('hidden', true);
+                        $('#addAutoFieldsBtn').attr('hidden', true);
+                        $('#AutoFieldsContainer input').removeAttr('required');
+                    } else if (selectedHeatingMode == '{{ \App\Models\Boiler::HEATING_MODE_WC }}') {
+                        $('#addAutoFieldsBtn').removeAttr('hidden');
+                        $('#AutoFieldsContainer').removeAttr('hidden');
+                        $('#boiler_form input[name=ch_setpoint_temp_value]').removeAttr('required');
+                        $('#boiler_form input[name=ch_setpoint_temp_value]').attr('disabled', true);
+                        $('#ch_setpoint_temp_div').attr('hidden', true);
+                        if ('{{ $boiler->object->boilerAuto->isEmpty() }}' && !is_added) {
+                            $("#AutoFieldsContainer").append($('<div class="moduleFields form-group row">' +
+                                        '<label class="control-label text-right col-md-3 label-fix"><strong>Уличная температура:</strong></label>' +
+                                        '<div class="col-md-2"><input class="form-control" name="t_out[]" autocomplete="off" required></div>' +
+                                        '<label class="control-label text-right col-md-3 label-fix"><strong>Температура теплоносителя:</strong></label>' +
+                                        '<div class="col-md-2"><input class="form-control" name="t_water[]" autocomplete="off" required></div>' +
+                                    '</div>'));
+                            is_added = 1;
+                        }
+                    }
+                    $('#dhw_setpoint_temp_div').removeAttr('hidden');
+                    $('#boiler_form input[name=dhw_setpoint_temp_value]').removeAttr('disabled');
+                    $('#boiler_form input[name=dhw_setpoint_temp_value]').attr('required', true);
+                } else if (selectedOption == '{{ \App\Models\Boiler::MODE_CH }}') {
+                    $('#heating_mode').removeAttr('hidden');
+                    if (selectedHeatingMode == '{{ \App\Models\Boiler::HEATING_MODE_MANUAL }}') {
+                        $('#ch_setpoint_temp_div').removeAttr('hidden');
+                        $('#boiler_form input[name=ch_setpoint_temp_value]').removeAttr('disabled');
+                        $('#boiler_form input[name=ch_setpoint_temp_value]').attr('required', true);
+                        $('#AutoFieldsContainer').attr('hidden', true);
+                        $('#addAutoFieldsBtn').attr('hidden', true);
+                        $('#AutoFieldsContainer input').removeAttr('required');
+                    } else if (selectedHeatingMode == '{{ \App\Models\Boiler::HEATING_MODE_WC }}') {
+                        $('#addAutoFieldsBtn').removeAttr('hidden');
+                        $('#AutoFieldsContainer').removeAttr('hidden');
+                        $('#boiler_form input[name=ch_setpoint_temp_value]').removeAttr('required');
+                        $('#boiler_form input[name=ch_setpoint_temp_value]').attr('disabled', true);
+                        $('#ch_setpoint_temp_div').attr('hidden', true);
+                        if ('{{ $boiler->object->boilerAuto->isEmpty() }}' && !is_added) {
+                            $("#AutoFieldsContainer").append($('<div class="moduleFields form-group row">' +
+                                        '<label class="control-label text-right col-md-3 label-fix"><strong>Уличная температура:</strong></label>' +
+                                        '<div class="col-md-2"><input class="form-control" name="t_out[]" autocomplete="off" required></div>' +
+                                        '<label class="control-label text-right col-md-3 label-fix"><strong>Температура теплоносителя:</strong></label>' +
+                                        '<div class="col-md-2"><input class="form-control" name="t_water[]" autocomplete="off" required></div>' +
+                                    '</div>'));
+                            is_added = 1;
+                        }
+                    }
+                    $('#dhw_setpoint_temp_div').attr('hidden', true);
+                    $('#boiler_form input[name=dhw_setpoint_temp_value]').attr('disabled', true);
+                    $('#boiler_form input[name=dhw_setpoint_temp_value]').removeAttr('required');
+                } else if (selectedOption == '{{ \App\Models\Boiler::MODE_DHW }}') {
+                    $('#heating_mode').attr('hidden', true);
+                    $('#dhw_setpoint_temp_div').removeAttr('hidden');
+                    $('#boiler_form input[name=dhw_setpoint_temp_value]').removeAttr('disabled');
+                    $('#boiler_form input[name=dhw_setpoint_temp_value]').attr('required', true);
+                    $('#ch_setpoint_temp_div').attr('hidden', true);
+                    $('#boiler_form input[name=ch_setpoint_temp_value]').attr('disabled', true);
+                    $('#boiler_form input[name=ch_setpoint_temp_value]').removeAttr('required');
+                    $('#AutoFieldsContainer').attr('hidden', true);
+                    $('#addAutoFieldsBtn').attr('hidden', true);
+                    $('#AutoFieldsContainer input').removeAttr('required');
                 }
             });
 

@@ -1,7 +1,15 @@
-{{ Form::bs_radio('mode', 'Режим управления температурой:', $boiler->getModes(), $boiler->mode, ['required' => true]) }}
+{{ Form::bs_radio('mode', 'Режим работы*:', $modes, old('mode', $boiler->mode), ['required' => true]) }}
 
-<div id="manual_set_value">
-    {{ Form::bs_text('set_value', 'Температура теплоносителя*:', old('set_value', $boiler->object->boilerManual->set_value), ['required' => false]) }}
+<div id="heating_mode">
+    {{ Form::bs_radio('heating_mode', 'Режим управления отоплением*:', $heatingModes, old('heating_mode', $boiler->heating_mode), ['required' => true]) }}
+</div>
+
+<div id="dhw_setpoint_temp_div" hidden>
+    {{ Form::bs_number('dhw_setpoint_temp_value', 'Уставка ГВС:', old('dhw_setpoint_temp', $boiler->boilersParam?->dhw_setpoint_temp), []) }}
+</div>
+
+<div id="ch_setpoint_temp_div" hidden>
+    {{ Form::bs_number('ch_setpoint_temp_value', 'Уставка ЦО:', old('ch_setpoint_temp', $boiler->boilersParam?->ch_setpoint_temp), []) }}
 </div>
 
 <div id="AutoFieldsContainer">

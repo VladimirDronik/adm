@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Page;
 use App\Models\Boiler;
+use App\Models\Elements;
 use App\Models\BoilerAuto;
 use App\Models\HomeObject;
 use App\Models\BoilersParam;
@@ -64,38 +65,63 @@ class BoilerService
                 $boiler->updatePageElements($page->id);
             }
 
-            // if ($boiler->mode == Boiler::PROP_MANUALMODE) {
-            //     $boilerManual = $boiler->object->boilerManual;
-            //     $boilerManual->set_value = $data['set_value'];
-            //     $boilerManual->save();
-            // }
+            switch ($boiler->mode) {
+                case Boiler::MODE_CH_DHW:
+                    $boiler->boilersParam->dhw_setpoint_temp = $data['dhw_setpoint_temp_value'];
+                    $this->updateDataByHeatingMode($boiler, $data);
+                    $boiler->boilersParam->save();
 
-            // if ($boiler->mode == Boiler::PROP_AUTOMODE) {
-            //     if (array_key_exists('boiler_auto', $data)) {
-            //         foreach ($data['boiler_auto'] as $id => $boilerAutoData) {
-            //             BoilerAuto::where('id', $id)->update($boilerAutoData);
-            //         }
-            //     }
+                    Elements::where('id_object', $boiler->id_object)
+                        ->where('handle', 'ch_current_temp')
+                        ->update(['active' => 1]);
+                    Elements::where('id_object', $boiler->id_object)
+                        ->where('handle', 'ch_setpoint_temp')
+                        ->update(['active' => 1]);
+                    Elements::where('id_object', $boiler->id_object)
+                        ->where('handle', 'dhw_current_temp')
+                        ->update(['active' => 1]);
+                    Elements::where('id_object', $boiler->id_object)
+                        ->where('handle', 'dhw_setpoint_temp')
+                        ->update(['active' => 1]);
+                    break;
+                case Boiler::MODE_CH:
+                    $this->updateDataByHeatingMode($boiler, $data);
+                    $boiler->boilersParam->save();
 
-            //     if (array_key_exists('t_out', $data) && array_key_exists('t_water', $data)) {
-            //         $idObject = $boiler->object->id;
-            //         $tOut = $data['t_out'];
-            //         $tWater = $data['t_water'];
-            //         $fieldsSet = [];
+                    Elements::where('id_object', $boiler->id_object)
+                        ->where('handle', 'ch_current_temp')
+                        ->update(['active' => 1]);
+                    Elements::where('id_object', $boiler->id_object)
+                        ->where('handle', 'ch_setpoint_temp')
+                        ->update(['active' => 1]);
+                    Elements::where('id_object', $boiler->id_object)
+                        ->where('handle', 'dhw_current_temp')
+                        ->update(['active' => 0]);
+                    Elements::where('id_object', $boiler->id_object)
+                        ->where('handle', 'dhw_setpoint_temp')
+                        ->update(['active' => 0]);
+                    break;
+                case Boiler::MODE_DHW:
+                    $boiler->boilersParam->dhw_setpoint_temp = $data['dhw_setpoint_temp_value'];
+                    $boiler->boilersParam->save();
 
-            //         for ($i = 0; $i < count($tOut); $i++) {
-            //             $fieldsSet[] = [
-            //                 't_out' => $tOut[$i],
-            //                 't_water' => $tWater[$i],
-            //                 'id_object' => $idObject,
-            //             ];
-            //         }
-
-            //         foreach ($fieldsSet as $fields) {
-            //             BoilerAuto::create($fields);
-            //         }
-            //     }
-            // }
+                    Elements::where('id_object', $boiler->id_object)
+                        ->where('handle', 'ch_current_temp')
+                        ->update(['active' => 0]);
+                    Elements::where('id_object', $boiler->id_object)
+                        ->where('handle', 'ch_setpoint_temp')
+                        ->update(['active' => 0]);
+                    Elements::where('id_object', $boiler->id_object)
+                        ->where('handle', 'dhw_current_temp')
+                        ->update(['active' => 1]);
+                    Elements::where('id_object', $boiler->id_object)
+                        ->where('handle', 'dhw_setpoint_temp')
+                        ->update(['active' => 1]);
+                    Elements::where('id_object', $boiler->id_object)
+                        ->where('handle', 'weather_compensation')
+                        ->update(['active' => 0]);
+                    break;
+            }
         });
 
         return true;
@@ -211,5 +237,45 @@ class BoilerService
             'outdoor_temp' => $boiler->outdoor_sensor ? 1 : 0,
             'indoor_temp' => 0,
         ]);
+    }
+
+    private function updateDataByHeatingMode(Boiler $boiler, array $data): void
+    {
+        if ($boiler->heating_mode == Boiler::HEATING_MODE_MANUAL) {
+            $boiler->boilersParam->ch_setpoint_temp = $data['ch_setpoint_temp_value'];
+
+            Elements::where('id_object', $boiler->id_object)
+                ->where('handle', 'weather_compensation')
+                ->update(['active' => 0]);
+        } elseif ($boiler->heating_mode == Boiler::HEATING_MODE_WC) {
+            if (array_key_exists('boiler_auto', $data)) {
+                foreach ($data['boiler_auto'] as $id => $boilerAutoData) {
+                    BoilerAuto::where('id', $id)->update($boilerAutoData);
+                }
+            }
+
+            if (array_key_exists('t_out', $data) && array_key_exists('t_water', $data)) {
+                $idObject = $boiler->object->id;
+                $tOut = $data['t_out'];
+                $tWater = $data['t_water'];
+                $fieldsSet = [];
+
+                for ($i = 0; $i < count($tOut); $i++) {
+                    $fieldsSet[] = [
+                        't_out' => $tOut[$i],
+                        't_water' => $tWater[$i],
+                        'id_object' => $idObject,
+                    ];
+                }
+
+                foreach ($fieldsSet as $fields) {
+                    BoilerAuto::create($fields);
+                }
+            }
+
+            Elements::where('id_object', $boiler->id_object)
+                ->where('handle', 'weather_compensation')
+                ->update(['active' => 1]);
+        }
     }
 }

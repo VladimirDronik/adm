@@ -22,6 +22,8 @@ class UpdateRequest extends FormRequest
             'name' => 'required|string|max:100',
             'mode' => 'required|string',
             'heating_mode' => 'required|string',
+            'dhw_setpoint_temp' => 'nullable|integer',
+            'ch_setpoint_temp' => 'nullable|integer',
             'outdoor_sensor' => 'nullable|integer|exists:App\Models\Termostat,id_object',
         ];
     }

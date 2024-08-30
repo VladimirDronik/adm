@@ -11,8 +11,4 @@
     {{ Form::bs_autoselect('gateway_id', 'Устройство*:', $modbusSlavers, old('gateway_id', $boiler->gateway_id), false, false, ['required' => true], null, null, 3, false, true) }}
 @endif
 
-{{ Form::bs_radio('mode', 'Режим работы*:', $modes, old('mode', $boiler->mode), ['required' => true]) }}
-
-{{ Form::bs_radio('heating_mode', 'Режим управления отоплением*:', $heatingModes, old('heating_mode', $boiler->heating_mode), ['required' => true]) }}
-
 {{ Form::bs_autoselect('outdoor_sensor', 'Уличный датчик температуры:', $termostats, old('outdoor_sensor', $boiler->outdoor_sensor), false, false, [], null) }}
