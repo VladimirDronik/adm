@@ -167,7 +167,7 @@ class Boiler extends Model
                 ]
             );
 
-            $element->internalPages()->create();
+            $element->internalPages()->updateOrCreate([]);
 
             $sort++;
         } else {
@@ -229,7 +229,7 @@ class Boiler extends Model
                 ]
             );
 
-            $element->internalPages()->create();
+            $element->internalPages()->updateOrCreate([]);
 
             $sort++;
         } else {
@@ -302,6 +302,46 @@ class Boiler extends Model
             $sort++;
         } else {
             $page->elements()->where('handle', 'error_code')->delete();
+        }
+
+        if ($paramsFlag->pressure) {
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'pressure',
+                ],
+                [
+                    'name' => 'Давление', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 0, 'units' => 'бар',
+                ]
+            );
+
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'pressure')->delete();
+        }
+
+        if ($paramsFlag->modulation) {
+            Elements::updateOrCreate(
+                [
+                    'id_object' => $this->id_object,
+                    'handle' => 'modulation',
+                ],
+                [
+                    'name' => 'Модуляция пламени', 'type' => 'label',
+                    'page' => $pageId, 'parent' => 0,
+                    'sort' => $sort,
+                    'position' => 2, 'active' => 1,
+                    'settings' => 0, 'units' => '%',
+                ]
+            );
+
+            $sort++;
+        } else {
+            $page->elements()->where('handle', 'modulation')->delete();
         }
     }
 
