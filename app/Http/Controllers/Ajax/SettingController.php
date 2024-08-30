@@ -13,6 +13,15 @@ class SettingController extends Controller
     ) {
     }
 
+    public function generateServerId(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id']), 400);
+
+        $response = $this->service->generateServerId((int)$r->id);
+
+        return response()->json($response);
+    }
+
     public function delete(Request $r)
     {
         abort_if(! ajaxHas($r, ['id']) || ! \Gate::allows('settings.delete'), 400);

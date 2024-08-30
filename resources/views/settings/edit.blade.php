@@ -14,8 +14,6 @@
                 <div class="card">
                     <div class="card-body">
                         <a href="{{ route('settings.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок параметров</a>
-                        <button type="button" class="btn btn-success m-b-10 m-l-5" id="addPageBtn">Добавить параметр
-                        </button>
                     </div>
                 </div>
             </div>
@@ -28,8 +26,27 @@
                     <div class="form-body">
                         {{ Form::bs_alert() }}
 
-                        {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
-                        {{ Form::bs_text('value', 'Значение*:', null, ['required' => true]) }}
+                        @if($setting->name == 'server_id')
+                            {{ Form::bs_text('name', 'Название*:', null, ['required' => true, 'readonly' => true]) }}
+
+                            <div class="form-group row">
+                                <label class="control-label text-right col-md-3 label-fix" for=""><strong>Значение*:</strong></label>
+                                <div class="col-md-9">
+                                    <div class="mt-2">
+                                        @if($setting->value)
+                                            <input class="form-control" readonly autocomplete="off" name="value" type="text" value="{{ $setting->value }}">
+                                        @else
+                                            <button type="button" class="btn btn-success m-b-10 m-l-5" id="generateServerId">Сгенерировать</button>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            {{ Form::bs_text('name', 'Название*:', null, ['required' => true]) }}
+
+                            {{ Form::bs_text('value', 'Значение*:', null, ['required' => true]) }}
+                        @endif
+
                         {{ Form::bs_textarea('comment', 'Описание*:', null, ['required' => true]) }}
                     </div>
                     {{ Form::bs_submit_btn() }}
@@ -51,6 +68,20 @@
                 $('#modalPage #modal_groups_div').show();
                 $('#modalPage #namePage').val('');
                 $('#modal_page_init_btn').click();
+            });
+
+            $('#generateServerId').click(function() {
+                $.ajax({
+                    url: "{{ route('ajax.settings.generate_server_id') }}",
+                    data: {'_token': _token, 'id': "{{ $setting->id }}"},
+                        success: function (data) {
+                            if (data.result) {
+                                window.location.reload();
+                            } else {
+                                showErrorModal(data.message ?? 'Ошибка генерации ID сервера');
+                            }
+                        }
+                });
             });
         });
     </script>

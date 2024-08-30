@@ -235,6 +235,7 @@ Route::group(['middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
+            Route::post('generate_server_id', 'SettingController@generateServerId')->name('generate_server_id');
             Route::post('delete', 'SettingController@delete')->name('delete');
         });
 

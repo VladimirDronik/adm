@@ -25,7 +25,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:20|unique:settings,name,'.$this->setting->id,
-            'value' => 'required|string|max:20',
+            'value' => 'required|string|max:40',
             'comment' => 'required|string|max:255',
         ];
     }
@@ -37,7 +37,7 @@ class UpdateRequest extends FormRequest
             'name.max' => 'Название содержит более 20 символов',
             'name.unique' => 'Параметр с таким названием уже существует. Укажите другое название',
             'value.required' => 'Не указано значение',
-            'value.max' => 'Значение должно содержать не более 20 символов',
+            'value.max' => 'Значение должно содержать не более 40 символов',
             'comment.required' => 'Не указано описание',
             'comment.max' => 'Описание должно содержать не более 255 символов',
         ];

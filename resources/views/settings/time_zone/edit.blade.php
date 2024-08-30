@@ -17,9 +17,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('settings.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок параметров</a>
-                        <button type="button" class="btn btn-success m-b-10 m-l-5" id="addPageBtn">Добавить параметр
-                        </button>
+                        <a href="{{ route('settings.index') }}" class="btn btn-success m-b-10 m-l-5">Список параметров</a>
                     </div>
                 </div>
             </div>

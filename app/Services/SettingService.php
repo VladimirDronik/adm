@@ -85,4 +85,42 @@ class SettingService
 
         DB::statement("SET global time_zone = '$timeZone'");
     }
+
+    /**
+     * Генерирует id сервера
+     */
+    public function generateServerId(string $settingId): array
+    {
+        $setting = Setting::find($settingId);
+
+        if (!$setting) {
+            return [
+                'result' => false,
+                'message' => 'Параметр ID сервера не найден',
+            ];
+        }
+
+        if ($setting->name != 'server_id') {
+            return [
+                'result' => false,
+                'message' => 'Данный параметр не является ID сервера',
+            ];
+        }
+
+        if ($setting->value) {
+            return [
+                'result' => false,
+                'message' => 'ID сервера уже был сгенерирован ранее',
+            ];
+        }
+
+        $setting->update([
+            'value' => uniqid(rand()),
+        ]);
+
+        return [
+            'result' => true,
+            'message' => 'ID сервера сгенерирован',
+        ];
+    }
 }

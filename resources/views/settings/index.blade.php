@@ -10,10 +10,6 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        @can('settings.create')
-                            <button type="button" class="btn btn-success m-b-10 m-l-5" id="addPageBtn">Добавить параметр
-                            </button>
-                        @endcan
                         <a href="{{ route('settings.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
@@ -31,9 +27,6 @@
                                     <th>Значение</th>
                                     <th>Описание</th>
                                     <th style="width: 60px;"></th>
-                                    @can('settings.delete')
-                                        <th style="width: 60px;"></th>
-                                    @endcan
                                 </tr>
                             </thead>
                             <tbody>
@@ -47,14 +40,6 @@
                                                 <i class="fa fa-cog fa-lg"></i>
                                             </a>
                                         </td>
-                                        @can('settings.delete')
-                                            <td align="center" class="text-center">
-                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                        data-id="{{ $setting->id }}" data-name="{{ $setting->name }}">
-                                                    <i class="fa fa-trash fa-lg"></i>
-                                                </button>
-                                            </td>
-                                        @endcan
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -64,9 +49,6 @@
                                     <th>Значение</th>
                                     <th>Описание</th>
                                     <th style="width: 60px;"></th>
-                                    @can('settings.delete')
-                                        <th style="width: 60px;"></th>
-                                    @endcan
                                 </tr>
                             </tfoot>
                         </table>

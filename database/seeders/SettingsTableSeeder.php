@@ -67,6 +67,11 @@ class SettingsTableSeeder extends Seeder
                 'value' => 'false',
                 'comment' => 'Режим охраны',
             ],
+            [
+                'name' => 'server_id',
+                'value' => null,
+                'comment' => 'Уникальный ID сервера',
+            ],
         ];
 
         $result_settings = [];
