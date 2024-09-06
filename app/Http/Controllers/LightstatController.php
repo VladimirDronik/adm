@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Lightstat\LightstatRequest;
 use App\Models\Lightstat;
-use App\Services\ObjectService;
-use App\Services\MessageService;
-use App\Services\LightstatService;
-use App\Repositories\RoomRepository;
+use App\Repositories\LightstatRepository;
 use App\Repositories\ObjectRepository;
+use App\Repositories\RoomRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\UsensorRepository;
-use App\Repositories\LightstatRepository;
-use App\Http\Requests\Lightstat\LightstatRequest;
+use App\Services\LightstatService;
+use App\Services\MessageService;
+use App\Services\ObjectService;
 
 class LightstatController extends Controller
 {

@@ -22,7 +22,7 @@ class YandexStationService
     {
         $station = YandexStation::where('speaker_id', $data['iot_id'])->first();
 
-        if (!$station) {
+        if (! $station) {
             $station = new YandexStation();
         }
 
@@ -86,15 +86,12 @@ class YandexStationService
 
     /**
      * Обновление или создание объекта станции
-     *
-     * @param YandexStation $station
-     * @return Model
      */
     private function updateOrCreateStationObject(YandexStation $station): Model
     {
         $object = $station->object;
 
-        if (!$object) {
+        if (! $object) {
             $object = new HomeObject();
             $unique_name = HomeObject::getUniqueObjectName(0, $station->name);
 
@@ -112,9 +109,6 @@ class YandexStationService
 
     /**
      * Создание методов для станции
-     *
-     * @param HomeObject $object
-     * @return void
      */
     private function createMethods(HomeObject $object): void
     {
@@ -132,7 +126,7 @@ class YandexStationService
                 'params' => 'Сообщение (Это сообщение отправится станции)',
                 'is_system' => 1,
                 'script' => $this->getScriptIdByLink('yandex_station_cmd.php'),
-            ]
+            ],
         ];
 
         foreach ($methods as $method) {
@@ -142,9 +136,6 @@ class YandexStationService
 
     /**
      * Поиск скрипта, если не находится, то создаем
-     *
-     * @param string $link
-     * @return int
      */
     private function getScriptIdByLink(string $link): int
     {

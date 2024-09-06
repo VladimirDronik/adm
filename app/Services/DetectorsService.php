@@ -2,16 +2,16 @@
 
 namespace App\Services;
 
-use App\Models\Usensor;
-use App\Models\Manometr;
-use App\Models\Hygrostat;
-use App\Models\Termostat;
-use App\Models\Lightstat;
-use App\Models\Drycontact;
 use App\Models\Carbdioxide;
 use App\Models\Carbmonoxide;
+use App\Models\Drycontact;
+use App\Models\Hygrostat;
+use App\Models\Lightstat;
+use App\Models\Manometr;
 use App\Models\Motionsensor;
 use App\Models\Pressurestat;
+use App\Models\Termostat;
+use App\Models\Usensor;
 
 class DetectorsService
 {

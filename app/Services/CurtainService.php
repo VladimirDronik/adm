@@ -8,11 +8,11 @@
 
 namespace App\Services;
 
-use App\Models\Port;
 use App\Models\Curtain;
 use App\Models\HomeObject;
-use Illuminate\Support\Facades\DB;
+use App\Models\Port;
 use App\Repositories\PortRepository;
+use Illuminate\Support\Facades\DB;
 
 class CurtainService
 {
@@ -213,9 +213,7 @@ class CurtainService
     /**
      * Запуск скрипта открытия/закрытия шторы
      *
-     * @param int $curtainObjId
-     * @param string $newState Доступные значения 'open' или 'close'
-     * @return array
+     * @param  string  $newState Доступные значения 'open' или 'close'
      */
     public function setStatus(int $curtainObjId, string $newStatus): array
     {
@@ -228,7 +226,7 @@ class CurtainService
         ];
 
         chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php ' . $scripts[$newStatus] . ' ' . $curtainObjId, $output, $resultCode);
+        exec('php '.$scripts[$newStatus].' '.$curtainObjId, $output, $resultCode);
 
         return [
             'code' => $resultCode,
@@ -238,10 +236,6 @@ class CurtainService
 
     /**
      * Запуск скрипта установки процента открытия шторы
-     *
-     * @param int $curtainObjId
-     * @param int $newPercent
-     * @return array
      */
     public function setPercent(int $curtainObjId, int $newPercent): array
     {
@@ -249,7 +243,7 @@ class CurtainService
         $resultCode = null;
 
         chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php curtain_set_percent.php ' . $curtainObjId . ' ' . $newPercent, $output, $resultCode);
+        exec('php curtain_set_percent.php '.$curtainObjId.' '.$newPercent, $output, $resultCode);
 
         return [
             'code' => $resultCode,
@@ -259,9 +253,6 @@ class CurtainService
 
     /**
      * Запуск скрипта для остановки шторы
-     *
-     * @param int $curtainObjId
-     * @return array
      */
     public function stop(int $curtainObjId): array
     {
@@ -269,7 +260,7 @@ class CurtainService
         $resultCode = null;
 
         chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php curtain_stop.php ' . $curtainObjId, $output, $resultCode);
+        exec('php curtain_stop.php '.$curtainObjId, $output, $resultCode);
 
         return [
             'code' => $resultCode,

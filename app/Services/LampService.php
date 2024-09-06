@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\HiteproDev;
 use App\Models\HomeObject;
 use App\Models\Lamp;
 use App\Models\Port;

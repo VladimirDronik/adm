@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Pressurestat\PressurestatRequest;
 use App\Models\Pressurestat;
-use App\Services\PortService;
-use App\Services\ObjectService;
-use App\Services\MessageService;
-use Illuminate\Support\Facades\Log;
-use App\Repositories\RoomRepository;
-use App\Services\PressurestatService;
 use App\Repositories\ObjectRepository;
+use App\Repositories\PressurestatRepository;
+use App\Repositories\RoomRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\UsensorRepository;
-use App\Repositories\PressurestatRepository;
-use App\Http\Requests\Pressurestat\PressurestatRequest;
-use App\Services\Service;
+use App\Services\MessageService;
+use App\Services\ObjectService;
+use App\Services\PortService;
+use App\Services\PressurestatService;
+use Illuminate\Support\Facades\Log;
 
 class PressurestatController extends Controller
 {
@@ -47,7 +46,7 @@ class PressurestatController extends Controller
                     ->with('success', 'Датчик давления успешно добавлен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при добавлении датчика давления ' . json_encode($r->all()) . ' ' . $e->getMessage());
+            Log::error('Ошибка при добавлении датчика давления '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении датчика давления');
@@ -96,7 +95,7 @@ class PressurestatController extends Controller
                 return redirect()->route('pressurestats.edit', [$pressurestat->id])->with('success', 'Датчик давления успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении датчика давления ' . $pressurestat->id . ' ' . json_encode($r->all()) . ' ' . $e->getMessage());
+            \Log::error('Ошибка при изменении датчика давления '.$pressurestat->id.' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении датчика давления');

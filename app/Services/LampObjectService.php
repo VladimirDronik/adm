@@ -38,7 +38,7 @@ class LampObjectService
      *
      * @return void
      */
-    public function createLampObjectMethods(int $objectId, ?int $deviceId = null, ?Port $port = null, ?int $registerId = null)
+    public function createLampObjectMethods(int $objectId, int $deviceId = null, Port $port = null, int $registerId = null)
     {
         $this->createLampMethods($objectId, $deviceId, $port, $registerId);
         $this->createLampDimmerMethods($objectId);
@@ -47,40 +47,40 @@ class LampObjectService
     /**
      * Обновление методов лампы
      */
-    public function updateAllLampMethods(int $objectId, ?int $deviceId = null, ?Port $port = null, ?int $registerId = null)
+    public function updateAllLampMethods(int $objectId, int $deviceId = null, Port $port = null, int $registerId = null)
     {
         $easyString = null;
 
         if ($registerId) {
-            $easyString = 'm;' . $registerId;
+            $easyString = 'm;'.$registerId;
         } else {
             if ($port) {
                 if ($port->type == 'ext') {
-                    $easyString = $deviceId . ';' . $port->extensionModule->sda_port . 'e' . $port->num_port;
+                    $easyString = $deviceId.';'.$port->extensionModule->sda_port.'e'.$port->num_port;
                 } else {
-                    $easyString = $deviceId . ';' . $port->num_port;
+                    $easyString = $deviceId.';'.$port->num_port;
                 }
             }
 
             //Обнуляем все простые действия, которые были назначены для этих портов
-            Method::where('easy', $easyString . ':0')
-                ->orWhere('easy', $easyString . ':1')
-                ->orWhere('easy', $easyString . ':2')
+            Method::where('easy', $easyString.':0')
+                ->orWhere('easy', $easyString.':1')
+                ->orWhere('easy', $easyString.':2')
                 ->update(['easy' => null]);
         }
 
         $methods = [
             [
                 'alias' => 'lamp_off',
-                'easy' => $registerId ? $easyString : $easyString . ':0',
+                'easy' => $registerId ? $easyString : $easyString.':0',
             ],
             [
                 'alias' => 'lamp_on',
-                'easy' => $registerId ? $easyString : $easyString . ':1',
+                'easy' => $registerId ? $easyString : $easyString.':1',
             ],
             [
                 'alias' => 'lamp_switch',
-                'easy' => $registerId ? $easyString : $easyString . ':2',
+                'easy' => $registerId ? $easyString : $easyString.':2',
             ],
         ];
 
@@ -99,7 +99,7 @@ class LampObjectService
     public function updateAllLampDimmerMethods(int $objectId, int $registerId)
     {
         $dataArrays = $this->getLampDimmerData();
-        $easyString = 'm;' . $registerId;
+        $easyString = 'm;'.$registerId;
 
         foreach ($dataArrays as $data) {
             Method::where('id_object', $objectId)
@@ -118,8 +118,8 @@ class LampObjectService
         if ($lampObject->methods->isNotEmpty()) {
             foreach ($lampObject->methods as $method) {
                 $method->update([
-                    'easy' => array_key_exists('register_id_' . $method->id, $data) && $data['register_id_' . $method->id]
-                        ? 'm;' . $data['register_id_' . $method->id]
+                    'easy' => array_key_exists('register_id_'.$method->id, $data) && $data['register_id_'.$method->id]
+                        ? 'm;'.$data['register_id_'.$method->id]
                         : null,
                 ]);
             }
@@ -129,25 +129,25 @@ class LampObjectService
     /**
      * Создание методов лампы
      */
-    private function createLampMethods(int $objectId, ?int $deviceId = null, ?Port $port = null, ?int $registerId = null)
+    private function createLampMethods(int $objectId, int $deviceId = null, Port $port = null, int $registerId = null)
     {
         $easyString = null;
 
         if ($registerId) {
-            $easyString = 'm;' . $registerId;
+            $easyString = 'm;'.$registerId;
         } else {
             if ($port) {
                 if ($port->type == 'ext') {
-                    $easyString = $deviceId . ';' . $port->extensionModule->sda_port . 'e' . $port->num_port;
+                    $easyString = $deviceId.';'.$port->extensionModule->sda_port.'e'.$port->num_port;
                 } else {
-                    $easyString = $deviceId . ';' . $port->num_port;
+                    $easyString = $deviceId.';'.$port->num_port;
                 }
             }
 
             //Обнуляем все простые действия, которые были назначены для этих портов
-            Method::where('easy', $easyString . ':0')
-                ->orWhere('easy', $easyString . ':1')
-                ->orWhere('easy', $easyString . ':2')
+            Method::where('easy', $easyString.':0')
+                ->orWhere('easy', $easyString.':1')
+                ->orWhere('easy', $easyString.':2')
                 ->update(['easy' => null]);
         }
 
@@ -157,7 +157,7 @@ class LampObjectService
                 'alias' => 'lamp_off',
                 'id_object' => $objectId,
                 'script' => null,
-                'easy' => $registerId ? $easyString : $easyString . ':0',
+                'easy' => $registerId ? $easyString : $easyString.':0',
                 'comment' => 'Выключить лампу',
                 'is_system' => 1,
             ],
@@ -166,7 +166,7 @@ class LampObjectService
                 'alias' => 'lamp_on',
                 'id_object' => $objectId,
                 'script' => null,
-                'easy' => $registerId ? $easyString : $easyString . ':1',
+                'easy' => $registerId ? $easyString : $easyString.':1',
                 'comment' => 'Включить лампу',
                 'is_system' => 1,
             ],
@@ -175,7 +175,7 @@ class LampObjectService
                 'alias' => 'lamp_switch',
                 'id_object' => $objectId,
                 'script' => null,
-                'easy' => $registerId ? $easyString : $easyString . ':2',
+                'easy' => $registerId ? $easyString : $easyString.':2',
                 'comment' => 'Смена состояния лампы',
                 'is_system' => 1,
             ],

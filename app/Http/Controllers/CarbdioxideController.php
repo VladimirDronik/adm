@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Usensor;
-use App\Models\Carbdioxide;
-use App\Services\PortService;
-use App\Services\ObjectService;
-use App\Services\MessageService;
-use Illuminate\Support\Facades\Log;
-use App\Repositories\RoomRepository;
-use App\Services\CarbdioxideService;
-use App\Repositories\ScriptRepository;
-use App\Repositories\ObjectRepository;
-use App\Repositories\UsensorRepository;
-use App\Repositories\CarbdioxideRepository;
 use App\Http\Requests\Carbdioxide\CarbdioxideRequest;
+use App\Models\Carbdioxide;
+use App\Models\Usensor;
+use App\Repositories\CarbdioxideRepository;
+use App\Repositories\ObjectRepository;
+use App\Repositories\RoomRepository;
+use App\Repositories\ScriptRepository;
+use App\Repositories\UsensorRepository;
+use App\Services\CarbdioxideService;
+use App\Services\MessageService;
+use App\Services\ObjectService;
+use App\Services\PortService;
+use Illuminate\Support\Facades\Log;
 
 class CarbdioxideController extends Controller
 {
@@ -67,7 +67,7 @@ class CarbdioxideController extends Controller
                     ->with('success', 'Датчик углекислого газа успешно добавлен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при добавлении датчика углекислого газа ' . json_encode($r->all()) . ' ' . $e->getMessage());
+            Log::error('Ошибка при добавлении датчика углекислого газа '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении датчика углекислого газа');
@@ -97,7 +97,7 @@ class CarbdioxideController extends Controller
                 return redirect()->route('carbdioxides.edit', [$carbdioxide->id])->with('success', 'Датчик углекислого газа успешно изменен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при изменении датчика углекислого газа '.$carbdioxide->id . ' ' . json_encode($r->all()) . ' ' . $e->getMessage());
+            Log::error('Ошибка при изменении датчика углекислого газа '.$carbdioxide->id.' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении датчика углекислого газа');

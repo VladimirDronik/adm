@@ -14,6 +14,7 @@ class ColorRepository
 {
     /**
      * Отдать в массиве доступные цвета по name типу
+     *
      * @return mixed
      */
     public static function getNameTypeColors()
@@ -27,6 +28,7 @@ class ColorRepository
 
     /**
      * Отдать в массиве доступные цвета по hsv типу
+     *
      * @return mixed
      */
     public static function getHsvTypeColors()

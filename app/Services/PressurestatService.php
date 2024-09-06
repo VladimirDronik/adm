@@ -64,7 +64,7 @@ class PressurestatService
         });
 
         chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php check_pressure.php ' . $pressurestat->id_object);
+        exec('php check_pressure.php '.$pressurestat->id_object);
 
         return $pressurestat->id;
     }
@@ -102,7 +102,7 @@ class PressurestatService
         });
 
         chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php check_pressure.php ' . $pressurestat->id_object);
+        exec('php check_pressure.php '.$pressurestat->id_object);
 
         return $pressurestat->id;
     }

@@ -24,7 +24,7 @@ class CameraService
                 $camera->vendor = $data['vendor'];
                 $camera->type = Camera::TYPE_MEDIA_SERVER;
                 $recorder = Recorder::create([
-                    'name' => 'Видеорегистратор камеры - ' . $data['name'],
+                    'name' => 'Видеорегистратор камеры - '.$data['name'],
                     'vendor' => $data['vendor'],
                     'sort' => Recorder::max('sort') + 1,
                     'ip_address' => $data['ip_address'],
@@ -43,7 +43,7 @@ class CameraService
                 $camera->vendor = $data['vendor'];
                 $camera->type = Camera::TYPE_MEDIA_SERVER;
                 $recorder = Recorder::create([
-                    'name' => 'Видеорегистратор камеры - ' . $data['name'],
+                    'name' => 'Видеорегистратор камеры - '.$data['name'],
                     'vendor' => $data['vendor'],
                     'sort' => Recorder::max('sort') + 1,
                     'ip_address' => $data['ip_address'],
@@ -75,7 +75,7 @@ class CameraService
             if ($data['vendor'] == Camera::VENDOR_IVIDEON) {
                 $imageUrl = $this->parseIdAndNumberFromUrl($data['link']);
             } else {
-                $imageUrl = 'ela/images/cameras_snapshots/camera' . $camera->id . '.jpeg';
+                $imageUrl = 'ela/images/cameras_snapshots/camera'.$camera->id.'.jpeg';
             }
 
             $camera->update(['image' => $imageUrl]);
@@ -97,6 +97,7 @@ class CameraService
         }
 
         $camera->save();
+
         return $camera->id;
     }
 
@@ -109,14 +110,14 @@ class CameraService
     {
         $camera = Camera::find($id);
 
-        if (!$camera) {
+        if (! $camera) {
             return false;
         }
 
         if ($camera->type == Camera::TYPE_MEDIA_SERVER) {
             if ($active == 0) {
                 try {
-                    Http::delete('http://localhost:9997/v3/config/paths/delete/camera' . $camera->id);
+                    Http::delete('http://localhost:9997/v3/config/paths/delete/camera'.$camera->id);
                 } catch (\Throwable $th) {
                 }
             } else {
@@ -130,7 +131,7 @@ class CameraService
                     );
 
                     try {
-                        Http::post('http://localhost:9997/v3/config/paths/add/camera' . $camera->id, [
+                        Http::post('http://localhost:9997/v3/config/paths/add/camera'.$camera->id, [
                             'source' => $link,
                         ]);
                     } catch (\Throwable $th) {

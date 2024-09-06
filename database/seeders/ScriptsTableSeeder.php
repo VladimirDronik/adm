@@ -277,8 +277,6 @@ class ScriptsTableSeeder extends Seeder
 
     /**
      * Скрипты для яндекс станций
-     *
-     * @return array
      */
     public static function getYandexStationScripts(): array
     {
@@ -287,13 +285,13 @@ class ScriptsTableSeeder extends Seeder
                 'name' => 'Скрипт команды "Сказать"',
                 'link' => 'yandex_station_say.php',
                 'count' => 0,
-                'system' => 1
+                'system' => 1,
             ],
             [
                 'name' => 'Скрипт команды "CMD"',
                 'link' => 'yandex_station_cmd.php',
                 'count' => 0,
-                'system' => 1
+                'system' => 1,
             ],
         ];
     }
@@ -328,8 +326,6 @@ class ScriptsTableSeeder extends Seeder
 
     /**
      * Скрипты для камер
-     *
-     * @return array
      */
     public static function getCameraScripts(): array
     {
@@ -337,14 +333,12 @@ class ScriptsTableSeeder extends Seeder
             'name' => 'Превью камер',
             'link' => 'get_rtsp_snapshots.php',
             'count' => 0,
-            'system' => 1
+            'system' => 1,
         ];
     }
 
     /**
      * Скрипты для устройств DALI
-     *
-     * @return array
      */
     public static function getDaliDeviceScripts(): array
     {

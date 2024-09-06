@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Recorder\CreateRequest;
 use App\Http\Requests\Recorder\UpdateRequest;
-use App\Models\Camera;
 use App\Models\Recorder;
 use App\Services\RecorderService;
 

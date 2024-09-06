@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Hygrostat\HygrostatRequest;
 use App\Models\Hygrostat;
-use App\Services\ObjectService;
-use App\Services\MessageService;
-use App\Services\HygrostatService;
-use App\Repositories\RoomRepository;
+use App\Repositories\HygrostatRepository;
 use App\Repositories\ObjectRepository;
+use App\Repositories\RoomRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\UsensorRepository;
-use App\Repositories\HygrostatRepository;
-use App\Http\Requests\Hygrostat\HygrostatRequest;
+use App\Services\HygrostatService;
+use App\Services\MessageService;
+use App\Services\ObjectService;
 
 class HygrostatController extends Controller
 {

@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Conditioner;
-use Illuminate\Support\Facades\Log;
-use App\Repositories\RoomRepository;
-use App\Services\ConditionerService;
-use App\Repositories\ModbusRepository;
-use App\Repositories\ConditionerRepository;
 use App\Http\Requests\Conditioner\CreateRequest;
 use App\Http\Requests\Conditioner\UpdateRequest;
+use App\Models\Conditioner;
+use App\Repositories\ConditionerRepository;
+use App\Repositories\ModbusRepository;
+use App\Repositories\RoomRepository;
+use App\Services\ConditionerService;
+use Illuminate\Support\Facades\Log;
 
 class ConditionerController extends Controller
 {
@@ -84,7 +84,7 @@ class ConditionerController extends Controller
                     ->with('success', 'Кондиционер успешно добавлен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при добавлении кондиционера ' . json_encode($r->all()) . ' ' . $e->getMessage());
+            Log::error('Ошибка при добавлении кондиционера '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении кондиционера');
@@ -98,7 +98,7 @@ class ConditionerController extends Controller
                     ->with('success', 'Кондиционер успешно изменен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при изменении кондиционера ' . json_encode($r->all()) . ' ' . $e->getMessage());
+            Log::error('Ошибка при изменении кондиционера '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении кондиционера');

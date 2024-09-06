@@ -8,14 +8,8 @@ class BrowserRequests
 {
     /**
      * Генерация get запроса с симуляцией браузера
-     *
-     * @param string $url
-     * @param string $cookie
-     * @param string $referer
-     * @param string $header
-     * @return string
      */
-    public function browserGetContents(string $url, string $cookie, string $referer = 'https://google.by',  string $header = ''): string
+    public function browserGetContents(string $url, string $cookie, string $referer = 'https://google.by', string $header = ''): string
     {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie);
@@ -39,7 +33,7 @@ class BrowserRequests
         }
 
         if (curl_errno($ch)) {
-            Log::error("Error Curl: " . curl_error($ch));
+            Log::error('Error Curl: '.curl_error($ch));
         }
 
         curl_close($ch);
@@ -49,12 +43,6 @@ class BrowserRequests
 
     /**
      * Генерация post запроса с симуляцией браузера
-     *
-     * @param string $url
-     * @param string $cookie
-     * @param string $referer
-     * @param string $header
-     * @return string
      */
     public function browserPostContents(string $url, string $param, string $cookie, string $referer = 'https://google.by', string $header = ''): string
     {
@@ -84,7 +72,7 @@ class BrowserRequests
         }
 
         if (curl_errno($ch)) {
-            Log::error('Error Curl: ' . curl_error($ch));
+            Log::error('Error Curl: '.curl_error($ch));
         }
 
         curl_close($ch);

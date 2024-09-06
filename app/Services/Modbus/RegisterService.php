@@ -59,9 +59,6 @@ class RegisterService
 
     /**
      * Запуск скрипта чтения данных регистра
-     *
-     * @param int $registerId
-     * @return array
      */
     public function read(int $registerId): array
     {
@@ -69,7 +66,7 @@ class RegisterService
         $resultCode = null;
 
         chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php modbus_read.php ' . $registerId, $output, $resultCode);
+        exec('php modbus_read.php '.$registerId, $output, $resultCode);
 
         return [
             'code' => $resultCode,
@@ -79,10 +76,6 @@ class RegisterService
 
     /**
      * Запуск скрипта записи данных регистра
-     *
-     * @param int $registerId
-     * @param string $value
-     * @return array
      */
     public function write(int $registerId, string $value): array
     {
@@ -92,7 +85,7 @@ class RegisterService
         $register = ModbusRegister::find($registerId);
 
         chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php modbus_write.php ' . $registerId . ' ' . $value, $output, $resultCode);
+        exec('php modbus_write.php '.$registerId.' '.$value, $output, $resultCode);
 
         if ($resultCode === 0) {
             $register->update(['last_value' => $value]);

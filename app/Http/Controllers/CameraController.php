@@ -66,7 +66,7 @@ class CameraController extends Controller
     {
         $recorder = $camera->recorder;
 
-        if (!$recorder) {
+        if (! $recorder) {
             return back()->with('error', 'Ошибка. Камера без видеорегистратора');
         }
 
@@ -77,13 +77,13 @@ class CameraController extends Controller
         );
 
         try {
-            Http::post('http://localhost:9997/v3/config/paths/add/camera' . $camera->id, [
+            Http::post('http://localhost:9997/v3/config/paths/add/camera'.$camera->id, [
                 'source' => $link,
             ]);
         } catch (\Throwable $th) {
             return back()->with('error', 'Ошибка при создании пути камеры');
         }
 
-        return redirect('http://' .request()->host() . ':8888/camera' . $camera->id . '?muted=1&controls=0&autoplay=1');
+        return redirect('http://'.request()->host().':8888/camera'.$camera->id.'?muted=1&controls=0&autoplay=1');
     }
 }

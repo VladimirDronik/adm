@@ -29,7 +29,7 @@ class CurtainsController extends Controller
     {
         abort_if(! ajaxHas($r, ['id_object', 'status']), 400);
 
-        $data = $this->service->setStatus((int)$r->id_object, (string)$r->status);
+        $data = $this->service->setStatus((int) $r->id_object, (string) $r->status);
 
         return response()->json([
             'result' => $data['code'] === 0,
@@ -41,7 +41,7 @@ class CurtainsController extends Controller
     {
         abort_if(! ajaxHas($r, ['id_object', 'percent']), 400);
 
-        $data = $this->service->setPercent((int)$r->id_object, (int)$r->percent);
+        $data = $this->service->setPercent((int) $r->id_object, (int) $r->percent);
 
         return response()->json([
             'result' => $data['code'] === 0,
@@ -53,7 +53,7 @@ class CurtainsController extends Controller
     {
         abort_if(! ajaxHas($r, ['id_object']), 400);
 
-        $data = $this->service->stop((int)$r->id_object);
+        $data = $this->service->stop((int) $r->id_object);
 
         return response()->json([
             'result' => $data['code'] === 0,

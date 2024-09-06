@@ -35,7 +35,7 @@ class ModbusSlaverController extends Controller
     {
         abort_if(! ajaxHas($r, ['id']), 400);
 
-        $response = $this->service->networkAssembly((int)$r->id);
+        $response = $this->service->networkAssembly((int) $r->id);
 
         return response()->json([
             'result' => $response['code'] === 0,
@@ -47,7 +47,7 @@ class ModbusSlaverController extends Controller
     {
         abort_if(! ajaxHas($r, ['id']), 400);
 
-        $response = $this->service->networkExpansion((int)$r->id);
+        $response = $this->service->networkExpansion((int) $r->id);
 
         return response()->json([
             'result' => $response['code'] === 0,
@@ -59,7 +59,7 @@ class ModbusSlaverController extends Controller
     {
         abort_if(! ajaxHas($r, ['id_object']), 400);
 
-        $response = $this->service->switchDaliStatus((int)$r->id_object);
+        $response = $this->service->switchDaliStatus((int) $r->id_object);
 
         return response()->json([
             'result' => $response['code'] === 0,
@@ -71,7 +71,7 @@ class ModbusSlaverController extends Controller
     {
         abort_if(! ajaxHas($r, ['id', 'brightness']), 400);
 
-        $response = $this->service->setDaliBrightness((int)$r->id, $r->brightness);
+        $response = $this->service->setDaliBrightness((int) $r->id, $r->brightness);
 
         return response()->json([
             'result' => $response['code'] === 0,
@@ -83,7 +83,7 @@ class ModbusSlaverController extends Controller
     {
         abort_if(! ajaxHas($r, ['id', 'cct']), 400);
 
-        $response = $this->service->setDaliCct((int)$r->id, $r->cct);
+        $response = $this->service->setDaliCct((int) $r->id, $r->cct);
 
         return response()->json([
             'result' => $response['code'] === 0,

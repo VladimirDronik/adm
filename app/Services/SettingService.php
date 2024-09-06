@@ -93,7 +93,7 @@ class SettingService
     {
         $setting = Setting::find($settingId);
 
-        if (!$setting) {
+        if (! $setting) {
             return [
                 'result' => false,
                 'message' => 'Параметр ID сервера не найден',

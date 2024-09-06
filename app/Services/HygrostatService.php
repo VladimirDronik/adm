@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Hygrostat;
 use App\Models\HomeObject;
+use App\Models\Hygrostat;
 use Illuminate\Support\Facades\DB;
 
 class HygrostatService
@@ -46,6 +46,7 @@ class HygrostatService
 
     /**
      * Создание датчика влажности
+     *
      * @throws \Throwable
      */
     public function store(array $data): int
@@ -63,8 +64,8 @@ class HygrostatService
             $hygrostat->save();
         });
 
-        chdir(env('SERVER_FOLDER') . '/scripts');
-        exec('php check_hygrostat.php ' . $hygrostat->id_object);
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php check_hygrostat.php '.$hygrostat->id_object);
 
         return $hygrostat->id;
     }
@@ -88,8 +89,8 @@ class HygrostatService
             $hygrostat->save();
         });
 
-        chdir(env('SERVER_FOLDER') . '/scripts');
-        exec('php check_hygrostat.php ' . $hygrostat->id_object);
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php check_hygrostat.php '.$hygrostat->id_object);
 
         return $hygrostat->id;
     }

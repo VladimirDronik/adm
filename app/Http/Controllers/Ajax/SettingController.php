@@ -17,7 +17,7 @@ class SettingController extends Controller
     {
         abort_if(! ajaxHas($r, ['id']), 400);
 
-        $response = $this->service->generateServerId((int)$r->id);
+        $response = $this->service->generateServerId((int) $r->id);
 
         return response()->json($response);
     }

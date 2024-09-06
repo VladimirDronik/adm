@@ -24,7 +24,7 @@ class ModbusRegisterController extends Controller
     {
         abort_if(! ajaxHas($r, ['id']), 400);
 
-        $data = $this->service->read((int)$r->id);
+        $data = $this->service->read((int) $r->id);
 
         return response()->json([
             'result' => $data['code'] === 0,
@@ -36,7 +36,7 @@ class ModbusRegisterController extends Controller
     {
         abort_if(! ajaxHas($r, ['id', 'value']), 400);
 
-        $data = $this->service->write((int)$r->id, (string)$r->value);
+        $data = $this->service->write((int) $r->id, (string) $r->value);
 
         return response()->json([
             'result' => $data['code'] === 0,

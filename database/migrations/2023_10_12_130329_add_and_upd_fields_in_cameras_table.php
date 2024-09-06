@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('type', 20)->nullable()->after('vendor');
         });
 
-        DB::statement("ALTER TABLE cameras ADD COLUMN base64_image MEDIUMBLOB AFTER image");
+        DB::statement('ALTER TABLE cameras ADD COLUMN base64_image MEDIUMBLOB AFTER image');
     }
 
     /**

@@ -7,32 +7,33 @@ use App\Repositories\RoomRepository;
 use App\Services\YandexStationService;
 use Illuminate\Support\Facades\Log;
 
-class YandexTTS {
-
+class YandexTTS
+{
     private $cookieFile;
+
     private $yandexStationService;
 
     public function __construct()
     {
         $this->cookieFile = base_path(config('yandex.cookie_file'));
-        $this->yandexStationService = new YandexStationService(new RoomRepository ());
+        $this->yandexStationService = new YandexStationService(new RoomRepository());
     }
 
     public function init()
     {
         $speakers = $this->getSpeakersList();
-        Log::info('YandexTTS Speakers list: ' . json_encode($speakers, JSON_UNESCAPED_UNICODE));
+        Log::info('YandexTTS Speakers list: '.json_encode($speakers, JSON_UNESCAPED_UNICODE));
 
         if (is_array($speakers) && count($speakers) > 0) {
             $this->addTTSScenarios($speakers);
             $scenarios = $this->getScenariosList();
-            Log::info('YandexTTS Scenarios list: ' . json_encode($scenarios, JSON_UNESCAPED_UNICODE));
+            Log::info('YandexTTS Scenarios list: '.json_encode($scenarios, JSON_UNESCAPED_UNICODE));
             if (is_array($scenarios) && count($scenarios) > 0) {
                 $result = true;
             } else {
                 $result = false;
             }
-            foreach($speakers as $speaker) {
+            foreach ($speakers as $speaker) {
                 $speaker_id = $speaker['iot_id'];
                 if (is_array($scenarios) && isset($scenarios[$speaker_id])) {
                     $speaker['scenario_id'] = $scenarios[$speaker_id]['id'];
@@ -55,11 +56,13 @@ class YandexTTS {
             $speaker = YandexStation::where('speaker_id', $speaker_id)->first();
             if ($speaker && $speaker->scenario_id) {
                 Log::info("YandexTTS Sending SAY '$message' to $speaker->name ($speaker_id)");
+
                 return $this->sendCloudTTS($speaker_id, $speaker->scenario_id, $message, 'phrase_action');
             } else {
                 Log::error("YandexStation: $speaker_id - Not Found");
             }
         }
+
         return false;
     }
 
@@ -69,17 +72,19 @@ class YandexTTS {
             $speaker = YandexStation::where('speaker_id', $speaker_id)->first();
             if ($speaker && $speaker->scenario_id) {
                 Log::info("YandexTTS Sending CMD '$message' to $speaker->name ($speaker_id)");
+
                 return $this->sendCloudTTS($speaker_id, $speaker->scenario_id, $message, 'text_action');
             } else {
                 Log::error("YandexStation: $speaker_id - Not Found");
             }
         }
+
         return false;
     }
 
     public function sendCloudTTS($iot_id, $scenario_id, $phrase, $action = 'phrase_action')
     {
-        $phrase = str_replace(array('(', ')'), ' ', $phrase);
+        $phrase = str_replace(['(', ')'], ' ', $phrase);
         $phrase = preg_replace('/<.+?>/u', '', $phrase);
         $phrase = preg_replace('/\s+/u', ' ', $phrase);
 
@@ -89,38 +94,38 @@ class YandexTTS {
 
         $nameEncode = $this->yandexEncode($iot_id);
 
-        $payload = array( //xor2016: изменения у Яндекса
+        $payload = [ //xor2016: изменения у Яндекса
             'name' => $nameEncode,
             'icon' => 'home',
-            'triggers' => array(array(
+            'triggers' => [[
                 'type' => 'scenario.trigger.voice',
                 'value' => $nameEncode,
-            )),
-            'steps' => array(array(
+            ]],
+            'steps' => [[
                 'type' => 'scenarios.steps.actions',
-                'parameters' => array(
-                    'requested_speaker_capabilities' => array(),
-                    'launch_devices' => array(array(
+                'parameters' => [
+                    'requested_speaker_capabilities' => [],
+                    'launch_devices' => [[
                         'id' => $iot_id,
-                        'capabilities' => array(array(
+                        'capabilities' => [[
                             'type' => 'devices.capabilities.quasar.server_action',
-                            'state' => array(
+                            'state' => [
                                 'instance' => $action,
-                                'value' => $phrase
-                            )
-                        ))
-                    ))
-                )
-            ))
-        );
+                                'value' => $phrase,
+                            ],
+                        ]],
+                    ]],
+                ],
+            ]],
+        ];
 
-        $result = $this->apiRequest('https://iot.quasar.yandex.ru/m/user/scenarios/' . $scenario_id, 'PUT', $payload);
+        $result = $this->apiRequest('https://iot.quasar.yandex.ru/m/user/scenarios/'.$scenario_id, 'PUT', $payload);
 
         if (is_array($result) && $result['status'] == 'ok') {
             $payload = [];
 
-            $result = $this->apiRequest('https://iot.quasar.yandex.ru/m/user/scenarios/' . $scenario_id . '/actions', 'POST', $payload);
-            Log::info('YandexTTS' . json_encode($result));
+            $result = $this->apiRequest('https://iot.quasar.yandex.ru/m/user/scenarios/'.$scenario_id.'/actions', 'POST', $payload);
+            Log::info('YandexTTS'.json_encode($result));
 
             if (is_array($result) && $result['status'] == 'ok') {
                 return true;
@@ -130,6 +135,7 @@ class YandexTTS {
         } else {
             Log::error('YandexTTS Error TTS-scenario update');
         }
+
         return false;
     }
 
@@ -142,7 +148,7 @@ class YandexTTS {
             if (is_array($result['rooms'])) {
                 foreach ($result['rooms'] as $room) {
                     if (is_array($room['devices'])) {
-                        foreach($room['devices'] as $device) {
+                        foreach ($room['devices'] as $device) {
                             if (preg_match('/^devices.types.smart_speaker/uis', $device['type'])) {
                                 $speakers[$device['id']] = [
                                     'name' => $device['name'],
@@ -157,7 +163,7 @@ class YandexTTS {
                 }
             }
             if (is_array($result['speakers'])) {
-                foreach($result['speakers'] as $device) {
+                foreach ($result['speakers'] as $device) {
                     $speakers[$device['id']] = [
                         'name' => $device['name'],
                         'room' => 'unknown',
@@ -170,7 +176,7 @@ class YandexTTS {
 
             return $speakers;
         } else {
-            Log::error('YandexTTS Error get speakers list: ' . json_encode($result, JSON_UNESCAPED_UNICODE));
+            Log::error('YandexTTS Error get speakers list: '.json_encode($result, JSON_UNESCAPED_UNICODE));
         }
 
         return false;
@@ -183,7 +189,7 @@ class YandexTTS {
         if (is_array($result) && $result['status'] == 'ok') {
             if (is_array($result['scenarios'])) {
                 $scenarios = [];
-                foreach($result['scenarios'] as $scenario) {
+                foreach ($result['scenarios'] as $scenario) {
                     if (mb_strpos($scenario['name'], 'ТО') !== false) {
                         $scenarios[$this->yandexDecode($scenario['name'])] = [
                             'id' => $scenario['id'],
@@ -192,10 +198,11 @@ class YandexTTS {
                         ];
                     }
                 }
+
                 return $scenarios;
             }
         } else {
-            Log::error('YandexTTS Error get TTS-scenarios list: ' . json_encode($result, JSON_UNESCAPED_UNICODE));
+            Log::error('YandexTTS Error get TTS-scenarios list: '.json_encode($result, JSON_UNESCAPED_UNICODE));
         }
 
         return false;
@@ -205,30 +212,30 @@ class YandexTTS {
     {
         $nameEncode = $this->yandexEncode($speaker_id);
 
-        $payload = array( //xor2016: изменения у Яндекса
+        $payload = [ //xor2016: изменения у Яндекса
             'name' => $nameEncode,
             'icon' => 'home',
-            'triggers' => array(array(
+            'triggers' => [[
                 'type' => 'scenario.trigger.voice',
                 'value' => mb_substr($nameEncode, 4),
-            )),
-            'steps' => array(array(
+            ]],
+            'steps' => [[
                 'type' => 'scenarios.steps.actions',
-                'parameters' => array(
-                    'requested_speaker_capabilities' => array(),
-                    'launch_devices' => array(array(
+                'parameters' => [
+                    'requested_speaker_capabilities' => [],
+                    'launch_devices' => [[
                         'id' => $speaker_id,
-                        'capabilities' => array(array(
+                        'capabilities' => [[
                             'type' => 'devices.capabilities.quasar.server_action',
-                            'state' => array(
+                            'state' => [
                                 'instance' => 'phrase_action',
-                                'value' => 'Сценарий для МДМ. НЕ УДАЛЯТЬ!'
-                            )
-                        ))
-                    ))
-                )
-            ))
-        );
+                                'value' => 'Сценарий для МДМ. НЕ УДАЛЯТЬ!',
+                            ],
+                        ]],
+                    ]],
+                ],
+            ]],
+        ];
 
         // !!!!!!!!!!
         // $result = $this->apiRequest('https://iot.quasar.yandex.ru/m/v2/user/scenarios/', 'POST', $payload);
@@ -238,7 +245,7 @@ class YandexTTS {
         if (is_array($result) && $result['status'] == 'ok') {
             return true;
         } else {
-            Log::error('YandexTTS Error create TTS-scenario: ' . json_encode($result, JSON_UNESCAPED_UNICODE));
+            Log::error('YandexTTS Error create TTS-scenario: '.json_encode($result, JSON_UNESCAPED_UNICODE));
         }
 
         return false;
@@ -246,7 +253,7 @@ class YandexTTS {
 
     public function addTTSScenarios($speakers = [])
     {
-        foreach($speakers as $speaker) {
+        foreach ($speakers as $speaker) {
             $this->addTTSScenario($speaker['iot_id']);
         }
     }
@@ -270,9 +277,11 @@ class YandexTTS {
 
         if (preg_match('/"csrfToken2":"(.+?)"/', $result, $m)) {
             $token = $m[1];
+
             return $token;
         } else {
             Log::error('YandexTTS Error get CSRF-token');
+
             return false;
         }
     }
@@ -291,7 +300,7 @@ class YandexTTS {
         } else {
             $header = [
                 'Content-type: application/json',
-                'x-csrf-token:' . $token
+                'x-csrf-token:'.$token,
             ];
             curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 
@@ -316,16 +325,18 @@ class YandexTTS {
     private function yandexEncode($in)
     {
         $in = strtolower($in);
-        $MASK_EN = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', '-');
-        $MASK_RU = array('о', 'е', 'а', 'и', 'н', 'т', 'с', 'р', 'в', 'л', 'к', 'м', 'д', 'п', 'у', 'я', 'ы');
-        return 'ТО ' . str_replace($MASK_EN, $MASK_RU, $in);
+        $MASK_EN = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', '-'];
+        $MASK_RU = ['о', 'е', 'а', 'и', 'н', 'т', 'с', 'р', 'в', 'л', 'к', 'м', 'д', 'п', 'у', 'я', 'ы'];
+
+        return 'ТО '.str_replace($MASK_EN, $MASK_RU, $in);
     }
 
     private function yandexDecode($in)
     {
         $in = str_replace('ТО ', '', $in);
-        $MASK_EN = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', '-');
-        $MASK_RU = array('о', 'е', 'а', 'и', 'н', 'т', 'с', 'р', 'в', 'л', 'к', 'м', 'д', 'п', 'у', 'я', 'ы');
+        $MASK_EN = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', '-'];
+        $MASK_RU = ['о', 'е', 'а', 'и', 'н', 'т', 'с', 'р', 'в', 'л', 'к', 'м', 'д', 'п', 'у', 'я', 'ы'];
+
         return str_replace($MASK_RU, $MASK_EN, $in);
     }
 }

@@ -18,24 +18,21 @@ class YandexAuth extends BrowserRequests
 
     /**
      * Парсим из контента страницы форму с инпутами
-     *
-     * @param string $pageCont
-     * @return array
      */
     private function parseForm(string $pageCont): array
     {
         $paramArr = [];
 
         if ($pageCont) {
-            $pageCont = str_replace("\r" , "", $pageCont);
-            $pageCont = str_replace("\n" , "", $pageCont);
+            $pageCont = str_replace("\r", '', $pageCont);
+            $pageCont = str_replace("\n", '', $pageCont);
 
             preg_match_all("/<FORM(.*?)<\/FORM>/i", $pageCont, $matchForm);
-            preg_match_all("/<INPUT(.*?)>/i", $pageCont, $matchInput);
+            preg_match_all('/<INPUT(.*?)>/i', $pageCont, $matchInput);
 
-            foreach($matchInput[1] as $key => $value) {
-                preg_match_all("/NAME=\"(.*?)\"/i", $value, $matchName);
-                preg_match_all("/VALUE=\"(.*?)\"/i", $value, $matchValue);
+            foreach ($matchInput[1] as $key => $value) {
+                preg_match_all('/NAME="(.*?)"/i', $value, $matchName);
+                preg_match_all('/VALUE="(.*?)"/i', $value, $matchValue);
 
                 $paramArr[array_key_exists(0, $matchName[1]) ? $matchName[1][0] : ''] = array_key_exists(0, $matchValue[1]) ? $matchValue[1][0] : '';
             }
@@ -48,12 +45,6 @@ class YandexAuth extends BrowserRequests
 
     /**
      * Прохождение пошаговой авторизации яндекса и запись куки
-     *
-     * @param string $login
-     * @param string $password
-     * @param string $cookie
-     * @param string $referer
-     * @return array
      */
     public function yaAuth(string $login, string $password, string $cookie, string $referer): array
     {
@@ -61,18 +52,18 @@ class YandexAuth extends BrowserRequests
             unlink($cookie);
         }
 
-        $url = "https://passport.yandex.ru/auth?";
+        $url = 'https://passport.yandex.ru/auth?';
         $pageCont = $this->browserGetContents($url, $cookie, $referer);
         $paramArr = $this->parseForm($pageCont);
 
         $paramArr['login'] = $login;
         $paramArr['hidden-password'] = $password;
-        $url = "https://passport.yandex.ru/auth?retpath=https%3A%2F%2Fyandex.ru%2F?";
+        $url = 'https://passport.yandex.ru/auth?retpath=https%3A%2F%2Fyandex.ru%2F?';
 
         $param = '';
 
-        foreach($paramArr as $key => $value) {
-            $param .= "&" . $key . "=" . $value;
+        foreach ($paramArr as $key => $value) {
+            $param .= '&'.$key.'='.$value;
         }
 
         $pageCont = $this->browserPostContents($url, $param, $cookie, $referer);
@@ -80,34 +71,31 @@ class YandexAuth extends BrowserRequests
 
         $paramArr['login'] = $login;
         $paramArr['passwd'] = $password;
-        $url = "https://passport.yandex.ru/auth?retpath=https%3A%2F%2Fyandex.ru%2F?";
+        $url = 'https://passport.yandex.ru/auth?retpath=https%3A%2F%2Fyandex.ru%2F?';
 
-        foreach($paramArr as $key => $value) {
-            $param .= "&" . $key . "=" . $value;
+        foreach ($paramArr as $key => $value) {
+            $param .= '&'.$key.'='.$value;
         }
 
         $pageCont = $this->browserPostContents($url, $param, $cookie, $referer);
 
-        if (strstr($pageCont, "https://passport.yandex.ru/auth/finish")) {
+        if (strstr($pageCont, 'https://passport.yandex.ru/auth/finish')) {
             return $this->getXToken($cookie);
-        } elseif (strstr($pageCont, "https://passport.yandex.ru/auth/challenges")) {
+        } elseif (strstr($pageCont, 'https://passport.yandex.ru/auth/challenges')) {
             return [
                 'code' => 422,
-                'message' => 'Авторизация по паролю недоступна. Используйте одноразовый пароль'
+                'message' => 'Авторизация по паролю недоступна. Используйте одноразовый пароль',
             ];
         } else {
             return [
                 'code' => 500,
-                'message' => 'Ошибка авторизации. Повторите попытку или воспользуйтесь другим способом авторизации'
+                'message' => 'Ошибка авторизации. Повторите попытку или воспользуйтесь другим способом авторизации',
             ];
         }
     }
 
     /**
      * Проверка авторизации и попытка получения куки по токену
-     *
-     * @param string $cookie
-     * @return array
      */
     public function checkOrGetCookies(string $cookie): array
     {
@@ -122,7 +110,7 @@ class YandexAuth extends BrowserRequests
         $response = curl_exec($ch);
 
         if (curl_errno($ch)) {
-            Log::error("Error Curl: " . curl_error($ch));
+            Log::error('Error Curl: '.curl_error($ch));
         }
 
         curl_close($ch);
@@ -154,10 +142,6 @@ class YandexAuth extends BrowserRequests
 
     /**
      * Получение куки по токену
-     *
-     * @param string $xToken
-     * @param string $cookieFile
-     * @return array
      */
     public function loginToken(string $xToken, string $cookieFile): array
     {
@@ -167,7 +151,7 @@ class YandexAuth extends BrowserRequests
         ];
 
         $headers = [
-            'Ya-Consumer-Authorization' => 'OAuth ' . $xToken,
+            'Ya-Consumer-Authorization' => 'OAuth '.$xToken,
         ];
 
         $response = '';
@@ -178,7 +162,8 @@ class YandexAuth extends BrowserRequests
                 'headers' => $headers,
             ]);
         } catch (GuzzleException $e) {
-            Log::error('Ошибка получения куки по токену:' . $e->getMessage());
+            Log::error('Ошибка получения куки по токену:'.$e->getMessage());
+
             return ['code' => 401];
         }
 
@@ -186,7 +171,7 @@ class YandexAuth extends BrowserRequests
 
         if (array_key_exists('status', $resp) && $resp['status'] == 'ok') {
             if (array_key_exists('passport_host', $resp) && array_key_exists('track_id', $resp)) {
-                $ch = curl_init($resp['passport_host'] . '/auth/session/?track_id=' . $resp['track_id']);
+                $ch = curl_init($resp['passport_host'].'/auth/session/?track_id='.$resp['track_id']);
                 curl_setopt($ch, CURLOPT_COOKIEJAR, $cookieFile);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -196,7 +181,7 @@ class YandexAuth extends BrowserRequests
                 curl_exec($ch);
 
                 if (curl_errno($ch)) {
-                    Log::error("Error Curl: " . curl_error($ch));
+                    Log::error('Error Curl: '.curl_error($ch));
                 }
 
                 $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -210,14 +195,14 @@ class YandexAuth extends BrowserRequests
         }
 
         Log::error('Ошибка получения куки по токену');
+
         return ['code' => 401];
     }
 
     /**
      * Получение токена по сессии для дальнейшего обновления куки
      *
-     * @param string $cookie
-     * @return array
+     * @param  string  $cookie
      */
     public function getXToken(string $cookies): array
     {
@@ -231,7 +216,7 @@ class YandexAuth extends BrowserRequests
                 if (array_key_exists(6, $fields)) {
                     $sessionValue = rtrim($fields[6]);
                 }
-                $session = 'Session_id=' . $sessionValue;
+                $session = 'Session_id='.$sessionValue;
                 break;
             }
         }
@@ -254,10 +239,11 @@ class YandexAuth extends BrowserRequests
                 'form_params' => $payload,
             ]);
         } catch (GuzzleException $e) {
-            Log::error('Ошибка получения токена по сессии для дальнейшего обновления куки:' . $e->getMessage());
+            Log::error('Ошибка получения токена по сессии для дальнейшего обновления куки:'.$e->getMessage());
+
             return [
                 'code' => 500,
-                'message' => 'Ошибка авторизации. Не удалось получить токен. Повторите попытку или обратитесь к администратору'
+                'message' => 'Ошибка авторизации. Не удалось получить токен. Повторите попытку или обратитесь к администратору',
             ];
         }
 
@@ -265,19 +251,18 @@ class YandexAuth extends BrowserRequests
 
         if (array_key_exists('access_token', $resp)) {
             file_put_contents(base_path(config('yandex.token_file')), json_encode(['x_token' => $resp['access_token']]));
+
             return ['code' => 200];
         } else {
             return [
                 'code' => 500,
-                'message' => 'Ошибка авторизации. Не удалось получить токен. Повторите попытку или обратитесь к администратору'
+                'message' => 'Ошибка авторизации. Не удалось получить токен. Повторите попытку или обратитесь к администратору',
             ];
         }
     }
 
     /**
      * Получение ссылки на qr-код
-     *
-     * @return array
      */
     public function getQrCode(): array
     {
@@ -286,19 +271,20 @@ class YandexAuth extends BrowserRequests
         try {
             $response = $this->client->get('https://passport.yandex.ru/am?app_platform=android');
         } catch (GuzzleException $e) {
-            Log::error('Ошибка получения яндекс qr-кода:' . $e->getMessage());
+            Log::error('Ошибка получения яндекс qr-кода:'.$e->getMessage());
+
             return [
                 'code' => 500,
-                'message' => 'Ошибка авторизации. Не удалось получить qr-код. Попробуйте другой способ авторизации'
+                'message' => 'Ошибка авторизации. Не удалось получить qr-код. Попробуйте другой способ авторизации',
             ];
         }
 
         preg_match('/"csrf_token" value="([^"]+)"/', $response->getBody()->getContents(), $matches);
 
-        if (!array_key_exists(1, $matches)) {
+        if (! array_key_exists(1, $matches)) {
             return [
                 'code' => 500,
-                'message' => 'Ошибка авторизации. Не удалось получить qr-код. Попробуйте другой способ авторизации'
+                'message' => 'Ошибка авторизации. Не удалось получить qr-код. Попробуйте другой способ авторизации',
             ];
         }
 
@@ -311,10 +297,11 @@ class YandexAuth extends BrowserRequests
                 'with_code' => 1,
             ]);
         } catch (GuzzleException $e) {
-            Log::error('Ошибка получения яндекс qr-кода:' . $e->getMessage());
+            Log::error('Ошибка получения яндекс qr-кода:'.$e->getMessage());
+
             return [
                 'code' => 500,
-                'message' => 'Ошибка авторизации. Не удалось получить qr-код. Попробуйте другой способ авторизации'
+                'message' => 'Ошибка авторизации. Не удалось получить qr-код. Попробуйте другой способ авторизации',
             ];
         }
 
@@ -327,22 +314,19 @@ class YandexAuth extends BrowserRequests
 
                 return [
                     'code' => 200,
-                    'qr_url' => 'https://passport.yandex.ru/auth/magic/code/?track_id=' . $resp['track_id']
+                    'qr_url' => 'https://passport.yandex.ru/auth/magic/code/?track_id='.$resp['track_id'],
                 ];
             }
         }
 
         return [
             'code' => 500,
-            'message' => 'Ошибка авторизации. Не удалось получить qr-код. Попробуйте другой способ авторизации'
+            'message' => 'Ошибка авторизации. Не удалось получить qr-код. Попробуйте другой способ авторизации',
         ];
     }
 
     /**
      * Авторизация qr-кода
-     *
-     * @param string $cookie
-     * @return array
      */
     public function loginQrCode(string $cookie): array
     {
@@ -362,7 +346,7 @@ class YandexAuth extends BrowserRequests
         $response = curl_exec($ch);
 
         if (curl_errno($ch)) {
-            Log::error("Error Curl: " . curl_error($ch));
+            Log::error('Error Curl: '.curl_error($ch));
         }
 
         $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -381,7 +365,7 @@ class YandexAuth extends BrowserRequests
 
         return [
             'code' => 500,
-            'message' => 'Ошибка авторизации. Не удалось авторизовать qr-код. Попробуйте другой способ авторизации'
+            'message' => 'Ошибка авторизации. Не удалось авторизовать qr-код. Попробуйте другой способ авторизации',
         ];
     }
 }

@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\Port;
-use App\Models\Usensor;
-use App\Models\ObjType;
 use App\Models\HomeObject;
+use App\Models\ObjType;
+use App\Models\Port;
 use App\Models\Pressurestat;
-use Illuminate\Support\Facades\DB;
+use App\Models\Usensor;
 use App\Repositories\PortRepository;
+use Illuminate\Support\Facades\DB;
 
 class UsensorService
 {
@@ -217,7 +217,7 @@ class UsensorService
     private function createLightstat(Usensor $usensor, int $minAlarm, int $maxAlarm, int $minThreshold, int $maxThreshold): void
     {
         $this->lightstatService->store([
-            'name' => 'Датчик освещенности (' . $usensor->type . '). ' . $usensor->relatedRoom->name,
+            'name' => 'Датчик освещенности ('.$usensor->type.'). '.$usensor->relatedRoom->name,
             'room' => $usensor->room,
             'usensor_id' => $usensor->id_object,
             'mode' => 0,
@@ -234,7 +234,7 @@ class UsensorService
     private function createTermostat(Usensor $usensor): void
     {
         $this->termostatService->store([
-            'name' => 'Датчик температуры (' . $usensor->type . '). ' . $usensor->relatedRoom->name,
+            'name' => 'Датчик температуры ('.$usensor->type.'). '.$usensor->relatedRoom->name,
             'room' => $usensor->room,
             'usensor_id' => $usensor->id_object,
             'placetype' => 'usensor',
@@ -251,7 +251,7 @@ class UsensorService
     private function createHygrostat(Usensor $usensor): void
     {
         $this->hygrostatService->store([
-            'name' => 'Датчик влажности (' . $usensor->type . '). ' . $usensor->relatedRoom->name,
+            'name' => 'Датчик влажности ('.$usensor->type.'). '.$usensor->relatedRoom->name,
             'room' => $usensor->room,
             'usensor_id' => $usensor->id_object,
             'type' => 0,
@@ -266,7 +266,7 @@ class UsensorService
     private function createPressurestat(Usensor $usensor, string $sensorType): void
     {
         $this->pressurestatService->store([
-            'name' => 'Датчик давления (' . $usensor->type . '). ' . $usensor->relatedRoom->name,
+            'name' => 'Датчик давления ('.$usensor->type.'). '.$usensor->relatedRoom->name,
             'room' => $usensor->room,
             'usensor_id' => $usensor->id_object,
             'mode' => 0,
@@ -282,7 +282,7 @@ class UsensorService
     private function createCarbdioxide(Usensor $usensor): void
     {
         $this->carbdioxideService->store([
-            'name' => 'Датчик углекислого газа (' . $usensor->type . '). ' . $usensor->relatedRoom->name,
+            'name' => 'Датчик углекислого газа ('.$usensor->type.'). '.$usensor->relatedRoom->name,
             'room' => $usensor->room,
             'usensor_id' => $usensor->id_object,
             'mode' => 0,

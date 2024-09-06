@@ -133,7 +133,7 @@ class DeviceService
         DB::beginTransaction();
 
         try {
-            exec("ping -c 1 {$data['ip_address']}",$output, $status);
+            exec("ping -c 1 {$data['ip_address']}", $output, $status);
 
             if ($status == 0) {
                 $data['active'] = 1;
@@ -241,7 +241,7 @@ class DeviceService
             return ['result' => false, 'message' => 'Устройство не найдено', '', ''];
         }
 
-        if (!$this->isValidIpAddress($data)) {
+        if (! $this->isValidIpAddress($data)) {
             return ['result' => false, 'message' => 'Недопустимый ip адрес', '', ''];
         }
 
@@ -347,13 +347,10 @@ class DeviceService
 
     /**
      * Вертнуть свободные и занятые порты устройства, которые соответсвуют указанным типам
-     *
-     * @param null|int $deviceId
-     * @param string $types
      */
     public function getAllDevicePortsByPortType(?int $deviceId, string $types = '')
     {
-        if (!$deviceId) {
+        if (! $deviceId) {
             return [];
         }
 
@@ -362,11 +359,11 @@ class DeviceService
 
         foreach ($ports as $port) {
             $arrayPorts[] = [
-                'name' => 'Порт '.$port->type.' ['.$port->num_port.']' . (
+                'name' => 'Порт '.$port->type.' ['.$port->num_port.']'.(
                     $port->eobject ?
-                    ': <span style="color:red">занят</span> ' . $port->eobject->name.' '.$port->eobject->id :
+                    ': <span style="color:red">занят</span> '.$port->eobject->name.' '.$port->eobject->id :
                     ': <span style="color:green">свободен</span>'
-                )
+                ),
             ];
         }
 
@@ -376,13 +373,11 @@ class DeviceService
     /**
      * Вертнуть свободные порты устройства, которые соответсвуют указанным типам
      *
-     * @param null|int $deviceId
-     * @param string $types
-     * @param null|int $currentObjectId = null
+     * @param  null|int  $currentObjectId = null
      */
-    public function getFreeDevicePortsByPortType(?int $deviceId, string $types, ?int $currentObjectId = null)
+    public function getFreeDevicePortsByPortType(?int $deviceId, string $types, int $currentObjectId = null)
     {
-        if (!$deviceId) {
+        if (! $deviceId) {
             return [];
         }
 
@@ -390,11 +385,11 @@ class DeviceService
         $arrayPorts = [];
 
         foreach ($ports as $port) {
-            if (($currentObjectId && $port->eobject && $port->eobject->id == $currentObjectId) || !$port->eobject) {
+            if (($currentObjectId && $port->eobject && $port->eobject->id == $currentObjectId) || ! $port->eobject) {
                 $arrayPorts[] = [
                     'id' => $port->id,
                     'num_port' => $port->num_port,
-                    'name' => 'Порт '.$port->type.' ['.$port->num_port.']'
+                    'name' => 'Порт '.$port->type.' ['.$port->num_port.']',
                 ];
             }
         }

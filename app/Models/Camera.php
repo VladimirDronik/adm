@@ -8,11 +8,14 @@ class Camera extends Model
 {
     protected $guarded = ['id'];
 
-    const VENDOR_IVIDEON= 'ivideon';
+    const VENDOR_IVIDEON = 'ivideon';
+
     const VENDOR_HIKVISION_HIWATCH = 'HikVision/HiWatch';
+
     const VENDOR_OTHER = 'other';
 
     const TYPE_DIRECT_LINK = 'direct_link';
+
     const TYPE_MEDIA_SERVER = 'media_server';
 
     public static function getVendors()

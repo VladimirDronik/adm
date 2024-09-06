@@ -24,6 +24,6 @@ class RecorderController extends Controller
     {
         abort_if(! ajaxHas($r, ['id']), 400);
 
-        return response()->json(['result' => (bool)$this->service->delete((int) $r->id)]);
+        return response()->json(['result' => (bool) $this->service->delete((int) $r->id)]);
     }
 }

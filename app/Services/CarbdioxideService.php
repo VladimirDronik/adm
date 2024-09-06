@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Usensor;
-use App\Models\HomeObject;
 use App\Models\Carbdioxide;
+use App\Models\HomeObject;
+use App\Models\Usensor;
 use Illuminate\Support\Facades\DB;
 
 class CarbdioxideService
@@ -64,8 +64,8 @@ class CarbdioxideService
             $carbdioxide->save();
         });
 
-        chdir(env('SERVER_FOLDER') . '/scripts');
-        exec('php check_carbdioxide.php ' . $carbdioxide->id_object);
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php check_carbdioxide.php '.$carbdioxide->id_object);
 
         return $carbdioxide->id;
     }
@@ -102,8 +102,8 @@ class CarbdioxideService
             $carbdioxide->save();
         });
 
-        chdir(env('SERVER_FOLDER') . '/scripts');
-        exec('php check_carbdioxide.php ' . $carbdioxide->id_object);
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php check_carbdioxide.php '.$carbdioxide->id_object);
 
         return $carbdioxide->id;
     }

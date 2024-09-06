@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Ajax;
 
 use App\Repositories\YandexStationRepository;
-use App\Services\YandexStationService;
-use Illuminate\Http\Request;
 use App\Services\YandexIntegration\YandexAuth;
 use App\Services\YandexIntegration\YandexTTS;
+use App\Services\YandexStationService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class YandexStationController
@@ -54,7 +54,7 @@ class YandexStationController
         $cookie = base_path(config('yandex.cookie_file'));
         $token = base_path(config('yandex.token_file'));
 
-        for ($i=0; $i < 5; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $yaAuth = $this->yandexAuth
                 ->yaAuth($validated['login'], $validated['password'], $cookie, 'https://passport.yandex.ru/auth/');
 

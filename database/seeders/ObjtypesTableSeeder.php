@@ -87,19 +87,19 @@ class ObjtypesTableSeeder extends Seeder
             ],
             [
                 'name' => ObjType::TYPE_CONDITIONER,
-                'label' => 'Кондиционер'
+                'label' => 'Кондиционер',
             ],
             [
                 'name' => ObjType::TYPE_YANDEX_STATION,
-                'label' => 'Яндекс Станция'
+                'label' => 'Яндекс Станция',
             ],
             [
                 'name' => ObjType::TYPE_TAPE,
-                'label' => 'Led лента'
+                'label' => 'Led лента',
             ],
             [
                 'name' => ObjType::TYPE_DALI,
-                'label' => 'Устройство DALI'
+                'label' => 'Устройство DALI',
             ],
         ];
     }

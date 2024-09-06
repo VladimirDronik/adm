@@ -173,7 +173,7 @@ if (! function_exists('customEncrypt')) {
 
         $encrypted = openssl_encrypt($data, $method, $key, 0, $iv);
 
-        return base64_encode($iv . $encrypted);
+        return base64_encode($iv.$encrypted);
     }
 }
 

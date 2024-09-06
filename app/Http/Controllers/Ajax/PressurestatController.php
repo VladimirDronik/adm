@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\PressurestatService;
+use Illuminate\Http\Request;
 
 class PressurestatController extends Controller
 {

@@ -2,19 +2,19 @@
 
 namespace App\Services;
 
-use Exception;
-use App\Models\Method;
-use App\Models\Script;
-use App\Models\ObjType;
-use App\Models\HomeObject;
 use App\Models\Conditioner;
-use App\Models\ModbusSlaver;
-use App\Models\SchedulerTask;
-use App\Models\SchedulerPoint;
 use App\Models\ConditionerType;
-use Illuminate\Support\Facades\DB;
-use Database\Seeders\ScriptsTableSeeder;
+use App\Models\HomeObject;
+use App\Models\Method;
+use App\Models\ModbusSlaver;
+use App\Models\ObjType;
+use App\Models\SchedulerPoint;
+use App\Models\SchedulerTask;
+use App\Models\Script;
 use App\Repositories\ConditionerRepository;
+use Database\Seeders\ScriptsTableSeeder;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class ConditionerService
 {
@@ -45,8 +45,8 @@ class ConditionerService
         $modbusSlaver = ModbusSlaver::find($data['modbus_slaver_id']);
         $conditionerType = ConditionerType::where('device', $modbusSlaver->relatedType->type)->first();
 
-        if (!$conditionerType) {
-            throw new Exception('Запись в таблице conditioner_types с полем device = ' . $modbusSlaver->relatedType->type . ' не найдена');
+        if (! $conditionerType) {
+            throw new Exception('Запись в таблице conditioner_types с полем device = '.$modbusSlaver->relatedType->type.' не найдена');
         }
 
         $conditioner->type = $conditionerType->id;
@@ -67,8 +67,8 @@ class ConditionerService
             $conditioner->save();
         });
 
-        chdir(env('SERVER_FOLDER') . '/scripts');
-        exec('php ac_polling.php ' . $conditioner->id_object);
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php ac_polling.php '.$conditioner->id_object);
 
         return $conditioner->id;
     }
@@ -109,9 +109,7 @@ class ConditionerService
     /**
      * Запуск скрипта смены состояния кондиционера
      *
-     * @param int $condObjId
-     * @param string $newStatus Доступные значения 'on' или 'off'
-     * @return array
+     * @param  string  $newStatus Доступные значения 'on' или 'off'
      */
     public function setStatus(int $condObjId, string $newStatus): array
     {
@@ -124,7 +122,7 @@ class ConditionerService
         ];
 
         chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php ' . $scripts[$newStatus] . ' ' . $condObjId, $output, $resultCode);
+        exec('php '.$scripts[$newStatus].' '.$condObjId, $output, $resultCode);
 
         return [
             'code' => $resultCode,
@@ -134,10 +132,6 @@ class ConditionerService
 
     /**
      * Запуск скрипта установки температуры кондиционера
-     *
-     * @param int $condObjId
-     * @param int $newTemp
-     * @return array
      */
     public function setTemp(int $condObjId, int $newTemp): array
     {
@@ -145,7 +139,7 @@ class ConditionerService
         $resultCode = null;
 
         chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php ac_set_temperature.php ' . $condObjId . ' ' . $newTemp, $output, $resultCode);
+        exec('php ac_set_temperature.php '.$condObjId.' '.$newTemp, $output, $resultCode);
 
         return [
             'code' => $resultCode,
@@ -155,10 +149,6 @@ class ConditionerService
 
     /**
      * Запуск скрипта установки режима работы кондиционера
-     *
-     * @param int $condObjId
-     * @param string $newMode
-     * @return array
      */
     public function setMode(int $condObjId, string $newMode): array
     {
@@ -166,7 +156,7 @@ class ConditionerService
         $resultCode = null;
 
         chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php ac_set_mode.php ' . $condObjId . ' ' . $newMode, $output, $resultCode);
+        exec('php ac_set_mode.php '.$condObjId.' '.$newMode, $output, $resultCode);
 
         return [
             'code' => $resultCode,
@@ -176,10 +166,6 @@ class ConditionerService
 
     /**
      * Запуск скрипта установки скорости вентилятора кондиционера
-     *
-     * @param int $condObjId
-     * @param string $newFan
-     * @return array
      */
     public function setFan(int $condObjId, string $newFan): array
     {
@@ -187,7 +173,7 @@ class ConditionerService
         $resultCode = null;
 
         chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php ac_set_fan.php ' . $condObjId . ' ' . $newFan, $output, $resultCode);
+        exec('php ac_set_fan.php '.$condObjId.' '.$newFan, $output, $resultCode);
 
         return [
             'code' => $resultCode,
@@ -197,10 +183,6 @@ class ConditionerService
 
     /**
      * Запуск скрипта установки вертикального направления воздуха кондиционера
-     *
-     * @param int $condObjId
-     * @param string $newVdir
-     * @return array
      */
     public function setVdir(int $condObjId, string $newVdir): array
     {
@@ -208,7 +190,7 @@ class ConditionerService
         $resultCode = null;
 
         chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php ac_set_vdir.php ' . $condObjId . ' ' . $newVdir, $output, $resultCode);
+        exec('php ac_set_vdir.php '.$condObjId.' '.$newVdir, $output, $resultCode);
 
         return [
             'code' => $resultCode,
@@ -218,10 +200,6 @@ class ConditionerService
 
     /**
      * Запуск скрипта установки горизонтального направления воздуха кондиционера
-     *
-     * @param int $condObjId
-     * @param string $newHdir
-     * @return array
      */
     public function setHdir(int $condObjId, string $newHdir): array
     {
@@ -229,7 +207,7 @@ class ConditionerService
         $resultCode = null;
 
         chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php ac_set_hdir.php ' . $condObjId . ' ' . $newHdir, $output, $resultCode);
+        exec('php ac_set_hdir.php '.$condObjId.' '.$newHdir, $output, $resultCode);
 
         return [
             'code' => $resultCode,
@@ -246,7 +224,7 @@ class ConditionerService
             ->where('system', 1)
             ->first();
 
-        if (!$script) {
+        if (! $script) {
             $script = Script::create(ScriptsTableSeeder::getCheckConditionerScript());
         }
 

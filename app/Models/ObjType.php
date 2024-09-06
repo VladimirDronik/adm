@@ -23,27 +23,49 @@ use Illuminate\Database\Eloquent\Model;
 class ObjType extends Model
 {
     const TYPE_COUNT = 'count';
+
     const TYPE_TERMOSTAT = 'termostat';
+
     const TYPE_HYGROSTAT = 'hygrostat';
+
     const TYPE_LIGHTSTAT = 'lightstat';
+
     const TYPE_PRESSURESTAT = 'pressurestat';
+
     const TYPE_CARBDIOXIDE = 'carbdioxide';
+
     const TYPE_USENSOR = 'usensor';
+
     const TYPE_DIMMER = 'dimmer';
+
     const TYPE_BUTTON = 'button';
+
     const TYPE_SWITCH = 'switch';
+
     const TYPE_RELAY = 'relay';
+
     const TYPE_SOCKET = 'socket';
+
     const TYPE_DRYCONTACT = 'drycontact';
+
     const TYPE_MOTIONSENSOR = 'motionsensor';
+
     const TYPE_CARBMONOXIDE = 'carbsens';
+
     const TYPE_VIRTUAL = 'virtual';
+
     const TYPE_MANOMETR = 'manometr';
+
     const TYPE_BOILER = 'boiler';
+
     const TYPE_BOILER_GVS = 'boiler_gvs';
+
     const TYPE_CONDITIONER = 'conditioner';
+
     const TYPE_YANDEX_STATION = 'yandex_station';
+
     const TYPE_TAPE = 'tape';
+
     const TYPE_DALI = 'dali';
 
     protected $table = 'objtypes';

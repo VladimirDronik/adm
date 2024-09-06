@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Class Boiler
@@ -16,23 +16,35 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Boiler extends Model
 {
     const PROP_CH_CURRENT_TEMP = 'ch_current_temp';
+
     const PROP_CH_SETPOINT_TEMP = 'ch_setpoint_temp';
+
     const PROP_DHW_CURRENT_TEMP = 'dhw_current_temp';
+
     const PROP_DHW_SETPOINT_TEMP = 'dhw_setpoint_temp';
+
     const PROP_RETURN_TEMP = 'return_temp';
+
     const PROP_ERROR_CODE = 'error_code';
+
     const PROP_OUTDOOR_TEMP = 'outdoor_temp';
+
     const PROP_MODULATION = 'modulation';
+
     const PROP_PRESSURE = 'pressure';
 
     const TYPE_ELECTRO = 'electro';
+
     const TYPE_GAS = 'gas';
 
     const MODE_CH_DHW = 'ch_dhw';
+
     const MODE_CH = 'ch';
+
     const MODE_DHW = 'dhw';
 
     const HEATING_MODE_MANUAL = 'manual';
+
     const HEATING_MODE_WC = 'wc';
 
     const DEFAULT_GVS_TEMP = 45;

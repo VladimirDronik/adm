@@ -36,6 +36,7 @@ class Script extends Model
     const LINK_PATH = '/';
 
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     /**

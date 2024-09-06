@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Elements extends Model
 {
@@ -51,7 +51,7 @@ class Elements extends Model
             if ($this->handle == Boiler::PROP_OUTDOOR_TEMP) {
                 $value = $boiler->outdoorSensor?->current;
             } else {
-                $value = $boiler->boilersParam ? $boiler->boilersParam[$this->handle]  : null;
+                $value = $boiler->boilersParam ? $boiler->boilersParam[$this->handle] : null;
             }
         }
 

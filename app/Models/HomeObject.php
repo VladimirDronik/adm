@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\HomeObject
@@ -35,10 +35,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class HomeObject extends Model
 {
     const GATEWAY_HTTP = 'http';
+
     const GATEWAY_MODBUS = 'modbus';
 
     protected $table = 'objects';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     public static function getGatewayTypes(): array

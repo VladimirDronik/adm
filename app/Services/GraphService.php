@@ -2,20 +2,20 @@
 
 namespace App\Services;
 
-use Carbon\Carbon;
-use App\Models\Room;
-use App\Models\Count;
-use App\Models\Hygrostat;
-use App\Models\Lightstat;
-use App\Models\Termostat;
-use App\Models\GraphLight;
-use App\Models\GraphCount;
 use App\Models\Carbdioxide;
-use App\Models\Pressurestat;
+use App\Models\Count;
+use App\Models\GraphCarbdioxide;
+use App\Models\GraphCount;
 use App\Models\GraphHumidity;
+use App\Models\GraphLight;
 use App\Models\GraphPressure;
 use App\Models\GraphTermostat;
-use App\Models\GraphCarbdioxide;
+use App\Models\Hygrostat;
+use App\Models\Lightstat;
+use App\Models\Pressurestat;
+use App\Models\Room;
+use App\Models\Termostat;
+use Carbon\Carbon;
 
 class GraphService
 {

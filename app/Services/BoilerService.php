@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\Page;
 use App\Models\Boiler;
-use App\Models\Elements;
 use App\Models\BoilerAuto;
-use App\Models\HomeObject;
 use App\Models\BoilersParam;
 use App\Models\BoilersParamsFlag;
+use App\Models\Elements;
+use App\Models\HomeObject;
+use App\Models\Page;
 use Illuminate\Support\Facades\DB;
 
 class BoilerService
@@ -32,7 +32,7 @@ class BoilerService
 
                 $boiler->object->update([
                     'name' => $objectName,
-                ]);;
+                ]);
 
                 if ($page) {
                     $page->update([

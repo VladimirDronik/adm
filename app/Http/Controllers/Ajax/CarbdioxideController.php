@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\CarbdioxideService;
+use Illuminate\Http\Request;
 
 class CarbdioxideController extends Controller
 {

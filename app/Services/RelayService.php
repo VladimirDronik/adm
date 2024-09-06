@@ -114,13 +114,13 @@ class RelayService
 
             switch ($relay->gateway_type) {
                 case HomeObject::GATEWAY_MODBUS:
-                        if ($data['register_id']) {
-                            $this->relayObjectService
-                                ->updateRelayObjectMethods($relay->object->id, null, null, $data['register_id']);
-                        } else {
-                            $this->relayObjectService
-                                ->updateRelayMethodsWithCurrentRegisters($relay->object, $data);
-                        }
+                    if ($data['register_id']) {
+                        $this->relayObjectService
+                            ->updateRelayObjectMethods($relay->object->id, null, null, $data['register_id']);
+                    } else {
+                        $this->relayObjectService
+                            ->updateRelayMethodsWithCurrentRegisters($relay->object, $data);
+                    }
                     break;
                 case HomeObject::GATEWAY_HTTP:
                     Port::where('object', $relay->object->id)

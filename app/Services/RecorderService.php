@@ -52,13 +52,13 @@ class RecorderService
                 'active' => 1,
             ];
 
-            for ($i=1; $i <= $data['number_of_cameras']; $i++) {
-                $cameraData['name'] = 'Камера ' . $i;
+            for ($i = 1; $i <= $data['number_of_cameras']; $i++) {
+                $cameraData['name'] = 'Камера '.$i;
                 $cameraData['sort'] = Camera::max('sort') + 1;
 
                 switch ($data['vendor']) {
                     case Recorder::VENDOR_HIKVISION_HIWATCH:
-                        $cameraData['link'] = 'rtsp://$login:$password@$ip_address/ISAPI/Streaming/channels/'. $i .'01';
+                        $cameraData['link'] = 'rtsp://$login:$password@$ip_address/ISAPI/Streaming/channels/'.$i.'01';
                         break;
                     case Recorder::VENDOR_OTHER:
                         $cameraData['link'] = null;
@@ -66,7 +66,7 @@ class RecorderService
                 }
 
                 $camera = Camera::create($cameraData);
-                $camera->update(['image' => 'ela/images/cameras_snapshots/camera' . $camera->id . '.jpeg']);
+                $camera->update(['image' => 'ela/images/cameras_snapshots/camera'.$camera->id.'.jpeg']);
             }
         });
 
@@ -103,7 +103,7 @@ class RecorderService
                 }
 
                 try {
-                    Http::delete('http://localhost:9997/v3/config/paths/delete/camera' . $camera->id);
+                    Http::delete('http://localhost:9997/v3/config/paths/delete/camera'.$camera->id);
                 } catch (\Throwable $th) {
                 }
             }

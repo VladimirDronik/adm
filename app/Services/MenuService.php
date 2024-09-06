@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Models\Menu;
 use App\Models\ObjType;
-use Illuminate\Support\Facades\DB;
 use App\Repositories\MenuRepository;
 use App\Repositories\ObjectRepository;
+use Illuminate\Support\Facades\DB;
 
 class MenuService
 {
@@ -207,7 +207,7 @@ class MenuService
         ]);
 
         $menu->update([
-            'link' => $link . $menu->id,
+            'link' => $link.$menu->id,
         ]);
 
         return $menu;
@@ -223,7 +223,7 @@ class MenuService
         if ($selectedObject->type == ObjType::TYPE_BOILER) {
             $engeneeringParent = $this->menuRepository->getByName('Инженерное');
 
-            if (!$engeneeringParent) {
+            if (! $engeneeringParent) {
                 $engeneeringParent = $this->createEngeneeringMenuItem();
             }
 

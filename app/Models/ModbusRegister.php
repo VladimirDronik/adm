@@ -12,11 +12,15 @@ class ModbusRegister extends Model
     use HasFactory;
 
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     const TYPE_COIL = 'coil';
+
     const TYPE_HOLDING = 'holding';
+
     const TYPE_INPUT = 'input';
+
     const TYPE_DISCRETE = 'discrete';
 
     public static function boot()

@@ -12,6 +12,7 @@ class ModbusSlaver extends Model
     use HasFactory;
 
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     public function relatedBus(): BelongsTo
@@ -63,8 +64,6 @@ class ModbusSlaver extends Model
 
     /**
      * Получить данные набора лед лент по коду выбранного режима
-     *
-     * @return array
      */
     public function getLedTapesDataByCode(int $code): array
     {

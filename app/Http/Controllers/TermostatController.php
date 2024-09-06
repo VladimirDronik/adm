@@ -59,12 +59,12 @@ class TermostatController extends Controller
 
     public function create()
     {
-        list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
-        $object_types =  HomeObject::getFullTypeIds();
+        [$objects, $rooms, $types, $devices, $usensors] = $this->getLists();
+        $object_types = HomeObject::getFullTypeIds();
         $can = gates('devices.show-object');
         $tab = 1;
 
-        return view('termostats.create', compact('objects','rooms', 'types', 'devices',
+        return view('termostats.create', compact('objects', 'rooms', 'types', 'devices',
             'usensors', 'object_types', 'can', 'tab'));
     }
 
@@ -84,7 +84,7 @@ class TermostatController extends Controller
 
     public function edit(Termostat $termostat, $tab = 1)
     {
-        list($objects, $rooms, $types, $devices, $usensors) = $this->getLists();
+        [$objects, $rooms, $types, $devices, $usensors] = $this->getLists();
 
         $methods = $this->object_service->getMethodsByObjectIdToArray($termostat->object);
         $object_types = HomeObject::getFullTypeIds();

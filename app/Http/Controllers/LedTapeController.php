@@ -45,7 +45,7 @@ class LedTapeController extends Controller
                     ->with('success', 'Led лента успешно добавлена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении led ленты ' .
+            \Log::error('Ошибка при добавлении led ленты '.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 
@@ -60,7 +60,7 @@ class LedTapeController extends Controller
                     ->with('success', 'Led лента успешно изменена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении Led ленты ' .
+            \Log::error('Ошибка при изменении Led ленты '.
                 json_encode($r->all()).' '.$e->getMessage());
         }
 

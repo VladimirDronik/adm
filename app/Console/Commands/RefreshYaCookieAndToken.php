@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 class RefreshYaCookieAndToken extends Command
 {
     private $yandexAuth;
+
     /**
      * The name and signature of the console command.
      *
@@ -59,6 +60,6 @@ class RefreshYaCookieAndToken extends Command
             }
         }
 
-        Log::info($message ? ($message . ' яндекса обновлены.') : 'Не удалось обновить токен и куки яндекса. Проверьте авторизацию яндекса.');
+        Log::info($message ? ($message.' яндекса обновлены.') : 'Не удалось обновить токен и куки яндекса. Проверьте авторизацию яндекса.');
     }
 }

@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Recorder extends Model
 {
     protected $guarded = ['id'];
+
     public $timestamps = false;
 
     const VENDOR_HIKVISION_HIWATCH = 'HikVision/HiWatch';
+
     const VENDOR_OTHER = 'other';
 
     public static function getVendors()

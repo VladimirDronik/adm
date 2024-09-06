@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Lightstat;
 use App\Models\HomeObject;
+use App\Models\Lightstat;
 use Illuminate\Support\Facades\DB;
 
 class LightstatService
@@ -43,14 +43,15 @@ class LightstatService
             $lightstat->save();
         });
 
-        chdir(env('SERVER_FOLDER') . '/scripts');
-        exec('php check_lightstat.php ' . $lightstat->id_object);
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php check_lightstat.php '.$lightstat->id_object);
 
         return $lightstat->id;
     }
 
     /**
      * Удаление датчика освещенности.
+     *
      * @throws \Throwable
      */
     public function delete(int $id): bool
@@ -88,8 +89,8 @@ class LightstatService
             $lightstat->save();
         });
 
-        chdir(env('SERVER_FOLDER') . '/scripts');
-        exec('php check_lightstat.php ' . $lightstat->id_object);
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php check_lightstat.php '.$lightstat->id_object);
 
         return $lightstat->id;
     }

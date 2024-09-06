@@ -6,7 +6,6 @@ use App\Models\HomeObject;
 use App\Models\Method;
 use App\Models\ObjType;
 use App\Models\Port;
-use App\Models\Relay;
 
 class RelayObjectService
 {
@@ -32,25 +31,25 @@ class RelayObjectService
      *
      * @return void
      */
-    public function createRelayObjectMethods(int $objectId, ?int $deviceId = null, ?Port $port = null, ?int $registerId = null)
+    public function createRelayObjectMethods(int $objectId, int $deviceId = null, Port $port = null, int $registerId = null)
     {
         $easyString = null;
 
         if ($registerId) {
-            $easyString = 'm;' . $registerId;
+            $easyString = 'm;'.$registerId;
         } else {
             if ($port) {
                 if ($port->type == 'ext') {
-                    $easyString = $deviceId . ';' . $port->extensionModule->sda_port . 'e' . $port->num_port;
+                    $easyString = $deviceId.';'.$port->extensionModule->sda_port.'e'.$port->num_port;
                 } else {
-                    $easyString = $deviceId . ';' . $port->num_port;
+                    $easyString = $deviceId.';'.$port->num_port;
                 }
             }
 
             //Обнуляем все простые действия, которые были назначены для этих портов
-            Method::where('easy', $easyString . ':0')
-                ->orWhere('easy', $easyString . ':1')
-                ->orWhere('easy', $easyString . ':2')
+            Method::where('easy', $easyString.':0')
+                ->orWhere('easy', $easyString.':1')
+                ->orWhere('easy', $easyString.':2')
                 ->update(['easy' => null]);
         }
 
@@ -59,7 +58,7 @@ class RelayObjectService
                 'name' => 'Выключить реле',
                 'id_object' => $objectId,
                 'script' => null,
-                'easy' => $registerId ? $easyString : $easyString . ':0',
+                'easy' => $registerId ? $easyString : $easyString.':0',
                 'comment' => 'Выключить реле',
                 'is_system' => 1,
             ],
@@ -67,7 +66,7 @@ class RelayObjectService
                 'name' => 'Включить реле',
                 'id_object' => $objectId,
                 'script' => null,
-                'easy' => $registerId ? $easyString : $easyString . ':1',
+                'easy' => $registerId ? $easyString : $easyString.':1',
                 'comment' => 'Включить реле',
                 'is_system' => 1,
             ],
@@ -75,7 +74,7 @@ class RelayObjectService
                 'name' => 'Переключить реле',
                 'id_object' => $objectId,
                 'script' => null,
-                'easy' => $registerId ? $easyString : $easyString . ':2',
+                'easy' => $registerId ? $easyString : $easyString.':2',
                 'comment' => 'Переключить реле',
                 'is_system' => 1,
             ],
@@ -89,40 +88,40 @@ class RelayObjectService
     /**
      * Обновление методов реле
      */
-    public function updateRelayObjectMethods(int $objectId, ?int $deviceId = null, ?Port $port = null, ?int $registerId = null)
+    public function updateRelayObjectMethods(int $objectId, int $deviceId = null, Port $port = null, int $registerId = null)
     {
         $easyString = null;
 
         if ($registerId) {
-            $easyString = 'm;' . $registerId;
+            $easyString = 'm;'.$registerId;
         } else {
             if ($port) {
                 if ($port->type == 'ext') {
-                    $easyString = $deviceId . ';' . $port->extensionModule->sda_port . 'e' . $port->num_port;
+                    $easyString = $deviceId.';'.$port->extensionModule->sda_port.'e'.$port->num_port;
                 } else {
-                    $easyString = $deviceId . ';' . $port->num_port;
+                    $easyString = $deviceId.';'.$port->num_port;
                 }
             }
 
             //Обнуляем все простые действия, которые были назначены для этих портов
-            Method::where('easy', $easyString . ':0')
-                ->orWhere('easy', $easyString . ':1')
-                ->orWhere('easy', $easyString . ':2')
+            Method::where('easy', $easyString.':0')
+                ->orWhere('easy', $easyString.':1')
+                ->orWhere('easy', $easyString.':2')
                 ->update(['easy' => null]);
         }
 
         $methods = [
             [
                 'name' => 'Выключить реле',
-                'easy' => $registerId ? $easyString : $easyString . ':0',
+                'easy' => $registerId ? $easyString : $easyString.':0',
             ],
             [
                 'name' => 'Включить реле',
-                'easy' => $registerId ? $easyString : $easyString . ':1',
+                'easy' => $registerId ? $easyString : $easyString.':1',
             ],
             [
                 'name' => 'Переключить реле',
-                'easy' => $registerId ? $easyString : $easyString . ':2',
+                'easy' => $registerId ? $easyString : $easyString.':2',
             ],
         ];
 
@@ -143,8 +142,8 @@ class RelayObjectService
         if ($relayObject->methods->isNotEmpty()) {
             foreach ($relayObject->methods as $method) {
                 $method->update([
-                    'easy' => array_key_exists('register_id_' . $method->id, $data) && $data['register_id_' . $method->id]
-                        ? 'm;' . $data['register_id_' . $method->id]
+                    'easy' => array_key_exists('register_id_'.$method->id, $data) && $data['register_id_'.$method->id]
+                        ? 'm;'.$data['register_id_'.$method->id]
                         : null,
                 ]);
             }

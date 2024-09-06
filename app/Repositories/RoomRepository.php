@@ -80,9 +80,6 @@ class RoomRepository
 
     /**
      * Поиск комнаты по названию
-     *
-     * @param null|string $name
-     * @return null|Model
      */
     public function getByName(?string $name): ?Model
     {

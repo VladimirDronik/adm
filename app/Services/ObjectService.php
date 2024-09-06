@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Boiler;
 use App\Models\HomeObject;
 use App\Models\Method;
 use App\Models\Termostat;
@@ -64,7 +63,7 @@ class ObjectService
     {
         $object = HomeObject::find($objectId);
 
-        if (!$object) {
+        if (! $object) {
             return [];
         }
 

@@ -11,9 +11,11 @@ class ModbusBus extends Model
     use HasFactory;
 
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     const TYPE_RTU = 'rtu';
+
     const TYPE_TCP = 'tcp';
 
     public static function getTypes(): array
@@ -71,9 +73,9 @@ class ModbusBus extends Model
         $ttyUsbFiles = glob('/dev/ttyUSB*');
         $devices = [];
 
-        if (!empty($ttyUsbFiles)) {
+        if (! empty($ttyUsbFiles)) {
             foreach ($ttyUsbFiles as $ttyUsbFile) {
-                if (!static::where('device', $ttyUsbFile)->exists()) {
+                if (! static::where('device', $ttyUsbFile)->exists()) {
                     $devices[$ttyUsbFile] = $ttyUsbFile;
                 }
             }

@@ -109,7 +109,7 @@ class ModbusSlaversTypesSeeder extends Seeder
             [
                 'type' => 'lessar-mu-1-01',
                 'name' => 'LESSAR MU-1-01',
-                    'purpose' => 'ac',
+                'purpose' => 'ac',
                 'relay' => 0,
             ],
         ];

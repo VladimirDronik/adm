@@ -7,12 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class LedTape extends Model
 {
     protected $table = 'tapes';
+
     public $timestamps = false;
+
     protected $guarded = ['id'];
 
     const TYPE_RGB = 'RGB';
+
     const TYPE_RGBW = 'RGBW';
+
     const TYPE_W = 'W';
+
     const TYPE_CCT = 'CCT';
 
     public static function getTypes(bool $is_full = false)
@@ -42,7 +47,7 @@ class LedTape extends Model
         return $this->belongsTo(ModbusSlaver::class, 'controller_id', 'id');
     }
 
-    function hsvToHsl()
+    public function hsvToHsl()
     {
         $s = $this->s / 100; // Переводим S из процентов в дробное число от 0 до 1
         $v = $this->v / 100; // Переводим V из процентов в дробное число от 0 до 1

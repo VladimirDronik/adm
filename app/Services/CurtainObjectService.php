@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\Method;
-use App\Models\Script;
 use App\Models\Curtain;
 use App\Models\HomeObject;
+use App\Models\Method;
+use App\Models\Script;
 use Database\Seeders\ScriptsTableSeeder;
 
 class CurtainObjectService
@@ -30,7 +30,6 @@ class CurtainObjectService
     /**
      * Автосоздание методов для шторы
      *
-     * @param string $place
      * @return void
      */
     public function createCurtainObjectMethods(int $object_id, string $place)

@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Usensor\UsensorRequest;
 use App\Models\Usensor;
+use App\Repositories\DeviceRepository;
+use App\Repositories\RoomRepository;
+use App\Repositories\UsensorRepository;
 use App\Services\PortService;
 use App\Services\UsensorService;
 use Illuminate\Support\Facades\Log;
-use App\Repositories\RoomRepository;
-use App\Repositories\DeviceRepository;
-use App\Repositories\UsensorRepository;
-use App\Http\Requests\Usensor\UsensorRequest;
 
 class UsensorController extends Controller
 {
@@ -53,7 +53,7 @@ class UsensorController extends Controller
                     ->with('success', 'I2C датчик успешно добавлен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при добавлении I2C датчика ' . json_encode($r->all()) . ' ' . $e->getMessage());
+            Log::error('Ошибка при добавлении I2C датчика '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при добавлении I2C датчика');
@@ -76,7 +76,7 @@ class UsensorController extends Controller
                     ->with('success', 'I2C датчик успешно изменен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при изменении I2C датчика ' . $usensor->id . ' ' . json_encode($r->all()) . ' ' . $e->getMessage());
+            Log::error('Ошибка при изменении I2C датчика '.$usensor->id.' '.json_encode($r->all()).' '.$e->getMessage());
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении I2C датчика');

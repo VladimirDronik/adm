@@ -41,7 +41,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('curtains', 'CurtainController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('locks', 'LockController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('conditioners', 'ConditionerController')->except('show', 'destroy')->middleware('can:devices');
-    Route::resource('led_tapes', 'LedTapeController')->except('show','destroy', 'index')->middleware('can:devices');
+    Route::resource('led_tapes', 'LedTapeController')->except('show', 'destroy', 'index')->middleware('can:devices');
     Route::get('illumination', 'IlluminationController@index')->name('illumination.index')->middleware('can:devices');
 
     Route::group(['prefix' => 'mod_bus', 'as' => 'mod_bus.'], function () {
@@ -71,10 +71,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('drycontacts', 'DrycontactController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('scheduler', 'SchedulerController')->except('show', 'destroy')->middleware('can:events');
     Route::resource('logs', 'LogController')->only('index')->middleware('can:logs');
-    Route::resource('users', 'UserController')->except('show','destroy')->middleware('can:rooms');
-    Route::resource('notifications', 'NotificationController')->except('show','destroy')->middleware('can:settings');
-    Route::resource('virtuals', 'VirtualsController')->except('show','destroy')->middleware('can:devices');
-    Route::resource('yandexstations', 'YandexStationController')->except('show','destroy','create','store')->middleware('can:devices');
+    Route::resource('users', 'UserController')->except('show', 'destroy')->middleware('can:rooms');
+    Route::resource('notifications', 'NotificationController')->except('show', 'destroy')->middleware('can:settings');
+    Route::resource('virtuals', 'VirtualsController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('yandexstations', 'YandexStationController')->except('show', 'destroy', 'create', 'store')->middleware('can:devices');
     Route::get('yandexstations/reset_user', 'YandexStationController@resetUser')->name('yandexstations.reset_user')->middleware('can:devices');
 
     //Route::get('termostats/{termostat}/edit/{tab?}', 'TermostatController@edit')->name('termostats.edit')->middleware('can:devices');

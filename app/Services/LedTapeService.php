@@ -12,8 +12,6 @@ class LedTapeService
     /**
      * Создание led ленты
      *
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function store(array $data): int
@@ -37,7 +35,7 @@ class LedTapeService
             $ledTape->cct = 50;
         }
 
-        DB::transaction(function () use (&$ledTape, $data) {
+        DB::transaction(function () use (&$ledTape) {
             $unique_name = HomeObject::getUniqueObjectName(0, $ledTape->name);
             $object = new HomeObject();
             $object->type = ObjType::TYPE_TAPE;
@@ -66,9 +64,6 @@ class LedTapeService
     /**
      * Изменение led ленты
      *
-     * @param LedTape $ledTape
-     * @param array $data
-     * @return int
      * @throws \Throwable
      */
     public function update(LedTape $ledTape, array $data): int
@@ -96,8 +91,6 @@ class LedTapeService
     /**
      * Удаление led ленты и связанных объектов.
      *
-     * @param int $id
-     * @return bool
      * @throws \Throwable
      */
     public function delete(int $id): bool

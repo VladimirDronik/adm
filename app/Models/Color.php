@@ -24,8 +24,10 @@ use Illuminate\Database\Eloquent\Model;
 class Color extends Model
 {
     const NAME_TYPE = 'name';
+
     const HSV_TYPE = 'hsv';
 
     public $timestamps = false;
+
     protected $guarded = ['id'];
 }

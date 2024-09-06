@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\ConditionerService;
+use Illuminate\Http\Request;
 
 class ConditionerController extends Controller
 {
@@ -24,7 +24,7 @@ class ConditionerController extends Controller
     {
         abort_if(! ajaxHas($r, ['id_object', 'status']), 400);
 
-        $data = $this->service->setStatus((int)$r->id_object, (string)$r->status);
+        $data = $this->service->setStatus((int) $r->id_object, (string) $r->status);
 
         return response()->json([
             'result' => $data['code'] === 0,
@@ -36,7 +36,7 @@ class ConditionerController extends Controller
     {
         abort_if(! ajaxHas($r, ['id_object', 'temp']), 400);
 
-        $data = $this->service->setTemp((int)$r->id_object, (int)$r->temp);
+        $data = $this->service->setTemp((int) $r->id_object, (int) $r->temp);
 
         return response()->json([
             'result' => $data['code'] === 0,
@@ -48,7 +48,7 @@ class ConditionerController extends Controller
     {
         abort_if(! ajaxHas($r, ['id_object', 'mode']), 400);
 
-        $data = $this->service->setMode((int)$r->id_object, (string)$r->mode);
+        $data = $this->service->setMode((int) $r->id_object, (string) $r->mode);
 
         return response()->json([
             'result' => $data['code'] === 0,
@@ -60,7 +60,7 @@ class ConditionerController extends Controller
     {
         abort_if(! ajaxHas($r, ['id_object', 'fan']), 400);
 
-        $data = $this->service->setFan((int)$r->id_object, (string)$r->fan);
+        $data = $this->service->setFan((int) $r->id_object, (string) $r->fan);
 
         return response()->json([
             'result' => $data['code'] === 0,
@@ -72,7 +72,7 @@ class ConditionerController extends Controller
     {
         abort_if(! ajaxHas($r, ['id_object', 'vdir']), 400);
 
-        $data = $this->service->setVdir((int)$r->id_object, (string)$r->vdir);
+        $data = $this->service->setVdir((int) $r->id_object, (string) $r->vdir);
 
         return response()->json([
             'result' => $data['code'] === 0,
@@ -84,7 +84,7 @@ class ConditionerController extends Controller
     {
         abort_if(! ajaxHas($r, ['id_object', 'hdir']), 400);
 
-        $data = $this->service->setHdir((int)$r->id_object, (string)$r->hdir);
+        $data = $this->service->setHdir((int) $r->id_object, (string) $r->hdir);
 
         return response()->json([
             'result' => $data['code'] === 0,
