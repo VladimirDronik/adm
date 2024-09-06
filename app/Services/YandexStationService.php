@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
-use App\Models\HomeObject;
-use App\Models\ObjType;
 use App\Models\Script;
+use App\Models\ObjType;
+use App\Models\HomeObject;
 use App\Models\YandexStation;
+use Illuminate\Support\Facades\DB;
 use App\Repositories\RoomRepository;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-use ScriptsTableSeeder;
+use Database\Seeders\ScriptsTableSeeder;
 
 class YandexStationService
 {

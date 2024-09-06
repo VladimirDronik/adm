@@ -2,18 +2,18 @@
 
 namespace App\Services\Modbus;
 
-use App\Models\ConditionerType;
+use App\Models\Method;
+use App\Models\Script;
+use App\Models\LedTape;
+use App\Models\ObjType;
 use App\Models\DaliDevice;
 use App\Models\HomeObject;
-use App\Models\LedTape;
-use App\Models\Method;
-use App\Models\ModbusRegister;
 use App\Models\ModbusSlaver;
-use App\Models\ObjType;
-use App\Models\Script;
+use App\Models\ModbusRegister;
+use App\Models\ConditionerType;
+use Illuminate\Support\Facades\DB;
 use App\Services\ConditionerService;
 use Database\Seeders\ScriptsTableSeeder;
-use Illuminate\Support\Facades\DB;
 
 class SlaverService
 {

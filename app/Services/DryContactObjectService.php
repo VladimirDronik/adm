@@ -1,17 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 09.04.20
- * Time: 9:23
- */
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Method;
-use App\Models\ObjType;
 use App\Models\Script;
+use App\Models\ObjType;
+use App\Models\HomeObject;
 use Database\Seeders\ScriptsTableSeeder;
 
 class DryContactObjectService
@@ -55,17 +49,17 @@ class DryContactObjectService
      *
      * @return void
      */
-    public function createDryContactObjectMethods(int $object_id)
+    public function createDryContactObjectMethods(int $objectId)
     {
         $script = ScriptsTableSeeder::getDrycontactsScript();
 
-        $script_id = $this->getScriptId($script);
+        $scriptId = $this->getScriptId($script);
 
         $method = new Method();
 
         $method->name = $script['name'];
-        $method->id_object = $object_id;
-        $method->script = $script_id;
+        $method->id_object = $objectId;
+        $method->script = $scriptId;
         $method->comment = $script['name'];
         $method->params = null;
         $method->is_system = 1;

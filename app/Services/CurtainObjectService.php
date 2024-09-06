@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\Curtain;
-use App\Models\HomeObject;
 use App\Models\Method;
 use App\Models\Script;
+use App\Models\Curtain;
+use App\Models\HomeObject;
 use Database\Seeders\ScriptsTableSeeder;
 
 class CurtainObjectService
@@ -32,19 +32,19 @@ class CurtainObjectService
      *
      * @return void
      */
-    public function createCurtainObjectMethods(int $object_id, string $place)
+    public function createCurtainObjectMethods(int $objectId, string $place)
     {
         $scripts = ScriptsTableSeeder::getCurtainScripts();
         $methods = [];
 
         foreach ($scripts as $script) {
-            $script_id = $this->getScriptId($script);
+            $scriptId = $this->getScriptId($script);
             if ($script['name'] == 'Открыть штору на %') {
                 if ($place == Curtain::PLACE_RS485) {
                     $methods[] = [
                         'name' => $script['name'],
-                        'id_object' => $object_id,
-                        'script' => $script_id,
+                        'id_object' => $objectId,
+                        'script' => $scriptId,
                         'comment' => $script['name'],
                         'params' => '% открытия (целое, 0-100)',
                         'is_system' => 1,
@@ -56,8 +56,8 @@ class CurtainObjectService
                 if ($place == Curtain::PLACE_RS485) {
                     $methods[] = [
                         'name' => $script['name'],
-                        'id_object' => $object_id,
-                        'script' => $script_id,
+                        'id_object' => $objectId,
+                        'script' => $scriptId,
                         'comment' => $script['name'],
                         'params' => null,
                         'is_system' => 1,
@@ -68,8 +68,8 @@ class CurtainObjectService
             } else {
                 $methods[] = [
                     'name' => $script['name'],
-                    'id_object' => $object_id,
-                    'script' => $script_id,
+                    'id_object' => $objectId,
+                    'script' => $scriptId,
                     'comment' => $script['name'],
                     'params' => null,
                     'is_system' => 1,

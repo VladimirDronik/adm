@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Label;
 use App\Models\Room;
 use App\Models\View;
+use App\Models\Label;
 use Illuminate\Support\Facades\DB;
 
 class ViewService

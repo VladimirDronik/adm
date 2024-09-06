@@ -1,23 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 08.04.20
- * Time: 21:11
- */
 
 namespace App\Services;
 
+use App\Models\Port;
 use App\Models\Drycontact;
 use App\Models\HomeObject;
-use App\Models\Port;
-use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
 
 class DrycontactService
 {
     public function __construct(
-        private DryContactObjectService $drycontact_object_service,
+        private DryContactObjectService $drycontactObjectService,
         private ObjectService $objectService,
         private PortRepository $portRepository
     ) {
@@ -40,16 +34,19 @@ class DrycontactService
         $this->prepareDrycontact($drycontact, $data);
 
         DB::transaction(function () use (&$drycontact, $data, $deviceID) {
-            $unique_name = HomeObject::getUniqueObjectName(0, $drycontact->name);
-            $object = $this->drycontact_object_service->createDrycontactObject($unique_name);
+            $uniqueName = HomeObject::getUniqueObjectName(0, $drycontact->name);
+            $object = $this->drycontactObjectService->createDrycontactObject($uniqueName);
             $drycontact->id_object = $object->id;
-            // $idNewMethod = $this->drycontact_object_service->createDryContactObjectMethods($object->id);
 
             $drycontact->save();
 
             if ($data['port_id']) {
-                Port::where('id', $data['port_id'])->update(['object' => $object->id, 'method' => null,
-                    'status' => 'IN', 'comment' => $data['name']]);
+                Port::where('id', $data['port_id'])->update([
+                    'object' => $object->id,
+                    'method' => null,
+                    'status' => 'IN',
+                    'comment' => $data['name']
+                ]);
                 ConfigMegaService::setPortType($deviceID, $this->portRepository->getNumPortByID($data['port_id']), 'IN-P&R');
             }
         });
@@ -128,9 +125,7 @@ class DrycontactService
 
         if ($drycontact->object && $drycontact->object->is_system) {
             DB::transaction(function () use (&$drycontact) {
-                //if (!HomeObject::isObjectUsed($switch->id_object, $switch->id, 'switches')) {
                 HomeObject::deleteAutoObject($drycontact->id_object);
-                //}
                 $drycontact->delete();
             });
         } else {

@@ -2,17 +2,17 @@
 
 namespace App\Services;
 
+use App\Models\Port;
 use App\Models\Dimmer;
 use App\Models\HomeObject;
-use App\Models\Port;
-use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
 
 class DimmerService
 {
     public function __construct(
-        private DimmerObjectService $dimmer_object_service,
-        private PortRepository $port_repository
+        private DimmerObjectService $dimmerObjectService,
+        private PortRepository $portRepository
     ) {
     }
 
@@ -69,8 +69,8 @@ class DimmerService
 
         DB::transaction(function () use (&$dimmer, $data, $deviceID) {
             $unique_name = HomeObject::getUniqueObjectName(0, $dimmer->name);
-            $object = $this->dimmer_object_service->createDimmerObject($unique_name);
-            $this->dimmer_object_service->createDimmerObjectMethods($object->id);
+            $object = $this->dimmerObjectService->createDimmerObject($unique_name);
+            $this->dimmerObjectService->createDimmerObjectMethods($object->id);
             $dimmer->id_object = $object->id;
             $dimmer->save();
 
@@ -83,7 +83,7 @@ class DimmerService
 
                 ConfigMegaService::setPortType(
                     $deviceID,
-                    $this->port_repository->getNumPortByID($data['port_id']),
+                    $this->portRepository->getNumPortByID($data['port_id']),
                     'PWM'
                 );
             }
@@ -145,7 +145,7 @@ class DimmerService
 
                 ConfigMegaService::setPortType(
                     $deviceID,
-                    $this->port_repository->getNumPortByID($data['port_id']),
+                    $this->portRepository->getNumPortByID($data['port_id']),
                     'PWM'
                 );
             }

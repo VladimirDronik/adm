@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Carbdioxide;
-use App\Models\HomeObject;
 use App\Models\Usensor;
+use App\Models\HomeObject;
+use App\Models\Carbdioxide;
 use Illuminate\Support\Facades\DB;
 
 class CarbdioxideService

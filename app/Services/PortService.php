@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
-use App\Models\Device;
-use App\Models\HiteproDev;
-use App\Models\Method;
 use App\Models\Port;
+use App\Models\Device;
+use App\Models\Method;
 use App\Models\Script;
+use App\Models\HiteproDev;
+use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
 use App\Repositories\DeviceRepository;
 use App\Repositories\HiteProDevRepository;
-use App\Repositories\PortRepository;
-use Illuminate\Support\Facades\DB;
 
 class PortService
 {
@@ -18,8 +18,8 @@ class PortService
 
     public function __construct(
         private PortRepository $rep,
-        private ObjectService $object_service,
-        private DeviceRepository $device_rep,
+        private ObjectService $objectService,
+        private DeviceRepository $deviceRep,
         private HiteProDevRepository $hiteproDevRep
     ) {
     }
@@ -154,7 +154,7 @@ class PortService
         $portData['type'] = $data['type'];
         $portData['port_id'] = $port->id;
 
-        $objects = $this->object_service->getObjects();
+        $objects = $this->objectService->getObjects();
         $portData['objects'] = [];
         foreach ($objects as $object) {
             $portData['objects'][] = [
@@ -175,12 +175,12 @@ class PortService
     private function getMethods(int $object_id, array $objects): array
     {
         if ($object_id) {
-            return $this->object_service
+            return $this->objectService
                 ->getMethodsByObjectId($object_id);
         }
 
         if (count($objects)) {
-            return $this->object_service
+            return $this->objectService
                 ->getMethodsByObjectId($objects[0]['id']);
         }
 
@@ -257,7 +257,7 @@ class PortService
 
     public function getObjectMethods($object_id)
     {
-        return $this->object_service
+        return $this->objectService
             ->getMethodsByObjectId($object_id);
     }
 
@@ -497,12 +497,12 @@ class PortService
             $hp_type = $controllerAndDevice['hp_type'];
         }
 
-        $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
+        $devices = $this->deviceRep->getAllWithoutTypesToArray(['Hite-pro']);
         $ports = $this->getPortsIntoList($idDevice, $typePort);
         $hp_devices = $this->getHPDevicesIntoList($idDevice, $hp_type);
 
         if (! $devices || ! $ports) {
-            $devices = $this->device_rep
+            $devices = $this->deviceRep
                 ->getAllWithoutTypesToArray(['Hite-pro']);
             $ports = [];
         }

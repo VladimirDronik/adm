@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Method;
-use App\Models\ObjType;
-use App\Models\SchedulerPoint;
-use App\Models\SchedulerTask;
 use App\Models\Script;
+use App\Models\ObjType;
+use App\Models\HomeObject;
+use App\Models\SchedulerTask;
+use App\Models\SchedulerPoint;
 use Database\Seeders\ScriptsTableSeeder;
 
 class CountObjectService
@@ -31,18 +31,18 @@ class CountObjectService
 
     private function getScriptIdForCheckMethod(): ?int
     {
-        $script_name = ScriptsTableSeeder::getCheckCountScript()['name'];
+        $scriptName = ScriptsTableSeeder::getCheckCountScript()['name'];
 
-        return Script::where('name', $script_name)
+        return Script::where('name', $scriptName)
             ->where('system', 1)
             ->value('id');
     }
 
     private function getScriptIdForResetMethod(): ?int
     {
-        $script_name = ScriptsTableSeeder::getResetCountScript()['name'];
+        $scriptName = ScriptsTableSeeder::getResetCountScript()['name'];
 
-        return Script::where('name', $script_name)
+        return Script::where('name', $scriptName)
             ->where('system', 1)
             ->value('id');
     }
@@ -50,28 +50,28 @@ class CountObjectService
     /**
      * Создание метода 'Проверка счетчика' и задачи планировщика 'Проверка счетчика' (каждый час)
      */
-    public function createCheckMethodWithEvent(int $object_id)
+    public function createCheckMethodWithEvent(int $objectId)
     {
-        $script_id = $this->getScriptIdForCheckMethod();
-        $method_id = Method::forceCreate([
+        $scriptId = $this->getScriptIdForCheckMethod();
+        $methodId = Method::forceCreate([
             'name' => 'Проверка счетчика',
-            'id_object' => $object_id,
-            'script' => $script_id,
+            'id_object' => $objectId,
+            'script' => $scriptId,
             'comment' => 'Периодическая проверка текущих значений счетчика',
             'is_system' => 1,
         ])->id;
 
-        $scheduler_task_id = SchedulerTask::forceCreate([
+        $schedulerTaskId = SchedulerTask::forceCreate([
             'name' => 'Проверка счетчика',
             'is_system' => 1,
             'is_hidden' => 1,
-            'object' => $object_id,
-            'method' => $method_id,
+            'object' => $objectId,
+            'method' => $methodId,
         ])->id;
 
         // каждый час
         SchedulerPoint::forceCreate([
-            'id_task' => $scheduler_task_id,
+            'id_task' => $schedulerTaskId,
             'type' => 'c',
             'time' => '60',
             'days' => '',
@@ -83,29 +83,29 @@ class CountObjectService
     /**
      * Создание метода 'Обнуление счетчика' и задачи планировщика 'Обнуление счетчика' (каждый день в 23:55)
      */
-    public function createResetMethodWithEvent(int $object_id)
+    public function createResetMethodWithEvent(int $objectId)
     {
-        $script_id = $this->getScriptIdForResetMethod();
+        $scriptId = $this->getScriptIdForResetMethod();
 
-        $method_id = Method::forceCreate([
+        $methodId = Method::forceCreate([
             'name' => 'Обнуление счетчика',
-            'id_object' => $object_id,
-            'script' => $script_id,
+            'id_object' => $objectId,
+            'script' => $scriptId,
             'comment' => 'Обнуление значений счетчика за текущий день',
             'is_system' => 1,
         ])->id;
 
-        $scheduler_task_id = SchedulerTask::forceCreate([
+        $schedulerTaskId = SchedulerTask::forceCreate([
             'name' => 'Обнуление счетчика',
             'is_system' => 1,
             'is_hidden' => 1,
-            'object' => $object_id,
-            'method' => $method_id,
+            'object' => $objectId,
+            'method' => $methodId,
         ])->id;
 
         // каждый день в 23:55
         SchedulerPoint::forceCreate([
-            'id_task' => $scheduler_task_id,
+            'id_task' => $schedulerTaskId,
             'type' => 'w',
             'time' => '23:55',
             'days' => '0,1,2,3,4,5,6',
@@ -120,9 +120,9 @@ class CountObjectService
      *
      * @return void
      */
-    public function createCountObjectMethodsWithEvents(int $object_id)
+    public function createCountObjectMethodsWithEvents(int $objectId)
     {
-        $this->createCheckMethodWithEvent($object_id);
-        $this->createResetMethodWithEvent($object_id);
+        $this->createCheckMethodWithEvent($objectId);
+        $this->createResetMethodWithEvent($objectId);
     }
 }

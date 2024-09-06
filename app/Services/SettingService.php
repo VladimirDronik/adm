@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\Setting;
-use App\Repositories\SettingRepository;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\SettingRepository;
 
 class SettingService
 {

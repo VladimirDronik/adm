@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\SchedulerPoint;
 use App\Models\SchedulerTask;
+use App\Models\SchedulerPoint;
 use Illuminate\Support\Facades\DB;
 
 class SchedulerService

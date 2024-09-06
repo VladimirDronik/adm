@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\Method;
 use App\Models\Port;
-use App\Models\SchedulerTask;
+use App\Models\Method;
 use App\Models\Script;
+use App\Models\SchedulerTask;
 use Illuminate\Support\Facades\DB;
 
 class MethodService

@@ -2,17 +2,17 @@
 
 namespace App\Services;
 
-use App\Models\DeviceSwitch;
+use App\Models\Port;
 use App\Models\HiteproDev;
 use App\Models\HomeObject;
-use App\Models\Port;
-use App\Repositories\PortRepository;
+use App\Models\DeviceSwitch;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
 
 class SwitchService
 {
     public function __construct(
-        private SwitchObjectService $switch_object_service,
+        private SwitchObjectService $switchObjectService,
         private PortRepository $portRepository
     ) {
     }
@@ -98,7 +98,7 @@ class SwitchService
         DB::transaction(function () use (&$switch, $data) {
             $unique_name = HomeObject::getUniqueObjectName(0, $switch->name);
 
-            $object = $this->switch_object_service
+            $object = $this->switchObjectService
                 ->createSwitchObject($unique_name, $switch->type);
 
             $switch->id_object = $object->id;
@@ -160,7 +160,7 @@ class SwitchService
             }
             $this->prepareSwitch($switch, $data);
 
-            $this->switch_object_service
+            $this->switchObjectService
                 ->updateSwitchObjectType($switch->object, $data['type']);
 
             $switch->save();

@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\Page;
 use App\Models\Boiler;
+use App\Models\Elements;
 use App\Models\BoilerAuto;
+use App\Models\HomeObject;
 use App\Models\BoilersParam;
 use App\Models\BoilersParamsFlag;
-use App\Models\Elements;
-use App\Models\HomeObject;
-use App\Models\Page;
 use Illuminate\Support\Facades\DB;
 
 class BoilerService
@@ -156,19 +156,6 @@ class BoilerService
                 ->createMethodsAndEvents($object->id, $boiler->gateway_type == HomeObject::GATEWAY_MODBUS ? $boiler->gateway_id : null);
 
             $boiler->id_object = $object->id;
-
-            // BoilerWater::create([
-            //     'id_object' => $boiler->id_object,
-            //     'min_value' => BoilerWater::MIN_VALUE,
-            //     'max_value' => BoilerWater::MAX_VALUE,
-            // ]);
-
-            // BoilerManual::create([
-            //     'id_object' => $boiler->id_object,
-            //     'min_value' => BoilerManual::MIN_VALUE,
-            //     'max_value' => BoilerManual::MAX_VALUE,
-            //     'set_value' => BoilerManual::DEFAULT_SET_VALUE,
-            // ]);
 
             $boiler->save();
 

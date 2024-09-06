@@ -2,16 +2,16 @@
 
 namespace App\Services;
 
+use App\Models\Port;
 use App\Models\HomeObject;
 use App\Models\Motionsensor;
-use App\Models\Port;
-use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
 
 class MotionsensorService
 {
     public function __construct(
-        private MotionSensorObjectService $motionsensor_object_service,
+        private MotionSensorObjectService $motionsensorObjectService,
         private ObjectService $objectService,
         private PortRepository $portRepository,
         private PortService $portService
@@ -49,13 +49,13 @@ class MotionsensorService
         DB::transaction(function () use (&$motionsensor, $data, $deviceID, $portID) {
             $unique_name = HomeObject::getUniqueObjectName(0, $motionsensor->name);
 
-            $object = $this->motionsensor_object_service
+            $object = $this->motionsensorObjectService
                 ->createMotionsensorObject($unique_name);
 
             $motionsensor->id_object = $object->id;
             $motionsensor->save();
 
-            $idNewMethod = $this->motionsensor_object_service
+            $idNewMethod = $this->motionsensorObjectService
                 ->createMotionsensorObjectMethods($object->id);
 
             if ($portID) {

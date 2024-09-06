@@ -1,17 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 14.05.20
- * Time: 20:05
- */
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Method;
-use App\Models\ObjType;
 use App\Models\Script;
+use App\Models\ObjType;
+use App\Models\HomeObject;
 use Database\Seeders\ScriptsTableSeeder;
 
 class MotionSensorObjectService
@@ -55,17 +49,17 @@ class MotionSensorObjectService
      *
      * @return void
      */
-    public function createMotionsensorObjectMethods(int $object_id)
+    public function createMotionsensorObjectMethods(int $objectId)
     {
         $script = ScriptsTableSeeder::getMotionsensorScript();
 
-        $script_id = $this->getScriptId($script);
+        $scriptId = $this->getScriptId($script);
 
         $method = new Method();
 
         $method->name = $script['name'];
-        $method->id_object = $object_id;
-        $method->script = $script_id;
+        $method->id_object = $objectId;
+        $method->script = $scriptId;
         $method->comment = $script['name'];
         $method->params = null;
         $method->is_system = 1;

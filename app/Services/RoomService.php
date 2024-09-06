@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\Color;
 use App\Models\Room;
-use App\Models\Temperature;
 use App\Models\View;
+use App\Models\Color;
+use App\Models\Temperature;
 use Illuminate\Support\Facades\DB;
 
 class RoomService

@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Method;
-use App\Models\ObjType;
 use App\Models\Script;
+use App\Models\ObjType;
+use App\Models\HomeObject;
 use Database\Seeders\ScriptsTableSeeder;
 
 class DimmerObjectService
@@ -49,18 +49,18 @@ class DimmerObjectService
      *
      * @return void
      */
-    public function createDimmerObjectMethods(int $object_id)
+    public function createDimmerObjectMethods(int $objectId)
     {
         $scripts = ScriptsTableSeeder::getDimmerScripts();
 
         $methods = [];
 
         foreach ($scripts as $script) {
-            $script_id = $this->getScriptId($script);
+            $scriptId = $this->getScriptId($script);
             $methods[] = [
                 'name' => $script['name'],
-                'id_object' => $object_id,
-                'script' => $script_id,
+                'id_object' => $objectId,
+                'script' => $scriptId,
                 'comment' => $script['name'],
                 'params' => mb_strpos($script['name'], 'Установить', 0, 'UTF-8') !== false ? 'Яркость (целое, 0-100)' : null,
                 'is_system' => 1,

@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\HomeObject;
-use App\Models\ObjType;
 use App\Models\Port;
-use App\Models\Pressurestat;
+use App\Models\ObjType;
 use App\Models\Usensor;
-use App\Repositories\PortRepository;
+use App\Models\HomeObject;
+use App\Models\Pressurestat;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
 
 class UsensorService
 {

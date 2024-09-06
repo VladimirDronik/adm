@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 14.07.20
- * Time: 9:24
- */
 
 namespace App\Services;
 
@@ -176,11 +170,6 @@ class ConfigMegaService
         $this->saveChanges($idDevice, $megaConfig, $foundValue, $stringIntoConfig);
 
         return true;
-    }
-
-    public function setPWM($idDevice, $numPort, $params)
-    {
-
     }
 
     private static function saveChanges($idDevice, $megaConfig, $foundValue, $stringIntoConfig)

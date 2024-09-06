@@ -2,22 +2,22 @@
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Port;
-use App\Models\Termostat;
 use App\Models\Usensor;
-use App\Repositories\ObjectRepository;
-use App\Repositories\PortRepository;
+use App\Models\Termostat;
+use App\Models\HomeObject;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
+use App\Repositories\ObjectRepository;
 
 class TermostatService
 {
-    private $id_object;
+    private $idObject;
 
     public function __construct(
-        private TermostatObjectService $termostat_object_service,
-        private PortService $port_service,
-        private PortRepository $port_repository,
+        private TermostatObjectService $termostatObjectService,
+        private PortService $portService,
+        private PortRepository $portRepository,
         private ObjectRepository $objectRepository
     ) {
     }
@@ -32,12 +32,12 @@ class TermostatService
     {
         $termostat = Termostat::findOrFail($id);
 
-        $deviceAndPort = $this->port_service
+        $deviceAndPort = $this->portService
             ->getIdDeviceAndPortId($termostat->id_object);
 
         ConfigMegaService::setPortType(
             $deviceAndPort['id_device'],
-            $this->port_repository->getNumPortByID($deviceAndPort['id_port']),
+            $this->portRepository->getNumPortByID($deviceAndPort['id_port']),
             'IN'
         );
 
@@ -118,10 +118,10 @@ class TermostatService
         DB::transaction(function () use (&$termostat, $port_id, $deviceId, $placeType) {
             $unique_name = HomeObject::getUniqueObjectName(0, $termostat->name);
 
-            $object = $this->termostat_object_service
+            $object = $this->termostatObjectService
                 ->createTermostatObject($unique_name);
 
-            $this->termostat_object_service
+            $this->termostatObjectService
                 ->createTermostatObjectMethodsWithEvents($object->id);
 
             if ($termostat->room != null) {
@@ -142,7 +142,7 @@ class TermostatService
 
                     ConfigMegaService::setPortType(
                         $deviceId,
-                        $this->port_repository->getNumPortByID($port_id),
+                        $this->portRepository->getNumPortByID($port_id),
                         '1WIRE'
                     );
                 } elseif ($placeType == '1wbus') {
@@ -151,17 +151,17 @@ class TermostatService
 
                     ConfigMegaService::setPortType(
                         $deviceId,
-                        $this->port_repository->getNumPortByID($port_id),
+                        $this->portRepository->getNumPortByID($port_id),
                         '1W-BUS'
                     );
                 }
             }
-            $this->id_object = $object->id;
+            $this->idObject = $object->id;
         });
 
-        if ($this->id_object) {
+        if ($this->idObject) {
             chdir(env('SERVER_FOLDER').'/scripts');
-            exec('php check_termostat.php '.$this->id_object);
+            exec('php check_termostat.php '.$this->idObject);
         }
 
         return $termostat->id;
@@ -199,7 +199,7 @@ class TermostatService
                 //Обнуляем порт, приводим в исходное состояние
                 Port::where('object', $termostat->id_object)
                     ->update(['object' => null, 'comment' => '', 'status' => 'IN']);
-                // ConfigMegaService::setPortType($deviceId, $this->port_repository->getNumPortByID($port_id), 'IN');
+                // ConfigMegaService::setPortType($deviceId, $this->portRepository->getNumPortByID($port_id), 'IN');
 
                 //Привязываем объект к порту в БД
                 Port::where('id', $port_id)
@@ -212,7 +212,7 @@ class TermostatService
 
                     ConfigMegaService::setPortType(
                         $deviceId,
-                        $this->port_repository->getNumPortByID($port_id),
+                        $this->portRepository->getNumPortByID($port_id),
                         '1WIRE'
                     );
                 } elseif ($placeType == '1wbus') {
@@ -221,14 +221,14 @@ class TermostatService
 
                     ConfigMegaService::setPortType(
                         $deviceId,
-                        $this->port_repository->getNumPortByID($port_id),
+                        $this->portRepository->getNumPortByID($port_id),
                         '1W-BUS'
                     );
                 }
             } else {
                 ConfigMegaService::setPortType(
                     $deviceId,
-                    $this->port_repository->getNumPortByID($port_id),
+                    $this->portRepository->getNumPortByID($port_id),
                     'IN'
                 );
 

@@ -1,18 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 10.05.21
- * Time: 16:16
- */
 
 namespace App\Services;
 
+use App\Models\Port;
 use App\Models\Curtain;
 use App\Models\HomeObject;
-use App\Models\Port;
-use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
 
 class CurtainService
 {

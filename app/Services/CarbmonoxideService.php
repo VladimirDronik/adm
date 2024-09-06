@@ -1,23 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 08.10.20
- * Time: 11:26
- */
 
 namespace App\Services;
 
-use App\Models\Carbmonoxide;
-use App\Models\HomeObject;
 use App\Models\Port;
-use App\Repositories\PortRepository;
+use App\Models\HomeObject;
+use App\Models\Carbmonoxide;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
 
 class CarbmonoxideService
 {
     public function __construct(
-        private CarbmonoxideObjectService $carbmonoxide_object_service,
+        private CarbmonoxideObjectService $carbmonoxideObjectService,
         private PortRepository $portRepository
     ) {
     }
@@ -50,11 +44,11 @@ class CarbmonoxideService
         $carbmonoxide->cur_value = 0;
 
         DB::transaction(function () use (&$carbmonoxide, $port, $deviceID) {
-            $unique_name = HomeObject::getUniqueObjectName(0, $carbmonoxide->name);
-            $object = $this->carbmonoxide_object_service
-                ->createCarbmonoxideObject($unique_name);
+            $uniqueName = HomeObject::getUniqueObjectName(0, $carbmonoxide->name);
+            $object = $this->carbmonoxideObjectService
+                ->createCarbmonoxideObject($uniqueName);
 
-            $this->carbmonoxide_object_service
+            $this->carbmonoxideObjectService
                 ->createCarbmonoxideObjectMethodsWithEvents($object->id);
 
             $carbmonoxide->id_object = $object->id;

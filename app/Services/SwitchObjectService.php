@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\DeviceSwitch;
-use App\Models\HomeObject;
 use App\Models\ObjType;
+use App\Models\HomeObject;
+use App\Models\DeviceSwitch;
 
 class SwitchObjectService
 {

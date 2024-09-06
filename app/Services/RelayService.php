@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Port;
 use App\Models\Relay;
-use App\Repositories\PortRepository;
+use App\Models\HomeObject;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
 
 class RelayService
 {

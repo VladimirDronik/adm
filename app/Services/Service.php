@@ -1,19 +1,16 @@
 <?php
-/**
- * Вспомогательные общие функции, которые могут быть необходимы влюбом классе
- */
 
 namespace App\Services;
 
 use App\Models\HomeObject;
-use App\Repositories\AliceDevicesRepository;
-use App\Repositories\EventRepository;
-use App\Repositories\NotificationRepository;
-use App\Repositories\ObjectRepository;
 use App\Repositories\RoomRepository;
-use App\Repositories\ScriptRepository;
-use App\Repositories\SoundRepository;
 use App\Repositories\ViewRepository;
+use App\Repositories\EventRepository;
+use App\Repositories\SoundRepository;
+use App\Repositories\ObjectRepository;
+use App\Repositories\ScriptRepository;
+use App\Repositories\AliceDevicesRepository;
+use App\Repositories\NotificationRepository;
 
 class Service
 {

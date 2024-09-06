@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Port;
 use App\Models\Virtual;
+use App\Models\HomeObject;
 use Illuminate\Support\Facades\DB;
 
 class VirtualService
 {
     public function __construct(
-        private VirtualObjectService $virtual_object_service
+        private VirtualObjectService $virtualObjectService
     ) {
     }
 
@@ -26,9 +26,7 @@ class VirtualService
 
         if ($virtual->object && $virtual->object->is_system) {
             DB::transaction(function () use (&$virtual) {
-                //if (!HomeObject::isObjectUsed($relay->id_object, $relay->id, 'relays')) {
                 HomeObject::deleteAutoObject($virtual->id_object);
-                //}
                 $virtual->delete();
             });
         } else {
@@ -58,8 +56,8 @@ class VirtualService
 
         DB::transaction(function () use (&$virtual) {
             $unique_name = HomeObject::getUniqueObjectName(0, $virtual->name);
-            $object = $this->virtual_object_service->createVirtualObject($unique_name);
-            $methods = $this->virtual_object_service->createVirtualObjectMethods($object->id);
+            $object = $this->virtualObjectService->createVirtualObject($unique_name);
+            $methods = $this->virtualObjectService->createVirtualObjectMethods($object->id);
             $virtual->id_object = $object->id;
             $virtual->method_on = $methods['method_on'];
             $virtual->method_off = $methods['method_off'];

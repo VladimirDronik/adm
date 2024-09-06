@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Method;
 use App\Models\ObjType;
+use App\Models\HomeObject;
 
 class VirtualObjectService
 {
@@ -28,11 +28,11 @@ class VirtualObjectService
     /**
      * Создание метода 'Выключить виртуальное устройство'
      */
-    public function createMethodOff(int $object_id): Method
+    public function createMethodOff(int $objectId): Method
     {
         return Method::forceCreate([
             'name' => 'Выключить виртуальное устройство',
-            'id_object' => $object_id,
+            'id_object' => $objectId,
             'script' => null,
             'easy' => null,
             'comment' => 'Выключить виртуальное устройство',
@@ -43,11 +43,11 @@ class VirtualObjectService
     /**
      * Создание метода 'Включить виртуальное устройство'
      */
-    public function createMethodOn(int $object_id): Method
+    public function createMethodOn(int $objectId): Method
     {
         return Method::forceCreate([
             'name' => 'Включить виртуальное устройство',
-            'id_object' => $object_id,
+            'id_object' => $objectId,
             'script' => null,
             'easy' => null,
             'comment' => 'Включить виртуальное устройство',
@@ -58,11 +58,11 @@ class VirtualObjectService
     /**
      * Создание метода 'Переключить виртуальное устройство'
      */
-    public function createMethodOnOff(int $object_id)
+    public function createMethodOnOff(int $objectId)
     {
         Method::forceCreate([
             'name' => 'Переключить виртуальное устройство',
-            'id_object' => $object_id,
+            'id_object' => $objectId,
             'script' => null,
             'easy' => null,
             'comment' => 'Переключить виртуальное устройство',
@@ -70,10 +70,10 @@ class VirtualObjectService
         ]);
     }
 
-    private function updateMethodOn(int $object_id, $device_id, $port_id)
+    private function updateMethodOn(int $objectId, $deviceId, $portId)
     {
-        if ($device_id && ! is_null($port_id)) {
-            $easyString = $device_id.';'.$port_id.':1';
+        if ($deviceId && ! is_null($portId)) {
+            $easyString = $deviceId.';'.$portId.':1';
         } else {
             $easyString = null;
         }
@@ -81,16 +81,16 @@ class VirtualObjectService
         //Обнуляем все простые действия, которые были назначены для этого порта
         Method::where('easy', $easyString)->update(['easy' => null]);
 
-        Method::where('id_object', $object_id)
+        Method::where('id_object', $objectId)
             ->where('name', 'Включить реле')
             ->update(['easy' => $easyString]);
     }
 
-    private function updateMethodOff(int $object_id, $device_id, $port_id)
+    private function updateMethodOff(int $objectId, $deviceId, $portId)
     {
 
-        if ($device_id && ! is_null($port_id)) {
-            $easyString = $device_id.';'.$port_id.':0';
+        if ($deviceId && ! is_null($portId)) {
+            $easyString = $deviceId.';'.$portId.':0';
         } else {
             $easyString = null;
         }
@@ -98,15 +98,15 @@ class VirtualObjectService
         //Обнуляем все простые действия, которые были назначены для этого порта
         Method::where('easy', $easyString)->update(['easy' => null]);
 
-        Method::where('id_object', $object_id)
+        Method::where('id_object', $objectId)
             ->where('name', 'Выключить реле')
             ->update(['easy' => $easyString]);
     }
 
-    private function updateMethodOnOff(int $object_id, $device_id, $port_id)
+    private function updateMethodOnOff(int $objectId, $deviceId, $portId)
     {
-        if ($device_id && ! is_null($port_id)) {
-            $easyString = $device_id.';'.$port_id.':2';
+        if ($deviceId && ! is_null($portId)) {
+            $easyString = $deviceId.';'.$portId.':2';
         } else {
             $easyString = null;
         }
@@ -114,7 +114,7 @@ class VirtualObjectService
         //Обнуляем все простые действия, которые были назначены для этого порта
         Method::where('easy', $easyString)->update(['easy' => null]);
 
-        Method::where('id_object', $object_id)
+        Method::where('id_object', $objectId)
             ->where('name', 'Переключить реле')
             ->update(['easy' => $easyString]);
     }
@@ -123,11 +123,11 @@ class VirtualObjectService
      * Автосоздание методов для объекта, который был
      * создан автоматически для реле
      */
-    public function createVirtualObjectMethods(int $object_id): array
+    public function createVirtualObjectMethods(int $objectId): array
     {
-        $methodOn = $this->createMethodOn($object_id);
-        $methodOff = $this->createMethodOff($object_id);
-        $this->createMethodOnOff($object_id);
+        $methodOn = $this->createMethodOn($objectId);
+        $methodOff = $this->createMethodOff($objectId);
+        $this->createMethodOnOff($objectId);
 
         $methods = [
             'method_on' => $methodOn->id,
@@ -137,10 +137,10 @@ class VirtualObjectService
         return $methods;
     }
 
-    public function updateRelayObjectMethods(int $object_id, $device_id, $port_id)
+    public function updateRelayObjectMethods(int $objectId, $deviceId, $portId)
     {
-        $this->updateMethodOff($object_id, $device_id, $port_id);
-        $this->updateMethodOn($object_id, $device_id, $port_id);
-        $this->updateMethodOnOff($object_id, $device_id, $port_id);
+        $this->updateMethodOff($objectId, $deviceId, $portId);
+        $this->updateMethodOn($objectId, $deviceId, $portId);
+        $this->updateMethodOnOff($objectId, $deviceId, $portId);
     }
 }

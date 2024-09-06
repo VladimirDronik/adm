@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Method;
 use App\Models\Script;
+use App\Models\HomeObject;
 use Database\Seeders\ScriptsTableSeeder;
 
 class LockObjectService
@@ -31,18 +31,18 @@ class LockObjectService
      *
      * @return void
      */
-    public function createLockObjectMethods(int $object_id)
+    public function createLockObjectMethods(int $objectId)
     {
         $scripts = ScriptsTableSeeder::getLockScripts();
 
         $methods = [];
 
         foreach ($scripts as $script) {
-            $script_id = $this->getScriptId($script);
+            $scriptId = $this->getScriptId($script);
             $methods[] = [
                 'name' => $script['name'],
-                'id_object' => $object_id,
-                'script' => $script_id,
+                'id_object' => $objectId,
+                'script' => $scriptId,
                 'comment' => $script['name'],
                 'params' => null,
                 'is_system' => 1,

@@ -1,18 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 11.07.20
- * Time: 10:46
- */
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Lamp;
-use App\Models\Method;
 use App\Models\Port;
+use App\Models\Method;
 use App\Models\Script;
+use App\Models\HomeObject;
 
 class LampObjectService
 {

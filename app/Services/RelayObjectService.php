@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\HomeObject;
+use App\Models\Port;
 use App\Models\Method;
 use App\Models\ObjType;
-use App\Models\Port;
+use App\Models\HomeObject;
 
 class RelayObjectService
 {

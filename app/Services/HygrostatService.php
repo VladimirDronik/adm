@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Hygrostat;
+use App\Models\HomeObject;
 use Illuminate\Support\Facades\DB;
 
 class HygrostatService

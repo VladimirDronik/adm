@@ -2,16 +2,16 @@
 
 namespace App\Services;
 
+use App\Models\Port;
 use App\Models\Count;
 use App\Models\HomeObject;
-use App\Models\Port;
-use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
 
 class CountService
 {
     public function __construct(
-        private CountObjectService $count_object_service,
+        private CountObjectService $countObjectService,
         private PortRepository $portRepository
     ) {
     }
@@ -74,12 +74,12 @@ class CountService
         $this->prepareCount($count, $data);
 
         DB::transaction(function () use (&$count, $data) {
-            $unique_name = HomeObject::getUniqueObjectName(0, $count->name);
+            $uniqueName = HomeObject::getUniqueObjectName(0, $count->name);
 
-            $object = $this->count_object_service
-                ->createCountObject($unique_name);
+            $object = $this->countObjectService
+                ->createCountObject($uniqueName);
 
-            $this->count_object_service
+            $this->countObjectService
                 ->createCountObjectMethodsWithEvents($object->id);
 
             $count->id_object = $object->id;

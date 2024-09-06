@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\LedTape;
 use App\Models\ObjType;
+use App\Models\HomeObject;
 use Illuminate\Support\Facades\DB;
 
 class LedTapeService
@@ -44,16 +44,6 @@ class LedTapeService
             $object->is_system = 1;
             $object->save();
 
-            // $view = new View();
-            // $view->type = View::TYPE_TAPE;
-            // $view->icon = 'noimage';
-            // $view->description = 'Отображение для led ленты - '.$ledTape->name;
-            // $view->status = 'off';
-            // $view->sort = $this->viewService->getSortMax($view) + 1;
-            // $view->active = 1;
-            // $view->id_object = $object->id;
-            // $view->save();
-
             $ledTape->id_object = $object->id;
             $ledTape->save();
         });
@@ -74,10 +64,6 @@ class LedTapeService
             if ($ledTape->name != $newName) {
                 $ledTape->object->name = HomeObject::getUniqueObjectName($ledTape->id_object, $newName);
                 $ledTape->object->save();
-
-                // View::where('id_object', $ledTape->object->id)->update([
-                //     'description' => 'Отображение для led ленты - '.$newName,
-                // ]);
             }
 
             $ledTape->name = $newName;
@@ -96,8 +82,6 @@ class LedTapeService
     public function delete(int $id): bool
     {
         $ledTape = LedTape::findOrFail($id);
-
-        // View::where('id_object', $ledTape->object->id)->delete();
 
         $ledTape->object()->delete();
 

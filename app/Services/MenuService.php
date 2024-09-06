@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Models\Menu;
 use App\Models\ObjType;
+use Illuminate\Support\Facades\DB;
 use App\Repositories\MenuRepository;
 use App\Repositories\ObjectRepository;
-use Illuminate\Support\Facades\DB;
 
 class MenuService
 {
@@ -87,25 +87,15 @@ class MenuService
      */
     private function getSortMax($menu): int
     {
-        // if ($menu->parent == 0) {
-        //     return (int) Menu::group()
-        //         ->orWhere(function ($query) {
-        //             $query->room()->whereNull('group_room');
-        //         })->max('sort');
-        // }
-
         return (int) Menu::where('parent', $menu->parent)->max('sort');
     }
 
     public function update(Menu $menu, array $data)
     {
         DB::transaction(function () use ($menu, $data) {
-            // if (is_null($menu->parent) && $data['parent'] !== '0') {
-            // из отдельных в конкретную
             unset($data['_method']);
 
             $menu->fill($data);
-            //$menu->sort = $this->getSortMax($menu) + 1;
             $menu->save();
         });
 

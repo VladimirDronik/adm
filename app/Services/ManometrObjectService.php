@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Method;
-use App\Models\ObjType;
-use App\Models\SchedulerPoint;
-use App\Models\SchedulerTask;
 use App\Models\Script;
+use App\Models\ObjType;
+use App\Models\HomeObject;
+use App\Models\SchedulerTask;
+use App\Models\SchedulerPoint;
 use Database\Seeders\ScriptsTableSeeder;
 
 class ManometrObjectService
@@ -31,12 +31,12 @@ class ManometrObjectService
 
     public function getOrCreateCheckScriptId(): int
     {
-        $script_id = Script::where('link', 'check_manometr.php')
+        $scriptId = Script::where('link', 'check_manometr.php')
             ->where('system', 1)
             ->value('id');
 
-        if ($script_id) {
-            return $script_id;
+        if ($scriptId) {
+            return $scriptId;
         }
 
         return Script::forceCreate(
@@ -47,29 +47,29 @@ class ManometrObjectService
     /**
      * Создание метода 'Проверка манометра' и задачи 'Проверка манометра' (каждую 1 мин)
      */
-    public function createCheckMethodWithEvent(int $object_id)
+    public function createCheckMethodWithEvent(int $objectId)
     {
-        $script_id = $this->getOrCreateChecKScriptId();
+        $scriptId = $this->getOrCreateChecKScriptId();
 
-        $method_id = Method::forceCreate([
+        $methodId = Method::forceCreate([
             'name' => 'Проверка манометра',
-            'id_object' => $object_id,
+            'id_object' => $objectId,
             'comment' => 'Периодическая проверка текущих значений манометра',
             'is_system' => 1,
-            'script' => $script_id,
+            'script' => $scriptId,
         ])->id;
 
-        $scheduler_task_id = SchedulerTask::forceCreate([
+        $schedulerTaskId = SchedulerTask::forceCreate([
             'name' => 'Проверка манометра',
             'is_system' => 1,
             'is_hidden' => 1,
-            'object' => $object_id,
-            'method' => $method_id,
+            'object' => $objectId,
+            'method' => $methodId,
         ])->id;
 
         // каждые 1 мин
         SchedulerPoint::forceCreate([
-            'id_task' => $scheduler_task_id,
+            'id_task' => $schedulerTaskId,
             'type' => 'c',
             'time' => '1',
             'days' => '',
@@ -84,8 +84,8 @@ class ManometrObjectService
      *
      * @return void
      */
-    public function createManometrObjectMethodsWithEvents(int $object_id)
+    public function createManometrObjectMethodsWithEvents(int $objectId)
     {
-        $this->createCheckMethodWithEvent($object_id);
+        $this->createCheckMethodWithEvent($objectId);
     }
 }

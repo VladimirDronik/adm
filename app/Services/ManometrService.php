@@ -1,23 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 08.10.20
- * Time: 11:26
- */
 
 namespace App\Services;
 
-use App\Models\HomeObject;
-use App\Models\Manometr;
 use App\Models\Port;
-use App\Repositories\PortRepository;
+use App\Models\Manometr;
+use App\Models\HomeObject;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\PortRepository;
 
 class ManometrService
 {
     public function __construct(
-        private ManometrObjectService $manometr_object_service,
+        private ManometrObjectService $manometrObjectService,
         private PortRepository $portRepository
     ) {
     }
@@ -50,9 +44,9 @@ class ManometrService
         $manometr->cur_value = 0;
 
         DB::transaction(function () use (&$manometr, $port, $deviceID) {
-            $unique_name = HomeObject::getUniqueObjectName(0, $manometr->name);
-            $object = $this->manometr_object_service->createManometrObject($unique_name);
-            $this->manometr_object_service->createManometrObjectMethodsWithEvents($object->id);
+            $uniqueName = HomeObject::getUniqueObjectName(0, $manometr->name);
+            $object = $this->manometrObjectService->createManometrObject($uniqueName);
+            $this->manometrObjectService->createManometrObjectMethodsWithEvents($object->id);
             $manometr->id_object = $object->id;
             $manometr->save();
 

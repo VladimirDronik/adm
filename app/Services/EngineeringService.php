@@ -1,23 +1,16 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 13.04.21
- * Time: 15:37
- */
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Page;
-use App\Repositories\MenuRepository;
+use App\Models\HomeObject;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\MenuRepository;
 
 class EngineeringService
 {
     public function delete(int $idObject, bool $delMenuAndPages)
     {
-        //HomeObject::deleteAutoObject(idObject);
         $menuRep = new MenuRepository();
 
         $object = HomeObject::findOrFail($idObject);

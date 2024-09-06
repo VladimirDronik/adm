@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\Port;
 use App\Models\Device;
 use App\Models\ExtensionModule;
-use App\Models\ExtensionModuleType;
-use App\Models\Port;
-use App\Repositories\DeviceRepository;
-use App\Repositories\PortRepository;
 use Illuminate\Support\Facades\DB;
+use App\Models\ExtensionModuleType;
+use App\Repositories\PortRepository;
+use App\Repositories\DeviceRepository;
 
 class DeviceService
 {
@@ -70,9 +70,9 @@ class DeviceService
     {
         $gw = explode(':', $sip)[0];
 
-        $sip_with_port = strpos($sip, ':') === false ? $sip.'%3A8080' : $sip;
+        $sipWithPort = strpos($sip, ':') === false ? $sip.'%3A8080' : $sip;
 
-        return "http://{$oldIP}/sec/?cf=1&eip={$eip}&pwd=sec&gw={$gw}&sip={$sip_with_port}&sct=md.php";
+        return "http://{$oldIP}/sec/?cf=1&eip={$eip}&pwd=sec&gw={$gw}&sip={$sipWithPort}&sct=md.php";
     }
 
     /**
@@ -105,16 +105,15 @@ class DeviceService
      *
      * @throws \Exception
      */
-    public function storeDevice(array $data, bool $is_notify = true)
+    public function storeDevice(array $data, bool $isNotify = true)
     {
         $this->device = new Device();
 
         $this->device->fill($data);
-        //$this->device->active = 1;
 
         $this->device->save();
 
-        if ($is_notify) {
+        if ($isNotify) {
             $this->notifyDeviceIp($data);
         }
     }
@@ -124,7 +123,7 @@ class DeviceService
      *
      * @throws \Throwable
      */
-    public function store(array $data, bool $forcedCreate = true, bool $is_notify = false) //true для реализации функции настройки устройства с дефолтным адресом
+    public function store(array $data, bool $forcedCreate = true, bool $isNotify = false)
     {
         $typeDevice = $data['type'];
 
@@ -142,7 +141,7 @@ class DeviceService
             }
 
             if (($data['active'] == 1) || ($forcedCreate)) {
-                $this->storeDevice($data, $is_notify);
+                $this->storeDevice($data, $isNotify);
 
                 $this->storePorts();
 
@@ -254,8 +253,6 @@ class DeviceService
             $device->port = $data['port'] ?: null;
         }
 
-        // $configResult = ConfigMegaService::sendConfigToDevice($data['id']);
-
         if (trim($data['ip_address']) !== $device->ip_address) {
             $device->ip_address = $data['ip_address'];
 
@@ -308,13 +305,13 @@ class DeviceService
         return true;
     }
 
-    public function getPortsByDeviceId(int $device_id)
+    public function getPortsByDeviceId(int $deviceId)
     {
-        if (! $device_id) {
+        if (! $deviceId) {
             return [];
         }
 
-        $ports = Port::where('id_device', $device_id)
+        $ports = Port::where('id_device', $deviceId)
             ->orderBy('num_port')
             ->pluck('num_port', 'id')
             ->toArray();
@@ -322,14 +319,14 @@ class DeviceService
         return array_values($ports);
     }
 
-    public function getPortsWithObjectsByDeviceId(int $device_id, string $status = '')
+    public function getPortsWithObjectsByDeviceId(int $deviceId, string $status = '')
     {
-        if (! $device_id) {
+        if (! $deviceId) {
             return [];
         }
 
         $ports = $this->portRepository
-            ->getPortsByDeviceId($device_id, $status);
+            ->getPortsByDeviceId($deviceId, $status);
 
         $arrayPorts = [];
 

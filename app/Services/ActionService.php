@@ -1,20 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 23.04.21
- * Time: 14:25
- */
 
 namespace App\Services;
 
 use App\Models\Action;
+use App\Repositories\ViewRepository;
+use App\Repositories\SoundRepository;
 use App\Repositories\ActionRepository;
 use App\Repositories\MethodRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
-use App\Repositories\SoundRepository;
-use App\Repositories\ViewRepository;
 
 class ActionService
 {
@@ -53,7 +47,6 @@ class ActionService
         $resultActions = [];
 
         foreach ($actions as $action) {
-
             $objectName = '';
             $nameValue = '';
             $delete = false;

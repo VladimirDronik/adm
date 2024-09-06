@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\HomeObject;
 use App\Models\Method;
 use App\Models\Termostat;
-use App\Repositories\ObjectRepository;
+use App\Models\HomeObject;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\ObjectRepository;
 
 class ObjectService
 {
@@ -89,10 +89,10 @@ class ObjectService
             ->params;
     }
 
-    public function getPropertiesByObjectId($object_id, $easyArray = true): array
+    public function getPropertiesByObjectId($objectId, $easyArray = true): array
     {
-        if ($object_id) {
-            $object = HomeObject::find($object_id);
+        if ($objectId) {
+            $object = HomeObject::find($objectId);
 
             switch ($object->type) {
                 case 'boiler': $properties = $object->boiler->getProperties();
@@ -149,10 +149,10 @@ class ObjectService
         return [];
     }
 
-    public function getMethodsByObjectIdToArray($object_id): array
+    public function getMethodsByObjectIdToArray($objectId): array
     {
-        if ($object_id) {
-            return Method::where('id_object', $object_id)
+        if ($objectId) {
+            return Method::where('id_object', $objectId)
                 ->orderBy('name')
                 ->select('id', 'name')
                 ->pluck('name', 'id')

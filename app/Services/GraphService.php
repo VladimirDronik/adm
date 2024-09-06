@@ -2,35 +2,35 @@
 
 namespace App\Services;
 
-use App\Models\Carbdioxide;
+use Carbon\Carbon;
+use App\Models\Room;
 use App\Models\Count;
-use App\Models\GraphCarbdioxide;
-use App\Models\GraphCount;
-use App\Models\GraphHumidity;
-use App\Models\GraphLight;
-use App\Models\GraphPressure;
-use App\Models\GraphTermostat;
 use App\Models\Hygrostat;
 use App\Models\Lightstat;
-use App\Models\Pressurestat;
-use App\Models\Room;
 use App\Models\Termostat;
-use Carbon\Carbon;
+use App\Models\GraphCount;
+use App\Models\GraphLight;
+use App\Models\Carbdioxide;
+use App\Models\Pressurestat;
+use App\Models\GraphHumidity;
+use App\Models\GraphPressure;
+use App\Models\GraphTermostat;
+use App\Models\GraphCarbdioxide;
 
 class GraphService
 {
     public function getTermostatsPeriods()
     {
         $periods = [];
-        $min_date = GraphTermostat::min('datetime');
-        if (empty($min_date)) {
+        $minDate = GraphTermostat::min('datetime');
+        if (empty($minDate)) {
             return $periods;
         }
-        $min_date = Carbon::createFromFormat('Y-m-d H:i:s', $min_date);
-        $cur_date = Carbon::now();
-        while ($min_date->lte($cur_date)) {
-            $periods[$min_date->month.'-'.$min_date->year] = 'за '.getRusMonth($min_date->month).' '.$min_date->year;
-            $min_date->addMonth();
+        $minDate = Carbon::createFromFormat('Y-m-d H:i:s', $minDate);
+        $curDate = Carbon::now();
+        while ($minDate->lte($curDate)) {
+            $periods[$minDate->month.'-'.$minDate->year] = 'за '.getRusMonth($minDate->month).' '.$minDate->year;
+            $minDate->addMonth();
         }
 
         return array_reverse($periods);
@@ -38,10 +38,10 @@ class GraphService
 
     public function getGraphTermostatsData()
     {
-        $rooms_ids = Termostat::whereNotNull('room')->select('room')
+        $roomsIds = Termostat::whereNotNull('room')->select('room')
             ->distinct()->pluck('room')->toArray();
 
-        $data['rooms'] = Room::whereIn('id', $rooms_ids)
+        $data['rooms'] = Room::whereIn('id', $roomsIds)
             ->with('termostats', 'termostats.last_graphs')->orderBy('id')->get();
 
         $data['other_termostats'] = Termostat::with('last_graphs')->whereNull('room')->orderBy('id')->get();
@@ -55,12 +55,12 @@ class GraphService
             ->select('value', 'datetime')->orderBy('datetime');
 
         if ($period === '7') {
-            $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
-            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
+            $weekAgoDate = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
+            $graphs = $query->where('datetime', '>=', $weekAgoDate)->get();
         } else {
-            $period_parts = explode('-', $period);
-            $month = (int) $period_parts[0];
-            $year = (int) $period_parts[1];
+            $periodParts = explode('-', $period);
+            $month = (int) $periodParts[0];
+            $year = (int) $periodParts[1];
             $graphs = $query->whereMonth('datetime', '=', $month)
                 ->whereYear('datetime', '=', $year)->get();
         }
@@ -71,20 +71,18 @@ class GraphService
         return [true, $data];
     }
 
-    /* humidities */
-
     public function getHumiditiesPeriods()
     {
         $periods = [];
-        $min_date = GraphHumidity::min('datetime');
-        if (empty($min_date)) {
+        $minDate = GraphHumidity::min('datetime');
+        if (empty($minDate)) {
             return $periods;
         }
-        $min_date = Carbon::createFromFormat('Y-m-d H:i:s', $min_date);
-        $cur_date = Carbon::now();
-        while ($min_date->lte($cur_date)) {
-            $periods[$min_date->month.'-'.$min_date->year] = 'за '.getRusMonth($min_date->month).' '.$min_date->year;
-            $min_date->addMonth();
+        $minDate = Carbon::createFromFormat('Y-m-d H:i:s', $minDate);
+        $curDate = Carbon::now();
+        while ($minDate->lte($curDate)) {
+            $periods[$minDate->month.'-'.$minDate->year] = 'за '.getRusMonth($minDate->month).' '.$minDate->year;
+            $minDate->addMonth();
         }
 
         return array_reverse($periods);
@@ -92,13 +90,13 @@ class GraphService
 
     public function getGraphHumiditiesData()
     {
-        $rooms_ids = Hygrostat::whereNotNull('room')
+        $roomsIds = Hygrostat::whereNotNull('room')
             ->select('room')
             ->distinct()
             ->pluck('room')
             ->toArray();
 
-        $data['rooms'] = Room::whereIn('id', $rooms_ids)
+        $data['rooms'] = Room::whereIn('id', $roomsIds)
             ->with('hygrostats', 'hygrostats.last_graphs')
             ->orderBy('id')
             ->get();
@@ -111,19 +109,19 @@ class GraphService
         return $data;
     }
 
-    public function getGraphHumiditiesPeriodData(int $hygrostat_id, string $period)
+    public function getGraphHumiditiesPeriodData(int $hygrostatId, string $period)
     {
-        $query = GraphHumidity::where('id_hygrostat', $hygrostat_id)
+        $query = GraphHumidity::where('id_hygrostat', $hygrostatId)
             ->select('value', 'datetime')
             ->orderBy('datetime');
 
         if ($period === '7') {
-            $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
-            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
+            $weekAgoDate = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
+            $graphs = $query->where('datetime', '>=', $weekAgoDate)->get();
         } else {
-            $period_parts = explode('-', $period);
-            $month = (int) $period_parts[0];
-            $year = (int) $period_parts[1];
+            $periodParts = explode('-', $period);
+            $month = (int) $periodParts[0];
+            $year = (int) $periodParts[1];
             $graphs = $query->whereMonth('datetime', '=', $month)
                 ->whereYear('datetime', '=', $year)
                 ->get();
@@ -135,20 +133,18 @@ class GraphService
         return [true, $data];
     }
 
-    /* lights */
-
     public function getLightsPeriods()
     {
         $periods = [];
-        $min_date = GraphLight::min('datetime');
-        if (empty($min_date)) {
+        $minDate = GraphLight::min('datetime');
+        if (empty($minDate)) {
             return $periods;
         }
-        $min_date = Carbon::createFromFormat('Y-m-d H:i:s', $min_date);
-        $cur_date = Carbon::now();
-        while ($min_date->lte($cur_date)) {
-            $periods[$min_date->month.'-'.$min_date->year] = 'за '.getRusMonth($min_date->month).' '.$min_date->year;
-            $min_date->addMonth();
+        $minDate = Carbon::createFromFormat('Y-m-d H:i:s', $minDate);
+        $curDate = Carbon::now();
+        while ($minDate->lte($curDate)) {
+            $periods[$minDate->month.'-'.$minDate->year] = 'за '.getRusMonth($minDate->month).' '.$minDate->year;
+            $minDate->addMonth();
         }
 
         return array_reverse($periods);
@@ -156,13 +152,13 @@ class GraphService
 
     public function getGraphLightsData()
     {
-        $rooms_ids = Lightstat::whereNotNull('room')
+        $roomsIds = Lightstat::whereNotNull('room')
             ->select('room')
             ->distinct()
             ->pluck('room')
             ->toArray();
 
-        $data['rooms'] = Room::whereIn('id', $rooms_ids)
+        $data['rooms'] = Room::whereIn('id', $roomsIds)
             ->with('lightstats', 'lightstats.last_graphs')
             ->orderBy('id')
             ->get();
@@ -175,19 +171,19 @@ class GraphService
         return $data;
     }
 
-    public function getGraphLightsPeriodData(int $count_id, string $period)
+    public function getGraphLightsPeriodData(int $countId, string $period)
     {
-        $query = GraphLight::where('id_count', $count_id)
+        $query = GraphLight::where('id_count', $countId)
             ->select('value', 'datetime')
             ->orderBy('datetime');
 
         if ($period === '7') {
-            $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
-            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
+            $weekAgoDate = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
+            $graphs = $query->where('datetime', '>=', $weekAgoDate)->get();
         } else {
-            $period_parts = explode('-', $period);
-            $month = (int) $period_parts[0];
-            $year = (int) $period_parts[1];
+            $periodParts = explode('-', $period);
+            $month = (int) $periodParts[0];
+            $year = (int) $periodParts[1];
             $graphs = $query->whereMonth('datetime', '=', $month)
                 ->whereYear('datetime', '=', $year)
                 ->get();
@@ -202,15 +198,15 @@ class GraphService
     public function getPressuresPeriods()
     {
         $periods = [];
-        $min_date = GraphPressure::min('datetime');
-        if (empty($min_date)) {
+        $minDate = GraphPressure::min('datetime');
+        if (empty($minDate)) {
             return $periods;
         }
-        $min_date = Carbon::createFromFormat('Y-m-d H:i:s', $min_date);
-        $cur_date = Carbon::now();
-        while ($min_date->lte($cur_date)) {
-            $periods[$min_date->month.'-'.$min_date->year] = 'за '.getRusMonth($min_date->month).' '.$min_date->year;
-            $min_date->addMonth();
+        $minDate = Carbon::createFromFormat('Y-m-d H:i:s', $minDate);
+        $curDate = Carbon::now();
+        while ($minDate->lte($curDate)) {
+            $periods[$minDate->month.'-'.$minDate->year] = 'за '.getRusMonth($minDate->month).' '.$minDate->year;
+            $minDate->addMonth();
         }
 
         return array_reverse($periods);
@@ -218,13 +214,13 @@ class GraphService
 
     public function getGraphPressuresData()
     {
-        $rooms_ids = Pressurestat::whereNotNull('room')
+        $roomsIds = Pressurestat::whereNotNull('room')
             ->select('room')
             ->distinct()
             ->pluck('room')
             ->toArray();
 
-        $data['rooms'] = Room::whereIn('id', $rooms_ids)
+        $data['rooms'] = Room::whereIn('id', $roomsIds)
             ->with('pressurestats', 'pressurestats.lastGraphs')
             ->orderBy('id')
             ->get();
@@ -237,19 +233,19 @@ class GraphService
         return $data;
     }
 
-    public function getGraphPressuresPeriodData(int $count_id, string $period)
+    public function getGraphPressuresPeriodData(int $countId, string $period)
     {
-        $query = GraphPressure::where('id_count', $count_id)
+        $query = GraphPressure::where('id_count', $countId)
             ->select('value', 'datetime')
             ->orderBy('datetime');
 
         if ($period === '7') {
-            $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
-            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
+            $weekAgoDate = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
+            $graphs = $query->where('datetime', '>=', $weekAgoDate)->get();
         } else {
-            $period_parts = explode('-', $period);
-            $month = (int) $period_parts[0];
-            $year = (int) $period_parts[1];
+            $periodParts = explode('-', $period);
+            $month = (int) $periodParts[0];
+            $year = (int) $periodParts[1];
             $graphs = $query->whereMonth('datetime', '=', $month)
                 ->whereYear('datetime', '=', $year)
                 ->get();
@@ -261,20 +257,18 @@ class GraphService
         return [true, $data];
     }
 
-    /* counts */
-
     public function getCountsPeriods()
     {
         $periods = [];
-        $min_date = GraphCount::min('datetime');
-        if (empty($min_date)) {
+        $minDate = GraphCount::min('datetime');
+        if (empty($minDate)) {
             return $periods;
         }
-        $min_date = Carbon::createFromFormat('Y-m-d', $min_date);
-        $cur_date = Carbon::now();
-        while ($min_date->lte($cur_date)) {
-            $periods[$min_date->month.'-'.$min_date->year] = 'за '.getRusMonth($min_date->month).' '.$min_date->year;
-            $min_date->addMonth();
+        $minDate = Carbon::createFromFormat('Y-m-d', $minDate);
+        $curDate = Carbon::now();
+        while ($minDate->lte($curDate)) {
+            $periods[$minDate->month.'-'.$minDate->year] = 'за '.getRusMonth($minDate->month).' '.$minDate->year;
+            $minDate->addMonth();
         }
 
         return array_reverse($periods);
@@ -282,31 +276,31 @@ class GraphService
 
     public function getGraphCountsData()
     {
-        $count_ids = GraphCount::select('id_count')
+        $countIds = GraphCount::select('id_count')
             ->distinct()
             ->pluck('id_count')
             ->toArray();
 
-        $data['counts'] = Count::whereIn('id', $count_ids)
+        $data['counts'] = Count::whereIn('id', $countIds)
             ->orderBy('name')
             ->get();
 
         return $data;
     }
 
-    public function getGraphCountsPeriodData(int $count_id, string $period)
+    public function getGraphCountsPeriodData(int $countId, string $period)
     {
-        $query = GraphCount::where('id_count', $count_id)
+        $query = GraphCount::where('id_count', $countId)
             ->select('value', 'datetime')
             ->orderBy('datetime');
 
         if ($period === '7') {
-            $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d');
-            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
+            $weekAgoDate = Carbon::now()->subDays(7)->format('Y-m-d');
+            $graphs = $query->where('datetime', '>=', $weekAgoDate)->get();
         } else {
-            $period_parts = explode('-', $period);
-            $month = (int) $period_parts[0];
-            $year = (int) $period_parts[1];
+            $periodParts = explode('-', $period);
+            $month = (int) $periodParts[0];
+            $year = (int) $periodParts[1];
             $graphs = $query->whereMonth('datetime', '=', $month)
                 ->whereYear('datetime', '=', $year)
                 ->get();
@@ -321,15 +315,15 @@ class GraphService
     public function getCarbdioxidesPeriods()
     {
         $periods = [];
-        $min_date = GraphCarbdioxide::min('datetime');
-        if (empty($min_date)) {
+        $minDate = GraphCarbdioxide::min('datetime');
+        if (empty($minDate)) {
             return $periods;
         }
-        $min_date = Carbon::createFromFormat('Y-m-d H:i:s', $min_date);
-        $cur_date = Carbon::now();
-        while ($min_date->lte($cur_date)) {
-            $periods[$min_date->month.'-'.$min_date->year] = 'за '.getRusMonth($min_date->month).' '.$min_date->year;
-            $min_date->addMonth();
+        $minDate = Carbon::createFromFormat('Y-m-d H:i:s', $minDate);
+        $curDate = Carbon::now();
+        while ($minDate->lte($curDate)) {
+            $periods[$minDate->month.'-'.$minDate->year] = 'за '.getRusMonth($minDate->month).' '.$minDate->year;
+            $minDate->addMonth();
         }
 
         return array_reverse($periods);
@@ -337,13 +331,13 @@ class GraphService
 
     public function getGraphCarbdioxidesData()
     {
-        $rooms_ids = Carbdioxide::whereNotNull('room')
+        $roomsIds = Carbdioxide::whereNotNull('room')
             ->select('room')
             ->distinct()
             ->pluck('room')
             ->toArray();
 
-        $data['rooms'] = Room::whereIn('id', $rooms_ids)
+        $data['rooms'] = Room::whereIn('id', $roomsIds)
             ->with('carbdioxides', 'carbdioxides.lastGraphs')
             ->orderBy('id')
             ->get();
@@ -363,12 +357,12 @@ class GraphService
             ->orderBy('datetime');
 
         if ($period === '7') {
-            $week_ago_date = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
-            $graphs = $query->where('datetime', '>=', $week_ago_date)->get();
+            $weekAgoDate = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
+            $graphs = $query->where('datetime', '>=', $weekAgoDate)->get();
         } else {
-            $period_parts = explode('-', $period);
-            $month = (int) $period_parts[0];
-            $year = (int) $period_parts[1];
+            $periodParts = explode('-', $period);
+            $month = (int) $periodParts[0];
+            $year = (int) $periodParts[1];
             $graphs = $query->whereMonth('datetime', '=', $month)
                 ->whereYear('datetime', '=', $year)
                 ->get();
