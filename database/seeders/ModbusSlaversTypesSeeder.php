@@ -36,7 +36,7 @@ class ModbusSlaversTypesSeeder extends Seeder
             ],
             [
                 'type' => 'bcg-301-w',
-                'name' => 'Nevoton OPENTHERM',
+                'name' => 'Nevoton Opentherm',
                 'purpose' => 'heat',
                 'relay' => 0,
             ],
@@ -110,6 +110,12 @@ class ModbusSlaversTypesSeeder extends Seeder
                 'type' => 'lessar-mu-1-01',
                 'name' => 'LESSAR MU-1-01',
                 'purpose' => 'ac',
+                'relay' => 0,
+            ],
+            [
+                'type' => 'beg-311-w',
+                'name' => 'Nevoton Ebus',
+                'purpose' => 'heat',
                 'relay' => 0,
             ],
         ];

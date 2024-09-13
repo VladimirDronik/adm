@@ -1,0 +1,93 @@
+[
+  {
+    "name": "Код ошибки котла",
+    "register_type": "input",
+    "starting_register": 1000,
+    "registers_quantity": 1,
+    "access": "ro",
+    "data_format": "u16",
+    "units": null,
+    "scale_unit": null,
+    "comment": null,
+    "is_system": 1,
+    "alias": "error_code"
+  },
+  {
+    "name": "Температура текущая «подачи» котловой воды (из котла в контур)",
+    "register_type": "input",
+    "starting_register": 1001,
+    "registers_quantity": 1,
+    "access": "ro",
+    "data_format": "u16",
+    "units": "°C",
+    "scale_unit": null,
+    "comment": null,
+    "is_system": 1,
+    "alias": "ch_current_temp"
+  },
+  {
+    "name": "Температура текущая ГВС",
+    "register_type": "input",
+    "starting_register": 1002,
+    "registers_quantity": 1,
+    "access": "ro",
+    "data_format": "u16",
+    "units": "°C",
+    "scale_unit": null,
+    "comment": null,
+    "is_system": 1,
+    "alias": "dhw_current_temp"
+  },
+  {
+    "name": "Температура текущая «обратки» котловой воды (из контура в котел)",
+    "register_type": "input",
+    "starting_register": 1003,
+    "registers_quantity": 1,
+    "access": "ro",
+    "data_format": "u16",
+    "units": "°C",
+    "scale_unit": null,
+    "comment": null,
+    "is_system": 1,
+    "alias": "return_temp"
+  },
+  {
+    "name": "Температура воды в накопителе",
+    "register_type": "input",
+    "starting_register": 1004,
+    "registers_quantity": 1,
+    "access": "ro",
+    "data_format": "u16",
+    "units": "°C",
+    "scale_unit": null,
+    "comment": null,
+    "is_system": 1,
+    "alias": null
+  },
+  {
+    "name": "Температура котловой воды установленная",
+    "register_type": "holding",
+    "starting_register": 1002,
+    "registers_quantity": 1,
+    "access": "rw",
+    "data_format": "u16",
+    "units": "°C",
+    "scale_unit": null,
+    "comment": "0 - 90 °C",
+    "is_system": 1,
+    "alias": "ch_setpoint_temp"
+  },
+  {
+    "name": "Температура ГВС установленная",
+    "register_type": "holding",
+    "starting_register": 1003,
+    "registers_quantity": 1,
+    "access": "rw",
+    "data_format": "u16",
+    "units": "°C",
+    "scale_unit": null,
+    "comment": "0 - 90 °C",
+    "is_system": 1,
+    "alias": "dhw_setpoint_temp"
+  }
+]
