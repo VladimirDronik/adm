@@ -67,7 +67,13 @@ class BoilerService
 
             switch ($boiler->mode) {
                 case Boiler::MODE_CH_DHW:
-                    $boiler->boilersParam->dhw_setpoint_temp = $data['dhw_setpoint_temp_value'];
+                    if ($boiler->boilersParam->dhw_setpoint_temp != $data['dhw_setpoint_temp_value']) {
+                        $setDhwResult = $this->setDhw($boiler->id_object, $data['dhw_setpoint_temp_value']);
+                        if ($setDhwResult['code'] === 0) {
+                            $boiler->boilersParam->dhw_setpoint_temp = $data['dhw_setpoint_temp_value'];
+                        }
+                    }
+
                     $this->updateDataByHeatingMode($boiler, $data);
                     $boiler->boilersParam->save();
 
@@ -102,8 +108,13 @@ class BoilerService
                         ->update(['active' => 0]);
                     break;
                 case Boiler::MODE_DHW:
-                    $boiler->boilersParam->dhw_setpoint_temp = $data['dhw_setpoint_temp_value'];
-                    $boiler->boilersParam->save();
+                    if ($boiler->boilersParam->dhw_setpoint_temp != $data['dhw_setpoint_temp_value']) {
+                        $setDhwResult = $this->setDhw($boiler->id_object, $data['dhw_setpoint_temp_value']);
+                        if ($setDhwResult['code'] === 0) {
+                            $boiler->boilersParam->dhw_setpoint_temp = $data['dhw_setpoint_temp_value'];
+                            $boiler->boilersParam->save();
+                        }
+                    }
 
                     Elements::where('id_object', $boiler->id_object)
                         ->where('handle', 'ch_current_temp')
@@ -229,7 +240,12 @@ class BoilerService
     private function updateDataByHeatingMode(Boiler $boiler, array $data): void
     {
         if ($boiler->heating_mode == Boiler::HEATING_MODE_MANUAL) {
-            $boiler->boilersParam->ch_setpoint_temp = $data['ch_setpoint_temp_value'];
+            if ($boiler->boilersParam->ch_setpoint_temp != $data['ch_setpoint_temp_value']) {
+                $setChResult = $this->setCh($boiler->id_object, $data['ch_setpoint_temp_value']);
+                if ($setChResult['code'] === 0) {
+                    $boiler->boilersParam->ch_setpoint_temp = $data['ch_setpoint_temp_value'];
+                }
+            }
 
             Elements::where('id_object', $boiler->id_object)
                 ->where('handle', 'weather_compensation')
@@ -264,5 +280,33 @@ class BoilerService
                 ->where('handle', 'weather_compensation')
                 ->update(['active' => 1]);
         }
+    }
+
+    private function setCh(int $objectId, int $value): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php boiler_set_ch.php '.$objectId.' '.$value, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
+
+    private function setDhw(int $objectId, int $value): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php boiler_set_dhw.php '.$objectId.' '.$value, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
     }
 }
