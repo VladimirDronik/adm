@@ -6,10 +6,10 @@ use App\Models\Virtual;
 
 class VirtualRepository
 {
-    public function getAll($pagination_count = 30)
+    public function getAll(int $perPage = 30)
     {
         return Virtual::with('object')
             ->orderBy('id', 'desc')
-            ->paginate($pagination_count);
+            ->paginate($perPage);
     }
 }

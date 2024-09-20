@@ -2,13 +2,14 @@
 
 namespace App\Repositories;
 
+use App\Models\Port;
 use App\Models\Device;
 use App\Models\DevType;
-use App\Models\Port;
+use Illuminate\Database\Eloquent\Collection;
 
 class DeviceRepository
 {
-    public function getByName($name = '', $pagination_count = 30)
+    public function getByName(string $name = '', int $perPage = 30)
     {
         $query = Device::with('devtype');
 
@@ -16,24 +17,22 @@ class DeviceRepository
             $query->where('name', 'like', '%'.$name.'%');
         }
 
-        return $query->orderBy('id')->paginate($pagination_count);
+        return $query->orderBy('id')->paginate($perPage);
     }
 
-    public function getAllToArray()
+    public function getAllToArray(): array
     {
-        //Выводим все контроллеры, кроме Hite-pro
-        $devices = Device::select('devices.id', 'devices.description')
+        // Выводим все контроллеры, кроме Hite-pro
+        return Device::select('devices.id', 'devices.description')
             ->join('devtypes', 'devices.type', '=', 'devtypes.id', 'left outer')
             ->pluck('devices.description', 'devices.id')
             ->toArray();
-
-        return $devices;
     }
 
     /**
      * Вывод всех устройств по типу, кроме перечисленных
      */
-    public function getAllWithoutTypesToArray(array $devicesTypes = [])
+    public function getAllWithoutTypesToArray(array $devicesTypes = []): array
     {
         $query = Device::query();
 
@@ -41,21 +40,18 @@ class DeviceRepository
             ->select('devices.id', 'description');
 
         foreach ($devicesTypes as $devType) {
-
             $query->where('devtypes.name', '!=', $devType);
         }
 
-        $devices = $query->orderBy('description')
+        return $query->orderBy('description')
             ->pluck('description', 'devices.id')
             ->toArray();
-
-        return $devices;
     }
 
     /**
      * Вывод всех устройств по типу
      */
-    public function getAllByTypesToArray(array $devicesTypes, $pluck = true)
+    public function getAllByTypesToArray(array $devicesTypes, bool $pluck = true): array
     {
         $query = Device::query();
 
@@ -66,27 +62,28 @@ class DeviceRepository
             $query->orwhere('devtypes.name', $devType);
         }
 
-        //Управляем форматом вывода - для загрузки через страницу используем pluck, для загрузки через AJAX не используем
+        // Управляем форматом вывода - для загрузки через страницу используем pluck, для загрузки через AJAX не используем
         if ($pluck) {
             $devices = $query->orderBy('description')
                 ->pluck('description', 'devices.id')
                 ->toArray();
         } else {
             $devices = $query->orderBy('description')
-                ->get()->toArray();
+                ->get()
+                ->toArray();
         }
 
         return $devices;
     }
 
-    public function getDevTypesToArray()
+    public function getDevTypesToArray(): array
     {
         return DevType::orderBy('name')
             ->pluck('name', 'name')
             ->toArray();
     }
 
-    public static function getDevTypeById($id)
+    public static function getDevTypeById(int $id)
     {
         return DevType::select('name')
             ->where('id', $id)
@@ -94,7 +91,7 @@ class DeviceRepository
             ->name;
     }
 
-    public function getIdTypeByName($name)
+    public function getIdTypeByName(string $name)
     {
         return DevType::select('id')
             ->where('name', $name)
@@ -102,7 +99,7 @@ class DeviceRepository
             ->id;
     }
 
-    public static function getDevByIdDevice($id)
+    public static function getDevByIdDevice(int $id): array
     {
         $device = Device::where('id', $id)->first();
         $type = '';
@@ -118,7 +115,7 @@ class DeviceRepository
         return ['type' => $type, 'address' => $address, 'password' => $password];
     }
 
-    public static function getAllDevicesForConfigs()
+    public static function getAllDevicesForConfigs(): Collection
     {
         return Device::select('id')
             ->where('active', 1)
@@ -129,7 +126,7 @@ class DeviceRepository
     /**
      * Получение id устройства по id порта
      */
-    public static function getDevByPort($idPort)
+    public static function getDevByPort(int $idPort)
     {
         return Port::select('id_device')
             ->where('id', $idPort)

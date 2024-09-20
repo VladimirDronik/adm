@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 13.06.20
- * Time: 15:39
- */
 
 namespace App\Repositories;
 
@@ -20,8 +14,8 @@ class SoundRepository
             ->toArray();
     }
 
-    public static function getNameById($idSound)
+    public static function getNameById(int $idSound): ?Sound
     {
-        return Sound::where('id', $idSound)->first();
+        return Sound::find($idSound);
     }
 }

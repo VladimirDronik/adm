@@ -339,15 +339,11 @@ class PortService
                             ->getTransmittersByDeviceId($deviceID);
                         break;
 
-                        // case 'dimmer':
-                        //     $HPdevices = $this->hiteproDevRep
-                        //         ->getInPortsByDeviceId($deviceID);
-                        //     break;
-
                     default: $HPdevices = [];
                         break;
                 }
             }
+
             $HPdevicesArray = [];
 
             foreach ($HPdevices as $HPdevice) {

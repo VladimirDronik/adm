@@ -11,7 +11,7 @@ class UsensorRepository
         return Usensor::paginate($perPage);
     }
 
-    public function getAllToArray()
+    public function getAllToArray(): array
     {
         return Usensor::select('id_object', 'name')
             ->orderBy('name')
@@ -19,7 +19,7 @@ class UsensorRepository
             ->toArray();
     }
 
-    public function getByTypesToArray(array $types)
+    public function getByTypesToArray(array $types): array
     {
         return Usensor::whereIn('type', $types)
             ->select('id_object', 'name')

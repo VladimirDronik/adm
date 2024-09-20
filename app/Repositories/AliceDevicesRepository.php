@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 02.05.21
- * Time: 15:43
- */
 
 namespace App\Repositories;
 
@@ -15,7 +9,7 @@ class AliceDevicesRepository
     /**
      * Получение имени и помещения для объекта
      */
-    public function getNameAndRoomByObject($idObject)
+    public function getNameAndRoomByObject(int $idObject)
     {
         $alice = Alice::select('name', 'room', 'active')->where('id_object', $idObject)->first();
 

@@ -6,10 +6,10 @@ use App\Models\Dimmer;
 
 class DimmerRepository
 {
-    public function getAll(int $pagination_count = 30)
+    public function getAll(int $perPage = 30)
     {
         return Dimmer::with('object')
             ->orderBy('id', 'desc')
-            ->paginate($pagination_count);
+            ->paginate($perPage);
     }
 }

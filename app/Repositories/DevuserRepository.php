@@ -6,8 +6,8 @@ use App\Models\DevUser;
 
 class DevuserRepository
 {
-    public function getAll($pagination_count = 30)
+    public function getAll(int $perPage = 30)
     {
-        return DevUser::orderBy('dev_id')->paginate($pagination_count);
+        return DevUser::orderBy('dev_id')->paginate($perPage);
     }
 }

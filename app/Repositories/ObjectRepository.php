@@ -3,15 +3,16 @@
 namespace App\Repositories;
 
 use App\Models\HomeObject;
+use Illuminate\Database\Eloquent\Collection;
 
 class ObjectRepository
 {
-    public function getAll()
+    public function getAll(): Collection
     {
         return HomeObject::orderBy('name')->get();
     }
 
-    public function getAllToArray()
+    public function getAllToArray(): array
     {
         return HomeObject::select('id', 'name')
             ->orderBy('name')
@@ -19,14 +20,14 @@ class ObjectRepository
             ->toArray();
     }
 
-    public function getAllExcludeGivenType(string $type)
+    public function getAllExcludeGivenType(string $type): Collection
     {
         return HomeObject::where('type', '!=', $type)
             ->orderBy('name')
             ->get();
     }
 
-    public static function getAllByTypes(string|array $types)
+    public static function getAllByTypes(string|array $types): array
     {
         $objects = HomeObject::query()
             ->select('id', 'name')
@@ -44,7 +45,7 @@ class ObjectRepository
     /**
      * Отдать всё инженерное оборудование
      */
-    public function getAllEngineering($pagination_count = 30)
+    public function getAllEngineering(int $perPage = 30)
     {
         $engEquipments = ['boiler', 'boiler_gvs'];
 
@@ -54,10 +55,10 @@ class ObjectRepository
             $queryEquipments->orwhere('objects.type', $equipment);
         }
 
-        return $queryEquipments->orderBy('objects.name')->paginate($pagination_count);
+        return $queryEquipments->orderBy('objects.name')->paginate($perPage);
     }
 
-    public function getByName($name, $pagination_count = 30)
+    public function getByName(?string $name, int $perPage = 30)
     {
         $query = HomeObject::query();
 
@@ -65,10 +66,10 @@ class ObjectRepository
             $query->where('name', 'like', '%'.$name.'%');
         }
 
-        return $query->orderBy('id')->paginate($pagination_count);
+        return $query->orderBy('id')->paginate($perPage);
     }
 
-    public static function getNameById($idObject)
+    public static function getNameById(int $idObject): ?HomeObject
     {
         return HomeObject::select('name')
             ->where('id', $idObject)

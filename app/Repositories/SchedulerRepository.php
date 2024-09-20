@@ -6,14 +6,14 @@ use App\Models\SchedulerTask;
 
 class SchedulerRepository
 {
-    public function getAll($pagination_count = 30)
+    public function getAll(int $perPage = 30)
     {
         return SchedulerTask::with('points', 'emethod')
             ->orderBy('name')
-            ->paginate($pagination_count);
+            ->paginate($perPage);
     }
 
-    public function getByNameAndType(array $filter, bool $with_system = true, bool $with_hidden = true, $pagination_count = 30)
+    public function getByNameAndType(array $filter, bool $withSystem = true, bool $withHidden = true, int $perPage = 30)
     {
         $name = trim($filter['name']);
         $type = trim($filter['type']);
@@ -34,11 +34,11 @@ class SchedulerRepository
             $q->where('system', SchedulerTask::SYSTEM);
         }]);
 
-        if (! $with_system) {
+        if (! $withSystem) {
             $query->notSystem();
         }
 
-        if (! $with_hidden) {
+        if (! $withHidden) {
             $query->notHidden();
         }
 
@@ -46,6 +46,6 @@ class SchedulerRepository
 
         $query->orderBy('name');
 
-        return $query->paginate($pagination_count);
+        return $query->paginate($perPage);
     }
 }

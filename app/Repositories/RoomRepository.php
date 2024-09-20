@@ -3,43 +3,43 @@
 namespace App\Repositories;
 
 use App\Models\Room;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 
 class RoomRepository
 {
-    public function getSpecialRooms()
+    public function getSpecialRooms(): Collection
     {
         return Room::room()
             ->orderBy('group_room')
             ->get();
     }
 
-    public function getRoomGroups()
+    public function getRoomGroups(): Collection
     {
         return Room::group()
             ->orderBy('name')
             ->get();
     }
 
-    public function getPaginationGroupsAndSeparateRooms(int $pagination_count = 30)
+    public function getPaginationGroupsAndSeparateRooms(int $perPage = 30)
     {
         return Room::group()
             ->orWhere(function ($query) {
                 $query->room()->whereNull('group_room');
             })
             ->orderBy('sort')
-            ->paginate($pagination_count);
+            ->paginate($perPage);
     }
 
-    public function getPaginationGroupRooms(int $groupId, int $pagination_count = 30)
+    public function getPaginationGroupRooms(int $groupId, int $perPage = 30)
     {
         return Room::room()
             ->where('group_room', $groupId)
             ->orderBy('sort')
-            ->paginate($pagination_count);
+            ->paginate($perPage);
     }
 
-    public function getGroup($id)
+    public function getGroup(int $id): ?Room
     {
         return Room::group()
             ->where('id', $id)
@@ -61,27 +61,27 @@ class RoomRepository
             ->toArray();
     }
 
-    public function getRoomName($room_id, $rooms = null): string
+    public function getRoomName(mixed $roomId, $rooms = null): string
     {
-        if ($room_id === '') {
+        if ($roomId === '') {
             return '';
         }
 
-        if ($room_id === '0' || is_null($room_id)) {
+        if ($roomId === '0' || is_null($roomId)) {
             return Room::COMMON_NAME;
         }
 
         if (empty($rooms)) {
-            return optional(Room::find($room_id))->name;
+            return optional(Room::find($roomId))->name;
         }
 
-        return optional($rooms->firstWhere('id', $room_id))->name;
+        return optional($rooms->firstWhere('id', $roomId))->name;
     }
 
     /**
      * Поиск комнаты по названию
      */
-    public function getByName(?string $name): ?Model
+    public function getByName(?string $name): ?Room
     {
         return Room::where('name', $name)->first();
     }

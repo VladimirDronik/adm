@@ -6,14 +6,14 @@ use App\Models\Carbdioxide;
 
 class CarbdioxideRepository
 {
-    public function getAll($pages = 30)
+    public function getAll(int $pages = 30)
     {
         return Carbdioxide::with('relatedObject')
             ->orderBy('id')
             ->paginate($pages);
     }
 
-    public function getAllToArray()
+    public function getAllToArray(): array
     {
         return Carbdioxide::select('id', 'name')
             ->orderBy('name')

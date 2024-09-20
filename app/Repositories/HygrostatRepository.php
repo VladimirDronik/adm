@@ -6,10 +6,10 @@ use App\Models\Hygrostat;
 
 class HygrostatRepository
 {
-    public function getAll($pagination_count = 30)
+    public function getAll(int $perPage = 30)
     {
         return Hygrostat::with('eobject')
             ->orderBy('id')
-            ->paginate($pagination_count);
+            ->paginate($perPage);
     }
 }

@@ -6,7 +6,7 @@ use App\Models\Conditioner;
 
 class ConditionerRepository
 {
-    public function getAll($perPage = 30)
+    public function getAll(int $perPage = 30)
     {
         return Conditioner::paginate($perPage);
     }

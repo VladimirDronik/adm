@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 28.06.21
- * Time: 18:22
- */
 
 namespace App\Repositories;
 
@@ -14,10 +8,8 @@ class ColorRepository
 {
     /**
      * Отдать в массиве доступные цвета по name типу
-     *
-     * @return mixed
      */
-    public static function getNameTypeColors()
+    public static function getNameTypeColors(): array
     {
         return Color::where('type', Color::NAME_TYPE)
             ->select('id', 'name')
@@ -28,10 +20,8 @@ class ColorRepository
 
     /**
      * Отдать в массиве доступные цвета по hsv типу
-     *
-     * @return mixed
      */
-    public static function getHsvTypeColors()
+    public static function getHsvTypeColors(): array
     {
         return Color::where('type', Color::HSV_TYPE)
             ->select('id', 'value')

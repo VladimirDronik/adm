@@ -6,14 +6,14 @@ use App\Models\Manometr;
 
 class ManometrRepository
 {
-    public function getAll($pagination_count = 30)
+    public function getAll(int $perPage = 30)
     {
         return Manometr::with('eobject')
             ->orderBy('id')
-            ->paginate($pagination_count);
+            ->paginate($perPage);
     }
 
-    public function getAllToArray()
+    public function getAllToArray(): array
     {
         return Manometr::select('id', 'name')
             ->orderBy('name')

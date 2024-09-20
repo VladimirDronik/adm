@@ -3,18 +3,18 @@
 namespace App\Repositories;
 
 use App\Models\ModbusBus;
-use App\Models\ModbusRegister;
 use App\Models\ModbusSlaver;
+use App\Models\ModbusRegister;
 use App\Models\ModbusSlaversType;
 
 class ModbusRepository
 {
-    public function getAllBusesByType(string $type, $elementsPerPage = 30)
+    public function getAllBusesByType(string $type, int $perPage = 30)
     {
-        return ModbusBus::where('type', $type)->paginate($elementsPerPage);
+        return ModbusBus::where('type', $type)->paginate($perPage);
     }
 
-    public function getAllBusesToArray()
+    public function getAllBusesToArray(): array
     {
         return ModbusBus::select('id', 'device')
             ->orderBy('device')
@@ -22,7 +22,7 @@ class ModbusRepository
             ->toArray();
     }
 
-    public function getBusesWhereHasSlaversToArray()
+    public function getBusesWhereHasSlaversToArray(): array
     {
         return ModbusBus::whereHas('slavers')
             ->select('id', 'device')
@@ -31,7 +31,7 @@ class ModbusRepository
             ->toArray();
     }
 
-    public function getAllSlavers(int $bus = null, $elementsPerPage = 30)
+    public function getAllSlavers(?int $bus = null, int $perPage = 30)
     {
         $slavers = ModbusSlaver::query();
 
@@ -39,10 +39,10 @@ class ModbusRepository
             $slavers->where('bus', $bus);
         }
 
-        return $slavers->paginate($elementsPerPage);
+        return $slavers->paginate($perPage);
     }
 
-    public function getSlaversWhereHasRegistersToArray()
+    public function getSlaversWhereHasRegistersToArray(): array
     {
         return ModbusSlaver::whereHas('registers')
             ->select('id', 'name')
@@ -51,7 +51,7 @@ class ModbusRepository
             ->toArray();
     }
 
-    public function getAllSlaversToArray()
+    public function getAllSlaversToArray(): array
     {
         return ModbusSlaver::select('id', 'name')
             ->orderBy('name')
@@ -62,7 +62,7 @@ class ModbusRepository
     /**
      * Получить список устройств отфильтрованных по полям типа устройства
      */
-    public function getFilteredSlaversToArray(array $purpose, bool $relay = null): array
+    public function getFilteredSlaversToArray(array $purpose, ?bool $relay = null): array
     {
         return ModbusSlaver::select('id', 'name')->whereHas('relatedType', function ($query) use ($purpose, $relay) {
             $query->whereIn('purpose', $purpose);
@@ -76,7 +76,7 @@ class ModbusRepository
             ->toArray();
     }
 
-    public function getAllSlaversTypesToArray()
+    public function getAllSlaversTypesToArray(): array
     {
         return ModbusSlaversType::select('id', 'name')
             ->orderBy('name')
@@ -84,7 +84,7 @@ class ModbusRepository
             ->toArray();
     }
 
-    public function getAllRegisters(int $slaver = null, int $isSystem = null, $elementsPerPage = 30)
+    public function getAllRegisters(?int $slaver = null, ?int $isSystem = null, int $perPage = 30)
     {
         $registers = ModbusRegister::query();
 
@@ -96,10 +96,10 @@ class ModbusRepository
             $registers->where('is_system', 0);
         }
 
-        return $registers->paginate($elementsPerPage);
+        return $registers->paginate($perPage);
     }
 
-    public function getRegistersBySlaverToArray(int $slaverId)
+    public function getRegistersBySlaverToArray(int $slaverId): array
     {
         return ModbusRegister::where('slaver_id', $slaverId)
             ->orderBy('name')

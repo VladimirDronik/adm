@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Models\Log;
 use Carbon\Carbon;
+use App\Models\Log;
 
 class LogRepository
 {
@@ -25,7 +25,7 @@ class LogRepository
         return $types;
     }
 
-    public function getByFilter(array $filter, $pagination_count = 30)
+    public function getByFilter(array $filter, int $perPage = 30)
     {
         $start = trim($filter['start']);
         $end = trim($filter['end']);
@@ -34,13 +34,17 @@ class LogRepository
         $query = Log::query();
 
         if ($start !== '') {
-            $query->where('date', '>=',
-                Carbon::createFromFormat('d.m.Y', $start)->format('Y-m-d 00:00:00'));
+            $query->where(
+                'date', '>=',
+                Carbon::createFromFormat('d.m.Y', $start)->format('Y-m-d 00:00:00')
+            );
         }
 
         if ($end !== '') {
-            $query->where('date', '<=',
-                Carbon::createFromFormat('d.m.Y', $end)->format('Y-m-d 23:59:59'));
+            $query->where(
+                'date', '<=',
+                Carbon::createFromFormat('d.m.Y', $end)->format('Y-m-d 23:59:59')
+            );
         }
 
         if ($type !== '') {
@@ -53,6 +57,6 @@ class LogRepository
 
         $query->orderBy('date', 'desc');
 
-        return $query->paginate($pagination_count);
+        return $query->paginate($perPage);
     }
 }

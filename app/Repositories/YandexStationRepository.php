@@ -3,17 +3,18 @@
 namespace App\Repositories;
 
 use App\Models\YandexStation;
+use Illuminate\Database\Eloquent\Collection;
 
 class YandexStationRepository
 {
-    public function getAll($pagination_count = 30)
+    public function getAll(int $perPage = 30)
     {
         return YandexStation::with('iroom')
             ->orderBy('id', 'desc')
-            ->paginate($pagination_count);
+            ->paginate($perPage);
     }
 
-    public function getStationsToArray()
+    public function getStationsToArray(): Collection
     {
         return YandexStation::orderBy('name')->get();
     }

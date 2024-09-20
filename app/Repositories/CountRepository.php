@@ -6,10 +6,10 @@ use App\Models\Count;
 
 class CountRepository
 {
-    public function getAll($pagination_count = 30)
+    public function getAll(int $perPage = 30)
     {
         return Count::with('object')
             ->orderBy('id', 'desc')
-            ->paginate($pagination_count);
+            ->paginate($perPage);
     }
 }

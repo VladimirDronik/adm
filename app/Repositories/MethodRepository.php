@@ -6,7 +6,7 @@ use App\Models\Method;
 
 class MethodRepository
 {
-    public function getAllToArray()
+    public function getAllToArray(): array
     {
         return Method::select('id', 'name')
             ->orderBy('id')
@@ -14,30 +14,30 @@ class MethodRepository
             ->toArray();
     }
 
-    public function getAllMethodsByObjectToArray($objectID)
+    public function getAllMethodsByObjectToArray(int $objectId): array
     {
         return Method::select('id', 'name')
-            ->where('id_object', $objectID)
+            ->where('id_object', $objectId)
             ->orderBy('id')
             ->pluck('name', 'id')
             ->toArray();
     }
 
-    public function getObjectByMethod($idMethod)
+    public function getObjectByMethod(?int $idMethod): ?int
     {
         if ($idMethod) {
-            $return = Method::select('id_object')
+            $method = Method::select('id_object')
                 ->where('id', $idMethod)
                 ->orderBy('id')
                 ->first();
 
-            return $return->id_object;
+            return $method?->id_object;
         } else {
             return null;
         }
     }
 
-    public static function getMethodByID($idMethod)
+    public static function getMethodByID(int $idMethod): ?Method
     {
         return Method::select('name', 'id_object')
             ->where('id', $idMethod)

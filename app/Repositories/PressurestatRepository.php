@@ -6,14 +6,14 @@ use App\Models\Pressurestat;
 
 class PressurestatRepository
 {
-    public function getAll($pages = 30)
+    public function getAll(int $perPage = 30)
     {
         return Pressurestat::with('relatedObject')
             ->orderBy('id')
-            ->paginate($pages);
+            ->paginate($perPage);
     }
 
-    public function getAllToArray()
+    public function getAllToArray(): array
     {
         return Pressurestat::select('id', 'name')
             ->orderBy('name')

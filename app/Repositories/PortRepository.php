@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Port;
+use Illuminate\Database\Eloquent\Collection;
 
 class PortRepository
 {
@@ -17,18 +18,18 @@ class PortRepository
         }
     }
 
-    public function getOutPortsByDeviceId(int $device_id)
+    public function getOutPortsByDeviceId(int $deviceId): Collection
     {
-        return Port::where('id_device', $device_id)
+        return Port::where('id_device', $deviceId)
             ->where('status', 'out')
             ->orderBy('num_port')
             ->get();
     }
 
-    public function getInPortsByDeviceId($device_id)
+    public function getInPortsByDeviceId(?int $deviceId): Collection
     {
-        if ($device_id) {
-            return Port::where('id_device', $device_id)
+        if ($deviceId) {
+            return Port::where('id_device', $deviceId)
                 ->where('status', 'in')
                 ->orderBy('num_port')
                 ->get();
@@ -40,10 +41,10 @@ class PortRepository
         }
     }
 
-    public function getI2CPortsByDeviceId($device_id)
+    public function getI2CPortsByDeviceId(?int $deviceId): Collection
     {
-        if ($device_id) {
-            return Port::where('id_device', $device_id)
+        if ($deviceId) {
+            return Port::where('id_device', $deviceId)
                 ->where('status', 'I2C')
                 ->orderBy('num_port')
                 ->get();
@@ -58,7 +59,7 @@ class PortRepository
     /**
      * Вертнуть порты устройства, которые соответсвуют указанным типам
      */
-    public function getPortsByDeviceId($deviceId, $typesPort)
+    public function getPortsByDeviceId(?int $deviceId, string $typesPort): Collection
     {
         $typesArr = explode(',', $typesPort);
 
@@ -76,7 +77,7 @@ class PortRepository
     /**
      * Вертнуть порты устройства, которые соответсвуют указанным типам
      */
-    public function getPortsByTypes(?int $deviceId, string $types)
+    public function getPortsByTypes(?int $deviceId, string $types): Collection
     {
         $typesArr = explode(',', $types);
 
@@ -91,9 +92,9 @@ class PortRepository
         return $sql->orderBy('num_port')->get();
     }
 
-    public function updateEasy($port_id, $easy = '')
+    public function updateEasy(int $portId, string $easy = '')
     {
-        Port::where('id', $port_id)
+        Port::where('id', $portId)
             ->update([
                 'easy' => $easy,
                 'object' => null,
@@ -102,23 +103,23 @@ class PortRepository
             ]);
     }
 
-    public function updateScript($port_id, $script_id = null)
+    public function updateScript(int $portId, ?int $scriptId = null)
     {
-        Port::where('id', $port_id)
+        Port::where('id', $portId)
             ->update([
-                'script' => $script_id,
+                'script' => $scriptId,
                 'object' => null,
                 'method' => null,
                 'easy' => null,
             ]);
     }
 
-    public function updateMethod($port_id, $object_id = null, $method_id = null)
+    public function updateMethod(int $portId, ?int $objectId = null, ?int $methodId = null)
     {
-        Port::where('id', $port_id)
+        Port::where('id', $portId)
             ->update([
-                'object' => $object_id,
-                'method' => $method_id,
+                'object' => $objectId,
+                'method' => $methodId,
             ]);
     }
 
@@ -133,24 +134,20 @@ class PortRepository
         }
     }
 
-    public function getPortByObject($idObject)
+    public function getPortByObject(int $idObject): ?int
     {
         $port = Port::where('object', $idObject)->first();
 
-        if ($port) {
-            return $port->id;
-        }
+        return $port?->id;
     }
 
     /**
      * Выводит номер реального физического порта по id
-     *
-     * @return mixed|null
      */
-    public function getNumPortByID($idPort)
+    public function getNumPortByID(mixed $idPort)
     {
         if ($idPort && $idPort != 'null') {
-            return Port::where('id', $idPort)->first()->num_port;
+            return Port::where('id', $idPort)->first()?->num_port;
         } else {
             return null;
         }
@@ -159,10 +156,10 @@ class PortRepository
     /**
      * Выводит номер реального физического порта по id (статическая функция)
      */
-    public static function getNumberPortByID($idPort)
+    public static function getNumberPortByID(mixed $idPort)
     {
         if (! is_null($idPort) && $idPort != 'null') {
-            return Port::where('id', $idPort)->first()->num_port;
+            return Port::where('id', $idPort)->first()?->num_port;
         } else {
             return null;
         }

@@ -6,7 +6,7 @@ use App\Models\Page;
 
 class PageRepository
 {
-    public function getAll($pagination_count = 30)
+    public function getAll(int $perPage = 30)
     {
         return Page::select(
             'pages.id',
@@ -14,10 +14,10 @@ class PageRepository
             'pages.link',
             'pages.type',
             \DB::raw('(SELECT count(elements.id) FROM elements WHERE elements.page = pages.id) AS countElements')
-        )->paginate($pagination_count);
+        )->paginate($perPage);
     }
 
-    public function getAllToArray()
+    public function getAllToArray(): array
     {
         return Page::select('link', 'name')
             ->orderBy('name')

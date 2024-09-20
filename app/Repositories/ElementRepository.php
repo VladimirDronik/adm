@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 07.04.21
- * Time: 6:53
- */
 
 namespace App\Repositories;
 
@@ -12,14 +6,14 @@ use App\Models\Elements;
 
 class ElementRepository
 {
-    public function getAllByPage($idPage, $pagination_count = 30)
+    public function getAllByPage(int $idPage, int $perPage = 30)
     {
         $elements = Elements::where('page', $idPage)
             ->where('parent', 0)
             ->orderBy('sort')
-            ->paginate($pagination_count);
+            ->paginate($perPage);
 
-        foreach ($elements as $key => $element) {
+        foreach ($elements as $element) {
             $element->value = $this->parser($element->value, 'status');
             $element->childs = null;
 
@@ -37,7 +31,7 @@ class ElementRepository
         return $elements;
     }
 
-    public function parser($valueToParsing, $key)
+    public function parser(string $valueToParsing, $key)
     {
         $inputArray = json_decode($valueToParsing, true);
         if (isset($inputArray[0][$key])) {
@@ -49,7 +43,7 @@ class ElementRepository
         return $formattedStatus;
     }
 
-    public function getParentsToArray($idPage)
+    public function getParentsToArray(int $idPage): array
     {
         return Elements::select('id', 'name')
             ->where('page', $idPage)

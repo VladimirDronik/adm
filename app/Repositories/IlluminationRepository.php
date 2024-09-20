@@ -2,14 +2,14 @@
 
 namespace App\Repositories;
 
-use App\Models\DaliDevice;
 use App\Models\Lamp;
 use App\Models\LedTape;
+use App\Models\DaliDevice;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class IlluminationRepository
 {
-    public function getAll($perPage = 30)
+    public function getAll(int $perPage = 30)
     {
         $lamps = Lamp::get();
         $ledTapes = LedTape::get();

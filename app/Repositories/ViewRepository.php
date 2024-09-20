@@ -3,41 +3,40 @@
 namespace App\Repositories;
 
 use App\Models\View;
+use Illuminate\Database\Eloquent\Collection;
 
 class ViewRepository
 {
-    public function getAll()
+    public function getAll(): Collection
     {
         return View::with('eroom', 'escene')
             ->orderBy('id')
             ->get();
     }
 
-    public function getAllToArray()
+    public function getAllToArray(): array
     {
         $views = View::select('id', 'description')
             ->orderBy('description')
             ->pluck('description', 'id')
             ->toArray();
 
-        // array_walk($views, function (&$view, $key) { $view = $key.' - '.$view; });
-
         return $views;
     }
 
-    public function getByRoom($room_id, $pagination_count = 50)
+    public function getByRoom(mixed $roomId, int $perPage = 50)
     {
         $query = View::with('eroom', 'escene', 'eobject', 'emethod');
 
-        if ($room_id === '0') {
+        if ($roomId === '0') {
             $query->whereNull('room')->orderBy('sort');
-        } elseif (! is_null($room_id)) {
-            $query->where('room', $room_id)->orderBy('sort');
+        } elseif (! is_null($roomId)) {
+            $query->where('room', $roomId)->orderBy('sort');
         } else {
             $query->orderBy('id');
         }
 
-        return $query->paginate($pagination_count);
+        return $query->paginate($perPage);
     }
 
     public function updateObject(array $data)
@@ -107,8 +106,8 @@ class ViewRepository
         }
     }
 
-    public static function getNameById($idView)
+    public static function getNameById($idView): ?View
     {
-        return View::where('id', $idView)->first();
+        return View::find($idView);
     }
 }

@@ -6,14 +6,14 @@ use App\Models\Termostat;
 
 class TermostatRepository
 {
-    public function getAll($pagination_count = 30)
+    public function getAll(int $perPage = 30)
     {
         return Termostat::with('eobject')
             ->orderBy('id')
-            ->paginate($pagination_count);
+            ->paginate($perPage);
     }
 
-    public function getAllWithIdObjectToArray()
+    public function getAllWithIdObjectToArray(): array
     {
         return Termostat::all()
             ->pluck('name', 'id_object')

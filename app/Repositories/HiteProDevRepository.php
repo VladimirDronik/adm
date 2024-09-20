@@ -3,69 +3,54 @@
 namespace App\Repositories;
 
 use App\Models\HiteproDev;
+use Illuminate\Database\Eloquent\Collection;
 
 class HiteProDevRepository
 {
-    public function getSwitchByDeviceId($idDevice)
+    public function getSwitchByDeviceId(int $idDevice): Collection
     {
-        if ($idDevice) {
-            return HiteproDev::where('id_controller', $idDevice)
-                ->where('type', 'switch')
-                ->orderBy('name')
-                ->get();
-        } else {
-            return null;
-        }
+        return HiteproDev::where('id_controller', $idDevice)
+            ->where('type', 'switch')
+            ->orderBy('name')
+            ->get();
     }
 
-    public function getSocketByDeviceId($idDevice)
+    public function getSocketByDeviceId(int $idDevice): Collection
     {
-        if ($idDevice) {
-            return HiteproDev::where('id_controller', $idDevice)
-                ->where('type', 'socket')
-                ->orderBy('name')
-                ->get();
-        } else {
-            return null;
-        }
+        return HiteproDev::where('id_controller', $idDevice)
+            ->where('type', 'socket')
+            ->orderBy('name')
+            ->get();
     }
 
-    public function getTermometrsByDeviceId($idDevice)
+    public function getTermometrsByDeviceId(int $idDevice): Collection
     {
-        if ($idDevice) {
-            return HiteproDev::where('id_controller', $idDevice)
-                ->where('type', 'temperature')
-                ->orderBy('name')
-                ->get();
-        } else {
-            return null;
-        }
+        return HiteproDev::where('id_controller', $idDevice)
+            ->where('type', 'temperature')
+            ->orderBy('name')
+            ->get();
     }
 
-    public function getTransmittersByDeviceId($idDevice)
+    public function getTransmittersByDeviceId(int $idDevice): Collection
     {
-        if ($idDevice) {
-            return HiteproDev::where('id_controller', $idDevice)
-                ->where('type', 'transmitter')
-                ->orderBy('name')
-                ->get();
-        } else {
-            return null;
-        }
+        return HiteproDev::where('id_controller', $idDevice)
+            ->where('type', 'transmitter')
+            ->orderBy('name')
+            ->get();
     }
 
-    public function getHPDevByDeviceId(int $device_id)
+    public function getHPDevByDeviceId(int $deviceId): Collection
     {
-        return HiteproDev::where('id_controller', $device_id)
+        return HiteproDev::where('id_controller', $deviceId)
             ->where('type', 'switch')
             ->orwhere('type', 'socket')
             ->orderBy('name')
             ->get();
     }
 
-    public static function getIDByDeviceID($deviceID)
+    public static function getIDByDeviceID(int $deviceId): Collection
     {
-        return HiteproDev::where('id_controller', $deviceID)
+        return HiteproDev::where('id_controller', $deviceId)
             ->where('type', 'switch')
             ->orwhere('type', 'socket')
             ->orderBy('name')
