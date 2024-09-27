@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Boiler\CreateRequest;
-use App\Http\Requests\Boiler\UpdateRequest;
 use App\Models\Boiler;
 use App\Models\HomeObject;
+use App\Services\BoilerService;
+use Illuminate\Support\Facades\Log;
 use App\Repositories\BoilerRepository;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ModbusRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\TermostatRepository;
-use App\Services\BoilerService;
+use App\Http\Requests\Boiler\CreateRequest;
+use App\Http\Requests\Boiler\UpdateRequest;
 
 class BoilerController extends Controller
 {
@@ -25,7 +26,7 @@ class BoilerController extends Controller
     ) {
     }
 
-    public function edit($boilerIdObject)
+    public function edit(int $boilerIdObject)
     {
         $boiler = $this->boilerRepository->getBoiler($boilerIdObject);
         $termostats = $this->termostatRepository->getAllWithIdObjectToArray();
@@ -58,14 +59,19 @@ class BoilerController extends Controller
 
         try {
             if ($this->service->update($boiler, $r->except('_token'))) {
-                return redirect()->route('boiler.edit', [$boiler->id_object])->with('success', 'Настройки успешно изменены');
+                return redirect()
+                    ->route('boiler.edit', [$boiler->id_object])
+                    ->with('success', 'Настройки успешно изменены');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении настроек котла '.$boiler->id_object.' '
-                .json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении настроек котла '.$boiler->id_object
+                .' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении настроек котла');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении настроек котла');
     }
 
     public function store(CreateRequest $r)
@@ -77,11 +83,14 @@ class BoilerController extends Controller
                     ->with('idObject', $id);
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении котла '.
-                json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении котла '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении котла');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении котла');
     }
 
     public function create()
@@ -94,6 +103,9 @@ class BoilerController extends Controller
         $devices = $this->deviceRepository->getAllToArray();
         $gatewayTypes = HomeObject::getGatewayTypes();
 
-        return view('engineering.boiler.create', compact('typesBoiler', 'types', 'modes', 'termostats', 'modbusSlavers', 'devices', 'gatewayTypes'));
+        return view('engineering.boiler.create', compact(
+            'typesBoiler', 'types', 'modes', 'termostats',
+            'modbusSlavers', 'devices', 'gatewayTypes'
+        ));
     }
 }

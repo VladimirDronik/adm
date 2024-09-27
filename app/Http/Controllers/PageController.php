@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Page;
-use App\Repositories\ElementRepository;
-use App\Repositories\PageRepository;
 use App\Services\ImageService;
+use App\Repositories\PageRepository;
+use App\Repositories\ElementRepository;
 
 class PageController extends Controller
 {
@@ -31,6 +31,8 @@ class PageController extends Controller
         $images = ImageService::getMainImages();
         $tab = $idTab;
 
-        return view('pages.edit', compact('page', 'elements', 'tab', 'images'));
+        return view('pages.edit', compact(
+            'page', 'elements', 'tab', 'images'
+        ));
     }
 }

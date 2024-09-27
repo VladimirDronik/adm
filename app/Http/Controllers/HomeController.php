@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Device;
-use App\Models\HomeObject;
 use App\Models\Room;
+use App\Models\View;
 use App\Models\Scene;
-use App\Models\SchedulerTask;
+use App\Models\Device;
 use App\Models\Script;
 use App\Models\Termostat;
-use App\Models\View;
+use App\Models\HomeObject;
+use App\Models\SchedulerTask;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 

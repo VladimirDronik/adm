@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Usensor\UsensorRequest;
 use App\Models\Usensor;
-use App\Repositories\DeviceRepository;
-use App\Repositories\RoomRepository;
-use App\Repositories\UsensorRepository;
 use App\Services\PortService;
 use App\Services\UsensorService;
 use Illuminate\Support\Facades\Log;
+use App\Repositories\RoomRepository;
+use App\Repositories\DeviceRepository;
+use App\Repositories\UsensorRepository;
+use App\Http\Requests\Usensor\UsensorRequest;
 
 class UsensorController extends Controller
 {
@@ -49,14 +49,19 @@ class UsensorController extends Controller
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('usensors.edit', [$id])
+                return redirect()
+                    ->route('usensors.edit', [$id])
                     ->with('success', 'I2C датчик успешно добавлен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при добавлении I2C датчика '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении I2C датчика '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении I2C датчика');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении I2C датчика');
     }
 
     public function edit(Usensor $usensor)
@@ -65,20 +70,27 @@ class UsensorController extends Controller
 
         $ports = $this->portService->getPortsIntoList($usensor->device_id, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
-        return view('usensors.edit', compact('usensor', 'rooms', 'devices', 'ports', 'types'));
+        return view('usensors.edit', compact(
+            'usensor', 'rooms', 'devices', 'ports', 'types'
+        ));
     }
 
     public function update(UsensorRequest $r, Usensor $usensor)
     {
         try {
             if ($this->service->update($usensor, $r->except('_token'))) {
-                return redirect()->route('usensors.edit', [$usensor->id])
+                return redirect()
+                    ->route('usensors.edit', [$usensor->id])
                     ->with('success', 'I2C датчик успешно изменен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при изменении I2C датчика '.$usensor->id.' '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении I2C датчика '.$usensor->id
+                .' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении I2C датчика');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении I2C датчика');
     }
 }

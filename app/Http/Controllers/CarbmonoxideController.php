@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Carbmonoxide\CreateRequest;
-use App\Http\Requests\Carbmonoxide\UpdateRequest;
-use App\Models\Carbmonoxide;
+use App\Services\Service;
 use App\Models\HomeObject;
-use App\Repositories\CarbmonoxideRepository;
+use App\Models\Carbmonoxide;
+use App\Services\PortService;
+use App\Services\ObjectService;
+use App\Services\MessageService;
+use Illuminate\Support\Facades\Log;
+use App\Repositories\RoomRepository;
+use App\Services\CarbmonoxideService;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
-use App\Repositories\RoomRepository;
 use App\Repositories\ScriptRepository;
-use App\Services\CarbmonoxideService;
-use App\Services\MessageService;
-use App\Services\ObjectService;
-use App\Services\PortService;
-use App\Services\Service;
+use App\Repositories\CarbmonoxideRepository;
+use App\Http\Requests\Carbmonoxide\CreateRequest;
+use App\Http\Requests\Carbmonoxide\UpdateRequest;
 
 class CarbmonoxideController extends Controller
 {
@@ -34,7 +35,6 @@ class CarbmonoxideController extends Controller
 
     public function index()
     {
-
         $carbmonoxides = $this->carbmonoxideRepository->getAll();
 
         return view('carbmonoxide.index', compact('carbmonoxides'));
@@ -51,30 +51,35 @@ class CarbmonoxideController extends Controller
 
     public function create()
     {
-
         [$objects, $rooms, $devices] = $this->getLists();
         $object_types = HomeObject::getFullTypeIds();
         $can = gates('devices.show-object');
 
-        return view('carbmonoxide.create', compact('objects', 'rooms', 'devices', 'object_types', 'can'));
+        return view('carbmonoxide.create', compact(
+            'objects', 'rooms', 'devices', 'object_types', 'can'
+        ));
     }
 
     public function store(CreateRequest $r)
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('carbmonoxide.edit', [$id])
+                return redirect()
+                    ->route('carbmonoxide.edit', [$id])
                     ->with('success', 'Датчик угарного газа успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении датчика угарного газа '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении датчика угарного газа '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении датчика угарного газа');
-
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении датчика угарного газа');
     }
 
-    public function edit(Carbmonoxide $carbmonoxide, $tab = 1)
+    public function edit(Carbmonoxide $carbmonoxide, int $tab = 1)
     {
         [$objects, $rooms, $devices] = $this->getLists();
 
@@ -90,8 +95,10 @@ class CarbmonoxideController extends Controller
 
         $ports = $this->portService->getPortsIntoList($deviceId, 'IN,I2C,1WIRE,1W-BUS,ADC');
 
-        [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents] =
-            Service::getListElements($carbmonoxide->id_object);
+        [
+            $messages, $events, $sounds, $views, $rooms,
+            $scripts, $objects, $object_types, $alice, $allEvents
+        ] = Service::getListElements($carbmonoxide->id_object);
 
         $messagePoint['first'] = 'При нижнем пороге';
         $messagePoint['second'] = 'При верхнем пороге';
@@ -99,22 +106,30 @@ class CarbmonoxideController extends Controller
         $availableEvents = Carbmonoxide::getEvents();
         $properties = Carbmonoxide::getProperties();
 
-        return view('carbmonoxide.edit', compact('carbmonoxide', 'objects', 'rooms',
-            'devices', 'low_methods', 'high_methods', 'object_types', 'messages', 'events', 'sounds', 'views',
-            'allEvents', 'availableEvents', 'properties',
-            'scripts', 'deviceId', 'ports', 'messagePoint', 'port', 'tab', 'can'));
+        return view('carbmonoxide.edit', compact(
+            'carbmonoxide', 'objects', 'rooms', 'sounds', 'views',
+            'devices', 'low_methods', 'high_methods', 'object_types',
+            'allEvents', 'availableEvents', 'properties', 'events', 'messages',
+            'scripts', 'deviceId', 'ports', 'messagePoint', 'port', 'tab', 'can'
+        ));
     }
 
     public function update(UpdateRequest $r, Carbmonoxide $carbmonoxide)
     {
         try {
             if ($this->service->update($carbmonoxide, $r->except('_token'))) {
-                return redirect()->route('carbmonoxide.edit', [$carbmonoxide->id])->with('success', 'Датчик угарного газа успешно изменен');
+                return redirect()
+                    ->route('carbmonoxide.edit', [$carbmonoxide->id])
+                    ->with('success', 'Датчик угарного газа успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении датчика угарного газа '.$carbmonoxide->id.' '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении датчика угарного газа '
+                .$carbmonoxide->id.' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении датчика угарного газа');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении датчика угарного газа');
     }
 }

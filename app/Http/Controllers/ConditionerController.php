@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Conditioner\CreateRequest;
-use App\Http\Requests\Conditioner\UpdateRequest;
 use App\Models\Conditioner;
-use App\Repositories\ConditionerRepository;
-use App\Repositories\ModbusRepository;
+use Illuminate\Support\Facades\Log;
 use App\Repositories\RoomRepository;
 use App\Services\ConditionerService;
-use Illuminate\Support\Facades\Log;
+use App\Repositories\ModbusRepository;
+use App\Repositories\ConditionerRepository;
+use App\Http\Requests\Conditioner\CreateRequest;
+use App\Http\Requests\Conditioner\UpdateRequest;
 
 class ConditionerController extends Controller
 {
@@ -28,7 +28,7 @@ class ConditionerController extends Controller
         return view('conditioners.index', compact('conditioners'));
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
         $conditioner = Conditioner::findOrFail($id);
         $conditionerType = $conditioner->relatedType;
@@ -80,27 +80,37 @@ class ConditionerController extends Controller
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('conditioners.edit', [$id])
+                return redirect()
+                    ->route('conditioners.edit', [$id])
                     ->with('success', 'Кондиционер успешно добавлен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при добавлении кондиционера '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении кондиционера '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении кондиционера');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении кондиционера');
     }
 
     public function update(UpdateRequest $r, Conditioner $conditioner)
     {
         try {
             if ($this->service->update($conditioner, $r->except('_token'))) {
-                return redirect()->route('conditioners.edit', [$conditioner->id])
+                return redirect()
+                    ->route('conditioners.edit', [$conditioner->id])
                     ->with('success', 'Кондиционер успешно изменен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при изменении кондиционера '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении кондиционера '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении кондиционера');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении кондиционера');
     }
 }

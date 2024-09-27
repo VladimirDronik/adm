@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Services\UserService;
+use Illuminate\Support\Facades\Log;
+use App\Repositories\DevuserRepository;
 use App\Http\Requests\User\CreateRequest;
 use App\Http\Requests\User\UpdateRequest;
-use App\Models\User;
-use App\Repositories\DevuserRepository;
-use App\Services\UserService;
 
 class UserController extends Controller
 {
     public function __construct(
-        private DevuserRepository $devuser_rep,
+        private DevuserRepository $devuserRep,
         private UserService $service
     ) {
     }
 
     public function index()
     {
-        $devusers = $this->devuser_rep->getAll();
+        $devusers = $this->devuserRep->getAll();
 
         return view('users.index', compact('devusers'));
     }
@@ -34,20 +35,29 @@ class UserController extends Controller
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('users.index', [$id])
+                return redirect()
+                    ->route('users.index', [$id])
                     ->with('success', 'Пользователь успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении пользователя'.
-                json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении пользователя'
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении параметра');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении параметра');
     }
 
     public function edit(User $user)
     {
-        $priority = [1 => 'Важные', 2 => 'Обычные', 3 => 'Все', 0 => 'Не назначено'];
+        $priority = [
+            1 => 'Важные',
+            2 => 'Обычные',
+            3 => 'Все',
+            0 => 'Не назначено',
+        ];
 
         return view('users.edit', compact('user', 'priority'));
     }
@@ -56,14 +66,18 @@ class UserController extends Controller
     {
         try {
             if ($this->service->update($user, $r->except('_token'))) {
-                return redirect()->route('users.index')
+                return redirect()
+                    ->route('users.index')
                     ->with('success', 'Пользователь успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении пользователя '.$user->id
-                .' '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении пользователя '.$user->id
+                .' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении пользователя');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении пользователя');
     }
 }

@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Lightstat\LightstatRequest;
 use App\Models\Lightstat;
-use App\Repositories\LightstatRepository;
-use App\Repositories\ObjectRepository;
+use App\Services\ObjectService;
+use App\Services\MessageService;
+use App\Services\LightstatService;
+use Illuminate\Support\Facades\Log;
 use App\Repositories\RoomRepository;
+use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\UsensorRepository;
-use App\Services\LightstatService;
-use App\Services\MessageService;
-use App\Services\ObjectService;
+use App\Repositories\LightstatRepository;
+use App\Http\Requests\Lightstat\LightstatRequest;
 
 class LightstatController extends Controller
 {
@@ -38,14 +39,19 @@ class LightstatController extends Controller
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('lightstats.edit', [$id])
+                return redirect()
+                    ->route('lightstats.edit', [$id])
                     ->with('success', 'Датчик освещенности успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении датчика освещенности '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении датчика освещенности '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении датчика освещенности');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении датчика освещенности');
     }
 
     private function getLists()
@@ -58,7 +64,7 @@ class LightstatController extends Controller
         return [$objects, $rooms, $types, $usensors];
     }
 
-    public function edit(Lightstat $lightstat, $tab = 1)
+    public function edit(Lightstat $lightstat, int $tab = 1)
     {
         [$objects, $rooms, $types, $usensors] = $this->getLists();
 
@@ -89,12 +95,18 @@ class LightstatController extends Controller
     {
         try {
             if ($this->service->update($lightstat, $r->except('_token'))) {
-                return redirect()->route('lightstats.edit', [$lightstat->id])->with('success', 'Датчик освещенности успешно изменен');
+                return redirect()
+                    ->route('lightstats.edit', [$lightstat->id])
+                    ->with('success', 'Датчик освещенности успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении датчика освещенности '.$lightstat->id.' '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении датчика освещенности '.$lightstat->id
+                .' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении датчика освещенности');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении датчика освещенности');
     }
 }

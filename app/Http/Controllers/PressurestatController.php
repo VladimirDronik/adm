@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Pressurestat\PressurestatRequest;
 use App\Models\Pressurestat;
-use App\Repositories\ObjectRepository;
-use App\Repositories\PressurestatRepository;
+use App\Services\PortService;
+use App\Services\ObjectService;
+use App\Services\MessageService;
+use Illuminate\Support\Facades\Log;
 use App\Repositories\RoomRepository;
+use App\Services\PressurestatService;
+use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\UsensorRepository;
-use App\Services\MessageService;
-use App\Services\ObjectService;
-use App\Services\PortService;
-use App\Services\PressurestatService;
-use Illuminate\Support\Facades\Log;
+use App\Repositories\PressurestatRepository;
+use App\Http\Requests\Pressurestat\PressurestatRequest;
 
 class PressurestatController extends Controller
 {
@@ -46,10 +46,14 @@ class PressurestatController extends Controller
                     ->with('success', 'Датчик давления успешно добавлен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при добавлении датчика давления '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении датчика давления '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении датчика давления');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении датчика давления');
     }
 
     private function getLists()
@@ -63,7 +67,7 @@ class PressurestatController extends Controller
         return [$rooms, $modes, $usensors, $objects, $sensorTypes];
     }
 
-    public function edit(Pressurestat $pressurestat, $tab = 1)
+    public function edit(Pressurestat $pressurestat, int $tab = 1)
     {
         [$rooms, $modes, $usensors, $objects, $sensorTypes] = $this->getLists();
 
@@ -85,19 +89,27 @@ class PressurestatController extends Controller
         [$rooms, $modes, $usensors, $objects, $sensorTypes] = $this->getLists();
         $tab = 1;
 
-        return view('pressurestats.create', compact('rooms', 'modes', 'usensors', 'tab', 'objects', 'sensorTypes'));
+        return view('pressurestats.create', compact(
+            'rooms', 'modes', 'usensors', 'tab', 'objects', 'sensorTypes'
+        ));
     }
 
     public function update(PressurestatRequest $r, Pressurestat $pressurestat)
     {
         try {
             if ($this->service->update($pressurestat, $r->except('_token'))) {
-                return redirect()->route('pressurestats.edit', [$pressurestat->id])->with('success', 'Датчик давления успешно изменен');
+                return redirect()
+                    ->route('pressurestats.edit', [$pressurestat->id])
+                    ->with('success', 'Датчик давления успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении датчика давления '.$pressurestat->id.' '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении датчика давления '.$pressurestat->id
+                .' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении датчика давления');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении датчика давления');
     }
 }

@@ -2,46 +2,51 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Lock\CreateRequest;
-use App\Http\Requests\Lock\UpdateRequest;
-use App\Models\HomeObject;
 use App\Models\Lock;
-use App\Repositories\DeviceRepository;
-use App\Repositories\LockRepository;
-use App\Repositories\ObjectRepository;
+use App\Services\Service;
+use App\Models\HomeObject;
 use App\Services\LockService;
 use App\Services\PortService;
-use App\Services\Service;
+use Illuminate\Support\Facades\Log;
+use App\Repositories\LockRepository;
+use App\Repositories\DeviceRepository;
+use App\Repositories\ObjectRepository;
+use App\Http\Requests\Lock\CreateRequest;
+use App\Http\Requests\Lock\UpdateRequest;
 
 class LockController extends Controller
 {
     public function __construct(
-        private LockRepository $lock_rep,
+        private LockRepository $lockRep,
         private PortService $portService,
         private LockService $lockService,
-        private ObjectRepository $object_rep,
-        private DeviceRepository $device_rep,
+        private ObjectRepository $objectRep,
+        private DeviceRepository $deviceRep,
     ) {
     }
 
     public function index()
     {
-        $locks = $this->lock_rep->getAll();
+        $locks = $this->lockRep->getAll();
 
         return view('locks.index', compact('locks'));
     }
 
-    public function edit(Lock $lock, $tab = 1)
+    public function edit(Lock $lock, int $tab = 1)
     {
         $types = Lock::getTypes(true);
 
         $can = gates('devices.show-object');
 
-        [$idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices] =
-            $this->portService->getCurrentDevPort($lock->id_object, 'OUT');
+        [
+            $idDevice, $idPort, $devices,
+            $ports, $hp_device, $hp_devices
+        ] = $this->portService->getCurrentDevPort($lock->id_object, 'OUT');
 
-        [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice] =
-            Service::getListElements($lock->id_object);
+        [
+            $messages, $events, $sounds, $views,
+            $rooms, $scripts, $objects, $object_types, $alice
+        ] = Service::getListElements($lock->id_object);
 
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
@@ -49,7 +54,7 @@ class LockController extends Controller
         $availableEvents = Lock::getEvents();
         $properties = Lock::getProperties();
 
-        $devices = $this->device_rep->getAllToArray();
+        $devices = $this->deviceRep->getAllToArray();
         $idPort_open = $lock->port_open;
         $idPort_close = $lock->port_close;
         $hp_device_open = $lock->port_open;
@@ -66,10 +71,12 @@ class LockController extends Controller
 
         $allEvents = '';
 
-        return view('locks.edit', compact('lock', 'types', 'events', 'sounds', 'views', 'rooms',
-            'idDevice', 'idPort', 'devices', 'ports', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents', 'properties',
+        return view('locks.edit', compact(
+            'lock', 'types', 'events', 'sounds', 'views', 'rooms', 'idDevice', 'idPort',
+            'devices', 'ports', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents', 'properties',
             'objects', 'object_types', 'scripts', 'hp_device', 'hp_devices', 'idPort_open', 'idPort_close',
-            'label_port', 'label_hitepro', 'hp_device_open', 'hp_device_close', 'allEvents', 'place', 'can'));
+            'label_port', 'label_hitepro', 'hp_device_open', 'hp_device_close', 'allEvents', 'place', 'can'
+        ));
     }
 
     public function update(UpdateRequest $r, int $id)
@@ -82,36 +89,45 @@ class LockController extends Controller
                     ->with('success', 'Змаок успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении замка '.$lock->id
-                .' '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении замка '.$lock->id
+                .' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении замка');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении замка');
     }
 
     public function create()
     {
         $types = Lock::getTypes(true);
-        $objects = $this->object_rep->getAllToArray();
+        $objects = $this->objectRep->getAllToArray();
         $object_types = HomeObject::getFullTypeIds();
-        $devices = $this->device_rep->getAllToArray();
+        $devices = $this->deviceRep->getAllToArray();
         $tab = 1;
 
-        return view('locks.create', compact('types', 'tab', 'objects', 'object_types', 'devices'));
+        return view('locks.create', compact(
+            'types', 'tab', 'objects', 'object_types', 'devices'
+        ));
     }
 
     public function store(CreateRequest $r)
     {
         try {
             if ($id = $this->lockService->store($r->except('_token'))) {
-                return redirect()->route('locks.edit', [$id])
+                return redirect()
+                    ->route('locks.edit', [$id])
                     ->with('success', 'Замок успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении замка '.
-                json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении замка '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении замка');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении замка');
     }
 }

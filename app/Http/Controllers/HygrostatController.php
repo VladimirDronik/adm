@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Hygrostat\HygrostatRequest;
 use App\Models\Hygrostat;
-use App\Repositories\HygrostatRepository;
-use App\Repositories\ObjectRepository;
+use App\Services\ObjectService;
+use App\Services\MessageService;
+use App\Services\HygrostatService;
+use Illuminate\Support\Facades\Log;
 use App\Repositories\RoomRepository;
+use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\UsensorRepository;
-use App\Services\HygrostatService;
-use App\Services\MessageService;
-use App\Services\ObjectService;
+use App\Repositories\HygrostatRepository;
+use App\Http\Requests\Hygrostat\HygrostatRequest;
 
 class HygrostatController extends Controller
 {
@@ -58,14 +59,19 @@ class HygrostatController extends Controller
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('hygrostats.edit', [$id])
+                return redirect()
+                    ->route('hygrostats.edit', [$id])
                     ->with('success', 'Датчик влажности успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении датчика влажности '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении датчика влажности '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении датчика влажности');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении датчика влажности');
     }
 
     public function edit(Hygrostat $hygrostat, $tab = 1)
@@ -89,12 +95,18 @@ class HygrostatController extends Controller
     {
         try {
             if ($this->service->update($hygrostat, $r->except('_token'))) {
-                return redirect()->route('hygrostats.edit', [$hygrostat->id])->with('success', 'Датчик влажности успешно изменен');
+                return redirect()
+                    ->route('hygrostats.edit', [$hygrostat->id])
+                    ->with('success', 'Датчик влажности успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении датчика влажности '.$hygrostat->id.' '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении датчика влажности '.$hygrostat->id
+                .' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении датчика влажности');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении датчика влажности');
     }
 }

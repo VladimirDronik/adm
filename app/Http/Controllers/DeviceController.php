@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Device\CreateRequest;
 use App\Models\Device;
-use App\Repositories\DeviceRepository;
-use App\Repositories\ExtensionModuleRepository;
-use App\Services\ConfigMegaService;
-use App\Services\DeviceService;
 use Illuminate\Http\Request;
+use App\Services\DeviceService;
+use App\Services\ConfigMegaService;
+use Illuminate\Support\Facades\Log;
+use App\Repositories\DeviceRepository;
+use App\Http\Requests\Device\CreateRequest;
+use App\Repositories\ExtensionModuleRepository;
 
 class DeviceController extends Controller
 {
@@ -36,8 +37,6 @@ class DeviceController extends Controller
 
     /**
      * Отправка конфига на выбранный контроллер
-     *
-     * @return $this|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function sendConfig(int $id, Request $request)
     {
@@ -72,18 +71,22 @@ class DeviceController extends Controller
     {
         try {
             if ($result = $this->service->store($r->except('_token'))) {
-
                 if (is_int($result)) {
                     $id = $result;
 
-                    return redirect()->route('devices.edit', [$id])->with('success', 'Устройство успешно добавлено');
+                    return redirect()->route('devices.edit', [$id])
+                        ->with('success', 'Устройство успешно добавлено');
                 }
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении устройства '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении устройства '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении устройства. '.$e->getMessage());
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении устройства. '.$e->getMessage());
     }
 
     public function edit(int $id, Request $request)
@@ -93,14 +96,15 @@ class DeviceController extends Controller
             $tab = 1;
         }
 
-        $device = Device::where('id', $id)
-            ->with('ports', 'ports.eobject', 'ports.emethod', 'ports.dcmethod', 'ports.lcmethod',
-                'ports.emethod.eobject', 'ports.dcmethod.eobject', 'ports.lcmethod.eobject',
-                'extensionModules', 'extensionModules.extensionModuleType'
-            )->first();
+        $device = Device::where('id', $id)->with(
+            'ports', 'ports.eobject', 'ports.emethod', 'ports.dcmethod',
+            'ports.emethod.eobject', 'ports.dcmethod.eobject', 'ports.lcmethod',
+            'extensionModules', 'extensionModules.extensionModuleType', 'ports.lcmethod.eobject'
+        )->first();
 
         if (! $device) {
-            return redirect()->route('devices.index')->with('error', 'Устройство не найдено');
+            return redirect()->route('devices.index')
+                ->with('error', 'Устройство не найдено');
         }
 
         if ($id) {
@@ -109,7 +113,7 @@ class DeviceController extends Controller
 
         $sdaSclPorts = $this->extModuleRep->getPortsForModuleByStatus($device, 'I2C');
         $sdaSclOptionsArray = [];
-        if ($sdaSclPorts->isNotEmpty()) {
+        if (!empty($sdaSclPorts)) {
             foreach ($sdaSclPorts as $key => $value) {
                 array_push($sdaSclOptionsArray, ['value' => $value, 'label' => $value]);
             }
@@ -118,7 +122,7 @@ class DeviceController extends Controller
 
         $inPorts = $this->extModuleRep->getPortsForModuleByStatus($device, 'IN');
         $intOptionsArray = [];
-        if ($inPorts->isNotEmpty()) {
+        if (!empty($inPorts)) {
             foreach ($inPorts as $key => $value) {
                 array_push($intOptionsArray, ['value' => $value, 'label' => $value]);
             }
@@ -127,13 +131,16 @@ class DeviceController extends Controller
 
         $moduleTypeOptionsArray = [];
         $extensionModuleTypes = $this->extModuleRep->getModuleTypes();
-        if ($extensionModuleTypes->isNotEmpty()) {
+        if (!empty($extensionModuleTypes)) {
             foreach ($extensionModuleTypes as $key => $value) {
                 array_push($moduleTypeOptionsArray, ['value' => $key, 'label' => $value]);
             }
         }
         $moduleTypeOptionsJson = json_encode($moduleTypeOptionsArray);
 
-        return view('devices.edit', compact('device', 'tab', 'sdaSclOptionsJson', 'moduleTypeOptionsJson', 'intOptionsJson'));
+        return view('devices.edit', compact(
+            'device', 'tab', 'sdaSclOptionsJson',
+            'moduleTypeOptionsJson', 'intOptionsJson'
+        ));
     }
 }

@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Carbdioxide\CarbdioxideRequest;
-use App\Models\Carbdioxide;
 use App\Models\Usensor;
-use App\Repositories\CarbdioxideRepository;
-use App\Repositories\ObjectRepository;
+use App\Models\Carbdioxide;
+use App\Services\PortService;
+use App\Services\ObjectService;
+use App\Services\MessageService;
+use Illuminate\Support\Facades\Log;
 use App\Repositories\RoomRepository;
+use App\Services\CarbdioxideService;
+use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\UsensorRepository;
-use App\Services\CarbdioxideService;
-use App\Services\MessageService;
-use App\Services\ObjectService;
-use App\Services\PortService;
-use Illuminate\Support\Facades\Log;
+use App\Repositories\CarbdioxideRepository;
+use App\Http\Requests\Carbdioxide\CarbdioxideRequest;
 
 class CarbdioxideController extends Controller
 {
@@ -42,7 +42,9 @@ class CarbdioxideController extends Controller
     {
         $rooms = $this->roomRep->getAllToArray();
         $modes = Carbdioxide::getFullCarbdioxideIds();
-        $usensors = $this->usensorRep->getByTypesToArray([Usensor::TYPE_SCD40, Usensor::TYPE_SCD41]);
+        $usensors = $this->usensorRep->getByTypesToArray(
+            [Usensor::TYPE_SCD40, Usensor::TYPE_SCD41]
+        );
         $objects = $this->objectRep->getAllToArray();
 
         return [$rooms, $modes, $usensors, $objects];
@@ -67,13 +69,17 @@ class CarbdioxideController extends Controller
                     ->with('success', 'Датчик углекислого газа успешно добавлен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при добавлении датчика углекислого газа '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении датчика углекислого газа '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении датчика углекислого газа');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении датчика углекислого газа');
     }
 
-    public function edit(Carbdioxide $carbdioxide, $tab = 1)
+    public function edit(Carbdioxide $carbdioxide, int $tab = 1)
     {
         [$rooms, $modes, $usensors, $objects] = $this->getLists();
 
@@ -94,12 +100,18 @@ class CarbdioxideController extends Controller
     {
         try {
             if ($this->service->update($carbdioxide, $r->except('_token'))) {
-                return redirect()->route('carbdioxides.edit', [$carbdioxide->id])->with('success', 'Датчик углекислого газа успешно изменен');
+                return redirect()
+                    ->route('carbdioxides.edit', [$carbdioxide->id])
+                    ->with('success', 'Датчик углекислого газа успешно изменен');
             }
         } catch (\Throwable $e) {
-            Log::error('Ошибка при изменении датчика углекислого газа '.$carbdioxide->id.' '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении датчика углекислого газа '
+                .$carbdioxide->id.' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении датчика углекислого газа');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении датчика углекислого газа');
     }
 }

@@ -17,6 +17,8 @@ class CctvController extends Controller
         $cameras = $this->cctvRep->getAllCameras();
         $recorders = $this->cctvRep->getAllRecorders();
 
-        return view('cctv.index', compact('cameras', 'recorders', 'tab'));
+        return view('cctv.index', compact(
+            'cameras', 'recorders', 'tab'
+        ));
     }
 }

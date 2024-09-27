@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Room\UpdateRequest;
-use App\Models\Color;
 use App\Models\Room;
-use App\Repositories\RoomRepository;
+use App\Models\Color;
+use App\Services\RoomService;
 use App\Services\ColorService;
 use App\Services\ImageService;
-use App\Services\RoomService;
+use Illuminate\Support\Facades\Log;
+use App\Repositories\RoomRepository;
+use App\Http\Requests\Room\UpdateRequest;
 
 class RoomController extends Controller
 {
     public function __construct(
-        private RoomRepository $room_rep,
+        private RoomRepository $roomRep,
         private RoomService $service
     ) {
     }
 
     public function index()
     {
-        $rooms = $this->room_rep->getPaginationGroupsAndSeparateRooms();
-        $groups = $this->room_rep->getRoomGroups();
+        $rooms = $this->roomRep->getPaginationGroupsAndSeparateRooms();
+        $groups = $this->roomRep->getRoomGroups();
         $colors = ColorService::getAllByType(Color::NAME_TYPE);
         $images = ImageService::getRoomImages();
 
@@ -34,7 +35,7 @@ class RoomController extends Controller
             return redirect()->route('rooms.index');
         }
 
-        $groups = $this->room_rep->getRoomGroups()->pluck('name', 'id')->toArray();
+        $groups = $this->roomRep->getRoomGroups()->pluck('name', 'id')->toArray();
 
         return view('rooms.edit_room', compact('room', 'groups'));
     }
@@ -43,13 +44,18 @@ class RoomController extends Controller
     {
         try {
             if ($this->service->update($room, $r->except('_token'))) {
-                return redirect()->route('rooms.edit', [$room->id])->with('success', 'Настройки успешно изменены');
+                return redirect()
+                    ->route('rooms.edit', [$room->id])
+                    ->with('success', 'Настройки успешно изменены');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении настроек помещения'.$room->id.' '
-                .json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении настроек помещения'.$room->id
+                .' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении настроек помещения');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении настроек помещения');
     }
 }

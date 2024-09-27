@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\LedTape;
-use App\Repositories\DeviceRepository;
-use App\Repositories\RoomRepository;
+use Illuminate\Http\Request;
+use App\Services\PortService;
 use App\Services\DeviceService;
 use App\Services\LedTapeService;
-use App\Services\PortService;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Repositories\RoomRepository;
+use App\Repositories\DeviceRepository;
 
 class LedTapeController extends Controller
 {
@@ -21,7 +22,7 @@ class LedTapeController extends Controller
     ) {
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
         $ledTape = LedTape::findOrFail($id);
         $rooms = $this->roomRep->getAllWithoutCommonToArray();
@@ -41,29 +42,37 @@ class LedTapeController extends Controller
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('led_tapes.edit', [$id])
+                return redirect()
+                    ->route('led_tapes.edit', [$id])
                     ->with('success', 'Led лента успешно добавлена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении led ленты '.
-                json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении led ленты '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении led ленты');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении led ленты');
     }
 
     public function update(Request $r, LedTape $ledTape)
     {
         try {
             if ($this->service->update($ledTape, $r->except('_token'))) {
-                return redirect()->route('led_tapes.edit', [$ledTape->id])
+                return redirect()
+                    ->route('led_tapes.edit', [$ledTape->id])
                     ->with('success', 'Led лента успешно изменена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении Led ленты '.
-                json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении Led ленты '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении Led ленты');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении Led ленты');
     }
 }

@@ -2,29 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\DeviceSwitch\CreateRequest;
-use App\Http\Requests\DeviceSwitch\UpdateRequest;
-use App\Models\DeviceSwitch;
+use App\Services\Service;
 use App\Models\HomeObject;
+use App\Models\DeviceSwitch;
+use App\Services\PortService;
+use App\Services\ObjectService;
+use App\Services\SwitchService;
+use App\Services\MessageService;
+use Illuminate\Support\Facades\Log;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\ScriptRepository;
 use App\Repositories\SwitchRepository;
-use App\Services\MessageService;
-use App\Services\ObjectService;
-use App\Services\PortService;
-use App\Services\Service;
-use App\Services\SwitchService;
+use App\Http\Requests\DeviceSwitch\CreateRequest;
+use App\Http\Requests\DeviceSwitch\UpdateRequest;
 
 class SwitchController extends Controller
 {
     public function __construct(
-        private SwitchRepository $switch_rep,
-        private ObjectRepository $object_rep,
-        private DeviceRepository $device_rep,
+        private SwitchRepository $switchRep,
+        private ObjectRepository $objectRep,
+        private DeviceRepository $deviceRep,
         private SwitchService $service,
         private PortService $portService,
-        private ScriptRepository $script_rep,
+        private ScriptRepository $scriptRep,
         private ObjectService $objectService,
         private MessageService $messagesService,
     ) {
@@ -32,7 +33,7 @@ class SwitchController extends Controller
 
     public function index()
     {
-        $switches = $this->switch_rep->getAll();
+        $switches = $this->switchRep->getAll();
 
         return view('switches.index', compact('switches'));
     }
@@ -40,36 +41,42 @@ class SwitchController extends Controller
     public function create()
     {
         $types = DeviceSwitch::getTypes(true);
-        $objects = $this->object_rep->getAllToArray();
+        $objects = $this->objectRep->getAllToArray();
         $object_types = HomeObject::getFullTypeIds();
-        $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
+        $devices = $this->deviceRep->getAllWithoutTypesToArray(['Hite-pro']);
         $can = gates('devices.show-object');
 
-        return view('switches.create', compact('types', 'objects', 'object_types', 'devices', 'can'));
+        return view('switches.create', compact(
+            'types', 'objects', 'object_types', 'devices', 'can'
+        ));
     }
 
     public function store(CreateRequest $r)
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('switches.edit', [$id])
+                return redirect()
+                    ->route('switches.edit', [$id])
                     ->with('success', 'Выключатель успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении выключателя '.
-                json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении выключателя '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении выключателя');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении выключателя');
     }
 
-    public function edit(int $id, $tab = 1)
+    public function edit(int $id, int $tab = 1)
     {
         $switch = DeviceSwitch::findOrFail($id);
 
         $types = DeviceSwitch::getTypes(true);
 
-        $objects = $this->object_rep
+        $objects = $this->objectRep
             ->getAllExcludeGivenType('conditioner')
             ->pluck('name', 'id')
             ->toArray();
@@ -80,9 +87,13 @@ class SwitchController extends Controller
 
         $port = $this->portService->getMethodsByObject($switch->id_object);
 
-        [$idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices] = $this->portService->getCurrentDevPort($switch->id_object, 'IN,I2C,1WIRE,1W-BUS,ADC');
-        [$messages, $events, $sounds, $views, $rooms, $scripts, , $object_types, $alice, $allEvents] =
-            Service::getListElements($switch->id_object);
+        [$idDevice, $idPort, $devices, $ports, $hp_device, $hp_devices] = $this->portService
+            ->getCurrentDevPort($switch->id_object, 'IN,I2C,1WIRE,1W-BUS,ADC');
+
+        [
+            $messages, $events, $sounds, $views,
+            $rooms, $scripts, , $object_types, $alice, $allEvents
+        ] = Service::getListElements($switch->id_object);
 
         $params['value'] = '';
         $params['name'] = '';
@@ -151,7 +162,7 @@ class SwitchController extends Controller
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';
 
-        $scripts = $this->script_rep->getAllToArray();
+        $scripts = $this->scriptRep->getAllToArray();
         $can = gates('devices.show-object');
 
         $availableEvents = DeviceSwitch::getEvents();
@@ -159,14 +170,16 @@ class SwitchController extends Controller
 
         //Если тип = кнопка, то выводим в устройствах хит-про
         if ($switch->type == 'button') {
-            $devices = $this->device_rep->getAllWithoutTypesToArray();
+            $devices = $this->deviceRep->getAllWithoutTypesToArray();
         }
 
-        return view('switches.edit', compact('switch', 'types', 'tab', 'events', 'allEvents',
+        return view('switches.edit', compact(
+            'switch', 'types', 'tab', 'events', 'allEvents',
             'object', 'method', 'methods', 'object_dc', 'method_dc', 'methods_dc', 'availableEvents', 'properties',
             'object_lc', 'method_lc', 'methods_lc', 'idDevice', 'idPort', 'devices', 'ports', 'sounds', 'views',
             'messages', 'messagePoint', 'hp_device', 'hp_devices', 'params', 'params_dc', 'params_lc',
-            'objects', 'object_types', 'scripts', 'place', 'can'));
+            'objects', 'object_types', 'scripts', 'place', 'can'
+        ));
     }
 
     public function update(UpdateRequest $r, int $id)
@@ -175,14 +188,18 @@ class SwitchController extends Controller
 
         try {
             if ($this->service->update($switch, $r->except('_token'))) {
-                return redirect()->route('switches.edit', [$switch->id])
+                return redirect()
+                    ->route('switches.edit', [$switch->id])
                     ->with('success', 'Выключатель успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении выключателя '.$switch->id
-                .' '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении выключателя '.$switch->id
+                .' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении выключателя');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении выключателя');
     }
 }

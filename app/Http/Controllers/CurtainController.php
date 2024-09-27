@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Curtain\CurtainFormRequest;
 use App\Models\Curtain;
-use App\Repositories\CurtainRepository;
+use App\Services\Service;
+use App\Services\PortService;
+use App\Services\CurtainService;
+use Illuminate\Support\Facades\Log;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ModbusRepository;
-use App\Services\CurtainService;
-use App\Services\PortService;
-use App\Services\Service;
+use App\Repositories\CurtainRepository;
+use App\Http\Requests\Curtain\CurtainFormRequest;
 
 class CurtainController extends Controller
 {
@@ -40,7 +41,10 @@ class CurtainController extends Controller
             [$idDevice, , , $ports] = $this->portService->getCurrentDevPort($curtain->id_object, 'OUT');
         }
 
-        [$messages, $events, $sounds, $views, $rooms, $scripts, , , $alice] = Service::getListElements($curtain->id_object);
+        [
+            $messages, $events, $sounds,
+            $views, $rooms, $scripts, , , $alice
+        ] = Service::getListElements($curtain->id_object);
 
         $types = Curtain::getTypes(true);
         $vendors = Curtain::getVendors(true);
@@ -73,8 +77,8 @@ class CurtainController extends Controller
 
         return view('curtains.edit', compact(
             'types', 'curtain', 'events', 'sounds', 'views', 'rooms', 'addressAttributes',
-            'idDevice', 'devices', 'ports', 'messagePoint', 'messages', 'alice', 'tab', 'availableEvents',
-            'properties', 'scripts', 'allEvents', 'can', 'buses', 'vendors', 'groupAttributes'
+            'idDevice', 'devices', 'ports', 'messagePoint', 'alice', 'tab', 'availableEvents',
+            'properties', 'scripts', 'allEvents', 'can', 'buses', 'vendors', 'groupAttributes', 'messages'
         ));
     }
 
@@ -84,12 +88,15 @@ class CurtainController extends Controller
 
         try {
             if ($this->curtainService->update($curtain, $r->except('_token'))) {
-                return redirect()->route('curtains.edit', [$curtain->id])
+                return redirect()
+                    ->route('curtains.edit', [$curtain->id])
                     ->with('success', 'Штора успешно изменена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении шторы '.$curtain->id
-                .' '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении шторы '.$curtain->id
+                .' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
         return back()->withInput($r->all())->with('error', 'Ошибка при изменении шторы');
@@ -104,21 +111,27 @@ class CurtainController extends Controller
         $buses = $this->modbusRepository->getAllBusesToArray();
         $tab = 1;
 
-        return view('curtains.create', compact('types', 'places', 'tab', 'devices', 'buses', 'vendors'));
+        return view('curtains.create', compact(
+            'types', 'places', 'tab', 'devices', 'buses', 'vendors'
+        ));
     }
 
     public function store(CurtainFormRequest $r)
     {
         try {
             if ($id = $this->curtainService->store($r->except('_token'))) {
-                return redirect()->route('curtains.edit', [$id])
+                return redirect()
+                    ->route('curtains.edit', [$id])
                     ->with('success', 'Штора успешно добавлена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении шторы '.
-                json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении шторы '.
+                json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении шторы');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении шторы');
     }
 }

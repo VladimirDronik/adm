@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Profile\UpdateRequest;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\Profile\UpdateRequest;
 
 class ProfileController extends Controller
 {
@@ -26,6 +26,7 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return redirect()->route('profile.edit')->with('success', 'Данные успешно изменены');
+        return redirect()->route('profile.edit')
+            ->with('success', 'Данные успешно изменены');
     }
 }

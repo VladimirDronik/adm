@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Dimmer\CreateRequest;
-use App\Http\Requests\Dimmer\UpdateRequest;
 use App\Models\Dimmer;
+use App\Services\Service;
 use App\Models\HomeObject;
+use App\Services\PortService;
+use App\Services\DimmerService;
+use Illuminate\Support\Facades\Log;
 use App\Repositories\DeviceRepository;
 use App\Repositories\DimmerRepository;
 use App\Repositories\ObjectRepository;
-use App\Services\DimmerService;
-use App\Services\PortService;
-use App\Services\Service;
+use App\Http\Requests\Dimmer\CreateRequest;
+use App\Http\Requests\Dimmer\UpdateRequest;
 
 class DimmerController extends Controller
 {
     public function __construct(
-        private DimmerRepository $dimmer_rep,
-        private ObjectRepository $object_rep,
-        private DeviceRepository $device_rep,
+        private DimmerRepository $dimmerRep,
+        private ObjectRepository $objectRep,
+        private DeviceRepository $deviceRep,
         private DimmerService $service,
         private PortService $portService,
     ) {
@@ -26,64 +27,80 @@ class DimmerController extends Controller
 
     public function index()
     {
-        $dimmers = $this->dimmer_rep->getAll();
+        $dimmers = $this->dimmerRep->getAll();
 
         return view('dimmers.index', compact('dimmers'));
     }
 
     public function create()
     {
-        $objects = $this->object_rep->getAllToArray();
+        $objects = $this->objectRep->getAllToArray();
         $object_types = HomeObject::getFullTypeIds();
-        $devices = $this->device_rep->getAllWithoutTypesToArray(['Hite-pro']);
+        $devices = $this->deviceRep->getAllWithoutTypesToArray(['Hite-pro']);
 
-        return view('dimmers.create', compact('objects', 'object_types', 'devices'));
+        return view('dimmers.create', compact(
+            'objects', 'object_types', 'devices'
+        ));
     }
 
     public function store(CreateRequest $r)
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('dimmers.edit', [$id])
+                return redirect()
+                    ->route('dimmers.edit', [$id])
                     ->with('success', 'Диммер успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении диммера '.
-                json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении диммера '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении диммера');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении диммера');
     }
 
-    public function edit(Dimmer $dimmer, $tab = 1)
+    public function edit(Dimmer $dimmer, int $tab = 1)
     {
         $can = gates('devices.show-object');
 
-        [$idDevice, $idPort, $devices, $ports] = $this->portService->getCurrentDevPort($dimmer->id_object, 'OUT,0..10V');
-        [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice] =
-            Service::getListElements($dimmer->id_object);
+        [$idDevice, $idPort, $devices, $ports] = $this->portService
+            ->getCurrentDevPort($dimmer->id_object, 'OUT,0..10V');
+
+        [
+            $messages, $events, $sounds, $views,
+            $rooms, $scripts, $objects, $object_types, $alice
+        ] = Service::getListElements($dimmer->id_object);
 
         $availableEvents = Dimmer::getEvents();
         $properties = Dimmer::getProperties();
         $allEvents = '';
 
-        return view('dimmers.edit', compact('dimmer', 'messages', 'events', 'sounds',
-            'idDevice', 'idPort', 'devices', 'ports', 'views', 'rooms', 'alice', 'tab', 'properties',
-            'objects', 'object_types', 'scripts', 'can', 'availableEvents', 'allEvents'));
+        return view('dimmers.edit', compact(
+            'dimmer', 'messages', 'events', 'sounds', 'idDevice', 'idPort',
+            'devices', 'ports', 'views', 'rooms', 'alice', 'tab', 'properties',
+            'objects', 'object_types', 'scripts', 'can', 'availableEvents', 'allEvents'
+        ));
     }
 
     public function update(UpdateRequest $r, Dimmer $dimmer)
     {
         try {
             if ($this->service->update($dimmer, $r->except('_token'))) {
-                return redirect()->route('dimmers.edit', [$dimmer->id])
+                return redirect()
+                    ->route('dimmers.edit', [$dimmer->id])
                     ->with('success', 'Диммер успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении диммера '.$dimmer->id
-                .' '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении диммера '.$dimmer->id
+                .' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении диммера');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении диммера');
     }
 }

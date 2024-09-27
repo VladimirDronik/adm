@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Logging;
-use App\Repositories\LogRepository;
 use Illuminate\Http\Request;
+use App\Repositories\LogRepository;
 
 class LogController extends Controller
 {
     public function __construct(
-        private LogRepository $log_rep
+        private LogRepository $logRep
     ) {
     }
 
@@ -25,8 +25,8 @@ class LogController extends Controller
     public function index(Request $r)
     {
         $filter = $this->getFilter($r);
-        $logs = $this->log_rep->getByFilter($filter);
-        $types = $this->log_rep->getTypes();
+        $logs = $this->logRep->getByFilter($filter);
+        $types = $this->logRep->getTypes();
 
         return view('logs.index', compact('logs', 'types', 'filter'));
     }

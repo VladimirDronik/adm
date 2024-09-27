@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Elements;
+use App\Services\ObjectService;
+use App\Services\ElementService;
+use Illuminate\Support\Facades\Log;
+use App\Repositories\ObjectRepository;
+use App\Repositories\ElementRepository;
 use App\Http\Requests\Element\CreateRequest;
 use App\Http\Requests\Element\UpdateRequest;
-use App\Models\Elements;
-use App\Repositories\ElementRepository;
-use App\Repositories\ObjectRepository;
-use App\Services\ElementService;
-use App\Services\ObjectService;
 
 class ElementController extends Controller
 {
@@ -20,28 +21,35 @@ class ElementController extends Controller
     ) {
     }
 
-    public function create($pageId)
+    public function create(int $pageId)
     {
         $types = Elements::getTypes(true);
         $parents = $this->elementRepository->getParentsToArray($pageId);
         $objects = $objects = $this->objectRepository->getAllToArray();
         $settings = false;
 
-        return view('elements.create', compact('types', 'parents', 'pageId', 'objects', 'settings'));
+        return view('elements.create', compact(
+            'types', 'parents', 'pageId', 'objects', 'settings'
+        ));
     }
 
     public function store(CreateRequest $r)
     {
         try {
             if ($idPage = $this->service->store($r->except('_token'))) {
-                return redirect()->route('pages.edit', [$idPage])
+                return redirect()
+                    ->route('pages.edit', [$idPage])
                     ->with('success', 'Элемент успешно добавлен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении элемента '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении элемента '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении элемента');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении элемента');
     }
 
     public function edit(Elements $element)
@@ -54,20 +62,27 @@ class ElementController extends Controller
         $element->value = $this->elementRepository->parser($element->value, 'status');
         $handles = $this->objectService->getPropertiesByObjectId($element->id_object, false);
 
-        return view('elements.edit', compact('element', 'types', 'parents', 'objects', 'handles', 'settings'));
+        return view('elements.edit', compact(
+            'element', 'types', 'parents', 'objects', 'handles', 'settings'
+        ));
     }
 
     public function update(UpdateRequest $r, Elements $element)
     {
         try {
             if ($this->service->update($element, $r->except('_token'))) {
-                return redirect()->route('elements.edit', [$element->id])->with('success', 'Элемент успешно изменен');
+                return redirect()
+                    ->route('elements.edit', [$element->id])
+                    ->with('success', 'Элемент успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении элемента '.$element->id.' '
-                .json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении элемента '.$element->id.' '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении элемента');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении элемента');
     }
 }

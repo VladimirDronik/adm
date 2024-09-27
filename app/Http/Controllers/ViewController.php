@@ -2,44 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\View\CreateRequest;
-use App\Http\Requests\View\UpdateRequest;
-use App\Models\ObjType;
 use App\Models\View;
-use App\Repositories\ColorRepository;
-use App\Repositories\ObjectRepository;
-use App\Repositories\PageRepository;
-use App\Repositories\RoomRepository;
-use App\Repositories\SceneRepository;
-use App\Repositories\ViewRepository;
+use App\Models\ObjType;
+use Illuminate\Http\Request;
+use App\Services\ViewService;
 use App\Services\ImageService;
 use App\Services\ObjectService;
-use App\Services\ViewService;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Repositories\PageRepository;
+use App\Repositories\RoomRepository;
+use App\Repositories\ViewRepository;
+use App\Repositories\ColorRepository;
+use App\Repositories\SceneRepository;
+use App\Repositories\ObjectRepository;
+use App\Http\Requests\View\CreateRequest;
+use App\Http\Requests\View\UpdateRequest;
 
 class ViewController extends Controller
 {
     public function __construct(
-        private ViewRepository $view_rep,
-        private RoomRepository $room_rep,
-        private SceneRepository $scene_rep,
+        private ViewRepository $viewRep,
+        private RoomRepository $roomRep,
+        private SceneRepository $sceneRep,
         private ViewService $service,
-        private ObjectRepository $object_rep,
-        private PageRepository $pages_rep,
-        private ObjectService $object_service
+        private ObjectRepository $objectRep,
+        private PageRepository $pagesRep,
+        private ObjectService $objectService
     ) {
     }
 
     public function getLists()
     {
         $types = View::getFullTypeIds();
-        $rooms = $this->room_rep->getAllToArray();
-        $scenes = $this->scene_rep->getAll()->pluck('label', 'id')->toArray();
+        $rooms = $this->roomRep->getAllToArray();
+        $scenes = $this->sceneRep->getAll()->pluck('label', 'id')->toArray();
         $images = ImageService::getViewImages();
-        $objects = $this->object_rep->getAllToArray();
-        $links = $this->pages_rep->getAllToArray();
+        $objects = $this->objectRep->getAllToArray();
+        $links = $this->pagesRep->getAllToArray();
         $safeTypes = View::getFullSafeTypes();
-        $relatedParameterObjects = $this->object_rep->getAllByTypes([
+        $relatedParameterObjects = $this->objectRep->getAllByTypes([
             ObjType::TYPE_TERMOSTAT,
             ObjType::TYPE_LIGHTSTAT,
             ObjType::TYPE_HYGROSTAT,
@@ -53,41 +54,59 @@ class ViewController extends Controller
 
     public function index(Request $r)
     {
-        $views = $this->view_rep->getByRoom($r->room);
-        $rooms = $this->room_rep->getSpecialRooms();
+        $views = $this->viewRep->getByRoom($r->room);
+        $rooms = $this->roomRep->getSpecialRooms();
 
         $filter_room = $r->input('room', '');
-        $filter_room_name = $this->room_rep->getRoomName($filter_room, $rooms);
+        $filter_room_name = $this->roomRep->getRoomName($filter_room, $rooms);
 
-        return view('views.index', compact('views', 'rooms', 'filter_room', 'filter_room_name'));
+        return view('views.index', compact(
+            'views', 'rooms', 'filter_room', 'filter_room_name'
+        ));
     }
 
     public function create()
     {
-        [$types, $rooms, $objects, $scenes, $images, $links, $safeTypes, $relatedParameterObjects] = $this->getLists();
+        [
+            $types, $rooms, $objects, $scenes,
+            $images, $links, $safeTypes, $relatedParameterObjects
+        ] = $this->getLists();
 
         $colors = ColorRepository::getNameTypeColors();
 
-        return view('views.create', compact('types', 'rooms', 'objects', 'scenes', 'images', 'links', 'colors', 'safeTypes', 'relatedParameterObjects'));
+        return view('views.create', compact(
+            'types', 'rooms', 'objects', 'scenes', 'images',
+            'links', 'colors', 'safeTypes', 'relatedParameterObjects'
+        ));
     }
 
     public function store(CreateRequest $r)
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('views.edit', [$id])->with('success', 'Отображение успешно добавлено');
+                return redirect()
+                    ->route('views.edit', [$id])
+                    ->with('success', 'Отображение успешно добавлено');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении отображения ', [$r->all(), $e->getMessage()]);
+            Log::error(
+                'Ошибка при добавлении отображения ',
+                [$r->all(), $e->getMessage()]
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении отображения');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении отображения');
     }
 
     public function edit(View $view)
     {
-        [$types, $rooms, , $scenes, $images, $links, $safeTypes, $relatedParameterObjects] = $this->getLists();
-        $methods = $this->object_service->getMethodsByObjectIdToArray($view->id_object);
+        [
+            $types, $rooms, , $scenes, $images,
+            $links, $safeTypes, $relatedParameterObjects
+        ] = $this->getLists();
+
+        $methods = $this->objectService->getMethodsByObjectIdToArray($view->id_object);
 
         $colors = ColorRepository::getNameTypeColors();
 
@@ -145,23 +164,29 @@ class ViewController extends Controller
                 break;
         }
 
-        return view('views.edit', compact('view', 'types', 'safeTypes', 'link', 'lowvalSet', 'highvalSet',
+        return view('views.edit', compact(
+            'view', 'types', 'safeTypes', 'link', 'lowvalSet', 'highvalSet',
             'rooms', 'methods', 'scenes', 'images', 'links', 'colors', 'safe_type', 'relatedParameterObjects',
-            'settingFromApp', 'lowval', 'highval', 'pushlabel', 'modallabel', 'label_longclick_text'));
+            'settingFromApp', 'lowval', 'highval', 'pushlabel', 'modallabel', 'label_longclick_text'
+        ));
     }
 
     public function update(UpdateRequest $r, View $view)
     {
         try {
             if ($this->service->update($view, $r->except('_token'))) {
-                return redirect()->route('views.edit', [$view->id])
+                return redirect()
+                    ->route('views.edit', [$view->id])
                     ->with('success', 'Отображение успешно изменено');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении отображения '.$view->id.' '
-                .json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении отображения '.$view->id
+                .' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении отображения');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении отображения');
     }
 }

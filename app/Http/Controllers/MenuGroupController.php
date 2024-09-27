@@ -1,38 +1,33 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 30.03.21
- * Time: 12:15
- */
 
 namespace App\Http\Controllers;
 
-use App\Repositories\MenuRepository;
-use App\Services\ImageService;
 use App\Services\MenuService;
+use App\Services\ImageService;
+use App\Repositories\MenuRepository;
 
 class MenuGroupController
 {
     public function __construct(
-        private MenuRepository $menu_rep,
+        private MenuRepository $menuRep,
         private MenuService $service
     ) {
     }
 
     public function index(int $id)
     {
-        $group = $this->menu_rep->getGroup($id);
+        $group = $this->menuRep->getGroup($id);
 
         if (! $group) {
             return redirect()->route('menu.index');
         }
 
-        $menus = $this->menu_rep->getChildren($group->id);
-        $groups = $this->menu_rep->getMenuGroups();
+        $menus = $this->menuRep->getChildren($group->id);
+        $groups = $this->menuRep->getMenuGroups();
         $images = ImageService::getMainImages();
 
-        return view('menu.group_index', compact('group', 'menus',
-            'groups', 'images'));
+        return view('menu.group_index', compact(
+            'group', 'menus', 'groups', 'images'
+        ));
     }
 }

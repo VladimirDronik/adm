@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Camera;
+use App\Services\CameraService;
+use Illuminate\Support\Facades\Log;
+use App\Repositories\RoomRepository;
+use Illuminate\Support\Facades\Http;
 use App\Http\Requests\Camera\CreateRequest;
 use App\Http\Requests\Camera\UpdateRequest;
-use App\Models\Camera;
-use App\Repositories\RoomRepository;
-use App\Services\CameraService;
-use Illuminate\Support\Facades\Http;
 
 class CameraController extends Controller
 {
@@ -17,7 +18,7 @@ class CameraController extends Controller
     ) {
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
         $camera = Camera::findOrFail($id);
 
@@ -28,15 +29,19 @@ class CameraController extends Controller
     {
         try {
             if ($this->service->update($camera, $r->except('_token'))) {
-                return redirect()->route('cameras.edit', [$camera->id])
+                return redirect()
+                    ->route('cameras.edit', [$camera->id])
                     ->with('success', 'Камера успешно изменена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении камеры '.
-                json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении камеры '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении камеры');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении камеры');
     }
 
     public function create()
@@ -51,15 +56,19 @@ class CameraController extends Controller
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('cameras.edit', [$id])
+                return redirect()
+                    ->route('cameras.edit', [$id])
                     ->with('success', 'Камера успешно добавлена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении камеры '.
-                json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении камеры '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении камеры');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении камеры');
     }
 
     public function getStream(Camera $camera)
@@ -67,12 +76,18 @@ class CameraController extends Controller
         $recorder = $camera->recorder;
 
         if (! $recorder) {
-            return back()->with('error', 'Ошибка. Камера без видеорегистратора');
+            return back()->with(
+                'error', 'Ошибка. Камера без видеорегистратора'
+            );
         }
 
         $link = str_replace(
             ['$login', '$password', '$ip_address'],
-            [$recorder->login, customDecrypt($recorder->password, config('secret.password_key')), $recorder->ip_address],
+            [
+                $recorder->login,
+                customDecrypt($recorder->password, config('secret.password_key')),
+                $recorder->ip_address,
+            ],
             $camera->link
         );
 

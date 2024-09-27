@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Recorder\CreateRequest;
-use App\Http\Requests\Recorder\UpdateRequest;
 use App\Models\Recorder;
 use App\Services\RecorderService;
+use Illuminate\Support\Facades\Log;
+use App\Http\Requests\Recorder\CreateRequest;
+use App\Http\Requests\Recorder\UpdateRequest;
 
 class RecorderController extends Controller
 {
@@ -23,15 +24,19 @@ class RecorderController extends Controller
     {
         try {
             if ($this->service->update($recorder, $r->except('_token'))) {
-                return redirect()->route('recorders.edit', [$recorder->id])
+                return redirect()
+                    ->route('recorders.edit', [$recorder->id])
                     ->with('success', 'Видеорегистратор успешно изменен');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении видеорегистратора '.
-                json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении видеорегистратора '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении видеорегистратора');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении видеорегистратора');
     }
 
     public function create()
@@ -45,14 +50,18 @@ class RecorderController extends Controller
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('recorders.edit', [$id])
+                return redirect()
+                    ->route('recorders.edit', [$id])
                     ->with('success', 'Видеорегистратор успешно добавлена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении видеорегистратора '.
-                json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении видеорегистратора '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении видеорегистратора');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении видеорегистратора');
     }
 }

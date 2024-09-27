@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Lamp\CreateRequest;
-use App\Http\Requests\Lamp\UpdateRequest;
-use App\Models\HomeObject;
 use App\Models\Lamp;
 use App\Models\Port;
+use App\Services\Service;
+use App\Models\HomeObject;
+use App\Services\LampService;
+use App\Services\PortService;
+use Illuminate\Support\Facades\Log;
 use App\Repositories\DeviceRepository;
 use App\Repositories\ModbusRepository;
 use App\Repositories\ObjectRepository;
-use App\Services\LampService;
-use App\Services\PortService;
-use App\Services\Service;
+use App\Http\Requests\Lamp\CreateRequest;
+use App\Http\Requests\Lamp\UpdateRequest;
 
 class LampController extends Controller
 {
     public function __construct(
-        private ObjectRepository $object_rep,
+        private ObjectRepository $objectRep,
         private DeviceRepository $deviceRepository,
         private LampService $service,
         private PortService $portService,
@@ -27,28 +28,35 @@ class LampController extends Controller
 
     public function create()
     {
-        $objects = $this->object_rep->getAllToArray();
+        $objects = $this->objectRep->getAllToArray();
         $object_types = HomeObject::getFullTypeIds();
         $devices = $this->deviceRepository->getAllToArray();
         $gatewayTypes = HomeObject::getGatewayTypes();
-        $modbusSlavers = $this->modbusRepository->getFilteredSlaversToArray(['light', 'relay'], 1);
+        $modbusSlavers = $this->modbusRepository
+            ->getFilteredSlaversToArray(['light', 'relay'], 1);
 
-        return view('lamps.create', compact('objects', 'object_types', 'devices', 'gatewayTypes', 'modbusSlavers'));
+        return view('lamps.create', compact(
+            'objects', 'object_types', 'devices', 'gatewayTypes', 'modbusSlavers'
+        ));
     }
 
     public function store(CreateRequest $r)
     {
         try {
             if ($id = $this->service->store($r->except('_token'))) {
-                return redirect()->route('lamps.edit', [$id])
+                return redirect()
+                    ->route('lamps.edit', [$id])
                     ->with('success', 'Лампа успешно добавлена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении лампы '.
-                json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при добавлении лампы '
+                .json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при добавлении лампы');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при добавлении лампы');
     }
 
     public function update(UpdateRequest $r, int $id)
@@ -57,22 +65,29 @@ class LampController extends Controller
 
         try {
             if ($this->service->update($lamp, $r->except('_token'))) {
-                return redirect()->route('lamps.edit', [$lamp->id])
+                return redirect()
+                    ->route('lamps.edit', [$lamp->id])
                     ->with('success', 'Лампа успешно изменена');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении лампы '.$lamp->id
-                .' '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении лампы '.$lamp->id
+                .' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении лампы');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении лампы');
     }
 
-    public function edit(Lamp $lamp, $tab = 1)
+    public function edit(Lamp $lamp, int $tab = 1)
     {
         $can = gates('devices.show-object');
-        [$messages, $events, $sounds, $views, $rooms, $scripts, $objects, $object_types, $alice, $allEvents] =
-            Service::getListElements($lamp->id_object);
+
+        [
+            $messages, $events, $sounds, $views, $rooms,
+            $scripts, $objects, $object_types, $alice, $allEvents
+        ] = Service::getListElements($lamp->id_object);
 
         $messagePoint['first'] = 'При включении';
         $messagePoint['second'] = 'При выключении';

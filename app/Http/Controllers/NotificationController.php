@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Notifsettings\UpdateRequest;
+use Illuminate\Support\Facades\Log;
 use App\Models\NotificationSettings;
-use App\Repositories\NotificationServiceRepository;
 use App\Repositories\SoundRepository;
 use App\Services\NotificationService;
+use App\Http\Requests\Notifsettings\UpdateRequest;
+use App\Repositories\NotificationServiceRepository;
 
 class NotificationController extends Controller
 {
     public function __construct(
-        private NotificationServiceRepository $notification_rep,
+        private NotificationServiceRepository $notificationRep,
         private NotificationService $service
     ) {
     }
 
     public function index()
     {
-        $notifications = $this->notification_rep->getAll();
+        $notifications = $this->notificationRep->getAll();
 
         return view('notifications.index', compact('notifications'));
     }
@@ -31,8 +32,9 @@ class NotificationController extends Controller
 
         $sounds = SoundRepository::getAllToArray();
 
-        return view('notifications.edit', compact('notification', 'priority',
-            'text_flag', 'sound_flag', 'sounds'));
+        return view('notifications.edit', compact(
+            'notification', 'priority', 'text_flag', 'sound_flag', 'sounds'
+        ));
     }
 
     public function update(UpdateRequest $r, int $id)
@@ -45,10 +47,13 @@ class NotificationController extends Controller
                     ->with('success', 'Настройки успешно изменены');
             }
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при изменении настроек '.$notifsetting->id
-                .' '.json_encode($r->all()).' '.$e->getMessage());
+            Log::error(
+                'Ошибка при изменении настроек '.$notifsetting->id
+                .' '.json_encode($r->all()).' '.$e->getMessage()
+            );
         }
 
-        return back()->withInput($r->all())->with('error', 'Ошибка при изменении настроек');
+        return back()->withInput($r->all())
+            ->with('error', 'Ошибка при изменении настроек');
     }
 }
