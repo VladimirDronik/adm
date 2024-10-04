@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use App\Http\Controllers\Controller;
-use App\Services\RoomService;
 use Illuminate\Http\Request;
+use App\Services\RoomService;
+use App\Http\Controllers\Controller;
 
 class RoomController extends Controller
 {
@@ -17,21 +17,27 @@ class RoomController extends Controller
     {
         abort_if(! ajaxHas($r, ['id']), 400);
 
-        return response()->json(['result' => $this->service->delete((int) $r->id)]);
+        return response()->json([
+            'result' => $this->service->delete((int) $r->id),
+        ]);
     }
 
     public function sort(Request $r)
     {
         abort_if(! ajaxHas($r, ['id', 'direction']), 400);
 
-        return response()->json(['result' => $this->service->sort($r->all())]);
+        return response()->json([
+            'result' => $this->service->sort($r->all()),
+        ]);
     }
 
     public function store(Request $r)
     {
         abort_if(! ajaxHas($r, ['name', 'image', 'style', 'type']), 400);
 
-        return response()->json(['result' => (bool) $this->service->store($r->all())]);
+        return response()->json([
+            'result' => (bool) $this->service->store($r->all()),
+        ]);
     }
 
     public function updateName(Request $r)
@@ -40,7 +46,10 @@ class RoomController extends Controller
 
         $this->service->updateName((int) $r->id, (string) $r->name);
 
-        return response()->json(['success' => true, 'html' => $r->name]);
+        return response()->json([
+            'success' => true,
+            'html' => $r->name,
+        ]);
     }
 
     public function updateImage(Request $r)

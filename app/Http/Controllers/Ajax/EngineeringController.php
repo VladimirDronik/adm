@@ -1,16 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 13.04.21
- * Time: 15:35
- */
 
 namespace App\Http\Controllers\Ajax;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\EngineeringService;
-use Illuminate\Http\Request;
 
 class EngineeringController extends Controller
 {
@@ -23,6 +17,8 @@ class EngineeringController extends Controller
     {
         abort_if(! ajaxHas($r, ['id']), 400);
 
-        return response()->json(['result' => $this->service->delete((int) $r->id, (bool) $r->del_checkbox)]);
+        return response()->json([
+            'result' => $this->service->delete((int) $r->id, (bool) $r->del_checkbox),
+        ]);
     }
 }

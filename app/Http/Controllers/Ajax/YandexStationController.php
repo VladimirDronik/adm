@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use App\Repositories\YandexStationRepository;
-use App\Services\YandexIntegration\YandexAuth;
-use App\Services\YandexIntegration\YandexTTS;
-use App\Services\YandexStationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Services\YandexStationService;
+use App\Repositories\YandexStationRepository;
+use App\Services\YandexIntegration\YandexTTS;
+use App\Services\YandexIntegration\YandexAuth;
 
 class YandexStationController
 {
@@ -18,16 +18,13 @@ class YandexStationController
     ) {
     }
 
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     *
-     * @throws \Throwable
-     */
     public function delete(Request $r)
     {
         abort_if(! ajaxHas($r, ['id']), 400);
 
-        return response()->json(['result' => $this->service->delete((int) $r->id)]);
+        return response()->json([
+            'result' => $this->service->delete((int) $r->id),
+        ]);
     }
 
     public function load()
@@ -35,10 +32,16 @@ class YandexStationController
         $stations = $this->repository->getStationsToArray();
 
         foreach ($stations as $station) {
-            $stationsArray[] = ['id' => $station['id'], 'name' => $station['name'], 'volume' => $station['volume']];
+            $stationsArray[] = [
+                'id' => $station['id'],
+                'name' => $station['name'],
+                'volume' => $station['volume'],
+            ];
         }
 
-        return response()->json(['stations' => $stationsArray]);
+        return response()->json([
+            'stations' => $stationsArray,
+        ]);
     }
 
     /**
@@ -71,6 +74,7 @@ class YandexStationController
             if (file_exists($token)) {
                 unlink($token);
             }
+
             Log::error('Яндекс Станция: Что-то пошло не так! Не удалось авторизироваться в Яндексе.');
         }
 
@@ -82,13 +86,16 @@ class YandexStationController
      */
     public function syncStations()
     {
-        $response = $this->yandexAuth->checkOrGetCookies(base_path(config('yandex.cookie_file')));
+        $response = $this->yandexAuth
+            ->checkOrGetCookies(base_path(config('yandex.cookie_file')));
 
         if ($response['code'] == 200) {
             $tts = new YandexTTS();
             $ttsResponse = $tts->init();
 
-            return response()->json(['code' => $ttsResponse ? 200 : 500]);
+            return response()->json([
+                'code' => $ttsResponse ? 200 : 500,
+            ]);
         }
 
         return response()->json($response);
@@ -99,7 +106,9 @@ class YandexStationController
      */
     public function getQr()
     {
-        return response()->json($this->yandexAuth->getQrCode());
+        return response()->json(
+            $this->yandexAuth->getQrCode()
+        );
     }
 
     /**
@@ -120,6 +129,7 @@ class YandexStationController
             if (file_exists($token)) {
                 unlink($token);
             }
+
             Log::error('Яндекс Станция: Что-то пошло не так! Не удалось авторизироваться в Яндексе.');
         }
 

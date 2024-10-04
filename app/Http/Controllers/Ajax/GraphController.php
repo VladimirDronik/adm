@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use App\Http\Controllers\Controller;
-use App\Services\GraphService;
 use Illuminate\Http\Request;
+use App\Services\GraphService;
+use App\Http\Controllers\Controller;
 
 class GraphController extends Controller
 {
@@ -17,7 +17,8 @@ class GraphController extends Controller
     {
         abort_if(! ajaxHas($r, ['termostat_id', 'period']), 400);
 
-        [$result, $data] = $this->service->getGraphTermostatsPeriodData($r->termostat_id, $r->period);
+        [$result, $data] = $this->service
+            ->getGraphTermostatsPeriodData($r->termostat_id, $r->period);
 
         return response()->json(compact('result', 'data'));
     }
@@ -26,7 +27,8 @@ class GraphController extends Controller
     {
         abort_if(! ajaxHas($r, ['hygrostat_id', 'period']), 400);
 
-        [$result, $data] = $this->service->getGraphHumiditiesPeriodData($r->hygrostat_id, $r->period);
+        [$result, $data] = $this->service
+            ->getGraphHumiditiesPeriodData($r->hygrostat_id, $r->period);
 
         return response()->json(compact('result', 'data'));
     }
@@ -35,7 +37,8 @@ class GraphController extends Controller
     {
         abort_if(! ajaxHas($r, ['count_id', 'period']), 400);
 
-        [$result, $data] = $this->service->getGraphCountsPeriodData($r->count_id, $r->period);
+        [$result, $data] = $this->service
+            ->getGraphCountsPeriodData($r->count_id, $r->period);
 
         return response()->json(compact('result', 'data'));
     }
@@ -44,7 +47,8 @@ class GraphController extends Controller
     {
         abort_if(! ajaxHas($r, ['count_id', 'period']), 400);
 
-        [$result, $data] = $this->service->getGraphLightsPeriodData($r->count_id, $r->period);
+        [$result, $data] = $this->service
+            ->getGraphLightsPeriodData($r->count_id, $r->period);
 
         return response()->json(compact('result', 'data'));
     }
@@ -53,7 +57,8 @@ class GraphController extends Controller
     {
         abort_if(! ajaxHas($r, ['count_id', 'period']), 400);
 
-        [$result, $data] = $this->service->getGraphPressuresPeriodData($r->count_id, $r->period);
+        [$result, $data] = $this->service
+            ->getGraphPressuresPeriodData($r->count_id, $r->period);
 
         return response()->json(compact('result', 'data'));
     }
@@ -62,7 +67,8 @@ class GraphController extends Controller
     {
         abort_if(! ajaxHas($r, ['count_id', 'period']), 400);
 
-        [$result, $data] = $this->service->getGraphCarbdioxidesPeriodData($r->count_id, $r->period);
+        [$result, $data] = $this->service
+            ->getGraphCarbdioxidesPeriodData($r->count_id, $r->period);
 
         return response()->json(compact('result', 'data'));
     }

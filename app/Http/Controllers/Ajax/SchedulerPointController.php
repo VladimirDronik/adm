@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use App\Http\Controllers\Controller;
-use App\Services\SchedulerService;
 use Illuminate\Http\Request;
+use App\Services\SchedulerService;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 
 class SchedulerPointController extends Controller
 {
@@ -17,7 +18,9 @@ class SchedulerPointController extends Controller
     {
         abort_if(! ajaxHas($r, ['id']), 400);
 
-        return response()->json(['result' => (bool) $this->service->deletePoint((int) $r->id)]);
+        return response()->json([
+            'result' => (bool) $this->service->deletePoint((int) $r->id),
+        ]);
     }
 
     public function store(Request $r)
@@ -27,9 +30,14 @@ class SchedulerPointController extends Controller
         try {
             $data = $this->service->storeOrUpdatePoint($r->data);
 
-            return response()->json(['result' => true] + $data);
+            return response()->json(
+                ['result' => true] + $data
+            );
         } catch (\Throwable $e) {
-            \Log::error('Ошибка при добавлении расписания элемента', [$r->all(), $e->getMessage()]);
+            Log::error(
+                'Ошибка при добавлении расписания элемента',
+                [$r->all(), $e->getMessage()]
+            );
 
             return response()->json(['result' => false]);
         }

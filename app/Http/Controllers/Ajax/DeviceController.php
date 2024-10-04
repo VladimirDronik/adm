@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use Illuminate\Http\Request;
+use App\Services\DeviceService;
+use App\Services\ConfigMegaService;
 use App\Http\Controllers\Controller;
 use App\Repositories\DeviceRepository;
-use App\Services\ConfigMegaService;
-use App\Services\DeviceService;
-use Illuminate\Http\Request;
 
 class DeviceController extends Controller
 {
@@ -21,21 +21,20 @@ class DeviceController extends Controller
     {
         abort_if(! ajaxHas($r, ['id']), 400);
 
-        return response()->json(['result' => (bool) $this->service->delete((int) $r->id)]);
+        return response()->json([
+            'result' => (bool) $this->service->delete((int) $r->id),
+        ]);
     }
 
     public function extensionModuleDelete(Request $r)
     {
         abort_if(! ajaxHas($r, ['extension_module_id']), 400);
 
-        return response()->json(['result' => (bool) $this->service->extensionModuleDelete((int) $r->extension_module_id)]);
+        return response()->json([
+            'result' => (bool) $this->service->extensionModuleDelete((int) $r->extension_module_id),
+        ]);
     }
 
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     *
-     * @throws \Exception
-     */
     public function update(Request $r)
     {
         abort_if(! ajaxHas($r, ['id', 'description', 'ip_address']), 400);
@@ -53,7 +52,10 @@ class DeviceController extends Controller
             $typeDevice = DeviceRepository::getDevByIdDevice((int) $r->device_id)['type'];
         }
 
-        $ports = $this->service->getPortsWithObjectsByDeviceId((int) $r->device_id, $r->has('status') ? $r->status : '');
+        $ports = $this->service->getPortsWithObjectsByDeviceId(
+            (int) $r->device_id,
+            $r->has('status') ? $r->status : ''
+        );
 
         return response()->json([
             'result' => true, 'ports' => $ports,
@@ -62,12 +64,13 @@ class DeviceController extends Controller
         ]);
     }
 
-    // todo
     public function updatePort(Request $r)
     {
         abort_if(! ajaxHas($r, ['id', 'port_id', 'name', 'value']), 400);
 
-        return response()->json(['result' => $this->service->updatePort($r->all())]);
+        return response()->json([
+            'result' => $this->service->updatePort($r->all()),
+        ]);
     }
 
     public function ports(Request $r)
@@ -76,32 +79,42 @@ class DeviceController extends Controller
 
         $ports = $this->service->getPortsByDeviceId((int) $r->device_id);
 
-        return response()->json(['result' => true, 'ports' => $ports]);
+        return response()->json([
+            'result' => true,
+            'ports' => $ports,
+        ]);
     }
 
-    public function checkServer(Request $r)
+    public function checkServer()
     {
         return response()->json(['result' => true]);
     }
 
     public function typeController(Request $r)
     {
-
         if ($r->id_device) {
             $typeDevice = DeviceRepository::getDevByIdDevice((int) $r->id_device)['type'];
         }
 
-        return response()->json(['result' => true, 'type' => $typeDevice]);
+        return response()->json([
+            'result' => true,
+            'type' => $typeDevice,
+        ]);
     }
 
-    //Получаем контроллеры для вывода в список контроллеров
+    /**
+     * Получаем контроллеры для вывода в список контроллеров
+     */
     public function get(Request $r)
     {
-
         if ($r->types) {
-            $devices = $this->deviceRepository->getAllByTypesToArray($r->types, false);
+            $devices = $this->deviceRepository
+                ->getAllByTypesToArray($r->types, false);
         }
 
-        return response()->json(['result' => true, 'devices' => $devices]);
+        return response()->json([
+            'result' => true,
+            'devices' => $devices,
+        ]);
     }
 }

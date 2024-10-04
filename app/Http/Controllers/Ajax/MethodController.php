@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use App\Http\Controllers\Controller;
-use App\Services\MethodService;
 use Illuminate\Http\Request;
+use App\Services\MethodService;
+use App\Http\Controllers\Controller;
 
 class MethodController extends Controller
 {
@@ -17,13 +17,18 @@ class MethodController extends Controller
     {
         abort_if(! ajaxHas($r, ['id']), 400);
 
-        return response()->json(['result' => (bool) $this->service->delete((int) $r->id)]);
+        return response()->json([
+            'result' => (bool) $this->service->delete((int) $r->id),
+        ]);
     }
 
     public function store(Request $r)
     {
         abort_if(! ajaxHas($r, ['data']), 400);
 
-        return response()->json(['result' => true, 'data' => $this->service->store($r->data)]);
+        return response()->json([
+            'result' => true,
+            'data' => $this->service->store($r->data),
+        ]);
     }
 }

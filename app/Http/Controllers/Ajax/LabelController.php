@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use App\Http\Controllers\Controller;
-use App\Models\HomeObject;
 use App\Models\Label;
+use App\Models\HomeObject;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class LabelController extends Controller
 {

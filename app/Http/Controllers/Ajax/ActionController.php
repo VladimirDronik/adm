@@ -1,16 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 23.04.21
- * Time: 14:24
- */
 
 namespace App\Http\Controllers\Ajax;
 
-use App\Http\Controllers\Controller;
-use App\Services\ActionService;
 use Illuminate\Http\Request;
+use App\Services\ActionService;
+use App\Http\Controllers\Controller;
 
 class ActionController extends Controller
 {
@@ -24,10 +18,7 @@ class ActionController extends Controller
      */
     public function getForEvent(Request $r)
     {
-        // abort_if(!ajaxHas($r, ['id_event']), 400);
-
         return response()->json(['actions' => $this->service->getForEvent($r->id_event, $r->actions)]);
-
     }
 
     public function addAction(Request $r)

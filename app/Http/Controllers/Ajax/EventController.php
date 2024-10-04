@@ -1,16 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kinord
- * Date: 27.04.21
- * Time: 15:32
- */
 
 namespace App\Http\Controllers\Ajax;
 
-use App\Http\Controllers\Controller;
-use App\Services\EventService;
 use Illuminate\Http\Request;
+use App\Services\EventService;
+use App\Http\Controllers\Controller;
 
 class EventController extends Controller
 {
@@ -36,7 +30,10 @@ class EventController extends Controller
             $result = true;
         }
 
-        return response()->json(['result' => $result, 'data' => $data]);
+        return response()->json([
+            'result' => $result,
+            'data' => $data,
+        ]);
     }
 
     public function delete(Request $r)
