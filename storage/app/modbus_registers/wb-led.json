@@ -1,7 +1,7 @@
 [
   {
     "name": "Вход 1. Состояние",
-    "register_type": "input_discrete",
+    "register_type": "discrete",
     "starting_register": 0,
     "registers_quantity": 1,
     "access": "ro",
@@ -14,7 +14,7 @@
   },
   {
     "name": "Вход 2. Состояние",
-    "register_type": "input_discrete",
+    "register_type": "discrete",
     "starting_register": 1,
     "registers_quantity": 1,
     "access": "ro",
@@ -27,7 +27,7 @@
   },
   {
     "name": "Вход 3. Состояние",
-    "register_type": "input_discrete",
+    "register_type": "discrete",
     "starting_register": 2,
     "registers_quantity": 1,
     "access": "ro",
@@ -40,7 +40,7 @@
   },
   {
     "name": "Вход 4. Состояние",
-    "register_type": "input_discrete",
+    "register_type": "discrete",
     "starting_register": 3,
     "registers_quantity": 1,
     "access": "ro",
