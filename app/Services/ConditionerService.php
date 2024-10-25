@@ -89,6 +89,17 @@ class ConditionerService
             }
 
             $conditioner->save();
+
+            //Сохраняем данные в таблицу Алисы или включаем запись если она есть уже
+            if (isset($data['alice_checkbox'])) {
+                AliceDevicesService::addOrReplaceDevice(
+                    $conditioner->id_object,
+                    $data['alice_command'],
+                    $data['room']
+                );
+            } else {
+                AliceDevicesService::setActive($conditioner->id_object, 0);
+            }
         });
 
         return $conditioner->id;

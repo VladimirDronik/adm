@@ -39,6 +39,12 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link @if($tab == 'prop') active @endif" data-toggle="tab" href="#conditionerstab3" role="tab">
+                                        <span class="hidden-sm-up"><i class="ti-home"></i></span>
+                                        <span class="hidden-xs-down">Свойства</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link @if($tab == 'control') active @endif" data-toggle="tab" href="#conditionerstab2" role="tab">
                                         <span class="hidden-sm-up"><i class="ti-home"></i></span>
                                         <span class="hidden-xs-down">Управление</span>
@@ -48,6 +54,9 @@
                             <div class="tab-content">
                                 <div class="tab-pane p-20 @if($tab == 'main') active @endif" id="conditionerstab1" role="tabpanel">
                                     @include('conditioners/edit_tabs/main')
+                                </div>
+                                <div class="tab-pane p-20 @if($tab == 'prop') active @endif" id="conditionerstab3" role="tabpanel">
+                                    @include('conditioners/edit_tabs/prop')
                                 </div>
                                 <div class="tab-pane p-20 @if($tab == 'control') active @endif" id="conditionerstab2" role="tabpanel">
                                     @include('conditioners/edit_tabs/control')
@@ -67,6 +76,7 @@
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/service.js') }}"></script>
     <script>
         const set_status_url = "{{ route('ajax.conditioners.set.status') }}";
         const set_temp_url = "{{ route('ajax.conditioners.set.temp') }}";
@@ -79,6 +89,8 @@
         const tempMax = "{{ $tempSettings['max'] ?? 30 }}";
 
         $(document).ready(function () {
+            serviceInit();
+
             $("#auto_sel_id_room").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $('#conditioner_form input[name=status]').change(function() {

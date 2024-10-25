@@ -8,6 +8,7 @@ use App\Repositories\RoomRepository;
 use App\Services\ConditionerService;
 use App\Repositories\ModbusRepository;
 use App\Repositories\ConditionerRepository;
+use App\Repositories\AliceDevicesRepository;
 use App\Http\Requests\Conditioner\CreateRequest;
 use App\Http\Requests\Conditioner\UpdateRequest;
 
@@ -17,7 +18,8 @@ class ConditionerController extends Controller
         private RoomRepository $roomRep,
         private ModbusRepository $modbusRep,
         private ConditionerService $service,
-        private ConditionerRepository $conditionersRep
+        private ConditionerRepository $conditionersRep,
+        private AliceDevicesRepository $aliceRepository
     ) {
     }
 
@@ -32,6 +34,8 @@ class ConditionerController extends Controller
     {
         $conditioner = Conditioner::findOrFail($id);
         $conditionerType = $conditioner->relatedType;
+        $alice = $this->aliceRepository
+            ->getNameAndRoomByObject($conditioner->id_object);
 
         $rooms = $this->roomRep->getAllWithoutCommonToArray();
         $tab = request()->input('tab') ?? 'main';
@@ -67,7 +71,7 @@ class ConditionerController extends Controller
         }
 
         return view('conditioners.edit', compact(
-            'conditioner', 'rooms', 'tab', 'tempSettings',
+            'conditioner', 'rooms', 'tab', 'tempSettings', 'alice',
             'modeSettings', 'fanSettings', 'vdirSettings', 'hdirSettings',
         ));
     }
