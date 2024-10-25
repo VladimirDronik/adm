@@ -127,10 +127,14 @@
             });
 
             $('#modbusWrite').click(function() {
-                $.ajax({
-                    url: modbus_write_url,
-                    data: { '_token': _token, 'id': id, 'value': $('#register_form input[name=modbus_write]').val() },
-                });
+                var value = $('#register_form input[name=modbus_write]').val();
+
+                if (value) {
+                    $.ajax({
+                        url: modbus_write_url,
+                        data: { '_token': _token, 'id': id, 'value': value },
+                    });
+                }
             });
         });
     </script>

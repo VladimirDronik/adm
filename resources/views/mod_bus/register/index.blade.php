@@ -182,23 +182,25 @@
                 var value = $('#modbus_write_' + id).val();
                 var units = $(this).attr('data-units');
 
-                $.ajax({
-                    url: modbus_write_url,
-                    data: { '_token': _token, 'id': id, 'value': value },
-                    success: function (data) {
-                        $('#modbus_write_' + id).val('');
+                if (value) {
+                    $.ajax({
+                        url: modbus_write_url,
+                        data: { '_token': _token, 'id': id, 'value': value },
+                        success: function (data) {
+                            $('#modbus_write_' + id).val('');
 
-                        if (data.result) {
-                            $('#last_value_' + id).text(value + ' ' + units);
-                        } else {
-                            showErrorModal(data.response ?? 'Нет ответа от устройства');
+                            if (data.result) {
+                                $('#last_value_' + id).text(value + ' ' + units);
+                            } else {
+                                showErrorModal(data.response ?? 'Нет ответа от устройства');
+                            }
+                        },
+                        error: function (error) {
+                            $('#modbus_write_' + id).val('');
+                            showErrorModal('Сервер временно недоступен');
                         }
-                    },
-                    error: function (error) {
-                        $('#modbus_write_' + id).val('');
-                        showErrorModal('Сервер временно недоступен');
-                    }
-                });
+                    });
+                }
             });
         });
     </script>
