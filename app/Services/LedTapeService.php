@@ -69,6 +69,17 @@ class LedTapeService
             $ledTape->name = $newName;
             $ledTape->room = $data['room'];
             $ledTape->save();
+
+            //Сохраняем данные в таблицу Алисы или включаем запись если она есть уже
+            if (isset($data['alice_checkbox'])) {
+                AliceDevicesService::addOrReplaceDevice(
+                    $ledTape->id_object,
+                    $data['alice_command'],
+                    $data['room']
+                );
+            } else {
+                AliceDevicesService::setActive($ledTape->id_object, 0);
+            }
         });
 
         return $ledTape->id;

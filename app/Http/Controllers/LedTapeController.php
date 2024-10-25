@@ -10,6 +10,7 @@ use App\Services\LedTapeService;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\RoomRepository;
 use App\Repositories\DeviceRepository;
+use App\Repositories\AliceDevicesRepository;
 
 class LedTapeController extends Controller
 {
@@ -18,16 +19,19 @@ class LedTapeController extends Controller
         private DeviceRepository $deviceRep,
         private PortService $portService,
         private DeviceService $deviceService,
-        private RoomRepository $roomRep
+        private RoomRepository $roomRep,
+        private AliceDevicesRepository $aliceRepository
     ) {
     }
 
-    public function edit(int $id)
+    public function edit(int $id, int $tab = 1)
     {
         $ledTape = LedTape::findOrFail($id);
         $rooms = $this->roomRep->getAllWithoutCommonToArray();
+        $alice = $this->aliceRepository
+            ->getNameAndRoomByObject($ledTape->id_object);
 
-        return view('led_tapes.edit', compact('ledTape', 'rooms'));
+        return view('led_tapes.edit', compact('ledTape', 'rooms', 'tab', 'alice'));
     }
 
     public function create()
