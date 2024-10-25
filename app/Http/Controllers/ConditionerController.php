@@ -36,18 +36,22 @@ class ConditionerController extends Controller
         $rooms = $this->roomRep->getAllWithoutCommonToArray();
         $tab = request()->input('tab') ?? 'main';
 
-        $tempSettings = json_decode($conditionerType->temperature, true);
+        $tempSettings = $conditionerType->temperature ? json_decode($conditionerType->temperature, true) : [];
         $modeSettings = [];
         $fanSettings = [];
         $vdirSettings = [];
         $hdirSettings = [];
 
-        foreach (json_decode($conditionerType->mode, true) as $key => $value) {
-            $modeSettings[$key] = $key;
+        if ($conditionerType->mode) {
+            foreach (json_decode($conditionerType->mode, true) as $key => $value) {
+                $modeSettings[$key] = $key;
+            }
         }
 
-        foreach (json_decode($conditionerType->fan, true) as $key => $value) {
-            $fanSettings[$key] = $key;
+        if ($conditionerType->fan) {
+            foreach (json_decode($conditionerType->fan, true) as $key => $value) {
+                $fanSettings[$key] = $key;
+            }
         }
 
         if ($conditionerType->vdir) {
