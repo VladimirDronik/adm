@@ -291,10 +291,6 @@ class SlaverService
         if ($daliDevice && $daliDevice->id_object && $cct) {
             chdir(env('SERVER_FOLDER').'/scripts');
             exec('php dali_set_cct.php '.$daliDevice->id_object.' '.$cct, $output, $resultCode);
-
-            if ($resultCode === 0) {
-                $daliDevice->update(['cct' => $cct]);
-            }
         }
 
         return [

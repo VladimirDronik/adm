@@ -51,7 +51,7 @@
                                 <div class="form-group row ">
                                     <label class="control-label text-right col-md-3 label-fix" for="brightness">Яркость:</label>
                                     <div class="col-md-9">
-                                        <input class="form-control" style="width: 30%; display: inline-block;" autocomplete="off" name="brightness" type="number" min="0" max="255" value="{{ old('brightness', $daliDevice->brightness) }}">
+                                        <input class="form-control" style="width: 30%; display: inline-block;" autocomplete="off" name="brightness" type="number" min="0" max="100" value="{{ old('brightness', $daliDevice->brightness) }}">
                                         <button type="button" class="btn btn-success m-b-10 m-l-5" id="setBrightness">Применить</button>
                                     </div>
                                 </div>
@@ -60,7 +60,7 @@
                                     <div class="form-group row ">
                                         <label class="control-label text-right col-md-3 label-fix" for="cct">Цветовая температура:</label>
                                         <div class="col-md-9">
-                                            <input class="form-control" style="width: 30%; display: inline-block;" autocomplete="off" name="cct" type="number" min="0" max="65535" value="{{ old('cct', $daliDevice->cct) }}">
+                                            <input class="form-control" style="width: 30%; display: inline-block;" autocomplete="off" name="cct" type="number" min="1000" max="10000" value="{{ old('cct', $daliDevice->cct) }}">
                                             <button type="button" class="btn btn-success m-b-10 m-l-5" id="setCct">Применить</button>
                                         </div>
                                     </div>
@@ -110,31 +110,43 @@
             });
 
             $('#setBrightness').click(function () {
-                $.ajax({
-                    url: '{{ route('ajax.mod_bus.slavers.set_brightness') }}',
-                    data: {'_token': _token, 'id': id, 'brightness': $('#dali_device_form [name=brightness]').val()},
-                        success: function (data) {
-                            if (data.result) {
-                                window.location.reload();
-                            } else {
-                                showErrorModal(data.message ?? 'Ошибка установки яркости');
+                var value = $('#dali_device_form [name=brightness]').val();
+
+                if (value && value >= 0 && value <= 100) {
+                    $.ajax({
+                        url: '{{ route('ajax.mod_bus.slavers.set_brightness') }}',
+                        data: {'_token': _token, 'id': id, 'brightness': value},
+                            success: function (data) {
+                                if (data.result) {
+                                    window.location.reload();
+                                } else {
+                                    showErrorModal(data.message ?? 'Ошибка установки яркости');
+                                }
                             }
-                        }
-                });
+                    });
+                } else {
+                    showErrorModal('Значение яркости должно быть целым числом в диапазоне от 0 до 100');
+                }
             });
 
             $('#setCct').click(function () {
-                $.ajax({
-                    url: '{{ route('ajax.mod_bus.slavers.set_cct') }}',
-                    data: {'_token': _token, 'id': id, 'cct': $('#dali_device_form [name=cct]').val()},
-                        success: function (data) {
-                            if (data.result) {
-                                window.location.reload();
-                            } else {
-                                showErrorModal(data.message ?? 'Ошибка установки цветовой температуры');
+                var value = $('#dali_device_form [name=cct]').val();
+
+                if (value && value >= 1000 && value <= 10000) {
+                    $.ajax({
+                        url: '{{ route('ajax.mod_bus.slavers.set_cct') }}',
+                        data: {'_token': _token, 'id': id, 'cct': value},
+                            success: function (data) {
+                                if (data.result) {
+                                    window.location.reload();
+                                } else {
+                                    showErrorModal(data.message ?? 'Ошибка установки цветовой температуры');
+                                }
                             }
-                        }
-                });
+                    });
+                } else {
+                    showErrorModal('Значение цветовой температуры должно быть целым числом в диапазоне от 1000 до 10000');
+                }
             });
         });
     </script>
