@@ -7,14 +7,14 @@ use App\Models\ExtensionModuleType;
 
 class ExtensionModuleRepository
 {
-    public function getPortsForModuleByStatus(Device $device, string $status): array
+    public function getPortsForModuleByStatus(Device $device, string $status)
     {
         return $device->ports()
             ->where('status', $status)
             ->pluck('num_port');
     }
 
-    public function getModuleTypes(): array
+    public function getModuleTypes()
     {
         return ExtensionModuleType::pluck('name', 'id');
     }
