@@ -99,7 +99,7 @@ class DeviceRepository
             ->id;
     }
 
-    public static function getDevByIdDevice(int $id): array
+    public static function getDevByIdDevice(?int $id): array
     {
         $device = Device::where('id', $id)->first();
         $type = '';

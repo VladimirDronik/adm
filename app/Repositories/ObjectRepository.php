@@ -76,7 +76,7 @@ class ObjectRepository
             ->first();
     }
 
-    public static function getById(int $idObject): ?HomeObject
+    public static function getById(?int $idObject): ?HomeObject
     {
         return HomeObject::find($idObject);
     }

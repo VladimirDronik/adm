@@ -35,6 +35,10 @@ class UpdateRequest extends FormRequest
             'id_object' => 'required|integer|min:1',
         ];
 
+        if ($this->request->get('placetype') == 'usensor') {
+            $rules['usensor_id'] = 'required|integer|exists:usensors,id_object';
+        }
+
         $ids = ['object', 'method_on', 'method_off'];
         foreach ($ids as $id) {
             $rules[$id] = 'nullable|integer|min:1';
