@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     @includeIf('components.breadcrumbs',
-        ['title' => 'Редактирование устройства DALI № '. $daliDevice->id,
+        ['title' => 'Редактирование устройства DALI № '. $daliDevice->id_object,
         'links' => [ route('illumination.index') => 'Устройства освещения'],
         'last_link' => 'Редактирование устройства DALI'])
 @endsection
