@@ -263,7 +263,7 @@ class SlaverService
 
         $daliDevice = DaliDevice::find($daliId);
 
-        if ($daliDevice && $daliDevice->id_object && $brightness) {
+        if ($daliDevice && $daliDevice->id_object && $brightness !== null) {
             chdir(env('SERVER_FOLDER').'/scripts');
             exec('php dali_set_brightness.php '.$daliDevice->id_object.' '.$brightness, $output, $resultCode);
 
