@@ -118,6 +118,12 @@ class ModbusSlaversTypesSeeder extends Seeder
                 'purpose' => 'heat',
                 'relay' => 0,
             ],
+            [
+                'type' => 'es-brxx-01',
+                'name' => 'EctoControl Adapter',
+                'purpose' => 'heat',
+                'relay' => 0,
+            ],
         ];
     }
 
