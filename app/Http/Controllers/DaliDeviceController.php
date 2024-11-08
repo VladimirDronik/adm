@@ -4,25 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Models\DaliDevice;
 use Illuminate\Http\Request;
-use App\Repositories\RoomRepository;
-use App\Services\Modbus\SlaverService;
 use Illuminate\Support\Facades\Log;
+use App\Repositories\RoomRepository;
+use App\Repositories\ModbusRepository;
+use App\Services\Modbus\SlaverService;
 
 class DaliDeviceController extends Controller
 {
     public function __construct(
         private SlaverService $service,
-        private RoomRepository $roomRep
+        private RoomRepository $roomRep,
+        private ModbusRepository $modbusRep
     ) {
     }
 
     public function edit($id)
     {
         $daliDevice = DaliDevice::findOrFail($id);
+
+        if ($daliDevice->is_group) {
+            $daliDevices = $this->modbusRep
+                ->getDaliDevicesNotRelatedToCurrentGroupToArray($daliDevice->id);
+        } else {
+            $daliDevices = [];
+        }
+
         $rooms = $this->roomRep->getAllWithoutCommonToArray();
 
         return view('mod_bus.dali_device.edit', compact(
-            'daliDevice', 'rooms'
+            'daliDevice', 'rooms', 'daliDevices'
         ));
     }
 

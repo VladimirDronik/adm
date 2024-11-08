@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\ModbusBus;
+use App\Models\DaliDevice;
 use App\Models\ModbusSlaver;
 use App\Models\ModbusRegister;
 use App\Models\ModbusSlaversType;
@@ -104,6 +105,17 @@ class ModbusRepository
         return ModbusRegister::where('slaver_id', $slaverId)
             ->orderBy('name')
             ->pluck('name', 'id')
+            ->toArray();
+    }
+
+    public function getDaliDevicesNotRelatedToCurrentGroupToArray(int $currentDeviceId): array
+    {
+        return DaliDevice::whereDoesntHave('groups', function ($query) use ($currentDeviceId) {
+            $query->where('id', $currentDeviceId);
+        })
+            ->where('is_group', 0)
+            ->orderBy('name')
+            ->pluck('name', 'id_object')
             ->toArray();
     }
 }

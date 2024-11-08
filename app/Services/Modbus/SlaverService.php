@@ -175,7 +175,9 @@ class SlaverService
             }
 
             $daliDevice->name = $newName;
-            $daliDevice->room = $data['room'];
+            if (array_key_exists('room', $data)) {
+                $daliDevice->room = $data['room'];
+            }
 
             $daliDevice->save();
         });
@@ -365,7 +367,7 @@ class SlaverService
         $registersData = [];
 
         for ($address = 0; $address < 64; $address++) {
-            $registers = [
+            $addressRegisters = [
                 [
                     'slaver_id' => $slaverId,
                     'name' => 'Установка уровня яркости устройства А'.$address,
@@ -478,7 +480,102 @@ class SlaverService
                 ],
             ];
 
-            $registersData = array_merge($registersData, $registers);
+            $registersData = array_merge($registersData, $addressRegisters);
+        }
+
+        for ($group = 0; $group < 16; $group++) {
+            $groupRegisters = [
+                [
+                    'slaver_id' => $slaverId,
+                    'name' => 'Установка уровня яркости группы G'.$group,
+                    'alias' => 'dali_set_brightness_g'.$group,
+                    'starting_address' => 2000 + $group * 5,
+                    'access' => 'rw',
+                    'register_type' => 'holding',
+                    'registers_quantity' => 1,
+                    'data_format' => 'u16',
+                    'is_system' => 1,
+                ],
+                [
+                    'slaver_id' => $slaverId,
+                    'name' => 'Команда управления группой G'.$group,
+                    'alias' => 'dali_send_cmd_g'.$group,
+                    'starting_address' => 2001 + $group * 5,
+                    'access' => 'rw',
+                    'register_type' => 'holding',
+                    'registers_quantity' => 1,
+                    'data_format' => 'u16',
+                    'is_system' => 1,
+                ],
+                [
+                    'slaver_id' => $slaverId,
+                    'name' => 'Присутствие на шине устройств, входящих в группу G'.$group,
+                    'alias' => 'dali_is_on_bus_g'.$group,
+                    'starting_address' => 2002 + $group * 5,
+                    'access' => 'ro',
+                    'register_type' => 'holding',
+                    'registers_quantity' => 1,
+                    'data_format' => 'u16',
+                    'is_system' => 1,
+                ],
+                [
+                    'slaver_id' => $slaverId,
+                    'name' => 'Запрос исправности группы G'.$group,
+                    'alias' => 'dali_get_failure_g'.$group,
+                    'starting_address' => 2003 + $group * 5,
+                    'access' => 'ro',
+                    'register_type' => 'holding',
+                    'registers_quantity' => 1,
+                    'data_format' => 'u16',
+                    'is_system' => 1,
+                ],
+                [
+                    'slaver_id' => $slaverId,
+                    'name' => 'Запрос состояния группы G'.$group,
+                    'alias' => 'dali_get_state_g'.$group,
+                    'starting_address' => 2004 + $group * 5,
+                    'access' => 'ro',
+                    'register_type' => 'holding',
+                    'registers_quantity' => 1,
+                    'data_format' => 'u16',
+                    'is_system' => 1,
+                ],
+                [
+                    'slaver_id' => $slaverId,
+                    'name' => 'Установка цветовой температуры группе G'.$group,
+                    'alias' => 'dali_set_temperature_g'.$group,
+                    'starting_address' => 2620 + $group * 5,
+                    'access' => 'rw',
+                    'register_type' => 'holding',
+                    'registers_quantity' => 1,
+                    'data_format' => 'u16',
+                    'is_system' => 1,
+                ],
+                [
+                    'slaver_id' => $slaverId,
+                    'name' => 'Регулирование цветовой температурой группы G'.$group,
+                    'alias' => 'dali_set_temperature_by_step_g'.$group,
+                    'starting_address' => 2621 + $group * 5,
+                    'access' => 'rw',
+                    'register_type' => 'holding',
+                    'registers_quantity' => 1,
+                    'data_format' => 'u16',
+                    'is_system' => 1,
+                ],
+                [
+                    'slaver_id' => $slaverId,
+                    'name' => 'Проверка присутствия в группе G'.$group.' светильников с изменяемой цветовой температурой',
+                    'alias' => 'dali_is_cct_in_g'.$group,
+                    'starting_address' => 2622 + $group * 5,
+                    'access' => 'ro',
+                    'register_type' => 'holding',
+                    'registers_quantity' => 1,
+                    'data_format' => 'u16',
+                    'is_system' => 1,
+                ],
+            ];
+
+            $registersData = array_merge($registersData, $groupRegisters);
         }
 
         ModbusRegister::insert($registersData);
@@ -554,6 +651,54 @@ class SlaverService
 
         chdir(env('SERVER_FOLDER').'/scripts');
         exec('php modbus_check_availability.php '.$slaverId, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
+
+    /**
+     * Добавление устройства DALI в группу
+     */
+    public function addDaliDeviceToGroup(int $daliDeviceIdObject, int $groupIdObject, int $groupAddress): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php dali_add_to_group.php '.$daliDeviceIdObject.' '.$groupAddress, $output, $resultCode);
+
+        if ($resultCode === 0) {
+            DB::table('dali_device_group')->insert([
+                'dali_device_id' => $daliDeviceIdObject,
+                'group_id' => $groupIdObject,
+            ]);
+        }
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
+
+    /**
+     * Удаление устройства DALI из группы
+     */
+    public function removeDaliDeviceFromGroup(int $daliDeviceIdObject, int $groupIdObject, int $groupAddress): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php dali_del_from_group.php '.$daliDeviceIdObject.' '.$groupAddress, $output, $resultCode);
+
+        if ($resultCode === 0) {
+            DB::table('dali_device_group')->where([
+                'dali_device_id' => $daliDeviceIdObject,
+                'group_id' => $groupIdObject,
+            ])->delete();
+        }
 
         return [
             'code' => $resultCode,

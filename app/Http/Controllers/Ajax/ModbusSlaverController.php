@@ -93,4 +93,36 @@ class ModbusSlaverController extends Controller
             'message' => array_key_exists(0, $response['output']) ? $response['output'][0] : null,
         ]);
     }
+
+    public function addDaliDeviceToGroup(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['dali_device_id_object', 'group_id_object', 'group_address']), 400);
+
+        $response = $this->service->addDaliDeviceToGroup(
+            (int) $r->dali_device_id_object,
+            (int) $r->group_id_object,
+            (int) $r->group_address
+        );
+
+        return response()->json([
+            'result' => $response['code'] === 0,
+            'message' => array_key_exists(0, $response['output']) ? $response['output'][0] : null,
+        ]);
+    }
+
+    public function removeDaliDeviceFromGroup(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['dali_device_id_object', 'group_id_object', 'group_address']), 400);
+
+        $response = $this->service->removeDaliDeviceFromGroup(
+            (int) $r->dali_device_id_object,
+            (int) $r->group_id_object,
+            (int) $r->group_address
+        );
+
+        return response()->json([
+            'result' => $response['code'] === 0,
+            'message' => array_key_exists(0, $response['output']) ? $response['output'][0] : null,
+        ]);
+    }
 }

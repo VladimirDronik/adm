@@ -27,4 +27,22 @@ class DaliDevice extends Model
     {
         return $this->belongsTo(ModbusSlaver::class, 'dali_gateway', 'id');
     }
+
+    public function daliDevices()
+    {
+        return $this->belongsToMany(
+            DaliDevice::class, 'dali_device_group',
+            'group_id', 'dali_device_id',
+            'id_object', 'id_object'
+        );
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany(
+            DaliDevice::class, 'dali_device_group',
+            'dali_device_id', 'group_id',
+            'id_object', 'id_object'
+        );
+    }
 }
