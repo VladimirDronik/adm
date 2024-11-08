@@ -101,6 +101,10 @@ class ObjtypesTableSeeder extends Seeder
                 'name' => ObjType::TYPE_DALI,
                 'label' => 'Устройство DALI',
             ],
+            [
+                'name' => ObjType::TYPE_SENSOR,
+                'label' => 'Датчик',
+            ],
         ];
     }
 
