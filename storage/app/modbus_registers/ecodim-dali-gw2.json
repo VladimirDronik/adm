@@ -244,7 +244,7 @@
     "scale_unit": null,
     "comment": "",
     "is_system": 1,
-    "alias": ""
+    "alias": "dali_direct_status"
   },
   {
     "name": "DALI команда в «прозрачном» режиме",
@@ -257,7 +257,7 @@
     "scale_unit": null,
     "comment": "",
     "is_system": 1,
-    "alias": ""
+    "alias": "dali_direct_cmd"
   },
   {
     "name": "Ответ в «прозрачном» режиме",
@@ -270,7 +270,7 @@
     "scale_unit": null,
     "comment": "",
     "is_system": 1,
-    "alias": ""
+    "alias": "dali_direct_response"
   },
   {
     "name": "Состояние реле №1",
