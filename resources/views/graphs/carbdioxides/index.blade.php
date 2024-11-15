@@ -35,7 +35,7 @@
         </div>
         <div class="card">
             <div class="card-body">
-                @if(count($data) && (count($data['rooms']) || count($data['other_pressurestats'])))
+                @if(count($data) && (count($data['rooms']) || count($data['other_carbdioxides'])))
                     @foreach($data['rooms'] as $room)
                         <h3>Помещение «{{ $room->name }}»</h3>
                         @if(count($room->carbdioxides))
@@ -52,9 +52,9 @@
                         @endif
                         <hr>
                     @endforeach
-                    @if(count($data['other_pressurestats']))
+                    @if(count($data['other_carbdioxides']))
                         <h3>Остальные датчики углекислого газа</h3>
-                        @foreach($data['other_pressurestats'] as $carbdioxide)
+                        @foreach($data['other_carbdioxides'] as $carbdioxide)
                             @include('graphs.carbdioxides.period', compact('carbdioxide'))
                             <div class="row">
                                 <div class="col col-md-12">
@@ -159,7 +159,7 @@
                 @endforeach
             @endforeach
 
-            @foreach($data['other_pressurestats'] as $carbdioxide)
+            @foreach($data['other_carbdioxides'] as $carbdioxide)
                 $('#select_period{{$carbdioxide->id}}').change();
             @endforeach
         });
