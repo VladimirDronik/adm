@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Method;
 use App\Models\Termostat;
 use App\Models\HomeObject;
+use App\Models\ObjType;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\ObjectRepository;
 
@@ -211,5 +212,12 @@ class ObjectService
         }
 
         return null;
+    }
+
+    public function sensorDelete(int $id)
+    {
+        return HomeObject::where('type', ObjType::TYPE_SENSOR)
+            ->where('id', $id)
+            ->delete();
     }
 }

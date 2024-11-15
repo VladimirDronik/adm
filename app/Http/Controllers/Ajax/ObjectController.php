@@ -137,4 +137,16 @@ class ObjectController extends Controller
     {
         $portRep->updateObject($r->all());
     }
+
+    /**
+     * Удаление объекта датчика
+     */
+    public function sensorDelete(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id']), 400);
+
+        return response()->json([
+            'result' => (bool) $this->service->sensorDelete((int) $r->id),
+        ]);
+    }
 }

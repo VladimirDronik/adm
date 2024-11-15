@@ -5,6 +5,14 @@
             <div class="card-body">
                 <ul class="nav nav-pills">
                     <li class="nav-item">
+                        <a class="nav-link @if($active == 'sensors') active show @endif" href="{{ route('sensors.index') }}">
+                            <span>
+                                <i class="fa fa-tasks"></i>
+                                Датчики ({{ $detectorsService->getSensorsCount() }})
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link @if($active == 'termostats') active show @endif" href="{{ route('termostats.index') }}">
                             <span>
                                 <img width="22" height="20" title="" src="{{ asset('ela/images/objects/termostat.png') }}">

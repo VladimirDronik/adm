@@ -60,6 +60,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('time_zone', 'TimeZoneSettingController')->except('show', 'destroy', 'index')->middleware('can:settings');
     Route::resource('scenes', 'SceneController')->except('show', 'destroy')->middleware('can:scenes');
     Route::resource('termostats', 'TermostatController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('sensors', 'SensorController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('hygrostats', 'HygrostatController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('motionsensors', 'MotionsensorsController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('lightstats', 'LightstatController')->except('show', 'destroy')->middleware('can:devices');
@@ -301,6 +302,10 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('delete', 'ObjectController@delete')->name('delete');
             Route::post('delete/all', 'ObjectController@deleteAll')->name('delete.all');
             Route::post('store', 'ObjectController@store')->name('store');
+
+            Route::group(['prefix' => 'sensor', 'as' => 'sensor.'], function () {
+                Route::post('delete', 'ObjectController@sensorDelete')->name('delete');
+            });
         });
 
         Route::post('view_objects/view/all', 'ViewObjectController@getViewAll')->name('view_objects.view.all');

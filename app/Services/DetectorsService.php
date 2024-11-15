@@ -2,12 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\ObjType;
 use App\Models\Usensor;
 use App\Models\Manometr;
 use App\Models\Hygrostat;
 use App\Models\Lightstat;
 use App\Models\Termostat;
 use App\Models\Drycontact;
+use App\Models\HomeObject;
 use App\Models\Carbdioxide;
 use App\Models\Carbmonoxide;
 use App\Models\Motionsensor;
@@ -63,5 +65,10 @@ class DetectorsService
     public function getCarbdioxidesCount(): int
     {
         return Carbdioxide::count();
+    }
+
+    public function getSensorsCount(): int
+    {
+        return HomeObject::where('type', ObjType::TYPE_SENSOR)->count();
     }
 }

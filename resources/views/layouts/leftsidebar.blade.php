@@ -50,7 +50,7 @@
                         </a>
                         <ul aria-expanded="false" class="collapse">
                             <li>
-                                <a href="{{ route('termostats.index') }}">
+                                <a href="{{ route('sensors.index') }}">
                                     <i class="fa fa-tasks"></i>
                                     Датчики
                                 </a>
