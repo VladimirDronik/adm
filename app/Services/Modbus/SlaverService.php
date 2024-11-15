@@ -306,7 +306,7 @@ class SlaverService
      */
     private function createDaliDevicesObjectsAndMethods(): void
     {
-        $daliDevices = DaliDevice::get();
+        $daliDevices = DaliDevice::where('is_group', 0)->get();
 
         if ($daliDevices->isNotEmpty()) {
             $scripts = ScriptsTableSeeder::getDaliDeviceScripts();
@@ -704,5 +704,54 @@ class SlaverService
             'code' => $resultCode,
             'output' => $output,
         ];
+    }
+
+    /**
+     * Создание группы DALI
+     */
+    public function createDaliDeviceGroup(int $slaverId, int $groupAddress): void
+    {
+        $name = 'Группа G(' . $groupAddress . ')';
+        $uniqueName = HomeObject::getUniqueObjectName(0, $name);
+
+        $object = HomeObject::create([
+            'name' => $uniqueName,
+            'type' => ObjType::TYPE_DALI,
+            'status' => 'on',
+            'is_system' => 1,
+        ]);
+
+        DaliDevice::create([
+            'id_object' => $object->id,
+            'name' => $name,
+            'type' => 255,
+            'dali_gateway' => $slaverId,
+            'address' => $groupAddress,
+            'failure' => 0,
+            'brightness' => 0,
+            'is_cct' => 0,
+            'is_group' => 1,
+        ]);
+    }
+
+    /**
+     * Удаление группы DALI
+     */
+    public function removeDaliDeviceGroup(int $groupId): bool
+    {
+        $result = false;
+        $daliDeviceGroup = DaliDevice::where('is_group', 1)
+            ->where('id', $groupId)
+            ->first();
+
+        if ($daliDeviceGroup) {
+            if ($daliDeviceGroup->id_object) {
+                $result = $daliDeviceGroup->object->delete();
+            } else {
+                $result = $daliDeviceGroup->delete();
+            }
+        }
+
+        return $result;
     }
 }

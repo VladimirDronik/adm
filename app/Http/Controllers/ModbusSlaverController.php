@@ -38,6 +38,30 @@ class ModbusSlaverController extends Controller
         $buses = $this->modbusRep->getAllBusesToArray();
         $wbLedOperModes = ModbusSlaver::getWbLedOperModes();
         $wbLedModeRegisterId = null;
+        $daliDeviceGroups = null;
+        $daliDeviceGroupsSelection = [];
+
+        if ($slaver->relatedType->type == 'ecodim-dali-gw2') {
+            $daliDeviceGroups = $slaver->daliDevices()->where('is_group', 1)->get();
+            $existingGroupsAddress = $daliDeviceGroups->pluck('address')->toArray();
+
+            $daliDeviceGroupsSelection = array_filter(
+                [
+                    'Группа 0', 'Группа 1',
+                    'Группа 2', 'Группа 3',
+                    'Группа 4', 'Группа 5',
+                    'Группа 6', 'Группа 7',
+                    'Группа 8', 'Группа 9',
+                    'Группа 10', 'Группа 11',
+                    'Группа 12', 'Группа 13',
+                    'Группа 14', 'Группа 15',
+                ],
+                function ($key) use ($existingGroupsAddress) {
+                    return !in_array($key, $existingGroupsAddress);
+                },
+                ARRAY_FILTER_USE_KEY
+            );
+        }
 
         if ($slaver->relatedType->type == 'wb-led') {
             $wbLedModeRegister = $slaver->registers()->where('alias', 'wb_led_mode')->first();
@@ -45,7 +69,8 @@ class ModbusSlaverController extends Controller
         }
 
         return view('mod_bus.slaver.edit', compact(
-            'slaver', 'types', 'buses', 'wbLedOperModes', 'wbLedModeRegisterId'
+            'slaver', 'types', 'buses', 'wbLedOperModes',
+            'wbLedModeRegisterId', 'daliDeviceGroups', 'daliDeviceGroupsSelection'
         ));
     }
 

@@ -120,6 +120,8 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::post('set_cct', 'ModbusSlaverController@setCct')->name('set_cct');
                 Route::post('add_dali_device_to_group', 'ModbusSlaverController@addDaliDeviceToGroup')->name('add_dali_device_to_group');
                 Route::post('remove_dali_device_from_group', 'ModbusSlaverController@removeDaliDeviceFromGroup')->name('remove_dali_device_from_group');
+                Route::post('create_dali_device_group', 'ModbusSlaverController@createDaliDeviceGroup')->name('create_dali_device_group');
+                Route::post('remove_dali_device_group', 'ModbusSlaverController@removeDaliDeviceGroup')->name('remove_dali_device_group');
             });
             Route::group(['prefix' => 'registers', 'as' => 'registers.'], function () {
                 Route::post('delete', 'ModbusRegisterController@delete')->name('delete');

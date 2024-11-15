@@ -56,8 +56,56 @@
 
                             <button type="button" class="btn btn-success m-b-10 m-l-5" @if(\App\Models\DaliDevice::exists()) id="networkAssemblyBtn" @else id="redirectToStartNetworkAssembly" @endif>Сборка сети</button>
                             <button type="button" class="btn btn-success m-b-10 m-l-5" id="startNetworkExpansion">Расширение сети</button>
-
-                            <br><br><br><br>
+                            <br><br>
+                            <h4>Группы:</h4>
+                            @if($daliDeviceGroups && $daliDeviceGroups->isNotEmpty())
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 50%;">Название</th>
+                                            <th style="width: 40%;">Адрес</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($daliDeviceGroups as $daliDeviceGroup)
+                                        <tr id="tr{{$daliDeviceGroup->id}}">
+                                            <td>
+                                                <a href="{{ route('mod_bus.dali_devices.edit', [$daliDeviceGroup->id]) }}">{{ $daliDeviceGroup->name }}</a>
+                                            </td>
+                                            <td>
+                                                G{{ $daliDeviceGroup->address }}
+                                            </td>
+                                            <td align="center">
+                                                <a href="{{ route('mod_bus.dali_devices.edit', [$daliDeviceGroup->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                                    <i class="fa fa-cog fa-lg"></i>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn" data-group_id="{{ $daliDeviceGroup->id }}">
+                                                    <i class="fa fa-trash fa-lg"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            @endif
+                            <br>
+                            <div class="form-group row {{ $errors->has('dali_device_group') ? ' has-error' : '' }}">
+                                <label class="control-label text-right col-md-3 label-fix" for="dali_device_group">Добавить группу:</label>
+                                <div class="col-sm-9">
+                                    <select autocomplete="off" id="auto_sel_dali_device_group" data-placeholder="не выбрано" name="dali_device_group" class="chosen-select form-control" style="width:350px;">
+                                        <option value="">Не выбрано</option>
+                                        @foreach ($daliDeviceGroupsSelection as $id => $daliDeviceName)
+                                            <option value="{{ $id }}">{{ $daliDeviceName }}</option>
+                                        @endforeach
+                                    </select>
+                                    {{ Form::bs_field_error('dali_device_group') }}
+                                    <button type="button" class="btn btn-success m-b-10 m-l-5" id="addDaliDeviceGroup">Добавить</button>
+                                </div>
+                            </div>
                         @elseif($slaver->relatedType->type == 'wb-led')
                             {{ Form::bs_select('wb_led_oper_mode', 'Режим работы*:', $wbLedOperModes, old('wb_led_oper_mode'), ['required' => true]) }}
 
@@ -66,7 +114,6 @@
                     </div>
 
                     {{ Form::bs_submit_btn() }}
-
                     {!! Form::close() !!}
                 </div>
                 <div style="height: 200px;">&nbsp;</div>
@@ -105,6 +152,43 @@
 
         $(document).ready(function () {
             $("#auto_sel_bus").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_dali_device_group").chosen({width:"50%", no_results_text: "Не найдено"});
+
+            $('#addDaliDeviceGroup').click(function () {
+                let group_address = $("#auto_sel_dali_device_group").chosen().val();
+                if (group_address) {
+                    $.ajax({
+                        url: "{{ route('ajax.mod_bus.slavers.create_dali_device_group') }}",
+                        data: {'_token': _token, 'slaver_id': id, 'group_address': group_address},
+                            success: function (data) {
+                                if (data.result) {
+                                    window.location.reload();
+                                } else {
+                                    showErrorModal('Ошибка добавления группы');
+                                }
+                            }
+                    });
+                } else {
+                    showErrorModal('Сначала выберите группу');
+                }
+            });
+
+            $('.del_btn').click(function () {
+                let del_group_id = $(this).attr('data-group_id');
+                if (del_group_id) {
+                    $.ajax({
+                        url: "{{ route('ajax.mod_bus.slavers.remove_dali_device_group') }}",
+                        data: {'_token': _token, 'group_id': del_group_id},
+                            success: function (data) {
+                                if (data.result) {
+                                    window.location.reload();
+                                } else {
+                                    showErrorModal('Ошибка удаления группы');
+                                }
+                            }
+                    });
+                }
+            });
 
             bubbleText({
                 element: $('#content1_modal_body'),
