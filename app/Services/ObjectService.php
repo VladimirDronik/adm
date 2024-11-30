@@ -213,11 +213,4 @@ class ObjectService
 
         return null;
     }
-
-    public function sensorDelete(int $id)
-    {
-        return HomeObject::where('type', ObjType::TYPE_SENSOR)
-            ->where('id', $id)
-            ->delete();
-    }
 }

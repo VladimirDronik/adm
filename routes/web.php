@@ -60,7 +60,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('time_zone', 'TimeZoneSettingController')->except('show', 'destroy', 'index')->middleware('can:settings');
     Route::resource('scenes', 'SceneController')->except('show', 'destroy')->middleware('can:scenes');
     Route::resource('termostats', 'TermostatController')->except('show', 'destroy')->middleware('can:devices');
-    Route::resource('sensors', 'SensorController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('sensors', 'SensorController')->except('show', 'destroy', 'update')->middleware('can:devices');
+    Route::put('sensors/{sensorObject}', 'SensorController@update')->name('sensors.update');
     Route::resource('hygrostats', 'HygrostatController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('motionsensors', 'MotionsensorsController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('lightstats', 'LightstatController')->except('show', 'destroy')->middleware('can:devices');
@@ -121,6 +122,7 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::post('set_cct', 'ModbusSlaverController@setCct')->name('set_cct');
                 Route::post('add_dali_device_to_group', 'ModbusSlaverController@addDaliDeviceToGroup')->name('add_dali_device_to_group');
                 Route::post('remove_dali_device_from_group', 'ModbusSlaverController@removeDaliDeviceFromGroup')->name('remove_dali_device_from_group');
+                Route::post('', 'ModbusSlaverController@getSlavers')->name('get');
             });
             Route::group(['prefix' => 'registers', 'as' => 'registers.'], function () {
                 Route::post('delete', 'ModbusRegisterController@delete')->name('delete');
@@ -304,6 +306,8 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('store', 'ObjectController@store')->name('store');
 
             Route::group(['prefix' => 'sensor', 'as' => 'sensor.'], function () {
+                Route::post('add_param', 'ObjectController@addParam')->name('add_param');
+                Route::post('delete_param', 'ObjectController@deleteParam')->name('delete_param');
                 Route::post('delete', 'ObjectController@sensorDelete')->name('delete');
             });
         });

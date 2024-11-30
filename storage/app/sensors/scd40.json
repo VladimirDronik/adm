@@ -1,0 +1,32 @@
+[
+    {
+        "param": "temperature",
+        "name": "Температура",
+        "get_param": "i2c_dev=scd4x&i2c_par=2",
+        "units": "celsius",
+        "accuracy": 1,
+        "min_range": -10,
+        "graph": 1,
+        "max_range": 60
+    },
+    {
+        "param": "humidity",
+        "name": "Влажность",
+        "get_param": "i2c_dev=scd4x&i2c_par=3",
+        "units": "percent",
+        "accuracy": 0,
+        "min_range": 0,
+        "graph": 1,
+        "max_range": 95
+    },
+    {
+        "param": "gas",
+        "name": "Газ",
+        "get_param": "i2c_dev=scd4x&i2c_par=1",
+        "units": "ppm",
+        "accuracy": 0,
+        "min_range": 400,
+        "graph": 1,
+        "max_range": 2000
+    }
+]

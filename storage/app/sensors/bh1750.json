@@ -1,0 +1,12 @@
+[
+    {
+        "param": "illumination",
+        "name": "Освещение",
+        "get_param": "i2c_dev=bh1750",
+        "units": "lux",
+        "accuracy": 0,
+        "min_range": 0,
+        "graph": 1,
+        "max_range": 65535
+    }
+]

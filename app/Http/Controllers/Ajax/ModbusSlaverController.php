@@ -125,4 +125,16 @@ class ModbusSlaverController extends Controller
             'message' => array_key_exists(0, $response['output']) ? $response['output'][0] : null,
         ]);
     }
+
+    public function getSlavers(Request $r)
+    {
+        abort_if(! ajaxHas($r, []), 400);
+
+        $slavers = $this->modbusRep->getAllSlaversToArray();
+
+        return response()->json([
+            'result' => true,
+            'slavers' => $slavers,
+        ]);
+    }
 }
