@@ -13,7 +13,7 @@ use Database\Seeders\ScriptsTableSeeder;
 class CarbdioxideObjectService
 {
     /**
-     * Автосоздание объекта для датчика углексилого газа
+     * Автосоздание объекта для датчика углекислого газа
      */
     public function createObject(string $name): HomeObject
     {
@@ -43,22 +43,22 @@ class CarbdioxideObjectService
     }
 
     /**
-     * Создание метода 'Проверка датчика углексилого газа' и задачи в расписании 'Проверка датчика углексилого газа' (каждые 5 мин)
+     * Создание метода 'Проверка датчика углекислого газа' и задачи в расписании 'Проверка датчика углекислого газа' (каждые 5 мин)
      */
     public function createCheckMethodWithEvent(int $objectId)
     {
         $scriptId = $this->getOrCreateCheckScriptId();
 
         $methodId = Method::create([
-            'name' => 'Проверка датчика углексилого газа',
+            'name' => 'Проверка датчика углекислого газа',
             'id_object' => $objectId,
-            'comment' => 'Периодическая проверка текущих значений датчика углексилого газа',
+            'comment' => 'Периодическая проверка текущих значений датчика углекислого газа',
             'is_system' => 1,
             'script' => $scriptId,
         ])->id;
 
         $schedulerTaskId = SchedulerTask::create([
-            'name' => 'Проверка датчика углексилого газа',
+            'name' => 'Проверка датчика углекислого газа',
             'is_system' => 1,
             'is_hidden' => 1,
             'object' => $objectId,
