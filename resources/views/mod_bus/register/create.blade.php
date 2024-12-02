@@ -38,7 +38,7 @@
 
                         {{ Form::bs_number('starting_register', 'Начальный адрес*:', old('starting_register'), ['min' => 0, 'max' => 65535, 'required' => true]) }}
 
-                        {{ Form::bs_number('registers_quantity', 'Кол-во регистров*:', old('registers_quantity'), ['min' => 1, 'max' => 100, 'required' => true]) }}
+                        {{ Form::bs_number('registers_quantity', 'Кол-во регистров*:', old('registers_quantity'), ['min' => 1, 'max' => 125, 'required' => true]) }}
 
                         {{ Form::bs_select('data_format', 'Формат данных*:', $dataFormats, old('data_format'), ['required' => true]) }}
 
