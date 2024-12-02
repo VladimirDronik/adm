@@ -31,7 +31,7 @@ class ElementRepository
         return $elements;
     }
 
-    public function parser(string $valueToParsing, $key)
+    public function parser(?string $valueToParsing, $key)
     {
         $inputArray = json_decode($valueToParsing, true);
         if (isset($inputArray[0][$key])) {
