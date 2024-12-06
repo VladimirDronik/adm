@@ -13,6 +13,22 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link @if($active == 'motionsensors') active show @endif" href="{{ route('motionsensors.index') }}">
+                            <span>
+                                <img width="18" height="20" title="" src="{{ asset('ela/images/objects/motionsensor.png') }}">
+                                Датчики движения ({{ $detectorsService->getMotionsensorsCount() }})
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if($active == 'drycontacts') active show @endif" href="{{ route('drycontacts.index') }}">
+                            <span>
+                                <img width="18" height="20" title="" src="{{ asset('ela/images/objects/drycontact.png') }}">
+                                Сухие контакты ({{ $detectorsService->getDrycontactsCount() }})
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link @if($active == 'termostats') active show @endif" href="{{ route('termostats.index') }}">
                             <span>
                                 <img width="22" height="20" title="" src="{{ asset('ela/images/objects/termostat.png') }}">
@@ -33,22 +49,6 @@
                             <span>
                                 <img width="18" height="20" title="" src="{{ asset('ela/images/objects/lightstat.png') }}">
                                 Датчики освещенности ({{ $detectorsService->getLightstatsCount() }})
-                            </span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @if($active == 'motionsensors') active show @endif" href="{{ route('motionsensors.index') }}">
-                            <span>
-                                <img width="18" height="20" title="" src="{{ asset('ela/images/objects/motionsensor.png') }}">
-                                Датчики движения ({{ $detectorsService->getMotionsensorsCount() }})
-                            </span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @if($active == 'drycontacts') active show @endif" href="{{ route('drycontacts.index') }}">
-                            <span>
-                                <img width="18" height="20" title="" src="{{ asset('ela/images/objects/drycontact.png') }}">
-                                Сухие контакты ({{ $detectorsService->getDrycontactsCount() }})
                             </span>
                         </a>
                     </li>
@@ -87,6 +87,14 @@
                         <a class="nav-link @if($active == 'carbdioxides') active show @endif" href="{{ route('carbdioxides.index') }}">
                             <span>
                                 Датчики углекислого газа ({{ $detectorsService->getCarbdioxidesCount() }})
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if($active == 'i2c') active show @endif" href="{{ route('usensors.index') }}">
+                            <span>
+                                <i class="fa fa-microchip"></i>
+                                I2C датчики ({{ $detectorsService->getUsensorsCount() }})
                             </span>
                         </a>
                     </li>

@@ -16,6 +16,7 @@
 
 @section('content')
     <div class="container-fluid">
+        @include('detectors.tab_header', ['active' => 'i2c'])
         <div class="row">
             <div class="col-12">
                 <div class="card">
