@@ -2,13 +2,18 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use App\Models\Port;
+use App\Models\Method;
+use App\Models\Script;
 use App\Models\Sensor;
 use App\Models\ObjType;
 use App\Models\HomeObject;
+use App\Models\SchedulerPoint;
+use App\Models\SchedulerTask;
 use App\Models\SensorsParam;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Database\Seeders\ScriptsTableSeeder;
 
 class SensorService
 {
@@ -99,12 +104,6 @@ class SensorService
                                         'object' => $sensorObject->id,
                                         'comment' => $uniqueName
                                     ]);
-
-                                    Sensor::create([
-                                        'object_id' => $sensorObject->id,
-                                        'name' => 'address',
-                                        'value' => $data['address'],
-                                    ]);
                                     break;
                                 default:
                                     Sensor::create([
@@ -157,20 +156,22 @@ class SensorService
                                 'name' => 'port',
                                 'value' => $data['port'],
                             ]);
+
+                            Port::where('id', $data['port'])->update([
+                                'object' => $sensorObject->id,
+                                'comment' => $uniqueName
+                            ]);
                             break;
                         case '1wbus':
-                            $this->createSensorsParams('ds18b20_1wbus', $sensorObject->id);
-
                             Sensor::create([
                                 'object_id' => $sensorObject->id,
                                 'name' => 'port',
                                 'value' => $data['port'],
                             ]);
 
-                            Sensor::create([
-                                'object_id' => $sensorObject->id,
-                                'name' => 'address',
-                                'value' => $data['address'],
+                            Port::where('id', $data['port'])->update([
+                                'object' => $sensorObject->id,
+                                'comment' => $uniqueName
                             ]);
                             break;
                     }
@@ -202,13 +203,28 @@ class SensorService
                         'value' => $data['sda'],
                     ]);
 
+                    Port::where('id', $data['sda'])->update([
+                        'object' => $sensorObject->id,
+                        'comment' => $uniqueName
+                    ]);
+
                     Sensor::create([
                         'object_id' => $sensorObject->id,
                         'name' => 'scl',
                         'value' => $data['scl'],
                     ]);
+
+                    Port::where('id', $data['scl'])->update([
+                        'object' => $sensorObject->id,
+                        'comment' => $uniqueName
+                    ]);
                     break;
             }
+
+            $this->createCheckMethodWithEvent($sensorObject->id);
+
+            chdir(env('SERVER_FOLDER').'/scripts');
+            exec('php check_sensor.php '.$sensorObject->id);
 
             return $sensorObject->id;
         });
@@ -290,13 +306,6 @@ class SensorService
                         'name' => 'scl',
                     ], ['value' => $data['scl']]);
                 }
-
-                if ($sensorSettings->where('name', 'connection')->first()?->value == '1wbus') {
-                    Sensor::updateOrCreate([
-                        'object_id' => $sensorObject->id,
-                        'name' => 'address',
-                    ], ['value' => $data['address']]);
-                }
             }
 
             return $sensorObject->id;
@@ -374,8 +383,76 @@ class SensorService
         return true;
     }
 
+    public function createAddressParam(array $data)
+    {
+        $sensorsParam = new SensorsParam();
+        $sensorsParam->object_id = $data['object_id'];
+        $sensorsParam->name = 'Температура';
+        $sensorsParam->param = 'temperature';
+        $sensorsParam->get_param = 'cmd=get&addr=' . $data['address'];
+        $sensorsParam->units = 'celsius';
+        $sensorsParam->accuracy = 1;
+        $sensorsParam->graph = 1;
+        $sensorsParam->min_range = -55;
+        $sensorsParam->max_range = 125;
+        $sensorsParam->timestamp = Carbon::now();
+
+        $sensorsParam->save();
+
+        return true;
+    }
+
     public function sensorsParamDelete(int $id)
     {
         return SensorsParam::where('id', $id)->delete();
+    }
+
+    private function getOrCreateCheckSensorScript(): Script
+    {
+        $script = Script::where('link', 'check_sensor.php')
+            ->where('system', 1)
+            ->first();
+
+        if (!$script) {
+            $script = Script::create(
+                ScriptsTableSeeder::getCheckSensorScript()
+            );
+        }
+
+        return $script;
+    }
+
+    /**
+     * Создание метода 'Проверка датчика' и элемента планировщика 'Проверка датчика' (каждую минуту)
+     */
+    private function createCheckMethodWithEvent(int $objectId)
+    {
+        $script = $this->getOrCreateCheckSensorScript();
+
+        $method = Method::create([
+            'name' => 'Проверка датчика',
+            'id_object' => $objectId,
+            'comment' => 'Периодическая проверка текущих значений датчика',
+            'is_system' => 1,
+            'script' => $script->id,
+        ]);
+
+        $schedulerTask = SchedulerTask::create([
+            'name' => 'Проверка датчика',
+            'is_system' => 1,
+            'is_hidden' => 1,
+            'object' => $objectId,
+            'method' => $method->id,
+        ]);
+
+        // каждую минуту
+        SchedulerPoint::create([
+            'id_task' => $schedulerTask->id,
+            'type' => 'c',
+            'time' => '1',
+            'days' => '',
+            'close' => 1,
+            'system' => 1,
+        ]);
     }
 }

@@ -54,10 +54,6 @@
 
                                 {{ Form::bs_autoselect('scl', 'Порт SCL:', [], old('scl', $sensorSettings->where('name', 'scl')->first()?->value), false, false, ['required' => true]) }}
                             @endif
-
-                            @if($sensorSettings->where('name', 'connection')->first()?->value == '1wbus')
-                                {{ Form::bs_number('address', 'Адрес:', old('address', $sensorSettings->where('name', 'address')->first()?->value), ['required' => true]) }}
-                            @endif
                         @endif
 
                         {{ Form::bs_title('Параметры') }}
@@ -97,7 +93,7 @@
                                         class="btn btn-info btn-sm btn-rounded edit_btn">
                                         <i class="fa fa-cog fa-lg"></i>
                                     </button>
-                                        @if($sensorSettings->where('name', 'type')->first()?->value == 'custom')
+                                        @if($sensorSettings->where('name', 'type')->first()?->value == 'custom' || $sensorSettings->where('name', 'connection')->first()?->value == '1wbus')
                                             <button type="button" data-id="{{ $sensorsParam->id }}" class="btn btn-danger btn-rounded btn-sm del_btn">
                                                 <i class="fa fa-trash fa-lg"></i>
                                             </button>
@@ -106,15 +102,21 @@
                                 </div>
                             @endforeach
                         </div>
-                        @if($sensorSettings->where('name', 'type')->first()?->value == 'custom')
-                            <div class="form-group row">
-                                <div class="col-md-12 text-left">
+                        <div class="form-group row">
+                            <div class="col-md-12 text-left">
+                                @if($sensorSettings->where('name', 'type')->first()?->value == 'custom')
                                     <button id="add_btn" type="button" class="btn btn-primary">
                                         <i class="fa fa-plus fa-lg"></i> Добавить параметр
                                     </button>
-                                </div>
+                                @endif
+
+                                @if($sensorSettings->where('name', 'connection')->first()?->value == '1wbus' && $addressParamsCount !== null && $addressParamsCount < 7)
+                                    <button id="add_address_btn" type="button" class="btn btn-primary">
+                                        <i class="fa fa-plus fa-lg"></i> Добавить адрес
+                                    </button>
+                                @endif
                             </div>
-                        @endif
+                        </div>
                     </div>
 
                     {{ Form::bs_submit_btn() }}
@@ -123,11 +125,13 @@
                 <div style="height: 200px;">&nbsp;</div>
                 <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#param_modal">&nbsp;</button>
                 <button type="button" id="init_info_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
+                <button type="button" id="address_init_btn" style="display: none;" data-toggle="modal" data-target="#address_param_modal">&nbsp;</button>
         </div>
     </div>
     @include('components.info_modal')
     @include('components.load_modal')
     @include('sensors.params_modal')
+    @include('sensors.address_params_modal')
     @include('components.del_modal')
 @endsection
 
@@ -213,12 +217,21 @@
                 $('#param_timestamp').val('');
             }
 
+            function clearAddressModal() {
+                $('#address_param_address').val('');
+            }
+
             function showAddModal() {
                 clearModal();
                 $('#div_param_timestamp').attr('hidden', true);
                 $('#param_modal_title').text('Добавление параметра');
                 $('#apply_btn').text('Добавить параметр');
                 init_btn.click();
+            }
+
+            function showAddAddressModal() {
+                clearAddressModal();
+                address_init_btn.click();
             }
 
             function getModalData() {
@@ -241,6 +254,14 @@
                 return data;
             }
 
+            function getAddressModalData() {
+                let data = {};
+
+                data.address = $('#address_param_address').val();
+
+                return data;
+            }
+
             function validateParam(data) {
                 if (data.param === '') {
                     return 'Не указан символьный код';
@@ -252,6 +273,14 @@
 
                 if (data.accuracy === '') {
                     return 'Не указана точность';
+                }
+
+                return '';
+            }
+
+            function validateAddressParam(data) {
+                if (data.address === '') {
+                    return 'Не указан адрес';
                 }
 
                 return '';
@@ -290,6 +319,7 @@
             }
 
             $('#add_btn').click(showAddModal);
+            $('#add_address_btn').click(showAddAddressModal);
 
             $('#apply_btn').click(function() {
                 let data = getModalData();
@@ -304,6 +334,32 @@
 
                 $.ajax({
                     url: "{{ route('ajax.objects.sensor.add_param') }}",
+                    data: {'_token': _token, 'data': data},
+                    success: function (resp) {
+                        if (resp.result) {
+                            location.reload();
+                        }
+                    },
+                    error: function () {
+                        $('#cancel_btn').click();
+                        showErrorModal('Сервер временно недоступен');
+                    }
+                });
+            });
+
+            $('#address_apply_btn').click(function() {
+                let data = getAddressModalData();
+                let message = validateAddressParam(data);
+
+                if (message !== '') {
+                    showModalError(message);
+                    return false;
+                }
+
+                data.object_id = "{{ $sensorObject->id }}"
+
+                $.ajax({
+                    url: "{{ route('ajax.objects.sensor.add_address_param') }}",
                     data: {'_token': _token, 'data': data},
                     success: function (resp) {
                         if (resp.result) {

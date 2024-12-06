@@ -307,6 +307,7 @@ Route::group(['middleware' => ['auth']], function () {
 
             Route::group(['prefix' => 'sensor', 'as' => 'sensor.'], function () {
                 Route::post('add_param', 'ObjectController@addParam')->name('add_param');
+                Route::post('add_address_param', 'ObjectController@addAddressParam')->name('add_address_param');
                 Route::post('delete_param', 'ObjectController@deleteParam')->name('delete_param');
                 Route::post('delete', 'ObjectController@sensorDelete')->name('delete');
             });

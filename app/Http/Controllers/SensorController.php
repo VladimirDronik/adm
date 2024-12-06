@@ -37,6 +37,7 @@ class SensorController extends Controller
         $sensorSettings = $sensorObject->sensors;
         $rooms = $this->roomRepository->getAllWithoutCommonToArray();
         $sources = [];
+        $addressParamsCount = null;
 
         if ($sensorSettings->where('name', 'source')->first()?->value == 'megad') {
             $sources = $this->deviceRepository->getAllByTypesToArray([
@@ -46,8 +47,16 @@ class SensorController extends Controller
             $sources = $this->modbusRepository->getAllSlaversToArray();
         }
 
+        if ($sensorSettings->where('name', 'connection')->first()?->value == '1wbus') {
+            $addressParamsCount = $sensorObject->sensorsParams()
+                ->where('get_param', 'like', 'cmd=get&addr=%')
+                ->whereRaw('LENGTH(get_param) > ?', [strlen('cmd=get&addr=')])
+                ->count();
+        }
+
         return view('sensors.edit', compact(
-            'rooms', 'sensorObject', 'sensorSettings', 'sources'
+            'rooms', 'sensorObject', 'sources',
+            'addressParamsCount', 'sensorSettings'
         ));
     }
 

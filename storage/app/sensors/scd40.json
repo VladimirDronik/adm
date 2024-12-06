@@ -20,7 +20,7 @@
         "max_range": 95
     },
     {
-        "param": "gas",
+        "param": "co2_level",
         "name": "Газ",
         "get_param": "i2c_dev=scd4x&i2c_par=1",
         "units": "ppm",

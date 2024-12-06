@@ -30,7 +30,6 @@ class UpdateRequest extends FormRequest
             'port' => 'nullable|integer|exists:App\Models\Port,id',
             'sda' => 'nullable|integer|exists:App\Models\Port,id',
             'scl' => 'nullable|integer|exists:App\Models\Port,id',
-            'address' => 'nullable|integer',
         ];
     }
 }

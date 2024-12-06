@@ -9,7 +9,7 @@
                     <span id="m_error_text"></span>
                 </div>
                 <input type="hidden" id="param_id" name="param_id" value="">
-                @if($sensorSettings->where('name', 'type')->first()?->value == 'custom')
+                @if($sensorSettings->where('name', 'type')->first()?->value == 'custom' || $sensorSettings->where('name', 'connection')->first()?->value == '1wbus')
                     <div class="form-group row">
                         <label class="control-label text-right col-md-3 label-fix" for="param_name">
                             <strong>Название*:</strong>

@@ -153,6 +153,18 @@ class ObjectController extends Controller
     }
 
     /**
+     * Добавление адреса датчика
+     */
+    public function addAddressParam(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['data']), 400);
+
+        return response()->json([
+            'result' => (bool) $this->sensorService->createAddressParam($r->data),
+        ]);
+    }
+
+    /**
      * Удаление параметра датчика
      */
     public function deleteParam(Request $r)

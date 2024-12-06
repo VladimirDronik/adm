@@ -54,6 +54,16 @@ class ScriptsTableSeeder extends Seeder
         ];
     }
 
+    public static function getCheckSensorScript(): array
+    {
+        return [
+            'name' => 'Проверка датчика',
+            'link' => 'check_sensor.php',
+            'count' => 0,
+            'system' => 1,
+        ];
+    }
+
     public static function getCheckConditionerScript(): array
     {
         return [
@@ -386,6 +396,7 @@ class ScriptsTableSeeder extends Seeder
         $scripts[] = self::getCheckManometrScript();
         $scripts[] = self::getCheckBoilerScript();
         $scripts[] = self::getCameraScripts();
+        $scripts[] = self::getCheckSensorScript();
 
         return $scripts;
     }

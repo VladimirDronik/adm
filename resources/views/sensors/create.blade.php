@@ -52,10 +52,6 @@
                             {{ Form::bs_autoselect('port', 'Порт:', [], old('port'), false, false, []) }}
                         </div>
 
-                        <div id="address_div" hidden>
-                            {{ Form::bs_number('address', 'Адрес:', old('address'), ['required' => true]) }}
-                        </div>
-
                         <div id="sda_div" hidden>
                             {{ Form::bs_autoselect('sda', 'Порт SDA:', [], old('sda'), false, false, []) }}
                         </div>
@@ -145,8 +141,6 @@
                         $('#sensor_form select[name=connection]').attr("disabled", true);
                         $('#port_div').attr("hidden", true);
                         $('#auto_sel_port').removeAttr("required");
-                        $('#address_div').attr("hidden", true);
-                        $('#sensor_form input[name=address]').attr("disabled", true);
                         $('#sda_div').attr("hidden", true);
                         $('#auto_sel_sda').removeAttr("required");
                         $('#scl_div').attr("hidden", true);
@@ -184,8 +178,6 @@
                         });
                         $('#port_div').attr("hidden", true);
                         $('#auto_sel_port').removeAttr("required");
-                        $('#address_div').attr("hidden", true);
-                        $('#sensor_form input[name=address]').attr("disabled", true);
                         $('#sda_div').attr("hidden", true);
                         $('#auto_sel_sda').removeAttr("required");
                         $('#scl_div').attr("hidden", true);
@@ -202,8 +194,6 @@
                         $('#sensor_form select[name=connection]').attr("disabled", true);
                         $('#port_div').attr("hidden", true);
                         $('#auto_sel_port').removeAttr("required");
-                        $('#address_div').attr("hidden", true);
-                        $('#sensor_form input[name=address]').attr("disabled", true);
                         $('#sda_div').attr("hidden", true);
                         $('#auto_sel_sda').removeAttr("required");
                         $('#scl_div').attr("hidden", true);
@@ -244,8 +234,6 @@
                         $('#auto_sel_scl').removeAttr("disabled");
                         $('#port_div').attr("hidden", true);
                         $('#auto_sel_port').removeAttr("required");
-                        $('#address_div').attr("hidden", true);
-                        $('#sensor_form input[name=address]').attr("disabled", true);
                         createSelect('#sensor_form select[name=connection]', {
                             'i2c': 'i2c',
                         }, 'i2c');
@@ -282,8 +270,6 @@
                         $('#sensor_form select[name=connection]').attr("disabled", true);
                         $('#port_div').attr("hidden", true);
                         $('#auto_sel_port').removeAttr("required");
-                        $('#address_div').attr("hidden", true);
-                        $('#sensor_form input[name=address]').attr("disabled", true);
                         $('#sda_div').attr("hidden", true);
                         $('#auto_sel_sda').removeAttr("required");
                         $('#scl_div').attr("hidden", true);
@@ -306,8 +292,6 @@
                         $('#sensor_form select[name=connection]').attr("disabled", true);
                         $('#port_div').attr("hidden", true);
                         $('#auto_sel_port').removeAttr("required");
-                        $('#address_div').attr("hidden", true);
-                        $('#sensor_form input[name=address]').attr("disabled", true);
                         $('#sda_div').attr("hidden", true);
                         $('#auto_sel_sda').removeAttr("required");
                         $('#scl_div').attr("hidden", true);
@@ -321,8 +305,6 @@
                         $('#sensor_form select[name=connection]').attr("disabled", true);
                         $('#port_div').attr("hidden", true);
                         $('#auto_sel_port').removeAttr("required");
-                        $('#address_div').attr("hidden", true);
-                        $('#sensor_form input[name=address]').attr("disabled", true);
                         $('#sda_div').attr("hidden", true);
                         $('#auto_sel_sda').removeAttr("required");
                         $('#scl_div').attr("hidden", true);
@@ -331,7 +313,7 @@
                 }
             });
 
-            $("#sensor_form select[name=connection]").change(function() {
+            $("#sensor_form select[name=connection]").change(function() {123
                 let connection = $(this).val();
 
                 switch (connection) {
@@ -344,14 +326,10 @@
                         $('#auto_sel_scl').removeAttr("disabled");
                         $('#port_div').attr("hidden", true);
                         $('#auto_sel_port').removeAttr("required");
-                        $('#address_div').attr("hidden", true);
-                        $('#sensor_form input[name=address]').attr("disabled", true);
                         break;
                     case '1wbus':
-                        $('#address_div').removeAttr("hidden");
                         $('#port_div').removeAttr("hidden");
                         $('#auto_sel_port').attr("required", true);
-                        $('#sensor_form input[name=address]').removeAttr("disabled");
                         $('#sda_div').attr("hidden", true);
                         $('#auto_sel_sda').removeAttr("required");
                         $('#scl_div').attr("hidden", true);
@@ -360,8 +338,6 @@
                     case '':
                         $('#port_div').attr("hidden", true);
                         $('#auto_sel_port').removeAttr("required");
-                        $('#address_div').attr("hidden", true);
-                        $('#sensor_form input[name=address]').attr("disabled", true);
                         $('#sda_div').attr("hidden", true);
                         $('#auto_sel_sda').removeAttr("required");
                         $('#scl_div').attr("hidden", true);
@@ -370,8 +346,6 @@
                     default:
                         $('#port_div').removeAttr("hidden");
                         $('#auto_sel_port').attr("required", true);
-                        $('#address_div').attr("hidden", true);
-                        $('#sensor_form input[name=address]').attr("disabled", true);
                         $('#sda_div').attr("hidden", true);
                         $('#auto_sel_sda').removeAttr("required");
                         $('#scl_div').attr("hidden", true);
