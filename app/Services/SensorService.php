@@ -360,18 +360,25 @@ class SensorService
 
     public function updateOrCreateParam(array $data)
     {
+        $isNew = false;
+
         if ($data['id']) {
             $sensorsParam = SensorsParam::find($data['id']);
         } else {
             $sensorsParam = new SensorsParam();
+            $isNew = true;
         }
 
         $sensorsParam->object_id = $data['object_id'];
         $sensorsParam->name = $data['name'];
-        $sensorsParam->param = $data['param'];
+        if (array_key_exists('param', $data)) {
+            $sensorsParam->param = $data['param'];
+        }
         $sensorsParam->get_param = $data['get_param'];
         $sensorsParam->value = $data['value'];
-        $sensorsParam->units = $data['units'];
+        if (array_key_exists('units', $data)) {
+            $sensorsParam->units = $data['units'];
+        }
         $sensorsParam->accuracy = $data['accuracy'];
         $sensorsParam->graph = array_key_exists('graph', $data);
         $sensorsParam->min_range = $data['min_range'];
@@ -382,8 +389,10 @@ class SensorService
 
         $sensorsParam->save();
 
-        chdir(env('SERVER_FOLDER').'/scripts');
-        exec('php check_sensor.php '.$data['object_id']);
+        if ($isNew) {
+            chdir(env('SERVER_FOLDER').'/scripts');
+            exec('php check_sensor.php '.$data['object_id']);
+        }
 
         return true;
     }

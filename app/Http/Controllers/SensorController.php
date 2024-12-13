@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sensor;
 use App\Models\HomeObject;
+use App\Models\SensorsParam;
 use App\Services\SensorService;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\RoomRepository;
@@ -38,6 +39,8 @@ class SensorController extends Controller
         $rooms = $this->roomRepository->getAllWithoutCommonToArray();
         $sources = [];
         $addressParamsCount = null;
+        $params = [];
+        $units = [];
 
         if ($sensorSettings->where('name', 'source')->first()?->value == 'megad') {
             $sources = $this->deviceRepository->getAllByTypesToArray([
@@ -54,9 +57,17 @@ class SensorController extends Controller
                 ->count();
         }
 
+        if (
+            $sensorSettings->where('name', 'type')->first()?->value == 'custom' ||
+            $sensorSettings->where('name', 'type')->first()?->value == 'ds18b20'
+        ) {
+            $params = SensorsParam::getParams();
+            $units = SensorsParam::getUnits();
+        }
+
         return view('sensors.edit', compact(
-            'rooms', 'sensorObject', 'sources',
-            'addressParamsCount', 'sensorSettings'
+            'rooms', 'sensorObject', 'sources', 'units',
+            'addressParamsCount', 'sensorSettings', 'params'
         ));
     }
 

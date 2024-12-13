@@ -1,5 +1,5 @@
 <div id="param_modal" class="modal">
-    <div class="modal-dialog modal-lg modal-dialog-centered" style="top: 70%;">
+    <div class="modal-dialog modal-lg modal-dialog-centered" style="top: 65%;">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="param_modal_title">Добавление параметра</h4>
@@ -18,22 +18,39 @@
                             <input autocomplete="off" name="param_name" id="param_name" required type="text" class="form-control" value="">
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="control-label text-right col-md-3 label-fix" for="param_param">
-                            <strong>Символьный код*:</strong>
-                        </label>
-                        <div class="col-md-9">
-                            <input autocomplete="off" name="param_param" id="param_param" required type="text" class="form-control" value="">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="control-label text-right col-md-3 label-fix" for="param_get_param">
-                            <strong>Get Param:</strong>
-                        </label>
-                        <div class="col-md-9">
-                            <input autocomplete="off" name="param_get_param" id="param_get_param" type="text" class="form-control" value="">
-                        </div>
-                    </div>
+                    {{ Form::bs_select('param_param', 'Измеряемый параметр*:', $params, old('param_param'), ['required' => true]) }}
+                    @switch($sensorSettings->where('name', 'source')->first()?->value)
+                        @case('megad')
+                            <div class="form-group row">
+                                <label class="control-label text-right col-md-3 label-fix" for="param_get_param">
+                                    <strong>Get запрос:</strong>
+                                </label>
+                                <div class="col-md-9">
+                                    <input autocomplete="off" name="param_get_param" id="param_get_param" @if($sensorSettings->where('name', 'type')->first()?->value != 'custom') readonly @endif type="text" class="form-control" value="">
+                                </div>
+                            </div>
+                            @break
+                        @case('modbus')
+                            <div class="form-group row">
+                                <label class="control-label text-right col-md-3 label-fix" for="param_get_param">
+                                    <strong>ID регистра:</strong>
+                                </label>
+                                <div class="col-md-9">
+                                    <input autocomplete="off" name="param_get_param" id="param_get_param" type="text" class="form-control" value="">
+                                </div>
+                            </div>
+                            @break
+                        @case('mqtt')
+                            <div class="form-group row">
+                                <label class="control-label text-right col-md-3 label-fix" for="param_get_param">
+                                    <strong>Топик:</strong>
+                                </label>
+                                <div class="col-md-9">
+                                    <input autocomplete="off" name="param_get_param" id="param_get_param" type="text" class="form-control" value="">
+                                </div>
+                            </div>
+                            @break
+                    @endswitch
                     <div class="form-group row">
                         <label class="control-label text-right col-md-3 label-fix" for="param_value">
                             <strong>Значение:</strong>
@@ -42,22 +59,8 @@
                             <input autocomplete="off" name="param_value" id="param_value" type="text" class="form-control" value="">
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="control-label text-right col-md-3 label-fix" for="param_units">
-                            <strong>Ед. измерения:</strong>
-                        </label>
-                        <div class="col-md-9">
-                            <input autocomplete="off" name="param_units" id="param_units" type="text" class="form-control" value="">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="control-label text-right col-md-3 label-fix" for="param_accuracy">
-                            <strong>Точность*:</strong>
-                        </label>
-                        <div class="col-md-9">
-                            <input autocomplete="off" name="param_accuracy" id="param_accuracy" required type="text" class="form-control" value="">
-                        </div>
-                    </div>
+                    {{ Form::bs_select('param_units', 'Ед. измерения*:', $units, old('param_units', null), ['required' => true]) }}
+                    {{ Form::bs_radio('param_accuracy', 'Точность (знаков после запятой)*:', [0 => '0', 1 => '1', 2 => '2'], null, ['required' => true]) }}
                     <div class="form-group row">
                         <label class="control-label text-right col-md-3 label-fix" for="param_graph">
                             <strong>График:</strong>
@@ -109,7 +112,7 @@
                     </div>
                     <div class="form-group row">
                         <label class="control-label text-right col-md-3 label-fix" for="param_param">
-                            <strong>Символьный код*:</strong>
+                            <strong>Измеряемый параметр*:</strong>
                         </label>
                         <div class="col-md-9">
                             <input autocomplete="off" name="param_param" id="param_param" readonly type="text" class="form-control" value="">
@@ -117,7 +120,7 @@
                     </div>
                     <div class="form-group row">
                         <label class="control-label text-right col-md-3 label-fix" for="param_get_param">
-                            <strong>Get Param:</strong>
+                            <strong>Get запрос:</strong>
                         </label>
                         <div class="col-md-9">
                             <input autocomplete="off" name="param_get_param" id="param_get_param" readonly type="text" class="form-control" value="">
@@ -141,7 +144,7 @@
                     </div>
                     <div class="form-group row">
                         <label class="control-label text-right col-md-3 label-fix" for="param_accuracy">
-                            <strong>Точность*:</strong>
+                            <strong>Точность (знаков после запятой):</strong>
                         </label>
                         <div class="col-md-9">
                             <input autocomplete="off" name="param_accuracy" id="param_accuracy" readonly type="text" class="form-control" value="">
@@ -152,7 +155,7 @@
                             <strong>График:</strong>
                         </label>
                         <div class="col-md-9">
-                            <input autocomplete="off" name="param_graph_text" id="param_graph_text" readonly type="text" class="form-control" value="">
+                            <input type="checkbox" name="param_graph" id="param_graph" value="1" autocomplete="off">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -176,7 +179,7 @@
                             <strong>Мин. аварийное значение:</strong>
                         </label>
                         <div class="col-md-9">
-                            <input autocomplete="off" name="param_min_alarm" id="param_min_alarm" readonly type="text" class="form-control" value="">
+                            <input autocomplete="off" name="param_min_alarm" id="param_min_alarm" type="text" class="form-control" value="">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -184,13 +187,13 @@
                             <strong>Макс. аварийное значение:</strong>
                         </label>
                         <div class="col-md-9">
-                            <input autocomplete="off" name="param_max_alarm" id="param_max_alarm" readonly type="text" class="form-control" value="">
+                            <input autocomplete="off" name="param_max_alarm" id="param_max_alarm" type="text" class="form-control" value="">
                         </div>
                     </div>
                 @endif
                 <div class="form-group row" id="div_param_timestamp">
                     <label class="control-label text-right col-md-3 label-fix" for="param_timestamp">
-                        <strong>Timestamp:</strong>
+                        <strong>Время последнего значения:</strong>
                     </label>
                     <div class="col-md-9">
                         <input autocomplete="off" name="param_timestamp" id="param_timestamp" readonly type="text" class="form-control" value="">
@@ -198,12 +201,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                @if($sensorSettings->where('name', 'type')->first()?->value == 'custom')
-                    <button type="button" class="btn btn-primary" id="apply_btn">Добавить параметр</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel_btn">Отмена</button>
-                @else
-                    <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel_btn">Закрыть</button>
-                @endif
+                <button type="button" class="btn btn-primary" id="apply_btn">Добавить параметр</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel_btn">Отмена</button>
             </div>
         </div>
     </div>

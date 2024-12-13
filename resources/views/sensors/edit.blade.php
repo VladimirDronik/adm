@@ -60,7 +60,7 @@
                         <div class="form-group row">
                             <label class="col-md-3"><i>Название</i></label>
                             <div class="col-md-3"><i>Значение</i></div>
-                            <div class="col-md-3"><i>Ед. измерения</i></div>
+                            <div class="col-md-3"><i>Время последнего значения</i></div>
                             <div class="col-md-2 text-right"></div>
                         </div>
                         <div id="sensorsParams_div">
@@ -70,18 +70,20 @@
                                         {{ $sensorsParam->name }}
                                     </label>
                                     <div class="col-md-3" id="value{{$sensorsParam->id}}">
-                                        {{ $sensorsParam->value }}
+                                        {{ $sensorsParam->value ? ($sensorsParam->value . ' ' . $sensorsParam->unit_name) : '' }}
                                     </div>
-                                    <div class="col-md-3" id="units{{$sensorsParam->id}}">
-                                        {{ $sensorsParam->units }}
+                                    <div class="col-md-3" id="timestamp{{$sensorsParam->id}}">
+                                        {{ $sensorsParam->timestamp }}
                                     </div>
                                     <div class="col-md-2 text-right">
                                     <button type="button"
                                         data-id="{{ $sensorsParam->id }}"
                                         data-name="{{ $sensorsParam->name }}"
                                         data-param="{{ $sensorsParam->param }}"
+                                        data-param_name="{{ $sensorsParam->param_name }}"
                                         data-get_param="{{ $sensorsParam->get_param }}"
                                         data-value="{{ $sensorsParam->value }}"
+                                        data-unit_name="{{ $sensorsParam->unit_name }}"
                                         data-units="{{ $sensorsParam->units }}"
                                         data-accuracy="{{ $sensorsParam->accuracy }}"
                                         data-graph="{{ $sensorsParam->graph }}"
@@ -204,11 +206,15 @@
             function clearModal() {
                 $('#param_id').val('');
                 $('#param_name').val('');
-                $('#param_param').val('');
+                $('select[name=param_param]').val('');
                 $('#param_get_param').val('');
                 $('#param_value').val('');
-                $('#param_units').val('');
+                $('select[name=param_units]').val('');
                 $('#param_accuracy').val('');
+                $('input[type=radio][name=param_accuracy]').each(function() {
+                    $(this).prop('checked', false);
+                    $(this).closest('label').removeClass('active');
+                });
                 $('#param_graph').find('input:checkbox').prop('checked', false);
                 $('#param_min_range').val('');
                 $('#param_max_range').val('');
@@ -239,11 +245,11 @@
 
                 data.id = $('#param_id').val();
                 data.name = $('#param_name').val();
-                data.param = $('#param_param').val();
+                data.param = $('select[name=param_param]').val();
                 data.get_param = $('#param_get_param').val();
                 data.value = $('#param_value').val();
-                data.units = $('#param_units').val();
-                data.accuracy = $('#param_accuracy').val();
+                data.units = $('select[name=param_units]').val();
+                data.accuracy = $('input[name=param_accuracy]:checked').val();
                 data.graph = $("input[name=param_graph]:checked").val();
                 data.min_range = $('#param_min_range').val();
                 data.max_range = $('#param_max_range').val();
@@ -263,15 +269,15 @@
             }
 
             function validateParam(data) {
-                if (data.param === '') {
-                    return 'Не указан символьный код';
+                if (data.param === '' || data.param === null) {
+                    return 'Не указан измеряемый параметр';
                 }
 
                 if (data.name === '') {
                     return 'Не указано название';
                 }
 
-                if (data.accuracy === '') {
+                if (typeof data.accuracy === 'undefined') {
                     return 'Не указана точность';
                 }
 
@@ -291,17 +297,26 @@
 
                 $('#param_id').val(data.id);
                 $('#param_name').val(data.name);
-                $('#param_param').val(data.param);
+                $('select[name=param_param]').val(data.param);
+                $('#param_param').val(data.param_name);
                 $('#param_get_param').val(data.get_param);
                 $('#param_value').val(data.value);
-                $('#param_units').val(data.units);
+                $('select[name=param_units]').val(data.units);
+                $('#param_units').val(data.unit_name);
                 $('#param_accuracy').val(data.accuracy);
+                $('input[type=radio][name=param_accuracy]').each(function() {
+                    if ($(this).val() === data.accuracy) {
+                        $(this).prop('checked', true);
+                        $(this).closest('label').addClass('active');
+                    } else {
+                        $(this).prop('checked', false);
+                        $(this).closest('label').removeClass('active');
+                    }
+                });
 
                 if (data.graph == '1') {
-                    $('#param_graph_text').val('Да');
                     $('#param_graph').prop('checked', true);
                 } else {
-                    $('#param_graph_text').val('Нет');
                     $('#param_graph').prop('checked', false);
                 }
 
@@ -379,9 +394,11 @@
                 data.id = $(this).attr('data-id');
                 data.name = $(this).attr('data-name');
                 data.param = $(this).attr('data-param');
+                data.param_name = $(this).attr('data-param_name');
                 data.get_param = $(this).attr('data-get_param');
                 data.value = $(this).attr('data-value');
                 data.units = $(this).attr('data-units');
+                data.unit_name = $(this).attr('data-unit_name');
                 data.accuracy = $(this).attr('data-accuracy');
                 data.graph = $(this).attr('data-graph');
                 data.min_range = $(this).attr('data-min_range');
