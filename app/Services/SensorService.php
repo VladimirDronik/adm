@@ -22,7 +22,7 @@ class SensorService
      */
     public function store(array $data): int
     {
-        return DB::transaction(function () use ($data) {
+        $sensorObjectId = DB::transaction(function () use ($data) {
             $sensorObject = new HomeObject();
             $uniqueName = HomeObject::getUniqueObjectName(0, $data['name']);
             $sensorObject->name = $uniqueName;
@@ -223,11 +223,13 @@ class SensorService
 
             $this->createCheckMethodWithEvent($sensorObject->id);
 
-            chdir(env('SERVER_FOLDER').'/scripts');
-            exec('php check_sensor.php '.$sensorObject->id);
-
             return $sensorObject->id;
         });
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php check_sensor.php '.$sensorObjectId);
+
+        return $sensorObjectId;
     }
 
     /**
