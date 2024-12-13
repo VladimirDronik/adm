@@ -382,6 +382,9 @@ class SensorService
 
         $sensorsParam->save();
 
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php check_sensor.php '.$data['object_id']);
+
         return true;
     }
 
@@ -400,6 +403,9 @@ class SensorService
         $sensorsParam->timestamp = Carbon::now();
 
         $sensorsParam->save();
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php check_sensor.php '.$data['object_id']);
 
         return true;
     }
