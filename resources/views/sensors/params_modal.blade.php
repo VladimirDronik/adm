@@ -18,7 +18,21 @@
                             <input autocomplete="off" name="param_name" id="param_name" required type="text" class="form-control" value="">
                         </div>
                     </div>
-                    {{ Form::bs_select('param_param', 'Измеряемый параметр*:', $params, old('param_param'), ['required' => true]) }}
+                    @if($sensorSettings->where('name', 'connection')->first()?->value == '1wbus')
+                        <div id="param_param_select_div">
+                            {{ Form::bs_select('param_param', 'Измеряемый параметр*:', $params, old('param_param'), ['required' => true]) }}
+                        </div>
+                        <div class="form-group row" id="param_param_input_div">
+                            <label class="control-label text-right col-md-3 label-fix" for="param_param">
+                                <strong>Измеряемый параметр*:</strong>
+                            </label>
+                            <div class="col-md-9">
+                                <input autocomplete="off" name="param_param_input" id="param_param_input" readonly type="text" class="form-control" value="">
+                            </div>
+                        </div>
+                    @else
+                        {{ Form::bs_select('param_param', 'Измеряемый параметр*:', $params, old('param_param'), ['required' => true]) }}
+                    @endif
                     @switch($sensorSettings->where('name', 'source')->first()?->value)
                         @case('megad')
                             <div class="form-group row">
@@ -51,7 +65,7 @@
                             </div>
                             @break
                     @endswitch
-                    <div class="form-group row">
+                    <div class="form-group row" id="param_value_div">
                         <label class="control-label text-right col-md-3 label-fix" for="param_value">
                             <strong>Значение:</strong>
                         </label>
@@ -107,7 +121,7 @@
                             <strong>Название*:</strong>
                         </label>
                         <div class="col-md-9">
-                            <input autocomplete="off" name="param_name" id="param_name" readonly type="text" class="form-control" value="">
+                            <input autocomplete="off" name="param_name" id="param_name" required type="text" class="form-control" value="">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -142,14 +156,7 @@
                             <input autocomplete="off" name="param_units" id="param_units" readonly type="text" class="form-control" value="">
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="control-label text-right col-md-3 label-fix" for="param_accuracy">
-                            <strong>Точность (знаков после запятой):</strong>
-                        </label>
-                        <div class="col-md-9">
-                            <input autocomplete="off" name="param_accuracy" id="param_accuracy" readonly type="text" class="form-control" value="">
-                        </div>
-                    </div>
+                    {{ Form::bs_radio('param_accuracy', 'Точность (знаков после запятой)*:', [0 => '0', 1 => '1', 2 => '2'], null, ['required' => true]) }}
                     <div class="form-group row">
                         <label class="control-label text-right col-md-3 label-fix" for="param_graph">
                             <strong>График:</strong>

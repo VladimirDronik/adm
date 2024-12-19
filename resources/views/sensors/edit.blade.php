@@ -229,6 +229,19 @@
 
             function showAddModal() {
                 clearModal();
+
+                if ("{{ $sensorSettings->where('name', 'type')->first()?->value }}" == 'custom') {
+                    $('#param_value_div').prop('hidden', true);
+                }
+
+                if ("{{ $sensorSettings->where('name', 'connection')->first()?->value }}" == '1wbus') {
+                    $('#param_param_select_div').removeAttr('hidden');
+                    $('#param_param_input_div').prop('hidden', true);
+                    $('#param_value').prop('readonly', false);
+                    $('#param_min_range').prop('readonly', false);
+                    $('#param_max_range').prop('readonly', false);
+                }
+
                 $('#div_param_timestamp').attr('hidden', true);
                 $('#param_modal_title').text('Добавление параметра');
                 $('#apply_btn').text('Добавить параметр');
@@ -294,6 +307,19 @@
 
             function showEditModal(data) {
                 clearModal();
+
+                if ("{{ $sensorSettings->where('name', 'type')->first()?->value }}" == 'custom') {
+                    $('#param_value').prop('readonly', true);
+                }
+
+                if ("{{ $sensorSettings->where('name', 'connection')->first()?->value }}" == '1wbus') {
+                    $('#param_param_select_div').prop('hidden', true);
+                    $('#param_param_input_div').removeAttr('hidden');
+                    $('#param_value').prop('readonly', true);
+                    $('#param_min_range').prop('readonly', true);
+                    $('#param_max_range').prop('readonly', true);
+                    $('#param_param_input').val(data.param_name);
+                }
 
                 $('#param_id').val(data.id);
                 $('#param_name').val(data.name);
