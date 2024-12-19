@@ -7,13 +7,6 @@ use Illuminate\Database\Seeder;
 
 class DevtypesTableSeeder extends Seeder
 {
-    private $devtypes;
-
-    public function __construct()
-    {
-        $this->devtypes = DevType::pluck('name')->toArray();
-    }
-
     /**
      * Run the database seeds.
      *
@@ -24,11 +17,11 @@ class DevtypesTableSeeder extends Seeder
         $devtypes = [
             [
                 'name' => 'Monoblock 14IN/14OUT',
-                'port_numbers' => 'in 0 6;out 7 13;dig 14 14;in 15 21;out 22 28;dig 29 37',
+                'port_numbers' => 'in 0 6;out 7 13;dig 14 14;in 15 21;out 22 28;dig 29 44',
             ],
             [
                 'name' => 'MegaD-2561',
-                'port_numbers' => 'in 0 13;out 15 28',
+                'port_numbers' => 'in 0 6;out 7 13;dig 14 14;in 15 21;out 22 28;dig 29 45',
             ],
             [
                 'name' => 'Mega328',
@@ -40,19 +33,11 @@ class DevtypesTableSeeder extends Seeder
             ],
         ];
 
-        $result_devtypes = [];
-
         foreach ($devtypes as $devtype) {
-            if (! in_array($devtype['name'], $this->devtypes, true)) {
-                $result_devtypes[] = $devtype;
-            }
+            DevType::updateOrCreate(
+                ['name' => $devtype['name']],
+                ['port_numbers' => $devtype['port_numbers']]
+            );
         }
-
-        if (count($result_devtypes)) {
-            DevType::insert($result_devtypes);
-        }
-
-        DevType::where('name', 'Monoblock 14IN/14OUT')
-            ->update(['port_numbers' => 'in 0 6;out 7 13;dig 14 14;in 15 21;out 22 28;dig 29 44']);
     }
 }
