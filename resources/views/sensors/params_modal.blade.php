@@ -73,7 +73,19 @@
                             <input autocomplete="off" name="param_value" id="param_value" type="text" class="form-control" value="">
                         </div>
                     </div>
-                    {{ Form::bs_select('param_units', 'Ед. измерения*:', $units, old('param_units', null), ['required' => true]) }}
+                    @if($sensorSettings->where('name', 'connection')->first()?->value == '1wbus')
+                        <div class="form-group row">
+                            <label class="control-label text-right col-md-3 label-fix" for="param_units">
+                                <strong>Ед. измерения*:</strong>
+                            </label>
+                            <div class="col-md-9">
+                                <input autocomplete="off" name="param_units_name" id="param_units_name" readonly type="text" class="form-control" value="°C">
+                                <input autocomplete="off" name="param_units" id="param_units" hidden type="text" class="form-control" value="celsius">
+                            </div>
+                        </div>
+                    @else
+                        {{ Form::bs_select('param_units', 'Ед. измерения*:', $units, old('param_units', null), ['required' => true]) }}
+                    @endif
                     {{ Form::bs_radio('param_accuracy', 'Точность (знаков после запятой)*:', [0 => '0', 1 => '1', 2 => '2'], null, ['required' => true]) }}
                     <div class="form-group row">
                         <label class="control-label text-right col-md-3 label-fix" for="param_graph">

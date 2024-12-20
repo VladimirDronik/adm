@@ -261,7 +261,13 @@
                 data.param = $('select[name=param_param]').val();
                 data.get_param = $('#param_get_param').val();
                 data.value = $('#param_value').val();
-                data.units = $('select[name=param_units]').val();
+
+                if ("{{ $sensorSettings->where('name', 'connection')->first()?->value }}" == '1wbus') {
+                    data.units = $('#param_units').val();
+                } else {
+                    data.units = $('select[name=param_units]').val();
+                }
+
                 data.accuracy = $('input[name=param_accuracy]:checked').val();
                 data.graph = $("input[name=param_graph]:checked").val();
                 data.min_range = $('#param_min_range').val();
