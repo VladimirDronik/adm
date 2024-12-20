@@ -24,7 +24,7 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:100|unique:scripts,name,'.$this->script,
+            'name' => 'required|string|max:100|regex:/^[a-zA-Z0-9_\-а-яА-ЯёЁ]+$/u|unique:scripts,name,'.$this->script,
             'code' => 'required|string',
         ];
     }
@@ -34,6 +34,7 @@ class UpdateRequest extends FormRequest
         return [
             'name.required' => 'Не указано название',
             'name.max' => 'Название содержит более 100 символов',
+            'name.regex' => 'Название может содержать только буквы (латиница и кириллица), цифры, знаки подчеркивания и дефисы',
             'name.unique' => 'Скрипт с таким названием уже существует. Укажите другое название',
             'code.required' => 'Не указан код скрипта',
         ];
