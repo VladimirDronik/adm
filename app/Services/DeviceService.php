@@ -7,6 +7,7 @@ use App\Models\Device;
 use App\Models\ExtensionModule;
 use Illuminate\Support\Facades\DB;
 use App\Models\ExtensionModuleType;
+use Illuminate\Support\Facades\Log;
 use App\Repositories\PortRepository;
 use App\Repositories\DeviceRepository;
 
@@ -247,12 +248,6 @@ class DeviceService
         $device->description = $data['description'];
         $device->password = $data['password'] ?: null;
 
-        if ($data['port'] === '0') {
-            $device->port = $data['port'];
-        } else {
-            $device->port = $data['port'] ?: null;
-        }
-
         if (trim($data['ip_address']) !== $device->ip_address) {
             $device->ip_address = $data['ip_address'];
 
@@ -273,7 +268,7 @@ class DeviceService
                 return ['result' => true];
             } catch (\Throwable $e) {
                 DB::rollback();
-                \Log::error('Ошибка при обновлении устройства', [$e->getMessage()]);
+                Log::error('Ошибка при обновлении устройства: '.$e->getMessage());
             }
         } else {
             $device->save();

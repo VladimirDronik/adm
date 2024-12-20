@@ -24,13 +24,9 @@ class DevtypesTableSeeder extends Seeder
                 'port_numbers' => 'in 0 13;out 15 28',
             ],
             [
-                'name' => 'Mega328',
-                'port_numbers' => 'in 0 7;out 8 14',
-            ],
-            [
-                'name' => 'ModbusTCP',
-                'port_numbers' => '',
-            ],
+                'name' => 'TouchonMini',
+                'port_numbers' => 'in 1 6;out 8 13;dig 15 15',
+            ]
         ];
 
         foreach ($devtypes as $devtype) {

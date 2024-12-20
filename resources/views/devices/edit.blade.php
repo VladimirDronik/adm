@@ -1,10 +1,11 @@
 @extends('layouts._layout')
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs',
-       ['title' => 'Редактирование контроллера «'.$device->description.'»',
+    @includeIf('components.breadcrumbs', [
+        'title' => 'Редактирование контроллера «'.$device->description.'»',
         'links' => [ route('devices.index') => 'Контроллеры'],
-        'last_link' => 'Редактирование контроллера'])
+        'last_link' => 'Редактирование контроллера',
+    ])
 @endsection
 
 @section('content')
@@ -13,10 +14,10 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('devices.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок контроллеров</a>
+                        <a href="{{ route('devices.index') }}" class="btn btn-success m-b-10 m-l-5">Список контроллеров</a>
                         <a href="{{ route('devices.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить контроллер</a>
                         <a href="{{ route('devices.edit',[$device->id]) }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
-                        @if($device->devtype->name !== 'ModbusTCP' && $device->devtype->name !== 'Monoblock 14IN/14OUT')
+                        @if($device->devtype->name !== 'Monoblock 14IN/14OUT' && $device->devtype->name !== 'TouchonMini')
                             <button type="button" id="settings_modal_btn" class="btn btn-success m-b-10 m-l-5" data-toggle="modal" data-target="#settings_modal">Настройки</button>
                         @else
                             <button type="button" id="deleteDeviceBtn" class="btn btn-outline-danger m-b-10 m-l-5 pull-right" data-dismiss="modal">Удалить контроллер</button>
@@ -26,46 +27,7 @@
             </div>
         </div>
         <div class="card">
-            @if($device->devtype->name == 'ModbusTCP')
-                <div class="card-body">
-                    <div class="col-md-12 col-lg-8 col-xl-8">
-                        <div class="form-group row">
-                            <label class="control-label text-right col-md-2 label-fix" for="modalDevType">
-                                <strong>Тип:</strong>
-                            </label>
-                            <div class="col-md-9" style="display: flex; align-items: center;">
-                                {{ optional($device->devtype)->name }}
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="control-label text-right col-md-2 label-fix" for="modalDevName">
-                                <strong>Название:</strong>
-                            </label>
-                            <div class="col-md-9">
-                                <input id="modalDevName" class="form-control" name="description" autocomplete="off" value="{{ $device->description}}">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="control-label text-right col-md-2 label-fix" for="modalDevIp">
-                                <strong>ip&nbsp;адрес:</strong>
-                            </label>
-                            <div class="col-md-9">
-                                <input id="modalDevIp" class="form-control" name="ip_address" autocomplete="off" value="{{ $device->ip_address }}" size="15">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="control-label text-right col-md-2 label-fix" for="modalDevPort">
-                                <strong>Порт:</strong>
-                            </label>
-                            <div class="col-md-9">
-                                <input id="modalDevPort" class="form-control" name="port" autocomplete="off" value="{{ $device->port }}" type="number" min="0" max="65535">
-                            </div>
-                        </div>
-                        <input type="hidden" id="id_device" value="{{ $device->id }}">
-                        <button type="button" id="updateDeviceBtn" class="btn btn-success m-b-10 m-l-5" data-dismiss="modal" onclick="updateDevice();">Сохранить</button>
-                    </div>
-                </div>
-            @elseif($device->devtype->name == 'Monoblock 14IN/14OUT')
+            @if($device->devtype->name == 'Monoblock 14IN/14OUT' || $device->devtype->name == 'TouchonMini')
                 <ul class="nav nav-tabs customtab" role="tablist">
                     <li class="nav-item"> <a class="nav-link active"  data-toggle="tab" href="#ports_settings" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты контроллера</span></a> </li>
                     <li class="nav-item"> <a class="nav-link"  data-toggle="tab" href="#main_settings" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Настройки</span></a> </li>
@@ -144,96 +106,101 @@
                                     </div>
                                 </div>
                                 <input type="hidden" id="id_device" value="{{ $device->id }}">
-                                <hr>
-                                <h4>Модули расширения:</h4>
-                                <br>
-                            </div>
-                            <div class="col-md-12 col-lg-8 col-xl-12">
-                                @if($device->extensionModules)
-                                    @foreach($device->extensionModules as $extensionModule)
-                                    <div class="form-group row">
-                                        <label class="text-right col-md-1 label-fix">
-                                            <strong>Тип:</strong>
-                                        </label>
-                                        <div class="col-sm-3" style="display: flex; align-items: center;">
-                                            {{ $extensionModule->extensionModuleType->name }}
-                                        </div>
-                                        <label class="text-right col-md-1 label-fix">
-                                            <strong>SDA:</strong>
-                                        </label>
-                                        <div class="col-sm-1" style="display: flex; align-items: center;">
-                                            {{ $extensionModule->sda_port }}
-                                        </div>
-                                        <label class="text-right col-md-1 label-fix">
-                                            <strong>SCL:</strong>
-                                        </label>
-                                        <div class="col-sm-1" style="display: flex; align-items: center;">
-                                            {{ $extensionModule->scl_port }}
-                                        </div>
-                                        @if($extensionModule->extensionModuleType->name == 'MegaD-16I-XT')
-                                            <label class="control-label text-right col-md-1 label-fix">
-                                                <strong>INT:</strong>
+                            @if($device->devtype->name == 'Monoblock 14IN/14OUT')
+                                    <hr>
+                                    <h4>Модули расширения:</h4>
+                                    <br>
+                                </div>
+                                <div class="col-md-12 col-lg-8 col-xl-12">
+                                    @if($device->extensionModules)
+                                        @foreach($device->extensionModules as $extensionModule)
+                                        <div class="form-group row">
+                                            <label class="text-right col-md-1 label-fix">
+                                                <strong>Тип:</strong>
+                                            </label>
+                                            <div class="col-sm-3" style="display: flex; align-items: center;">
+                                                {{ $extensionModule->extensionModuleType->name }}
+                                            </div>
+                                            <label class="text-right col-md-1 label-fix">
+                                                <strong>SDA:</strong>
                                             </label>
                                             <div class="col-sm-1" style="display: flex; align-items: center;">
-                                                {{ $extensionModule->int_port }}
+                                                {{ $extensionModule->sda_port }}
                                             </div>
-                                        @else
-                                            <div class="col-sm-2">
+                                            <label class="text-right col-md-1 label-fix">
+                                                <strong>SCL:</strong>
+                                            </label>
+                                            <div class="col-sm-1" style="display: flex; align-items: center;">
+                                                {{ $extensionModule->scl_port }}
                                             </div>
-                                        @endif
-                                        <div class="col-sm-1"><button id="deleteExtensionModule{{ $extensionModule->id }}" onclick="deleteExtensionModule('{{ $extensionModule->id }}')" class="deleteExtensionModule btn btn-outline-danger">Удалить</button></div>
-                                    </div>
-                                    @endforeach
-                                @endif
-                                <div id="extensionModulesContainer"></div>
-                                <button class="btn btn-success m-b-10 m-l-5" id="addExtensionModuleBtn">Добавить модуль</button>
+                                            @if($extensionModule->extensionModuleType->name == 'MegaD-16I-XT')
+                                                <label class="control-label text-right col-md-1 label-fix">
+                                                    <strong>INT:</strong>
+                                                </label>
+                                                <div class="col-sm-1" style="display: flex; align-items: center;">
+                                                    {{ $extensionModule->int_port }}
+                                                </div>
+                                            @else
+                                                <div class="col-sm-2">
+                                                </div>
+                                            @endif
+                                            <div class="col-sm-1"><button id="deleteExtensionModule{{ $extensionModule->id }}" onclick="deleteExtensionModule('{{ $extensionModule->id }}')" class="deleteExtensionModule btn btn-outline-danger">Удалить</button></div>
+                                        </div>
+                                        @endforeach
+                                    @endif
+                                    <div id="extensionModulesContainer"></div>
+                                    <button class="btn btn-success m-b-10 m-l-5" id="addExtensionModuleBtn">Добавить модуль</button>
+                                    <hr><br>
+                                    <button type="button" id="updateDeviceBtn" class="btn btn-success m-b-10 m-l-5" data-dismiss="modal" onclick="updateDevice();">Сохранить</button>
+                                </div>
+                            @else
+                                </div>
                                 <hr><br>
                                 <button type="button" id="updateDeviceBtn" class="btn btn-success m-b-10 m-l-5" data-dismiss="modal" onclick="updateDevice();">Сохранить</button>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
             @else
-            <div class="card-title"><h4>Порты контроллера</h4></div>
-            <div class="card-body">
-                @if(count($device->ports))
-                    <ul class="nav nav-tabs customtab" role="tablist">
+                <div class="card-title"><h4>Порты контроллера</h4></div>
+                <div class="card-body">
+                    @if(count($device->ports))
+                        <ul class="nav nav-tabs customtab" role="tablist">
 
-                        <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Порты IN</span></a> </li>
-                        <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты OUT</span></a> </li>
-                        <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты DIG</span></a> </li>
-                        @if($device->extensionModules)
-                            @foreach($device->extensionModules as $extensionModule)
-                                <li class="nav-item"> <a class="nav-link @if($tab=='ext'.$extensionModule->id) active @endif"  data-toggle="tab" href="#extportstab{{ $extensionModule->id }}" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">{{ $extensionModule->extensionModuleType->name }}({{ $extensionModule->sda_port }})</span></a> </li>
-                            @endforeach
-                        @endif
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
-                            @include('devices.in_ports')
-                        </div>
-                        <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
-                            @include('devices.out_ports')
-                        </div>
-                        <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
-                            @include('devices.dig_ports')
-                        </div>
-                        @if($device->extensionModules)
-                            @foreach($device->extensionModules as $extensionModule)
-                            <div class="tab-pane p-20 @if($tab=='ext'.$extensionModule->id) active @endif" id="extportstab{{ $extensionModule->id }}" role="tabpanel">
-                                @include('devices.extension_module_ports', ['extensionModule' => $extensionModule])
+                            <li class="nav-item"> <a class="nav-link @if($tab==1) active @endif"  data-toggle="tab" href="#portstab1" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Порты IN</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==2) active @endif"  data-toggle="tab" href="#portstab2" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты OUT</span></a> </li>
+                            <li class="nav-item"> <a class="nav-link @if($tab==3) active @endif"  data-toggle="tab" href="#portstab3" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Порты DIG</span></a> </li>
+                            @if($device->extensionModules)
+                                @foreach($device->extensionModules as $extensionModule)
+                                    <li class="nav-item"> <a class="nav-link @if($tab=='ext'.$extensionModule->id) active @endif"  data-toggle="tab" href="#extportstab{{ $extensionModule->id }}" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">{{ $extensionModule->extensionModuleType->name }}({{ $extensionModule->sda_port }})</span></a> </li>
+                                @endforeach
+                            @endif
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane p-20 @if($tab==1) active @endif" id="portstab1" role="tabpanel">
+                                @include('devices.in_ports')
                             </div>
-                            @endforeach
-                        @endif
-                    </div>
-                @else
-                    <p>Порты не найдены</p>
-                @endif
-            </div>
+                            <div class="tab-pane p-20 @if($tab==2) active @endif" id="portstab2" role="tabpanel">
+                                @include('devices.out_ports')
+                            </div>
+                            <div class="tab-pane p-20 @if($tab==3) active @endif" id="portstab3" role="tabpanel">
+                                @include('devices.dig_ports')
+                            </div>
+                            @if($device->extensionModules)
+                                @foreach($device->extensionModules as $extensionModule)
+                                <div class="tab-pane p-20 @if($tab=='ext'.$extensionModule->id) active @endif" id="extportstab{{ $extensionModule->id }}" role="tabpanel">
+                                    @include('devices.extension_module_ports', ['extensionModule' => $extensionModule])
+                                </div>
+                                @endforeach
+                            @endif
+                        </div>
+                    @else
+                        <p>Порты не найдены</p>
+                    @endif
+                </div>
             @endif
         </div>
     </div>
-
     @include('components.info_modal')
 
     <div id="name_modal" class="modal">
@@ -243,14 +210,12 @@
                     <h4 class="modal-title">Описание порта</h4>
                 </div>
                 <div class="modal-body">
-                    <input type="text" class="form-control input-default"
-                           id="name_modal_data" placeholder="">
+                    <input type="text" class="form-control input-default" id="name_modal_data" placeholder="">
                     <button type="button" class="btn btn-default" onclick="setDefaultComment();">Убрать</button>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                    <button type="button"   class="btn btn-primary" data-dismiss="modal"
-                            onclick="updatePortComment();">Сохранить изменения</button>
+                    <button type="button"   class="btn btn-primary" data-dismiss="modal" onclick="updatePortComment();">Сохранить изменения</button>
                 </div>
             </div>
         </div>
@@ -267,8 +232,7 @@
                         <label id="selected_object"></label><br>
                     </div>
                     <div>
-                        <input type="text" name="modal_objects_filter" class="form-control"
-                               placeholder="Поиск по названию...">
+                        <input type="text" name="modal_objects_filter" class="form-control" placeholder="Поиск по названию...">
                     </div>
                     <div id="objectframe"></div>
                 </div>
@@ -278,21 +242,6 @@
             </div>
         </div>
     </div>
-
-    <!-- <div id="device_modal" class="modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Текущая конфигурация будет загружена в контроллер.</h4>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
-                    <button type="button"   class="btn btn-primary" data-dismiss="modal" onclick="updateDevice();" >Продолжить</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <button type="button" id="device_modal_init_btn" style="display: none;" data-toggle="modal" data-target="#device_modal">&nbsp;</button> -->
 
     <div id="delete_modal" class="modal">
         <div class="modal-dialog">
@@ -309,29 +258,7 @@
     </div>
     <button type="button" id="delete_modal_init_btn" style="display: none;" data-toggle="modal" data-target="#delete_modal">&nbsp;</button>
 
-    <div id="reloadModal" class="modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Сообщение</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-info">
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        Конфигурация загружается в устройство... Пожалуйста, дождитесь завершения операции.
-                    </div>
-                </div>
-                <div class="modal-footer">
-{{--                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>--}}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <button type="button" style="display: none;" id="reloadDeviceBtn" data-target="#reloadModal" data-toggle="modal" data-backdrop="static" data-keyboard="false">&nbsp;</button>
-
     {{-- methods modal --}}
-
     <div id="methodsModal" class="modal">
         <div class="modal-dialog modal-lg" style="max-width: 900px !important;">
             <div class="modal-content">
@@ -350,8 +277,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <input type="text" name="modal_objects_filter" class="form-control"
-                                       placeholder="Поиск объекта по названию...">
+                                <input type="text" name="modal_objects_filter" class="form-control" placeholder="Поиск объекта по названию...">
                                 <div style="height:350px; overflow:auto;">
                                     <div class="table-responsive">
                                         <table class="table">
@@ -397,8 +323,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div id="modal_methods_table">
-                                    <input type="text" name="modal_methods_filter" class="form-control"
-                                           placeholder="Поиск метода по названию...">
+                                    <input type="text" name="modal_methods_filter" class="form-control" placeholder="Поиск метода по названию...">
                                     <div style="height:350px; overflow:auto;">
                                         <div class="table-responsive">
                                             <table class="table">
@@ -436,11 +361,10 @@
             </div>
         </div>
     </div>
-    <button type="button" id="methods_modal_init_btn" style="display: none;"
-            data-toggle="modal" data-target="#methodsModal">&nbsp;</button>
+    <button type="button" id="methods_modal_init_btn" style="display: none;" data-toggle="modal" data-target="#methodsModal">&nbsp;</button>
 
     @include('components.params_modal')
-    @if($device->devtype->name !== 'ModbusTCP' && $device->devtype->name !== 'Monoblock 14IN/14OUT')
+    @if($device->devtype->name !== 'Monoblock 14IN/14OUT')
         @include('devices.modals.settings_modal')
     @endif
 @endsection
@@ -449,17 +373,17 @@
     <script src="{{ asset('ela/js/pagescripts/device.js') }}"></script>
     <script>
         const device_id = '{{ $device->id }}';
-        const port_comment_url = '{{ route('ajax.ports.update.comment') }}';
-        const objects_url = '{{ route('ajax.objects.view.all') }}';
-        const methods_url = '{{ route('ajax.ports.method.all') }}';
-        const edit_port_methods_url = '{{ route('ajax.ports.edit.methods') }}'
-        const edit_port_method_delete_url = '{{ route('ajax.ports.edit.method.delete') }}';
-        const object_methods_url = '{{ route('ajax.ports.object.methods') }}';
-        const update_method_url = '{{ route('ajax.ports.update.method') }}';
-        const delete_extension_module = '{{ route('ajax.devices.extension_module.delete') }}';
+        const port_comment_url = "{{ route('ajax.ports.update.comment') }}";
+        const objects_url = "{{ route('ajax.objects.view.all') }}";
+        const methods_url = "{{ route('ajax.ports.method.all') }}";
+        const edit_port_methods_url = "{{ route('ajax.ports.edit.methods') }}";
+        const edit_port_method_delete_url = "{{ route('ajax.ports.edit.method.delete') }}";
+        const object_methods_url = "{{ route('ajax.ports.object.methods') }}";
+        const update_method_url = "{{ route('ajax.ports.update.method') }}";
+        const delete_extension_module = "{{ route('ajax.devices.extension_module.delete') }}";
         const autoreload_period = 3000;
-        const createObjectUrl = '{{ route('objects.create') }}';
-        const createMethodInitUrl = '{{ route('objects.index') }}';
+        const createObjectUrl = "{{ route('objects.create') }}";
+        const createMethodInitUrl = "{{ route('objects.index') }}";
         let port_id = 0;
         let object_id = 0;
         let method_id = 0;
@@ -470,7 +394,6 @@
 
 
         // in-port methods
-
         function redirectToCreateObject() {
             $('#methodsModal #methods_modal_cancel_btn').click();
             window.open(createObjectUrl, '_blank');
@@ -498,7 +421,6 @@
         }
 
         $(document).ready(function () {
-
             function createNewFields() {
                 var newFields = $('<div class="moduleFields form-group row">' +
                                     '<label class="text-right col-md-1 label-fix">Тип:</label>' +
@@ -566,16 +488,11 @@
                 });
             });
 
-            // $('#updateDeviceBtn').click(function() {
-            //     $('#device_modal_init_btn').click();
-            // });
-
             $('#deleteDeviceBtn').click(function() {
                 $('#delete_modal_init_btn').click();
             });
 
             // кнопка Убрать
-
             $('#methodsModal #modal_delete_method_btn').click(function () {
                 if (port_id === 0 || type === '') {
                     return false;
@@ -598,7 +515,6 @@
             });
 
             // выбор объекта в таблице
-
             $('body').on('click', '.js-object-td', function () {
                 if (port_id === 0 || type === '') {
                     return false;
@@ -623,7 +539,6 @@
             });
 
             // выбор метода в таблице
-
             function ajaxUpdateMethod(methodId, params) {
                 $.ajax({
                     url: update_method_url,
@@ -678,7 +593,6 @@
             });
 
             // фильтры
-
             $('#methodsModal input[name=modal_objects_filter]').on('input', function () {
                 const search = $(this).val().trim().toLowerCase();
                 $("#methodsModal .js-object-tr").show();
@@ -740,14 +654,11 @@
         }
 
         function updateMethodsModalTables(data) {
-
             // фильтры
-
             $('#methodsModal input[name=modal_objects_filter]').val('');
             $('#methodsModal input[name=modal_methods_filter]').val('');
 
             // таблица объектов
-
             let html = '';
             let selected_class = '';
             for (let i = 0; i < data.objects.length; i++) {
@@ -768,7 +679,6 @@
             $('#methodsModal #modal_objects_table_body').html(html);
 
             // таблица методов
-
             if (data.object_id !== 0) {
                 setMethodsTableHtml(data.methods);
             } else {
@@ -838,15 +748,13 @@
             port_id = 0;
         }
 
-        //
-
         function deleteDevice() {
             $.ajax({
-                url: '{{ route('ajax.devices.delete') }}',
+                url: "{{ route('ajax.devices.delete') }}",
                 data: {'_token': _token, 'id': device_id},
                 success: function (data) {
                     if (data.result) {
-                        window.location = '{{ route('devices.index') }}';
+                        window.location = "{{ route('devices.index') }}";
                     } else {
                         showErrorModal('Ошибка при удалении контроллера');
                     }
@@ -869,14 +777,9 @@
             if (ip_address === '') {
                 return 'Не указан адрес контроллера';
             }
-            if ('{{ $device->devtype->name }}' == 'ModbusTCP') {
-                if (port === '') {
-                    return 'Не указан порт контроллера';
-                }
-            } else {
-                if (password === '') {
-                    return 'Не указан пароль контроллера';
-                }
+
+            if (password === '') {
+                return 'Не указан пароль контроллера';
             }
 
             if (ip_address.length > 15) {
@@ -890,19 +793,11 @@
         }
 
         function updateDevice() {
-
             let description = $("input[name=description]").val().trim();
             let ip_address = $("input[name=ip_address]").val().trim();
+            var password = $("input[name=password]").val().trim();
 
-            if ('{{ $device->devtype->name }}' == 'ModbusTCP') {
-                var port = $("input[name=port]").val().trim();
-                var password = '';
-            } else {
-                var password = $("input[name=password]").val().trim();
-                var port = '';
-            }
-
-            $message = validateDevice(description, ip_address, password, port);
+            $message = validateDevice(description, ip_address, password);
             if ($message !== '') {
                 showErrorModal($message);
                 return false;
@@ -923,11 +818,11 @@
                         data.push(item);
                     });
                 }
-                // $('#reloadDeviceBtn').click();
+
                 $.ajax({
-                    url: '{{ route('ajax.devices.update') }}',
+                    url: "{{ route('ajax.devices.update') }}",
                     data: {'_token': _token, 'id': device_id, 'description': description,
-                        'ip_address': ip_address, 'password': password, 'port': port, extension_modules: data},
+                        'ip_address': ip_address, 'password': password, extension_modules: data},
                     success: function (data) {
                         if (!data.result) {
                             if (data.message) {
@@ -937,8 +832,6 @@
                             }
                         } else {
                             location.reload();
-                        // $('#reloadDeviceBtn').click();
-                            //setTimeout(checkServer, autoreload_period);
                         }
                     }
                 });
@@ -947,7 +840,7 @@
 
         function checkServer() {
             $.ajax({
-                url: '{{ route('ajax.devices.check.server') }}',
+                url: "{{ route('ajax.devices.check.server') }}",
                 data: { '_token' : _token },
                 success: function (data) {
                     if (data.result) {
