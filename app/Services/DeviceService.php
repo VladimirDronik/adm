@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ExtensionModuleType;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\PortRepository;
+use Illuminate\Support\Facades\Http;
 use App\Repositories\DeviceRepository;
 
 class DeviceService
@@ -67,38 +68,22 @@ class DeviceService
         Port::insert($extensionModule->extensionModuleType->getPortsForInserting($deviceId, $extensionModule->id));
     }
 
-    private function getDeviceIpNotificationParams(string $oldIP, string $eip, string $sip): string
-    {
-        $gw = explode(':', $sip)[0];
-
-        $sipWithPort = strpos($sip, ':') === false ? $sip.'%3A8080' : $sip;
-
-        return "http://{$oldIP}/sec/?cf=1&eip={$eip}&pwd=sec&gw={$gw}&sip={$sipWithPort}&sct=md.php";
-    }
-
     /**
-     * Передача ip нового устройства на удаленный сервер
-     *
-     * @throws \Exception
+     * Проверка доступности ip адреса
      */
-    public function notifyDeviceIp(array $data)
+    public function checkDeviceIp(string $ip, string $password): bool
     {
-        $sip = $this->networkService->getIface()[0];
-        $oldIP = DeviceService::getDeviceIP($data['id']);
+        $active = 0;
 
-        if (empty($sip)) {
-            throw new \Exception('Не указан ip-адрес для подсети устройств в разделе «Настройка сети»');
+        try {
+            $response = Http::get('http://'.$ip.'/'.$password);
+
+            $active = $response->ok();
+        } catch (\Throwable $th) {
+            Log::error('Ошибка проверки доступности ip адреса контроллера: '.$th->getMessage());
         }
 
-        if (self::getStatus($data['id'])) {
-            $answer = file_get_contents($this->getDeviceIpNotificationParams($oldIP, $data['ip_address'], $sip));
-        } else {
-            $answer = false;
-        }
-
-        if ($answer === false) {
-            throw new \Exception('Некорректный ответ от устройства или устройство недоступно');
-        }
+        return $active;
     }
 
     /**
@@ -106,17 +91,13 @@ class DeviceService
      *
      * @throws \Exception
      */
-    public function storeDevice(array $data, bool $isNotify = true)
+    public function storeDevice(array $data)
     {
         $this->device = new Device();
 
         $this->device->fill($data);
 
         $this->device->save();
-
-        if ($isNotify) {
-            $this->notifyDeviceIp($data);
-        }
     }
 
     /**
@@ -124,38 +105,24 @@ class DeviceService
      *
      * @throws \Throwable
      */
-    public function store(array $data, bool $forcedCreate = true, bool $isNotify = false)
+    public function store(array $data)
     {
-        $typeDevice = $data['type'];
+        DB::transaction(function () use ($data) {
+            $typeDevice = $data['type'];
 
-        $data['type'] = $this->deviceRepository->getIdTypeByName($typeDevice);
+            $data['type'] = $this->deviceRepository->getIdTypeByName($typeDevice);
 
-        DB::beginTransaction();
+            $data['active'] =  $this->checkDeviceIp(
+                $data['ip_address'],
+                $data['password']
+            );
 
-        try {
-            exec("ping -c 1 {$data['ip_address']}", $output, $status);
+            $this->storeDevice($data);
 
-            if ($status == 0) {
-                $data['active'] = 1;
-            } else {
-                $data['active'] = 0;
-            }
+            $this->storePorts();
+        });
 
-            if (($data['active'] == 1) || ($forcedCreate)) {
-                $this->storeDevice($data, $isNotify);
-
-                $this->storePorts();
-
-                DB::commit();
-
-                return $this->device->id;
-            } else {
-                throw new \Exception('Устройство недоступно!');
-            }
-        } catch (\Throwable $e) {
-            DB::rollback();
-            throw $e;
-        }
+        return $this->device->id;
     }
 
     private function isDoubleDescription(array $data)
@@ -246,18 +213,16 @@ class DeviceService
         }
 
         $device->description = $data['description'];
-        $device->password = $data['password'] ?: null;
 
-        if (trim($data['ip_address']) !== $device->ip_address) {
+        if ($data['ip_address'] !== $device->ip_address || $data['password'] !== $device->password) {
             $device->ip_address = $data['ip_address'];
+            $device->password = $data['password'];
+            $device->active = $this->checkDeviceIp($data['ip_address'], $data['password']);
 
             DB::beginTransaction();
 
             try {
                 $device->save();
-
-                //Меняем адрес устойства
-                $this->notifyDeviceIp($data);
 
                 if ($extensionModules) {
                     $this->storeExtensionModules($extensionModules, $device);

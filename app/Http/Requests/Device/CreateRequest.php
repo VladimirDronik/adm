@@ -26,8 +26,7 @@ class CreateRequest extends FormRequest
         return [
             'type' => 'required',
             'description' => 'required|string|max:255|unique:devices,description',
-            'password' => 'nullable|string|max:100',
-            'port' => 'nullable|integer|min:0|max:65535',
+            'password' => 'required|string|max:100',
             'ip_address' => 'required|string|ip|max:15',
         ];
     }
