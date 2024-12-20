@@ -7,6 +7,7 @@ use App\Models\Termostat;
 use App\Models\HomeObject;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\ObjectRepository;
+use Illuminate\Database\Eloquent\Builder;
 
 class ObjectService
 {
@@ -70,7 +71,10 @@ class ObjectService
         $methodsQuery = $object->methods();
 
         if ($object->lamp) {
-            $methodsQuery->whereIn('alias', $object->lamp->getMethodsAliasByType());
+            $methodsQuery->where(function (Builder $subQuery) use ($object) {
+                $subQuery->whereIn('alias', $object->lamp->getMethodsAliasByType())
+                    ->orWhereNull('alias');
+            });
         }
 
         return $methodsQuery->orderBy('name')
