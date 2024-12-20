@@ -67,7 +67,7 @@
     <script>
         function rtuFields() {
             $('#rtu_div').removeAttr("hidden");
-            $('#bus_form input[name=device_select]').removeAttr("disabled");
+            $('#bus_form select[name=device_select]').removeAttr("disabled");
             $('#bus_form input[name=baudrate]').removeAttr("disabled");
             $('#bus_form input[name=length]').removeAttr("disabled");
             $('#bus_form input[name=parity]').removeAttr("disabled");
@@ -86,7 +86,7 @@
             $('#bus_form input[name=port]').removeAttr("disabled");
 
             $('#rtu_div').attr("hidden", true);
-            $('#bus_form input[name=device_select]').attr("disabled", true);
+            $('#bus_form select[name=device_select]').attr("disabled", true);
             $('#bus_form input[name=baudrate]').attr("disabled", true);
             $('#bus_form input[name=length]').attr("disabled", true);
             $('#bus_form input[name=parity]').attr("disabled", true);
