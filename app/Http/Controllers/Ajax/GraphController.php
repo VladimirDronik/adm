@@ -72,4 +72,14 @@ class GraphController extends Controller
 
         return response()->json(compact('result', 'data'));
     }
+
+    public function getSensorsParamsPeriodData(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['sensor_param_id', 'period']), 400);
+
+        [$result, $data] = $this->service
+            ->getSensorGraphsPeriodData($r->sensor_param_id, $r->period);
+
+        return response()->json(compact('result', 'data'));
+    }
 }

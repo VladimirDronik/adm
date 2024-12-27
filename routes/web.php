@@ -365,6 +365,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('graphs/pressures/period/data', 'GraphController@getPressuresPeriodData')->name('graphs.pressures.period.data');
         Route::post('graphs/carbdioxides/period/data', 'GraphController@getCarbdioxidesPeriodData')->name('graphs.carbdioxides.period.data');
         Route::post('graphs/counts/period/data', 'GraphController@getCountsPeriodData')->name('graphs.counts.period.data');
+        Route::post('graphs/sensors_params/period/data', 'GraphController@getSensorsParamsPeriodData')->name('graphs.sensors_params.period.data');
 
         Route::group(['prefix' => 'scripts', 'as' => 'scripts.'], function () {
             Route::post('delete', 'ScriptController@delete')->name('delete');

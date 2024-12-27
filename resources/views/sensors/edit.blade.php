@@ -76,25 +76,30 @@
                                         {{ $sensorsParam->timestamp }}
                                     </div>
                                     <div class="col-md-2 text-right">
-                                    <button type="button"
-                                        data-id="{{ $sensorsParam->id }}"
-                                        data-name="{{ $sensorsParam->name }}"
-                                        data-param="{{ $sensorsParam->param }}"
-                                        data-param_name="{{ $sensorsParam->param_name }}"
-                                        data-get_param="{{ $sensorsParam->get_param }}"
-                                        data-value="{{ $sensorsParam->value }}"
-                                        data-unit_name="{{ $sensorsParam->unit_name }}"
-                                        data-units="{{ $sensorsParam->units }}"
-                                        data-accuracy="{{ $sensorsParam->accuracy }}"
-                                        data-graph="{{ $sensorsParam->graph }}"
-                                        data-min_range="{{ $sensorsParam->min_range }}"
-                                        data-max_range="{{ $sensorsParam->max_range }}"
-                                        data-min_alarm="{{ $sensorsParam->min_alarm }}"
-                                        data-max_alarm="{{ $sensorsParam->max_alarm }}"
-                                        data-timestamp="{{ $sensorsParam->timestamp }}"
-                                        class="btn btn-info btn-sm btn-rounded edit_btn">
-                                        <i class="fa fa-cog fa-lg"></i>
-                                    </button>
+                                        @if($sensorsParam->graph)
+                                            <button type="button" data-id="{{ $sensorsParam->id }}" data-name="{{ $sensorsParam->name }}" class="btn btn-info btn-sm btn-rounded graph_btn">
+                                                <i class="fa fa-bar-chart"></i>
+                                            </button>
+                                        @endif
+                                        <button type="button"
+                                            data-id="{{ $sensorsParam->id }}"
+                                            data-name="{{ $sensorsParam->name }}"
+                                            data-param="{{ $sensorsParam->param }}"
+                                            data-param_name="{{ $sensorsParam->param_name }}"
+                                            data-get_param="{{ $sensorsParam->get_param }}"
+                                            data-value="{{ $sensorsParam->value }}"
+                                            data-unit_name="{{ $sensorsParam->unit_name }}"
+                                            data-units="{{ $sensorsParam->units }}"
+                                            data-accuracy="{{ $sensorsParam->accuracy }}"
+                                            data-graph="{{ $sensorsParam->graph }}"
+                                            data-min_range="{{ $sensorsParam->min_range }}"
+                                            data-max_range="{{ $sensorsParam->max_range }}"
+                                            data-min_alarm="{{ $sensorsParam->min_alarm }}"
+                                            data-max_alarm="{{ $sensorsParam->max_alarm }}"
+                                            data-timestamp="{{ $sensorsParam->timestamp }}"
+                                            class="btn btn-info btn-sm btn-rounded edit_btn">
+                                            <i class="fa fa-cog fa-lg"></i>
+                                        </button>
                                         @if($sensorSettings->where('name', 'type')->first()?->value == 'custom' || $sensorSettings->where('name', 'connection')->first()?->value == '1wbus')
                                             <button type="button" data-id="{{ $sensorsParam->id }}" class="btn btn-danger btn-rounded btn-sm del_btn">
                                                 <i class="fa fa-trash fa-lg"></i>
@@ -128,6 +133,7 @@
                 <button type="button" id="init_btn" style="display: none;" data-toggle="modal" data-target="#param_modal">&nbsp;</button>
                 <button type="button" id="init_info_btn" style="display: none;" data-toggle="modal" data-target="#info_modal">&nbsp;</button>
                 <button type="button" id="address_init_btn" style="display: none;" data-toggle="modal" data-target="#address_param_modal">&nbsp;</button>
+                <button type="button" id="graph_init_btn" style="display: none;" data-toggle="modal" data-target="#graph_modal">&nbsp;</button>
         </div>
     </div>
     @include('components.info_modal')
@@ -135,10 +141,15 @@
     @include('sensors.params_modal')
     @include('sensors.address_params_modal')
     @include('components.del_modal')
+    @include('sensors.graph_modal')
 @endsection
 
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('ela/js/lib/amcharts4/core.js') }}"></script>
+    <script src="{{ asset('ela/js/lib/amcharts4/charts.js') }}"></script>
+    <script src="{{ asset('ela/js/lib/amcharts4/themes/animated.js') }}"></script>
+    <script src="{{ asset('ela/js/lib/amcharts4/lang/ru_RU.js') }}"></script>
     <script>
         $("#auto_sel_source_id").chosen({width:"100%", no_results_text: "Не найдено"});
 
@@ -463,6 +474,94 @@
                         }
                     });
                 }
+            });
+
+            function createAmChart(id, dates, values, unit_name) {
+                // Create chart
+                var chart = am4core.create("chart", am4charts.XYChart);
+                chart.paddingRight = 20;
+                chart.language.locale = am4lang_ru_RU;
+                chart.data = getChartData(dates, values);
+
+                var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+                dateAxis.baseInterval = {
+                    "timeUnit": "minute",
+                    "count": 1
+                };
+                dateAxis.tooltipDateFormat = "dd.MM.yyyy HH:mm";
+
+                var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+                valueAxis.tooltip.disabled = true;
+                valueAxis.title.text = unit_name;
+
+                var series = chart.series.push(new am4charts.LineSeries());
+                series.dataFields.dateX = "date";
+                series.dataFields.valueY = "temp";
+                series.tooltipText = "T: [bold]{valueY}[/]";
+                series.fillOpacity = 0.3;
+
+                chart.cursor = new am4charts.XYCursor();
+                chart.cursor.lineY.opacity = 0;
+                chart.scrollbarX = new am4charts.XYChartScrollbar();
+                chart.scrollbarX.series.push(series);
+
+                chart.events.on("datavalidated", function () {
+                    dateAxis.zoom({start:0, end:1});
+                });
+            }
+
+            function getChartData(dates, values) {
+                var chartData = [];
+                for (var i = 0; i < dates.length; i++) {
+                    chartData.push({
+                        date: new Date(dates[i]),
+                        temp: values[i]
+                    });
+                }
+                return chartData;
+            }
+
+            am4core.ready(function() {
+                am4core.useTheme(am4themes_animated);
+            });
+
+            function updateChart(sensor_param_id, data) {
+                createAmChart(sensor_param_id, data.dates, data.values, data.unit_name);
+            }
+
+            function getChartPeriodData(sensor_param_id, period) {
+                $.ajax({
+                    url: "{{ route('ajax.graphs.sensors_params.period.data') }}",
+                    data: {'_token': _token, 'sensor_param_id': sensor_param_id, 'period': period},
+                    success: function (resp) {
+                        if (resp.result) {
+                            updateChart(sensor_param_id, resp.data);
+                        }
+                    }
+                });
+            }
+
+            $('body').on('change', '.select_period', function() {
+                let sensor_param_id = $(this).attr('data-id');
+                let period = $(this).val();
+                getChartPeriodData(sensor_param_id, period);
+            });
+
+            function showGraphModal(data) {
+                $('#graph_modal_title').text('График параметра: ' + data.name);
+                $('#select_period').attr('data-id', data.id);
+                $('#select_period').change();
+
+                graph_init_btn.click();
+            }
+
+            $('body').on('click', '.graph_btn', function() {
+                let data = {};
+
+                data.id = $(this).attr('data-id');
+                data.name = $(this).attr('data-name');
+
+                showGraphModal(data);
             });
         });
     </script>

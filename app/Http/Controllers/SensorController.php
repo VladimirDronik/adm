@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Sensor;
 use App\Models\HomeObject;
 use App\Models\SensorsParam;
+use App\Services\GraphService;
 use App\Services\SensorService;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\RoomRepository;
@@ -22,6 +23,7 @@ class SensorController extends Controller
         private SensorService $service,
         private DeviceRepository $deviceRepository,
         private ModbusRepository $modbusRepository,
+        private GraphService $graphService,
     ) {
     }
 
@@ -37,6 +39,7 @@ class SensorController extends Controller
         $sensorObject = HomeObject::findOrFail($id);
         $sensorSettings = $sensorObject->sensors;
         $rooms = $this->roomRepository->getAllWithoutCommonToArray();
+        $periods = $this->graphService->getSensorsParamsPeriods();
         $sources = [];
         $addressParamsCount = null;
         $params = [];
@@ -67,7 +70,7 @@ class SensorController extends Controller
 
         return view('sensors.edit', compact(
             'rooms', 'sensorObject', 'sources', 'units',
-            'addressParamsCount', 'sensorSettings', 'params'
+            'addressParamsCount', 'sensorSettings', 'params', 'periods'
         ));
     }
 
