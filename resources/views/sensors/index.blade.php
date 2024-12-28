@@ -3,12 +3,13 @@
 @section('breadcrumbs')
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-primary">I2C датчики</h3></div>
+            <h3 class="text-primary">Датчики</h3></div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Главная</a></li>
                 <li class="breadcrumb-item breadcrumb-item-no-link">Устройства</li>
-                <li class="breadcrumb-item active">I2C датчики</li>
+                <li class="breadcrumb-item breadcrumb-item-no-link">Датчики</li>
+                <li class="breadcrumb-item active">Датчики</li>
             </ol>
         </div>
     </div>
@@ -16,72 +17,81 @@
 
 @section('content')
     <div class="container-fluid">
-        @include('detectors.tab_header', ['active' => 'i2c'])
+        @include('detectors.tab_header', ['active' => 'sensors'])
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('usensors.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить I2C датчик</a>
-                        <a href="{{ route('usensors.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
+                        <a href="{{ route('sensors.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить датчик</a>
+                        <a href="{{ route('sensors.index') }}" class="btn btn-success m-b-10 m-l-5">Обновить</a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card">
-            <div class="card-title"><h4>I2C датчики</h4></div>
+            <div class="card-title"><h4>Датчики</h4></div>
             <div class="card-body">
-                @if(count($usensors))
+                @if(count($sensorObjects))
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
                                     <th style="width: 60px;">ID</th>
                                     <th>Название</th>
-                                    <th>Тип датчика</th>
-                                    <th>Контроллер</th>
-                                    <th>SDA</th>
-                                    <th>SCL</th>
+                                    <th>Параметры</th>
                                     <th>Помещение</th>
+                                    <th>Статус</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($usensors as $usensor)
-                                    <tr id="tr{{$usensor->id}}">
-                                        <td scope="row">{{ $usensor->id_object }}</td>
+                                @foreach($sensorObjects as $sensorObject)
+                                    <tr id="tr{{$sensorObject->id}}">
                                         <td>
-                                            <a href="{{ route('usensors.edit', [$usensor->id]) }}">{{ $usensor->name }}</a>
+                                            {{ $sensorObject->id }}
                                         </td>
-                                        <td>{{ $usensor->type_name }}</td>
-                                        <td>{{ $usensor->device?->description }}</td>
-                                        <td>{{ $usensor->port_SDA }}</td>
-                                        <td>{{ $usensor->port_SCL }}</td>
-                                        <td>{{ $usensor->relatedRoom?->name }}</td>
+                                        <td>
+                                            <a href="{{ route('sensors.edit', [$sensorObject->id]) }}">{{ $sensorObject->name }}</a>
+                                        </td>
+                                        <td>
+                                            @foreach($sensorObject->sensorsParams as $sensorsParam)
+                                                {{ $sensorsParam->name }}: {{ $sensorsParam->value ? ($sensorsParam->value . ' ' . $sensorsParam->unit_name) : '' }}
+                                                <br>
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            {{ \App\Models\Room::find($sensorObject->sensors()->where('name', 'room')->first()?->value)?->name }}
+                                        </td>
+                                        <td>
+                                            @if($sensorObject->status == 'ok')
+                                                <span class="badge badge-success">Активно</span>
+                                            @else
+                                                <span class="badge badge-danger">Недоступно</span>
+                                            @endif
+                                        </td>
                                         <td align="center" class="text-center">
-                                            <a href="{{ route('usensors.edit',[$usensor->id]) }}" class="btn btn-info btn-sm btn-rounded">
+                                            <a href="{{ route('sensors.edit', [$sensorObject->id]) }}" class="btn btn-info btn-sm btn-rounded">
                                                 <i class="fa fa-cog fa-lg"></i>
                                             </a>
                                         </td>
                                         <td align="center" class="text-center">
                                             <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                    data-id="{{ $usensor->id }}" data-name="{{ $usensor->name }}">
+                                                    data-id="{{ $sensorObject->id }}" data-name="{{ $sensorObject->name }}">
                                                 <i class="fa fa-trash fa-lg"></i>
                                             </button>
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
-                            @if(count($usensors) > 10)
+                            @if(count($sensorObjects) > 10)
                                 <tfoot>
                                     <tr>
                                         <th style="width: 60px;">ID</th>
                                         <th>Название</th>
-                                        <th>Тип датчика</th>
-                                        <th>Контроллер</th>
-                                        <th>SDA</th>
-                                        <th>SCL</th>
+                                        <th>Параметры</th>
                                         <th>Помещение</th>
+                                        <th>Статус</th>
                                         <th style="width: 60px;"></th>
                                         <th style="width: 60px;"></th>
                                     </tr>
@@ -89,14 +99,15 @@
                             @endif
                         </table>
                     </div>
-                    {{ $usensors->appends(request()->input())->links() }}
-                    <p class="text-right">Найдено: {{ $usensors->total() }}</p>
+                    {{ $sensorObjects->appends(request()->input())->links() }}
+                    <p class="text-right">Найдено: {{ $sensorObjects->total() }}</p>
                 @else
-                    <p>I2C датчики не найдены</p>
+                    <p>Датчики не найдены</p>
                 @endif
             </div>
         </div>
     </div>
+    @include('components.info_modal')
     @include('components.del_modal')
 @endsection
 
@@ -107,20 +118,20 @@
 
             $('.del_btn').click(function() {
                 del_id = $(this).data('id');
-                $('#del_modal_body').text('Удалить I2C датчик № '+del_id+' «'+$(this).data('name')+'»?');
+                $('#del_modal_body').text('Удалить датчик № '+del_id+' «'+$(this).data('name')+'»?');
                 $('#del_init_btn').click();
             });
 
-            $('#del_modal_btn').click(function() {
+            $('#del_modal_btn').click(function(){
                 if (del_id) {
                     $.ajax({
-                        url: '{{ route('ajax.usensors.delete') }}',
+                        url: "{{ route('ajax.objects.sensor.delete') }}",
                         data: { '_token': _token, 'id': del_id },
                         success: function (data) {
                             if (data.result) {
                                 $('#tr'+del_id).hide();
                             } else {
-                                showErrorModal('Ошибка при удалении унивестального датчика');
+                                showErrorModal('Ошибка при удалении датчика');
                             }
                         }
                     });

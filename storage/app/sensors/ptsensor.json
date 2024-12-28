@@ -1,0 +1,12 @@
+[
+    {
+        "param": "pressure",
+        "name": "Давление",
+        "get_param": "cmd=get",
+        "units": "bar",
+        "accuracy": 1,
+        "min_range": 0,
+        "graph": 1,
+        "max_range": 10
+    }
+]

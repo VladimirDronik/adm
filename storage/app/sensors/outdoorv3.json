@@ -1,0 +1,42 @@
+[
+    {
+        "param": "temperature",
+        "name": "Температура",
+        "get_param": "i2c_dev=bmx280&i2c_par=1",
+        "units": "celsius",
+        "accuracy": 1,
+        "min_range": -40,
+        "graph": 1,
+        "max_range": 85
+    },
+    {
+        "param": "humidity",
+        "name": "Влажность",
+        "get_param": "i2c_dev=bmx280&i2c_par=2",
+        "units": "percent",
+        "accuracy": 0,
+        "min_range": 0,
+        "graph": 1,
+        "max_range": 100
+    },
+    {
+        "param": "pressure",
+        "name": "Давление",
+        "get_param": "i2c_dev=bmx280",
+        "units": "mmhg",
+        "accuracy": 0,
+        "min_range": 225,
+        "graph": 1,
+        "max_range": 825
+    },
+    {
+        "param": "illumination",
+        "name": "Освещение",
+        "get_param": "i2c_dev=bh1750",
+        "units": "lux",
+        "accuracy": 0,
+        "min_range": 0,
+        "graph": 1,
+        "max_range": 65535
+    }
+]

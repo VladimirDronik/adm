@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Method;
 use App\Models\Termostat;
 use App\Models\HomeObject;
+use App\Models\ObjType;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\ObjectRepository;
 use Illuminate\Database\Eloquent\Builder;

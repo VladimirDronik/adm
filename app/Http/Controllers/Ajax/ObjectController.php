@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Ajax;
 
 use Illuminate\Http\Request;
 use App\Services\ObjectService;
+use App\Services\SensorService;
 use App\Http\Controllers\Controller;
 use App\Repositories\PortRepository;
 use App\Repositories\ObjectRepository;
@@ -11,7 +12,8 @@ use App\Repositories\ObjectRepository;
 class ObjectController extends Controller
 {
     public function __construct(
-        private ObjectService $service
+        private ObjectService $service,
+        private SensorService $sensorService,
     ) {
     }
 
@@ -136,5 +138,53 @@ class ObjectController extends Controller
     public function addObjectToPort(Request $r, PortRepository $portRep)
     {
         $portRep->updateObject($r->all());
+    }
+
+    /**
+     * Добавление или обновление параметра датчика
+     */
+    public function addParam(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['data']), 400);
+
+        return response()->json([
+            'result' => (bool) $this->sensorService->updateOrCreateParam($r->data),
+        ]);
+    }
+
+    /**
+     * Добавление адреса датчика
+     */
+    public function addAddressParam(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['data']), 400);
+
+        return response()->json([
+            'result' => (bool) $this->sensorService->createAddressParam($r->data),
+        ]);
+    }
+
+    /**
+     * Удаление параметра датчика
+     */
+    public function deleteParam(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id']), 400);
+
+        return response()->json([
+            'result' => (bool) $this->sensorService->sensorsParamDelete((int) $r->id),
+        ]);
+    }
+
+    /**
+     * Удаление объекта датчика
+     */
+    public function sensorDelete(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['id']), 400);
+
+        return response()->json([
+            'result' => (bool) $this->sensorService->sensorDelete((int) $r->id),
+        ]);
     }
 }

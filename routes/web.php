@@ -60,6 +60,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('time_zone', 'TimeZoneSettingController')->except('show', 'destroy', 'index')->middleware('can:settings');
     Route::resource('scenes', 'SceneController')->except('show', 'destroy')->middleware('can:scenes');
     Route::resource('termostats', 'TermostatController')->except('show', 'destroy')->middleware('can:devices');
+    Route::resource('sensors', 'SensorController')->except('show', 'destroy', 'update')->middleware('can:devices');
+    Route::put('sensors/{sensorObject}', 'SensorController@update')->name('sensors.update');
     Route::resource('hygrostats', 'HygrostatController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('motionsensors', 'MotionsensorsController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('lightstats', 'LightstatController')->except('show', 'destroy')->middleware('can:devices');
@@ -122,6 +124,7 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::post('remove_dali_device_from_group', 'ModbusSlaverController@removeDaliDeviceFromGroup')->name('remove_dali_device_from_group');
                 Route::post('create_dali_device_group', 'ModbusSlaverController@createDaliDeviceGroup')->name('create_dali_device_group');
                 Route::post('remove_dali_device_group', 'ModbusSlaverController@removeDaliDeviceGroup')->name('remove_dali_device_group');
+                Route::post('', 'ModbusSlaverController@getSlavers')->name('get');
             });
             Route::group(['prefix' => 'registers', 'as' => 'registers.'], function () {
                 Route::post('delete', 'ModbusRegisterController@delete')->name('delete');
@@ -303,6 +306,13 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('delete', 'ObjectController@delete')->name('delete');
             Route::post('delete/all', 'ObjectController@deleteAll')->name('delete.all');
             Route::post('store', 'ObjectController@store')->name('store');
+
+            Route::group(['prefix' => 'sensor', 'as' => 'sensor.'], function () {
+                Route::post('add_param', 'ObjectController@addParam')->name('add_param');
+                Route::post('add_address_param', 'ObjectController@addAddressParam')->name('add_address_param');
+                Route::post('delete_param', 'ObjectController@deleteParam')->name('delete_param');
+                Route::post('delete', 'ObjectController@sensorDelete')->name('delete');
+            });
         });
 
         Route::post('view_objects/view/all', 'ViewObjectController@getViewAll')->name('view_objects.view.all');
@@ -357,6 +367,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('graphs/pressures/period/data', 'GraphController@getPressuresPeriodData')->name('graphs.pressures.period.data');
         Route::post('graphs/carbdioxides/period/data', 'GraphController@getCarbdioxidesPeriodData')->name('graphs.carbdioxides.period.data');
         Route::post('graphs/counts/period/data', 'GraphController@getCountsPeriodData')->name('graphs.counts.period.data');
+        Route::post('graphs/sensors_params/period/data', 'GraphController@getSensorsParamsPeriodData')->name('graphs.sensors_params.period.data');
 
         Route::group(['prefix' => 'scripts', 'as' => 'scripts.'], function () {
             Route::post('delete', 'ScriptController@delete')->name('delete');

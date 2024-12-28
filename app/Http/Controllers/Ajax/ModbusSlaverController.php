@@ -150,4 +150,16 @@ class ModbusSlaverController extends Controller
             'result' => $result,
         ]);
     }
+
+    public function getSlavers(Request $r)
+    {
+        abort_if(! ajaxHas($r, []), 400);
+
+        $slavers = $this->modbusRep->getAllSlaversToArray();
+
+        return response()->json([
+            'result' => true,
+            'slavers' => $slavers,
+        ]);
+    }
 }

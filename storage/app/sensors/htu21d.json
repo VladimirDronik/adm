@@ -1,0 +1,22 @@
+[
+    {
+        "param": "temperature",
+        "name": "Температура",
+        "get_param": "i2c_dev=htu21d&i2c_par=1",
+        "units": "celsius",
+        "accuracy": 1,
+        "min_range": -40,
+        "graph": 1,
+        "max_range": 105
+    },
+    {
+        "param": "humidity",
+        "name": "Влажность",
+        "get_param": "i2c_dev=htu21d",
+        "units": "percent",
+        "accuracy": 0,
+        "min_range": 0,
+        "graph": 1,
+        "max_range": 100
+    }
+]

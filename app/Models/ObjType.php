@@ -68,6 +68,8 @@ class ObjType extends Model
 
     const TYPE_DALI = 'dali';
 
+    const TYPE_SENSOR = 'sensor';
+
     protected $table = 'objtypes';
 
     public $timestamps = false;

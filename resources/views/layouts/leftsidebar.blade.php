@@ -50,15 +50,9 @@
                         </a>
                         <ul aria-expanded="false" class="collapse">
                             <li>
-                                <a href="{{ route('termostats.index') }}">
+                                <a href="{{ route('sensors.index') }}">
                                     <i class="fa fa-tasks"></i>
                                     Датчики
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('usensors.index') }}">
-                                    <i class="fa fa-microchip"></i>
-                                    I2C датчики
                                 </a>
                             </li>
                             <li>

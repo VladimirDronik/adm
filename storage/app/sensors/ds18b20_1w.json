@@ -1,0 +1,12 @@
+[
+    {
+        "param": "temperature",
+        "name": "Температура",
+        "get_param": "cmd=get",
+        "units": "celsius",
+        "accuracy": 1,
+        "min_range": -55,
+        "graph": 1,
+        "max_range": 125
+    }
+]

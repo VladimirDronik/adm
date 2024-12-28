@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\HomeObject
@@ -198,5 +199,15 @@ class HomeObject extends Model
     public function boiler(): HasOne
     {
         return $this->hasOne(Boiler::class, 'id_object', 'id');
+    }
+
+    public function sensors(): HasMany
+    {
+        return $this->hasMany(Sensor::class, 'object_id', 'id');
+    }
+
+    public function sensorsParams(): HasMany
+    {
+        return $this->hasMany(SensorsParam::class, 'object_id', 'id');
     }
 }

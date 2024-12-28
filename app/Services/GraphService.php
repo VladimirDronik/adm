@@ -11,7 +11,9 @@ use App\Models\Termostat;
 use App\Models\GraphCount;
 use App\Models\GraphLight;
 use App\Models\Carbdioxide;
+use App\Models\SensorGraph;
 use App\Models\Pressurestat;
+use App\Models\SensorsParam;
 use App\Models\GraphHumidity;
 use App\Models\GraphPressure;
 use App\Models\GraphTermostat;
@@ -370,6 +372,47 @@ class GraphService
 
         $data['values'] = $graphs->pluck('value')->toArray();
         $data['dates'] = $graphs->pluck('datetime')->toArray();
+
+        return [true, $data];
+    }
+
+    public function getSensorsParamsPeriods()
+    {
+        $periods = [];
+        $minDate = SensorGraph::min('datetime');
+        if (empty($minDate)) {
+            return $periods;
+        }
+        $minDate = Carbon::createFromFormat('Y-m-d H:i:s', $minDate);
+        $curDate = Carbon::now();
+        while ($minDate->lte($curDate)) {
+            $periods[$minDate->month.'-'.$minDate->year] = 'за '.getRusMonth($minDate->month).' '.$minDate->year;
+            $minDate->addMonth();
+        }
+
+        return array_reverse($periods);
+    }
+
+    public function getSensorGraphsPeriodData(int $sensorParamId, string $period)
+    {
+        $sensorsParam = SensorsParam::find($sensorParamId);
+        $query = SensorGraph::where('param_id', $sensorParamId)
+            ->select('value', 'datetime')->orderBy('datetime');
+
+        if ($period === '7') {
+            $weekAgoDate = Carbon::now()->subDays(7)->format('Y-m-d 00:00:00');
+            $graphs = $query->where('datetime', '>=', $weekAgoDate)->get();
+        } else {
+            $periodParts = explode('-', $period);
+            $month = (int) $periodParts[0];
+            $year = (int) $periodParts[1];
+            $graphs = $query->whereMonth('datetime', '=', $month)
+                ->whereYear('datetime', '=', $year)->get();
+        }
+
+        $data['values'] = $graphs->pluck('value')->toArray();
+        $data['dates'] = $graphs->pluck('datetime')->toArray();
+        $data['unit_name'] = $sensorsParam->unit_name;
 
         return [true, $data];
     }
