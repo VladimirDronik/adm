@@ -371,6 +371,18 @@ class ScriptsTableSeeder extends Seeder
                 'count' => 0,
                 'system' => 1,
             ],
+            [
+                'name' => 'Применить яркость',
+                'link' => 'dali_apply.php',
+                'count' => 0,
+                'system' => 1,
+            ],
+            [
+                'name' => 'Изменение яркости',
+                'link' => 'dali_dim.php',
+                'count' => 0,
+                'system' => 1,
+            ],
         ];
     }
 
