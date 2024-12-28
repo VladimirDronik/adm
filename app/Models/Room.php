@@ -49,7 +49,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Room extends Model
 {
-    const COMMON_NAME = 'Общие';
+    const COMMON_NAME = 'Сценарии';
 
     public $timestamps = false;
 

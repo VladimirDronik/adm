@@ -34,7 +34,7 @@ class ViewController extends Controller
     public function getLists()
     {
         $types = View::getFullTypeIds();
-        $rooms = $this->roomRep->getAllToArray();
+        $rooms = $this->roomRep->getAllForViewsToArray();
         $scenes = $this->sceneRep->getAll()->pluck('label', 'id')->toArray();
         $images = ImageService::getViewImages();
         $objects = $this->objectRep->getAllToArray();

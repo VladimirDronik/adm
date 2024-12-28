@@ -48,6 +48,14 @@ class RoomRepository
 
     public function getAllToArray(): array
     {
+        return [0 => 'Общие'] +
+            $this->getSpecialRooms()
+                ->pluck('name', 'id')
+                ->toArray();
+    }
+
+    public function getAllForViewsToArray(): array
+    {
         return [0 => Room::COMMON_NAME] +
             $this->getSpecialRooms()
                 ->pluck('name', 'id')
