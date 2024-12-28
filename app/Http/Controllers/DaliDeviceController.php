@@ -8,19 +8,27 @@ use Illuminate\Support\Facades\Log;
 use App\Repositories\RoomRepository;
 use App\Repositories\ModbusRepository;
 use App\Services\Modbus\SlaverService;
+use App\Repositories\AliceDevicesRepository;
 
 class DaliDeviceController extends Controller
 {
     public function __construct(
         private SlaverService $service,
         private RoomRepository $roomRep,
-        private ModbusRepository $modbusRep
+        private ModbusRepository $modbusRep,
+        private AliceDevicesRepository $aliceRepository,
     ) {
     }
 
-    public function edit($id)
+    public function edit($id, int $tab = 1)
     {
         $daliDevice = DaliDevice::findOrFail($id);
+        $alice = null;
+
+        if ($daliDevice->id_object) {
+            $alice = $this->aliceRepository
+                ->getNameAndRoomByObject($daliDevice->id_object);
+        }
 
         if ($daliDevice->is_group) {
             $daliDevices = $this->modbusRep
@@ -32,7 +40,7 @@ class DaliDeviceController extends Controller
         $rooms = $this->roomRep->getAllWithoutCommonToArray();
 
         return view('mod_bus.dali_device.edit', compact(
-            'daliDevice', 'rooms', 'daliDevices'
+            'daliDevice', 'rooms', 'daliDevices', 'tab', 'alice'
         ));
     }
 

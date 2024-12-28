@@ -11,6 +11,7 @@ use App\Models\HomeObject;
 use App\Models\ModbusSlaver;
 use App\Models\ModbusRegister;
 use App\Models\ConditionerType;
+use App\Services\AliceDevicesService;
 use Illuminate\Support\Facades\DB;
 use App\Services\ConditionerService;
 use Database\Seeders\ScriptsTableSeeder;
@@ -180,6 +181,18 @@ class SlaverService
             }
 
             $daliDevice->save();
+
+            if ($daliDevice->id_object) {
+                if (isset($data['alice_checkbox'])) {
+                    AliceDevicesService::addOrReplaceDevice(
+                        $daliDevice->id_object,
+                        $data['alice_command'],
+                        $data['alice_room']
+                    );
+                } else {
+                    AliceDevicesService::setActive($daliDevice->id_object, 0);
+                }
+            }
         });
 
         return $daliDevice->id;
