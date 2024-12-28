@@ -17,7 +17,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('switches.index') }}" class="btn btn-success m-b-10 m-l-5">Cписок выключателей</a>
+                        <a href="{{ route('switches.index') }}" class="btn btn-success m-b-10 m-l-5">Список выключателей</a>
                         <a href="{{ route('switches.create') }}" class="btn btn-success m-b-10 m-l-5">Добавить выключатель</a>
                     </div>
                 </div>
@@ -119,6 +119,7 @@
             $("#auto_sel_method").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_object_lc").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_method_lc").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_method_lcr").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_object_dc").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_method_dc").chosen({width:"100%", no_results_text: "Не найдено"});
 
@@ -166,8 +167,10 @@
             $("#auto_sel_object_lc").chosen().change(function() {
                 let object_id = $(this).val();
                 hideParamsFields('method_lc_params');
+                hideParamsFields('method_lcr_params');
 
                 getMethods(object_id, '#auto_sel_method_lc');
+                getMethods(object_id, '#auto_sel_method_lcr');
             });
 
             $("#auto_sel_object_dc").chosen().change(function() {
@@ -198,6 +201,7 @@
 
             getMethods($("#auto_sel_object").val(), '#auto_sel_method', '{{ $method }}');
             getMethods($("#auto_sel_object_lc").val(), '#auto_sel_method_lc', '{{ $method_lc }}');
+            getMethods($("#auto_sel_object_lc").val(), '#auto_sel_method_lcr', '{{ $method_lcr }}');
             getMethods($("#auto_sel_object_dc").val(), '#auto_sel_method_dc', '{{ $method_dc }}');
 
 
@@ -208,6 +212,10 @@
 
             $("#auto_sel_method_lc").chosen().change(function() {
                 loadMethods($(this).val(), 'method_lc_params', '#switch_form');
+            });
+
+            $("#auto_sel_method_lcr").chosen().change(function() {
+                loadMethods($(this).val(), 'method_lcr_params', '#switch_form');
             });
 
             $("#auto_sel_method_dc").chosen().change(function() {

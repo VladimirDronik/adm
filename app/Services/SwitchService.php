@@ -124,6 +124,8 @@ class SwitchService
                         'dc_method_params' => $data['method_dc_params'],
                         'lc_method' => $data['method_lc'],
                         'lc_method_params' => $data['method_lc_params'],
+                        'lcr_method' => $data['method_lcr'],
+                        'lcr_method_params' => $data['method_lcr_params'],
                         'status' => 'IN',
                         'comment' => $data['name'],
                     ]);
@@ -197,6 +199,8 @@ class SwitchService
                 'dc_method_params' => null,
                 'lc_method' => null,
                 'lc_method_params' => null,
+                'lcr_method' => null,
+                'lcr_method_params' => null,
                 'comment' => '',
             ]);
 
@@ -209,6 +213,8 @@ class SwitchService
                     'dc_method_params' => $data['method_dc_params'],
                     'lc_method' => $data['method_lc'],
                     'lc_method_params' => $data['method_lc_params'],
+                    'lcr_method' => $data['method_lcr'],
+                    'lcr_method_params' => $data['method_lcr_params'],
                     'comment' => $data['name'],
                     'status' => 'IN',
                 ]);

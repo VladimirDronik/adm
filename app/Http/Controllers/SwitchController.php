@@ -101,6 +101,8 @@ class SwitchController extends Controller
         $params_dc['name'] = '';
         $params_lc['value'] = '';
         $params_lc['name'] = '';
+        $params_lcr['value'] = '';
+        $params_lcr['name'] = '';
         $place = '';
 
         if ($port) {
@@ -122,18 +124,25 @@ class SwitchController extends Controller
             }
 
             $method_lc = $port->lc_method;
+            $method_lcr = $port->lcr_method;
             $object_lc = $this->objectService->getObjectByMethod($method_lc);
+            $object_lcr = $this->objectService->getObjectByMethod($method_lcr);
             $methods_lc = $this->objectService->getMethodsByObjectIdToArray($object_lc);
+            $methods_lcr = $this->objectService->getMethodsByObjectIdToArray($object_lcr);
 
             if ($port->lc_method) {
                 $params_lc['value'] = $port->lc_method_params;
                 $params_lc['name'] = $this->objectService->getParamsByMethodId($port->lc_method);
             }
 
+            if ($port->lcr_method) {
+                $params_lcr['value'] = $port->lcr_method_params;
+                $params_lcr['name'] = $this->objectService->getParamsByMethodId($port->lcr_method);
+            }
+
             $place = 'port';
 
         } else {
-
             $method = null;
             $object = null;
             $methods = [];
@@ -143,6 +152,9 @@ class SwitchController extends Controller
             $method_lc = null;
             $object_lc = null;
             $methods_lc = [];
+            $method_lcr = null;
+            $object_lcr = null;
+            $methods_lcr = [];
 
             //Если выбрано устройство hite-pro, значит контроллер тоже хитпро
             if ($hp_device != null) {
@@ -176,8 +188,8 @@ class SwitchController extends Controller
         return view('switches.edit', compact(
             'switch', 'types', 'tab', 'events', 'allEvents',
             'object', 'method', 'methods', 'object_dc', 'method_dc', 'methods_dc', 'availableEvents', 'properties',
-            'object_lc', 'method_lc', 'methods_lc', 'idDevice', 'idPort', 'devices', 'ports', 'sounds', 'views',
-            'messages', 'messagePoint', 'hp_device', 'hp_devices', 'params', 'params_dc', 'params_lc',
+            'object_lc', 'method_lc', 'methods_lc', 'object_lcr', 'method_lcr', 'methods_lcr','idDevice', 'idPort', 'devices', 'ports', 'sounds', 'views',
+            'messages', 'messagePoint', 'hp_device', 'hp_devices', 'params', 'params_dc', 'params_lc', 'params_lcr',
             'objects', 'object_types', 'scripts', 'place', 'can'
         ));
     }

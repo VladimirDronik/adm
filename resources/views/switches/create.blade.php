@@ -5,8 +5,10 @@
 @endsection
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление выключателя', 'links' => [ route('switches.index') => 'Выключатели']])
+    @includeIf('components.breadcrumbs', [
+        'title' => 'Добавление выключателя',
+        'links' => [ route('switches.index') => 'Выключатели'],
+    ])
 @endsection
 
 @section('content')
@@ -68,8 +70,6 @@
                             </div>
                         </div>
 
-
-
                         <div id="double_clk_div" style="display: none">
                             {{ Form::bs_title('Двойное нажатие') }}
 
@@ -101,18 +101,29 @@
                             {{ Form::bs_autoselect('object_lc', 'Объект:', $objects, old('object_lc'),
                                 false, false, [], null, 'Объект, на который воздействуем') }}
 
-                            {{ Form::bs_autoselect('method_lc', 'Метод:', [], old('method_lc'),
-                                false, false, [], null, 'Метод объекта при длительном нажатии кнопки') }}
+                            {{ Form::bs_autoselect('method_lc', 'Метод при замыкании:', [], old('method_lc'), false, false, [], null) }}
 
-                            <div class="form-group row" id="method_lc_params_div"
-                                 @if(!old('method_lc')) style="display: none;" @endif>
+                            <div class="form-group row" id="method_lc_params_div" @if(!old('method_lc')) style="display: none;" @endif>
                                 <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_lc_params"></label>
                                 <div class="col-md-9 pr-0">
                                     <div class="form-group row ">
                                         <label class="control-label text-right col-md-6 label-fix" id="method_lc_params_label" for="method_lc_params">...</label>
                                         <div class="col-md-6">
-                                            <input class="form-control" autocomplete="off" id="method_lc_params" name="method_lc_params"
-                                                   type="text" value="{{ old('method_lc_params') }}">
+                                            <input class="form-control" autocomplete="off" id="method_lc_params" name="method_lc_params" type="text" value="{{ old('method_lc_params') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{ Form::bs_autoselect('method_lcr', 'Метод при размыкании:', [], old('method_lcr'), false, false, [], null) }}
+
+                            <div class="form-group row" id="method_lcr_params_div" @if(!old('method_lcr')) style="display: none;" @endif>
+                                <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="method_lcr_params"></label>
+                                <div class="col-md-9 pr-0">
+                                    <div class="form-group row ">
+                                        <label class="control-label text-right col-md-6 label-fix" id="method_lcr_params_label" for="method_lcr_params">...</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" autocomplete="off" id="method_lcr_params" name="method_lcr_params" type="text" value="{{ old('method_lcr_params') }}">
                                         </div>
                                     </div>
                                 </div>
@@ -155,6 +166,7 @@
             $("#auto_sel_method").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_object_lc").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_method_lc").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_method_lcr").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_object_dc").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_method_dc").chosen({width:"100%", no_results_text: "Не найдено"});
 
@@ -170,8 +182,10 @@
             $("#auto_sel_object_lc").chosen().change(function() {
                 let object_id = $(this).val();
                 hideParamsFields('method_lc_params');
+                hideParamsFields('method_lcr_params');
 
                 getMethods(object_id, '#auto_sel_method_lc');
+                getMethods(object_id, '#auto_sel_method_lcr');
             });
 
             $("#auto_sel_object_dc").chosen().change(function() {
@@ -190,6 +204,10 @@
 
             $("#auto_sel_method_lc").chosen().change(function() {
                 loadMethods($(this).val(), 'method_lc_params', '#switch_form');
+            });
+
+            $("#auto_sel_method_lcr").chosen().change(function() {
+                loadMethods($(this).val(), 'method_lcr_params', '#switch_form');
             });
 
             $("#auto_sel_method_dc").chosen().change(function() {
