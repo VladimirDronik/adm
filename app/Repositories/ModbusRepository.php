@@ -60,6 +60,13 @@ class ModbusRepository
             ->toArray();
     }
 
+    public function getAllByTypePurpose(array $purposes): array
+    {
+        return ModbusSlaver::whereHas('relatedType', function ($query) use ($purposes) {
+            $query->whereIn('purpose', $purposes);
+        })->select('id', 'name')->orderBy('name')->pluck('name', 'id')->toArray();
+    }
+
     /**
      * Получить список устройств отфильтрованных по полям типа устройства
      */

@@ -78,6 +78,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('virtuals', 'VirtualsController')->except('show', 'destroy')->middleware('can:devices');
     Route::resource('yandexstations', 'YandexStationController')->except('show', 'destroy', 'create', 'store')->middleware('can:devices');
     Route::get('yandexstations/reset_user', 'YandexStationController@resetUser')->name('yandexstations.reset_user')->middleware('can:devices');
+    Route::resource('regulators', 'RegulatorController')->except('show', 'destroy')->middleware('can:devices');
 
     //Route::get('termostats/{termostat}/edit/{tab?}', 'TermostatController@edit')->name('termostats.edit')->middleware('can:devices');
 
@@ -101,7 +102,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('scripts', 'ScriptController')->except('show', 'destroy')->middleware('can:scripts');
 
     Route::group(['namespace' => 'Ajax', 'as' => 'ajax.'], function () {
-
         Route::group(['prefix' => 'cameras', 'as' => 'cameras.'], function () {
             Route::post('sort', 'CameraController@sort')->name('sort');
             Route::post('delete', 'CameraController@delete')->name('delete');
@@ -144,6 +144,10 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'led_tapes', 'as' => 'led_tapes.'], function () {
             Route::post('delete', 'LedTapeController@delete')->name('delete');
+        });
+
+        Route::group(['prefix' => 'regulators', 'as' => 'regulators.'], function () {
+            Route::post('delete', 'RegulatorController@delete')->name('delete');
         });
 
         Route::group(['prefix' => 'conditioners', 'as' => 'conditioners.'], function () {
@@ -309,6 +313,7 @@ Route::group(['middleware' => ['auth']], function () {
 
             Route::group(['prefix' => 'sensor', 'as' => 'sensor.'], function () {
                 Route::post('add_param', 'ObjectController@addParam')->name('add_param');
+                Route::post('get_params', 'ObjectController@getParams')->name('get_params');
                 Route::post('add_address_param', 'ObjectController@addAddressParam')->name('add_address_param');
                 Route::post('delete_param', 'ObjectController@deleteParam')->name('delete_param');
                 Route::post('delete', 'ObjectController@sensorDelete')->name('delete');
