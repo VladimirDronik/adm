@@ -14,13 +14,19 @@ class MethodRepository
             ->toArray();
     }
 
-    public function getAllMethodsByObjectToArray(int $objectId): array
+    public function getAllMethodsByObjectToArray(?int $objectId): array
     {
-        return Method::select('id', 'name')
-            ->where('id_object', $objectId)
-            ->orderBy('id')
-            ->pluck('name', 'id')
-            ->toArray();
+        $methods = [];
+
+        if ($objectId) {
+            $methods = Method::select('id', 'name')
+                ->where('id_object', $objectId)
+                ->orderBy('id')
+                ->pluck('name', 'id')
+                ->toArray();
+        }
+
+        return $methods;
     }
 
     public function getObjectByMethod(?int $idMethod): ?int
