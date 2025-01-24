@@ -128,8 +128,6 @@
                                     <div id="port_div" hidden>
                                         {{ Form::bs_autoselect('port', 'Порт*:', [], old('port'), false, false, [], null) }}
                                     </div>
-
-                                    {{ Form::bs_text('megad_setpoint', 'Уставка*:', old('megad_setpoint'), []) }}
                                 </div>
                             </div>
 
@@ -293,7 +291,7 @@
                         data: {'_token': _token, 'slaver_id': slaver_id},
                         success: function (data) {
                             $("#register_div").removeAttr("hidden");
-                            createSelect('#auto_sel_modbus_register', data, "{{ old('modbus_register') }}");
+                            createSelect('#auto_sel_modbus_register', data, -1);
                             $('#auto_sel_modbus_register').trigger("chosen:updated");
                         }
                     });

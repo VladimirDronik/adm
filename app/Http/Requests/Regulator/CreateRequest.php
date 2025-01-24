@@ -41,7 +41,6 @@ class CreateRequest extends FormRequest
                 case 'megad':
                     $rules['device'] = 'required|integer|exists:devices,id';
                     $rules['port'] = 'required|integer|exists:ports,id';
-                    $rules['megad_setpoint'] = 'required|numeric';
                     break;
             }
         } else {

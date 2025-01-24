@@ -26,6 +26,7 @@
                 </div>
             </div>
         </div>
+        {{ Form::bs_alert() }}
         <div class="card">
             <div class="card-title"><h4>Регуляторы</h4></div>
             <div class="card-body">

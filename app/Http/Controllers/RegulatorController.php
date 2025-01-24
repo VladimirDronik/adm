@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Port;
 use App\Models\Regulator;
-use App\Models\Termostat;
+use App\Services\ObjectService;
 use App\Services\RegulatorService;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\RoomRepository;
@@ -24,6 +25,7 @@ class RegulatorController extends Controller
         private ObjectRepository $objectRep,
         private ModbusRepository $modbusRep,
         private DeviceRepository $deviceRep,
+        private ObjectService $objectService,
         private RoomRepository $roomRep,
     ) {
     }
@@ -51,10 +53,19 @@ class RegulatorController extends Controller
     public function store(CreateRequest $r)
     {
         try {
-            if ($id = $this->service->store($r->except('_token'))) {
+            $result = $this->service->store($r->except('_token'));
+
+            if ($result['redirect_to_edit']) {
                 return redirect()
-                    ->route('regulators.edit', [$id])
+                    ->route('regulators.edit', [$result['regulator']->id])
                     ->with('success', 'Регулятор успешно добавлен');
+            } else {
+                return redirect()
+                    ->route('regulators.index')
+                    ->with(
+                        'error',
+                        'Регулятор № '.$result['regulator']->object_id.' «'.$result['regulator']->object->name.'» недоступен'
+                    );
             }
         } catch (\Throwable $e) {
             Log::error(
@@ -69,18 +80,64 @@ class RegulatorController extends Controller
 
     public function edit(Regulator $regulator)
     {
-        $rooms = $this->roomRep->getAllWithoutCommonToArray();
+        if ($regulator->source) {
+            $getScriptData = $this->service->regulatorGetScript($regulator->object_id);
 
-        return view('regulators.edit', compact('rooms', 'regulator'));
+            if ($getScriptData['code'] !== 0) {
+                return back()->with(
+                    'error',
+                    'Регулятор № '.$regulator->object_id.' «'.$regulator->object->name.'» недоступен'
+                );
+            }
+        }
+
+        $rooms = $this->roomRep->getAllWithoutCommonToArray();
+        $objects = $this->objectRep->getAllToArray();
+        $slavers = $this->modbusRep->getAllByTypePurpose(['thermostat', 'hygrostat']);
+        $devices = $this->deviceRep->getAllByTypesToArray(['MegaD-2561', 'Monoblock 14IN/14OUT']);
+        $device = null;
+
+        if ($regulator->source == 'megad') {
+            $device = Port::find($regulator->source_id)?->device;
+        }
+
+        $higherMethods = [];
+        $lowerMethods = [];
+        $fallbackMethods = [];
+
+        if (!$regulator->source) {
+            $higherMethods = $this->objectService
+            ->getMethodsByObjectIdToArray($regulator->higherMethod->id_object);
+
+            $lowerMethods = $this->objectService
+                ->getMethodsByObjectIdToArray($regulator->lowerMethod->id_object);
+
+            $fallbackMethods = $this->objectService
+                ->getMethodsByObjectIdToArray($regulator->fallbackMethod?->id_object);
+        }
+
+        return view('regulators.edit', compact(
+            'rooms', 'regulator', 'objects', 'slavers', 'devices',
+            'higherMethods', 'lowerMethods', 'fallbackMethods', 'device'
+        ));
     }
 
     public function update(UpdateRequest $r, Regulator $regulator)
     {
         try {
-            if ($this->service->update($regulator, $r->except('_token'))) {
+            $result = $this->service->update($regulator, $r->except('_token'));
+
+            if ($result['redirect_to_edit']) {
                 return redirect()
                     ->route('regulators.edit', [$regulator->id])
                     ->with('success', 'Регулятор успешно изменен');
+            } else {
+                return redirect()
+                    ->route('regulators.index')
+                    ->with(
+                        'error',
+                        'Регулятор № '.$result['regulator']->object_id.' «'.$result['regulator']->object->name.'» недоступен'
+                    );
             }
         } catch (\Throwable $e) {
             Log::error(

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Carbon\Carbon;
+use App\Models\Port;
 use App\Models\Device;
 use App\Models\ObjType;
 use App\Models\Regulator;
@@ -10,13 +11,11 @@ use App\Models\HomeObject;
 use App\Models\ModbusSlaver;
 use App\Models\SensorsParam;
 use Illuminate\Support\Facades\DB;
-use App\Services\Modbus\RegisterService;
 
 class RegulatorService
 {
     public function __construct(
         private SensorService $sensorService,
-        private RegisterService $registerService,
     ) {
     }
 
@@ -25,9 +24,9 @@ class RegulatorService
      *
      * @throws \Throwable
      */
-    public function store(array $data): int
+    public function store(array $data): array
     {
-        return DB::transaction(function () use ($data) {
+        $regulator = DB::transaction(function () use ($data) {
             $object = new HomeObject();
             $object->type = ObjType::TYPE_REGULATOR;
             $object->name = HomeObject::getUniqueObjectName(0, $data['name']);
@@ -44,7 +43,7 @@ class RegulatorService
             if (array_key_exists('independent_device', $data)) {
                 switch ($data['source']) {
                     case 'modbus':
-                        $slaver = ModbusSlaver::with('registers')->find($data['modbus_slaver']);
+                        $slaver = ModbusSlaver::find($data['modbus_slaver']);
 
                         $regulator->source_id = $data['modbus_slaver'];
                         $regulator->type = $slaver->relatedType->purpose;
@@ -99,34 +98,11 @@ class RegulatorService
                                 $regulator->sensors_param_id = $sensorsParam->id;
                                 break;
                         }
-
-                        $setpoint = 0;
-                        $setpointRegister = $slaver->registers()->where('alias', 'setpoint')->first();
-                        $stateRegister = $slaver->registers()->where('alias', 'state')->first();
-
-                        if ($setpointRegister) {
-                            $setpointRegisterData = $this->registerService->read($setpointRegister->id);
-
-                            if ($setpointRegisterData['code'] === 0) {
-                                $setpoint = $setpointRegisterData['output'];
-                            }
-                        }
-
-                        if ($stateRegister) {
-                            $stateRegisterData = $this->registerService->read($stateRegister->id);
-
-                            if ($setpointRegisterData['code'] === 0) {
-                                // TODO Что делать с полученными данными из state регистра?
-                            }
-                        }
-
-                        $regulator->setpoint = $setpoint;
                         break;
                     case 'megad':
                         $device = Device::find($data['device']);
-                        $regulator->source_id = $data['device'];
+                        $regulator->source_id = $data['port'];
                         $regulator->type = 'thermostat';
-                        $regulator->setpoint = $data['megad_setpoint'];
 
                         $sensorObjectId = $this->sensorService->store([
                             'name' => 'Датчик температуры '.$device->description,
@@ -146,6 +122,7 @@ class RegulatorService
                         break;
                 }
 
+                $regulator->setpoint = 0;
                 $regulator->source = $data['source'];
             } else {
                 $sensorsParam = SensorsParam::find($data['sensor_param']);
@@ -167,17 +144,26 @@ class RegulatorService
                 $regulator->higher_method = $data['higher_method'];
                 $regulator->lower_method = $data['lower_method'];
                 $regulator->fallback_method = $data['fallback_method'];
-
-                // TODO Куда записывать значения параметров, если выбран метод с параметрами?
-                // $data['higher_method_params'];
-                // $data['lower_method_params'];
-                // $data['fallback_method_params'];
+                $regulator->higher_method_params = $data['higher_method_params'];
+                $regulator->lower_method_params = $data['lower_method_params'];
+                $regulator->fallback_method_params = $data['fallback_method_params'];
             }
 
             $regulator->save();
 
-            return $regulator->id;
+            return $regulator;
         });
+
+        $redirectToEdit = true;
+        if ($regulator->source) {
+            $getScriptResult = $this->regulatorGetScript($regulator->object_id);
+            $redirectToEdit = $getScriptResult['code'] === 0;
+        }
+
+        return [
+            'redirect_to_edit' => $redirectToEdit,
+            'regulator' => $regulator,
+        ];
     }
 
     /**
@@ -185,22 +171,119 @@ class RegulatorService
      *
      * @throws \Throwable
      */
-    public function update(Regulator $regulator, array $data): int
+    public function update(Regulator $regulator, array $data): array
     {
         DB::transaction(function () use (&$regulator, $data) {
             $newName = trim($data['name']);
             if ($regulator->object->name != $newName) {
                 $regulator->object->name = HomeObject::getUniqueObjectName($regulator->object_id, $newName);
-                $regulator->object->save();
             }
+
+            $regulator->object->status = $data['status'];
 
             $regulator->room = $data['room'];
             $regulator->min_setpoint = $data['min_setpoint'];
             $regulator->max_setpoint = $data['max_setpoint'];
+
+            if (!$regulator->source) {
+                $regulator->setpoint = $data['setpoint'];
+                $regulator->hysteresis = $data['hysteresis'];
+
+                $regulator->higher_method = $data['higher_method'];
+                $regulator->lower_method = $data['lower_method'];
+                $regulator->fallback_method = $data['fallback_method'];
+                $regulator->higher_method_params = $data['higher_method_params'];
+                $regulator->lower_method_params = $data['lower_method_params'];
+                $regulator->fallback_method_params = $data['fallback_method_params'];
+            } else {
+                $sensorObject = HomeObject::find($regulator->sensorsParam->object_id);
+                $sensorSettings = $sensorObject->sensors;
+
+                $sensorSettings->where('name', 'room')->first()->update([
+                    'value' => $data['room'],
+                ]);
+
+                switch ($regulator->source) {
+                    case 'modbus':
+                        $slaver = ModbusSlaver::find($data['modbus_slaver']);
+
+                        $regulator->source_id = $data['modbus_slaver'];
+                        $regulator->type = $slaver->relatedType->purpose;
+
+                        $sensorSettings->where('name', 'source_id')->first()->update([
+                            'value' => $data['modbus_slaver'],
+                        ]);
+
+                        switch ($regulator->type) {
+                            case 'thermostat':
+                                $uniqueName = HomeObject::getUniqueObjectName($sensorObject->id, 'Датчик температуры '.$slaver->name);
+
+                                $regulator->sensorsParam->update([
+                                    'param' => 'temperature',
+                                    'name' => 'Температура',
+                                    'get_param' => $data['modbus_register'],
+                                    'units' => 'celsius',
+                                    'accuracy' => 1,
+                                    'graph' => 1,
+                                    'min_range' => -50,
+                                    'max_range' => 300,
+                                ]);
+                                break;
+                            case 'hygrostat':
+                                $uniqueName = HomeObject::getUniqueObjectName($sensorObject->id, 'Датчик влажности '.$slaver->name);
+
+                                $regulator->sensorsParam->update([
+                                    'param' => 'humidity',
+                                    'name' => 'Влажность',
+                                    'get_param' => $data['modbus_register'],
+                                    'units' => 'percent',
+                                    'accuracy' => 0,
+                                    'graph' => 1,
+                                    'min_range' => 0,
+                                    'max_range' => 100,
+                                ]);
+                                break;
+                        }
+                        break;
+                    case 'megad':
+                        $device = Device::find($data['device']);
+                        $regulator->source_id = $data['port'];
+
+                        $uniqueName = HomeObject::getUniqueObjectName($sensorObject->id, 'Датчик температуры '.$device->description);
+
+                        $sensorSettings->where('name', 'source_id')->first()->update([
+                            'value' => $data['device'],
+                        ]);
+
+                        $sensorSettings->where('name', 'port')->first()->update([
+                            'value' => $data['port'],
+                        ]);
+
+                        Port::where('id', $data['port'])->update([
+                            'object' => $sensorObject->id,
+                            'comment' => $uniqueName
+                        ]);
+                        break;
+                }
+
+                $sensorObject->name = $uniqueName;
+                $sensorObject->save();
+            }
+
+            $regulator->object->save();
             $regulator->save();
         });
 
-        return $regulator->id;
+        $redirectToEdit = true;
+        if ($regulator->source) {
+            $setScriptResult = $this->regulatorSetScript($regulator->object_id);
+            $redirectToEdit = $setScriptResult['code'] === 0;
+        }
+
+        return [
+            'redirect_to_edit' => $redirectToEdit,
+            'regulator' => $regulator,
+        ];
     }
 
     /**
@@ -215,5 +298,39 @@ class RegulatorService
         $regulator->object->delete();
 
         return true;
+    }
+
+    /**
+     * Запуск скрипта regulator_get
+     */
+    public function regulatorGetScript(int $objectId): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php regulator_get.php '.$objectId, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
+    }
+
+    /**
+     * Запуск скрипта regulator_set
+     */
+    public function regulatorSetScript(int $objectId): array
+    {
+        $output = [];
+        $resultCode = null;
+
+        chdir(env('SERVER_FOLDER').'/scripts');
+        exec('php regulator_set.php '.$objectId, $output, $resultCode);
+
+        return [
+            'code' => $resultCode,
+            'output' => $output,
+        ];
     }
 }

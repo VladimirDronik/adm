@@ -23,12 +23,36 @@ class UpdateRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'name' => 'required|string',
             'room' => 'required|integer|exists:rooms,id',
             'min_setpoint' => 'required|numeric',
             'max_setpoint' => 'required|numeric',
         ];
+
+        if (request()->has('independent_device')) {
+            switch (request()->input('source')) {
+                case 'modbus':
+                    $rules['modbus_slaver'] = 'required|integer|exists:modbus_slavers,id';
+                    $rules['modbus_register'] = 'required|integer|exists:modbus_registers,id';
+                    break;
+                case 'megad':
+                    $rules['device'] = 'required|integer|exists:devices,id';
+                    $rules['port'] = 'required|integer|exists:ports,id';
+                    break;
+            }
+        } else {
+            $rules['setpoint'] = 'required|numeric';
+            $rules['hysteresis'] = 'required|numeric';
+            $rules['higher_method'] = 'required|integer|exists:methods,id';
+            $rules['higher_method_params'] = 'nullable|string';
+            $rules['lower_method'] = 'required|integer|exists:methods,id';
+            $rules['lower_method_params'] = 'nullable|string';
+            $rules['fallback_method'] = 'nullable|integer|exists:methods,id';
+            $rules['fallback_method_params'] = 'nullable|string';
+        }
+
+        return $rules;
     }
 
     public function messages()
