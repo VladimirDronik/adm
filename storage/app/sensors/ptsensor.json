@@ -2,7 +2,7 @@
     {
         "param": "pressure",
         "name": "Давление",
-        "get_param": "cmd=get",
+        "get_param": "i2c_dev=ptsensor&i2c_par=2",
         "units": "bar",
         "accuracy": 1,
         "min_range": 0,
