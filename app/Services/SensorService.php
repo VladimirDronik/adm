@@ -310,6 +310,17 @@ class SensorService
                 }
             }
 
+            //Сохраняем данные в таблицу Алисы или включаем запись если она есть уже
+            if (isset($data['alice_checkbox'])) {
+                AliceDevicesService::addOrReplaceDevice(
+                    $sensorObject->id,
+                    $data['alice_command'],
+                    $data['alice_room'],
+                );
+            } else {
+                AliceDevicesService::setActive($sensorObject->id, 0);
+            }
+
             return $sensorObject->id;
         });
     }

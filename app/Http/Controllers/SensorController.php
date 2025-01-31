@@ -14,6 +14,7 @@ use App\Repositories\ModbusRepository;
 use App\Repositories\SensorRepository;
 use App\Http\Requests\Sensor\CreateRequest;
 use App\Http\Requests\Sensor\UpdateRequest;
+use App\Repositories\AliceDevicesRepository;
 
 class SensorController extends Controller
 {
@@ -24,6 +25,7 @@ class SensorController extends Controller
         private DeviceRepository $deviceRepository,
         private ModbusRepository $modbusRepository,
         private GraphService $graphService,
+        private AliceDevicesRepository $aliceRep,
     ) {
     }
 
@@ -40,6 +42,7 @@ class SensorController extends Controller
         $sensorSettings = $sensorObject->sensors;
         $rooms = $this->roomRepository->getAllWithoutCommonToArray();
         $periods = $this->graphService->getSensorsParamsPeriods();
+        $alice = $this->aliceRep->getNameAndRoomByObject($sensorObject->id);
         $sources = [];
         $addressParamsCount = null;
         $params = [];
@@ -69,7 +72,7 @@ class SensorController extends Controller
         }
 
         return view('sensors.edit', compact(
-            'rooms', 'sensorObject', 'sources', 'units',
+            'rooms', 'sensorObject', 'sources', 'units', 'alice',
             'addressParamsCount', 'sensorSettings', 'params', 'periods'
         ));
     }
