@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use App\Models\ModbusSlaver;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\ModbusRepository;
@@ -160,6 +161,17 @@ class ModbusSlaverController extends Controller
         return response()->json([
             'result' => true,
             'slavers' => $slavers,
+        ]);
+    }
+
+    public function checkCustom(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['slaver_id']), 400);
+
+        $slaver = ModbusSlaver::find($r->slaver_id);
+
+        return response()->json([
+            'result' => $slaver->relatedType->type == 'custom',
         ]);
     }
 }

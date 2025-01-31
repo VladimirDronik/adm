@@ -125,6 +125,7 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::post('create_dali_device_group', 'ModbusSlaverController@createDaliDeviceGroup')->name('create_dali_device_group');
                 Route::post('remove_dali_device_group', 'ModbusSlaverController@removeDaliDeviceGroup')->name('remove_dali_device_group');
                 Route::post('all', 'ModbusSlaverController@getSlavers')->name('get');
+                Route::post('check_custom', 'ModbusSlaverController@checkCustom')->name('check_custom');
             });
             Route::group(['prefix' => 'registers', 'as' => 'registers.'], function () {
                 Route::post('delete', 'ModbusRegisterController@delete')->name('delete');

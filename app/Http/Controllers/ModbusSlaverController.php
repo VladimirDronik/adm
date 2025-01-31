@@ -34,12 +34,12 @@ class ModbusSlaverController extends Controller
     public function edit(int $id)
     {
         $slaver = ModbusSlaver::findOrFail($id);
-        $types = $this->modbusRep->getAllSlaversTypesToArray();
         $buses = $this->modbusRep->getAllBusesToArray();
         $wbLedOperModes = ModbusSlaver::getWbLedOperModes();
         $wbLedModeRegisterId = null;
         $daliDeviceGroups = null;
         $daliDeviceGroupsSelection = [];
+        $purposes = ModbusSlaversType::getPurposes();
 
         if ($slaver->relatedType->type == 'ecodim-dali-gw2') {
             $daliDeviceGroups = $slaver->daliDevices()->where('is_group', 1)->get();
@@ -69,7 +69,7 @@ class ModbusSlaverController extends Controller
         }
 
         return view('mod_bus.slaver.edit', compact(
-            'slaver', 'types', 'buses', 'wbLedOperModes',
+            'slaver', 'buses', 'wbLedOperModes', 'purposes',
             'wbLedModeRegisterId', 'daliDeviceGroups', 'daliDeviceGroupsSelection'
         ));
     }
@@ -95,12 +95,13 @@ class ModbusSlaverController extends Controller
 
     public function create()
     {
-        $types = ModbusSlaversType::get();
+        $purposes = ModbusSlaversType::getPurposes();
+        $types = ModbusSlaversType::where('type', '!=', 'custom')->get();
         $buses = $this->modbusRep->getAllBusesToArray();
         $wbLedOperModes = ModbusSlaver::getWbLedOperModes();
 
         return view('mod_bus.slaver.create', compact(
-            'types', 'buses', 'wbLedOperModes'
+            'types', 'buses', 'wbLedOperModes', 'purposes'
         ));
     }
 

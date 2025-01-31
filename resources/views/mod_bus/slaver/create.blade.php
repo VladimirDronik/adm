@@ -39,6 +39,7 @@
                                     @foreach($types as $type)
                                         <option value="{{ $type->id }}" data-type="{{ $type->type }}">{{ $type->name }}</option>
                                     @endforeach
+                                    <option value="custom" data-type="custom">Custom</option>
                                 </select>
                             </div>
                         </div>
@@ -46,6 +47,10 @@
                         {{ Form::bs_autoselect('bus', 'Шина*:', $buses, old('bus'), false, false, ['required' => true], null, null, 3, false, true) }}
 
                         {{ Form::bs_number('address', 'Адрес*:', old('address'), ['min' => 1, 'max' => 247, 'required' => true]) }}
+
+                        <div id='purpose' hidden>
+                            {{ Form::bs_select('purpose', 'Назначение устройства*:', $purposes, old('purpose'), ['required' => true]) }}
+                        </div>
 
                         <div id='wb_led' hidden>
                             {{ Form::bs_select('wb_led_oper_mode', 'Режим работы*:', $wbLedOperModes, old('wb_led_oper_mode'), ['required' => true]) }}
@@ -67,9 +72,18 @@
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script>
         if ($('#slaver_form select[name=type]').find('option:selected').data('type') == 'wb-led') {
+            $('#purpose').attr("hidden", true);
+            $('#slaver_form input[name=purpose]').attr("disabled", true);
             $('#wb_led').removeAttr("hidden");
             $('#slaver_form input[name=wb_led_oper_mode]').removeAttr("disabled");
+        } else if ($('#slaver_form select[name=type]').find('option:selected').data('type') == 'custom') {
+            $('#purpose').removeAttr("hidden");
+            $('#slaver_form input[name=purpose]').removeAttr("disabled");
+            $('#wb_led').attr("hidden", true);
+            $('#slaver_form input[name=wb_led_oper_mode]').attr("disabled", true);
         } else {
+            $('#purpose').attr("hidden", true);
+            $('#slaver_form input[name=purpose]').attr("disabled", true);
             $('#wb_led').attr("hidden", true);
             $('#slaver_form input[name=wb_led_oper_mode]').attr("disabled", true);
         }
@@ -82,9 +96,18 @@
                 var type = selectedOption.data('type');
 
                 if (type == 'wb-led') {
+                    $('#purpose').attr("hidden", true);
+                    $('#slaver_form input[name=purpose]').attr("disabled", true);
                     $('#wb_led').removeAttr("hidden");
                     $('#slaver_form input[name=wb_led_oper_mode]').removeAttr("disabled");
+                } else if (type == 'custom') {
+                    $('#purpose').removeAttr("hidden");
+                    $('#slaver_form input[name=purpose]').removeAttr("disabled");
+                    $('#wb_led').attr("hidden", true);
+                    $('#slaver_form input[name=wb_led_oper_mode]').attr("disabled", true);
                 } else {
+                    $('#purpose').attr("hidden", true);
+                    $('#slaver_form input[name=purpose]').attr("disabled", true);
                     $('#wb_led').attr("hidden", true);
                     $('#slaver_form input[name=wb_led_oper_mode]').attr("disabled", true);
                 }

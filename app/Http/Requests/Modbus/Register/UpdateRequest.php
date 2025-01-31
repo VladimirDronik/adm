@@ -33,6 +33,7 @@ class UpdateRequest extends FormRequest
             'units' => 'nullable|string',
             'scale_unit' => 'nullable|numeric',
             'access' => 'required|string',
+            'alias' => 'nullable|string|max:50',
         ];
     }
 }

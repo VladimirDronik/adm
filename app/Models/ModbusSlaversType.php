@@ -18,4 +18,18 @@ class ModbusSlaversType extends Model
     {
         return $this->hasMany(ModbusSlaver::class, 'type', 'id');
     }
+
+    public static function getPurposes(): array
+    {
+        return [
+            'ac' => 'ac',
+            'ir' => 'ir',
+            'light' => 'light',
+            'thermostat' => 'thermostat',
+            'heat' => 'heat',
+            'relay' => 'relay',
+            'meter' => 'meter',
+            'other' => 'other',
+        ];
+    }
 }

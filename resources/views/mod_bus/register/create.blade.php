@@ -47,6 +47,10 @@
                         {{ Form::bs_text('scale_unit', 'Множитель:', old('scale_unit'), []) }}
 
                         {{ Form::bs_radio('access', 'Доступ*:', $accesses, old('access'), ['required' => true]) }}
+
+                        <div id='alias' hidden>
+                            {{ Form::bs_text('alias', 'Алиас:', old('alias'), []) }}
+                        </div>
                     </div>
 
                     {{ Form::bs_submit_btn() }}
@@ -65,6 +69,39 @@
     <script>
         $(document).ready(function () {
             $("#auto_sel_slaver_id").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            if ($("#auto_sel_slaver_id").chosen().val()) {
+                $.ajax({
+                    url: "{{ route('ajax.mod_bus.slavers.check_custom') }}",
+                    data: {'_token': _token, 'slaver_id': $("#auto_sel_slaver_id").chosen().val()},
+                    success: function (data) {
+                        if (data.result) {
+                            $('#alias').removeAttr("hidden");
+                            $('#register_form input[name=alias]').removeAttr("disabled");
+                        } else {
+                            $('#alias').attr("hidden", true);
+                            $('#register_form input[name=alias]').attr("disabled", true);
+                        }
+                    }
+                });
+            }
+
+            $("#auto_sel_slaver_id").chosen().change(function() {
+                let slaver_id = $(this).val();
+                $.ajax({
+                    url: "{{ route('ajax.mod_bus.slavers.check_custom') }}",
+                    data: {'_token': _token, 'slaver_id': slaver_id},
+                    success: function (data) {
+                        if (data.result) {
+                            $('#alias').removeAttr("hidden");
+                            $('#register_form input[name=alias]').removeAttr("disabled");
+                        } else {
+                            $('#alias').attr("hidden", true);
+                            $('#register_form input[name=alias]').attr("disabled", true);
+                        }
+                    }
+                });
+            });
         });
     </script>
 @endsection

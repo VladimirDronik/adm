@@ -51,6 +51,10 @@
 
                         {{ Form::bs_radio('access', 'Доступ*:', $accesses, old('access', $register->access), ['required' => true]) }}
 
+                        <div id='alias' hidden>
+                            {{ Form::bs_text('alias', 'Алиас:', old('alias'), []) }}
+                        </div>
+
                         <div class="form-group row">
                             <label class="control-label text-right col-md-3 label-fix" for="access">Значение регистра:</label>
                             <div class="col-md-9">
@@ -96,6 +100,39 @@
 
         $(document).ready(function () {
             $("#auto_sel_slaver_id").chosen({width:"100%", no_results_text: "Не найдено"});
+
+            if ($("#auto_sel_slaver_id").chosen().val()) {
+                $.ajax({
+                    url: "{{ route('ajax.mod_bus.slavers.check_custom') }}",
+                    data: {'_token': _token, 'slaver_id': $("#auto_sel_slaver_id").chosen().val()},
+                    success: function (data) {
+                        if (data.result) {
+                            $('#alias').removeAttr("hidden");
+                            $('#register_form input[name=alias]').removeAttr("disabled");
+                        } else {
+                            $('#alias').attr("hidden", true);
+                            $('#register_form input[name=alias]').attr("disabled", true);
+                        }
+                    }
+                });
+            }
+
+            $("#auto_sel_slaver_id").chosen().change(function() {
+                let slaver_id = $(this).val();
+                $.ajax({
+                    url: "{{ route('ajax.mod_bus.slavers.check_custom') }}",
+                    data: {'_token': _token, 'slaver_id': slaver_id},
+                    success: function (data) {
+                        if (data.result) {
+                            $('#alias').removeAttr("hidden");
+                            $('#register_form input[name=alias]').removeAttr("disabled");
+                        } else {
+                            $('#alias').attr("hidden", true);
+                            $('#register_form input[name=alias]').attr("disabled", true);
+                        }
+                    }
+                });
+            });
 
             $('#register_form input[name=access]').change(function() {
                 var options = $('#register_form input[name=access]');

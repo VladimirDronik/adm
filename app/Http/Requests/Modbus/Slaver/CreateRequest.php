@@ -25,7 +25,7 @@ class CreateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'type' => 'required|integer|exists:App\Models\ModbusSlaversType,id',
+            'type' => 'required',
             'bus' => 'required|integer|exists:App\Models\ModbusBus,id',
             'address' => 'required|integer|min:1|max:247',
         ];

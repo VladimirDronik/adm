@@ -110,6 +110,9 @@
                             {{ Form::bs_select('wb_led_oper_mode', 'Режим работы*:', $wbLedOperModes, old('wb_led_oper_mode'), ['required' => true]) }}
 
                             <input type="hidden" name="old_wb_led_oper_mode" value="">
+
+                        @elseif($slaver->relatedType->type == 'custom')
+                            {{ Form::bs_select('purpose', 'Назначение устройства*:', $purposes, old('purpose', $slaver->relatedType->purpose), ['required' => true]) }}
                         @endif
                     </div>
 

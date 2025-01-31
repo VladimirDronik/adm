@@ -11,9 +11,10 @@ use App\Models\HomeObject;
 use App\Models\ModbusSlaver;
 use App\Models\ModbusRegister;
 use App\Models\ConditionerType;
-use App\Services\AliceDevicesService;
+use App\Models\ModbusSlaversType;
 use Illuminate\Support\Facades\DB;
 use App\Services\ConditionerService;
+use App\Services\AliceDevicesService;
 use Database\Seeders\ScriptsTableSeeder;
 
 class SlaverService
@@ -29,12 +30,24 @@ class SlaverService
     public function store(array $data): int
     {
         $slaver = new ModbusSlaver();
-        $slaver->name = $data['name'];
-        $slaver->type = $data['type'];
-        $slaver->bus = $data['bus'];
-        $slaver->address = $data['address'];
 
-        $dbWriting = DB::transaction(function () use ($slaver) {
+        $dbWriting = DB::transaction(function () use ($data, &$slaver) {
+            $slaver->name = $data['name'];
+            $slaver->bus = $data['bus'];
+            $slaver->address = $data['address'];
+
+            if ($data['type'] == 'custom') {
+                $type = ModbusSlaversType::create([
+                    'type' => 'custom',
+                    'name' => $data['name'],
+                    'purpose' => $data['purpose'],
+                ]);
+
+                $slaver->type = $type->id;
+            } else {
+                $slaver->type = $data['type'];
+            }
+
             $slaver->save();
 
             $pathToJson = storage_path('app/modbus_registers/'.$slaver->relatedType->type.'.json');
@@ -111,6 +124,13 @@ class SlaverService
             }
         }
 
+        if ($slaver->relatedType->type == 'custom') {
+            $slaver->relatedType->update([
+                'name' => $data['name'],
+                'purpose' => $data['purpose'],
+            ]);
+        }
+
         $slaver->name = $data['name'];
         $slaver->bus = $data['bus'];
         $slaver->address = $data['address'];
@@ -147,6 +167,9 @@ class SlaverService
                             $ledTape->object->delete();
                         }
                     }
+                    break;
+                case 'custom':
+                    $modbusSlaver->relatedType->delete();
                     break;
             }
 
