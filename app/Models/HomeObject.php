@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\HomeObject
@@ -209,5 +210,15 @@ class HomeObject extends Model
     public function sensorsParams(): HasMany
     {
         return $this->hasMany(SensorsParam::class, 'object_id', 'id');
+    }
+
+    public function parentObject(): BelongsTo
+    {
+        return $this->belongsTo(HomeObject::class, 'parent_id', 'id');
+    }
+
+    public function childObjects(): HasMany
+    {
+        return $this->hasMany(HomeObject::class, 'parent_id', 'id');
     }
 }

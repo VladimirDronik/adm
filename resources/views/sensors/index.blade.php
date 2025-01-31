@@ -76,10 +76,12 @@
                                             </a>
                                         </td>
                                         <td align="center" class="text-center">
-                                            <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
-                                                    data-id="{{ $sensorObject->id }}" data-name="{{ $sensorObject->name }}">
-                                                <i class="fa fa-trash fa-lg"></i>
-                                            </button>
+                                            @if(!$sensorObject->parent_id)
+                                                <button type="button" class="btn btn-danger btn-rounded btn-sm del_btn"
+                                                        data-id="{{ $sensorObject->id }}" data-name="{{ $sensorObject->name }}">
+                                                    <i class="fa fa-trash fa-lg"></i>
+                                                </button>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

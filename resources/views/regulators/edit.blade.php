@@ -29,106 +29,30 @@
                 <div class="col-md-12 col-lg-8 col-xl-8">
                     {!! Form::model($regulator, ['route' => ['regulators.update', $regulator->id], 'id' => 'regulator_form', 'method' => 'put', 'class' => 'form-horizontal form-bordered']) !!}
                         {{ csrf_field() }}
-
                         <div class="form-body">
                             {{ Form::bs_alert() }}
-
-                            {{ Form::bs_simple_text('ID объекта:', $regulator->object_id) }}
-
-                            {{ Form::bs_text('name', 'Название*:', old('name', $regulator->object->name), ['required' => true]) }}
-
-                            {{ Form::bs_autoselect('room', 'Помещение*:', $rooms, old('room', $regulator->room), false, false, [], null) }}
-
-                            {{ Form::bs_radio('status', 'Состояне:', ['on' => 'Вкл', 'off' => 'Выкл'], old('status', $regulator->object->status), []) }}
-
-                            @if(!$regulator->source)
-                                {{ Form::bs_text('setpoint', 'Уставка*:', old('setpoint', $regulator->setpoint), ['required' => true]) }}
-
-                                {{ Form::bs_text('hysteresis', 'Гистерезис*:', old('hysteresis', $regulator->hysteresis), ['required' => true]) }}
-
-                                <br>
-                                <br>
-                                {{ Form::bs_title('Метод при значении выше уставки') }}
-
-                                {{ Form::bs_autoselect('higher_object', 'Объект:', $objects, $regulator->higherMethod->id_object, false, false, [], null) }}
-
-                                {{ Form::bs_autoselect('higher_method', 'Метод:', $higherMethods, $regulator->higher_method, false, false, [], null) }}
-
-                                <div class="form-group row" id="higher_method_params_div" @if(!$regulator->higher_method_params) style="display: none;" @endif>
-                                    <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="higher_method_params"></label>
-                                    <div class="col-md-9 pr-0">
-                                        <div class="form-group row ">
-                                            <label class="control-label text-right col-md-6 label-fix" id="higher_method_params_label" for="higher_method_params">{{ $regulator->higherMethod->params ?: '...'}}</label>
-                                            <div class="col-md-6">
-                                                <input class="form-control" autocomplete="off" id="higher_method_params" name="higher_method_params" type="text" value="{{ old('higher_method_params', $regulator->higher_method_params) }}">
-                                            </div>
-                                        </div>
-                                    </div>
+                            <ul class="nav nav-tabs customtab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#regulatorstab1" role="tab">
+                                        <span class="hidden-sm-up"><i class="ti-home"></i></span>
+                                        <span class="hidden-xs-down">Основное</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#regulatorstab3" role="tab">
+                                        <span class="hidden-sm-up"><i class="ti-home"></i></span>
+                                        <span class="hidden-xs-down">Свойства</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane p-20 active" id="regulatorstab1" role="tabpanel">
+                                    @include('regulators/edit_tabs/main')
                                 </div>
-                                <hr>
-
-                                <br>
-                                <br>
-                                {{ Form::bs_title('Метод при значении меньше уставки') }}
-
-                                {{ Form::bs_autoselect('lower_object', 'Объект:', $objects, $regulator->lowerMethod->id_object, false, false, [], null) }}
-
-                                {{ Form::bs_autoselect('lower_method', 'Метод:', $lowerMethods, $regulator->lower_method, false, false, [], null) }}
-
-                                <div class="form-group row" id="lower_method_params_div" @if(!$regulator->lower_method_params) style="display: none;" @endif>
-                                    <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="lower_method_params"></label>
-                                    <div class="col-md-9 pr-0">
-                                        <div class="form-group row ">
-                                            <label class="control-label text-right col-md-6 label-fix" id="lower_method_params_label" for="lower_method_params">{{ $regulator->lowerMethod->params ?: '...'}}</label>
-                                            <div class="col-md-6">
-                                                <input class="form-control" autocomplete="off" id="lower_method_params" name="lower_method_params" type="text" value="{{ old('lower_method_params', $regulator->lower_method_params) }}">
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="tab-pane p-20" id="regulatorstab3" role="tabpanel">
+                                    @include('regulators/edit_tabs/prop')
                                 </div>
-                                <hr>
-
-                                <br>
-                                <br>
-                                {{ Form::bs_title('Аварийный метод') }}
-
-                                {{ Form::bs_autoselect('fallback_object', 'Объект:', $objects, $regulator->fallbackMethod?->id_object, false, false, [], null) }}
-
-                                {{ Form::bs_autoselect('fallback_method', 'Метод:', $fallbackMethods, $regulator->fallback_method, false, false, [], null) }}
-
-                                <div class="form-group row" id="fallback_method_params_div" @if(!$regulator->fallback_method_params) style="display: none;" @endif>
-                                    <label class="control-label text-right col-md-3 pl-0 pr-0 label-fix" for="fallback_method_params"></label>
-                                    <div class="col-md-9 pr-0">
-                                        <div class="form-group row ">
-                                            <label class="control-label text-right col-md-6 label-fix" id="fallback_method_params_label" for="fallback_method_params">{{ $regulator->fallbackMethod?->params ?: '...'}}</label>
-                                            <div class="col-md-6">
-                                                <input class="form-control" autocomplete="off" id="fallback_method_params" name="fallback_method_params" type="text" value="{{ old('fallback_method_params', $regulator->fallback_method_params) }}">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr>
-
-                                <br>
-                                <br>
-                            @else
-                                <input type="text" name="independent_device" hidden value="1">
-                                @if($regulator->source == 'modbus')
-                                    <input type="text" name="source" hidden value="modbus">
-                                    {{ Form::bs_autoselect('modbus_slaver', 'Устройство*:', $slavers, old('modbus_slaver', $regulator->source_id), false, false, [], null) }}
-
-                                    {{ Form::bs_autoselect('modbus_register', 'Регистр*:', [], old('modbus_register'), false, false, [], null) }}
-                                @elseif($regulator->source == 'megad')
-                                    <input type="text" name="source" hidden value="megad">
-                                    {{ Form::bs_autoselect('device', 'Контроллер*:', $devices, old('device', $device->id), false, false, [], null) }}
-
-                                    {{ Form::bs_autoselect('port', 'Порт*:', [], old('port'), false, false, [], null) }}
-                                @endif
-                            @endif
-
-                            {{ Form::bs_text('min_setpoint', 'Минимальное значение уставки*:', old('min_setpoint', $regulator->min_setpoint), []) }}
-
-                            {{ Form::bs_text('max_setpoint', 'Максимальное значение уставки*:', old('max_setpoint', $regulator->max_setpoint), []) }}
+                            </div>
                         </div>
                     {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
@@ -144,10 +68,12 @@
 @section('scripts')
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script src="{{ asset('ela/js/pagescripts/methods.js') }}"></script>
+    <script src="{{ asset('ela/js/pagescripts/service.js') }}"></script>
     <script>
         const url_methods = "{{ route('ajax.objects.methods') }}";
 
         $("#auto_sel_room").chosen({width:"100%", no_results_text: "Не найдено"});
+        $("#auto_sel_alice_room").chosen({width:"100%", no_results_text: "Не найдено"});
         $("#auto_sel_higher_object").chosen({width:"100%", no_results_text: "Не найдено"});
         $("#auto_sel_higher_method").chosen({width:"100%", no_results_text: "Не найдено"});
         $("#auto_sel_lower_object").chosen({width:"100%", no_results_text: "Не найдено"});
@@ -158,6 +84,8 @@
         $("#auto_sel_modbus_register").chosen({width:"100%", no_results_text: "Не найдено"});
         $("#auto_sel_device").chosen({width:"100%", no_results_text: "Не найдено"});
         $("#auto_sel_port").chosen({width:"100%", no_results_text: "Не найдено"});
+        $("#auto_sel_sensor").chosen({width:"100%", no_results_text: "Не найдено"});
+        $("#auto_sel_sensor_param").chosen({width:"100%", no_results_text: "Не найдено"});
 
         function createSelect(target, options, selected) {
             let sel = $(target);
@@ -187,6 +115,33 @@
         }
 
         $(document).ready(function () {
+            serviceInit();
+
+            $("#auto_sel_sensor").chosen().change(function() {
+                let sensor_id = $(this).val();
+                if (sensor_id) {
+                    $.ajax({
+                        url: "{{ route('ajax.objects.sensor.get_params') }}",
+                        data: {'_token': _token, 'sensor_id': sensor_id,},
+                        success: function (data) {
+                            createSelect('#auto_sel_sensor_param', data.params, -1);
+                            $('#auto_sel_sensor_param').trigger("chosen:updated");
+                        }
+                    });
+                }
+            });
+
+            if ($("#auto_sel_sensor").chosen().val()) {
+                $.ajax({
+                    url: "{{ route('ajax.objects.sensor.get_params') }}",
+                    data: {'_token': _token, 'sensor_id': $("#auto_sel_sensor").chosen().val()},
+                    success: function (data) {
+                        createSelect('#auto_sel_sensor_param', data.params, "{{ old('sensor_param', $regulator->sensors_param_id) }}");
+                        $('#auto_sel_sensor_param').trigger("chosen:updated");
+                    }
+                });
+            }
+
             $("#auto_sel_device").chosen().change(function() {
                 let device_id = $(this).val();
                 if (device_id) {
@@ -194,7 +149,6 @@
                         url: "{{ route('ajax.devices.objects_ports') }}",
                         data: {'_token': _token, 'device_id': device_id, 'status': 'IN,I2C,1WIRE,1W-BUS,ADC'},
                         success: function (data) {
-                            $("#port_div").removeAttr("hidden");
                             createPortSelect('#auto_sel_port', data.ports, -1);
                             $('#auto_sel_port').trigger("chosen:updated");
                         }
@@ -207,7 +161,6 @@
                     url: "{{ route('ajax.devices.objects_ports') }}",
                     data: {'_token': _token, 'device_id': $("#auto_sel_device").chosen().val(), 'status': 'IN,I2C,1WIRE,1W-BUS,ADC'},
                     success: function (data) {
-                        $("#port_div").removeAttr("hidden");
                         createPortSelect('#auto_sel_port', data.ports, "{{ old('port', $regulator->source_id) }}");
                         $('#auto_sel_port').trigger("chosen:updated");
                     }
@@ -221,7 +174,6 @@
                         url: "{{ route('ajax.mod_bus.slavers.registers') }}",
                         data: {'_token': _token, 'slaver_id': slaver_id},
                         success: function (data) {
-                            $("#register_div").removeAttr("hidden");
                             createSelect('#auto_sel_modbus_register', data, -1);
                             $('#auto_sel_modbus_register').trigger("chosen:updated");
                         }
@@ -234,7 +186,6 @@
                     url: "{{ route('ajax.mod_bus.slavers.registers') }}",
                     data: {'_token': _token, 'slaver_id': $("#auto_sel_modbus_slaver").chosen().val()},
                     success: function (data) {
-                        $("#register_div").removeAttr("hidden");
                         createSelect('#auto_sel_modbus_register', data, "{{ old('modbus_register', $regulator->sensorsParam->get_param) }}");
                         $('#auto_sel_modbus_register').trigger("chosen:updated");
                     }

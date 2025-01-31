@@ -13,6 +13,7 @@ use App\Repositories\ModbusRepository;
 use App\Repositories\ObjectRepository;
 use App\Repositories\SensorRepository;
 use App\Repositories\RegulatorRepository;
+use App\Repositories\AliceDevicesRepository;
 use App\Http\Requests\Regulator\CreateRequest;
 use App\Http\Requests\Regulator\UpdateRequest;
 
@@ -27,6 +28,7 @@ class RegulatorController extends Controller
         private DeviceRepository $deviceRep,
         private ObjectService $objectService,
         private RoomRepository $roomRep,
+        private AliceDevicesRepository $aliceRep,
     ) {
     }
 
@@ -80,17 +82,17 @@ class RegulatorController extends Controller
 
     public function edit(Regulator $regulator)
     {
-        if ($regulator->source) {
-            $getScriptData = $this->service->regulatorGetScript($regulator->object_id);
+        $getScriptData = $this->service->regulatorGetScript($regulator->object_id);
 
-            if ($getScriptData['code'] !== 0) {
-                return back()->with(
-                    'error',
-                    'Регулятор № '.$regulator->object_id.' «'.$regulator->object->name.'» недоступен'
-                );
-            }
+        if ($getScriptData['code'] !== 0) {
+            return back()->with(
+                'error',
+                'Регулятор № '.$regulator->object_id.' «'.$regulator->object->name.'» недоступен'
+            );
         }
 
+        $alice = $this->aliceRep->getNameAndRoomByObject($regulator->object_id);
+        $sensors = $this->sensorRep->getAllToArray();
         $rooms = $this->roomRep->getAllWithoutCommonToArray();
         $objects = $this->objectRep->getAllToArray();
         $slavers = $this->modbusRep->getAllByTypePurpose(['thermostat', 'hygrostat']);
@@ -117,8 +119,8 @@ class RegulatorController extends Controller
         }
 
         return view('regulators.edit', compact(
-            'rooms', 'regulator', 'objects', 'slavers', 'devices',
-            'higherMethods', 'lowerMethods', 'fallbackMethods', 'device'
+            'rooms', 'regulator', 'objects', 'slavers', 'devices', 'sensors',
+            'higherMethods', 'lowerMethods', 'fallbackMethods', 'device', 'alice'
         ));
     }
 

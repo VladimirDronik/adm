@@ -28,6 +28,7 @@ class UpdateRequest extends FormRequest
             'room' => 'required|integer|exists:rooms,id',
             'min_setpoint' => 'required|numeric',
             'max_setpoint' => 'required|numeric',
+            'setpoint' => 'required|numeric',
         ];
 
         if (request()->has('independent_device')) {
@@ -42,7 +43,7 @@ class UpdateRequest extends FormRequest
                     break;
             }
         } else {
-            $rules['setpoint'] = 'required|numeric';
+            $rules['sensor_param'] = 'required|integer|exists:sensors_params,id';
             $rules['hysteresis'] = 'required|numeric';
             $rules['higher_method'] = 'required|integer|exists:methods,id';
             $rules['higher_method_params'] = 'nullable|string';

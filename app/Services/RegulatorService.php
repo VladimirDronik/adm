@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use App\Models\Port;
-use App\Models\Device;
 use App\Models\ObjType;
 use App\Models\Regulator;
 use App\Models\HomeObject;
@@ -27,9 +26,10 @@ class RegulatorService
     public function store(array $data): array
     {
         $regulator = DB::transaction(function () use ($data) {
+            $uniqueName = HomeObject::getUniqueObjectName(0, $data['name']);
             $object = new HomeObject();
             $object->type = ObjType::TYPE_REGULATOR;
-            $object->name = HomeObject::getUniqueObjectName(0, $data['name']);
+            $object->name = $uniqueName;
             $object->status = 'on';
             $object->is_system = 1;
             $object->save();
@@ -51,11 +51,12 @@ class RegulatorService
                         switch ($regulator->type) {
                             case 'thermostat':
                                 $sensorObjectId = $this->sensorService->store([
-                                    'name' => 'Датчик температуры '.$slaver->name,
+                                    'name' => 'Датчик температуры '.$uniqueName,
                                     'room' => $data['room'],
                                     'type' => 'custom',
                                     'source' => $data['source'],
                                     'source_id' => $data['modbus_slaver'],
+                                    'parent_id' => $object->id,
                                 ]);
 
                                 $sensorsParam = new SensorsParam();
@@ -75,11 +76,12 @@ class RegulatorService
                                 break;
                             case 'hygrostat':
                                 $sensorObjectId = $this->sensorService->store([
-                                    'name' => 'Датчик влажности '.$slaver->name,
+                                    'name' => 'Датчик влажности '.$uniqueName,
                                     'room' => $data['room'],
                                     'type' => 'custom',
                                     'source' => $data['source'],
                                     'source_id' => $data['modbus_slaver'],
+                                    'parent_id' => $object->id,
                                 ]);
 
                                 $sensorsParam = new SensorsParam();
@@ -100,18 +102,18 @@ class RegulatorService
                         }
                         break;
                     case 'megad':
-                        $device = Device::find($data['device']);
                         $regulator->source_id = $data['port'];
                         $regulator->type = 'thermostat';
 
                         $sensorObjectId = $this->sensorService->store([
-                            'name' => 'Датчик температуры '.$device->description,
+                            'name' => 'Датчик температуры '.$uniqueName,
                             'room' => $data['room'],
                             'type' => 'ds18b20',
                             'input_source' => $data['source'],
                             'source_id' => $data['device'],
                             'port' => $data['port'],
                             'connection' => '1w',
+                            'parent_id' => $object->id,
                         ]);
 
                         $sensorsParam = SensorsParam::where('object_id', $sensorObjectId)
@@ -154,11 +156,8 @@ class RegulatorService
             return $regulator;
         });
 
-        $redirectToEdit = true;
-        if ($regulator->source) {
-            $getScriptResult = $this->regulatorGetScript($regulator->object_id);
-            $redirectToEdit = $getScriptResult['code'] === 0;
-        }
+        $getScriptResult = $this->regulatorGetScript($regulator->object_id);
+        $redirectToEdit = $getScriptResult['code'] === 0;
 
         return [
             'redirect_to_edit' => $redirectToEdit,
@@ -184,9 +183,23 @@ class RegulatorService
             $regulator->room = $data['room'];
             $regulator->min_setpoint = $data['min_setpoint'];
             $regulator->max_setpoint = $data['max_setpoint'];
+            $regulator->setpoint = $data['setpoint'];
 
             if (!$regulator->source) {
-                $regulator->setpoint = $data['setpoint'];
+                $sensorsParam = SensorsParam::find($data['sensor_param']);
+                switch ($sensorsParam->param) {
+                    case 'temperature':
+                        $regulator->type = 'thermostat';
+                        break;
+                    case 'humidity':
+                        $regulator->type = 'hygrostat';
+                        break;
+                    default:
+                        $regulator->type = 'other';
+                        break;
+                }
+
+                $regulator->sensors_param_id = $data['sensor_param'];
                 $regulator->hysteresis = $data['hysteresis'];
 
                 $regulator->higher_method = $data['higher_method'];
@@ -216,7 +229,7 @@ class RegulatorService
 
                         switch ($regulator->type) {
                             case 'thermostat':
-                                $uniqueName = HomeObject::getUniqueObjectName($sensorObject->id, 'Датчик температуры '.$slaver->name);
+                                $uniqueName = HomeObject::getUniqueObjectName($sensorObject->id, 'Датчик температуры '.$newName);
 
                                 $regulator->sensorsParam->update([
                                     'param' => 'temperature',
@@ -230,7 +243,7 @@ class RegulatorService
                                 ]);
                                 break;
                             case 'hygrostat':
-                                $uniqueName = HomeObject::getUniqueObjectName($sensorObject->id, 'Датчик влажности '.$slaver->name);
+                                $uniqueName = HomeObject::getUniqueObjectName($sensorObject->id, 'Датчик влажности '.$newName);
 
                                 $regulator->sensorsParam->update([
                                     'param' => 'humidity',
@@ -246,10 +259,9 @@ class RegulatorService
                         }
                         break;
                     case 'megad':
-                        $device = Device::find($data['device']);
                         $regulator->source_id = $data['port'];
 
-                        $uniqueName = HomeObject::getUniqueObjectName($sensorObject->id, 'Датчик температуры '.$device->description);
+                        $uniqueName = HomeObject::getUniqueObjectName($sensorObject->id, 'Датчик температуры '.$newName);
 
                         $sensorSettings->where('name', 'source_id')->first()->update([
                             'value' => $data['device'],
@@ -272,13 +284,21 @@ class RegulatorService
 
             $regulator->object->save();
             $regulator->save();
+
+            //Сохраняем данные в таблицу Алисы или включаем запись если она есть уже
+            if (isset($data['alice_checkbox'])) {
+                AliceDevicesService::addOrReplaceDevice(
+                    $regulator->object_id,
+                    $data['alice_command'],
+                    $data['alice_room'],
+                );
+            } else {
+                AliceDevicesService::setActive($regulator->object_id, 0);
+            }
         });
 
-        $redirectToEdit = true;
-        if ($regulator->source) {
-            $setScriptResult = $this->regulatorSetScript($regulator->object_id);
-            $redirectToEdit = $setScriptResult['code'] === 0;
-        }
+        $setScriptResult = $this->regulatorSetScript($regulator->object_id);
+        $redirectToEdit = $setScriptResult['code'] === 0;
 
         return [
             'redirect_to_edit' => $redirectToEdit,
