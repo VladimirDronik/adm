@@ -1,4 +1,17 @@
 [
+   {
+    "name": "Диагностическая информация. Код последней перезагрузки адаптера",
+    "register_type": "holding",
+    "starting_register": 16,
+    "registers_quantity": 1,
+    "access": "ro",
+    "data_format": "u16",
+    "units": null
+    "scale_unit": null,
+    "comment": "MSB: бит 2...0-тип адаптера (000-Opentherm, 001-eBus, 010-Navien); бит 3-состояние связи с котлом (0-нет ответа, 1 - есть ответ); LSB: 0...255 - код",
+    "is_system": 1,
+    "alias": "connection_status"
+  },
   {
     "name": "Время работы адаптера после перезагрузки",
     "register_type": "holding",
