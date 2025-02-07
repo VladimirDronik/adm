@@ -15,8 +15,43 @@
         {{ Form::bs_autoselect('sensor', 'Датчик*:', $sensors, old('sensor', $regulator->sensorsParam->object_id), false, false, [], null) }}
 
         {{ Form::bs_autoselect('sensor_param', 'Параметр*:', [], old('sensor_param'), false, false, [], null) }}
+    @else
+        <input type="text" name="independent_device" hidden value="1">
+        @if($regulator->source == 'modbus')
+            <input type="text" name="source" hidden value="modbus">
+            {{ Form::bs_autoselect('modbus_slaver', 'Устройство*:', $slavers, old('modbus_slaver', $regulator->source_id), false, false, [], null) }}
 
-        <br>
+            {{ Form::bs_autoselect('modbus_register', 'Регистр*:', [], old('modbus_register'), false, false, [], null) }}
+        @elseif($regulator->source == 'megad')
+            <input type="text" name="source" hidden value="megad">
+            {{ Form::bs_autoselect('device', 'Контроллер*:', $devices, old('device', $device->id), false, false, [], null) }}
+
+            {{ Form::bs_autoselect('port', 'Порт*:', [], old('port'), false, false, [], null) }}
+        @endif
+    @endif
+    <br>
+    <br>
+
+    {{ Form::bs_title('Текущее значение датчика') }}
+
+    <div class="form-group row ">
+        <label class="control-label text-right col-md-3 label-fix">{{ $regulator->sensorsParam->name }}:</label>
+        <div class="col-md-9 d-flex align-items-center">
+            {{ $regulator->sensorsParam->value ? ($regulator->sensorsParam->value . ' ' . $regulator->sensorsParam->unit_name) : '' }}
+        </div>
+    </div>
+    <div class="form-group row ">
+        <label class="control-label text-right col-md-3 label-fix">Датчик:</label>
+        <div class="col-md-9 d-flex align-items-center">
+            <a href="{{ route('sensors.edit', [$regulator->sensorsParam->object_id]) }}">
+                {{ $regulator->sensorsParam->object->name }}
+            </a>
+        </div>
+    </div>
+    <hr>
+    <br>
+
+    @if(!$regulator->source)
         <br>
         {{ Form::bs_title('Метод при значении выше уставки') }}
 
@@ -81,39 +116,9 @@
 
         <br>
         <br>
-    @else
-        <input type="text" name="independent_device" hidden value="1">
-        @if($regulator->source == 'modbus')
-            <input type="text" name="source" hidden value="modbus">
-            {{ Form::bs_autoselect('modbus_slaver', 'Устройство*:', $slavers, old('modbus_slaver', $regulator->source_id), false, false, [], null) }}
-
-            {{ Form::bs_autoselect('modbus_register', 'Регистр*:', [], old('modbus_register'), false, false, [], null) }}
-        @elseif($regulator->source == 'megad')
-            <input type="text" name="source" hidden value="megad">
-            {{ Form::bs_autoselect('device', 'Контроллер*:', $devices, old('device', $device->id), false, false, [], null) }}
-
-            {{ Form::bs_autoselect('port', 'Порт*:', [], old('port'), false, false, [], null) }}
-        @endif
     @endif
 
     {{ Form::bs_text('min_setpoint', 'Минимальное значение уставки*:', old('min_setpoint', $regulator->min_setpoint), []) }}
 
     {{ Form::bs_text('max_setpoint', 'Максимальное значение уставки*:', old('max_setpoint', $regulator->max_setpoint), []) }}
-
-    {{ Form::bs_title('Текущее значение датчика') }}
-
-    <div class="form-group row ">
-        <label class="control-label text-right col-md-3 label-fix">{{ $regulator->sensorsParam->name }}:</label>
-        <div class="col-md-9 d-flex align-items-center">
-            {{ $regulator->sensorsParam->value ? ($regulator->sensorsParam->value . ' ' . $regulator->sensorsParam->unit_name) : '' }}
-        </div>
-    </div>
-    <div class="form-group row ">
-        <label class="control-label text-right col-md-3 label-fix">Датчик:</label>
-        <div class="col-md-9 d-flex align-items-center">
-            <a href="{{ route('sensors.edit', [$regulator->sensorsParam->object_id]) }}">
-                {{ $regulator->sensorsParam->object->name }}
-            </a>
-        </div>
-    </div>
 </div>

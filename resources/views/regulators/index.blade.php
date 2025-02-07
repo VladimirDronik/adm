@@ -37,7 +37,11 @@
                                 <tr>
                                     <th style="width: 60px;">ID</th>
                                     <th>Название</th>
-                                    <th>Источник данных</th>
+                                    <th>Самостоятельное устройство</th>
+                                    <th>Режим</th>
+                                    <th>Уставка</th>
+                                    <th>Текущее значение</th>
+                                    <th>Гистерезис</th>
                                     <th>Размещение</th>
                                     <th style="width: 60px;"></th>
                                     <th style="width: 60px;"></th>
@@ -52,7 +56,31 @@
                                                 {{ $regulator->object->name }}
                                             </a>
                                         </td>
-                                        <td>{{ $regulator->source }}</td>
+                                        <td>
+                                            @if($regulator->source == 'megad')
+                                                MegaDevice
+                                            @elseif($regulator->source == 'modbus')
+                                                Modbus
+                                            @else
+                                                Нет
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($regulator->object->status == 'on')
+                                                Авто
+                                            @elseif($regulator->object->status == 'off')
+                                                Ручной
+                                            @endif
+                                        </td>
+                                        <td>
+                                            {{ $regulator->setpoint . ' ' . $regulator->sensorsParam->unit_name }}
+                                        </td>
+                                        <td>
+                                            {{ $regulator->sensorsParam->value !== null ? ($regulator->sensorsParam->value . ' ' . $regulator->sensorsParam->unit_name) : '' }}
+                                        </td>
+                                        <td>
+                                            {{ $regulator->hysteresis }}
+                                        </td>
                                         <td>{{ $regulator->relatedRoom->name }}</td>
                                         <td align="center" class="text-center">
                                             <a href="{{ route('regulators.edit', [$regulator->id]) }}" class="btn btn-info btn-sm btn-rounded">
@@ -72,7 +100,11 @@
                                     <tr>
                                         <th style="width: 60px;">ID</th>
                                         <th>Название</th>
-                                        <th>Источник данных</th>
+                                        <th>Самостоятельное устройство</th>
+                                        <th>Режим</th>
+                                        <th>Уставка</th>
+                                        <th>Текущее значение</th>
+                                        <th>Гистерезис</th>
                                         <th>Размещение</th>
                                         <th style="width: 60px;"></th>
                                         <th style="width: 60px;"></th>
