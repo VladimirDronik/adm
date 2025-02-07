@@ -39,6 +39,7 @@
                                 <tr>
                                     <th style="width: 60px;">ID</th>
                                     <th>Устройство</th>
+                                    <th>Адрес</th>
                                     <th>Название</th>
                                     <th>Тип</th>
                                     <th>Формат данных</th>
@@ -56,6 +57,9 @@
                                     <td scope="row">{{ $register->id }}</td>
                                     <td>
                                         {{ $register->slaver->name }}
+                                    </td>
+                                    <td>
+                                        {{ $register->starting_register }}
                                     </td>
                                     <td>
                                         {{ $register->name }}
@@ -103,6 +107,7 @@
                                 <tr>
                                     <th style="width: 60px;">ID</th>
                                     <th>Устройство</th>
+                                    <th>Адрес</th>
                                     <th>Название</th>
                                     <th>Тип</th>
                                     <th>Формат данных</th>
