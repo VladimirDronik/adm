@@ -107,6 +107,8 @@ class View extends Model
 
     const TYPE_CURTAIN = 'curtain';
 
+    const TYPE_SENSOR = 'sensor';
+
     const PIN_SAFE_TYPE = 'pin';
 
     const CONFIRM_SAFE_TYPE = 'confirm';
@@ -131,6 +133,7 @@ class View extends Model
             self::TYPE_CONDITIONER => 'Кондиционер',
             self::TYPE_CUSTOMIZABLE_LIGHT => 'Настраиваемый источник света',
             self::TYPE_CURTAIN => 'Штора',
+            self::TYPE_SENSOR => 'Сенсор / Регулятор',
         ];
     }
 

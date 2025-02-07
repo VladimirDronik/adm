@@ -5,8 +5,10 @@
 @endsection
 
 @section('breadcrumbs')
-    @includeIf('components.breadcrumbs',
-       ['title' => 'Добавление отображения', 'links' => [ route('views.index') => 'Отображения']])
+    @includeIf('components.breadcrumbs', [
+        'title' => 'Добавление отображения',
+        'links' => [ route('views.index') => 'Отображения']
+    ])
 @endsection
 
 @section('content')
@@ -23,39 +25,44 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 col-lg-8 col-xl-8">
-                    {!! Form::open(['route' => 'views.store', 'method' => 'post', 'id' => 'view_form',
-                            'class' => 'form-horizontal form-bordered']) !!}
+                    {!! Form::open(['route' => 'views.store', 'method' => 'post', 'id' => 'view_form', 'class' => 'form-horizontal form-bordered']) !!}
                         {{ csrf_field() }}
                         <div class="form-body">
                             {{ Form::bs_alert() }}
+
                             {{ Form::bs_title('Основные данные') }}
 
                             {{ Form::bs_radio('type', 'Тип элемента*:', $types, null, ['required' => true]) }}
+
                             {{ Form::bs_text('description', 'Описание:') }}
+
                             {{ Form::bs_checkbox('active', 'Активность:', true) }}
+
                             {{ Form::bs_radio('safe_type', 'Защита от случайного нажатия:', $safeTypes, null) }}
 
                             <div id="id_object_div" style="display: block;">
-                            {{ Form::bs_autoselect('id_object', 'Объект:', $objects, old('id_object'), false, false) }}
+                                {{ Form::bs_autoselect('id_object', 'Объект:', $objects, old('id_object'), false, false) }}
+                            </div>
+
+                            <div id="sensors_param_id_div" style="display: none;">
+                                {{ Form::bs_autoselect('sensors_param_id', 'Параметр датчика:', [], old('sensors_param_id'), false, false) }}
                             </div>
 
                             <div id="on_method_div" style="display: block;">
-                            {{ Form::bs_autoselect('id_method', 'Метод вкл:', [], old('id_method'), false, false) }}
+                                {{ Form::bs_autoselect('id_method', 'Метод вкл:', [], old('id_method'), false, false) }}
                             </div>
 
                             <div id="on_params_div" style="display: none;">
                                 {{ Form::bs_autoselect('link', 'Ссылка:', $links, old('link'), false, false) }}
                             </div>
 
-                            <div class="form-group row" id="on_method_params_div"
-                                 @if(!old('id_method')) style="display: none;" @endif>
+                            <div class="form-group row" id="on_method_params_div" @if(!old('id_method')) style="display: none;" @endif>
                                 <label class="control-label text-right col-md-3 label-fix" for="on_method_params"></label>
                                 <div class="col-md-9 pr-0">
                                     <div class="form-group row">
                                         <label class="control-label text-right col-md-6 label-fix" id="on_method_params_label" for="on_method_params">...</label>
                                         <div class="col-md-6">
-                                            <input class="form-control" autocomplete="off" id="on_method_params" name="on_method_params"
-                                                   type="text" value="{{ old('on_method_params') }}">
+                                            <input class="form-control" autocomplete="off" id="on_method_params" name="on_method_params" type="text" value="{{ old('on_method_params') }}">
                                         </div>
                                     </div>
                                 </div>
@@ -65,15 +72,13 @@
                                 {{ Form::bs_autoselect('off_method', 'Метод выкл:', [], old('off_method'), false, false) }}
                             </div>
 
-                            <div class="form-group row" id="off_method_params_div"
-                                 @if(!old('off_method')) style="display: none;" @endif>
+                            <div class="form-group row" id="off_method_params_div" @if(!old('off_method')) style="display: none;" @endif>
                                 <label class="control-label text-right col-md-3 label-fix" for="off_method_params"></label>
                                 <div class="col-md-9 pr-0">
                                     <div class="form-group row">
                                         <label class="control-label text-right col-md-6 label-fix" id="on_method_params_label" for="off_method_params">...</label>
                                         <div class="col-md-6">
-                                            <input class="form-control" autocomplete="off" id="off_method_params" name="off_method_params"
-                                                   type="text" value="{{ old('off_method_params') }}">
+                                            <input class="form-control" autocomplete="off" id="off_method_params" name="off_method_params" type="text" value="{{ old('off_method_params') }}">
                                         </div>
                                     </div>
                                 </div>
@@ -83,48 +88,55 @@
 
                             {{ Form::bs_text('title','Надпись:') }}
 
-
-
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                        </div>
-                                        <div class="col-1">
-                                            Цвет:
-                                        </div>
-                                        <div class="col-md-2" >
+                            <div id="color_div" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                    </div>
+                                    <div class="col-1">
+                                        Цвет:
+                                    </div>
+                                    <div class="col-md-2" >
                                         <select name="color" style="background-color: #FFFFFF" onchange="this.style.backgroundColor = this.options[this.selectedIndex].style.backgroundColor;">
                                             <option style="background-color: #FFFFFF" value="null">Цвет соответствует цвету помещения</option>
-                                            @foreach($colors AS $color)
-                                                <option style="background-color: {{$color}}" value="{{$color}}">{{$color}}</option>
-                                                @endforeach
+                                            @foreach($colors as $color)
+                                                <option style="background-color: {{$color}}" value="{{$color}}">{{ $color }}</option>
+                                            @endforeach
                                         </select>
-                                        </div>
                                     </div>
+                                </div>
 
-
-
-
-                            {{ Form::bs_image('icon','Изображение:', old('icon_image',\App\Services\ImageService::NO_IMAGE_PATH)) }}
+                                {{ Form::bs_image('icon','Изображение:', old('icon_image',\App\Services\ImageService::NO_IMAGE_PATH)) }}
+                            </div>
 
                             {{ Form::bs_title('Расположение') }}
 
                             {{ Form::bs_select('room', 'Помещение*:', ["" => "Не указано"] + $rooms, null, ['required' => true]) }}
-                            {{ Form::bs_select('scene', 'Сцена:', ["" => "Не указана"] + $scenes) }}
-                            {{ Form::bs_number('position_left','Левый отступ (%):', old('position_left', 0), ['min' => 0, 'max' => 100, 'required' => false] ) }}
-                            {{ Form::bs_number('position_top','Верхний отступ (%):', old('position_top', 0), ['min' => 0, 'max' => 100, 'required' => false] )  }}
 
-                            <div id="additionallydiv" style="display: none;" >
+                            <div id="positions_div" style="display: none;">
+                                {{ Form::bs_select('scene', 'Сцена:', ["" => "Не указана"] + $scenes) }}
+
+                                {{ Form::bs_number('position_left','Левый отступ (%):', old('position_left', 0), ['min' => 0, 'max' => 100, 'required' => false] ) }}
+
+                                {{ Form::bs_number('position_top','Верхний отступ (%):', old('position_top', 0), ['min' => 0, 'max' => 100, 'required' => false] )  }}
+                            </div>
+
+                            <div id="additionallydiv" style="display: none;">
                                 <br>
-                            {{ Form::bs_title('Дополнительно') }}
+                                {{ Form::bs_title('Дополнительно') }}
+
                                 <div id="low_high_val_div" style="display: none;" >
                                     {{ Form::bs_radio('setting_from_app', 'Настройка из приложения:', ['true' => 'дa', 'false' => 'нет'], 'true') }}
+
                                     {{ Form::bs_number('lowval','Нижний порог шкалы:', old('lowval'), ['required' => false]) }}
+
                                     {{ Form::bs_number('highval','Верхний порог шкалы:', old('highval'), ['required' => false])  }}
                                 </div>
 
                                 <div id="labeldiv" style="display: none;" >
                                     {{ Form::bs_radio('pushlabel', 'Отображать нажатие:', ['true' => 'дa', 'false' => 'нет'], old('pushlabel', 'false')) }}
+
                                     {{ Form::bs_radio('modallabel', 'Показывать модальное окно:', ['true' => 'дa', 'false' => 'нет'], old('modallabel', 'true')) }}
+
                                     <div id="label_longclick_text_div">
                                         {{ Form::bs_text('label_longclick_text','Надпись при длительном нажатии:') }}
                                     </div>
@@ -140,8 +152,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                         {{ Form::bs_submit_btn() }}
                     {!! Form::close() !!}
@@ -159,8 +169,7 @@
                 </div>
                 <div class="modal-body" style="background: gray;">
                     @foreach($images as $image)
-                        <img src="{{ asset($image) }}" width="40" height="40" style="cursor: pointer;"
-                             onclick="setViewImage('{{$image}}');" data-dismiss="modal">&nbsp;&nbsp;&nbsp;
+                        <img src="{{ asset($image) }}" width="40" height="40" style="cursor: pointer;" onclick="setViewImage('{{$image}}');" data-dismiss="modal">&nbsp;&nbsp;&nbsp;
                     @endforeach
                 </div>
                 <div class="modal-footer">
@@ -176,14 +185,12 @@
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script>
         let image_id;
-        let url = '{{ asset('/') }}';
-
-        const url_methods = '{{ route('ajax.objects.methods') }}';
-        const url_objects = '{{ route('ajax.objects.getObjects') }}';
-        const url_related_parameters = '{{ route('ajax.labels.related_parameters') }}';
-
-
+        let url = "{{ asset('/') }}";
         let methods = [];
+
+        const url_methods = "{{ route('ajax.objects.methods') }}";
+        const url_objects = "{{ route('ajax.objects.getObjects') }}";
+        const url_related_parameters = "{{ route('ajax.labels.related_parameters') }}";
 
         function setViewImage(image) {
             $('#img_'+image_id).prop('src', url + image);
@@ -194,15 +201,46 @@
             image_id = id;
         }
 
+        function createSelect(target, options, selected) {
+            let sel = $(target);
+            sel.html('');
+            let s = '<option value="">Не выбрано</option>';
+            $.each(options, function(key, value) {
+                if (selected == key) {
+                    s += '<option selected value="' + key + '">' + value + '</option>';
+                } else {
+                    s += '<option value="' + key + '">' + value + '</option>';
+                }
+            });
+            sel.append(s);
+        }
+
         function createMethodSelect(target, options, selected) {
             let sel = $(target);
             sel.html('');
             let s = '<option value="">Не выбрано</option>';
             for (let i = 0; i < options.length; i++) {
-                if (selected == options[i].id)
+                if (selected == options[i].id) {
                     s += '<option selected value="' + options[i].id + '">' + options[i].name + '</option>';
-                else
+                }
+                else {
                     s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
+                }
+            }
+            sel.append(s);
+        }
+
+        function createObjectSelect(target, options, selected) {
+            let sel = $(target);
+            sel.html('');
+            let s = '<option value="">Не выбрано</option>';
+            for (let i = 0; i < options.length; i++) {
+                if (selected == options[i].id) {
+                    s += '<option selected data-type="' + options[i].type + '" value="' + options[i].id + '">' + options[i].name + '</option>';
+                }
+                else {
+                    s += '<option data-type="' + options[i].type + '" value="' + options[i].id + '">' + options[i].name + '</option>';
+                }
             }
             sel.append(s);
         }
@@ -251,6 +289,7 @@
             $("#auto_sel_link").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_related_parameter_object").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_related_parameter").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_sensors_param_id").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_related_parameter_object").chosen().change(function() {
                 let object_id = $(this).val();
@@ -284,6 +323,20 @@
                         $('#auto_sel_off_method').trigger("chosen:updated");
                     }
                 });
+
+                if ($(this).find('option:selected').data('type') == 'sensor') {
+                    $.ajax({
+                        url: "{{ route('ajax.objects.sensor.get_params') }}",
+                        data: {'_token': _token, 'sensor_id': object_id,},
+                        success: function (data) {
+                            $('#sensors_param_id_div').show();
+                            createSelect('#auto_sel_sensors_param_id', data.params, -1);
+                            $('#auto_sel_sensors_param_id').trigger("chosen:updated");
+                        }
+                    });
+                } else {
+                    $('#sensors_param_id_div').hide();
+                }
             });
 
             $('#view_form button[type=submit]').click(function(){
@@ -345,18 +398,19 @@
             $('#view_form [name=modallabel]').change(function(){
 
                 if ($(this).val() === 'true')
-                  $('#label_longclick_text_div').show();
+                    $('#label_longclick_text_div').show();
                 else
                     $('#label_longclick_text_div').hide();
             });
 
             //
 
-            $('#view_form [name=type]').change(function(){
+            $('#view_form [name=type]').change(function() {
 
                 $('#additionallydiv').hide();
                 $('#low_high_val_div').hide();
                 $('#on_params_div').hide();
+                $('#sensors_param_id_div').hide();
                 $('#view_form #id_object_div').show();
 
                 var type_obj = $(this).val();
@@ -365,11 +419,19 @@
                     var type_obj = ['tape', 'dali', 'dimmer'];
                 }
 
+                if ($(this).val() == 'sensor') {
+                    var type_obj = ['sensor', 'regulator'];
+                }
+
                 if ($(this).val() == 'switch') {
                     $('#view_form #off_method_div').show();
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 } else if ($(this).val() == 'conditioner' || $(this).val() == 'customizable_light' || $(this).val() == 'dimmer' || $(this).val() == 'curtain') {
                     $('#view_form #off_method_div').hide();
                     $('#view_form #on_method_div').hide();
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 } else if ($(this).val() == 'termostat' || $(this).val() == 'pressurestat') {
                     $('#view_form [name=lowval]').val(10);
                     $('#view_form [name=highval]').val(26);
@@ -379,6 +441,8 @@
                     $('#view_form [name=highval]').attr('max', 50);
                     $('#additionallydiv').show();
                     $('#low_high_val_div').show();
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 } else if ($(this).val() == 'lightstat') {
                     $('#view_form [name=lowval]').val(0);
                     $('#view_form [name=highval]').val(30);
@@ -388,6 +452,8 @@
                     $('#view_form [name=highval]').attr('max', 100);
                     $('#additionallydiv').show();
                     $('#low_high_val_div').show();
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 } else if ($(this).val() == 'carbsens') {
                     $('#view_form [name=lowval]').val(400);
                     $('#view_form [name=highval]').val(2000);
@@ -397,11 +463,15 @@
                     $('#view_form [name=highval]').attr('max', 2000);
                     $('#additionallydiv').show();
                     $('#low_high_val_div').show();
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 } else if ($(this).val() == 'link') {
                     $('#view_form #id_object_div').hide();
                     $('#view_form #on_method_div').hide();
                     $('#view_form #off_method_div').hide();
                     $('#on_params_div').show();
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 } else if ($(this).val() == 'hygrostat') {
                     $('#view_form [name=lowval]').val(0);
                     $('#view_form [name=highval]').val(100);
@@ -411,28 +481,37 @@
                     $('#view_form [name=highval]').attr('max', 100);
                     $('#additionallydiv').show();
                     $('#low_high_val_div').show();
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 } else if ($(this).val() == 'label') {
                     $('#additionallydiv').show();
                     $('#labeldiv').show();
+                    $('#color_div').show();
+                    $('#positions_div').show();
+                } else if ($(this).val() == 'sensor') {
+                    $('#off_method_div').hide();
+                    $('#on_method_div').hide();
+                    $('#color_div').hide();
+                    $('#positions_div').hide();
                 } else {
                     $('#view_form #on_method_div').show();
                     $('#view_form #off_method_div').hide();
                     $('#view_form #off_method_params_div').hide();
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 }
 
                 $.ajax({
                     url: url_objects,
                     data: {'_token': _token, 'type_object': type_obj},
                     success: function (data) {
-                        objects = data.objects;
-                        createMethodSelect('#auto_sel_id_object', data.objects, -1);
+                        createObjectSelect('#auto_sel_id_object', data.objects, -1);
                         $('#auto_sel_id_object').trigger("chosen:updated");
                     }
                 });
 
                 return true;
             });
-
         });
     </script>
 @endsection

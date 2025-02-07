@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Room;
 use App\Models\View;
 use App\Models\Label;
+use App\Models\ObjType;
 use Illuminate\Support\Facades\DB;
 
 class ViewService
@@ -17,12 +18,8 @@ class ViewService
         $view->scene = $data['scene'] ?? null;
         $view->position_top = (int) $data['position_top'];
         $view->position_left = (int) $data['position_left'];
-
-        if ($data['color'] != '') {
-            $view->color = $data['color'];
-        } else {
-            $view->color = null;
-        }
+        $view->color = $data['color'] ?? null;
+        $view->id_object = $data['id_object'] ?? null;
 
         $safeType = null;
 
@@ -52,6 +49,22 @@ class ViewService
             } else {
                 $data['params'] = "push={$data['pushlabel']}&modal={$data['modallabel']}&message={$data['label_longclick_text']}";
             }
+        } elseif ($type == View::TYPE_SENSOR) {
+            $data['params'] = null;
+
+            if ($view->eobject?->type == ObjType::TYPE_REGULATOR) {
+                $data['params'] = 'sensors_param_id='.$view->eobject->regulator->sensors_param_id;
+            } elseif ($view->eobject?->type == ObjType::TYPE_SENSOR) {
+                $data['params'] = array_key_exists('sensors_param_id', $data) && $data['sensors_param_id'] ? 'sensors_param_id='.$data['sensors_param_id'] : null;
+            }
+
+            if ($safeType) {
+                if ($data['params']) {
+                    $data['params'] .= ';'.$safeType;
+                } else {
+                    $data['params'] = $safeType;
+                }
+            }
         } else {
             if ($safeType) {
                 $data['params'] = $safeType;
@@ -72,7 +85,6 @@ class ViewService
             }
         }
 
-        $view->id_object = $data['id_object'] ?? null;
         $view->on_method = $data['id_method'] ?? null;
         $view->description = trim($data['description']);
         $view->status = 'off';

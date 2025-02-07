@@ -118,6 +118,7 @@ class ViewController extends Controller
         $label_longclick_text = null;
         $link = null;
         $safe_type = null;
+        $sensorsParamId = null;
 
         if ($view->type == View::TYPE_TEMP || $view->type == View::TYPE_LIGHTSTAT || $view->type == View::TYPE_CARBMONOXIDE || $view->type == View::TYPE_HYGROSTAT) {
             $onmethodparams = explode(';', $view->params);
@@ -140,6 +141,22 @@ class ViewController extends Controller
             $link = explode('=', $params[0])[1];
             if (array_key_exists(1, $params)) {
                 $safe_type = explode('=', $params[1])[1];
+            }
+        } elseif ($view->type == View::TYPE_SENSOR) {
+            $params = explode(';', $view->params);
+            $sensorsParamSettings = is_array($params) ? explode('=', $params[0]) : null;
+            $safeTypeSettings = is_array($params) && array_key_exists(1, $params) ? explode('=', $params[1]) : null;
+
+            if ($sensorsParamSettings && $sensorsParamSettings[0] == 'sensors_param_id') {
+                $sensorsParamId = $sensorsParamSettings[1];
+            }
+
+            if ($sensorsParamSettings && $sensorsParamSettings[0] == 'auth') {
+                $safe_type = $sensorsParamSettings[1];
+            }
+
+            if ($safeTypeSettings && $safeTypeSettings[0] == 'auth') {
+                $safe_type = $safeTypeSettings[1];
             }
         } elseif ($view->params) {
             $safe_type = explode('=', $view->params)[1];
@@ -165,7 +182,7 @@ class ViewController extends Controller
         }
 
         return view('views.edit', compact(
-            'view', 'types', 'safeTypes', 'link', 'lowvalSet', 'highvalSet',
+            'view', 'types', 'safeTypes', 'link', 'lowvalSet', 'highvalSet', 'sensorsParamId',
             'rooms', 'methods', 'scenes', 'images', 'links', 'colors', 'safe_type', 'relatedParameterObjects',
             'settingFromApp', 'lowval', 'highval', 'pushlabel', 'modallabel', 'label_longclick_text'
         ));

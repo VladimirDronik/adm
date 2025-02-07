@@ -39,11 +39,15 @@
                         {{ Form::bs_radio('safe_type', 'Защита от случайного нажатия:', $safeTypes, old('safe_type', $safe_type)) }}
 
                         <div id="id_object_div"  @if($view->type != 'link') style="display: block;" @else style="display: none;" @endif>
-                        {{ Form::bs_autoselect('id_object', 'Объект:', [], old('id_object', $view->id_object), false, false) }}
+                            {{ Form::bs_autoselect('id_object', 'Объект:', [], old('id_object', $view->id_object), false, false) }}
                         </div>
 
-                        <div id="on_method_div" @if(in_array($view->type, ['dimmer', 'link', 'conditioner', 'customizable_light', 'curtain'])) style="display: none;" @endif>
-                        {{ Form::bs_autoselect('id_method', 'Метод вкл:', $methods, old('id_method', $view->on_method), false, false) }}
+                        <div id="sensors_param_id_div" style="display: none;">
+                            {{ Form::bs_autoselect('sensors_param_id', 'Параметр датчика:', [], old('sensors_param_id'), false, false) }}
+                        </div>
+
+                        <div id="on_method_div" @if(in_array($view->type, ['dimmer', 'link', 'conditioner', 'customizable_light', 'curtain', 'sensor'])) style="display: none;" @endif>
+                            {{ Form::bs_autoselect('id_method', 'Метод вкл:', $methods, old('id_method', $view->on_method), false, false) }}
                         </div>
 
                         <div id="on_params_div"  @if($view->type == 'link') style="display: block;" @else style="display: none;"  @endif>
@@ -90,31 +94,35 @@
 
                         {{ Form::bs_text('title','Надпись:') }}
 
-                        <div class="row">
-                            <div class="col-md-2">
+                        <div id="color_div" @if($view->type == 'sensor' && !old('off_method')) style="display: none; @endif">
+                            <div class="row">
+                                <div class="col-md-2">
+                                </div>
+                                <div class="col-1">
+                                    Цвет:
+                                </div>
+                                <div class="col-md-2" >
+                                    <select name="color" style="background-color: @if($view->color) {{$view->color}} @else #FFFFFF  @endif" onchange="this.style.backgroundColor = this.options[this.selectedIndex].style.backgroundColor;">
+                                        <option style="background-color: #FFFFFF" value="">Цвет соответствует цвету помещения</option>
+                                        @foreach($colors AS $color)
+                                            <option style="background-color: {{$color}}" value="{{$color}}" @if ($view->color == $color) selected @endif>{{$color}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-1">
-                                Цвет:
-                            </div>
-                            <div class="col-md-2" >
-                                <select name="color" style="background-color: @if($view->color) {{$view->color}} @else #FFFFFF  @endif" onchange="this.style.backgroundColor = this.options[this.selectedIndex].style.backgroundColor;">
-                                    <option style="background-color: #FFFFFF" value="">Цвет соответствует цвету помещения</option>
-                                    @foreach($colors AS $color)
-                                        <option style="background-color: {{$color}}" value="{{$color}}" @if ($view->color == $color) selected @endif>{{$color}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
 
-                        {{ Form::bs_image('icon','Изображение:', old('icon_image', $view->icon_path)) }}
+                            {{ Form::bs_image('icon','Изображение:', old('icon_image', $view->icon_path)) }}
+                        </div>
 
                         {{ Form::bs_title('Расположение') }}
 
-                        {{ Form::bs_select('room', 'Помещение*:', ["" => "Не указано"] + $rooms,
-                            is_null($view->room) ? 0 : $view->room, ['required' => true]) }}
-                        {{ Form::bs_select('scene', 'Сцена:', ["" => "Не указана"] + $scenes) }}
-                        {{ Form::bs_number('position_left','Левый отступ (%):', old('position_left', $view->position_left), ['min' => 0, 'max' => 100, 'required' => false] ) }}
-                        {{ Form::bs_number('position_top','Верхний отступ (%):', old('position_top', $view->position_right), ['min' => 0, 'max' => 100, 'required' => false] ) }}
+                        {{ Form::bs_select('room', 'Помещение*:', ["" => "Не указано"] + $rooms, is_null($view->room) ? 0 : $view->room, ['required' => true]) }}
+
+                        <div id="positions_div" @if($view->type == 'sensor') style="display: none;" @endif>
+                            {{ Form::bs_select('scene', 'Сцена:', ["" => "Не указана"] + $scenes) }}
+                            {{ Form::bs_number('position_left','Левый отступ (%):', old('position_left', $view->position_left), ['min' => 0, 'max' => 100, 'required' => false] ) }}
+                            {{ Form::bs_number('position_top','Верхний отступ (%):', old('position_top', $view->position_right), ['min' => 0, 'max' => 100, 'required' => false] ) }}
+                        </div>
 
                         <div id="additionallydiv"  @if(($view->type == 'termostat')||($view->type == 'label')||($view->type == 'lightstat')||($view->type == 'carbsens')||($view->type == 'pressurestat')||($view->type == 'hygrostat')) style="display: block;" @else style="display: none;" @endif >
                             <br>
@@ -177,11 +185,13 @@
     <script src="{{ asset('ela/js/lib/chosen/chosen.jquery.js') }}"></script>
     <script>
         let image_id;
-        let url = '{{ asset('/') }}';
-        const url_methods = '{{ route('ajax.objects.methods') }}';
-        const url_objects = '{{ route('ajax.objects.getObjects') }}';
-        const url_related_parameters = '{{ route('ajax.labels.related_parameters') }}';
+        let url = "{{ asset('/') }}";
+        const url_methods = "{{ route('ajax.objects.methods') }}";
+        const url_objects = "{{ route('ajax.objects.getObjects') }}";
+        const url_related_parameters = "{{ route('ajax.labels.related_parameters') }}";
         let methods = [];
+
+        $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});
 
         function setViewImage(image) {
             $('#img_'+image_id).prop('src', url + image);
@@ -202,6 +212,35 @@
                 else
                     s += '<option value="' + options[i].id + '">' + options[i].name + '</option>';
             }
+            sel.append(s);
+        }
+
+        function createObjectSelect(target, options, selected) {
+            let sel = $(target);
+            sel.html('');
+            let s = '<option value="">Не выбрано</option>';
+            for (let i = 0; i < options.length; i++) {
+                if (selected == options[i].id) {
+                    s += '<option selected data-type="' + options[i].type + '" value="' + options[i].id + '">' + options[i].name + '</option>';
+                }
+                else {
+                    s += '<option data-type="' + options[i].type + '" value="' + options[i].id + '">' + options[i].name + '</option>';
+                }
+            }
+            sel.append(s);
+        }
+
+        function createSelect(target, options, selected) {
+            let sel = $(target);
+            sel.html('');
+            let s = '<option value="">Не выбрано</option>';
+            $.each(options, function(key, value) {
+                if (selected == key) {
+                    s += '<option selected value="' + key + '">' + value + '</option>';
+                } else {
+                    s += '<option value="' + key + '">' + value + '</option>';
+                }
+            });
             sel.append(s);
         }
 
@@ -274,13 +313,31 @@
                 type_obj = ['tape', 'dali', 'dimmer'];
             }
 
+            if (type_obj == 'sensor') {
+                type_obj = ['sensor', 'regulator'];
+            }
+
             $.ajax({
                 url: url_objects,
                 data: {'_token': _token, 'type_object': type_obj},
                 success: function (data) {
                     objects = data.objects;
-                    createMethodSelect('#auto_sel_id_object', data.objects, '{{ $view->id_object }}');
+                    createObjectSelect('#auto_sel_id_object', data.objects, "{{ $view->id_object }}");
                     $('#auto_sel_id_object').trigger("chosen:updated");
+
+                    if ($("#auto_sel_id_object").chosen().val() && $("#auto_sel_id_object").chosen().find('option:selected').data('type') == 'sensor') {
+                        $.ajax({
+                            url: "{{ route('ajax.objects.sensor.get_params') }}",
+                            data: {'_token': _token, 'sensor_id': $("#auto_sel_id_object").chosen().val()},
+                            success: function (data) {
+                                $('#sensors_param_id_div').show();
+                                createSelect('#auto_sel_sensors_param_id', data.params, "{{ $sensorsParamId }}");
+                                $('#auto_sel_sensors_param_id').trigger("chosen:updated");
+                            }
+                        });
+                    } else {
+                        $('#sensors_param_id_div').hide();
+                    }
                 }
             });
         }
@@ -288,12 +345,12 @@
         $(document).ready(function () {
             initMethodsVar({{ optional($view->eobject)->id }});
 
-            $("#auto_sel_id_object").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_id_method").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_off_method").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_link").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_related_parameter_object").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_related_parameter").chosen({width:"100%", no_results_text: "Не найдено"});
+            $("#auto_sel_sensors_param_id").chosen({width:"100%", no_results_text: "Не найдено"});
 
             $("#auto_sel_related_parameter_object").chosen().change(function() {
                 let object_id = $(this).val();
@@ -329,6 +386,20 @@
                         $('#auto_sel_off_method').trigger("chosen:updated");
                     }
                 });
+
+                if ($(this).find('option:selected').data('type') == 'sensor') {
+                    $.ajax({
+                        url: "{{ route('ajax.objects.sensor.get_params') }}",
+                        data: {'_token': _token, 'sensor_id': object_id,},
+                        success: function (data) {
+                            $('#sensors_param_id_div').show();
+                            createSelect('#auto_sel_sensors_param_id', data.params, -1);
+                            $('#auto_sel_sensors_param_id').trigger("chosen:updated");
+                        }
+                    });
+                } else {
+                    $('#sensors_param_id_div').hide();
+                }
             });
 
             $('#view_form button[type=submit]').click(function(){
@@ -401,6 +472,7 @@
                 $('#additionallydiv').hide();
                 $('#low_high_val_div').hide();
                 $('#on_params_div').hide();
+                $('#sensors_param_id_div').hide();
                 $('#view_form #id_object_div').show();
 
                 var type_obj = $(this).val();
@@ -409,11 +481,19 @@
                     var type_obj = ['tape', 'dali', 'dimmer'];
                 }
 
+                if ($(this).val() == 'sensor') {
+                    var type_obj = ['sensor', 'regulator'];
+                }
+
                 if ($(this).val() == 'switch') {
                     $('#view_form #off_method_div').show();
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 } else if ($(this).val() == 'conditioner' || $(this).val() == 'customizable_light' || $(this).val() == 'dimmer' || $(this).val() == 'curtain') {
                     $('#view_form #off_method_div').hide();
                     $('#view_form #on_method_div').hide();
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 } else if ($(this).val() == 'termostat' || $(this).val() == 'pressurestat') {
                     $('#view_form [name=lowval]').attr('min', 0);
                     $('#view_form [name=highval]').attr('min', 0);
@@ -421,6 +501,8 @@
                     $('#view_form [name=highval]').attr('max', 50);
                     $('#additionallydiv').show();
                     $('#low_high_val_div').show();
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 } else if ($(this).val() == 'lightstat') {
                     $('#view_form [name=lowval]').attr('min', 0);
                     $('#view_form [name=highval]').attr('min', 0);
@@ -428,6 +510,8 @@
                     $('#view_form [name=highval]').attr('max', 100);
                     $('#additionallydiv').show();
                     $('#low_high_val_div').show();
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 } else if ($(this).val() == 'carbsens') {
                     $('#view_form [name=lowval]').attr('min', 400);
                     $('#view_form [name=highval]').attr('min', 400);
@@ -435,6 +519,8 @@
                     $('#view_form [name=highval]').attr('max', 2000);
                     $('#additionallydiv').show();
                     $('#low_high_val_div').show();
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 } else if ($(this).val() == 'hygrostat') {
                     $('#view_form [name=lowval]').val(0);
                     $('#view_form [name=highval]').val(100);
@@ -444,20 +530,31 @@
                     $('#view_form [name=highval]').attr('max', 100);
                     $('#additionallydiv').show();
                     $('#low_high_val_div').show();
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 } else if ($(this).val() == 'link') {
                     $('#view_form #id_object_div').hide();
                     $('#view_form #on_method_div').hide();
                     $('#view_form #off_method_div').hide();
                     $('#on_params_div').show();
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 } else if ($(this).val() == 'label') {
                     $('#additionallydiv').show();
                     $('#labeldiv').show();
-                }
-                else {
+                    $('#color_div').show();
+                    $('#positions_div').show();
+                } else if ($(this).val() == 'sensor') {
+                    $('#off_method_div').hide();
+                    $('#on_method_div').hide();
+                    $('#color_div').hide();
+                    $('#positions_div').hide();
+                } else {
                     $('#view_form #on_method_div').show();
                     $('#view_form #off_method_div').hide();
                     $('#view_form #off_method_params_div').hide();
-
+                    $('#color_div').show();
+                    $('#positions_div').show();
                 }
 
                 getObjectByType(type_obj)

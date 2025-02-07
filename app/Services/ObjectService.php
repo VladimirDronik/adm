@@ -146,7 +146,7 @@ class ObjectService
             }
 
             return $query->orderBy('name')
-                ->select('id', 'name')
+                ->select('id', 'name', 'type')
                 ->get()
                 ->toArray();
         }

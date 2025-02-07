@@ -207,6 +207,11 @@ class HomeObject extends Model
         return $this->hasMany(Sensor::class, 'object_id', 'id');
     }
 
+    public function regulator(): HasOne
+    {
+        return $this->hasOne(Regulator::class, 'object_id', 'id');
+    }
+
     public function sensorsParams(): HasMany
     {
         return $this->hasMany(SensorsParam::class, 'object_id', 'id');
