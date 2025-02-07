@@ -70,6 +70,8 @@ class ObjType extends Model
 
     const TYPE_SENSOR = 'sensor';
 
+    const TYPE_REGULATOR = 'regulator';
+
     protected $table = 'objtypes';
 
     public $timestamps = false;

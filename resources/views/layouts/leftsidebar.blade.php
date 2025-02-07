@@ -56,6 +56,12 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="{{ route('regulators.index') }}">
+                                    <i class="fa fa-sort"></i>
+                                    Регуляторы
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('engineering.index') }}">
                                     <i class="fa fa-fire"></i>
                                     Котлы

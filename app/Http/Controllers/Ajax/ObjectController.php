@@ -8,12 +8,14 @@ use App\Services\SensorService;
 use App\Http\Controllers\Controller;
 use App\Repositories\PortRepository;
 use App\Repositories\ObjectRepository;
+use App\Repositories\SensorRepository;
 
 class ObjectController extends Controller
 {
     public function __construct(
         private ObjectService $service,
         private SensorService $sensorService,
+        private SensorRepository $sensorRep,
     ) {
     }
 
@@ -149,6 +151,19 @@ class ObjectController extends Controller
 
         return response()->json([
             'result' => (bool) $this->sensorService->updateOrCreateParam($r->data),
+        ]);
+    }
+
+    /**
+     * Получить список все параметров датчика
+     */
+    public function getParams(Request $r)
+    {
+        abort_if(! ajaxHas($r, ['sensor_id']), 400);
+
+        return response()->json([
+            'result' => true,
+            'params' => $this->sensorRep->getParamsBySensor($r->sensor_id),
         ]);
     }
 

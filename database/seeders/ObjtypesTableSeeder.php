@@ -105,6 +105,10 @@ class ObjtypesTableSeeder extends Seeder
                 'name' => ObjType::TYPE_SENSOR,
                 'label' => 'Датчик',
             ],
+            [
+                'name' => ObjType::TYPE_REGULATOR,
+                'label' => 'Регулятор',
+            ],
         ];
     }
 

@@ -29,6 +29,11 @@ class SensorService
             $sensorObject->type = ObjType::TYPE_SENSOR;
             $sensorObject->status = 'ok';
             $sensorObject->is_system = 1;
+
+            if (array_key_exists('parent_id', $data)) {
+                $sensorObject->parent_id = $data['parent_id'];
+            }
+
             $sensorObject->save();
 
             $room = $data['room'] ?? null;
