@@ -56,7 +56,7 @@
                                         </td>
                                         <td>
                                             @foreach($sensorObject->sensorsParams as $sensorsParam)
-                                                {{ $sensorsParam->name }}: {{ $sensorsParam->value ? ($sensorsParam->value . ' ' . $sensorsParam->unit_name) : '' }}
+                                                {{ $sensorsParam->name }}: {{ $sensorsParam->value !== null ? ($sensorsParam->value . ' ' . $sensorsParam->unit_name) : '' }}
                                                 <br>
                                             @endforeach
                                         </td>
