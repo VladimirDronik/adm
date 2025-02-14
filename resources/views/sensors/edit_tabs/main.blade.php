@@ -36,7 +36,7 @@
                 {{ $sensorsParam->name }}
             </label>
             <div class="col-md-3" id="value{{$sensorsParam->id}}">
-                {{ $sensorsParam->value ? ($sensorsParam->value . ' ' . $sensorsParam->unit_name) : '' }}
+                {{ $sensorsParam->value !== null ? ($sensorsParam->value . ' ' . $sensorsParam->unit_name) : '' }}
             </div>
             <div class="col-md-3" id="timestamp{{$sensorsParam->id}}">
                 {{ $sensorsParam->timestamp }}
