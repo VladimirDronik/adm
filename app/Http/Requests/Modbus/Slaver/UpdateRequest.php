@@ -26,7 +26,7 @@ class UpdateRequest extends FormRequest
         return [
             'name' => 'required|string|max:100',
             'bus' => 'required|integer|exists:App\Models\ModbusBus,id',
-            'address' => 'required|integer|min:1|max:247',
+            'address' => 'required|integer',
         ];
     }
 }

@@ -34,12 +34,11 @@ class ModbusRegisterController extends Controller
     {
         $register = ModbusRegister::findOrFail($id);
         $slavers = $this->modbusRep->getAllSlaversToArray();
-        $types = ModbusRegister::getTypes();
         $dataFormats = ModbusRegister::getSelectableDataFormat();
         $accesses = ModbusRegister::getSelectableAccess();
 
         return view('mod_bus.register.edit', compact(
-            'register', 'slavers', 'types', 'dataFormats', 'accesses'
+            'register', 'slavers', 'dataFormats', 'accesses'
         ));
     }
 
@@ -65,12 +64,11 @@ class ModbusRegisterController extends Controller
     public function create()
     {
         $slavers = $this->modbusRep->getAllSlaversToArray();
-        $types = ModbusRegister::getTypes();
         $dataFormats = ModbusRegister::getSelectableDataFormat();
         $accesses = ModbusRegister::getSelectableAccess();
 
         return view('mod_bus.register.create', compact(
-            'slavers', 'types', 'dataFormats', 'accesses'
+            'slavers', 'dataFormats', 'accesses'
         ));
     }
 

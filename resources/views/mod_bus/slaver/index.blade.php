@@ -15,7 +15,7 @@
                         <div class="pull-right">
                             <form class="form-inline my-2 my-lg-0" method="get">
                                 <label class="control-label text-right col-md-2 label-fix" for="bus">Шина:</label>
-                                <select class="form-control form-control-lg" autocomplete="off" name="bus" style="font-size: 1rem;">
+                                <select class="form-control form-control-lg" autocomplete="off" name="bus" style="font-size: 1rem; width: 180px;">
                                     <option value="" @if(!$filterBus) selected @endif>Не выбрано</option>
                                     @foreach($buses as $id => $bus)
                                         <option value="{{ $id }}" @if($filterBus == $id) selected @endif>{{ $bus }}</option>
@@ -40,6 +40,7 @@
                                     <th style="width: 60px;">ID</th>
                                     <th>Название</th>
                                     <th>Тип</th>
+                                    <th>Протокол</th>
                                     <th>Адрес</th>
                                     <th>Шина</th>
                                     <th>Статус</th>
@@ -56,6 +57,9 @@
                                     </td>
                                     <td>
                                         {{ $slaver->relatedType->name }}
+                                    </td>
+                                    <td>
+                                        {{ $slaver->relatedType->protocol }}
                                     </td>
                                     <td>
                                         {{ $slaver->address }}
@@ -89,6 +93,7 @@
                                     <th style="width: 60px;">ID</th>
                                     <th>Название</th>
                                     <th>Тип</th>
+                                    <th>Протокол</th>
                                     <th>Адрес</th>
                                     <th>Шина</th>
                                     <th>Статус</th>

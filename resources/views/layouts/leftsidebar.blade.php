@@ -22,7 +22,7 @@
                     <li>
                         <a class="has-arrow" href="#" aria-expanded="false">
                             <i class="fa fa-sitemap"></i>
-                            <span class="hide-menu">Modbus</span>
+                            <span class="hide-menu">RS-485</span>
                         </a>
                         <ul aria-expanded="false" class="collapse">
                             <li>

@@ -12,7 +12,7 @@ class RegisterService
         $register->slaver_id = $data['slaver_id'];
         $register->register_type = $data['register_type'];
         $register->starting_register = $data['starting_register'];
-        $register->registers_quantity = $data['registers_quantity'];
+        $register->registers_quantity = $data['registers_quantity'] ?? 0;
         $register->data_format = $data['data_format'];
         $register->units = array_key_exists('units', $data) ? $data['units'] : null;
         $register->scale_unit = array_key_exists('scale_unit', $data) ? $data['scale_unit'] : null;

@@ -41,6 +41,7 @@ class SlaverService
                     'type' => 'custom',
                     'name' => $data['name'],
                     'purpose' => $data['purpose'],
+                    'protocol' => $data['protocol'],
                 ]);
 
                 $slaver->type = $type->id;
@@ -128,6 +129,7 @@ class SlaverService
             $slaver->relatedType->update([
                 'name' => $data['name'],
                 'purpose' => $data['purpose'],
+                'protocol' => $data['protocol'],
             ]);
         }
 

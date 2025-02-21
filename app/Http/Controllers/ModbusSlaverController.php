@@ -34,6 +34,7 @@ class ModbusSlaverController extends Controller
     public function edit(int $id)
     {
         $slaver = ModbusSlaver::findOrFail($id);
+        $protocols = ModbusSlaversType::getProtocols();
         $buses = $this->modbusRep->getAllBusesToArray();
         $wbLedOperModes = ModbusSlaver::getWbLedOperModes();
         $wbLedModeRegisterId = null;
@@ -69,7 +70,7 @@ class ModbusSlaverController extends Controller
         }
 
         return view('mod_bus.slaver.edit', compact(
-            'slaver', 'buses', 'wbLedOperModes', 'purposes',
+            'slaver', 'buses', 'wbLedOperModes', 'purposes', 'protocols',
             'wbLedModeRegisterId', 'daliDeviceGroups', 'daliDeviceGroupsSelection'
         ));
     }
@@ -96,12 +97,13 @@ class ModbusSlaverController extends Controller
     public function create()
     {
         $purposes = ModbusSlaversType::getPurposes();
+        $protocols = ModbusSlaversType::getProtocols();
         $types = ModbusSlaversType::where('type', '!=', 'custom')->get();
         $buses = $this->modbusRep->getAllBusesToArray();
         $wbLedOperModes = ModbusSlaver::getWbLedOperModes();
 
         return view('mod_bus.slaver.create', compact(
-            'types', 'buses', 'wbLedOperModes', 'purposes'
+            'types', 'buses', 'wbLedOperModes', 'purposes', 'protocols'
         ));
     }
 

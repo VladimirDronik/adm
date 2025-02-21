@@ -28,7 +28,7 @@ class CreateRequest extends FormRequest
             'slaver_id' => 'required|integer|exists:App\Models\ModbusSlaver,id',
             'register_type' => 'required|string',
             'starting_register' => 'required|integer|min:0|max:65535',
-            'registers_quantity' => 'required|integer|min:1|max:125',
+            'registers_quantity' => 'nullable|integer|min:1|max:125',
             'data_format' => 'required|string',
             'units' => 'nullable|string',
             'scale_unit' => 'nullable|numeric',

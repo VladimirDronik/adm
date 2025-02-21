@@ -32,4 +32,12 @@ class ModbusSlaversType extends Model
             'other' => 'other',
         ];
     }
+
+    public static function getProtocols(): array
+    {
+        return [
+            'modbus' => 'Modbus',
+            'pulsarm' => 'Пульсар-М',
+        ];
+    }
 }

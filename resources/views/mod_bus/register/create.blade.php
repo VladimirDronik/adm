@@ -34,11 +34,13 @@
 
                         {{ Form::bs_autoselect('slaver_id', 'Устройство*:', $slavers, old('slaver_id'), false, false, ['required' => true], null, null, 3, false, true) }}
 
-                        {{ Form::bs_select('register_type', 'Тип*:', $types, old('register_type'), ['required' => true]) }}
+                        {{ Form::bs_select('register_type', 'Тип*:', [], old('register_type'), ['required' => true]) }}
 
                         {{ Form::bs_number('starting_register', 'Начальный адрес*:', old('starting_register'), ['min' => 0, 'max' => 65535, 'required' => true]) }}
 
-                        {{ Form::bs_number('registers_quantity', 'Кол-во регистров*:', old('registers_quantity'), ['min' => 1, 'max' => 125, 'required' => true]) }}
+                        <div id='registers_quantity' hidden>
+                            {{ Form::bs_number('registers_quantity', 'Кол-во регистров*:', old('registers_quantity'), ['min' => 1, 'max' => 125, 'required' => true]) }}
+                        </div>
 
                         {{ Form::bs_select('data_format', 'Формат данных*:', $dataFormats, old('data_format'), ['required' => true]) }}
 
@@ -70,12 +72,48 @@
         $(document).ready(function () {
             $("#auto_sel_slaver_id").chosen({width:"100%", no_results_text: "Не найдено"});
 
+            function updateRegisterTypeSelect(protocol) {
+                var select = $('#register_form select[name=register_type]');
+                select.empty();
+
+                var options = [];
+                if (protocol === 'modbus') {
+                    options = [
+                        { value: 'coil', text: 'coil' },
+                        { value: 'holding', text: 'holding' },
+                        { value: 'input', text: 'input' },
+                        { value: 'discrete', text: 'discrete' }
+                    ];
+                } else if (protocol === 'pulsarm') {
+                    options = [
+                        { value: 'channel', text: 'channel' },
+                        { value: 'parameter', text: 'parameter' }
+                    ];
+                }
+
+                $.each(options, function (index, option) {
+                    select.append(new Option(option.text, option.value));
+                });
+            }
+
             if ($("#auto_sel_slaver_id").chosen().val()) {
                 $.ajax({
-                    url: "{{ route('ajax.mod_bus.slavers.check_custom') }}",
+                    url: "{{ route('ajax.mod_bus.slavers.additional_data') }}",
                     data: {'_token': _token, 'slaver_id': $("#auto_sel_slaver_id").chosen().val()},
                     success: function (data) {
-                        if (data.result) {
+                        updateRegisterTypeSelect(data.protocol);
+
+                        if (data.protocol == 'modbus') {
+                            $('label[for="starting_register"] strong').text('Начальный адрес*:');
+                            $('#registers_quantity').removeAttr("hidden");
+                            $('#register_form input[name=registers_quantity]').removeAttr("disabled");
+                        } else if (data.protocol == 'pulsarm') {
+                            $('label[for="starting_register"] strong').text('Адрес*:');
+                            $('#registers_quantity').attr("hidden", true);
+                            $('#register_form input[name=registers_quantity]').attr("disabled", true);
+                        }
+
+                        if (data.is_custom) {
                             $('#alias').removeAttr("hidden");
                             $('#register_form input[name=alias]').removeAttr("disabled");
                         } else {
@@ -89,10 +127,22 @@
             $("#auto_sel_slaver_id").chosen().change(function() {
                 let slaver_id = $(this).val();
                 $.ajax({
-                    url: "{{ route('ajax.mod_bus.slavers.check_custom') }}",
+                    url: "{{ route('ajax.mod_bus.slavers.additional_data') }}",
                     data: {'_token': _token, 'slaver_id': slaver_id},
                     success: function (data) {
-                        if (data.result) {
+                        updateRegisterTypeSelect(data.protocol);
+
+                        if (data.protocol == 'modbus') {
+                            $('label[for="starting_register"] strong').text('Начальный адрес*:');
+                            $('#registers_quantity').removeAttr("hidden");
+                            $('#register_form input[name=registers_quantity]').removeAttr("disabled");
+                        } else if (data.protocol == 'pulsarm') {
+                            $('label[for="starting_register"] strong').text('Адрес*:');
+                            $('#registers_quantity').attr("hidden", true);
+                            $('#register_form input[name=registers_quantity]').attr("disabled", true);
+                        }
+
+                        if (data.is_custom) {
                             $('#alias').removeAttr("hidden");
                             $('#register_form input[name=alias]').removeAttr("disabled");
                         } else {

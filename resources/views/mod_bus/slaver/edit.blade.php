@@ -37,8 +37,11 @@
 
                         {{ Form::bs_autoselect('bus', 'Шина*:', $buses, old('bus', $slaver->bus), false, false, ['required' => true], null, null, 3, false, true) }}
 
-                        {{ Form::bs_number('address', 'Адрес*:', old('address', $slaver->address), ['min' => 1, 'max' => 247, 'required' => true]) }}
-
+                        @if($slaver->relatedType->protocol == 'modbus')
+                            {{ Form::bs_number('address', 'Адрес*:', old('address', $slaver->address), ['min' => 1, 'max' => 247, 'required' => true]) }}
+                        @elseif($slaver->relatedType->protocol == 'pulsarm')
+                            {{ Form::bs_number('address', 'Адрес*:', old('address', $slaver->address), ['required' => true]) }}
+                        @endif
                         <div class="form-group row">
                             <label class="control-label text-right col-md-3 label-fix" for="">Статус:</label>
                             <div class="col-md-9 align-self-center">
@@ -113,6 +116,8 @@
 
                         @elseif($slaver->relatedType->type == 'custom')
                             {{ Form::bs_select('purpose', 'Назначение устройства*:', $purposes, old('purpose', $slaver->relatedType->purpose), ['required' => true]) }}
+
+                            {{ Form::bs_select('protocol', 'Протокол*:', $protocols, old('protocol', $slaver->relatedType->protocol), ['required' => true]) }}
                         @endif
                     </div>
 
@@ -156,6 +161,18 @@
         $(document).ready(function () {
             $("#auto_sel_bus").chosen({width:"100%", no_results_text: "Не найдено"});
             $("#auto_sel_dali_device_group").chosen({width:"50%", no_results_text: "Не найдено"});
+
+            $('#slaver_form select[name=protocol]').change(function() {
+                var protocol = $(this).find('option:selected').val();
+
+                if (protocol == 'modbus') {
+                    $('#slaver_form input[name=address]').attr("min", 1);
+                    $('#slaver_form input[name=address]').attr("max", 247);
+                } else if (protocol == 'pulsarm') {
+                    $('#slaver_form input[name=address]').removeAttr("min");
+                    $('#slaver_form input[name=address]').removeAttr("max");
+                }
+            });
 
             $('#addDaliDeviceGroup').click(function () {
                 let group_address = $("#auto_sel_dali_device_group").chosen().val();

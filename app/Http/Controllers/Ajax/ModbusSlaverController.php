@@ -164,14 +164,15 @@ class ModbusSlaverController extends Controller
         ]);
     }
 
-    public function checkCustom(Request $r)
+    public function additionalData(Request $r)
     {
         abort_if(! ajaxHas($r, ['slaver_id']), 400);
 
         $slaver = ModbusSlaver::find($r->slaver_id);
 
         return response()->json([
-            'result' => $slaver->relatedType->type == 'custom',
+            'is_custom' => $slaver->relatedType->type == 'custom',
+            'protocol' => $slaver->relatedType->protocol,
         ]);
     }
 }
