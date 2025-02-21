@@ -1,0 +1,28 @@
+[
+  {
+    "name": "Объем прямой",
+    "register_type": "channel",
+    "starting_register": 1,
+    "registers_quantity": 1,
+    "access": "ro",
+    "data_format": "float",
+    "units": "м³",
+    "scale_unit": null,
+    "comment": null,
+    "is_system": 1,
+    "alias": null
+  },
+  {
+    "name": "Расход",
+    "register_type": "parameter",
+    "starting_register": 256,
+    "registers_quantity": 1,
+    "access": "ro",
+    "data_format": "float",
+    "units": "м³/ч",
+    "scale_unit": null,
+    "comment": null,
+    "is_system": 1,
+    "alias": null
+  }
+]
